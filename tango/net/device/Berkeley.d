@@ -350,26 +350,26 @@ else
         {
                 socket_t socket(int af, int type, int protocol);
                 int fcntl(socket_t s, int f, ...);
-                uint inet_addr(char* cp);
-                int bind(socket_t s, Address.sockaddr* name, int namelen);
-                int connect(socket_t s, Address.sockaddr* name, int namelen);
+                uint inet_addr(const(char)* cp);
+                int bind(socket_t s, const(Address.sockaddr)* name, int namelen);
+                int connect(socket_t s, const(Address.sockaddr)* name, int namelen);
                 int listen(socket_t s, int backlog);
                 socket_t accept(socket_t s, Address.sockaddr* addr, int* addrlen);
                 int close(socket_t s);
                 int shutdown(socket_t s, int how);
                 int getpeername(socket_t s, Address.sockaddr* name, int* namelen);
                 int getsockname(socket_t s, Address.sockaddr* name, int* namelen);
-                int send(socket_t s, void* buf, size_t len, int flags);
-                int sendto(socket_t s, void* buf, size_t len, int flags, Address.sockaddr* to, int tolen);
-                int recv(socket_t s, void* buf, size_t len, int flags);
-                int recvfrom(socket_t s, void* buf, size_t len, int flags, Address.sockaddr* from, int* fromlen);
+                int send(socket_t s, const(void)* buf, size_t len, int flags);
+                int sendto(socket_t s, const(void)* buf, size_t len, int flags, Address.sockaddr* to, int tolen);
+                int recv(socket_t s, const(void)* buf, size_t len, int flags);
+                int recvfrom(socket_t s, const(void)* buf, size_t len, int flags, Address.sockaddr* from, int* fromlen);
                 int select(int nfds, SocketSet.fd* readfds, SocketSet.fd* writefds, SocketSet.fd* errorfds, SocketSet.timeval* timeout);
                 int getsockopt(socket_t s, int level, int optname, void* optval, int* optlen);
-                int setsockopt(socket_t s, int level, int optname, void* optval, int optlen);
+                int setsockopt(socket_t s, int level, int optname, const(void)* optval, int optlen);
                 int gethostname(void* namebuffer, int buflen);
                 char* inet_ntoa(uint ina);
-                NetHost.hostent* gethostbyname(char* name);
-                NetHost.hostent* gethostbyaddr(void* addr, int len, int type);
+                NetHost.hostent* gethostbyname(const(char)* name);
+                NetHost.hostent* gethostbyaddr(const(void)* addr, int len, int type);
 
                 /**
                 Given node and service, which identify an Internet host and a service,
@@ -380,7 +380,7 @@ else
                 but unlike the latter functions, getaddrinfo() is reentrant and allows
                 programs to eliminate IPv4-versus-IPv6 dependencies. (C) MAN
                 */
-                int getaddrinfo(char* node, char* service, Address.addrinfo* hints, Address.addrinfo** res);
+                int getaddrinfo(const(char)* node, const(char)* service, Address.addrinfo* hints, Address.addrinfo** res);
 
                 /**
                 The freeaddrinfo() function frees the memory that was allocated for the
@@ -401,9 +401,9 @@ else
                 The gai_strerror function translates error codes of getaddrinfo, freeaddrinfo
                 and getnameinfo to a human readable string, suitable for error reporting. (C) MAN
                 */
-                char* gai_strerror(int errcode);
+                const(char)* gai_strerror(int errcode);
 
-                char* inet_ntop(int af, void *src, char *dst, int len);
+                const(char)* inet_ntop(int af, const(void) *src, char *dst, int len);
        }
 }
 
@@ -492,7 +492,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        socket_t handle ()
+        const socket_t handle ()
         {
                 return sock;
         }
@@ -503,7 +503,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int error ()
+        const int error ()
         {
                 int errcode;
                 getOption (SocketOptionLevel.SOCKET, SocketOption.ERROR, (&errcode)[0..1]);
@@ -531,7 +531,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        bool isAlive ()
+        const bool isAlive ()
         {
                 int type, typesize = type.sizeof;
                 return getsockopt (sock, SocketOptionLevel.SOCKET,
@@ -543,7 +543,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        AddressFamily addressFamily ()
+        const AddressFamily addressFamily ()
         {
                 return family;
         }
@@ -556,7 +556,7 @@ version (Windows)
         {
                 if(Error == .bind (sock, addr.name, addr.nameLen))
                    exception ("Unable to bind socket: ");
-                return this;
+                return &this;
         }
 
         /***********************************************************************
@@ -573,17 +573,17 @@ version (Windows)
                       version (Windows)
                               {
                               if (err is WSAEWOULDBLOCK)
-                                  return this;
+                                  return &this;
                               }
                            else
                               {
                               if (err is EINPROGRESS)
-                                  return this;
+                                  return &this;
                               }
                       }
                    exception ("Unable to connect socket: ");
                    }
-                return this;
+                return &this;
         }
 
         /***********************************************************************
@@ -596,7 +596,7 @@ version (Windows)
         {
                 if (Error == .listen (sock, backlog))
                     exception ("Unable to listen on socket: ");
-                return this;
+                return &this;
         }
 
         /***********************************************************************
@@ -635,7 +635,7 @@ version (Windows)
         Berkeley* shutdown (SocketShutdown how)
         {
                 .shutdown (sock, how);
-                return this;
+                return &this;
         }
 
         /***********************************************************************
@@ -722,7 +722,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Address newFamilyObject ()
+        const Address newFamilyObject ()
         {
                 if (family is AddressFamily.INET)
                    return new IPv4Address;
@@ -766,7 +766,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Address remoteAddress ()
+        const Address remoteAddress ()
         {
                 auto addr = newFamilyObject;
                 auto nameLen = addr.nameLen;
@@ -782,7 +782,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Address localAddress ()
+        const Address localAddress ()
         {
                 auto addr = newFamilyObject;
                 auto nameLen = addr.nameLen;
@@ -802,7 +802,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int send (void[] buf, SocketFlags flags=SocketFlags.NONE)
+        const int send (const(void)[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 if (buf.length is 0)
                     return 0;
@@ -829,7 +829,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int sendTo (void[] buf, SocketFlags flags, Address to)
+        const int sendTo (const(void)[] buf, SocketFlags flags, Address to)
         {
                 return sendTo (buf, cast(int) flags, to.name, to.nameLen);
         }
@@ -840,7 +840,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int sendTo (void[] buf, Address to)
+        const int sendTo (const(void)[] buf, Address to)
         {
                 return sendTo (buf, SocketFlags.NONE, to);
         }
@@ -851,7 +851,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int sendTo (void[] buf, SocketFlags flags=SocketFlags.NONE)
+        const int sendTo (const(void)[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 return sendTo (buf, cast(int) flags, null, 0);
         }
@@ -866,7 +866,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        private int sendTo (void[] buf, int flags, Address.sockaddr* to, int len)
+        private const int sendTo (const(void)[] buf, int flags, Address.sockaddr* to, int len)
         {
                 if (buf.length is 0)
                     return 0;
@@ -894,7 +894,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int receive (void[] buf, SocketFlags flags=SocketFlags.NONE)
+        const int receive (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 if (!buf.length)
                      badArg ("Socket.receive :: target buffer has 0 length");
@@ -912,7 +912,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int receiveFrom (void[] buf, SocketFlags flags, Address from)
+        const int receiveFrom (void[] buf, SocketFlags flags, Address from)
         {
                 if (!buf.length)
                      badArg ("Socket.receiveFrom :: target buffer has 0 length");
@@ -928,7 +928,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int receiveFrom (void[] buf, Address from)
+        const int receiveFrom (void[] buf, Address from)
         {
                 return receiveFrom(buf, SocketFlags.NONE, from);
         }
@@ -939,7 +939,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int receiveFrom (void[] buf, SocketFlags flags = SocketFlags.NONE)
+        const int receiveFrom (void[] buf, SocketFlags flags = SocketFlags.NONE)
         {
                 if (!buf.length)
                      badArg ("Socket.receiveFrom :: target buffer has 0 length");
@@ -954,7 +954,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int getOption (SocketOptionLevel level, SocketOption option, void[] result)
+        const int getOption (SocketOptionLevel level, SocketOption option, void[] result)
         {
                 int len = cast(int) result.length;
                 if(Error == .getsockopt (sock, cast(int)level, cast(int)option, result.ptr, &len))
@@ -966,11 +966,11 @@ version (Windows)
 
         ***********************************************************************/
 
-        Berkeley* setOption (SocketOptionLevel level, SocketOption option, void[] value)
+        Berkeley* setOption (SocketOptionLevel level, SocketOption option, const(void)[] value)
         {
                 if(Error == .setsockopt (sock, cast(int)level, cast(int)option, value.ptr, cast(int) value.length))
                    exception ("Unable to set socket option: ");
-                return this;
+                return &this;
         }
 
         /***********************************************************************
@@ -979,7 +979,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        bool blocking()
+        const bool blocking()
         {
                 version (Windows)
                          return synchronous;
@@ -1019,16 +1019,16 @@ version (Windows)
 
         ***********************************************************************/
 
-        static void exception (char[] msg)
+        static void exception (immutable(char)[] msg)
         {
-                throw new SocketException (msg ~ SysError.lookup(lastError));
+                throw new SocketException (msg ~ SysError.lookup(lastError).idup);
         }
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        protected static void badArg (char[] msg)
+        protected static void badArg (immutable(char)[] msg)
         {
                 throw new IllegalArgumentException (msg);
         }
@@ -1069,8 +1069,8 @@ public abstract class Address
                 addrinfo* ai_next;
         }
 
-        abstract sockaddr*      name();
-        abstract int            nameLen();
+        abstract sockaddr* name();
+        abstract const int nameLen();
 
         /***********************************************************************
 
@@ -1115,7 +1115,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        private static int toInt (char[] s)
+        private static int toInt (const(char)[] s)
         {
                 uint value;
 
@@ -1133,7 +1133,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        static void exception (char[] msg)
+        static void exception (immutable(char)[] msg)
         {
                 throw new SocketException (msg);
         }
@@ -1161,7 +1161,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        static Address resolve (char[] host, char[] service = null,
+        static Address resolve (const(char)[] host, const(char)[] service = null,
                                 AddressFamily af = AddressFamily.UNSPEC,
                                 AIFlags flags = cast(AIFlags)0)
         {
@@ -1172,7 +1172,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        static Address resolve (char[] host, ushort port,
+        static Address resolve (const(char)[] host, ushort port,
                                 AddressFamily af = AddressFamily.UNSPEC,
                                 AIFlags flags = cast(AIFlags)0)
         {
@@ -1183,7 +1183,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        static Address[] resolveAll (char[] host, char[] service = null,
+        static Address[] resolveAll (const(char)[] host, const(char)[] service = null,
                                      AddressFamily af = AddressFamily.UNSPEC,
                                      AIFlags flags = cast(AIFlags)0)
         {
@@ -1214,7 +1214,7 @@ public abstract class Address
                 hints.ai_socktype = SocketType.STREAM;
                 int error = getaddrinfo(toStringz(host), service.length == 0 ? null : toStringz(service), &hints, &info);
                 if (error != 0)
-                    throw new AddressException("couldn't resolve " ~ host);
+                    throw new AddressException("couldn't resolve " ~ host.idup);
 
                 retVal.length = 16;
                 retVal.length = 0;
@@ -1232,7 +1232,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        static Address[] resolveAll (char host[], ushort port,
+        static Address[] resolveAll (const(char) host[], ushort port,
                                      AddressFamily af = AddressFamily.UNSPEC,
                                      AIFlags flags = cast(AIFlags)0)
         {
@@ -1244,7 +1244,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        static Address passive (char[] service,
+        static Address passive (const(char)[] service,
                                 AddressFamily af = AddressFamily.UNSPEC,
                                 AIFlags flags = cast(AIFlags)0)
         {
@@ -1271,7 +1271,7 @@ public abstract class Address
                 // Getting name info. Don't look up hostname, returns
                 // numeric name. (NIFlags.NUMERICHOST)
                 getnameinfo (name, nameLen, host.ptr, host.length, null, 0, NIFlags.NUMERICHOST);
-                return fromStringz (host.ptr);
+                return fromStringz (host.ptr).dup;
         }
 
         /***********************************************************************
@@ -1294,9 +1294,9 @@ public abstract class Address
 
         ***********************************************************************/
 
-        char[] toString()
+        immutable(char)[] toString()
         {
-                return toAddrString ~ ":" ~ toPortString;
+                return toAddrString.idup ~ ":" ~ toPortString.idup;
         }
 
         /***********************************************************************
@@ -1331,7 +1331,7 @@ public class UnknownAddress : Address
 
         ***********************************************************************/
 
-        int nameLen()
+        const int nameLen()
         {
                 return sa.sizeof;
         }
@@ -1349,7 +1349,7 @@ public class UnknownAddress : Address
 
         ***********************************************************************/
 
-        char[] toString()
+        immutable(char)[] toString()
         {
                 return "Unknown";
         }
@@ -1433,7 +1433,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        this (char[] addr, ushort port = PORT_ANY)
+        this (const(char)[] addr, ushort port = PORT_ANY)
         {
                 uint uiaddr = parse(addr);
                 if (ADDR_NONE == uiaddr)
@@ -1442,7 +1442,7 @@ public class IPv4Address : Address
                    if (!ih.getHostByName(addr))
                       {
                       char[16] tmp = void;
-                      exception ("Unable to resolve "~addr~":"~fromInt(tmp, port));
+                      exception ("Unable to resolve "~addr.idup~":"~fromInt(tmp, port).idup);
                       }
                    uiaddr = ih.addrList[0];
                    }
@@ -1472,9 +1472,9 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        int nameLen()
+        const int nameLen()
         {
-                return sin.sizeof;
+                return cast(int)sin.sizeof;
         }
 
         /***********************************************************************
@@ -1490,7 +1490,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        ushort port()
+        const ushort port()
         {
                 return ntohs(sin.sin_port);
         }
@@ -1499,7 +1499,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        uint addr()
+        const uint addr()
         {
                 return ntohl(sin.sin_addr);
         }
@@ -1508,7 +1508,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        char[] toAddrString()
+        const char[] toAddrString()
         {
                 char[16] buff = 0;
                 version (Windows)
@@ -1521,7 +1521,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        char[] toPortString()
+        const char[] toPortString()
         {
                 char[8] _port;
                 return fromInt (_port, port()).dup;
@@ -1531,9 +1531,9 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        char[] toString()
+        immutable(char)[] toString()
         {
-                return toAddrString() ~ ":" ~ toPortString();
+                return toAddrString().idup ~ ":" ~ toPortString().idup;
         }
 
         /***********************************************************************
@@ -1543,7 +1543,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        static uint parse(char[] addr)
+        static uint parse(const(char)[] addr)
         {
                 char[64] tmp;
 
@@ -1692,9 +1692,9 @@ protected:
 
         ***********************************************************************/
 
-        int nameLen()
+        const int nameLen()
         {
-                return sin.sizeof;
+                return cast(int)sin.sizeof;
         }
 
  public:
@@ -1709,13 +1709,13 @@ protected:
         }
 
 
-        const ushort PORT_ANY = 0;
+        enum ushort PORT_ANY = 0;
 
         /***********************************************************************
 
          ***********************************************************************/
 
-        ushort port()
+        const ushort port()
         {
                 return ntohs(sin.sin_port);
         }
@@ -1738,7 +1738,7 @@ protected:
 
         ***********************************************************************/
 
-        this (char[] addr, int port = PORT_ANY)
+        this (const(char)[] addr, int port = PORT_ANY)
         {
                 version (Win32)
                         {
@@ -1763,7 +1763,7 @@ protected:
 
         ***********************************************************************/
 
-        this (char[] addr, char[] service)
+        this (const(char)[] addr, const(char)[] service)
         {
                 version (Win32)
                         {
@@ -1793,7 +1793,7 @@ protected:
         ***********************************************************************/
 
         version (Posix)
-        char[] toAddrString()
+        const char[] toAddrString()
         {
 
                 char[100] buff = 0;
@@ -1804,7 +1804,7 @@ protected:
 
         ***********************************************************************/
 
-        char[] toPortString()
+        const char[] toPortString()
         {
                 char[8] _port;
                 return fromInt (_port, port()).dup;
@@ -1814,9 +1814,9 @@ protected:
 
         ***********************************************************************/
 
-        char[] toString()
+        immutable(char)[] toString()
         {
-                return "[" ~ toAddrString ~ "]:" ~ toPortString;
+                return "[" ~ toAddrString.idup ~ "]:" ~ toPortString.idup;
         }
 }
 
@@ -1842,8 +1842,8 @@ debug(UnitTest)
 
 public class NetHost
 {
-        char[]          name;
-        char[][]        aliases;
+        const(char)[]          name;
+        const(char)[][]        aliases;
         uint[]          addrList;
 
         /***********************************************************************
@@ -1852,8 +1852,8 @@ public class NetHost
 
         struct hostent
         {
-                char* h_name;
-                char** h_aliases;
+                const(char)* h_name;
+                const(char)** h_aliases;
                 version (Win32)
                         {
                         short h_addrtype;
@@ -1864,9 +1864,9 @@ public class NetHost
                         int h_addrtype;
                         int h_length;
                         }
-                char** h_addr_list;
+                const(char)** h_addr_list;
 
-                char* h_addr()
+                const(char)* h_addr()
                 {
                         return h_addr_list[0];
                 }
@@ -1889,7 +1889,7 @@ public class NetHost
         void populate (hostent* he)
         {
                 int i;
-                char* p;
+                const(char)* p;
 
                 name = fromStringz(he.h_name);
 
@@ -1930,7 +1930,7 @@ public class NetHost
 
         ***********************************************************************/
 
-        bool getHostByName(char[] name)
+        bool getHostByName(const(char)[] name)
         {
                 char[1024] tmp;
 
@@ -1968,7 +1968,7 @@ public class NetHost
         ***********************************************************************/
 
         //shortcut
-        bool getHostByAddr(char[] addr)
+        bool getHostByAddr(const(char)[] addr)
         {
                 char[64] tmp;
 
@@ -1992,27 +1992,27 @@ public class NetHost
 
 debug (UnitTest)
 {
-        extern (C) int printf(char*, ...);
+        import tango.io.Stdout;
         unittest
         {
         NetHost ih = new NetHost;
         ih.getHostByName(Berkeley.hostName());
         assert(ih.addrList.length > 0);
         IPv4Address ia = new IPv4Address(ih.addrList[0], IPv4Address.PORT_ANY);
-        printf("addrses: %x %x\n", ia.toAddrString.ptr, ih.name.ptr);
-        printf("IP address = %.*s\nname = %.*s\n", ia.toAddrString(), ih.name);
-        foreach(int i, char[] s; ih.aliases)
+        Stdout.formatln("addrses: {} {}\n", ia.toAddrString, ih.name);
+        Stdout.formatln("IP address = {}\nname = {}\n", ia.toAddrString(), ih.name);
+        foreach(int i, const(char)[] s; ih.aliases)
         {
-                printf("aliases[%d] = %.*s\n", i, s);
+                Stdout.formatln("aliases[%d] = {}\n", i, s);
         }
 
-        printf("---\n");
+        Stdout("---\n");
 
         assert(ih.getHostByAddr(ih.addrList[0]));
-        printf("name = %.*s\n", ih.name);
-        foreach(int i, char[] s; ih.aliases)
+        Stdout.formatln("name = {}\n", ih.name);
+        foreach(int i, const(char)[] s; ih.aliases)
         {
-                printf("aliases[%d] = %.*s\n", i, s);
+                Stdout.formatln("aliases[{}] = {}\n", i, s);
         }
         }
 }
@@ -2033,7 +2033,7 @@ public class SocketSet
                 c_long  seconds, microseconds;
         }
 
-        private uint  nbytes; //Win32: excludes uint.size "count"
+        private size_t  nbytes; //Win32: excludes uint.size "count"
         private byte* buf;
 
         struct fd {}
@@ -2060,18 +2060,18 @@ public class SocketSet
         {
                 import tango.core.BitManip;
 
-                uint nfdbits;
+                size_t nfdbits;
                 socket_t _maxfd = 0;
 
-                uint fdelt(socket_t s)
+                const uint fdelt(socket_t s)
                 {
-                        return cast(uint)s / nfdbits;
+                        return cast(uint)(s / nfdbits);
                 }
 
 
-                uint fdmask(socket_t s)
+                const uint fdmask(socket_t s)
                 {
-                        return 1 << cast(uint)s % nfdbits;
+                        return 1 << cast(uint)(s % nfdbits);
                 }
 
 
@@ -2288,7 +2288,7 @@ public class SocketSet
                 return isSet(s.handle);
         }
 
-        uint max()
+        const size_t max()
         {
                 return nbytes / socket_t.sizeof;
         }
