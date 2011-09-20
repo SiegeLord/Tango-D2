@@ -543,7 +543,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        const AddressFamily addressFamily ()
+        AddressFamily addressFamily ()
         {
                 return family;
         }
