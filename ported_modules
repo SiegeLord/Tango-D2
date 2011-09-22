@@ -48,6 +48,7 @@ tango/math/random/Random.d
 tango/math/random/Twister.d
 tango/math/random/Ziggurat.d
 tango/net/device/Berkeley.d
+tango/net/InternetAddress.d
 tango/stdc/errno.d
 tango/stdc/stdarg.d
 tango/stdc/stringz.d

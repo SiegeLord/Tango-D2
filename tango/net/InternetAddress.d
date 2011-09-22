@@ -36,7 +36,7 @@ class InternetAddress : IPv4Address
 
         ***********************************************************************/
 
-        this (char[] addr, int port = PORT_ANY)
+        this (const(char)[] addr, int port = PORT_ANY)
         {
                 foreach (int i, char c; addr)
                          if (c is ':')
@@ -74,7 +74,7 @@ class InternetAddress : IPv4Address
 
         **********************************************************************/
 
-        private static int parse (char[] s)
+        private static int parse (const(char)[] s)
         {       
                 int number;
 
