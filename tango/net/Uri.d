@@ -26,7 +26,7 @@ private import  Integer = tango.text.convert.Integer;
         
 *******************************************************************************/
 
-extern (C) char* memchr (char *, int, size_t);
+extern (C) char* memchr (const(char) *, int, size_t);
 
 
 /*******************************************************************************
@@ -50,7 +50,7 @@ extern (C) char* memchr (char *, int, size_t);
 class Uri : UriView
 {
         // simplistic string appender
-        private alias size_t delegate(void[]) Consumer;  
+        private alias scope size_t delegate(const(void)[]) Consumer;
         
         /// old method names
         public alias port        getPort;
@@ -73,7 +73,7 @@ class Uri : UriView
         public enum {InvalidPort = -1}
 
         private int             port_;
-        private char[]          host_,
+        private const(char)[]   host_,
                                 path_,
                                 query_,
                                 scheme_,
@@ -83,11 +83,11 @@ class Uri : UriView
 
         private static ubyte    map[];
 
-        private static short[char[]] genericSchemes;
+        private static short[immutable(char)[]] genericSchemes;
 
-        private static const char[] hexDigits = "0123456789abcdef";
+        private enum immutable(char)[] hexDigits = "0123456789abcdef";
 
-        private static const SchemePort[] schemePorts =
+        private enum SchemePort[] schemePorts =
                 [
                 {"coffee",      80},
                 {"file",        InvalidPort},
@@ -134,7 +134,7 @@ class Uri : UriView
         // scheme and port pairs
         private struct SchemePort
         {
-                char[]  name;
+                const(char)[]  name;
                 short   port;
         }
 
@@ -240,7 +240,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        this (char[] uri)
+        this (const(char)[] uri)
         {
                 this ();
                 parse (uri);
@@ -253,7 +253,7 @@ class Uri : UriView
                 
         ***********************************************************************/
 
-        this (char[] scheme, char[] host, char[] path, char[] query = null)
+        this (const(char)[] scheme, const(char)[] host, const(char)[] path, const(char)[] query = null)
         {
                 this ();
 
@@ -289,7 +289,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final int defaultPort (char[] scheme)
+        final const int defaultPort (const(char)[] scheme)
         {
                 short* port = scheme in genericSchemes; 
                 if (port is null)
@@ -304,7 +304,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] scheme()
+        final const const(char)[] scheme()
         {
                 return scheme_;
         }
@@ -316,7 +316,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] host()
+        final const const(char)[] host()
         {
                 return host_;
         }
@@ -328,7 +328,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final int port()
+        final const int port()
         {
                 return port_;
         }
@@ -340,7 +340,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final int validPort()
+        final const int validPort()
         {
                 if (port_ is InvalidPort)
                     return defaultPort (scheme_);
@@ -354,7 +354,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] userinfo()
+        final const const(char)[] userinfo()
         {
                 return userinfo_;
         }
@@ -366,7 +366,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] path()
+        final const const(char)[] path()
         {
                 return path_;
         }
@@ -378,7 +378,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] query()
+        final const const(char)[] query()
         {
                 return query_;
         }
@@ -390,7 +390,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] fragment()
+        final const const(char)[] fragment()
         {
                 return fragment_;
         }
@@ -401,7 +401,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final bool isGeneric ()
+        final const bool isGeneric ()
         {
                 return (scheme_ in genericSchemes) !is null;
         }
@@ -413,7 +413,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final size_t produce (Consumer consume)
+        final const size_t produce (Consumer consume)
         {
                 size_t ret;
 
@@ -463,13 +463,13 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] toString ()
+        final immutable(char)[] toString ()
         {
-                void[] s;
+                immutable(void)[] s;
 
                 s.length = 256, s.length = 0;
-                produce ((void[] v) {return s ~= v, v.length;});
-                return cast(char[]) s;
+                produce ((const(void)[] v) {return s ~= v, v.length;});
+                return cast(immutable(char)[]) s;
         }
 
         /***********************************************************************
@@ -479,7 +479,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        static size_t encode (Consumer consume, char[] s, int flags)
+        static size_t encode (Consumer consume, const(char)[] s, int flags)
         {
                 size_t  ret;
                 char[3] hex;
@@ -515,10 +515,10 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        static char[] encode (char[] text, int flags)
+        static char[] encode (const(char)[] text, int flags)
         {
                 void[] s;
-                encode ((void[] v) {return s ~= v, v.length;}, text, flags);
+                encode ((const(void)[] v) {return s ~= v, v.length;}, text, flags);
                 return cast(char[]) s;
         }
 
@@ -530,7 +530,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        private char[] decoder (char[] s, char ignore=0)
+        private char[] decoder (const(char)[] s, char ignore=0)
         {
                 static int toInt (char c)
                 {
@@ -581,8 +581,8 @@ class Uri : UriView
                    return cast(char[]) decoded.slice (j);
                    }
 
-                // return original content
-                return s;
+                // return original content (bad dup)
+                return s.dup;
         }   
 
         /***********************************************************************
@@ -591,7 +591,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] decode (char[] s)
+        final char[] decode (const(char)[] s)
         {
                 return decoder(s).dup;
         }
@@ -616,10 +616,10 @@ class Uri : UriView
                 
         ***********************************************************************/
 
-        final Uri parse (char[] uri, bool relative = false)
+        final Uri parse (const(char)[] uri, bool relative = false)
         {
                 char    c;
-                int     i, 
+                size_t  i,
                         mark;
                 auto    prefix = path_;
                 auto    len = uri.length;
@@ -631,8 +631,10 @@ class Uri : UriView
                 for (i=0; i < len && !(map[c = uri[i]] & ExcScheme); ++i) {}
                 if (c is ':')
                    {
-                   scheme_ = uri [mark .. i];   
-                   toLower (scheme_);
+                   /* Bad dup? */
+                   auto lower_uri = uri [mark .. i].dup;
+                   toLower (lower_uri);
+                   scheme_ = lower_uri;
                    mark = i + 1;
                    }
 
@@ -692,7 +694,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri relParse (char[] uri)
+        final Uri relParse (const(char)[] uri)
         {
                 return parse (uri, true);
         }
@@ -703,7 +705,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri scheme (char[] scheme)
+        final Uri scheme (const(char)[] scheme)
         {
                 this.scheme_ = scheme;
                 return this;
@@ -715,7 +717,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri host (char[] host)
+        final Uri host (const(char)[] host)
         {
                 this.host_ = host;
                 return this;
@@ -739,7 +741,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri userinfo (char[] userinfo)
+        final Uri userinfo (const(char)[] userinfo)
         {
                 this.userinfo_ = userinfo;
                 return this;
@@ -751,7 +753,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri query (char[] query)
+        final Uri query (const(char)[] query)
         {
                 this.query_ = query;
                 return this;
@@ -763,7 +765,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] extendQuery (char[] tail)
+        final const(char)[] extendQuery (const(char)[] tail)
         {
                 if (tail.length)
                     if (query_.length)
@@ -779,7 +781,7 @@ class Uri : UriView
 
         ***********************************************************************/
         
-        final Uri path (char[] path)
+        final Uri path (const(char)[] path)
         {
                 this.path_ = path;
                 return this;
@@ -791,7 +793,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri fragment (char[] fragment)
+        final Uri fragment (const(char)[] fragment)
         {
                 this.fragment_ = fragment;
                 return this;
@@ -813,9 +815,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        private void parseAuthority (char[] auth)
+        private void parseAuthority (const(char)[] auth)
         {
-                int     mark,
+                size_t  mark,
                         len = auth.length;
 
                 // get userinfo: (([^@]*)@?)
@@ -828,7 +830,7 @@ class Uri : UriView
                             }
 
                 // get port: (:(.*))?
-                for (int i=mark; i < len; ++i)
+                for (size_t i=mark; i < len; ++i)
                      if (auth [i] is ':')
                         {
                         port_ = Integer.atoi (auth [i+1 .. len]);
@@ -844,7 +846,7 @@ class Uri : UriView
 
         **********************************************************************/
 
-        private final char[] toLastSlash (char[] path)
+        private final static T[] toLastSlash (T)(T[] path)
         {
                 if (path.ptr)
                     for (auto p = path.ptr+path.length; --p >= path.ptr;)
@@ -875,7 +877,7 @@ class Uri : UriView
 
 private struct HeapSlice
 {
-        private uint    used;
+        private size_t    used;
         private void[]  buffer;
 
         /***********************************************************************
@@ -896,7 +898,7 @@ private struct HeapSlice
 
         ***********************************************************************/
 
-        final void* expand (uint size)
+        final void* expand (size_t size)
         {
                 auto len = used + size;
                 if (len > buffer.length)
@@ -915,7 +917,7 @@ private struct HeapSlice
 
         final void[] slice (int size)
         {
-                uint i = used;
+                size_t i = used;
                 used += size;
                 return buffer [i..used];
         }
@@ -929,7 +931,7 @@ private struct HeapSlice
 
 debug (UnitTest)
 { 
-    import tango.util.log.Trace;
+    //import tango.util.log.Trace;
 
 unittest
 {
