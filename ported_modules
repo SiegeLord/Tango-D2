@@ -159,6 +159,7 @@ tango/util/log/AppendFiles.d
 tango/util/log/Config.d
 tango/util/log/LayoutDate.d
 tango/util/log/Log.d
+tango/util/log/Trace.d
 tango/util/log/model/ILogger.d
 tango/util/MinMax.d
 tango/util/uuid/NamespaceGenV3.d

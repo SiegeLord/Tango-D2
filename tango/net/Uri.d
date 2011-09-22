@@ -931,7 +931,7 @@ private struct HeapSlice
 
 debug (UnitTest)
 { 
-    //import tango.util.log.Trace;
+    import tango.util.log.Trace;
 
 unittest
 {
