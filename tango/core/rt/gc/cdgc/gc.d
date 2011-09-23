@@ -178,6 +178,10 @@ struct Range
         else
         return cast(int)(pbot > other.pbot);
     }
+    int opEquals(in Range other)
+    {
+        return pbot is other.pbot;
+    }
 }
 
 
