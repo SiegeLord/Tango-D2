@@ -413,7 +413,7 @@ debug( UnitTest )
                     if( ++numReaders > maxReaders )
                         maxReaders = numReaders;
                 }
-                Thread.sleep( 0.001 );
+                Thread.sleep( dur!"msecs"(1) );
                 synchronized( synInfo )
                 {
                     --numReaders;
@@ -454,7 +454,7 @@ debug( UnitTest )
                         if( ++numReaders > maxReaders )
                             maxReaders = numReaders;
                     }
-                    Thread.sleep( 0.001 );
+                    Thread.sleep( dur!"msecs"(1) );
                     synchronized( synInfo )
                     {
                         --numReaders;
@@ -474,7 +474,7 @@ debug( UnitTest )
                         if( ++numWriters > maxWriters )
                             maxWriters = numWriters;
                     }
-                    Thread.sleep( 0.001 );
+                    Thread.sleep( dur!"msecs"(1) );
                     synchronized( synInfo )
                     {
                         --numWriters;
