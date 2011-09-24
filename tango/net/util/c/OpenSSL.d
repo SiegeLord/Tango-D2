@@ -53,63 +53,63 @@ version(linux)
     }
 }
 
-const uint BYTES_ENTROPY = 2048; // default bytes of entropy to load on startup.
+enum uint BYTES_ENTROPY = 2048; // default bytes of entropy to load on startup.
 private CRYPTO_dynlock_value *last = null;
 Mutex _dynLocksMutex = null;
 extern (C)
 {
-    const int NID_sha1 = 64;
-    const int NID_md5 = 4;
-    const int RSA_PKCS1_OAEP_PADDING = 4;
-    const int RSA_PKCS1_PADDING = 1;
-    const int BIO_C_SET_NBIO = 102;
-    const int SHA_DIGEST_LENGTH = 20;
-    const int SSL_CTRL_SET_SESS_CACHE_MODE = 44;
-    const int MBSTRING_FLAG = 0x1000;
-    const int MBSTRING_ASC = MBSTRING_FLAG | 1;
-    const int EVP_PKEY_RSA = 6;
-    const int RSA_F4 = 0x1001;
-    const int SSL_SENT_SHUTDOWN = 1;
-    const int SSL_RECEIVED_SHUTDOWN = 2;
-    const int BIO_C_GET_SSL = 110;
-    const int BIO_CTRL_RESET = 1;
-    const int BIO_CTRL_INFO = 3;
-    const int BIO_FLAGS_READ = 0x01;
-    const int BIO_FLAGS_WRITE = 0x02;
-    const int BIO_FLAGS_IO_SPECIAL = 0x04;
-    const int BIO_FLAGS_SHOULD_RETRY = 0x08;
-    const int BIO_CLOSE = 0x00;
-    const int BIO_NOCLOSE = 0x01;
-    const int ASN1_STRFLGS_ESC_CTRL = 2;
-    const int ASN1_STRFLGS_ESC_MSB = 4;
-    const int XN_FLAG_SEP_MULTILINE = (4 << 16);
-    const int XN_FLAG_SPC_EQ = (1 << 23);
-    const int XN_FLAG_FN_LN = (1 << 21);
-    const int XN_FLAG_FN_ALIGN = (1 << 25);
-    const int XN_FLAG_MULTILINE = ASN1_STRFLGS_ESC_CTRL | ASN1_STRFLGS_ESC_MSB | XN_FLAG_SEP_MULTILINE | XN_FLAG_SPC_EQ | XN_FLAG_FN_LN | XN_FLAG_FN_ALIGN;
+    enum int NID_sha1 = 64;
+    enum int NID_md5 = 4;
+    enum int RSA_PKCS1_OAEP_PADDING = 4;
+    enum int RSA_PKCS1_PADDING = 1;
+    enum int BIO_C_SET_NBIO = 102;
+    enum int SHA_DIGEST_LENGTH = 20;
+    enum int SSL_CTRL_SET_SESS_CACHE_MODE = 44;
+    enum int MBSTRING_FLAG = 0x1000;
+    enum int MBSTRING_ASC = MBSTRING_FLAG | 1;
+    enum int EVP_PKEY_RSA = 6;
+    enum int RSA_F4 = 0x1001;
+    enum int SSL_SENT_SHUTDOWN = 1;
+    enum int SSL_RECEIVED_SHUTDOWN = 2;
+    enum int BIO_C_GET_SSL = 110;
+    enum int BIO_CTRL_RESET = 1;
+    enum int BIO_CTRL_INFO = 3;
+    enum int BIO_FLAGS_READ = 0x01;
+    enum int BIO_FLAGS_WRITE = 0x02;
+    enum int BIO_FLAGS_IO_SPECIAL = 0x04;
+    enum int BIO_FLAGS_SHOULD_RETRY = 0x08;
+    enum int BIO_CLOSE = 0x00;
+    enum int BIO_NOCLOSE = 0x01;
+    enum int ASN1_STRFLGS_ESC_CTRL = 2;
+    enum int ASN1_STRFLGS_ESC_MSB = 4;
+    enum int XN_FLAG_SEP_MULTILINE = (4 << 16);
+    enum int XN_FLAG_SPC_EQ = (1 << 23);
+    enum int XN_FLAG_FN_LN = (1 << 21);
+    enum int XN_FLAG_FN_ALIGN = (1 << 25);
+    enum int XN_FLAG_MULTILINE = ASN1_STRFLGS_ESC_CTRL | ASN1_STRFLGS_ESC_MSB | XN_FLAG_SEP_MULTILINE | XN_FLAG_SPC_EQ | XN_FLAG_FN_LN | XN_FLAG_FN_ALIGN;
 
-    const char* PEM_STRING_EVP_PKEY = "ANY PRIVATE KEY";
-    const char* PEM_STRING_X509 = "CERTIFICATE";   
-    const char* PEM_STRING_RSA_PUBLIC = "RSA PUBLIC KEY";    
+    enum immutable(char)* PEM_STRING_EVP_PKEY = "ANY PRIVATE KEY";
+    enum immutable(char)* PEM_STRING_X509 = "CERTIFICATE";   
+    enum immutable(char)* PEM_STRING_RSA_PUBLIC = "RSA PUBLIC KEY";    
 
-    const int SSL_CTRL_OPTIONS = 32;
+    enum int SSL_CTRL_OPTIONS = 32;
 
-    const int SSL_OP_ALL = 0x00000FFFL;
-    const int SSL_OP_NO_SSLv2 = 0x01000000L;
+    enum int SSL_OP_ALL = 0x00000FFFL;
+    enum int SSL_OP_NO_SSLv2 = 0x01000000L;
 
-    const int CRYPTO_LOCK = 1;
-    const int CRYPTO_UNLOCK = 2;
-    const int CRYPTO_READ = 4;
-    const int CRYPTO_WRITE = 8;
+    enum int CRYPTO_LOCK = 1;
+    enum int CRYPTO_UNLOCK = 2;
+    enum int CRYPTO_READ = 4;
+    enum int CRYPTO_WRITE = 8;
 
-    const int ERR_TXT_STRING = 0x02;
+    enum int ERR_TXT_STRING = 0x02;
 
-    const int MD5_CBLOCK = 64;
-    const int MD5_LBLOCK = MD5_CBLOCK / 4;
-    const int MD5_DIGEST_LENGTH = 16;
+    enum int MD5_CBLOCK = 64;
+    enum int MD5_LBLOCK = MD5_CBLOCK / 4;
+    enum int MD5_DIGEST_LENGTH = 16;
 
-    const int EVP_MAX_BLOCK_LENGTH = 32;
-    const int EVP_MAX_IV_LENGTH = 16;
+    enum int EVP_MAX_BLOCK_LENGTH = 32;
+    enum int EVP_MAX_IV_LENGTH = 16;
 
     struct MD5_CTX
     {
@@ -228,19 +228,19 @@ extern (C)
     typedef void function(SSL_CTX *ctx, int mode, int function(int, X509_STORE_CTX *) callback) tSSL_CTX_set_verify;
     typedef void function(EVP_PKEY *pkey) tEVP_PKEY_free;
     typedef int function(SSL_CTX *ctx, int cmd, int larg, void *parg) tSSL_CTX_ctrl;
-    typedef int function(SSL_CTX *ctx, char *str) tSSL_CTX_set_cipher_list;
+    typedef int function(SSL_CTX *ctx, const(char) *str) tSSL_CTX_set_cipher_list;
     typedef void function(SSL_CTX *) tSSL_CTX_free;
     typedef void function() tSSL_load_error_strings;
     typedef void function() tSSL_library_init;
     typedef void function() tOpenSSL_add_all_digests;
-    typedef int function(char *file, int max_bytes) tRAND_load_file;
+    typedef int function(const(char) *file, int max_bytes) tRAND_load_file;
     typedef int function() tCRYPTO_num_locks;
     typedef void function(uint function() cb) tCRYPTO_set_id_callback;
-    typedef void function(void function(int mode, int type, char *file, int line) cb) tCRYPTO_set_locking_callback;
-    typedef void function(CRYPTO_dynlock_value *function(char *file, int line) cb) tCRYPTO_set_dynlock_create_callback;    
-    typedef void function(void function(int mode, CRYPTO_dynlock_value *lock, char *file, int lineNo) cb) tCRYPTO_set_dynlock_lock_callback;
-    typedef void function(void function(CRYPTO_dynlock_value *lock, char *file, int line) cb) tCRYPTO_set_dynlock_destroy_callback;
-    typedef uint function(char **file, int *line, char **data, int *flags) tERR_get_error_line_data;
+    typedef void function(void function(int mode, int type, const(char) *file, int line) cb) tCRYPTO_set_locking_callback;
+    typedef void function(CRYPTO_dynlock_value *function(const(char) *file, int line) cb) tCRYPTO_set_dynlock_create_callback;    
+    typedef void function(void function(int mode, CRYPTO_dynlock_value *lock, const(char) *file, int lineNo) cb) tCRYPTO_set_dynlock_lock_callback;
+    typedef void function(void function(CRYPTO_dynlock_value *lock, const(char) *file, int line) cb) tCRYPTO_set_dynlock_destroy_callback;
+    typedef uint function(const(char) **file, int *line, const(char) **data, int *flags) tERR_get_error_line_data;
     typedef void function(uint pid) tERR_remove_state;
     typedef void function() tRAND_cleanup;
     typedef void function() tERR_free_strings;
@@ -252,7 +252,7 @@ extern (C)
     typedef int function(BIO *b, void *data, int len) tBIO_read;
     typedef int function(SSL_CTX *ctx) tSSL_CTX_check_private_key;
     typedef EVP_PKEY* function(BIO *bp, EVP_PKEY **x, pem_password_cb *cb, void *u) tPEM_read_bio_PrivateKey;
-    typedef BIO* function(char *filename, char *mode) tBIO_new_file;
+    typedef BIO* function(const(char) *filename, const(char) *mode) tBIO_new_file;
     typedef int function() tERR_peek_error;
     typedef int function(BIO *b, int flags) tBIO_test_flags;
     typedef int function(BIO *b, int cmd, int larg, void *parg) tBIO_ctrl; 
@@ -260,7 +260,7 @@ extern (C)
     typedef int function(SSL *ssl) tSSL_get_shutdown;
     typedef int function(SSL_CTX *ctx, X509 *x) tSSL_CTX_use_certificate;
     typedef void function(SSL_CTX *CTX, X509_STORE *store) tSSL_CTX_set_cert_store;
-    typedef int function(SSL_CTX *ctx, char *CAfile, char *CApath) tSSL_CTX_load_verify_locations;
+    typedef int function(SSL_CTX *ctx, const(char) *CAfile, const(char) *CApath) tSSL_CTX_load_verify_locations;
     typedef X509* function(X509_STORE_CTX *ctx) tX509_STORE_CTX_get_current_cert;
     typedef int function(X509_STORE_CTX *ctx) tX509_STORE_CTX_get_error;
     typedef int function(X509_STORE_CTX *ctx) tX509_STORE_CTX_get_error_depth;
@@ -275,9 +275,9 @@ extern (C)
     typedef void function(RSA *r) tRSA_free;
     typedef BIO* function(BIO_METHOD *type) tBIO_new;
     typedef BIO_METHOD* function() tBIO_s_mem;
-    typedef int function(BIO *bp, EVP_PKEY *x, EVP_CIPHER *cipher, char *kstr, int klen, pem_password_cb, void *) tPEM_write_bio_PKCS8PrivateKey;
+    typedef int function(BIO *bp, EVP_PKEY *x, const(EVP_CIPHER) *cipher, char *kstr, int klen, pem_password_cb, void *) tPEM_write_bio_PKCS8PrivateKey;
     typedef EVP_CIPHER* function() tEVP_aes_256_cbc;
-    typedef void* function(d2i_of_void d2i, char *name, BIO *bp, void **x, pem_password_cb cb, void *u) tPEM_ASN1_read_bio;
+    typedef void* function(d2i_of_void d2i, const(char) *name, BIO *bp, void **x, pem_password_cb cb, void *u) tPEM_ASN1_read_bio;
     typedef X509* function() tX509_new;
     typedef void function(X509 *x) tX509_free;
     typedef int function(X509 *x, int ver) tX509_set_version;
@@ -295,8 +295,8 @@ extern (C)
     typedef int function(X509_STORE_CTX *ctx, X509_STORE *store, X509 *x509, void *shizzle) tX509_STORE_CTX_init;
     typedef int function(X509_STORE_CTX *ctx) tX509_verify_cert;
     typedef void function(X509_STORE_CTX *ctx) tX509_STORE_CTX_free;
-    typedef int function(i2d_of_void i2d, char *name, BIO *bp, char *x, EVP_CIPHER *enc, char *kstr, int klen, pem_password_cb cb, void *u) tPEM_ASN1_write_bio;
-    typedef int function(X509_NAME *name, char* field, int type, char *bytes, int len, int loc, int set) tX509_NAME_add_entry_by_txt;
+    typedef int function(i2d_of_void i2d, const(char) *name, BIO *bp, char *x, const(EVP_CIPHER) *enc, char *kstr, int klen, pem_password_cb cb, void *u) tPEM_ASN1_write_bio;
+    typedef int function(X509_NAME *name, char* field, int type, const(char) *bytes, int len, int loc, int set) tX509_NAME_add_entry_by_txt;
     typedef int function(SSL_CTX *ctx, ubyte *id, uint len) tSSL_CTX_set_session_id_context;
     typedef int function(EVP_PKEY *a, EVP_PKEY *b) tEVP_PKEY_cmp_parameters;
     typedef int function(X509 *a, X509 *b) tX509_cmp;
@@ -335,7 +335,7 @@ extern (C)
     {
         return cast(uint)cast(void*)Thread.getThis;
     }
-    void sslStaticLock(int mode, int index, char *sourceFile, int lineNo)
+    void sslStaticLock(int mode, int index, const(char) *sourceFile, int lineNo)
     {
         if (_locks)
         {
@@ -357,7 +357,7 @@ extern (C)
         } 
     }
     uint ablah = 0;
-    CRYPTO_dynlock_value *sslDynamicLockCreate(char *sourceFile, int lineNo)
+    CRYPTO_dynlock_value *sslDynamicLockCreate(const(char) *sourceFile, int lineNo)
     {
         auto rtn = new CRYPTO_dynlock_value;
         rtn.lock = new ReadWriteMutex;
@@ -375,7 +375,7 @@ extern (C)
         return rtn; 
     }
 
-    void sslDynamicLockLock(int mode, CRYPTO_dynlock_value *lock, char *sourceFile, int lineNo)
+    void sslDynamicLockLock(int mode, CRYPTO_dynlock_value *lock, const(char) *sourceFile, int lineNo)
     {
         if (lock && lock.lock)
         {
@@ -396,7 +396,7 @@ extern (C)
         } 
     }
 
-    void sslDynamicLockDestroy(CRYPTO_dynlock_value *lock, char *sourceFile, int lineNo)
+    void sslDynamicLockDestroy(CRYPTO_dynlock_value *lock, const(char) *sourceFile, int lineNo)
     {
         synchronized
         {
@@ -611,7 +611,7 @@ X509* PEM_read_bio_X509(BIO *b, X509 **x, pem_password_cb cb, void *u)
 }
 
 
-private void bindFunc(T)(ref T func, char[] funcName, SharedLib lib)
+private void bindFunc(T)(ref T func, const(char)[] funcName, SharedLib lib)
 in
 {
     assert(funcName);
@@ -626,7 +626,7 @@ body
         *point = funcPtr;
     }
     else
-        throw new Exception("Could not load symbol: " ~ funcName);
+        throw new Exception("Could not load symbol: " ~ funcName.idup);
 }
 
 static SharedLib ssllib = null;
@@ -647,8 +647,8 @@ void throwOpenSSLError()
         char[] exceptionString;
 
         int flags, line;
-        char *data;
-        char *file;
+        const(char) *data;
+        const(char) *file;
         uint code;
 
         code = ERR_get_error_line_data(&file, &line, &data, &flags);
@@ -660,7 +660,7 @@ void throwOpenSSLError()
                 exceptionString ~= Format.convert("ssl error code: {} {}:{}\r\n", code, fromStringz(file), line); 
             code = ERR_get_error_line_data(&file, &line, &data, &flags);
         }
-        throw new Exception(exceptionString);
+        throw new Exception(exceptionString.idup);
     }
     else
         throw new Exception("Unknown OpenSSL error.");
@@ -713,7 +713,7 @@ static this()
 }*/
 
 
-SharedLib loadLib(char[][] loadPath)
+SharedLib loadLib(const(char)[][] loadPath)
 {
     SharedLib rtn;
     foreach(path; loadPath)
@@ -736,7 +736,7 @@ version (Win32)
 {
     void loadEAY32()
     {
-        char[][] loadPath = [ "libeay32.dll" ];
+        const(char)[][] loadPath = [ "libeay32.dll" ];
         if ((eaylib = loadLib(loadPath)) !is null)
         {
             bindCrypto(eaylib);    
@@ -857,23 +857,23 @@ void loadOpenSSL()
 {
     version (linux)
     {
-        char[][] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
+        const(char)[][] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
     }
     version (Win32)
     {
-        char[][] loadPath = [ "libssl32.dll" ];
+        const(char)[][] loadPath = [ "libssl32.dll" ];
     }
     version (darwin)
     {
-        char[][] loadPath = [ "/usr/lib/libssl.dylib", "libssl.dylib" ];
+        const(char)[][] loadPath = [ "/usr/lib/libssl.dylib", "libssl.dylib" ];
     }
     version (freebsd)
     {
-        char[][] loadPath = [ "libssl.so.5", "libssl.so" ];
+        const(char)[][] loadPath = [ "libssl.so.5", "libssl.so" ];
     }
     version (solaris)
     {
-        char[][] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
+        const(char)[][] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
     }
     if ((ssllib = loadLib(loadPath)) !is null)
     {

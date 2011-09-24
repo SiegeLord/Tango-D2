@@ -55,6 +55,7 @@ tango/net/device/Multicast.d
 tango/net/InternetAddress.d
 tango/net/Uri.d
 tango/net/model/UriView.d
+tango/net/util/c/OpenSSL.d
 tango/stdc/errno.d
 tango/stdc/stdarg.d
 tango/stdc/stringz.d
