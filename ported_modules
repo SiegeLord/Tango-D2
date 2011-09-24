@@ -51,6 +51,7 @@ tango/net/device/Berkeley.d
 tango/net/device/Datagram.d
 tango/net/device/Socket.d
 tango/net/device/LocalSocket.d
+tango/net/device/Multicast.d
 tango/net/InternetAddress.d
 tango/net/Uri.d
 tango/net/model/UriView.d
