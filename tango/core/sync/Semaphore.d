@@ -368,7 +368,7 @@ debug( UnitTest )
                 semaphore.notify();
                 Thread.yield();
             }
-            Thread.sleep(1.0);
+            Thread.sleep(dur!("seconds")(1));
             synchronized( synProduced )
             {
                 allProduced = true;

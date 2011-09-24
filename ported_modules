@@ -60,6 +60,7 @@ tango/stdc/stdarg.d
 tango/stdc/stringz.d
 tango/stdc/posix/dirent.d
 tango/stdc/posix/langinfo.d
+tango/stdc/posix/signal.d
 tango/sys/Common.d
 tango/sys/SharedLib.d
 tango/sys/Environment.d
@@ -173,5 +174,7 @@ tango/util/uuid/NamespaceGenV5.d
 tango/util/uuid/RandomGen.d
 tango/util/uuid/Uuid.d
 
+tango/core/sync/Config.d
+tango/core/sync/Semaphore.d
 tango/core/sync/Mutex.d
 
