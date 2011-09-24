@@ -58,6 +58,7 @@ tango/stdc/stringz.d
 tango/stdc/posix/dirent.d
 tango/stdc/posix/langinfo.d
 tango/sys/Common.d
+tango/sys/SharedLib.d
 tango/text/Arguments.d
 tango/text/Ascii.d
 tango/text/Util.d
