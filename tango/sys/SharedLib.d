@@ -11,7 +11,7 @@ module tango.sys.SharedLib;
 
 
 private {
-    import tango.stdc.stringz : fromStringz, toStringz;
+    import tango.stdc.stringz : fromStringz;
 
     version (Windows) {
         import tango.sys.Common : SysError;
@@ -271,8 +271,8 @@ final class SharedLib {
             A pointer to the symbol or throws SharedLibException if it's
             not present in the library.
       */
-    void* getSymbol(const(char)[] name) {
-       return getSymbolImpl(toStringz(name), true);
+    void* getSymbol(const(char)* name) {
+       return getSymbolImpl(name, true);
     }
 
 
@@ -285,8 +285,8 @@ final class SharedLib {
         Returns:
             A pointer to the symbol or null if it's not present in the library.
       */
-    void* getSymbolNoThrow(const(char)[] name) {
-       return getSymbolImpl(toStringz(name), false);
+    void* getSymbolNoThrow(const(char)* name) {
+       return getSymbolImpl(name, false);
     }
 
 
