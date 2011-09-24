@@ -176,5 +176,6 @@ tango/util/uuid/Uuid.d
 
 tango/core/sync/Config.d
 tango/core/sync/Semaphore.d
+tango/core/sync/Condition.d
 tango/core/sync/Mutex.d
 
