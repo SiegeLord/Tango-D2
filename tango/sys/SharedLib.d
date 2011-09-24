@@ -272,7 +272,7 @@ final class SharedLib {
             not present in the library.
       */
     void* getSymbol(const(char)[] name) {
-    	return getSymbolImpl(name, true);
+       return getSymbolImpl(toStringz(name), true);
     }
 
 
@@ -286,11 +286,11 @@ final class SharedLib {
             A pointer to the symbol or null if it's not present in the library.
       */
     void* getSymbolNoThrow(const(char)[] name) {
-    	return getSymbolImpl(name, false);
+       return getSymbolImpl(toStringz(name), false);
     }
 
 
-    private void* getSymbolImpl(const(char)[] name, bool throwExceptions) {
+    private void* getSymbolImpl(const(char)* name, bool throwExceptions) {
         assert (loaded);
         return getSymbol_(name, throwExceptions);
     }
@@ -328,11 +328,11 @@ final class SharedLib {
                 }
             }
 
-            void* getSymbol_(const(char)[] name, bool throwExceptions) {
+            void* getSymbol_(const(char)* name, bool throwExceptions) {
                 // MSDN: "Multiple threads do not overwrite each other's last-error code."
-                auto res = GetProcAddress(handle, toStringz(name));
+                auto res = GetProcAddress(handle, name);
                 if (res is null && throwExceptions) {
-                    throw new SharedLibException("Couldn't load symbol '" ~ name.idup ~ "' from shared library '" ~ this.path_.idup ~ "' : " ~ SysError.lastMsg.idup);
+                    throw new SharedLibException("Couldn't load symbol '" ~ fromStringz(name).idup ~ "' from shared library '" ~ this.path_.idup ~ "' : " ~ SysError.lastMsg.idup);
                 } else {
                     return res;
                 }
@@ -360,11 +360,11 @@ final class SharedLib {
                 }
             }
 
-            void* getSymbol_(const(char)[] name, bool throwExceptions) {
+            void* getSymbol_(const(char)* name, bool throwExceptions) {
                 if (throwExceptions) {
                     synchronized (typeof(this).classinfo) { // dlerror need not be reentrant
                         auto err = dlerror();               // clear previous error condition
-                        auto res = dlsym(handle, toStringz(name));     // result of null does NOT indicate error
+                        auto res = dlsym(handle, name);     // result of null does NOT indicate error
                         
                         err = dlerror();                    // check for error condition
                         if (err !is null) {
@@ -374,7 +374,7 @@ final class SharedLib {
                         }
                     }
                 } else {
-                    return dlsym(handle, toStringz(name));
+                    return dlsym(handle, name);
                 }
             }
 
