@@ -103,7 +103,7 @@ class Datagram : Socket
 
         ***********************************************************************/
 
-        override size_t write (void[] src)
+        override size_t write (const(void)[] src)
         {
                 return write (src, null);
         }
@@ -118,7 +118,7 @@ class Datagram : Socket
 
         ***********************************************************************/
 
-        size_t write (void[] src, Address to)
+        size_t write (const(void)[] src, Address to)
         {
                 int count = Eof;
                 
