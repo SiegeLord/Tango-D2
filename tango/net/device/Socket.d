@@ -166,10 +166,10 @@ class Socket : Conduit, ISelectable
                 		asyncConnect (addr);
                 		return this;
             		}
-        		}
-        		native.connect (addr);
+            	}
+            	native.connect (addr);
         		
-                return this;
+            	return this;
         }
 
         /***********************************************************************
@@ -239,12 +239,10 @@ class Socket : Conduit, ISelectable
 
         override size_t read (void[] dst)
         {
-                version (TangoRuntime)
-                {
-                	if (scheduler)
-                		return asyncRead (dst);
-        		}
-
+    		version (TangoRuntime)
+    			if (scheduler)
+    				return asyncRead (dst);
+    		
                 auto x = Eof;
                 if (wait (true))
                    {
@@ -262,10 +260,8 @@ class Socket : Conduit, ISelectable
         size_t write (const(void)[] src)
         {
                 version (TangoRuntime)
-                {
                 	if (scheduler)
                 		return asyncWrite (src);
-            	}
 
                 auto x = Eof;
                 if (wait (false))
@@ -289,14 +285,14 @@ class Socket : Conduit, ISelectable
         override OutputStream copy (InputStream src, size_t max = -1)
         {
                 auto x = cast(ISelectable) src;
-
+                
                 version (TangoRuntime)
                 {
-                	if (scheduler && x) { 
+                	if (scheduler && x){
                 		asyncCopy (x.fileHandle);
                 		return this;
             		}
-        		}
+            	}
                 
                 super.copy (src, max);
                 return this;
@@ -597,16 +593,16 @@ class ServerSocket : Socket
         {
                 if (recipient is null)
                     recipient = new Socket;
-
+                    
                 version (TangoRuntime)
                 {
                 	if (scheduler)
-                		asyncAccept (recipient);
-            		else              
-            			berkeley.accept (recipient.berkeley);
-    			}
+                		asyncAccept(recipient);
+            		else
+            			berkeley.accept(recipient.berkeley);
+                }
                 else
-                	berkeley.accept (recipient.berkeley);
+                	berkeley.accept(recipient.berkeley);
                 
                 recipient.timeout = timeout;
                 return recipient;
