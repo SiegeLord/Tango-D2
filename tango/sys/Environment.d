@@ -42,8 +42,8 @@ version (Windows)
         }
         extern (Windows)
         {
-                private int SetEnvironmentVariableW(wchar*, wchar*);
-                private uint GetEnvironmentVariableW(wchar*, wchar*, uint);
+                private int SetEnvironmentVariableW(const(wchar)*, const(wchar)*);
+                private uint GetEnvironmentVariableW(const(wchar)*, wchar*, uint);
                 private const int ERROR_ENVVAR_NOT_FOUND = 203;
         }
 }
@@ -52,7 +52,7 @@ else
     version (darwin)
     {
         extern (C) char*** _NSGetEnviron();
-        private char** environ;
+        private __gshared char** environ;
         
         static this ()
         {
@@ -61,7 +61,7 @@ else
     }
     
     else
-        private extern (C) extern char** environ;
+        private extern (C) extern __gshared char** environ;
 
     import tango.stdc.posix.stdlib;
     import tango.stdc.string;
@@ -85,7 +85,7 @@ struct Environment
 
         ***********************************************************************/
 
-        private static void exception (char[] msg)
+        private static void exception (immutable(char)[] msg)
         {
                 throw new PlatformException (msg);
         }
@@ -99,7 +99,7 @@ struct Environment
 
         ***********************************************************************/
 
-        static char[] toAbsolute(char[] path)
+        static const(char)[] toAbsolute(const(char)[] path)
         {
             scope fp = new FilePath(path);
             if (fp.isAbsolute)
@@ -118,7 +118,7 @@ struct Environment
 
         ***********************************************************************/
 
-        static FilePath exePath (char[] file)
+        static FilePath exePath (const(char)[] file)
         {
                 auto bin = new FilePath (file);
 
@@ -137,7 +137,7 @@ struct Environment
                              return bin;
 
                 // rifle through the path (after converting to standard format)
-                foreach (pe; Text.patterns (standard(get("PATH")), FileConst.SystemPathString))
+                foreach (pe; Text.patterns (standard(get("PATH")), tango.io.model.IFile.FileConst.SystemPathString))
                          if (bin.path(pe).exists)
                              version (Windows)
                                       return bin;
@@ -166,9 +166,9 @@ struct Environment
 
                 **************************************************************/
 
-                static char[] get (char[] variable, char[] def = null)
+                static char[] get (const(char)[] variable, char[] def = null)
                 {
-                        wchar[] var = toString16(variable) ~ "\0";
+                        const(wchar)[] var = toString16(variable) ~ "\0";
 
                         uint size = GetEnvironmentVariableW(var.ptr, cast(wchar*)null, 0);
                         if (size is 0)
@@ -176,13 +176,13 @@ struct Environment
                            if (SysError.lastCode is ERROR_ENVVAR_NOT_FOUND)
                                return def;
                            else
-                              exception (SysError.lastMsg);
+                              exception (SysError.lastMsg.idup);
                            }
 
                         auto buffer = new wchar[size];
                         size = GetEnvironmentVariableW(var.ptr, buffer.ptr, size);
                         if (size is 0)
-                            exception (SysError.lastMsg);
+                            exception (SysError.lastMsg.idup);
 
                         return toString (buffer[0 .. size]);
                 }
@@ -193,9 +193,9 @@ struct Environment
 
                 **************************************************************/
 
-                static void set (char[] variable, char[] value = null)
+                static void set (const(char)[] variable, const(char)[] value = null)
                 {
-                        wchar * var, val;
+                        const(wchar) * var, val;
 
                         var = (toString16 (variable) ~ "\0").ptr;
 
@@ -203,7 +203,7 @@ struct Environment
                             val = (toString16 (value) ~ "\0").ptr;
 
                         if (! SetEnvironmentVariableW(var, val))
-                              exception (SysError.lastMsg);
+                              exception (SysError.lastMsg.idup);
                 }
 
                 /**************************************************************
@@ -246,7 +246,7 @@ struct Environment
                                       value.length = 2 * value.length;
                                   }
 
-                            arr [toString(key[0 .. k])] = toString(value[0 .. v]);
+                            arr [toString(key[0 .. k]).idup] = toString(value[0 .. v]);
                             }
 
                         return arr;
@@ -258,7 +258,7 @@ struct Environment
 
                 **************************************************************/
 
-                static void cwd (char[] path)
+                static void cwd (const(char)[] path)
                 {
                         version (Win32SansUnicode)
                                 {
@@ -352,7 +352,7 @@ struct Environment
 
                 **************************************************************/
 
-                static char[] get (char[] variable, char[] def = null)
+                static char[] get (const(char)[] variable, char[] def = null)
                 {
                         char* ptr = getenv ((variable ~ '\0').ptr);
 
@@ -368,7 +368,7 @@ struct Environment
         
                 **************************************************************/
 
-                static void set (char[] variable, char[] value = null)
+                static void set (const(char)[] variable, const(char)[] value = null)
                 {
                         int result;
 
@@ -378,7 +378,7 @@ struct Environment
                            result = setenv ((variable ~ '\0').ptr, (value ~ '\0').ptr, 1);
 
                         if (result != 0)
-                            exception (SysError.lastMsg);
+                            exception (SysError.lastMsg.idup);
                 }
 
                 /**************************************************************
@@ -405,7 +405,7 @@ struct Environment
                             char* val = str;
                             while (*str++)
                                    ++k;
-                            arr[key] = val[0 .. k];
+                            arr[key.idup] = val[0 .. k];
                             }
 
                         return arr;
@@ -417,7 +417,7 @@ struct Environment
 
                 **************************************************************/
 
-                static void cwd (char[] path)
+                static void cwd (const(char)[] path)
                 {
                         char[512] tmp = void;
                         tmp [path.length] = 0;
@@ -462,11 +462,11 @@ debug (Environment)
         import tango.io.Console;
 
 
-        void main(char[][] args)
+        void main(const(char)[][] args)
         {
-        const char[] VAR = "TESTENVVAR";
-        const char[] VAL1 = "VAL1";
-        const char[] VAL2 = "VAL2";
+        enum immutable(char)[] VAR = "TESTENVVAR";
+        enum immutable(char)[] VAL1 = "VAL1";
+        enum immutable(char)[] VAL2 = "VAL2";
 
         assert(Environment.get(VAR) is null);
 
