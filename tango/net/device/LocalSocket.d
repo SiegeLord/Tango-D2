@@ -50,7 +50,7 @@ class LocalSocket : Socket
 
         ***********************************************************************/
 
-        this (char[] path)
+        this (const(char)[] path)
         {
                 this (new LocalAddress (path));
         }
@@ -73,7 +73,7 @@ class LocalSocket : Socket
 
         ***********************************************************************/
 
-        override char[] toString()
+        override immutable(char)[] toString()
         {
                 return "<localsocket>";
         }
@@ -90,7 +90,7 @@ class LocalServerSocket : LocalSocket
 
         ***********************************************************************/
 
-        this (char[] path, int backlog=32, bool reuse=false)
+        this (const(char)[] path, int backlog=32, bool reuse=false)
         {
                 auto addr = new LocalAddress (path);
                 native.addressReuse(reuse).bind(addr).listen(backlog);
@@ -102,7 +102,7 @@ class LocalServerSocket : LocalSocket
 
         ***********************************************************************/
 
-        override char[] toString()
+        override immutable(char)[] toString()
         {
                 return "<localaccept>";
         }
@@ -137,8 +137,8 @@ class LocalAddress : Address
         protected
         {
                 sockaddr_un sun;
-                char[] _path;
-                int _pathLength;
+                const(char)[] _path;
+                size_t _pathLength;
         }
 
         /***********************************************************************
@@ -147,7 +147,7 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        this (char[] path)
+        this (const(char)[] path)
         {
                 assert (path.length < 108);
                 
@@ -171,9 +171,9 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        final int nameLen () 
+        final const int nameLen ()
         { 
-                return _pathLength + ushort.sizeof; 
+                return cast(int)(_pathLength + ushort.sizeof);
         }
         
         /***********************************************************************
@@ -189,19 +189,19 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        final char[] toString ()
+        final immutable(char)[] toString ()
         {
                 if (isAbstract)
-                    return "unix:abstract=" ~ _path[1..$];
+                    return "unix:abstract=" ~ _path[1..$].idup;
                 else
-                   return "unix:path=" ~ _path;
+                   return "unix:path=" ~ _path.idup;
         }
         
         /***********************************************************************
 
         ***********************************************************************/
 
-        final char[] path ()
+        final const const(char)[] path ()
         {
                 return _path;
         }
@@ -210,7 +210,7 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        final bool isAbstract ()
+        final const bool isAbstract ()
         {
                 return _path[0] == 0;
         }
@@ -229,4 +229,4 @@ debug (LocalSocket)
                 auto y = new LocalSocket ("foo");
                 auto x = new LocalServerSocket ("foo");   
         }
-}        
+}
