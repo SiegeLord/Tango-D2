@@ -98,7 +98,7 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override char[] toString()
+        immutable(char)[] toString()
         {
                 return "<socket>";
         }
@@ -134,7 +134,7 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override size_t bufferSize ()
+        override const size_t bufferSize ()
         {
                 return 1024 * 8;
         }
@@ -160,11 +160,16 @@ class Socket : Conduit, ISelectable
 
         Socket connect (Address addr)
         {
-                if (scheduler)
-                    asyncConnect (addr);
-                else
-                   native.connect (addr);
-                return this;
+                version (TangoRuntime)
+                {
+                	if (scheduler) {
+                		asyncConnect (addr);
+                		return this;
+            		}
+            	}
+            	native.connect (addr);
+        		
+            	return this;
         }
 
         /***********************************************************************
@@ -234,9 +239,10 @@ class Socket : Conduit, ISelectable
 
         override size_t read (void[] dst)
         {
-                if (scheduler)
-                    return asyncRead (dst);
-
+    		version (TangoRuntime)
+    			if (scheduler)
+    				return asyncRead (dst);
+    		
                 auto x = Eof;
                 if (wait (true))
                    {
@@ -251,10 +257,11 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override size_t write (void[] src)
+        size_t write (const(void)[] src)
         {
-                if (scheduler)
-                    return asyncWrite (src);
+                version (TangoRuntime)
+                	if (scheduler)
+                		return asyncWrite (src);
 
                 auto x = Eof;
                 if (wait (false))
@@ -278,11 +285,16 @@ class Socket : Conduit, ISelectable
         override OutputStream copy (InputStream src, size_t max = -1)
         {
                 auto x = cast(ISelectable) src;
-
-                if (scheduler && x)
-                    asyncCopy (x.fileHandle);
-                else
-                   super.copy (src, max);
+                
+                version (TangoRuntime)
+                {
+                	if (scheduler && x){
+                		asyncCopy (x.fileHandle);
+                		return this;
+            		}
+            	}
+                
+                super.copy (src, max);
                 return this;
         }
 
@@ -568,7 +580,7 @@ class ServerSocket : Socket
 
         ***********************************************************************/
 
-        override char[] toString()
+        immutable(char)[] toString()
         {
                 return "<accept>";
         }
@@ -581,11 +593,16 @@ class ServerSocket : Socket
         {
                 if (recipient is null)
                     recipient = new Socket;
-
-                if (scheduler)
-                    asyncAccept (recipient);
-                else              
-                   berkeley.accept (recipient.berkeley);
+                    
+                version (TangoRuntime)
+                {
+                	if (scheduler)
+                		asyncAccept(recipient);
+            		else
+            			berkeley.accept(recipient.berkeley);
+                }
+                else
+                	berkeley.accept(recipient.berkeley);
                 
                 recipient.timeout = timeout;
                 return recipient;
