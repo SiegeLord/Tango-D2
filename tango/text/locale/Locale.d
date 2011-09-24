@@ -71,7 +71,7 @@ public class Locale : Layout!(char)
 
         ***********************************************************************/
 
-        protected override char[] unknown (char[] output, char[] format, TypeInfo type, Arg p)
+        protected override char[] unknown (char[] output, const(char)[] format, TypeInfo type, Arg p)
         {
                 switch (type.classinfo.name[9])
                        {
@@ -79,21 +79,21 @@ public class Locale : Layout!(char)
                        case TypeCode.STRUCT:
                             if (type is typeid(Time))
                                 return formatDateTime (output, *cast(Time*) p, format, dateFormat);
-
-                       return type.toString;
+                       /* Bad dup */
+                       return type.toString.dup;
 
                        default:
                             break;
                        }
 
-                return "{unhandled argument type: " ~ type.toString ~ '}';
+                return "{unhandled argument type: ".dup ~ type.toString ~ '}';
         }
 
         /**********************************************************************
 
         **********************************************************************/
 
-        protected override char[] integer (char[] output, long v, char[] alt, ulong mask=ulong.max, char[] format=null)
+        protected override char[] integer (char[] output, long v, const(char)[] alt, ulong mask=ulong.max, const(char)[] format=null)
         {
                 return formatInteger (output, v, alt, numberFormat);
         }
@@ -102,7 +102,7 @@ public class Locale : Layout!(char)
 
         **********************************************************************/
 
-        protected override char[] floater (char[] output, real v, char[] format)
+        protected override char[] floater (char[] output, real v, const(char)[] format)
         {
                 return formatDouble (output, v, format, numberFormat);
         }

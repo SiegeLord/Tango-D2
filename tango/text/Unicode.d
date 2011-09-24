@@ -41,14 +41,14 @@ private import tango.text.convert.Utf;
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-deprecated char[] blockToUpper(char[] input, char[] output = null, dchar[] working = null) {
+/+deprecated char[] blockToUpper(char[] input, char[] output = null, dchar[] working = null) {
 
     // ?? How much preallocation ?? This is worst case allocation
     if (working is null)
         working.length = input.length;
 
     uint produced = 0;
-    uint ate;
+    size_t ate;
     uint oprod = 0;
     foreach(dchar ch; input) {
         // TODO Conditional Case Mapping
@@ -78,7 +78,7 @@ deprecated char[] blockToUpper(char[] input, char[] output = null, dchar[] worki
         working[produced++] =  d is null ? ch:d.simpleUpperCaseMapping;
     }
     return toString(working[0..produced],output);
-}
+}+/
 
 
 
@@ -90,7 +90,7 @@ deprecated char[] blockToUpper(char[] input, char[] output = null, dchar[] worki
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-char[] toUpper(char[] input, char[] output = null) {
+char[] toUpper(const(char)[] input, char[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -98,7 +98,7 @@ char[] toUpper(char[] input, char[] output = null) {
         output.length = input.length;
 
     auto produced = 0;
-    uint ate;
+    size_t ate;
     foreach(dchar ch; input) {
         // TODO Conditional Case Mapping
         UnicodeData *d = getUnicodeData(ch);
@@ -146,7 +146,7 @@ char[] toUpper(char[] input, char[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-wchar[] toUpper(wchar[] input, wchar[] output = null) {
+wchar[] toUpper(const(wchar)[] input, wchar[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -154,7 +154,7 @@ wchar[] toUpper(wchar[] input, wchar[] output = null) {
         output.length = input.length;
 
     auto produced = 0;
-    uint ate;
+    size_t ate;
     foreach(dchar ch; input) {
         // TODO Conditional Case Mapping
         UnicodeData *d = getUnicodeData(ch);
@@ -200,7 +200,7 @@ wchar[] toUpper(wchar[] input, wchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-dchar[] toUpper(dchar[] input, dchar[] output = null) {
+dchar[] toUpper(const(dchar)[] input, dchar[] output = null) {
 
     // assume most common case: String stays the same length
     if (input.length > output.length)
@@ -242,7 +242,7 @@ dchar[] toUpper(dchar[] input, dchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-char[] toLower(char[] input, char[] output = null) {
+char[] toLower(const(char)[] input, char[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -250,7 +250,7 @@ char[] toLower(char[] input, char[] output = null) {
         output.length = input.length;
 
     auto produced = 0;
-    uint ate;
+    size_t ate;
     foreach(dchar ch; input) {
         // TODO Conditional Case Mapping
         UnicodeData *d = getUnicodeData(ch);
@@ -298,7 +298,7 @@ char[] toLower(char[] input, char[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-wchar[] toLower(wchar[] input, wchar[] output = null) {
+wchar[] toLower(const(wchar)[] input, wchar[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -306,7 +306,7 @@ wchar[] toLower(wchar[] input, wchar[] output = null) {
         output.length = input.length;
 
     auto produced = 0;
-    uint ate;
+    size_t ate;
     foreach(dchar ch; input) {
         // TODO Conditional Case Mapping
         UnicodeData *d = getUnicodeData(ch);
@@ -353,7 +353,7 @@ wchar[] toLower(wchar[] input, wchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-dchar[] toLower(dchar[] input, dchar[] output = null) {
+dchar[] toLower(const(dchar)[] input, dchar[] output = null) {
 
     // assume most common case: String stays the same length
     if (input.length > output.length)
@@ -395,7 +395,7 @@ dchar[] toLower(dchar[] input, dchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-char[] toFold(char[] input, char[] output = null) {
+char[] toFold(const(char)[] input, char[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -403,7 +403,7 @@ char[] toFold(char[] input, char[] output = null) {
         output.length = input.length;
 
     auto produced = 0;
-    uint ate;
+    size_t ate;
     foreach(dchar ch; input) {
         FoldingCaseData *s = getFoldingCaseData(ch);
         if(s !is null) {
@@ -444,7 +444,7 @@ char[] toFold(char[] input, char[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-wchar[] toFold(wchar[] input, wchar[] output = null) {
+wchar[] toFold(const(wchar)[] input, wchar[] output = null) {
 
     dchar[1] buf;
     // assume most common case: String stays the same length
@@ -452,7 +452,7 @@ wchar[] toFold(wchar[] input, wchar[] output = null) {
         output.length = input.length;
 
     auto produced = 0;
-    uint ate;
+    size_t ate;
     foreach(dchar ch; input) {
         FoldingCaseData *s = getFoldingCaseData(ch);
         if(s !is null) {
@@ -492,7 +492,7 @@ wchar[] toFold(wchar[] input, wchar[] output = null) {
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-dchar[] toFold(dchar[] input, dchar[] output = null) {
+dchar[] toFold(const(dchar)[] input, dchar[] output = null) {
 
     // assume most common case: String stays the same length
     if (input.length > output.length)
@@ -672,12 +672,12 @@ unittest {
 
     // 1) No Buffer passed, no resize, no SpecialCase
 
-    char[] testString1utf8 = "\u00E4\u00F6\u00FC";
-    wchar[] testString1utf16 = "\u00E4\u00F6\u00FC";
-    dchar[] testString1utf32 = "\u00E4\u00F6\u00FC";
-    char[] refString1utf8 = "\u00C4\u00D6\u00DC";
-    wchar[] refString1utf16 = "\u00C4\u00D6\u00DC";
-    dchar[] refString1utf32 = "\u00C4\u00D6\u00DC";
+    const(char)[] testString1utf8 = "\u00E4\u00F6\u00FC";
+    const(wchar)[] testString1utf16 = "\u00E4\u00F6\u00FC";
+    const(dchar)[] testString1utf32 = "\u00E4\u00F6\u00FC";
+    const(char)[] refString1utf8 = "\u00C4\u00D6\u00DC";
+    const(wchar)[] refString1utf16 = "\u00C4\u00D6\u00DC";
+    const(dchar)[] refString1utf32 = "\u00C4\u00D6\u00DC";
     char[] resultString1utf8 = toUpper(testString1utf8);
     assert(resultString1utf8 == refString1utf8);
     wchar[] resultString1utf16 = toUpper(testString1utf16);
@@ -717,12 +717,12 @@ unittest {
     // 4) Buffer passed, resize necessary, extensive SpecialCase
 
 
-    char[] testString2utf8 = "\uFB03\uFB04\uFB05";
-    wchar[] testString2utf16 = "\uFB03\uFB04\uFB05";
-    dchar[] testString2utf32 = "\uFB03\uFB04\uFB05";
-    char[] refString2utf8 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
-    wchar[] refString2utf16 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
-    dchar[] refString2utf32 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
+    const(char)[] testString2utf8 = "\uFB03\uFB04\uFB05";
+    const(wchar)[] testString2utf16 = "\uFB03\uFB04\uFB05";
+    const(dchar)[] testString2utf32 = "\uFB03\uFB04\uFB05";
+    const(char)[] refString2utf8 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
+    const(wchar)[] refString2utf16 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
+    const(dchar)[] refString2utf32 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
     resultString1utf8 = toUpper(testString2utf8,buffer2utf8);
     assert(resultString1utf8.ptr != buffer2utf8.ptr);
     assert(resultString1utf8 == refString2utf8);
@@ -741,17 +741,17 @@ unittest {
 
     // 1) No Buffer passed, no resize, no SpecialCase
 
-    char[] testString1utf8 = "\u00C4\u00D6\u00DC";
-    wchar[] testString1utf16 = "\u00C4\u00D6\u00DC";
-    dchar[] testString1utf32 = "\u00C4\u00D6\u00DC";
-    char[] refString1utf8 = "\u00E4\u00F6\u00FC";
-    wchar[] refString1utf16 = "\u00E4\u00F6\u00FC";
-    dchar[] refString1utf32 = "\u00E4\u00F6\u00FC";
-    char[] resultString1utf8 = toLower(testString1utf8);
+    const(char)[] testString1utf8 = "\u00C4\u00D6\u00DC";
+    const(wchar)[] testString1utf16 = "\u00C4\u00D6\u00DC";
+    const(dchar)[] testString1utf32 = "\u00C4\u00D6\u00DC";
+    const(char)[] refString1utf8 = "\u00E4\u00F6\u00FC";
+    const(wchar)[] refString1utf16 = "\u00E4\u00F6\u00FC";
+    const(dchar)[] refString1utf32 = "\u00E4\u00F6\u00FC";
+    const(char)[] resultString1utf8 = toLower(testString1utf8);
     assert(resultString1utf8 == refString1utf8);
-    wchar[] resultString1utf16 = toLower(testString1utf16);
+    const(wchar)[] resultString1utf16 = toLower(testString1utf16);
     assert(resultString1utf16 == refString1utf16);
-    dchar[] resultString1utf32 = toLower(testString1utf32);
+    const(dchar)[] resultString1utf32 = toLower(testString1utf32);
     assert(resultString1utf32 == refString1utf32);
 
     // 2) Buffer passed, no resize, no SpecialCase
@@ -785,12 +785,12 @@ unittest {
 
     // 4) Buffer passed, resize necessary, extensive SpecialCase
 
-    char[] testString2utf8 = "\u0130\u0130\u0130";
-    wchar[] testString2utf16 = "\u0130\u0130\u0130";
-    dchar[] testString2utf32 = "\u0130\u0130\u0130";
-    char[] refString2utf8 = "\u0069\u0307\u0069\u0307\u0069\u0307";
-    wchar[] refString2utf16 = "\u0069\u0307\u0069\u0307\u0069\u0307";
-    dchar[] refString2utf32 = "\u0069\u0307\u0069\u0307\u0069\u0307";
+    const(char)[] testString2utf8 = "\u0130\u0130\u0130";
+    const(wchar)[] testString2utf16 = "\u0130\u0130\u0130";
+    const(dchar)[] testString2utf32 = "\u0130\u0130\u0130";
+    const(char)[] refString2utf8 = "\u0069\u0307\u0069\u0307\u0069\u0307";
+    const(wchar)[] refString2utf16 = "\u0069\u0307\u0069\u0307\u0069\u0307";
+    const(dchar)[] refString2utf32 = "\u0069\u0307\u0069\u0307\u0069\u0307";
     resultString1utf8 = toLower(testString2utf8,buffer2utf8);
     assert(resultString1utf8.ptr != buffer2utf8.ptr);
     assert(resultString1utf8 == refString2utf8);
@@ -803,14 +803,14 @@ unittest {
 }
 
 unittest {
-    char[] testString1utf8 = "?!Mädchen \u0390\u0390,;";
-    char[] testString2utf8 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
+    const(char)[] testString1utf8 = "?!Mädchen \u0390\u0390,;";
+    const(char)[] testString2utf8 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
     assert(toFold(testString1utf8) == toFold(testString2utf8));
-    wchar[] testString1utf16 = "?!Mädchen \u0390\u0390,;";;
-    wchar[] testString2utf16 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
+    const(wchar)[] testString1utf16 = "?!Mädchen \u0390\u0390,;";;
+    const(wchar)[] testString2utf16 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
     assert(toFold(testString1utf16) == toFold(testString2utf16));
-    wchar[] testString1utf32 = "?!Mädchen \u0390\u0390,;";
-    wchar[] testString2utf32 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
+    const(wchar)[] testString1utf32 = "?!Mädchen \u0390\u0390,;";
+    const(wchar)[] testString2utf32 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
     assert(toFold(testString1utf32) == toFold(testString2utf32));
 }
 

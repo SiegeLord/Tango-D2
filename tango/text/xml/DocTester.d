@@ -18,6 +18,8 @@ private import tango.text.xml.Document;
 
 private import tango.text.convert.Format;
 
+private import tango.core.Vararg;
+
 /*******************************************************************************
 
         Validate a document
@@ -196,9 +198,9 @@ protected class DocTester(T)
 
         ***********************************************************************/
         
-        static void error (char[] format, ...)
+        static void error (const(char)[] format, ...)
         {
-                throw new TextException (Format.convert(_arguments, _argptr, format));
+                throw new TextException (Format.convert(_arguments, _argptr, format).idup);
         }
 }
 

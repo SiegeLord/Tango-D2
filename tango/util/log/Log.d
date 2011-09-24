@@ -1070,11 +1070,24 @@ private class Hierarchy : Logger.Context
         {
                 synchronized(this)
                 {
-                    auto name = label ~ ".";
+                    // try not to allocate unless you really need to
+                    char[255] stack_buffer;
+                    char[] buffer = stack_buffer;
+
+                    if (buffer.length < label.length + 1)
+                        buffer.length = label.length + 1;
+
+                    buffer[0 .. label.length] = label[];
+                    buffer[label.length] = '.';
+
+                    auto name = buffer[0 .. label.length + 1]; 
                     auto l = name in loggers;
 
                     if (l is null)
                        {
+                       // don't use the stack allocated buffer
+                       if (name.ptr is stack_buffer.ptr)
+                           name = name.dup;
                        // create a new logger
                        auto li = dg(name);
                        l = &li;

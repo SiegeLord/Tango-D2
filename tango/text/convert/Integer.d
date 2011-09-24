@@ -198,7 +198,7 @@ private void decode(T) (in T[] fmt, ref char type, out char pre, out int width)
 
 
 T[] formatter(T, U=long, X=char, Y=char) (T[] dst, U i, X type, Y pre, int width)
-{return formatter!(T)(dst, cast(long) i, type, pre, width);}
+{ return formatter!(T)(dst, cast(long) i, cast(char) type, cast(char) pre, width);}
 
 
 private struct _FormatterInfo(T)

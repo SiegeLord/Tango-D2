@@ -148,14 +148,14 @@ struct FoldingCaseData
 	dchar[] mapping;
 }
 
-private int binary_search(T)(T[] array, dchar code)
+private ptrdiff_t binary_search(T)(T[] array, dchar code)
 {
-    uint lo = 0;
-    uint hi = array.length;
+    size_t lo = 0;
+    size_t hi = array.length;
 
     while (lo < hi)
     {
-        uint mid = lo + (hi - lo) / 2;
+        auto mid = lo + (hi - lo) / 2;
         if (code > array[mid].code)
             lo = mid + 1;
         else if (code < array[mid].code)

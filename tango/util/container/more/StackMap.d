@@ -52,7 +52,7 @@ class StackMap (K, V, alias Hash = Container.hash,
                                         tail,
                                         start;
         // dimension of queue
-        private uint                    capacity;
+        private size_t                    capacity;
 
        /**********************************************************************
 
@@ -62,7 +62,7 @@ class StackMap (K, V, alias Hash = Container.hash,
 
         **********************************************************************/
 
-        this (uint capacity)
+        this (size_t capacity)
         {
                 hash = new Map;
                 this.capacity = capacity;
@@ -107,7 +107,7 @@ class StackMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final const uint size ()
+        final const size_t size ()
         {
                 return hash.size;
         }

@@ -74,7 +74,7 @@ struct Stack (V, int Size = 0)
 
         ***********************************************************************/
 
-        uint size ()
+        size_t size ()
         {
                 return depth;
         }
@@ -222,7 +222,7 @@ struct Stack (V, int Size = 0)
 
         **********************************************************************/
 
-        V nth (uint i)
+        V nth (size_t i)
         {
                 if (i < depth)
                     return stack [depth-i-1];
@@ -238,7 +238,7 @@ struct Stack (V, int Size = 0)
 
         **********************************************************************/
 
-        Stack* rotateLeft (uint d)
+        Stack* rotateLeft (size_t d)
         {
                 if (d <= depth)
                    {
@@ -261,7 +261,7 @@ struct Stack (V, int Size = 0)
 
         **********************************************************************/
 
-        Stack* rotateRight (uint d)
+        Stack* rotateRight (size_t d)
         {
                 if (d <= depth)
                    {

@@ -158,8 +158,8 @@ class JsonParser(T)
                            } while (i /= 10);
                         return p[0..(buf.ptr+buf.length)-p];
                 }
-                char[16] tmp = void;
-                expected (token ~ " @input[" ~ itoa(tmp, point-str.text.ptr)~"]");
+                char[32] tmp = void;
+                expected (token ~ " @input[" ~ itoa(tmp, point-str.text.ptr).idup~"]");
         }
         
         /***********************************************************************
@@ -427,7 +427,7 @@ class JsonParser(T)
 
 debug(UnitTest)
 {       
-                const static char[] json = 
+                immutable(char)[] json = 
                 "{"
                         "\"glossary\": {"
                         "\"title\": \"example glossary\","

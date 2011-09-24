@@ -293,7 +293,7 @@ class Json(T) : private JsonParser!(T)
 
         ***********************************************************************/
         
-        private void exception (const(char)[] msg)
+        private void exception (immutable(char)[] msg)
         {
                 throw new Exception (msg.idup);
         }
@@ -413,7 +413,7 @@ class Json(T) : private JsonParser!(T)
         struct NameValue
         {
                 private Attribute       next;
-                public  T[]             name;
+                public  const(T)[]      name;
                 public  Value           value;
 
                 /***************************************************************
@@ -513,7 +513,7 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
         
-                Value value (T[] name)
+                Value value (const(T)[] name)
                 {
                         auto a = head;
                         while (a)
@@ -553,7 +553,7 @@ class Json(T) : private JsonParser!(T)
                 {
                         private Attribute head;
         
-                        int opApply (int delegate(ref T[] key, ref Value val) dg)
+                        int opApply (int delegate(ref const(T)[] key, ref Value val) dg)
                         {
                                 int res;
         
@@ -582,7 +582,7 @@ class Json(T) : private JsonParser!(T)
                 {
                         Value[]         array;
                         real            number;
-                        T[]             string;
+                        const(T)[]      string;
                         Composite       object;
                 }
         
@@ -623,7 +623,8 @@ class Json(T) : private JsonParser!(T)
                 const(T)[] toString (T[] dst = null)
                 {
                         if (type is Type.RawString)
-                            return string;
+                            /* Bad dup */
+                            return string.dup;
 
                         if (type is Type.String)
                             return unescape (string, dst);

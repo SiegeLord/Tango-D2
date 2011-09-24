@@ -17,7 +17,7 @@ private import  tango.core.ByteSwap;
 private import  Utf = tango.text.convert.Utf;
 
 
-private extern (C) void onUnicodeError (char[] msg, size_t idx = 0);
+private extern (C) void onUnicodeError (const(char[]) msg, size_t idx = 0);
 
 /*******************************************************************************
 
@@ -135,7 +135,7 @@ class UnicodeBom(T) : BomSniffer
 
         ***********************************************************************/
 
-        final T[] decode (void[] content, T[] dst=null, uint* ate=null)
+        final T[] decode (void[] content, T[] dst=null, size_t* ate=null)
         {
                 // look for a BOM
                 auto info = test (content);
@@ -219,7 +219,7 @@ class UnicodeBom(T) : BomSniffer
 
         ***********************************************************************/
 
-        static T[] into (void[] x, uint type, T[] dst=null, uint* ate = null)
+        static T[] into (void[] x, uint type, T[] dst=null, size_t* ate = null)
         {
                 T[] ret;
                 
@@ -285,7 +285,7 @@ class UnicodeBom(T) : BomSniffer
 
         ***********************************************************************/
 
-        static void[] from (T[] x, uint type, void[] dst=null, uint* ate=null)
+        static void[] from (T[] x, uint type, void[] dst=null, size_t* ate=null)
         {
                 void[] ret;
 
@@ -351,19 +351,19 @@ class UnicodeBom(T) : BomSniffer
 
 class BomSniffer 
 {
-        private bool     found;        // was an encoding discovered?
-        private Encoding encoder;      // the current encoding 
-        private Info*    settings;     // pointer to encoding configuration
+        private bool            found;        // was an encoding discovered?
+        private Encoding        encoder;      // the current encoding 
+        private const(Info)*    settings;     // pointer to encoding configuration
 
         private struct  Info
                 {
-                int      type;          // type of element (char/wchar/dchar)
-                Encoding encoding;      // Encoding.xx encoding
-                char[]   bom;           // pattern to match for signature
-                bool     test,          // should we test for this encoding?
-                         endian,        // this encoding have endian concerns?
-                         bigEndian;     // is this a big-endian encoding?
-                Encoding fallback;      // can this encoding be defaulted?
+                int           type;          // type of element (char/wchar/dchar)
+                Encoding      encoding;      // Encoding.xx encoding
+                const(char)[] bom;           // pattern to match for signature
+                bool          test,          // should we test for this encoding?
+                              endian,        // this encoding have endian concerns?
+                              bigEndian;     // is this a big-endian encoding?
+                Encoding      fallback;      // can this encoding be defaulted?
                 };
 
         private enum {Utf8, Utf16, Utf32};
@@ -412,7 +412,7 @@ class BomSniffer
 
         ***********************************************************************/
 
-        final void[] signature ()
+        final const(void)[] signature ()
         {
                 return settings.bom;
         }
@@ -437,12 +437,12 @@ class BomSniffer
 
         ***********************************************************************/
 
-        static final Info* test (void[] content)
+        static final const(Info)* test (void[] content)
         {
-                for (Info* info=lookup.ptr+lookup.length; --info >= lookup.ptr;)
+                for (const(Info)* info=lookup.ptr+lookup.length; --info >= lookup.ptr;)
                      if (info.bom)
                         {
-                        int len = info.bom.length;
+                        size_t len = info.bom.length;
                         if (len <= content.length)
                             if (content[0..len] == info.bom[0..len])
                                 return info;
@@ -459,10 +459,10 @@ debug (UnitTest)
 {
         unittest
         {
-                void[] INPUT2 = "abc\xE3\x81\x82\xE3\x81\x84\xE3\x81\x86";
+                void[] INPUT2 = "abc\xE3\x81\x82\xE3\x81\x84\xE3\x81\x86".dup;
                 void[] INPUT = x"efbbbf" ~ INPUT2;
                 auto bom = new UnicodeBom!(char)(Encoding.Unknown);
-                uint ate;
+                size_t ate;
                 char[256] buf;
                 
                 auto temp = bom.decode (INPUT, buf, &ate);
@@ -481,10 +481,10 @@ debug (UnicodeBom)
 
         void main()
         {
-                void[] INPUT2 = "abc\xE3\x81\x82\xE3\x81\x84\xE3\x81\x86";
+                void[] INPUT2 = "abc\xE3\x81\x82\xE3\x81\x84\xE3\x81\x86".dup;
                 void[] INPUT = x"efbbbf" ~ INPUT2;
                 auto bom = new UnicodeBom!(char)(Encoding.Unknown);
-                uint ate;
+                size_t ate;
                 char[256] buf;
                 
                 auto temp = bom.decode (INPUT, buf, &ate);

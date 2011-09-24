@@ -155,18 +155,19 @@ class Linux : FileFilter
                 return temp;
         }
 
-        private auto gcc = "gcc -c -o";
+        private auto gcc00 = "gcc -c -o";
         private auto gcc32 = "gcc -c -m32 -o";
         private auto gcc64 = "gcc -c -m64 -o";
 
         int dmd ()
         {
-                char[] gcc, march;
+                char[] gcc = gcc00;
+                char[] march;
 
                 if (args.march.length)
                 {
-                    march = " -m" ~ args.march;
-                    gcc = args.march == "64" ? gcc64 : gcc32;
+                    march = (args.march == "64") ? " -m64" : " -m32";
+                    gcc = (args.march == "64") ? gcc64 : gcc32;
                 }
 
                 auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root ~
@@ -190,18 +191,19 @@ class Linux : FileFilter
                     }
                 }
 
-                makeLib(args.march == " -m32");
+                makeLib(args.march == "32");
                 return count;
         }
 
         int ldc ()
         {
-                char[] gcc, march;
+                char[] gcc = gcc00;
+                char[] march;
 
                 if (args.march.length)
                 {
-                    march = " -m" ~ args.march;
-                    gcc = args.march == "64" ? gcc64 : gcc32;
+                    march = (args.march == "64") ? " -m64" : " -m32";
+                    gcc = (args.march == "64") ? gcc64 : gcc32;
                 }
 
                 auto ldc = "ldc -c -I"~args.root~"/tango/core " ~ march ~ " -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
@@ -228,12 +230,13 @@ class Linux : FileFilter
 
         int gdc ()
         {
-                char[] gcc, march;
+                char[] gcc = gcc00;
+                char[] march;
 
                 if (args.march.length)
                 {
-                    march = " -m" ~ args.march;
-                    gcc = args.march == "64" ? gcc64 : gcc32;
+                    march = (args.march == "64") ? " -m64" : " -m32";
+                    gcc = (args.march == "64") ? gcc64 : gcc32;
                 }
 
                 auto gdc = "gdc -c -I"~args.root~"/tango/core -I"~args.root ~

@@ -33,7 +33,13 @@ class RC6 : BlockCipher
         uint[] S;
         const(ubyte)[] workingKey;
     }
-    
+
+    this() {}
+    this(bool encrypt, ubyte[] key) {
+        this();
+        init(encrypt, key);
+    }
+
     final override const(char)[] name()
     {
         return "RC6";
@@ -44,17 +50,17 @@ class RC6 : BlockCipher
         return BLOCK_SIZE;
     }
     
-    final void init(bool encrypt, SymmetricKey keyParams)
+    final void init(bool encrypt, ubyte[] key)
     {
         _encrypt = encrypt;
         
-        auto len = keyParams.key.length;
+        auto len = key.length;
         if (len != 16 && len != 24 && len != 32)
             invalid(name()~": Invalid key length (requires 16/24/32 bytes)");
         
         S = new uint[2*ROUNDS+4];        
                    
-        workingKey = keyParams.key;
+        workingKey = key;
         setup(workingKey);
         
         _initialized = true;
@@ -123,10 +129,10 @@ class RC6 : BlockCipher
             B -= S[0];
         }
 
-        output[0..4] = ByteConverter.LittleEndian.from!(uint)(A);
-        output[4..8] = ByteConverter.LittleEndian.from!(uint)(B);
-        output[8..12] = ByteConverter.LittleEndian.from!(uint)(C);
-        output[12..16] = ByteConverter.LittleEndian.from!(uint)(D);
+        ByteConverter.LittleEndian.from!(uint)(A, output[0..4]);
+        ByteConverter.LittleEndian.from!(uint)(B, output[4..8]);
+        ByteConverter.LittleEndian.from!(uint)(C, output[8..12]);
+        ByteConverter.LittleEndian.from!(uint)(D, output[12..16]);
         
         return BLOCK_SIZE;
     }
@@ -198,7 +204,7 @@ class RC6 : BlockCipher
             {
                 ubyte[] buffer = new ubyte[t.blockSize];
                 char[] result;
-                SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_key));
+                auto key = ByteConverter.hexDecode(test_key);
                 
                 // Encryption
                 t.init(true, key);

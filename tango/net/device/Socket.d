@@ -87,7 +87,7 @@ class Socket : Conduit, ISelectable
         this (AddressFamily family, SocketType type, ProtocolType protocol)
         {
                 berkeley.open (family, type, protocol);
-                version (Windows)
+                version (Windows) version(TangoRuntime)
                          if (scheduler)
                              scheduler.open (fileHandle, toString);
         }
@@ -98,7 +98,11 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
+<<<<<<< HEAD
         override immutable(char)[] toString()
+=======
+        immutable(char)[] toString()
+>>>>>>> d2port
         {
                 return "<socket>";
         }
@@ -160,10 +164,16 @@ class Socket : Conduit, ISelectable
 
         Socket connect (Address addr)
         {
-                if (scheduler)
-                    asyncConnect (addr);
-                else
-                   native.connect (addr);
+                version (TangoRuntime)
+                {
+                    if (scheduler)
+                        {
+                        asyncConnect (addr);
+                        return this;
+                        }
+                }
+                native.connect (addr);
+                
                 return this;
         }
 
@@ -234,10 +244,16 @@ class Socket : Conduit, ISelectable
 
         override size_t read (void[] dst)
         {
+            version (TangoRuntime)
                 if (scheduler)
                     return asyncRead (dst);
+<<<<<<< HEAD
 
                 size_t x = Eof;
+=======
+            
+                auto x = Eof;
+>>>>>>> d2port
                 if (wait (true))
                    {
                    x = native.receive (dst);
@@ -251,10 +267,15 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
+<<<<<<< HEAD
         override size_t write (const(void)[] src)
+=======
+        size_t write (const(void)[] src)
+>>>>>>> d2port
         {
-                if (scheduler)
-                    return asyncWrite (src);
+                version (TangoRuntime)
+                    if (scheduler)
+                        return asyncWrite (src);
 
                 size_t x = Eof;
                 if (wait (false))
@@ -278,11 +299,16 @@ class Socket : Conduit, ISelectable
         override OutputStream copy (InputStream src, size_t max = -1)
         {
                 auto x = cast(ISelectable) src;
-
-                if (scheduler && x)
-                    asyncCopy (x.fileHandle);
-                else
-                   super.copy (src, max);
+                
+                version (TangoRuntime)
+                {
+                    if (scheduler && x){
+                        asyncCopy (x.fileHandle);
+                        return this;
+                    }
+                }
+                
+                super.copy (src, max);
                 return this;
         }
 
@@ -407,7 +433,11 @@ class Socket : Conduit, ISelectable
 
                 ***************************************************************/
 
+<<<<<<< HEAD
                 private size_t asyncWrite (const(void[]) src)
+=======
+                private size_t asyncWrite (const(void)[] src)
+>>>>>>> d2port
                 {
                         DWORD bytes;
                         WSABUF buf = {src.length, src.ptr};
@@ -526,7 +556,11 @@ class Socket : Conduit, ISelectable
 
                 ***************************************************************/
 
+<<<<<<< HEAD
                 private size_t asyncWrite (const(void[]) src)
+=======
+                private size_t asyncWrite (const(void)[] src)
+>>>>>>> d2port
                 {
                         assert (false);
                 }
@@ -568,7 +602,11 @@ class ServerSocket : Socket
 
         ***********************************************************************/
 
+<<<<<<< HEAD
         override immutable(char)[] toString()
+=======
+        immutable(char)[] toString()
+>>>>>>> d2port
         {
                 return "<accept>";
         }
@@ -581,11 +619,16 @@ class ServerSocket : Socket
         {
                 if (recipient is null)
                     recipient = new Socket;
-
-                if (scheduler)
-                    asyncAccept (recipient);
-                else              
-                   berkeley.accept (recipient.berkeley);
+                    
+                version (TangoRuntime)
+                {
+                    if (scheduler)
+                        asyncAccept(recipient);
+                    else
+                        berkeley.accept(recipient.berkeley);
+                }
+                else
+                    berkeley.accept(recipient.berkeley);
                 
                 recipient.timeout = timeout;
                 return recipient;

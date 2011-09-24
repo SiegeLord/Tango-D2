@@ -104,7 +104,7 @@ class ChaCha : Salsa20
             
         int j;    
         for (i = j = 0; i < x.length; i++,j+=int.sizeof)
-            output[j..j+int.sizeof] = ByteConverter.LittleEndian.from!(uint)(x[i]);
+            ByteConverter.LittleEndian.from!(uint)(x[i], output[j..j+int.sizeof]);
     }
     
     /** ChaCha test vectors */
@@ -181,18 +181,18 @@ class ChaCha : Salsa20
             char[] result;
             for (int i = 0; i < test_keys.length; i++)
             {
-                SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_keys[i]));
-                ParametersWithIV params = new ParametersWithIV(key, ByteConverter.hexDecode(test_ivs[i]));
+                auto key = ByteConverter.hexDecode(test_keys[i]);
+                auto iv = ByteConverter.hexDecode(test_ivs[i]);
                 
                 // Encryption
-                cc.init(true, params);
+                cc.init(true, key, iv);
                 cc.update(ByteConverter.hexDecode(test_plaintexts[i]), buffer);
                 result = ByteConverter.hexEncode(buffer);
                 assert(result == test_ciphertexts[i],
                         cc.name()~": ("~result~") != ("~test_ciphertexts[i]~")");           
                 
                 // Decryption
-                cc.init(false, params);
+                cc.init(false, key, iv);
                 cc.update(ByteConverter.hexDecode(test_ciphertexts[i]), buffer);
                 result = ByteConverter.hexEncode(buffer);
                 assert(result == test_plaintexts[i],

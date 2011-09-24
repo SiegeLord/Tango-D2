@@ -10,6 +10,8 @@
 
     This is a regular expression compiler and interpreter based on the Tagged NFA/DFA method.
 
+    The Regex class is not thread safe.
+
     See <a href="http://en.wikipedia.org/wiki/Regular_expression">Wikpedia's article on regular expressions</a>
     for details on regular expressions in general.
 
@@ -65,6 +67,8 @@
     $(TR $(TD \d) $(TD digits) )
     $(TR $(TD \D) $(TD non-digit) )
     </table>
+
+    Note that "alphanumeric" only applies to Latin-1.
 *******************************************************************************/
 module tango.text.Regex;
 
@@ -698,9 +702,7 @@ struct CharClass(char_t)
                 {l_:0x01, r_:0xff}
             ]},
             dot_oper = {parts: [
-                {l_:0x09, r_:0x13},   // basic control chars
-                {l_:0x20, r_:0x7e},   // basic latin
-                {l_:0xa0, r_:0xff}    // latin-1 supplement
+                {l_:0x01, r_:0xff}
             ]},
             alphanum_ = {parts: [
                 {l_:0x30, r_:0x39},
@@ -717,10 +719,7 @@ struct CharClass(char_t)
                 {l_:0x0001, r_:0xffff}
             ]},
             dot_oper = {parts: [
-                {l_:0x09,r_:0x13},{l_:0x20, r_:0x7e},{l_:0xa0, r_:0xff},
-                {l_:0x0100, r_:0x017f},   // latin extended a
-                {l_:0x0180, r_:0x024f},   // latin extended b
-                {l_:0x20a3, r_:0x20b5},   // currency symbols
+                {l_:0x0001, r_:0xffff}
             ]},
             alphanum_ = {parts: [
                 {l_:0x30, r_:0x39},
@@ -4713,3 +4712,65 @@ void encode(ref dchar[] s, dchar c)
     {
         s ~= c;
     }
+
+debug(UnitTest)
+{
+    unittest
+    {
+        // match a fixed string
+        Regex r;
+        r = new Regex("abc");
+        assert(r.test("abc123"));
+        assert(r.test("feabc123"));
+        assert(!r.test("abe123"));
+
+        // match a non-ASCII string
+        r = new Regex("☃");
+        assert(r.test("a☃c123"));
+
+        // capture
+        r = new Regex("☃(c)");
+        assert(r.test("a☃c123"));
+        assert(r.match(1) == "c");
+
+        // dot
+        r = new Regex("..");
+        assert(r.test("a☃c123"));
+
+        // dot capture
+        r = new Regex("(..)");
+        assert(r.test("a☃c123"));
+        assert(r.match(1) == "a☃");
+
+        // two captures
+        r = new Regex("(.)(.)");
+        assert(r.test("a☃c123"));
+        assert(r.match(1) == "a");
+        assert(r.match(2) == "☃");
+
+        // multiple letters
+        r = new Regex(".*(e+).*");
+        assert(r.test("aeeeeec123"));
+        assert(r.match(1) == "eeeee", "Expected: eeeee Got: " ~ r.match(1));
+        assert(!r.test("abfua"));
+
+        // multiple snowmen
+        r = new Regex(".*(☃+).*");
+        assert(r.test("a☃☃☃☃☃c123"));
+        assert(r.match(1) == "☃☃☃☃☃", "Expected: ☃☃☃☃☃ Got: " ~ r.match(1));
+        assert(!r.test("abeua"));
+
+        // multiple snowmen
+        r = new Regex("(☃*)");
+        assert(r.test("a☃☃☃☃☃c123"));
+        assert(r.match(0) == "☃☃☃☃☃");
+        assert(r.match(1) == "☃☃☃☃☃");
+        assert(r.test("abeua"));
+    }
+
+    debug(RegexTestOnly)
+    {
+        import tango.io.Stdout;
+        void main() { Stdout("All tests pass").newline(); }
+    }
+}

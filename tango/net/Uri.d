@@ -37,7 +37,7 @@ private import  core.stdc.string : memchr;
 class Uri
 {
         // simplistic string appender
-        private alias size_t delegate(const(void)[]) Consumer;  
+        private alias scope size_t delegate(const(void)[]) Consumer;
         
         /// old method names
         public alias port        getPort;
@@ -60,7 +60,7 @@ class Uri
         public enum {InvalidPort = -1};
 
         private int             port_;
-        private char[]          host_,
+        private const(char)[]   host_,
                                 path_,
                                 query_,
                                 scheme_,
@@ -70,11 +70,11 @@ class Uri
 
         private static ubyte    map[];
 
-        private static short[char[]] genericSchemes;
+        private static short[immutable(char)[]] genericSchemes;
 
-        private static const char[] hexDigits = "0123456789abcdef";
+        private enum immutable(char)[] hexDigits = "0123456789abcdef";
 
-        private static const SchemePort[] schemePorts =
+        private enum SchemePort[] schemePorts =
                 [
                 {"coffee",      80},
                 {"file",        InvalidPort},
@@ -121,8 +121,8 @@ class Uri
         // scheme and port pairs
         private struct SchemePort
         {
-                immutable(char)[]  name;
-                short              port;
+                const(char)[]  name;
+                short   port;
         }
 
         /***********************************************************************
@@ -399,7 +399,7 @@ class Uri
 
         ***********************************************************************/
 
-        final size_t produce (Consumer consume)
+        final const size_t produce (Consumer consume)
         {
                 size_t ret;
 
@@ -567,8 +567,8 @@ class Uri
                    return cast(const(char)[]) decoded.slice (j);
                    }
 
-                // return original content
-                return s;
+                // return original content (bad dup)
+                return s.dup;
         }   
 
         /***********************************************************************
@@ -605,6 +605,7 @@ class Uri
         final Uri parse (const(char)[] uri, bool relative = false)
         {
                 char    c;
+
                 size_t  i; 
                 size_t  mark;
                 auto    prefix = path_;
@@ -678,7 +679,7 @@ class Uri
 
         ***********************************************************************/
 
-        final Uri relParse (char[] uri)
+        final Uri relParse (const(char)[] uri)
         {
                 return parse (uri, true);
         }
@@ -689,7 +690,7 @@ class Uri
 
         ***********************************************************************/
 
-        final Uri scheme (char[] scheme)
+        final Uri scheme (const(char)[] scheme)
         {
                 this.scheme_ = scheme;
                 return this;
@@ -701,7 +702,7 @@ class Uri
 
         ***********************************************************************/
 
-        final Uri host (char[] host)
+        final Uri host (const(char)[] host)
         {
                 this.host_ = host;
                 return this;
@@ -725,7 +726,7 @@ class Uri
 
         ***********************************************************************/
 
-        final Uri userinfo (char[] userinfo)
+        final Uri userinfo (const(char)[] userinfo)
         {
                 this.userinfo_ = userinfo;
                 return this;
@@ -737,7 +738,7 @@ class Uri
 
         ***********************************************************************/
 
-        final Uri query (char[] query)
+        final Uri query (const(char)[] query)
         {
                 this.query_ = query;
                 return this;
@@ -749,7 +750,7 @@ class Uri
 
         ***********************************************************************/
 
-        final char[] extendQuery (char[] tail)
+        final const(char)[] extendQuery (const(char)[] tail)
         {
                 if (tail.length) {
                     if (query_.length)
@@ -766,7 +767,7 @@ class Uri
 
         ***********************************************************************/
         
-        final Uri path (char[] path)
+        final Uri path (const(char)[] path)
         {
                 this.path_ = path;
                 return this;
@@ -778,7 +779,7 @@ class Uri
 
         ***********************************************************************/
 
-        final Uri fragment (char[] fragment)
+        final Uri fragment (const(char)[] fragment)
         {
                 this.fragment_ = fragment;
                 return this;
@@ -831,7 +832,7 @@ class Uri
 
         **********************************************************************/
 
-        private final char[] toLastSlash (char[] path)
+        private final static T[] toLastSlash (T)(T[] path)
         {
                 if (path.ptr)
                     for (auto p = path.ptr+path.length; --p >= path.ptr;)
@@ -862,7 +863,7 @@ class Uri
 
 private struct HeapSlice
 {
-        private uint    used;
+        private size_t    used;
         private void[]  buffer;
 
         /***********************************************************************
@@ -902,7 +903,7 @@ private struct HeapSlice
 
         final void[] slice (int size)
         {
-                uint i = used;
+                size_t i = used;
                 used += size;
                 return buffer [i..used];
         }

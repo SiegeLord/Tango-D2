@@ -42,19 +42,14 @@ class Salsa20 : StreamCipher
         i0 = 8;
         i1 = 9;
     }
-    
-    void init(bool encrypt, Parameters params)
+
+    this(bool encrypt, ubyte[] key, ubyte[] iv) {
+        this();
+        init(encrypt, key, iv);
+    }
+
+    void init(bool encrypt, ubyte[] key, ubyte[] iv)
     {
-        ParametersWithIV ivParams = cast(ParametersWithIV)params;
-        
-        if (!ivParams)
-            invalid(name()~": init parameters must include an IV. (use ParametersWithIV)");
-                    
-        SymmetricKey keyParams = cast(SymmetricKey)ivParams.parameters;
-                    
-        const(ubyte)[] iv = ivParams.iv,
-                       key = keyParams.key;
-            
         if (key)
         {
             if (key.length != 16 && key.length != 32)
@@ -220,7 +215,7 @@ class Salsa20 : StreamCipher
             
         int j;    
         for (i = j = 0; i < x.length; i++,j+=int.sizeof)
-            output[j..j+int.sizeof] = ByteConverter.LittleEndian.from!(uint)(x[i]);
+            ByteConverter.LittleEndian.from!(uint)(x[i], output[j..j+int.sizeof]);
     }
     
     /** Salsa20 test vectors */
@@ -296,18 +291,18 @@ class Salsa20 : StreamCipher
             char[] result;
             for (int i = 0; i < test_keys.length; i++)
             {
-                SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_keys[i]));
-                ParametersWithIV params = new ParametersWithIV(key, ByteConverter.hexDecode(test_ivs[i]));
+                auto key = ByteConverter.hexDecode(test_keys[i]);
+                auto params = ByteConverter.hexDecode(test_ivs[i]);
                 
                 // Encryption
-                s20.init(true, params);
+                s20.init(true, key, params);
                 s20.update(ByteConverter.hexDecode(test_plaintexts[i]), buffer);
                 result = ByteConverter.hexEncode(buffer);
                 assert(result == test_ciphertexts[i],
                         s20.name()~": ("~result~") != ("~test_ciphertexts[i]~")");           
                 
                 // Decryption
-                s20.init(false, params);
+                s20.init(false, key, params);
                 s20.update(ByteConverter.hexDecode(test_ciphertexts[i]), buffer);
                 result = ByteConverter.hexEncode(buffer);
                 assert(result == test_plaintexts[i],

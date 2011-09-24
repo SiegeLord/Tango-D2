@@ -67,14 +67,14 @@
         {
                 // set or reset the content
                 Text set (T[] chars, bool mutable=true);
-                Text set (TextView other, bool mutable=true);
+                Text set (const(TextView) other, bool mutable=true);
 
                 // retrieve currently selected text
                 T[] selection ();
 
                 // set and retrieve current selection point
-                Text point (uint index);
-                uint point ();
+                Text point (size_t index);
+                size_t point ();
 
                 // mark a selection
                 Text select (int start=0, int length=int.max);
@@ -89,7 +89,7 @@
 
                 // append behind current selection
                 Text append (T[] text);
-                Text append (TextView other);
+                Text append (const(TextView) other);
                 Text append (T chr, int count=1);
                 Text append (InputStream source);
 
@@ -100,13 +100,13 @@
 
                 // insert before current selection
                 Text prepend (T[] text);
-                Text prepend (TextView other);
+                Text prepend (const(TextView) other);
                 Text prepend (T chr, int count=1);
 
                 // replace current selection
                 Text replace (T chr);
                 Text replace (T[] text);
-                Text replace (TextView other);
+                Text replace (const(TextView) other);
 
                 // remove current selection
                 Text remove ();
@@ -136,17 +136,17 @@
                 hash_t toHash ();
 
                 // return length of content
-                uint length ();
+                size_t length ();
 
                 // compare content
                 bool equals  (T[] text);
-                bool equals  (TextView other);
+                bool equals  (const(TextView) other);
                 bool ends    (T[] text);
-                bool ends    (TextView other);
+                bool ends    (const(TextView) other);
                 bool starts  (T[] text);
-                bool starts  (TextView other);
+                bool starts  (const(TextView) other);
                 int compare  (T[] text);
-                int compare  (TextView other);
+                int compare  (const(TextView) other);
                 int opEquals (Object other);
                 int opCmp    (Object other);
 
@@ -240,7 +240,7 @@ class Text(T) : TextView!(T)
         private T[]                     content;
         private bool                    mutable;
         private Comparator              comparator_;
-        private uint                    selectPoint,
+        private size_t                  selectPoint,
                                         selectLength,
                                         contentLength;
 
@@ -253,7 +253,7 @@ class Text(T) : TextView!(T)
         private struct Search(T)
         {
                 private alias SearchFruct!(T) Engine;
-                private alias size_t delegate(T[], size_t) Call;
+                private alias size_t delegate(const(T)[], size_t) Call;
 
                 private Text    text;
                 private Engine  engine;
@@ -264,7 +264,7 @@ class Text(T) : TextView!(T)
 
                 ***************************************************************/
 
-                static Search opCall (Text text, T[] match)
+                static Search opCall (Text text, const(T)[] match)
                 {
                         Search s = void;
                         s.engine.match = match;
@@ -339,7 +339,7 @@ class Text(T) : TextView!(T)
 
                 ***************************************************************/
 
-                void replace (T[] sub = null)
+                void replace (const(T)[] sub = null)
                 {
                         auto dst = new T[text.length];
                         dst.length = 0;
@@ -355,7 +355,7 @@ class Text(T) : TextView!(T)
 
                 ***************************************************************/
 
-                private bool locate (Call call, T[] content, size_t from)
+                private bool locate (Call call, const(T)[] content, size_t from)
                 {
                         auto index = call (content, from);
                         if (index < content.length)
@@ -377,7 +377,7 @@ class Text(T) : TextView!(T)
 
         deprecated public struct Span
         {
-                uint    begin,                  /// index of selection point
+                size_t  begin,                  /// index of selection point
                         length;                 /// length of selection
         }
 
@@ -393,7 +393,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        this (uint space = 0)
+        this (size_t space = 0)
         {
                 content.length = space;
                 this.comparator_ = &simpleComparator;
@@ -410,9 +410,15 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        this (T[] content, bool copy = true)
+        this (T[] content, bool copy)
         {
                 set (content, copy);
+                this.comparator_ = &simpleComparator;
+        }
+        
+        this (const(T)[] content)
+        {
+                set (content);
                 this.comparator_ = &simpleComparator;
         }
 
@@ -429,7 +435,12 @@ class Text(T) : TextView!(T)
 
         this (TextViewT other, bool copy = true)
         {
-                this (other.slice, copy);
+                this (other.mslice, copy);
+        }
+        
+        this (const(TextViewT) other, bool copy = true)
+        {
+                this (other.slice);
         }
 
         /***********************************************************************
@@ -444,13 +455,22 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text set (T[] chars, bool copy = true)
+        final Text set (T[] chars, bool copy)
         {
                 contentLength = chars.length;
                 if ((this.mutable = copy) is true)
                      content = chars.dup;
                 else
                    content = chars;
+
+                // no selection
+                return select (0, 0);
+        }
+        
+        final Text set (const(T)[] chars)
+        {
+                contentLength = chars.length;
+                content = chars.dup;
 
                 // no selection
                 return select (0, 0);
@@ -471,7 +491,7 @@ class Text(T) : TextView!(T)
 
         final Text set (TextViewT other, bool copy = true)
         {
-                return set (other.slice, copy);
+                return set (other.mslice, copy);
         }
 
         /***********************************************************************
@@ -481,7 +501,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text select (int start=0, int length=int.max)
+        final Text select (size_t start=0, size_t length=int.max)
         {
                 pinIndices (start, length);
                 selectPoint = start;
@@ -495,7 +515,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final T[] selection ()
+        final const const(T)[] selection ()
         {
                 return slice [selectPoint .. selectPoint+selectLength];
         }
@@ -522,7 +542,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final uint point ()
+        final size_t point ()
         {
                 return selectPoint;
         }
@@ -533,7 +553,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text point (uint index)
+        final Text point (size_t index)
         {
                 return select (index, 0);
         }
@@ -562,7 +582,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        Search!(T) search (T[] match)
+        Search!(T) search (const(T)[] match)
         {
                 return Search!(T) (this, match);
         }
@@ -602,7 +622,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        deprecated final bool select (TextViewT other)
+        deprecated final bool select (const(TextViewT) other)
         {
                 return select (other.slice);
         }
@@ -616,7 +636,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        deprecated final bool select (T[] chars)
+        deprecated final bool select (const(T)[] chars)
         {
                 auto s = slice();
                 auto x = Util.locatePattern (s, chars, selectPoint);
@@ -658,7 +678,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        deprecated final bool selectPrior (TextViewT other)
+        deprecated final bool selectPrior (const(TextViewT) other)
         {
                 return selectPrior (other.slice);
         }
@@ -672,7 +692,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        deprecated final bool selectPrior (T[] chars)
+        deprecated final bool selectPrior (const(T)[] chars)
         {
                 auto s = slice();
                 auto x = Util.locatePatternPrior (s, chars, selectPoint);
@@ -690,9 +710,9 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text format (T[] format, ...)
+        final Text format (const(T)[] format, ...)
         {
-                uint emit (T[] s)
+                size_t emit (const(T)[] s)
                 {
                     append (s);
                     return s.length;
@@ -720,7 +740,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text append (TextViewT other)
+        final Text append (const(TextViewT) other)
         {
                 return append (other.slice);
         }
@@ -731,7 +751,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text append (T[] chars)
+        final Text append (const(T)[] chars)
         {
                 return append (chars.ptr, chars.length);
         }
@@ -742,9 +762,9 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text append (T chr, int count=1)
+        final Text append (T chr, size_t count=1)
         {
-                uint point = selectPoint + selectLength;
+                size_t point = selectPoint + selectLength;
                 expand (point, count);
                 return set (chr, point, count);
         }
@@ -757,7 +777,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        deprecated final Text append (int v, T[] fmt = null)
+        deprecated final Text append (int v, const(T)[] fmt = null)
         {
                 return append (cast(long) v, fmt);
         }
@@ -770,7 +790,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        deprecated final Text append (long v, T[] fmt = null)
+        deprecated final Text append (long v, const(T)[] fmt = null)
         {
                 T[64] tmp = void;
                 return append (Integer.format(tmp, v, fmt));
@@ -784,7 +804,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        deprecated final Text append (double v, uint decimals=2, int e=10)
+        deprecated final Text append (double v, int decimals=2, int e=10)
         {
                 T[64] tmp = void;
                 return append (Float.format(tmp, v, decimals, e));
@@ -832,7 +852,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text prepend (T[] other)
+        final Text prepend (const(T)[] other)
         {
                 expand (selectPoint, other.length);
                 content[selectPoint..selectPoint+other.length] = other;
@@ -845,7 +865,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text prepend (TextViewT other)
+        final Text prepend (const(TextViewT) other)
         {
                 return prepend (other.slice);
         }
@@ -857,7 +877,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text encode (char[] s)
+        final Text encode (const(char)[] s)
         {
                 T[1024] tmp = void;
 
@@ -872,7 +892,7 @@ class Text(T) : TextView!(T)
         }
 
         /// ditto
-        final Text encode (wchar[] s)
+        final Text encode (const(wchar)[] s)
         {
                 T[1024] tmp = void;
 
@@ -887,7 +907,7 @@ class Text(T) : TextView!(T)
         }
 
         /// ditto
-        final Text encode (dchar[] s)
+        final Text encode (const(dchar)[] s)
         {
                 T[1024] tmp = void;
 
@@ -926,9 +946,9 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text replace (T[] chars)
+        final Text replace (const(T)[] chars)
         {
-                int chunk = chars.length - selectLength;
+                int chunk = cast(int)chars.length - cast(int)selectLength;
                 if (chunk >= 0)
                     expand (selectPoint, chunk);
                 else
@@ -944,7 +964,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text replace (TextViewT other)
+        final Text replace (const(TextViewT) other)
         {
                 return replace (other.slice);
         }
@@ -968,7 +988,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        private Text remove (int start, int count)
+        private Text remove (size_t start, size_t count)
         {
                 pinIndices (start, count);
                 if (count > 0)
@@ -976,7 +996,7 @@ class Text(T) : TextView!(T)
                    if (! mutable)
                          realloc ();
 
-                   uint i = start + count;
+                   size_t i = start + count;
                    memmove (content.ptr+start, content.ptr+i, (contentLength-i) * T.sizeof);
                    contentLength -= count;
                    }
@@ -991,7 +1011,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text truncate (int index = int.max)
+        final Text truncate (size_t index = size_t.max)
         {
                 if (index is int.max)
                     index = selectPoint + selectLength;
@@ -1020,7 +1040,7 @@ class Text(T) : TextView!(T)
 
         final Text trim ()
         {
-                content = Util.trim (slice);
+                content = Util.trim (mslice);
                 select (0, contentLength = content.length);
                 return this;
         }
@@ -1034,7 +1054,7 @@ class Text(T) : TextView!(T)
 
         final Text strip (T matches)
         {
-                content = Util.strip (slice, matches);
+                content = Util.strip (mslice, matches);
                 select (0, contentLength = content.length);
                 return this;
         }
@@ -1045,7 +1065,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text reserve (uint extra)
+        final Text reserve (size_t extra)
         {
                 realloc (extra);
                 return this;
@@ -1073,7 +1093,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final TypeInfo encoding()
+        final const TypeInfo encoding()
         {
                 return typeid(T);
         }
@@ -1110,7 +1130,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final uint length ()
+        final const size_t length ()
         {
                 return contentLength;
         }
@@ -1121,7 +1141,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final bool equals (TextViewT other)
+        final const bool equals (const(TextViewT) other)
         {
                 if (other is this)
                     return true;
@@ -1134,7 +1154,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final bool equals (T[] other)
+        final const bool equals (const(T)[] other)
         {
                 if (other.length == contentLength)
                     return Util.matching (other.ptr, content.ptr, contentLength);
@@ -1147,7 +1167,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final bool ends (TextViewT other)
+        final const bool ends (const(TextViewT) other)
         {
                 return ends (other.slice);
         }
@@ -1158,7 +1178,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final bool ends (T[] chars)
+        final const bool ends (const(T)[] chars)
         {
                 if (chars.length <= contentLength)
                     return Util.matching (content.ptr+(contentLength-chars.length), chars.ptr, chars.length);
@@ -1171,7 +1191,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final bool starts (TextViewT other)
+        final const bool starts (const(TextViewT) other)
         {
                 return starts (other.slice);
         }
@@ -1182,7 +1202,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final bool starts (T[] chars)
+        final const bool starts (const(T)[] chars)
         {
                 if (chars.length <= contentLength)
                     return Util.matching (content.ptr, chars.ptr, chars.length);
@@ -1198,7 +1218,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final int compare (TextViewT other)
+        final const int compare (const(TextViewT) other)
         {
                 if (other is this)
                     return 0;
@@ -1215,7 +1235,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final int compare (T[] chars)
+        final const int compare (const(T)[] chars)
         {
                 return comparator_ (slice, chars);
         }
@@ -1231,9 +1251,9 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final T[] copy (T[] dst)
+        final const T[] copy (T[] dst)
         {
-                uint i = contentLength;
+                size_t i = contentLength;
                 if (i > dst.length)
                     i = dst.length;
 
@@ -1249,7 +1269,12 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final T[] slice ()
+        final const const(T)[] slice ()
+        {
+                return content [0 .. contentLength];
+        }
+        
+        T[] mslice ()
         {
                 return content [0 .. contentLength];
         }
@@ -1273,11 +1298,20 @@ class Text(T) : TextView!(T)
                 will be moved to the heap if said buffer is not large enough
 
         ***********************************************************************/
-
-        final char[] toString (char[] dst = null)
+        
+        const immutable(char)[] toString()
         {
-                static if (is (T == char))
-                           return slice();
+                return toString(null).idup;
+        }
+        
+        final const char[] toString (char[] dst)
+        {
+                static if (is (T == char)) {
+                           if(dst.length < length)
+                                dst.length = length;
+                           dst[] = slice()[];
+                           return dst[0..length];
+                }
 
                 static if (is (T == wchar))
                            return Utf.toString (slice, dst);
@@ -1287,20 +1321,24 @@ class Text(T) : TextView!(T)
         }
 
         /// ditto
-        final wchar[] toString16 (wchar[] dst = null)
+        final const wchar[] toString16 (wchar[] dst = null)
         {
                 static if (is (T == char))
                            return Utf.toString16 (slice, dst);
 
-                static if (is (T == wchar))
-                           return slice;
+                static if (is (T == wchar)) {
+                           if(dst.length < length)
+                                dst.length = length;
+                           dst[] = slice()[];
+                           return dst[0..length];
+                }
 
                 static if (is (T == dchar))
                            return Utf.toString16 (slice, dst);
         }
 
         /// ditto
-        final dchar[] toString32 (dchar[] dst = null)
+        final const dchar[] toString32 (dchar[] dst = null)
         {
                 static if (is (T == char))
                            return Utf.toString32 (slice, dst);
@@ -1308,8 +1346,12 @@ class Text(T) : TextView!(T)
                 static if (is (T == wchar))
                            return Utf.toString32 (slice, dst);
 
-                static if (is (T == dchar))
-                           return slice;
+                static if (is (T == dchar)) {
+                           if(dst.length < length)
+                                dst.length = length;
+                           dst[] = slice()[];
+                           return dst[0..length];
+                }
         }
 
         /***********************************************************************
@@ -1319,7 +1361,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        override int opCmp (Object o)
+        override const int opCmp (Object o)
         {
                 auto other = cast (TextViewT) o;
 
@@ -1335,7 +1377,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        override int opEquals (Object o)
+        override bool opEquals (Object o)
         {
                 auto other = cast (TextViewT) o;
 
@@ -1348,7 +1390,7 @@ class Text(T) : TextView!(T)
         }
 
         /// ditto
-        final int opEquals (T[] s)
+        final bool opEquals (const(T)[] s)
         {
                 return slice == s;
         }
@@ -1359,7 +1401,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        private void pinIndex (ref int x)
+        private const void pinIndex (ref size_t x)
         {
                 if (x > contentLength)
                     x = contentLength;
@@ -1371,7 +1413,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        private void pinIndices (ref int start, ref int length)
+        private const void pinIndices (ref size_t start, ref size_t length)
         {
                 if (start > contentLength)
                     start = contentLength;
@@ -1389,9 +1431,9 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        private int simpleComparator (T[] a, T[] b)
+        private int simpleComparator (const(T)[] a, const(T)[] b)
         {
-                uint i = a.length;
+                size_t i = a.length;
                 if (b.length < i)
                     i = b.length;
 
@@ -1399,7 +1441,7 @@ class Text(T) : TextView!(T)
                      if ((k = a[j] - b[j]) != 0)
                           return k;
 
-                return a.length - b.length;
+                return cast(int)a.length - cast(int)b.length;
         }
 
         /***********************************************************************
@@ -1408,7 +1450,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        private void expand (uint index, uint count)
+        private void expand (size_t index, size_t count)
         {
                 if (!mutable || (contentLength + count) > content.length)
                      realloc (count);
@@ -1425,7 +1467,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        private Text set (T chr, uint start, uint count)
+        private Text set (T chr, size_t start, size_t count)
         {
                 content [start..start+count] = chr;
                 return this;
@@ -1438,9 +1480,9 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        private void realloc (uint count = 0)
+        private void realloc (size_t count = 0)
         {
-                uint size = (content.length + count + 127) & ~127;
+                size_t size = (content.length + count + 127) & ~127;
 
                 if (mutable)
                     content.length = size;
@@ -1460,9 +1502,9 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        private Text append (T* chars, uint count)
+        private Text append (const(T)* chars, size_t count)
         {
-                uint point = selectPoint + selectLength;
+                size_t point = selectPoint + selectLength;
                 expand (point, count);
                 content[point .. point+count] = chars[0 .. count];
                 return this;
@@ -1479,7 +1521,7 @@ class Text(T) : TextView!(T)
 
 class TextView(T) : UniText
 {
-        public typedef int delegate (T[] a, T[] b) Comparator;
+        public typedef int delegate (const(T)[] a, const(T)[] b) Comparator;
 
         /***********************************************************************
 
@@ -1487,7 +1529,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract uint length ();
+        abstract const size_t length ();
 
         /***********************************************************************
 
@@ -1495,7 +1537,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract bool equals (TextView other);
+        abstract const bool equals (const(TextView) other);
 
         /***********************************************************************
 
@@ -1503,7 +1545,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract bool equals (T[] other);
+        abstract const bool equals (const(T)[] other);
 
         /***********************************************************************
 
@@ -1511,7 +1553,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract bool ends (TextView other);
+        abstract const bool ends (const(TextView) other);
 
         /***********************************************************************
 
@@ -1519,7 +1561,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract bool ends (T[] chars);
+        abstract const bool ends (const(T)[] chars);
 
         /***********************************************************************
 
@@ -1527,7 +1569,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract bool starts (TextView other);
+        abstract const bool starts (const(TextView) other);
 
         /***********************************************************************
 
@@ -1535,7 +1577,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract bool starts (T[] chars);
+        abstract const bool starts (const(T)[] chars);
 
         /***********************************************************************
 
@@ -1546,7 +1588,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract int compare (TextView other);
+        abstract const int compare (const(TextView) other);
 
         /***********************************************************************
 
@@ -1557,7 +1599,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract int compare (T[] chars);
+        abstract const int compare (const(T)[] chars);
 
         /***********************************************************************
 
@@ -1569,7 +1611,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract T[] copy (T[] dst);
+        abstract const T[] copy (T[] dst);
 
         /***********************************************************************
 
@@ -1577,7 +1619,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract int opCmp (Object o);
+        abstract const int opCmp (Object o);
 
         /***********************************************************************
 
@@ -1585,7 +1627,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract int opEquals (Object other);
+        abstract bool opEquals (Object other);
 
         /***********************************************************************
 
@@ -1593,7 +1635,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract int opEquals (T[] other);
+        abstract bool opEquals (const(T)[] other);
 
         /***********************************************************************
 
@@ -1601,7 +1643,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract TypeInfo encoding();
+        abstract const TypeInfo encoding();
 
         /***********************************************************************
 
@@ -1628,7 +1670,8 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract T[] slice ();
+        abstract const const(T)[] slice ();
+        abstract T[] mslice ();
 }
 
 
@@ -1640,13 +1683,13 @@ class TextView(T) : UniText
 
 class UniText
 {
-        abstract char[]  toString  (char[]  dst = null);
+        abstract const char[]  toString  (char[]  dst = null);
 
-        abstract wchar[] toString16 (wchar[] dst = null);
+        abstract const wchar[] toString16 (wchar[] dst = null);
 
-        abstract dchar[] toString32 (dchar[] dst = null);
+        abstract const dchar[] toString32 (dchar[] dst = null);
 
-        abstract TypeInfo encoding();
+        abstract const TypeInfo encoding();
 }
 
 

@@ -199,18 +199,18 @@ public interface IFormatService {
  */
 public class Culture : IFormatService {
 
-  private const int LCID_INVARIANT = 0x007F;
+  private enum int LCID_INVARIANT = 0x007F;
 
-  private static Culture[char[]] namedCultures;
+  private static Culture[immutable(char)[]] namedCultures;
   private static Culture[int] idCultures;
-  private static Culture[char[]] ietfCultures;
+  private static Culture[immutable(char)[]] ietfCultures;
 
   private static Culture currentCulture_;
   private static Culture userDefaultCulture_; // The user's default culture (GetUserDefaultLCID).
   private static Culture invariantCulture_; // The invariant culture is associated with the English language.
   private Calendar calendar_;
   private Culture parent_;
-  private CultureData* cultureData_;
+  private const(CultureData)* cultureData_;
   private bool isReadOnly_;
   private NumberFormat numberFormat_;
   private DateTimeFormat dateTimeFormat_;
@@ -237,7 +237,7 @@ public class Culture : IFormatService {
    * Initializes a new Culture instance from the supplied name.
    * Params: cultureName = The name of the Culture.
    */
-  public this(char[] cultureName) {
+  public this(const(char)[] cultureName) {
     cultureData_ = CultureData.getDataFromCultureName(cultureName);
   }
 
@@ -310,12 +310,12 @@ version (Posix) {
    * Returns: A read-only culture instance.
    * Remarks: Instances returned by this method are cached.
    */
-  public static Culture getCulture(char[] cultureName) {
+  public static Culture getCulture(const(char)[] cultureName) {
     if (cultureName is null)
        error("Value cannot be null.");
     Culture culture = getCultureInternal(0, cultureName);
     if (culture is null)
-      error("Culture name " ~ cultureName ~ " is not supported.");
+      error("Culture name " ~ cultureName.idup ~ " is not supported.");
     return culture;
   }
 
@@ -324,22 +324,24 @@ version (Posix) {
     * Params: name = The name of the language.
     * Returns: A read-only culture instance.
     */
-  public static Culture getCultureFromIetfLanguageTag(char[] name) {
+  public static Culture getCultureFromIetfLanguageTag(const(char)[] name) {
     if (name is null)
       error("Value cannot be null.");
     Culture culture = getCultureInternal(-1, name);
     if (culture is null)
-      error("Culture IETF name " ~ name ~ " is not a known IETF name.");
+      error("Culture IETF name " ~ name.idup ~ " is not a known IETF name.");
     return culture;
   }
 
-  private static Culture getCultureInternal(int cultureID, char[] cname) {
+  private static Culture getCultureInternal(int cultureID, const(char)[] cname) {
     // If cultureID is - 1, name is an IETF name; if it's 0, name is a culture name; otherwise, it's a valid LCID.
-    char[] name = cname; 
+    const(char)[] name = cname;
+    char[] temp_name;
     foreach (i, c; cname)
        if (c is '_') {
-         name = cname.dup;
-         name[i] = '-';
+         temp_name = cname.dup;
+         temp_name[i] = '-';
+         name = temp_name;
          break;
        }
 
@@ -413,11 +415,11 @@ version (Posix) {
    * Returns the name of the Culture.
    * Returns: A string containing the name of the Culture in the format &lt;language&gt;"-"&lt;region&gt;.
    */
-  public override char[] toString() {
-    return cultureData_.name;
+  public override immutable(char)[] toString() {
+    return cultureData_.name.idup;
   }
 
-  public override int opEquals(Object obj) {
+  public override bool opEquals(Object obj) {
     if (obj is this)
       return true;
     Culture other = cast(Culture)obj;
@@ -494,7 +496,7 @@ version (Posix) {
    * Remarks: The culture identifier corresponds to the Windows locale identifier (LCID). It can therefore be used when 
    * interfacing with the Windows NLS functions.
    */
-  public int id() {
+  public const int id() {
     return cultureData_.lcid;
   }
 
@@ -503,7 +505,7 @@ version (Posix) {
    * $(I Property.) Retrieves the name of the Culture in the format &lt;language&gt;"-"&lt;region&gt;.
    * Returns: The name of the current instance. For example, the name of the UK English culture is "en-GB".
    */
-  public char[] name() {
+  public const const(char)[] name() {
     return cultureData_.name;
   }
 
@@ -512,7 +514,7 @@ version (Posix) {
    * Returns: The name of the current instance in English. For example, the englishName of the UK English culture 
    * is "English (United Kingdom)".
    */
-  public char[] englishName() {
+  public const const(char)[] englishName() {
     return cultureData_.englishName;
   }
 
@@ -521,7 +523,7 @@ version (Posix) {
    * Returns: The name of the current instance in its native language. For example, if Culture.name is "de-DE", nativeName is 
    * "Deutsch (Deutschland)".
    */
-  public char[] nativeName() {
+  public const const(char)[] nativeName() {
     return cultureData_.nativeName;
   }
 
@@ -529,7 +531,7 @@ version (Posix) {
    * $(I Property.) Retrieves the two-letter language code of the culture.
    * Returns: The two-letter language code of the Culture instance. For example, the twoLetterLanguageName for English is "en".
    */
-  public char[] twoLetterLanguageName() {
+  public const const(char)[] twoLetterLanguageName() {
     return cultureData_.isoLangName;
   }
 
@@ -537,7 +539,7 @@ version (Posix) {
    * $(I Property.) Retrieves the three-letter language code of the culture.
    * Returns: The three-letter language code of the Culture instance. For example, the threeLetterLanguageName for English is "eng".
    */
-  public char[] threeLetterLanguageName() {
+  public const const(char)[] threeLetterLanguageName() {
     return cultureData_.isoLangName2;
   }
 
@@ -545,7 +547,7 @@ version (Posix) {
    * $(I Property.) Retrieves the RFC 3066 identification for a language.
    * Returns: A string representing the RFC 3066 language identification.
    */
-  public final char[] ietfLanguageTag() {
+  public const final const(char)[] ietfLanguageTag() {
     return cultureData_.ietfTag;
   }
 
@@ -599,7 +601,7 @@ version (Posix) {
    * // Chinese (Traditional) - neutral
    * ---
    */
-  public bool isNeutral() {
+  public const bool isNeutral() {
     return cultureData_.isNeutral;
   }
 
@@ -609,7 +611,7 @@ version (Posix) {
    * Remarks: If the culture is read-only, the $(LINK2 #Culture_dateTimeFormat, dateTimeFormat) and $(LINK2 #Culture_numberFormat, numberFormat) properties return 
    * read-only instances.
    */
-  public final bool isReadOnly() {
+  public const final bool isReadOnly() {
     return isReadOnly_;
   }
 
@@ -682,7 +684,7 @@ version (Posix) {
 
   private static void checkNeutral(Culture culture) {
     if (culture.isNeutral)
-      error("Culture '" ~ culture.name ~ "' is a neutral culture. It cannot be used in formatting and therefore cannot be set as the current culture.");
+      error("Culture '" ~ culture.name.idup ~ "' is a neutral culture. It cannot be used in formatting and therefore cannot be set as the current culture.");
   }
 
   private void checkReadOnly() {
@@ -746,9 +748,9 @@ version (Posix) {
  */
 public class Region {
 
-  private CultureData* cultureData_;
+  private const(CultureData)* cultureData_;
   private static Region currentRegion_;
-  private char[] name_;
+  private const(char)[] name_;
 
   /**
    * Initializes a new Region instance based on the region associated with the specified culture identifier.
@@ -767,14 +769,14 @@ public class Region {
    * Initializes a new Region instance based on the region specified by name.
    * Params: name = A two-letter ISO 3166 code for the region. Or, a culture $(LINK2 #Culture_name, _name) consisting of the language and region.
    */
-  public this(char[] name) {
+  public this(const(char)[] name) {
     cultureData_ = CultureData.getDataFromRegionName(name);
     name_ = name;
     if (cultureData_.isNeutral)
-        error ("The region name " ~ name ~ " corresponds to a neutral culture and cannot be used to create a region.");
+        error ("The region name " ~ name.idup ~ " corresponds to a neutral culture and cannot be used to create a region.");
   }
 
-  package this(CultureData* cultureData) {
+  package this(const(CultureData)* cultureData) {
     cultureData_ = cultureData;
     name_ = cultureData.regionName;
   }
@@ -793,7 +795,7 @@ public class Region {
    * $(I Property.) Retrieves a unique identifier for the geographical location of the region.
    * Returns: An $(B int) uniquely identifying the geographical location.
    */
-  public int geoID() {
+  public const int geoID() {
     return cultureData_.geoId;
   }
 
@@ -802,7 +804,7 @@ public class Region {
    * $(I Property.) Retrieves the ISO 3166 code, or the name, of the current Region.
    * Returns: The value specified by the name parameter of the $(LINK2 #Region_ctor_name, Region(char[])) constructor.
    */
-  public char[] name() {
+  public const const(char)[] name() {
     return name_;
   }
 
@@ -810,7 +812,7 @@ public class Region {
    * $(I Property.) Retrieves the full name of the region in English.
    * Returns: The full name of the region in English.
    */
-  public char[] englishName() {
+  public const const(char)[] englishName() {
     return cultureData_.englishCountry;
   }
 
@@ -818,7 +820,7 @@ public class Region {
    * $(I Property.) Retrieves the full name of the region in its native language.
    * Returns: The full name of the region in the language associated with the region code.
    */
-  public char[] nativeName() {
+  public const const(char)[] nativeName() {
     return cultureData_.nativeCountry;
   }
 
@@ -826,7 +828,7 @@ public class Region {
    * $(I Property.) Retrieves the two-letter ISO 3166 code of the region.
    * Returns: The two-letter ISO 3166 code of the region.
    */
-  public char[] twoLetterRegionName() {
+  public const const(char)[] twoLetterRegionName() {
     return cultureData_.regionName;
   }
 
@@ -834,7 +836,7 @@ public class Region {
    * $(I Property.) Retrieves the three-letter ISO 3166 code of the region.
    * Returns: The three-letter ISO 3166 code of the region.
    */
-  public char[] threeLetterRegionName() {
+  public const const(char)[] threeLetterRegionName() {
     return cultureData_.isoRegionName;
   }
 
@@ -842,7 +844,7 @@ public class Region {
    * $(I Property.) Retrieves the currency symbol of the region.
    * Returns: The currency symbol of the region.
    */
-  public char[] currencySymbol() {
+  public const const(char)[] currencySymbol() {
     return cultureData_.currency;
   }
 
@@ -850,7 +852,7 @@ public class Region {
    * $(I Property.) Retrieves the three-character currency symbol of the region.
    * Returns: The three-character currency symbol of the region.
    */
-  public char[] isoCurrencySymbol() {
+  public const const(char)[] isoCurrencySymbol() {
     return cultureData_.intlSymbol;
   }
 
@@ -858,7 +860,7 @@ public class Region {
    * $(I Property.) Retrieves the name in English of the currency used in the region.
    * Returns: The name in English of the currency used in the region.
    */
-  public char[] currencyEnglishName() {
+  public const const(char)[] currencyEnglishName() {
     return cultureData_.englishCurrency;
   }
 
@@ -866,7 +868,7 @@ public class Region {
    * $(I Property.) Retrieves the name in the native language of the region of the currency used in the region.
    * Returns: The name in the native language of the region of the currency used in the region.
    */
-  public char[] currencyNativeName() {
+  public const const(char)[] currencyNativeName() {
     return cultureData_.nativeCurrency;
   }
 
@@ -874,7 +876,7 @@ public class Region {
    * $(I Property.) Retrieves a value indicating whether the region uses the metric system for measurements.
    * Returns: true is the region uses the metric system; otherwise, false.
    */
-  public bool isMetric() {
+  public const bool isMetric() {
     return cultureData_.isMetric;
   }
 
@@ -882,8 +884,8 @@ public class Region {
    * Returns a string containing the ISO 3166 code, or the $(LINK2 #Region_name, name), of the current Region.
    * Returns: A string containing the ISO 3166 code, or the name, of the current Region.
    */
-  public override char[] toString() {
-    return name_;
+  public override immutable(char)[] toString() {
+    return name_.idup;
   }
 
 }
@@ -936,19 +938,19 @@ public class NumberFormat : IFormatService {
   private int currencyDecimalDigits_;
   private int currencyNegativePattern_;
   private int currencyPositivePattern_;
-  private int[] numberGroupSizes_;
-  private int[] currencyGroupSizes_;
-  private char[] numberGroupSeparator_;
-  private char[] numberDecimalSeparator_;
-  private char[] currencyGroupSeparator_;
-  private char[] currencyDecimalSeparator_;
-  private char[] currencySymbol_;
-  private char[] negativeSign_;
-  private char[] positiveSign_;
-  private char[] nanSymbol_;
-  private char[] negativeInfinitySymbol_;
-  private char[] positiveInfinitySymbol_;
-  private char[][] nativeDigits_;
+  private const(int)[] numberGroupSizes_;
+  private const(int)[] currencyGroupSizes_;
+  private const(char)[] numberGroupSeparator_;
+  private const(char)[] numberDecimalSeparator_;
+  private const(char)[] currencyGroupSeparator_;
+  private const(char)[] currencyDecimalSeparator_;
+  private const(char)[] currencySymbol_;
+  private const(char)[] negativeSign_;
+  private const(char)[] positiveSign_;
+  private const(char)[] nanSymbol_;
+  private const(char)[] negativeInfinitySymbol_;
+  private const(char)[] positiveInfinitySymbol_;
+  private const(char[])[] nativeDigits_;
 
   /**
    * Initializes a new, culturally independent instance.
@@ -959,7 +961,7 @@ public class NumberFormat : IFormatService {
     this(null);
   }
 
-  package this(CultureData* cultureData) {
+  package this(const(CultureData)* cultureData) {
     // Initialize invariant data.
     numberDecimalDigits_ = 2;
     numberNegativePattern_ = 1;
@@ -976,7 +978,7 @@ public class NumberFormat : IFormatService {
     nanSymbol_ = "NaN";
     negativeInfinitySymbol_ = "-Infinity";
     positiveInfinitySymbol_ = "Infinity";
-    nativeDigits_ = arrayOf!(char[])("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
+    nativeDigits_ = arrayOf!(const(char)[])("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
 
     if (cultureData !is null && cultureData.lcid != Culture.LCID_INVARIANT) {
       // Initialize culture-specific data.
@@ -1071,7 +1073,7 @@ version (Clone)
    * $(I Property.) Retrieves a value indicating whether the instance is read-only.
    * Returns: true if the instance is read-only; otherwise, false.
    */
-  public final bool isReadOnly() {
+  public final const bool isReadOnly() {
     return isReadOnly_;
   }
 
@@ -1079,7 +1081,7 @@ version (Clone)
    * $(I Property.) Retrieves the number of decimal places used for numbers.
    * Returns: The number of decimal places used for numbers. For $(LINK2 #NumberFormat_invariantFormat, invariantFormat), the default is 2.
    */
-  public final int numberDecimalDigits() {
+  public final const int numberDecimalDigits() {
     return numberDecimalDigits_;
   }
   /**
@@ -1128,7 +1130,7 @@ version (Clone)
    * <tr><td>4</td><td>n -</td></tr>
    * </table>
    */
-  public final int numberNegativePattern() {
+  public final const int numberNegativePattern() {
     return numberNegativePattern_;
   }
   /**
@@ -1171,7 +1173,7 @@ version (Clone)
    * $(I Property.) Retrieves the number of decimal places to use in currency values.
    * Returns: The number of decimal digits to use in currency values.
    */
-  public final int currencyDecimalDigits() {
+  public const final int currencyDecimalDigits() {
     return currencyDecimalDigits_;
   }
   /**
@@ -1187,7 +1189,7 @@ version (Clone)
    * $(I Property.) Retrieves the formal pattern to use for negative currency values.
    * Returns: The format pattern to use for negative currency values.
    */
-  public final int currencyNegativePattern() {
+  public const final int currencyNegativePattern() {
     return currencyNegativePattern_;
   }
   /**
@@ -1203,7 +1205,7 @@ version (Clone)
    * $(I Property.) Retrieves the formal pattern to use for positive currency values.
    * Returns: The format pattern to use for positive currency values.
    */
-  public final int currencyPositivePattern() {
+  public const final int currencyPositivePattern() {
     return currencyPositivePattern_;
   }
   /**
@@ -1219,14 +1221,14 @@ version (Clone)
    * $(I Property.) Retrieves the number of digits int each group to the left of the decimal place in numbers.
    * Returns: The number of digits int each group to the left of the decimal place in numbers.
    */
-  public final int[] numberGroupSizes() {
+  public const final const(int)[] numberGroupSizes() {
     return numberGroupSizes_;
   }
   /**
    * $(I Property.) Assigns the number of digits int each group to the left of the decimal place in numbers.
    * Params: value = The number of digits int each group to the left of the decimal place in numbers.
    */
-  public final void numberGroupSizes(int[] value) {
+  public final void numberGroupSizes(const(int)[] value) {
     checkReadOnly();
     numberGroupSizes_ = value;
   }
@@ -1235,14 +1237,14 @@ version (Clone)
    * $(I Property.) Retrieves the number of digits int each group to the left of the decimal place in currency values.
    * Returns: The number of digits int each group to the left of the decimal place in currency values.
    */
-  public final int[] currencyGroupSizes() {
+  public const final const(int)[] currencyGroupSizes() {
     return currencyGroupSizes_;
   }
   /**
    * $(I Property.) Assigns the number of digits int each group to the left of the decimal place in currency values.
    * Params: value = The number of digits int each group to the left of the decimal place in currency values.
    */
-  public final void currencyGroupSizes(int[] value) {
+  public final void currencyGroupSizes(const(int)[] value) {
     checkReadOnly();
     currencyGroupSizes_ = value;
   }
@@ -1251,14 +1253,14 @@ version (Clone)
    * $(I Property.) Retrieves the string separating groups of digits to the left of the decimal place in numbers.
    * Returns: The string separating groups of digits to the left of the decimal place in numbers. For example, ",".
    */
-  public final char[] numberGroupSeparator() {
+  public const final const(char)[] numberGroupSeparator() {
     return numberGroupSeparator_;
   }
   /**
    * $(I Property.) Assigns the string separating groups of digits to the left of the decimal place in numbers.
    * Params: value = The string separating groups of digits to the left of the decimal place in numbers.
    */
-  public final void numberGroupSeparator(char[] value) {
+  public final void numberGroupSeparator(const(char)[] value) {
     checkReadOnly();
     numberGroupSeparator_ = value;
   }
@@ -1267,14 +1269,14 @@ version (Clone)
    * $(I Property.) Retrieves the string used as the decimal separator in numbers.
    * Returns: The string used as the decimal separator in numbers. For example, ".".
    */
-  public final char[] numberDecimalSeparator() {
+  public const final const(char)[] numberDecimalSeparator() {
     return numberDecimalSeparator_;
   }
   /**
    * $(I Property.) Assigns the string used as the decimal separator in numbers.
    * Params: value = The string used as the decimal separator in numbers.
    */
-  public final void numberDecimalSeparator(char[] value) {
+  public final void numberDecimalSeparator(const(char)[] value) {
     checkReadOnly();
     numberDecimalSeparator_ = value;
   }
@@ -1283,14 +1285,14 @@ version (Clone)
    * $(I Property.) Retrieves the string separating groups of digits to the left of the decimal place in currency values.
    * Returns: The string separating groups of digits to the left of the decimal place in currency values. For example, ",".
    */
-  public final char[] currencyGroupSeparator() {
+  public const final const(char)[] currencyGroupSeparator() {
     return currencyGroupSeparator_;
   }
   /**
    * $(I Property.) Assigns the string separating groups of digits to the left of the decimal place in currency values.
    * Params: value = The string separating groups of digits to the left of the decimal place in currency values.
    */
-  public final void currencyGroupSeparator(char[] value) {
+  public final void currencyGroupSeparator(const(char)[] value) {
     checkReadOnly();
     currencyGroupSeparator_ = value;
   }
@@ -1299,14 +1301,14 @@ version (Clone)
    * $(I Property.) Retrieves the string used as the decimal separator in currency values.
    * Returns: The string used as the decimal separator in currency values. For example, ".".
    */
-  public final char[] currencyDecimalSeparator() {
+  public const final const(char)[] currencyDecimalSeparator() {
     return currencyDecimalSeparator_;
   }
   /**
    * $(I Property.) Assigns the string used as the decimal separator in currency values.
    * Params: value = The string used as the decimal separator in currency values.
    */
-  public final void currencyDecimalSeparator(char[] value) {
+  public final void currencyDecimalSeparator(const(char)[] value) {
     checkReadOnly();
     currencyDecimalSeparator_ = value;
   }
@@ -1315,14 +1317,14 @@ version (Clone)
    * $(I Property.) Retrieves the string used as the currency symbol.
    * Returns: The string used as the currency symbol. For example, "£".
    */
-  public final char[] currencySymbol() {
+  public const final const(char)[] currencySymbol() {
     return currencySymbol_;
   }
   /**
    * $(I Property.) Assigns the string used as the currency symbol.
    * Params: value = The string used as the currency symbol.
    */
-  public final void currencySymbol(char[] value) {
+  public final void currencySymbol(const(char)[] value) {
     checkReadOnly();
     currencySymbol_ = value;
   }
@@ -1331,14 +1333,14 @@ version (Clone)
    * $(I Property.) Retrieves the string denoting that a number is negative.
    * Returns: The string denoting that a number is negative. For example, "-".
    */
-  public final char[] negativeSign() {
+  public const final const(char)[] negativeSign() {
     return negativeSign_;
   }
   /**
    * $(I Property.) Assigns the string denoting that a number is negative.
    * Params: value = The string denoting that a number is negative.
    */
-  public final void negativeSign(char[] value) {
+  public final void negativeSign(const(char)[] value) {
     checkReadOnly();
     negativeSign_ = value;
   }
@@ -1347,14 +1349,14 @@ version (Clone)
    * $(I Property.) Retrieves the string denoting that a number is positive.
    * Returns: The string denoting that a number is positive. For example, "+".
    */
-  public final char[] positiveSign() {
+  public const final const(char)[] positiveSign() {
     return positiveSign_;
   }
   /**
    * $(I Property.) Assigns the string denoting that a number is positive.
    * Params: value = The string denoting that a number is positive.
    */
-  public final void positiveSign(char[] value) {
+  public final void positiveSign(const(char)[] value) {
     checkReadOnly();
     positiveSign_ = value;
   }
@@ -1363,14 +1365,14 @@ version (Clone)
    * $(I Property.) Retrieves the string representing the NaN (not a number) value.
    * Returns: The string representing the NaN value. For example, "NaN".
    */
-  public final char[] nanSymbol() {
+  public const final const(char)[] nanSymbol() {
     return nanSymbol_;
   }
   /**
    * $(I Property.) Assigns the string representing the NaN (not a number) value.
    * Params: value = The string representing the NaN value.
    */
-  public final void nanSymbol(char[] value) {
+  public final void nanSymbol(const(char)[] value) {
     checkReadOnly();
     nanSymbol_ = value;
   }
@@ -1379,14 +1381,14 @@ version (Clone)
    * $(I Property.) Retrieves the string representing negative infinity.
    * Returns: The string representing negative infinity. For example, "-Infinity".
    */
-  public final char[] negativeInfinitySymbol() {
+  public const final const(char)[] negativeInfinitySymbol() {
     return negativeInfinitySymbol_;
   }
   /**
    * $(I Property.) Assigns the string representing negative infinity.
    * Params: value = The string representing negative infinity.
    */
-  public final void negativeInfinitySymbol(char[] value) {
+  public final void negativeInfinitySymbol(const(char)[] value) {
     checkReadOnly();
     negativeInfinitySymbol_ = value;
   }
@@ -1395,14 +1397,14 @@ version (Clone)
    * $(I Property.) Retrieves the string representing positive infinity.
    * Returns: The string representing positive infinity. For example, "Infinity".
    */
-  public final char[] positiveInfinitySymbol() {
+  public const final const(char)[] positiveInfinitySymbol() {
     return positiveInfinitySymbol_;
   }
   /**
    * $(I Property.) Assigns the string representing positive infinity.
    * Params: value = The string representing positive infinity.
    */
-  public final void positiveInfinitySymbol(char[] value) {
+  public final void positiveInfinitySymbol(const(char)[] value) {
     checkReadOnly();
     positiveInfinitySymbol_ = value;
   }
@@ -1411,19 +1413,19 @@ version (Clone)
    * $(I Property.) Retrieves a string array of native equivalents of the digits 0 to 9.
    * Returns: A string array of native equivalents of the digits 0 to 9.
    */
-  public final char[][] nativeDigits() {
+  public const final const(char[])[] nativeDigits() {
     return nativeDigits_;
   }
   /**
    * $(I Property.) Assigns a string array of native equivalents of the digits 0 to 9.
    * Params: value = A string array of native equivalents of the digits 0 to 9.
    */
-  public final void nativeDigits(char[][] value) {
+  public final void nativeDigits(const(char[])[] value) {
     checkReadOnly();
     nativeDigits_ = value;
   }
 
-  private void checkReadOnly() {
+  private const void checkReadOnly() {
     if (isReadOnly_)
         error("NumberFormat instance is read-only.");
   }
@@ -1439,44 +1441,44 @@ version (Clone)
  */
 public class DateTimeFormat : IFormatService {
 
-  private const char[] rfc1123Pattern_ = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
-  private const char[] sortableDateTimePattern_ = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
-  private const char[] universalSortableDateTimePattern_ = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
-  private const char[] allStandardFormats = [ 'd', 'D', 'f', 'F', 'g', 'G', 'm', 'M', 'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y' ];
+  private enum const(char)[] rfc1123Pattern_ = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
+  private enum const(char)[] sortableDateTimePattern_ = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
+  private enum const(char)[] universalSortableDateTimePattern_ = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
+  private enum const(char)[] allStandardFormats = [ 'd', 'D', 'f', 'F', 'g', 'G', 'm', 'M', 'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y' ];
 
 
   package bool isReadOnly_;
   private static DateTimeFormat invariantFormat_;
-  private CultureData* cultureData_;
+  private const(CultureData)* cultureData_;
 
   private Calendar calendar_;
-  private int[] optionalCalendars_;
+  private const(int)[] optionalCalendars_;
   private int firstDayOfWeek_ = -1;
   private int calendarWeekRule_ = -1;
-  private char[] dateSeparator_;
-  private char[] timeSeparator_;
-  private char[] amDesignator_;
-  private char[] pmDesignator_;
-  private char[] shortDatePattern_;
-  private char[] shortTimePattern_;
-  private char[] longDatePattern_;
-  private char[] longTimePattern_;
-  private char[] monthDayPattern_;
-  private char[] yearMonthPattern_;
-  private char[][] abbreviatedDayNames_;
-  private char[][] dayNames_;
-  private char[][] abbreviatedMonthNames_;
-  private char[][] monthNames_;
+  private const(char)[] dateSeparator_;
+  private const(char)[] timeSeparator_;
+  private const(char)[] amDesignator_;
+  private const(char)[] pmDesignator_;
+  private const(char)[] shortDatePattern_;
+  private const(char)[] shortTimePattern_;
+  private const(char)[] longDatePattern_;
+  private const(char)[] longTimePattern_;
+  private const(char)[] monthDayPattern_;
+  private const(char)[] yearMonthPattern_;
+  private const(char[])[] abbreviatedDayNames_;
+  private const(char[])[] dayNames_;
+  private const(char[])[] abbreviatedMonthNames_;
+  private const(char[])[] monthNames_;
 
-  private char[] fullDateTimePattern_;
-  private char[] generalShortTimePattern_;
-  private char[] generalLongTimePattern_;
+  private const(char)[] fullDateTimePattern_;
+  private const(char)[] generalShortTimePattern_;
+  private const(char)[] generalLongTimePattern_;
 
-  private char[][] shortTimePatterns_;
-  private char[][] shortDatePatterns_;
-  private char[][] longTimePatterns_;
-  private char[][] longDatePatterns_;
-  private char[][] yearMonthPatterns_;
+  private const(char[])[] shortTimePatterns_;
+  private const(char[])[] shortDatePatterns_;
+  private const(char[])[] longTimePatterns_;
+  private const(char[])[] longDatePatterns_;
+  private const(char[])[] yearMonthPatterns_;
 
   /**
    * $(ANCHOR DateTimeFormat_ctor)
@@ -1489,7 +1491,7 @@ public class DateTimeFormat : IFormatService {
     initialize();
   }
 
-  package this(CultureData* cultureData, Calendar calendar) {
+  package this(const(CultureData)* cultureData, Calendar calendar) {
     cultureData_ = cultureData;
     this.calendar = calendar;
   }
@@ -1517,31 +1519,31 @@ version(Clone)
   }
 }
 
-  package char[][] shortTimePatterns() {
+  package const(char)[][] shortTimePatterns() {
     if (shortTimePatterns_ is null)
       shortTimePatterns_ = cultureData_.shortTimes;
     return shortTimePatterns_.dup;
   }
 
-  package char[][] shortDatePatterns() {
+  package const(char)[][] shortDatePatterns() {
     if (shortDatePatterns_ is null)
       shortDatePatterns_ = cultureData_.shortDates;
     return shortDatePatterns_.dup;
   }
 
-  package char[][] longTimePatterns() {
+  package const(char)[][] longTimePatterns() {
     if (longTimePatterns_ is null)
       longTimePatterns_ = cultureData_.longTimes;
     return longTimePatterns_.dup;
   }
 
-  package char[][] longDatePatterns() {
+  package const(char)[][] longDatePatterns() {
     if (longDatePatterns_ is null)
       longDatePatterns_ = cultureData_.longDates;
     return longDatePatterns_.dup;
   }
 
-  package char[][] yearMonthPatterns() {
+  package const(char[])[] yearMonthPatterns() {
     if (yearMonthPatterns_ is null)
       yearMonthPatterns_ = cultureData_.yearMonths;
     return yearMonthPatterns_;
@@ -1552,8 +1554,8 @@ version(Clone)
    * Retrieves the standard patterns in which Time values can be formatted.
    * Returns: An array of strings containing the standard patterns in which Time values can be formatted.
    */
-  public final char[][] getAllDateTimePatterns() {
-    char[][] result;
+  public final const(char)[][] getAllDateTimePatterns() {
+    const(char)[][] result;
     foreach (char format; DateTimeFormat.allStandardFormats)
       result ~= getAllDateTimePatterns(format);
     return result;
@@ -1564,10 +1566,10 @@ version(Clone)
    * Retrieves the standard patterns in which Time values can be formatted using the specified format character.
    * Returns: An array of strings containing the standard patterns in which Time values can be formatted using the specified format character.
    */
-  public final char[][] getAllDateTimePatterns(char format) {
+  public final const(char)[][] getAllDateTimePatterns(char format) {
 
-    char[][] combinePatterns(char[][] patterns1, char[][] patterns2) {
-      char[][] result = new char[][patterns1.length * patterns2.length];
+    const(char)[][] combinePatterns(const(char)[][] patterns1, const(char)[][] patterns2) {
+      const(char)[][] result = new const(char)[][patterns1.length * patterns2.length];
       for (int i = 0; i < patterns1.length; i++) {
         for (int j = 0; j < patterns2.length; j++)
           result[i * patterns2.length + j] = patterns1[i] ~ " " ~ patterns2[j];
@@ -1576,7 +1578,7 @@ version(Clone)
     }
 
     // format must be one of allStandardFormats.
-    char[][] result;
+    const(char)[][] result;
     switch (format) {
       case 'd':
         result ~= shortDatePatterns;
@@ -1635,7 +1637,7 @@ version(Clone)
    * Params: dayOfWeek = A DayOfWeek value.
    * Returns: The abbreviated name of the day of the week represented by dayOfWeek.
    */
-  public final char[] getAbbreviatedDayName(Calendar.DayOfWeek dayOfWeek) {
+  public final const(char)[] getAbbreviatedDayName(Calendar.DayOfWeek dayOfWeek) {
     return abbreviatedDayNames[cast(int)dayOfWeek];
   }
 
@@ -1645,7 +1647,7 @@ version(Clone)
    * Params: dayOfWeek = A DayOfWeek value.
    * Returns: The full name of the day of the week represented by dayOfWeek.
    */
-  public final char[] getDayName(Calendar.DayOfWeek dayOfWeek) {
+  public final const(char)[] getDayName(Calendar.DayOfWeek dayOfWeek) {
     return dayNames[cast(int)dayOfWeek];
   }
 
@@ -1655,7 +1657,7 @@ version(Clone)
    * Params: month = An integer between 1 and 13 indicating the name of the _month to return.
    * Returns: The abbreviated name of the _month represented by month.
    */
-  public final char[] getAbbreviatedMonthName(int month) {
+  public final const(char)[] getAbbreviatedMonthName(int month) {
     return abbreviatedMonthNames[month - 1];
   }
 
@@ -1665,7 +1667,7 @@ version(Clone)
    * Params: month = An integer between 1 and 13 indicating the name of the _month to return.
    * Returns: The full name of the _month represented by month.
    */
-  public final char[] getMonthName(int month) {
+  public final const(char)[] getMonthName(int month) {
     return monthNames[month - 1];
   }
 
@@ -1810,7 +1812,7 @@ version(Clone)
    * $(I Property.) Retrieves the native name of the calendar associated with the current instance.
    * Returns: The native name of the calendar associated with the current instance.
    */
-  public final char[] nativeCalendarName() {
+  public final const(char)[] nativeCalendarName() {
     return cultureData_.nativeCalName;
   }
 
@@ -1819,7 +1821,7 @@ version(Clone)
    * $(I Property.) Retrieves the string separating date components.
    * Returns: The string separating date components.
    */
-  public final char[] dateSeparator() {
+  public final const(char)[] dateSeparator() {
     if (dateSeparator_ is null)
       dateSeparator_ = cultureData_.date;
     return dateSeparator_;
@@ -1828,7 +1830,7 @@ version(Clone)
    * $(I Property.) Assigns the string separating date components.
    * Params: value = The string separating date components.
    */
-  public final void dateSeparator(char[] value) {
+  public final void dateSeparator(const(char)[] value) {
     checkReadOnly();
     dateSeparator_ = value;
   }
@@ -1838,7 +1840,7 @@ version(Clone)
    * $(I Property.) Retrieves the string separating time components.
    * Returns: The string separating time components.
    */
-  public final char[] timeSeparator() {
+  public final const(char)[] timeSeparator() {
     if (timeSeparator_ is null)
       timeSeparator_ = cultureData_.time;
     return timeSeparator_;
@@ -1847,7 +1849,7 @@ version(Clone)
    * $(I Property.) Assigns the string separating time components.
    * Params: value = The string separating time components.
    */
-  public final void timeSeparator(char[] value) {
+  public final void timeSeparator(const(char)[] value) {
     checkReadOnly();
     timeSeparator_ = value;
   }
@@ -1857,7 +1859,7 @@ version(Clone)
    * $(I Property.) Retrieves the string designator for hours before noon.
    * Returns: The string designator for hours before noon. For example, "AM".
    */
-  public final char[] amDesignator() {
+  public final const(char)[] amDesignator() {
     assert(amDesignator_ !is null);
     return amDesignator_;
   }
@@ -1865,7 +1867,7 @@ version(Clone)
    * $(I Property.) Assigns the string designator for hours before noon.
    * Params: value = The string designator for hours before noon.
    */
-  public final void amDesignator(char[] value) {
+  public final void amDesignator(const(char)[] value) {
     checkReadOnly();
     amDesignator_ = value;
   }
@@ -1875,7 +1877,7 @@ version(Clone)
    * $(I Property.) Retrieves the string designator for hours after noon.
    * Returns: The string designator for hours after noon. For example, "PM".
    */
-  public final char[] pmDesignator() {
+  public final const(char)[] pmDesignator() {
     assert(pmDesignator_ !is null);
     return pmDesignator_;
   }
@@ -1883,7 +1885,7 @@ version(Clone)
    * $(I Property.) Assigns the string designator for hours after noon.
    * Params: value = The string designator for hours after noon.
    */
-  public final void pmDesignator(char[] value) {
+  public final void pmDesignator(const(char)[] value) {
     checkReadOnly();
     pmDesignator_ = value;
   }
@@ -1893,7 +1895,7 @@ version(Clone)
    * $(I Property.) Retrieves the format pattern for a short date value.
    * Returns: The format pattern for a short date value.
    */
-  public final char[] shortDatePattern() {
+  public final const(char)[] shortDatePattern() {
     assert(shortDatePattern_ !is null);
     return shortDatePattern_;
   }
@@ -1901,10 +1903,10 @@ version(Clone)
    * $(I Property.) Assigns the format pattern for a short date _value.
    * Params: value = The format pattern for a short date _value.
    */
-  public final void shortDatePattern(char[] value) {
+  public final void shortDatePattern(const(char)[] value) {
     checkReadOnly();
     if (shortDatePatterns_ !is null)
-      shortDatePatterns_[0] = value;
+      shortDatePatterns_ = [value];
     shortDatePattern_ = value;
     generalLongTimePattern_ = null;
     generalShortTimePattern_ = null;
@@ -1915,7 +1917,7 @@ version(Clone)
    * $(I Property.) Retrieves the format pattern for a short time value.
    * Returns: The format pattern for a short time value.
    */
-  public final char[] shortTimePattern() {
+  public final const(char)[] shortTimePattern() {
     if (shortTimePattern_ is null)
       shortTimePattern_ = cultureData_.shortTime;
     return shortTimePattern_;
@@ -1924,7 +1926,7 @@ version(Clone)
    * $(I Property.) Assigns the format pattern for a short time _value.
    * Params: value = The format pattern for a short time _value.
    */
-  public final void shortTimePattern(char[] value) {
+  public final void shortTimePattern(const(char)[] value) {
     checkReadOnly();
     shortTimePattern_ = value;
     generalShortTimePattern_ = null;
@@ -1935,7 +1937,7 @@ version(Clone)
    * $(I Property.) Retrieves the format pattern for a long date value.
    * Returns: The format pattern for a long date value.
    */
-  public final char[] longDatePattern() {
+  public final const(char)[] longDatePattern() {
     assert(longDatePattern_ !is null);
     return longDatePattern_;
   }
@@ -1943,10 +1945,10 @@ version(Clone)
    * $(I Property.) Assigns the format pattern for a long date _value.
    * Params: value = The format pattern for a long date _value.
    */
-  public final void longDatePattern(char[] value) {
+  public final void longDatePattern(const(char)[] value) {
     checkReadOnly();
     if (longDatePatterns_ !is null)
-      longDatePatterns_[0] = value;
+      longDatePatterns_ = [value];
     longDatePattern_ = value;
     fullDateTimePattern_ = null;
   }
@@ -1956,7 +1958,7 @@ version(Clone)
    * $(I Property.) Retrieves the format pattern for a long time value.
    * Returns: The format pattern for a long time value.
    */
-  public final char[] longTimePattern() {
+  public final const(char)[] longTimePattern() {
     assert(longTimePattern_ !is null);
     return longTimePattern_;
   }
@@ -1964,7 +1966,7 @@ version(Clone)
    * $(I Property.) Assigns the format pattern for a long time _value.
    * Params: value = The format pattern for a long time _value.
    */
-  public final void longTimePattern(char[] value) {
+  public final void longTimePattern(const(char)[] value) {
     checkReadOnly();
     longTimePattern_ = value;
     fullDateTimePattern_ = null;
@@ -1975,7 +1977,7 @@ version(Clone)
    * $(I Property.) Retrieves the format pattern for a month and day value.
    * Returns: The format pattern for a month and day value.
    */
-  public final char[] monthDayPattern() {
+  public final const(char)[] monthDayPattern() {
     if (monthDayPattern_ is null)
       monthDayPattern_ = cultureData_.monthDay;
     return monthDayPattern_;
@@ -1984,7 +1986,7 @@ version(Clone)
    * $(I Property.) Assigns the format pattern for a month and day _value.
    * Params: value = The format pattern for a month and day _value.
    */
-  public final void monthDayPattern(char[] value) {
+  public final void monthDayPattern(const(char)[] value) {
     checkReadOnly();
     monthDayPattern_ = value;
   }
@@ -1994,7 +1996,7 @@ version(Clone)
    * $(I Property.) Retrieves the format pattern for a year and month value.
    * Returns: The format pattern for a year and month value.
    */
-  public final char[] yearMonthPattern() {
+  public final const(char)[] yearMonthPattern() {
     assert(yearMonthPattern_ !is null);
     return yearMonthPattern_;
   }
@@ -2002,7 +2004,7 @@ version(Clone)
    * $(I Property.) Assigns the format pattern for a year and month _value.
    * Params: value = The format pattern for a year and month _value.
    */
-  public final void yearMonthPattern(char[] value) {
+  public final void yearMonthPattern(const(char)[] value) {
     checkReadOnly();
     yearMonthPattern_ = value;
   }
@@ -2013,7 +2015,7 @@ version(Clone)
    * Returns: A string array containing the abbreviated names of the days of the week. For $(LINK2 #DateTimeFormat_invariantFormat, invariantFormat),
    *   this contains "Sun", "Mon", "Tue", "Wed", "Thu", "Fri" and "Sat".
    */
-  public final char[][] abbreviatedDayNames() {
+  public final const(char)[][] abbreviatedDayNames() {
     if (abbreviatedDayNames_ is null)
       abbreviatedDayNames_ = cultureData_.abbrevDayNames;
     return abbreviatedDayNames_.dup;
@@ -2022,7 +2024,7 @@ version(Clone)
    * $(I Property.) Assigns a string array containing the abbreviated names of the days of the week.
    * Params: value = A string array containing the abbreviated names of the days of the week.
    */
-  public final void abbreviatedDayNames(char[][] value) {
+  public final void abbreviatedDayNames(const(char)[][] value) {
     checkReadOnly();
     abbreviatedDayNames_ = value;
   }
@@ -2033,7 +2035,7 @@ version(Clone)
    * Returns: A string array containing the full names of the days of the week. For $(LINK2 #DateTimeFormat_invariantFormat, invariantFormat),
    *   this contains "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" and "Saturday".
    */
-  public final char[][] dayNames() {
+  public final const(char)[][] dayNames() {
     if (dayNames_ is null)
       dayNames_ = cultureData_.dayNames;
     return dayNames_.dup;
@@ -2042,7 +2044,7 @@ version(Clone)
    * $(I Property.) Assigns a string array containing the full names of the days of the week.
    * Params: value = A string array containing the full names of the days of the week.
    */
-  public final void dayNames(char[][] value) {
+  public final void dayNames(const(char)[][] value) {
     checkReadOnly();
     dayNames_ = value;
   }
@@ -2053,7 +2055,7 @@ version(Clone)
    * Returns: A string array containing the abbreviated names of the months. For $(LINK2 #DateTimeFormat_invariantFormat, invariantFormat),
    *   this contains "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" and "".
    */
-  public final char[][] abbreviatedMonthNames() {
+  public final const(char)[][] abbreviatedMonthNames() {
     if (abbreviatedMonthNames_ is null)
       abbreviatedMonthNames_ = cultureData_.abbrevMonthNames;
     return abbreviatedMonthNames_.dup;
@@ -2062,7 +2064,7 @@ version(Clone)
    * $(I Property.) Assigns a string array containing the abbreviated names of the months.
    * Params: value = A string array containing the abbreviated names of the months.
    */
-  public final void abbreviatedMonthNames(char[][] value) {
+  public final void abbreviatedMonthNames(const(char)[][] value) {
     checkReadOnly();
     abbreviatedMonthNames_ = value;
   }
@@ -2073,7 +2075,7 @@ version(Clone)
    * Returns: A string array containing the full names of the months. For $(LINK2 #DateTimeFormat_invariantFormat, invariantFormat),
    *   this contains "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" and "".
    */
-  public final char[][] monthNames() {
+  public final const(char)[][] monthNames() {
     if (monthNames_ is null)
       monthNames_ = cultureData_.monthNames;
     return monthNames_.dup;
@@ -2082,7 +2084,7 @@ version(Clone)
    * $(I Property.) Assigns a string array containing the full names of the months.
    * Params: value = A string array containing the full names of the months.
    */
-  public final void monthNames(char[][] value) {
+  public final void monthNames(const(char)[][] value) {
     checkReadOnly();
     monthNames_ = value;
   }
@@ -2092,7 +2094,7 @@ version(Clone)
    * $(I Property.) Retrieves the format pattern for a long date and a long time value.
    * Returns: The format pattern for a long date and a long time value.
    */
-  public final char[] fullDateTimePattern() {
+  public final const(char)[] fullDateTimePattern() {
     if (fullDateTimePattern_ is null)
       fullDateTimePattern_ = longDatePattern ~ " " ~ longTimePattern;
     return fullDateTimePattern_;
@@ -2101,7 +2103,7 @@ version(Clone)
    * $(I Property.) Assigns the format pattern for a long date and a long time _value.
    * Params: value = The format pattern for a long date and a long time _value.
    */
-  public final void fullDateTimePattern(char[] value) {
+  public final void fullDateTimePattern(const(char)[] value) {
     checkReadOnly();
     fullDateTimePattern_ = value;
   }
@@ -2111,7 +2113,7 @@ version(Clone)
    * $(I Property.) Retrieves the format pattern based on the IETF RFC 1123 specification, for a time value.
    * Returns: The format pattern based on the IETF RFC 1123 specification, for a time value.
    */
-  public final char[] rfc1123Pattern() {
+  public const final const(char)[] rfc1123Pattern() {
     return rfc1123Pattern_;
   }
 
@@ -2120,7 +2122,7 @@ version(Clone)
    * $(I Property.) Retrieves the format pattern for a sortable date and time value.
    * Returns: The format pattern for a sortable date and time value.
    */
-  public final char[] sortableDateTimePattern() {
+  public const final const(char)[] sortableDateTimePattern() {
     return sortableDateTimePattern_;
   }
 
@@ -2129,23 +2131,23 @@ version(Clone)
    * $(I Property.) Retrieves the format pattern for a universal date and time value.
    * Returns: The format pattern for a universal date and time value.
    */
-  public final char[] universalSortableDateTimePattern() {
+  public const final const(char)[] universalSortableDateTimePattern() {
     return universalSortableDateTimePattern_;
   }
 
-  package char[] generalShortTimePattern() {
+  package const(char)[] generalShortTimePattern() {
     if (generalShortTimePattern_ is null)
       generalShortTimePattern_ = shortDatePattern ~ " " ~ shortTimePattern;
     return generalShortTimePattern_;
   }
 
-  package char[] generalLongTimePattern() {
+  package const(char)[] generalLongTimePattern() {
     if (generalLongTimePattern_ is null)
       generalLongTimePattern_ = shortDatePattern ~ " " ~ longTimePattern;
     return generalLongTimePattern_;
   }
 
-  private void checkReadOnly() {
+  private const void checkReadOnly() {
     if (isReadOnly_)
         error("DateTimeFormat instance is read-only.");
   }
@@ -2169,13 +2171,13 @@ version(Clone)
       calendarWeekRule_ = cultureData_.firstDayOfYear;
   }
 
-  private int[] optionalCalendars() {
+  private const(int)[] optionalCalendars() {
     if (optionalCalendars_ is null)
       optionalCalendars_ = cultureData_.optionalCalendars;
     return optionalCalendars_;
   }
 
-  private void error(char[] msg) {
+  private const void error(immutable(char)[] msg) {
      throw new LocaleException (msg);
   }
 

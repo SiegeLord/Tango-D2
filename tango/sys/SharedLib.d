@@ -108,7 +108,7 @@ final class SharedLib {
             A SharedLib instance being a handle to the library, or throws
             SharedLibException if it could not be loaded
       */
-    static SharedLib load(char[] path, LoadMode mode = LoadMode.Now | LoadMode.Global) {
+    static SharedLib load(const(char)[] path, LoadMode mode = LoadMode.Now | LoadMode.Global) {
     	return loadImpl(path, mode, true);
     }
 
@@ -128,12 +128,12 @@ final class SharedLib {
             A SharedLib instance being a handle to the library, or null if it
             could not be loaded
       */
-    static SharedLib loadNoThrow(char[] path, LoadMode mode = LoadMode.Now | LoadMode.Global) {
+    static SharedLib loadNoThrow(const(char)[] path, LoadMode mode = LoadMode.Now | LoadMode.Global) {
     	return loadImpl(path, mode, false);
     }
 
 
-    private static SharedLib loadImpl(char[] path, LoadMode mode, bool throwExceptions) {
+    private static SharedLib loadImpl(const(char)[] path, LoadMode mode, bool throwExceptions) {
         SharedLib res;
 
         synchronized (mutex) {
@@ -271,8 +271,8 @@ final class SharedLib {
             A pointer to the symbol or throws SharedLibException if it's
             not present in the library.
       */
-    void* getSymbol(char* name) {
-    	return getSymbolImpl(name, true);
+    void* getSymbol(const(char)* name) {
+       return getSymbolImpl(name, true);
     }
 
 
@@ -285,12 +285,12 @@ final class SharedLib {
         Returns:
             A pointer to the symbol or null if it's not present in the library.
       */
-    void* getSymbolNoThrow(char* name) {
-    	return getSymbolImpl(name, false);
+    void* getSymbolNoThrow(const(char)* name) {
+       return getSymbolImpl(name, false);
     }
 
 
-    private void* getSymbolImpl(char* name, bool throwExceptions) {
+    private void* getSymbolImpl(const(char)* name, bool throwExceptions) {
         assert (loaded);
         return getSymbol_(name, throwExceptions);
     }
@@ -324,15 +324,15 @@ final class SharedLib {
                             }
                     }
                 if (handle is null && throwExceptions) {
-                    throw new SharedLibException("Couldn't load shared library '" ~ this.path_ ~ "' : " ~ SysError.lastMsg);
+                    throw new SharedLibException("Couldn't load shared library '" ~ this.path_.idup ~ "' : " ~ SysError.lastMsg.idup);
                 }
             }
 
-            void* getSymbol_(char* name, bool throwExceptions) {
+            void* getSymbol_(const(char)* name, bool throwExceptions) {
                 // MSDN: "Multiple threads do not overwrite each other's last-error code."
                 auto res = GetProcAddress(handle, name);
                 if (res is null && throwExceptions) {
-                    throw new SharedLibException("Couldn't load symbol '" ~ fromStringz(name) ~ "' from shared library '" ~ this.path_ ~ "' : " ~ SysError.lastMsg);
+                    throw new SharedLibException("Couldn't load symbol '" ~ fromStringz(name).idup ~ "' from shared library '" ~ this.path_.idup ~ "' : " ~ SysError.lastMsg.idup);
                 } else {
                     return res;
                 }
@@ -340,7 +340,7 @@ final class SharedLib {
 
             void unload_(bool throwExceptions) {
                 if (0 == FreeLibrary(handle) && throwExceptions) {
-                    throw new SharedLibException("Couldn't unload shared library '" ~ this.path_ ~ "' : " ~ SysError.lastMsg);
+                    throw new SharedLibException("Couldn't unload shared library '" ~ this.path_.idup ~ "' : " ~ SysError.lastMsg.idup);
                 }
             }
         }
@@ -356,11 +356,11 @@ final class SharedLib {
 
                 handle = dlopen((this.path_ ~ \0).ptr, mode_);
                 if (handle is null && throwExceptions) {
-                    throw new SharedLibException("Couldn't load shared library: " ~ fromStringz(dlerror()));
+                    throw new SharedLibException("Couldn't load shared library: " ~ fromStringz(dlerror()).idup);
                 }
             }
 
-            void* getSymbol_(char* name, bool throwExceptions) {
+            void* getSymbol_(const(char)* name, bool throwExceptions) {
                 if (throwExceptions) {
                     synchronized (typeof(this).classinfo) { // dlerror need not be reentrant
                         auto err = dlerror();               // clear previous error condition
@@ -368,7 +368,7 @@ final class SharedLib {
                         
                         err = dlerror();                    // check for error condition
                         if (err !is null) {
-                            throw new SharedLibException("Couldn't load symbol: " ~ fromStringz(err));
+                            throw new SharedLibException("Couldn't load symbol: " ~ fromStringz(err).idup);
                         } else {
                             return res;
                         }
@@ -380,7 +380,7 @@ final class SharedLib {
 
             void unload_(bool throwExceptions) {
                 if (0 != dlclose(handle) && throwExceptions) {
-                    throw new SharedLibException("Couldn't unload shared library: " ~ fromStringz(dlerror()));
+                    throw new SharedLibException("Couldn't unload shared library: " ~ fromStringz(dlerror()).idup);
                 }
             }
         }
@@ -398,7 +398,7 @@ final class SharedLib {
         }
 
 
-        this(char[] path) {
+        this(const(char)[] path) {
             this.path_ = path.dup;
         }
     }
@@ -417,7 +417,7 @@ final class SharedLib {
 
 
 class SharedLibException : Exception {
-    this (char[] msg) {
+    this (immutable(char)[] msg) {
         super(msg);
     }
 }

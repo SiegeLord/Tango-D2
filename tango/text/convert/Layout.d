@@ -117,7 +117,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] sprint (T[] result, const(T[]) formatStr, ...)
+        public final T[] sprint (T[] result, const(T)[] formatStr, ...)
         {
                 return vprint (result, formatStr, _arguments, _argptr);
         }
@@ -131,7 +131,7 @@ class Layout(T)
                 T*  p = result.ptr;
                 size_t available = result.length;
 
-                size_t sink (const(T[]) s)
+                size_t sink (const(T)[] s)
                 {
                         size_t len = s.length;
                         if (len > available)
@@ -572,7 +572,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        protected T[] integer (T[] output, long v, const(T)[] format, ulong mask = ulong.max, const(T[]) def="d")
+        protected T[] integer (T[] output, long v, const(T)[] format, ulong mask = ulong.max, const(T)[] def="d")
         {
                 if (format.length is 0)
                     format = def;
@@ -588,7 +588,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        protected T[] floater (T[] output, real v, const(T[]) format)
+        protected T[] floater (T[] output, real v, const(T)[] format)
         {
                 uint dec = 2,
                      exp = 10;
@@ -654,7 +654,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        private T[] imaginary (T[] result, ireal val, const(T[]) format)
+        private T[] imaginary (T[] result, ireal val, const(T)[] format)
         {
                 return floatingTail (result, val.im, format, "*1i");
         }
@@ -665,7 +665,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        private T[] complex (T[] result, creal val, const(T[]) format)
+        private T[] complex (T[] result, creal val, const(T)[] format)
         {
                 static bool signed (real x)
                 {
@@ -692,7 +692,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        private T[] floatingTail (T[] result, real val, const(T[]) format, const(T[]) tail)
+        private T[] floatingTail (T[] result, real val, const(T)[] format, const(T)[] tail)
         {
                 assert (result.length > tail.length);
 

@@ -61,7 +61,7 @@ T[] escape(T) (const(T)[] src, T[] dst = null)
 {
         size_t content;
 
-        void append (T[] s)
+        void append (const(T)[] s)
         {
                 if (content + s.length > dst.length)
                     dst.length = dst.length + s.length + 1024;
@@ -83,7 +83,7 @@ T[] escape(T) (const(T)[] src, T[] dst = null)
               
 ******************************************************************************/
 
-void unescape(T) (const(T)[] src, void delegate(const(T)[]) emit)
+void unescape(T) (const(T)[] src, scope void delegate(const(T)[]) emit)
 {
         size_t delta;
         auto s = src.ptr;
@@ -197,7 +197,7 @@ void unescape(T) (const(T)[] src, void delegate(const(T)[]) emit)
         
 ******************************************************************************/
 
-void escape(T) (const(T)[] src, void delegate(const(T)[]) emit)
+void escape(T) (const(T)[] src, scope void delegate(const(T)[]) emit)
 {
         T[2] patch = '\\';
         auto s = src.ptr;

@@ -53,7 +53,7 @@ public class StringComparer {
       strA = A string to compare to strB.
       strB = A string to compare to strA.
   */
-  public int compare(char[] strA, char[] strB) {
+  public int compare(const(char)[] strA, const(char)[] strB) {
     return nativeMethods.compareString(culture_.id, strA, 0, strA.length, strB, 0, strB.length, ignoreCase_);
   }
 
@@ -65,7 +65,7 @@ public class StringComparer {
       strA = A string to compare to strB.
       strB = A string to compare to strA.
   */
-  public bool equals(char[] strA, char[] strB) {
+  public bool equals(const(char)[] strA, const(char)[] strB) {
     return (compare(strA, strB) == 0);
   }
 
@@ -110,9 +110,9 @@ public class StringComparer {
 /**
   $(I Delegate.) Represents the method that will handle the string comparison.
   Remarks:
-    The delegate has the signature $(I int delegate(char[], char[])).
+    The delegate has the signature $(I int delegate(const(char)[], const(char)[])).
  */
-alias int delegate(char[], char[]) StringComparison;
+alias int delegate(const(char)[], const(char)[]) StringComparison;
 
 /**
   Sorts strings according to the rules of the specified culture.
@@ -156,7 +156,7 @@ public class StringSorter {
     Params:
       array = The array of strings to _sort.
   */
-  public void sort(ref char[][] array) {
+  public void sort(ref const(char)[][] array) {
     sort(array, 0, array.length);
   }
 
@@ -167,12 +167,12 @@ public class StringSorter {
       index = The starting index of the range.
       count = The number of elements in the range.
   */
-  public void sort(ref char[][] array, int index, int count) {
+  public void sort(ref const(char)[][] array, size_t index, size_t count) {
 
-    void qsort(int left, int right) {
+    void qsort(size_t left, size_t right) {
       do {
-        int i = left, j = right;
-        char[] pivot = array[left + ((right - left) >> 1)];
+        size_t i = left, j = right;
+        const(char)[] pivot = array[left + ((right - left) >> 1)];
 
         do {
           while (comparison_(array[i], pivot) < 0)
@@ -183,7 +183,7 @@ public class StringSorter {
           if (i > j)
             break;
           else if (i < j) {
-            char[] temp = array[i];
+            const(char)[] temp = array[i];
             array[i] = array[j];
             array[j] = temp;
           }

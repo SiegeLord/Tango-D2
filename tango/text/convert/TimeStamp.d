@@ -52,7 +52,7 @@ ulong toTime(T) (T[] src)
 
         auto x = parse (src, &len);
         if (len < src.length)
-            throw new IllegalArgumentException ("unknown time format: "~src);
+            throw new IllegalArgumentException ("unknown time format: "~src.idup);
         return x;
 }
 
@@ -122,9 +122,9 @@ T[] format(T, U=Time) (T[] output, U t)
 
 T[] format(T) (immutable(T[]) output, Time t)
 {
-        static T[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        enum const(T)[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        static T[][] Days   = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        enum const(T)[][] Days   = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
         T[] convert (T[] tmp, long i)
         {
@@ -141,7 +141,7 @@ T[] format(T) (immutable(T[]) output, Time t)
 
         // use the featherweight formatter ...
         T[14] tmp = void;
-        return Util.layout (output, cast(T[])"%0, %1 %2 %3 %4:%5:%6 GMT", 
+        return Util.layout (output, cast(const(T)[])"%0, %1 %2 %3 %4:%5:%6 GMT", 
                             Days[date.dow],
                             convert (tmp[0..2], date.day),
                             Months[date.month-1],
@@ -182,7 +182,7 @@ T[] format8601(T) (T[] output, Time t)
 
         // use the featherweight formatter ...
         T[20] tmp = void;
-        return Util.layout (output, cast(T[]) "%0-%1-%2T%3%:%4:%5Z", 
+        return Util.layout (output, cast(const(T)[]) "%0-%1-%2T%3%:%4:%5Z", 
                             convert (tmp[0..4], date.year),
                             convert (tmp[4..6], date.month),
                             convert (tmp[6..8], date.day),
@@ -231,7 +231,7 @@ Time parse(T) (T[] src, size_t* ate = null)
 
 ******************************************************************************/
 
-bool parse(T) (T[] src, ref TimeOfDay tod, ref Date date, uint* ate = null)
+bool parse(T) (T[] src, ref TimeOfDay tod, ref Date date, size_t* ate = null)
 {
         size_t len;
     
@@ -736,6 +736,7 @@ private static int parseInt(T) (ref T* p, T* e)
 
 debug (UnitTest)
 {
+<<<<<<< HEAD
 	unittest
 	{
 		wchar[30] tmp;
@@ -753,6 +754,25 @@ debug (UnitTest)
 		auto text2 = format(tmp2, time);
 		assert (text2 == "Wed, 11 Jun 2008 17:22:07 GMT");
 	}
+=======
+        unittest
+        {
+        wchar[30] tmp;
+        const(wchar)[] test = "Sun, 06 Nov 1994 08:49:37 GMT";
+
+        auto time = parse (test);
+        auto text = format (tmp, time);
+        assert (text == test);
+
+        const(char)[] garbageTest = "Wed Jun 11 17:22:07 20088";
+        garbageTest = garbageTest[0..$-1];
+        char[128] tmp2;
+
+        time = parse(garbageTest);
+        auto text2 = format(tmp2, time);
+        assert (text2 == "Wed, 11 Jun 2008 17:22:07 GMT");
+        }
+>>>>>>> d2port
 }
 
 /******************************************************************************
