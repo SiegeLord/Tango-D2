@@ -87,7 +87,7 @@ class Socket : Conduit, ISelectable
         this (AddressFamily family, SocketType type, ProtocolType protocol)
         {
                 berkeley.open (family, type, protocol);
-                version (Windows)
+                version (Windows) version(TangoRuntime)
                          if (scheduler)
                              scheduler.open (fileHandle, toString);
         }
@@ -162,14 +162,15 @@ class Socket : Conduit, ISelectable
         {
                 version (TangoRuntime)
                 {
-                	if (scheduler) {
-                		asyncConnect (addr);
-                		return this;
-            		}
-            	}
-            	native.connect (addr);
-        		
-            	return this;
+                    if (scheduler)
+                        {
+                        asyncConnect (addr);
+                        return this;
+                        }
+                }
+                native.connect (addr);
+                
+                return this;
         }
 
         /***********************************************************************
@@ -239,10 +240,10 @@ class Socket : Conduit, ISelectable
 
         override size_t read (void[] dst)
         {
-    		version (TangoRuntime)
-    			if (scheduler)
-    				return asyncRead (dst);
-    		
+            version (TangoRuntime)
+                if (scheduler)
+                    return asyncRead (dst);
+            
                 auto x = Eof;
                 if (wait (true))
                    {
@@ -260,8 +261,8 @@ class Socket : Conduit, ISelectable
         size_t write (const(void)[] src)
         {
                 version (TangoRuntime)
-                	if (scheduler)
-                		return asyncWrite (src);
+                    if (scheduler)
+                        return asyncWrite (src);
 
                 auto x = Eof;
                 if (wait (false))
@@ -288,11 +289,11 @@ class Socket : Conduit, ISelectable
                 
                 version (TangoRuntime)
                 {
-                	if (scheduler && x){
-                		asyncCopy (x.fileHandle);
-                		return this;
-            		}
-            	}
+                    if (scheduler && x){
+                        asyncCopy (x.fileHandle);
+                        return this;
+                    }
+                }
                 
                 super.copy (src, max);
                 return this;
@@ -419,7 +420,7 @@ class Socket : Conduit, ISelectable
 
                 ***************************************************************/
 
-                private size_t asyncWrite (void[] src)
+                private size_t asyncWrite (const(void)[] src)
                 {
                         DWORD bytes;
                         WSABUF buf = {src.length, src.ptr};
@@ -538,7 +539,7 @@ class Socket : Conduit, ISelectable
 
                 ***************************************************************/
 
-                private size_t asyncWrite (void[] src)
+                private size_t asyncWrite (const(void)[] src)
                 {
                         assert (false);
                 }
@@ -596,13 +597,13 @@ class ServerSocket : Socket
                     
                 version (TangoRuntime)
                 {
-                	if (scheduler)
-                		asyncAccept(recipient);
-            		else
-            			berkeley.accept(recipient.berkeley);
+                    if (scheduler)
+                        asyncAccept(recipient);
+                    else
+                        berkeley.accept(recipient.berkeley);
                 }
                 else
-                	berkeley.accept(recipient.berkeley);
+                    berkeley.accept(recipient.berkeley);
                 
                 recipient.timeout = timeout;
                 return recipient;
