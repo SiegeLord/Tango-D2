@@ -12,9 +12,9 @@
  */
 private import  tango.io.Stdout,
                 tango.io.Console,
+                tango.io.File,
                 tango.io.device.Device,
-                tango.io.device.Conduit,
-                tango.io.device.File;
+                tango.io.device.Conduit;
                 
 private import  tango.net.InternetAddress;
 

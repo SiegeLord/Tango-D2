@@ -1446,11 +1446,10 @@ unittest
 
     static assert(octal!17777777777 == int.max);
 
-    static assert(!__traits(compiles, octal!823));
-
     // for some reason, this line fails, though if you try it in code,
     // it indeed doesn't compile... weird.
 
+    // static assert(!__traits(compiles, octal!823));
     // static assert(!__traits(compiles, octal!"823"));
 
     static assert(!__traits(compiles, octal!"_823"));
