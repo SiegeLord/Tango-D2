@@ -10,6 +10,7 @@ module tango.net.Uri;
 
 private import core.stdc.string;
 private import Integer = tango.text.convert.Integer;
+private import Utf = tango.text.Unicode;
 
 
 /**
@@ -288,7 +289,7 @@ class Uri
 
         ***********************************************************************/
 
-        final short defaultPort (const(char)[] scheme)
+        final const short defaultPort (const(char)[] scheme)
         {
                 short* port = scheme in genericSchemes; 
                 if (port is null)
@@ -430,7 +431,7 @@ class Uri
                    if (host_.length)
                        ret += consume (host_);
 
-                   if (port_ != InvalidPort && port_ != getDefaultPort(scheme_))
+                   if (port_ != InvalidPort && port_ != this.getDefaultPort(scheme_))
                       {
                       char[8] tmp;
                       ret += consume (":"), ret += consume (Integer.itoa (tmp, cast(uint) port_));
@@ -632,7 +633,7 @@ class Uri
                 if (c is ':')
                    {
                    scheme_ = uri [mark .. i].dup;   
-                   toLower (scheme_);
+                   scheme_ = Utf.toLower (scheme_);
                    mark = i + 1;
                    }
 
@@ -852,20 +853,6 @@ class Uri
                          if (*p is '/')
                              return path [0 .. (p-path.ptr)+1];
                 return path;
-        }
-
-        /**********************************************************************
-
-                in-place conversion to lowercase 
-
-        **********************************************************************/
-
-        private final static char[] toLower (ref char[] src)
-        {
-                foreach (ref char c; src)
-                         if (c >= 'A' && c <= 'Z')
-                             c = cast(char)(c + ('a' - 'A'));
-                return src;
         }
 }
 
