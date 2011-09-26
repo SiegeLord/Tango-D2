@@ -38,7 +38,7 @@ version (Posix)
 
 ******************************************************************************/
 
-char[] homeFolder()
+const(char)[] homeFolder()
 {
     version (Windows)
         return Path.standard(Environment.get("USERPROFILE"));
@@ -104,7 +104,7 @@ version (Posix)
         -----
     ******************************************************************************/
 
-    char[] expandTilde (char[] inputPath)
+    const(char)[] expandTilde (const(char)[] inputPath)
     {
             // Return early if there is no tilde in path.
             if (inputPath.length < 1 || inputPath[0] != '~')
@@ -123,7 +123,7 @@ version (Posix)
 
     ******************************************************************************/
 
-    private char[] expandFromEnvironment(char[] path)
+    private const(char)[] expandFromEnvironment(const(char)[] path)
     in
     {
         assert(path.length >= 1);
@@ -132,7 +132,7 @@ version (Posix)
     body
     {
         // Get HOME and use that to replace the tilde.
-        char[] home = homeFolder;
+        const(char)[] home = homeFolder;
         if (home is null)
             return path;
 
@@ -150,7 +150,7 @@ version (Posix)
 
     ******************************************************************************/
 
-    private char[] expandFromDatabase(char[] path)
+    private const(char)[] expandFromDatabase(const(char)[] path)
     {
         assert(path.length > 2 || (path.length == 2 && path[1] != '/'));
         assert(path[0] == '~');
@@ -161,11 +161,11 @@ version (Posix)
 
         if (last_char == path.length)
         {
-            username = path[1..$] ~ '\0';
+            username = path[1..$].dup ~ '\0';
         }
         else
         {
-            username = path[1..last_char] ~ '\0';
+            username = path[1..last_char].dup ~ '\0';
         }
 
         assert(last_char > 1);
@@ -181,7 +181,7 @@ version (Posix)
         {
             extra_memory = tango.stdc.stdlib.malloc(extra_memory_size);
             if (extra_memory is null)
-                throw new OutOfMemoryException("Not enough memory for user lookup in tilde expansion.", __LINE__);
+                throw new OutOfMemoryError("Not enough memory for user lookup in tilde expansion.", __LINE__);
 
             // Obtain info from database.
             passwd *verify;
@@ -201,7 +201,7 @@ version (Posix)
             }
 
             if (tango.stdc.errno.errno() != ERANGE)
-                throw new OutOfMemoryException("Not enough memory for user lookup in tilde expansion.", __LINE__);
+                throw new OutOfMemoryError("Not enough memory for user lookup in tilde expansion.", __LINE__);
 
             // extra_memory isn't large enough
             tango.stdc.stdlib.free(extra_memory);
@@ -269,9 +269,9 @@ version (Windows)
         -----
     ******************************************************************************/
 
-    char[] expandTilde(char[] inputPath)
+    const(char)[] expandTilde(const(char)[] inputPath)
     {
-        inputPath = Path.standard(inputPath);
+        inputPath = Path.standard(inputPath.dup);
 
         if (inputPath.length < 1 || inputPath[0] != '~') {
             return inputPath;
@@ -284,7 +284,7 @@ version (Windows)
         return expandOtherUser(inputPath);
     }
 
-    private char[] expandCurrentUser(char[] path)
+    private const(char)[] expandCurrentUser(const(char)[] path)
     {
         auto userProfileDir = homeFolder;
         auto offset = TextUtil.locate(path, '/');
@@ -296,7 +296,7 @@ version (Windows)
         return Path.join(userProfileDir, path[offset+1..$]);
     }
 
-    private char[] expandOtherUser(char[] path)
+    private const(char)[] expandOtherUser(const(char)[] path)
     {
         auto profileDir = Path.parse(homeFolder).parent;
         return Path.join(profileDir, path[1..$]);
