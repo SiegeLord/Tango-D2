@@ -1359,7 +1359,7 @@ void initialize()
 // (we have less than min_free% of the total heap free).
 void early_collect()
 {
-    if (!opts.options.early_collect || collect_in_progress())
+    if ((!opts.options.early_collect || collect_in_progress()) && !gc.disabled)
         return;
     double percent_free = gc.free_mem * 100.0 / gc.total_mem;
     if (percent_free < opts.options.min_free)
