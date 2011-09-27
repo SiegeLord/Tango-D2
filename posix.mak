@@ -24,6 +24,7 @@ SRC_CORE=tango/core/Array.d \
 SRC_IO=tango/io/Console.d \
 	tango/io/Stdout.d \
 	tango/io/File.d \
+	tango/io/Path.d \
 	\
 	tango/io/device/Array.d \
 	tango/io/device/Conduit.d \
@@ -32,19 +33,23 @@ SRC_IO=tango/io/Console.d \
 	tango/io/model/IConduit.d \
 	tango/io/model/ISelectable.d \
 	\
-	tango/io/stream/Buffered.d \
-	tango/io/stream/Delimiters.d \
-	tango/io/stream/Format.d \
-	tango/io/stream/Iterator.d \
-	tango/io/stream/Lines.d \
-	\
 	tango/io/selector/model/ISelector.d \
 	tango/io/selector/AbstractSelector.d \
 	tango/io/selector/SelectorException.d \
 	tango/io/selector/SelectSelector.d \
 	tango/io/selector/PollSelector.d \
 	tango/io/selector/EpollSelector.d \
-	tango/io/selector/Selector.d
+	tango/io/selector/Selector.d \
+	\
+	tango/io/stream/Buffered.d \
+	tango/io/stream/Delimiters.d \
+	tango/io/stream/Digester.d \
+	tango/io/stream/Format.d \
+	tango/io/stream/Iterator.d \
+	tango/io/stream/Lines.d \
+	\
+	tango/io/vfs/FileFolder.d \
+	tango/io/vfs/model/Vfs.d
 	
 SRC_BINDING=tango/binding/bzlib.d \
 	tango/binding/zlib.d
@@ -208,7 +213,7 @@ endif
 
 # generate all target for the examles
 #DIR_EXAMPLES=$(wildcard ./doc/example/*)
-DIR_EXAMPLES=./doc/example/concurrency ./doc/example/console ./doc/example/networking ./doc/example/sql
+DIR_EXAMPLES=./doc/example/concurrency ./doc/example/conduits ./doc/example/console ./doc/example/networking ./doc/example/sql
 SRC_EXAMPLES:=$(foreach DIR_EXAMPLE,$(DIR_EXAMPLES),$(wildcard $(DIR_EXAMPLE)/*.d))
 PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 

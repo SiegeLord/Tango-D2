@@ -10,7 +10,7 @@
 private import  core.thread;
 
 private import  tango.io.Console,
-                tango.io.device.File;
+                tango.io.File;
 
 private import  tango.net.TcpSocket,
                 tango.net.TcpServer;

@@ -12,16 +12,12 @@
 
 module tango.io.vfs.FileFolder;
 
-private import tango.io.device.File;
-
-private import Path = tango.io.Path;
-
-private import tango.core.Exception;
-
 public import tango.io.vfs.model.Vfs;
 
+private import tango.core.Exception;
+private import tango.io.File;
 private import tango.io.model.IConduit;
-
+private import Path = tango.io.Path;
 private import tango.time.Time : Time;
 
 /*******************************************************************************
@@ -45,7 +41,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        this (char[] path, bool create=false)
+        this (const(char)[] path, bool create=false)
         {
                 this.path = open (Path.standard(path.dup), create);
         }
@@ -56,7 +52,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private this (char[] path, char[] name)
+        private this (const(char)[] path, const(char)[] name)
         {
                 this.path = Path.join (path, name);
         }
@@ -90,9 +86,9 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final char[] toString ()
+        final override immutable(char)[] toString ()
         {
-                return path;
+                return path.idup;
         }
 
         /***********************************************************************
@@ -277,9 +273,9 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private char[] error (char[] msg)
+        private char[] error (const(char)[] msg)
         {
-                throw new VfsException (msg);
+                throw new VfsException(msg.idup);
         }
 
         /***********************************************************************
@@ -508,7 +504,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final FileGroup catalog (char[] pattern)
+        final FileGroup catalog (const(char)[] pattern)
         {
                 bool foo (VfsInfo info)
                 {
@@ -639,7 +635,7 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        final char[] toString ()
+        final override immutable(char)[] toString ()
         {
                 return path.toString;
         }
