@@ -24,11 +24,13 @@ SRC_CORE=tango/core/Array.d \
 SRC_IO=tango/io/Console.d \
 	tango/io/Stdout.d \
 	tango/io/File.d \
+	tango/io/FilePath.d \
 	tango/io/Path.d \
 	\
 	tango/io/device/Array.d \
 	tango/io/device/Conduit.d \
 	tango/io/device/Device.d \
+	tango/io/device/FileMap.d \
 	\
 	tango/io/model/IConduit.d \
 	tango/io/model/ISelectable.d \
@@ -47,6 +49,7 @@ SRC_IO=tango/io/Console.d \
 	tango/io/stream/Format.d \
 	tango/io/stream/Iterator.d \
 	tango/io/stream/Lines.d \
+	tango/io/stream/Zlib.d \
 	\
 	tango/io/vfs/FileFolder.d \
 	tango/io/vfs/model/Vfs.d
@@ -81,16 +84,20 @@ SRC_MATH=tango/math/Bessel.d \
 	tango/math/random/Ziggurat.d
 	
 SRC_TEXT=tango/text/Ascii.d \
+	tango/text/Unicode.d \
 	tango/text/Util.d \
+	\
 	tango/text/json/JsonEscape.d \
 	tango/text/json/JsonParser.d \
 	tango/text/json/Json.d \
+	\
 	tango/text/convert/Float.d \
 	tango/text/convert/Integer.d \
 	tango/text/convert/Layout.d \
 	tango/text/convert/Utf.d \
 	tango/text/convert/TimeStamp.d \
 	tango/text/convert/Format.d \
+	\
 	tango/text/xml/Document.d \
 	tango/text/xml/PullParser.d
 
@@ -109,9 +116,14 @@ SRC_TIME=tango/time/chrono/Calendar.d \
 	tango/time/Time.d \
 	tango/time/WallClock.d
 
-SRC_UTIL=tango/util/container/more/Stack.d \
+SRC_UTIL=tango/util/Convert.d \
+	tango/util/MinMax.d \
+	\
+	tango/util/container/more/Stack.d \
 	tango/util/container/Container.d \
 	tango/util/container/LinkedList.d \
+	\
+	tango/util/compress/Zip.d \
 	\
 	tango/util/cipher/AES.d \
 	tango/util/cipher/Blowfish.d \
@@ -122,11 +134,6 @@ SRC_UTIL=tango/util/container/more/Stack.d \
 	tango/util/cipher/Salsa20.d \
 	tango/util/cipher/TEA.d \
 	tango/util/cipher/XTEA.d \
-	\
-	tango/util/Convert.d \
-	tango/util/MinMax.d \
-	\
-	tango/util/compress/Zip.d \
 	\
 	tango/util/digest/Digest.d \
 	tango/util/digest/Crc32.d \
