@@ -267,7 +267,7 @@ class MappedFile
                         if (access & host.Access.Write)
                             protection |= PROT_WRITE;
 
-                        base = mmap (null, size, protection, flags, host.fileHandle, 0);
+                        base = mmap (null, size, protection, flags, host.handle, 0);
                         if (base is MAP_FAILED)
                            {
                            base = null;

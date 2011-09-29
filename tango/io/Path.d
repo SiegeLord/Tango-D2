@@ -926,7 +926,7 @@ package struct FS
                 {
                         int             ret;
                         DIR*            dir;
-                        dirent          entry;
+                        dirent*         entry;
                         dirent*         pentry;
                         stat_t          sbuf;
                         const(char)[]   prefix;
@@ -948,7 +948,7 @@ package struct FS
                         while (true)
                               {
                               // pentry is null at end of listing, or on an error
-                              readdir_r (dir, &entry, &pentry);
+                              readdir_r (dir, entry, &pentry);
                               if (pentry is null)
                                   break;
 
