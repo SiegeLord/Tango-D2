@@ -85,6 +85,7 @@ SRC_MATH=tango/math/Bessel.d \
 	
 SRC_TEXT=tango/text/Ascii.d \
 	tango/text/Unicode.d \
+	tango/text/UnicodeData.d \
 	tango/text/Util.d \
 	\
 	tango/text/json/JsonEscape.d \
