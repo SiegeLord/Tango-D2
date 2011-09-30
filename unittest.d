@@ -8,56 +8,14 @@
 *******************************************************************************/
 
 /**
- * This file covers all unittest
+ * This file is linked against all others for unittesting
  */
-private import  tango.io.Stdout,
-                tango.io.Console,
-                tango.io.File,
-                tango.io.device.Device,
-                tango.io.device.Conduit;
-                
-private import  tango.net.InternetAddress;
-
-private import  tango.text.convert.Integer,
-                tango.text.convert.Layout;
-                
-private import  tango.util.Convert;
+private import  tango.io.Stdout;
 
 /**
- * inside this unittest we call all other unittests
- */
-unittest
-{
-	uint countFailed = 0;
-	uint countTotal = 1;
-
-	Stdout("This is the tango unittest module.").newline;
-	Stdout("NOTE: This is still fairly rudimentary, and will only report the").newline;
-	Stdout("    first error per module.").newline;
-
-	foreach(m; ModuleInfo) {
-		if(m.unitTest) {
-			Stdout.format ("{}. Executing unittests in '{}' ", countTotal, m.name).flush;
-			countTotal++;
-			try {
-				m.unitTest();
-			}
-			catch (Exception e) {
-				countFailed++;
-				Stdout(" - Unittest failed.").newline;
-				continue;
-			}
-			Stdout(" - Success.").newline;
-		}
-	}
-	
-	Stdout.format ("{} out of {} tests failed.", countFailed, countTotal - 1).newline;
-}
-
-/**
- *  main is empty, because all unittest will be executed before main
+ * this is just an empty main that is linked against the specific module
  */
 int main(char[][] args)
 {
-	return 0;
+    return 0;
 }
