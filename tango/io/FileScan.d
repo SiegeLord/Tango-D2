@@ -119,7 +119,7 @@ class FileScan
 
         ***********************************************************************/
 
-        FileScan sweep (char[] path, bool recurse=true)
+        FileScan sweep (const(char)[] path, bool recurse=true)
         {
                 return sweep (path, cast(Filter) null, recurse);
         }
@@ -131,7 +131,7 @@ class FileScan
 
         ***********************************************************************/
 
-        FileScan sweep (char[] path, char[] match, bool recurse=true)
+        FileScan sweep (const(char)[] path, const(char)[] match, bool recurse=true)
         {
                 return sweep (path, (FilePath fp, bool isDir)
                              {return isDir || fp.suffix == match;}, recurse);
@@ -144,7 +144,7 @@ class FileScan
 
         ***********************************************************************/
 
-        FileScan sweep (char[] path, Filter filter, bool recurse=true)
+        FileScan sweep (const(char)[] path, Filter filter, bool recurse=true)
         {
                 errorSet = null, fileSet = folderSet = null;
                 return scan (new FilePath(path), filter, recurse);
