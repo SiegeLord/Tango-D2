@@ -41,15 +41,23 @@ public import tango.net.Socket,
 
 class UdpSocket : Socket
 {
-        /***********************************************************************
-        
-                Create a read/write datagram socket
-
-        ***********************************************************************/
-
-        this ()
+        /**
+         * this is the default constructor to get a read write datagram socket
+         */
+        public this ()
         {
-                super (AddressFamily.INET, SocketType.DGRAM, ProtocolType.IP);
+                super (AddressFamily.INET, SocketType.DGRAM, ProtocolType.UDP);
+        }
+        
+        /**
+         * construct a socket by an existing socket_t
+         * 
+         * params:
+         *  sock = a native socket_t socket.
+         */
+        public this(socket_t sock)
+        {
+                super(AddressFamily.INET, SocketType.DGRAM, ProtocolType.UDP, sock);
         }
 
         /***********************************************************************
