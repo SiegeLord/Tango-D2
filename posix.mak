@@ -111,8 +111,16 @@ SRC_TEXT=tango/text/Ascii.d \
 	tango/text/convert/TimeStamp.d \
 	tango/text/convert/Format.d \
 	\
+	tango/text/locale/Convert.d \
+	tango/text/locale/Core.d \
+	tango/text/locale/Data.d \
+	tango/text/locale/Locale.d \
+	tango/text/locale/Posix.d \
+	\
 	tango/text/xml/Document.d \
-	tango/text/xml/PullParser.d
+	tango/text/xml/DocPrinter.d \
+	tango/text/xml/PullParser.d \
+	tango/text/xml/SaxParser.d
 
 SRC_TIME=tango/time/chrono/Calendar.d \
 	tango/time/chrono/GregorianBased.d \
@@ -228,7 +236,7 @@ endif
 
 # generate all target for the examles
 #DIR_EXAMPLES=$(wildcard ./doc/example/*)
-DIR_EXAMPLES=./doc/example/concurrency ./doc/example/conduits ./doc/example/console ./doc/example/networking ./doc/example/sql
+DIR_EXAMPLES=./doc/example/concurrency ./doc/example/text ./doc/example/console ./doc/example/networking ./doc/example/sql
 SRC_EXAMPLES:=$(foreach DIR_EXAMPLE,$(DIR_EXAMPLES),$(wildcard $(DIR_EXAMPLE)/*.d))
 PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 

@@ -1,7 +1,9 @@
-import tango.io.Stdout;
-import tango.io.device.File;
-import tango.time.StopWatch;
-import tango.text.xml.PullParser;
+private import  tango.io.Stdout,
+                tango.io.File;
+                
+private import  tango.time.StopWatch;
+
+private import  tango.text.xml.PullParser;
 
 void benchmark (int iterations) 
 {       

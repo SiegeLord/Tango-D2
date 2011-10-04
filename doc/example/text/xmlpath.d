@@ -25,8 +25,9 @@ void main()
                 .element   (null, "second");
 
         // emit document
-        auto print = new DocPrinter!(char);
-        Stdout(print(doc)).newline;
+        auto printer = new DocPrinter!(char);
+        auto text = printer.print(doc);
+        Stdout(text).newline;
 
         // time some queries
         StopWatch w;
@@ -65,7 +66,7 @@ void main()
 
 }
 
-void result (char[] msg, double time, XmlPath!(char).NodeSet set)
+void result (string msg, double time, XmlPath!(char).NodeSet set)
 {
         Stdout.newline.formatln("{} {}", time, msg);
         foreach (element; set)
