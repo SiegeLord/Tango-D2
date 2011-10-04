@@ -18,184 +18,219 @@ private import tango.util.container.more.Stack;
 version=dashdash;       // -- everything assigned to the null argument
 
 /*******************************************************************************
+ * Command-line argument parser. Simple usage is in a trivial case:
+ * 
+ * ---
+ * private import tango.io.Stdout;
+ * 
+ * // ./program -a -b     --> true, true
+ * // ./program -b        --> false, true
+ * // ./program --a       --> true, false
+ * // ./program -ab       --> true, false (sloppy=false) [default]
+ * // ./program -ab       --> true, true  (sloppy=true)
+ * // ./program --c=value --> fase, false, c=value
+ * 
+ * int main(char[][] args)
+ * {
+ *     // parse arguments
+ *     bool sloppy = false;
+ *     auto arguments = new Arguments(args, sloppy);
+ *     auto a = arguments("a"); // same as arguments.get("a");
+ *     auto b = arguments("b"); // same as arguments.get("b");
+ *     auto c = arguments("b"); // same as arguments.get("c");
+ *     
+ *     // debug output
+ *     Stdout(a.set).newline;
+ *     Stdout(b.set).newline;
+ *     Stdout(c.assigned).newline;
+ * 
+ *     if (a.set && b.set)
+ *        // ... do something ...
+ * 
+ *     // ok
+ *     return 0;
+ * }
+ * ---
+ * 
+ * You don't need to parse the arguments directly in it's constructor, just use
+ * ---
+ * auto arguments = new Arguments;
+ * arguments.parse(args, true);     // sloppy=true
+ * arguments.parse("-a -b");        // parsing a string
+ * ---
+ * 
+ * 
+ * Argument parameters are assigned to the last known target, such
+ * that multiple parameters accumulate:
+ * ---
+ * args.parse ("-a=1 -a=2 foo", true);
+ * assert (args('a').assigned.length is 3);
+ * ---
+ * 
+ * 
+ * That example results in argument 'a' assigned three parameters.
+ * Two parameters are explicitly assigned using '=', while a third
+ * is implicitly assigned. Implicit parameters are often useful for
+ * collecting filenames or other parameters without specifying the
+ * associated argument:
+ * ---
+ * args.parse ("thisfile.txt thatfile.doc -v", true);
+ * assert (args(null).assigned.length is 2);
+ * ---
+ * The 'null' argument is always defined and acts as an accumulator
+ * for parameters left uncaptured by other arguments. In the above
+ * instance it was assigned both parameters. 
+ * 
+ * Examples thus far have used 'sloppy' argument declaration, via
+ * the second argument of parse() being set true. This allows the
+ * parser to create argument declaration on-the-fly, which can be
+ * handy for trivial usage. However, most features require the a-
+ * priori declaration of arguments:
+ * ---
+ * args = new Arguments;
+ * args('x').required;
+ * if (! args.parse("-x"))
+ *       // x not supplied!
+ * ---
 
-        Command-line argument parser. Simple usage is:
-        ---
-        auto args = new Arguments;
-        args.parse ("-a -b", true);
-        auto a = args("a");
-        auto b = args("b");
-        if (a.set && b.set)
-            ...
-        ---
+ * Sloppy arguments are disabled in that example, and a required
+ * argument 'x' is declared. The parse() method will fail if the
+ * pre-conditions are not fully met. Additional qualifiers include
+ * specifying how many parameters are allowed for each individual
+ * argument, default parameters, whether an argument requires the 
+ * presence or exclusion of another, etc. Qualifiers are typically 
+ * chained together and the following example shows argument "foo"
+ * being made required, with one parameter, aliased to 'f', and
+ * dependent upon the presence of another argument "bar":
+ * ---
+ * args("foo").required.params(1).aliased('f').requires("bar");
+ * args("help").aliased('?').aliased('h');
+ * ---
 
-        Argument parameters are assigned to the last known target, such
-        that multiple parameters accumulate:
-        ---
-        args.parse ("-a=1 -a=2 foo", true);
-        assert (args('a').assigned.length is 3);
-        ---
+ * Parameters can be constrained to a set of matching text values,
+ * and the parser will fail on mismatched input:
+ * ---
+ * args("greeting").restrict("hello", "yo", "gday");
+ * args("enabled").restrict("true", "false", "t", "f", "y", "n");  
+ * ---
 
-        That example results in argument 'a' assigned three parameters.
-        Two parameters are explicitly assigned using '=', while a third
-        is implicitly assigned. Implicit parameters are often useful for
-        collecting filenames or other parameters without specifying the
-        associated argument:
-        ---
-        args.parse ("thisfile.txt thatfile.doc -v", true);
-        assert (args(null).assigned.length is 2);
-        ---
-        The 'null' argument is always defined and acts as an accumulator
-        for parameters left uncaptured by other arguments. In the above
-        instance it was assigned both parameters. 
-        
-        Examples thus far have used 'sloppy' argument declaration, via
-        the second argument of parse() being set true. This allows the
-        parser to create argument declaration on-the-fly, which can be
-        handy for trivial usage. However, most features require the a-
-        priori declaration of arguments:
-        ---
-        args = new Arguments;
-        args('x').required;
-        if (! args.parse("-x"))
-              // x not supplied!
-        ---
+ * A set of declared arguments may be configured in this manner
+ * and the parser will return true only where all conditions are
+ * met. Where a error condition occurs you may traverse the set
+ * of arguments to find out which argument has what error. This
+ * can be handled like so, where arg.error holds a defined code:
+ * ---
+ * if (! args.parse (...))
+ *       foreach (arg; args)
+ *           if (arg.error)
+ *             ...
+ * ---
+ * 
+ * 
+ * Error codes are as follows:
+ * ---
+ * None:            ok (zero)
+ * ParamLo:         too few params for an argument
+ * ParamHi:         too many params for an argument
+ * Required:        missing argument is required 
+ * Requires:        depends on a missing argument
+ * Conflict:        conflicting argument is present
+ * Extra:           unexpected argument (see sloppy)
+ * Option:          parameter does not match options
+ * ---
+ * 
+ * 
+ * A simpler way to handle errors is to invoke an internal format
+ * routine, which constructs error messages on your behalf:
+ * ---
+ * if (! args.parse (...))
+ *       stderr (args.errors(&stderr.layout.sprint));
+ * ---
+ *
+ * Note that messages are constructed via a layout handler and
+ * the messages themselves may be customized (for i18n purposes).
+ * See the two errors() methods for more information on this.
+ *
+ * The parser make a distinction between a short and long prefix, 
+ * in that a long prefix argument is always distinct while short
+ * prefix arguments may be combined as a shortcut:
+ * ---
+ * args.parse ("--foo --bar -abc", true);
+ * assert (args("foo").set);
+ * assert (args("bar").set);
+ * assert (args("a").set);
+ * assert (args("b").set);
+ * assert (args("c").set);
+ * ---
+ *
+ * In addition, short-prefix arguments may be "smushed" with an
+ * associated parameter when configured to do so:
+ * ---
+ * args('o').params(1).smush;
+ * if (args.parse ("-ofile"))
+ *     assert (args('o').assigned[0] == "file");
+ * ---
+ *
+ * There are two callback varieties supports, where one is invoked
+ * when an associated argument is parsed and the other is invoked
+ * as parameters are assigned. See the bind() methods for delegate
+ * signature details.
+ *
+ * You may change the argument prefix to be something other than 
+ * "-" and "--" via the constructor. You might, for example, need 
+ * to specify a "/" indicator instead, and use ':' for explicitly
+ * assigning parameters:
+ * 
+ * ---
+ * auto args = new Args ("/", "-", ':');
+ * args.parse ("-foo:param -bar /abc");
+ * assert (args("foo").set);
+ * assert (args("bar").set);
+ * assert (args("a").set);
+ * assert (args("b").set);
+ * assert (args("c").set);
+ * assert (args("foo").assigned.length is 1);
+ * ---
 
-        Sloppy arguments are disabled in that example, and a required
-        argument 'x' is declared. The parse() method will fail if the
-        pre-conditions are not fully met. Additional qualifiers include
-        specifying how many parameters are allowed for each individual
-        argument, default parameters, whether an argument requires the 
-        presence or exclusion of another, etc. Qualifiers are typically 
-        chained together and the following example shows argument "foo"
-        being made required, with one parameter, aliased to 'f', and
-        dependent upon the presence of another argument "bar":
-        ---
-        args("foo").required.params(1).aliased('f').requires("bar");
-        args("help").aliased('?').aliased('h');
-        ---
+ * Returning to an earlier example we can declare some specifics:
+ * ---
+ * args('v').params(0);
+ * assert (args.parse (`-v thisfile.txt thatfile.doc`));
+ * assert (args(null).assigned.length is 2);
+ * ---
 
-        Parameters can be constrained to a set of matching text values,
-        and the parser will fail on mismatched input:
-        ---
-        args("greeting").restrict("hello", "yo", "gday");
-        args("enabled").restrict("true", "false", "t", "f", "y", "n");  
-        ---
+ * Note that the -v flag is now in front of the implicit parameters
+ * but ignores them because it is declared to consume none. That is,
+ * implicit parameters are assigned to arguments from right to left,
+ * according to how many parameters said arguments may consume. Each
+ * sloppy argument consumes parameters by default, so those implicit
+ * parameters would have been assigned to -v without the declaration 
+ * shown. On the other hand, an explicit assignment (via '=') always 
+ * associates the parameter with that argument even when an overflow
+ * would occur (though will cause an error to be raised).
 
-        A set of declared arguments may be configured in this manner
-        and the parser will return true only where all conditions are
-        met. Where a error condition occurs you may traverse the set
-        of arguments to find out which argument has what error. This
-        can be handled like so, where arg.error holds a defined code:
-        ---
-        if (! args.parse (...))
-              foreach (arg; args)
-                       if (arg.error)
-                           ...
-        ---
-       
-        Error codes are as follows:
-        ---
-        None:           ok (zero)
-        ParamLo:        too few params for an argument
-        ParamHi:        too many params for an argument
-        Required:       missing argument is required 
-        Requires:       depends on a missing argument
-        Conflict:       conflicting argument is present
-        Extra:          unexpected argument (see sloppy)
-        Option:         parameter does not match options
-        ---
-        
-        A simpler way to handle errors is to invoke an internal format
-        routine, which constructs error messages on your behalf:
-        ---
-        if (! args.parse (...))
-              stderr (args.errors(&stderr.layout.sprint));
-        ---
+ * Certain parameters are used for capturing comments or other plain
+ * text from the user, including whitespace and other special chars.
+ * Such parameter values should be quoted on the commandline, and be
+ * assigned explicitly rather than implicitly:
+ * ---
+ * args.parse (`--comment="-- a comment --"`);
+ * ---
 
-        Note that messages are constructed via a layout handler and
-        the messages themselves may be customized (for i18n purposes).
-        See the two errors() methods for more information on this.
+ * Without the explicit assignment, the text content might otherwise 
+ * be considered the start of another argument (due to how argv/argc
+ * values are stripped of original quotes).
 
-        The parser make a distinction between a short and long prefix, 
-        in that a long prefix argument is always distinct while short
-        prefix arguments may be combined as a shortcut:
-        ---
-        args.parse ("--foo --bar -abc", true);
-        assert (args("foo").set);
-        assert (args("bar").set);
-        assert (args("a").set);
-        assert (args("b").set);
-        assert (args("c").set);
-        ---
-
-        In addition, short-prefix arguments may be "smushed" with an
-        associated parameter when configured to do so:
-        ---
-        args('o').params(1).smush;
-        if (args.parse ("-ofile"))
-            assert (args('o').assigned[0] == "file");
-        ---
-
-        There are two callback varieties supports, where one is invoked
-        when an associated argument is parsed and the other is invoked
-        as parameters are assigned. See the bind() methods for delegate
-        signature details.
-
-        You may change the argument prefix to be something other than 
-        "-" and "--" via the constructor. You might, for example, need 
-        to specify a "/" indicator instead, and use ':' for explicitly
-        assigning parameters:
-        ---
-        auto args = new Args ("/", "-", ':');
-        args.parse ("-foo:param -bar /abc");
-        assert (args("foo").set);
-        assert (args("bar").set);
-        assert (args("a").set);
-        assert (args("b").set);
-        assert (args("c").set);
-        assert (args("foo").assigned.length is 1);
-        ---
-
-        Returning to an earlier example we can declare some specifics:
-        ---
-        args('v').params(0);
-        assert (args.parse (`-v thisfile.txt thatfile.doc`));
-        assert (args(null).assigned.length is 2);
-        ---
-
-        Note that the -v flag is now in front of the implicit parameters
-        but ignores them because it is declared to consume none. That is,
-        implicit parameters are assigned to arguments from right to left,
-        according to how many parameters said arguments may consume. Each
-        sloppy argument consumes parameters by default, so those implicit
-        parameters would have been assigned to -v without the declaration 
-        shown. On the other hand, an explicit assignment (via '=') always 
-        associates the parameter with that argument even when an overflow
-        would occur (though will cause an error to be raised).
-
-        Certain parameters are used for capturing comments or other plain
-        text from the user, including whitespace and other special chars.
-        Such parameter values should be quoted on the commandline, and be
-        assigned explicitly rather than implicitly:
-        ---
-        args.parse (`--comment="-- a comment --"`);
-        ---
-
-        Without the explicit assignment, the text content might otherwise 
-        be considered the start of another argument (due to how argv/argc
-        values are stripped of original quotes).
-
-        Lastly, all subsequent text is treated as paramter-values after a
-        "--" token is encountered. This notion is applied by unix systems 
-        to terminate argument processing in a similar manner. Such values
-        are considered to be implicit, and are assigned to preceding args
-        in the usual right to left fashion (or to the null argument):
-        ---
-        args.parse (`-- -thisfile --thatfile`);
-        assert (args(null).assigned.length is 2);
-        ---
-        
+ * Lastly, all subsequent text is treated as paramter-values after a
+ * "--" token is encountered. This notion is applied by unix systems 
+ * to terminate argument processing in a similar manner. Such values
+ * are considered to be implicit, and are assigned to preceding args
+ * in the usual right to left fashion (or to the null argument):
+ * ---
+ * args.parse (`-- -thisfile --thatfile`);
+ * assert (args(null).assigned.length is 2);
+ * ---
+ * 
 *******************************************************************************/
 
 class Arguments
@@ -211,16 +246,16 @@ class Arguments
                                         lp;             // long prefix
         private const(char)[][]         msgs = errmsg;  // error messages
         private const const(char)[][]   errmsg =        // default errors
-                [
-                "argument '{0}' expects {2} parameter(s) but has {1}\n", 
-                "argument '{0}' expects {3} parameter(s) but has {1}\n", 
-                "argument '{0}' is missing\n", 
-                "argument '{0}' requires '{4}'\n", 
-                "argument '{0}' conflicts with '{4}'\n", 
-                "unexpected argument '{0}'\n", 
-                "argument '{0}' expects one of {5}\n", 
-                "invalid parameter for argument '{0}': {4}\n", 
-                ];
+        [
+            "argument '{0}' expects {2} parameter(s) but has {1}\n", 
+            "argument '{0}' expects {3} parameter(s) but has {1}\n", 
+            "argument '{0}' is missing\n", 
+            "argument '{0}' requires '{4}'\n", 
+            "argument '{0}' conflicts with '{4}'\n", 
+            "unexpected argument '{0}'\n", 
+            "argument '{0}' expects one of {5}\n", 
+            "invalid parameter for argument '{0}': {4}\n", 
+        ];
 
         /***********************************************************************
               
@@ -230,12 +265,28 @@ class Arguments
 
         ***********************************************************************/
         
-        this (const(char)[] sp="-", const(char)[] lp="--", char eq='=')
+        public this (const(char)[] sp="-", const(char)[] lp="--", char eq='=')
         {
                 this.sp = sp;
                 this.lp = lp;
                 this.eq = eq;
                 get(null).params;       // set null argument to consume params
+        }
+        
+        /***********************************************************************
+              
+              Construct and directly parses the arguments.
+              ---
+              int main(char[][] args)
+              {
+                  Arguments arguments = new Arguments(args);
+              }
+              ---
+        ***********************************************************************/
+        public this(const(char)[][] input, bool sloppy=false, const(char)[] sp="-", const(char)[] lp="--", char eq='=')
+        {
+            this(sp, lp, eq);
+            this.parse(input, sloppy);
         }
 
         /***********************************************************************
@@ -283,20 +334,23 @@ class Arguments
 
                 debug(Arguments) stdout.formatln ("\ncmdline: '{}'", input);
                 stack.push (get(null));
+                
                 foreach (s; input)
-                        {
+                {
                         debug(Arguments) stdout.formatln ("'{}'", s);
                         if (done is false)
+                        {
                             if (s == "--")
                                {done=true; version(dashdash){stack.clear.push(get(null));} continue;}
-                            else
-                               if (argument (s, lp, sloppy, false) ||
-                                   argument (s, sp, sloppy, true))
-                                   continue;
+                            else if (argument (s, lp, sloppy, false) || argument (s, sp, sloppy, true))
+                                continue;
+                        }
                         stack.top.append (s);
-                        }  
+                }
+                
                 foreach (arg; args)
-                         error |= arg.valid;
+                    error |= arg.valid;
+                
                 return error is 0;
         }
 
@@ -470,20 +524,23 @@ class Arguments
         private Argument enable (const(char)[] elem, bool sloppy, bool flag=false)
         {
                 if (flag && elem.length > 1)
-                   {
-                   // locate arg for first char
-                   auto arg = enable (elem[0..1], sloppy);
-                   elem = elem[1..$];
+                {
+                    // locate arg for first char
+                    auto arg = enable (elem[0..1], sloppy);
+                    elem = elem[1..$];
 
-                   // drop further processing of this flag where in error
-                   if (arg.error is arg.None)
-                       // smush remaining text or treat as additional args
-                       if (arg.cat)
-                           arg.append (elem, true);
-                       else
-                          arg = enable (elem, sloppy, true);
-                   return arg;
-                   }
+                    // drop further processing of this flag where in error
+                    if (arg.error is arg.None)
+                    {
+                        // smush remaining text or treat as additional args
+                        if (arg.cat)
+                            arg.append (elem, true);
+                        else
+                            arg = enable (elem, sloppy, true);
+                    }
+
+                    return arg;
+                }
 
                 // if not in args, or in aliases, then create new arg
                 auto a = elem in args;
@@ -889,11 +946,11 @@ class Arguments
                 private int valid ()
                 {
                         if (error is None)
+                        {
                             if (req && !set)      
                                 error = Required;
-                            else
-                               if (set)
-                                  {
+                            else if (set)
+                            {
                                   // short circuit?
                                   if (fail)
                                       return -1;
@@ -913,8 +970,9 @@ class Arguments
                                                  if (arg.set)
                                                      error = Conflict, bogus=arg.name;
                                         }
-                                  }
-
+                            }
+                        }
+                        
                         debug(Arguments) stdout.formatln ("{}: error={}, set={}, min={}, max={}, "
                                                "req={}, values={}, defaults={}, requires={}", 
                                                name, error, set, min, max, req, values, 
