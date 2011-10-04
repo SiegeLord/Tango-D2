@@ -236,7 +236,7 @@ endif
 
 # generate all target for the examles
 #DIR_EXAMPLES=$(wildcard ./doc/example/*)
-DIR_EXAMPLES=./doc/example/concurrency ./doc/example/text ./doc/example/console ./doc/example/networking ./doc/example/sql
+DIR_EXAMPLES=./doc/example/concurrency ./doc/example/conduits ./doc/example/text ./doc/example/console ./doc/example/networking ./doc/example/sql
 SRC_EXAMPLES:=$(foreach DIR_EXAMPLE,$(DIR_EXAMPLES),$(wildcard $(DIR_EXAMPLE)/*.d))
 PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 
@@ -274,7 +274,6 @@ unittest: $(UNITTESTS)
 install: all
 		$(CP) $(ROOT)/libtango2.a /usr/lib$(MODEL)
 		@echo "install was done."
-
 endif
 
 examples: $(PROG_EXAMPLES)
