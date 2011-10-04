@@ -13,7 +13,7 @@ private import  tango.io.Stdout,
 
 void main(char[][] args)
 {       
-        char[] root = args.length < 2 ? "." : args[1];
+        const(char)[] root = args.length < 2 ? "." : args[1];
         Stdout.formatln ("Scanning '{}'", root);
 
         auto scan = (new FileScan)(root, ".d");
