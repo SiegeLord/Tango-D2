@@ -1034,7 +1034,7 @@ final class RandomG(SourceT=DefaultEngine)
                     T x=n.getRandom();
                     T v=c*x+cast(T)1;
                     v=v*v*v; // might underflow (in extreme situations) so it is in the loop
-                } while (v<=0)
+                } while (v<=0);
                 T u=r.uniform!(T)();
                 if (u<1-(cast(T)0.331)*(x*x)*(x*x)) return t*d*v;
                 if (log(u)< x*x/2+d*(1-v+log(v))) return t*d*v;
@@ -1189,7 +1189,7 @@ final class RandomG(SourceT=DefaultEngine)
                 x=n.getRandom();
                 v=c*x+cast(T)1;
                 v=v*v*v; // might underflow (in extreme situations) so it is in the loop
-            } while (v<=0)
+            } while (v<=0);
             T u=uniform!(T)();
             if (u<1-(cast(T)0.331)*(x*x)*(x*x)) return sigma*d*v;
             if (log(u)< x*x/2+d*(1-v+log(v))) return sigma*d*v;

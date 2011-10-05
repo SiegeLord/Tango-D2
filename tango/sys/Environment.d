@@ -137,7 +137,7 @@ struct Environment
                         } else {
                             stat_t stats;
                             stat(bin.cString.ptr, &stats);
-                            if (stats.st_mode & 0100)
+                            if (stats.st_mode & 0x40)
                                 return bin;
                         }
                     }

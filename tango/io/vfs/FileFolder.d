@@ -358,7 +358,7 @@ class FileGroup : VfsFiles
 
         ***********************************************************************/
 
-        final uint files ()
+        final size_t files ()
         {
                 return group.length;
         }
@@ -369,7 +369,7 @@ class FileGroup : VfsFiles
 
         ***********************************************************************/
 
-        final ulong bytes ()
+        final size_t bytes ()
         {
                 return stats.bytes;
         }
@@ -463,7 +463,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final uint folders ()
+        final size_t folders ()
         {
                 if (members.length is 1)
                     return members[0].stats.folders;
@@ -476,7 +476,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final uint entries ()
+        final size_t entries ()
         {
                 return files + folders;
         }
