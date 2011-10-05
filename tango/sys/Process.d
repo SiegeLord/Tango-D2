@@ -12,23 +12,24 @@ private import tango.sys.Common;
 private import tango.sys.Pipe;
 private import tango.core.Exception;
 private import tango.text.Util;
-private import Integer = tango.text.convert.Integer;
 
-private import tango.stdc.stdlib;
-private import tango.stdc.string;
-private import tango.stdc.stringz;
+private import Integer = tango.text.convert.Integer;
+private import Utf = tango.text.convert.Utf;
+
+private import core.stdc.stdlib;
+private import core.stdc.string;
 
 version (Posix)
 {
-    private import tango.stdc.errno;
-    private import tango.stdc.posix.fcntl;
-    private import tango.stdc.posix.unistd;
-    private import tango.stdc.posix.sys.wait;
+    private import core.stdc.errno;
+    private import core.sys.posix.fcntl;
+    private import core.sys.posix.unistd;
+    private import core.sys.posix.sys.wait;
 
     version (darwin)
     {
-        extern (C) char*** _NSGetEnviron();
-        private char** environ;
+        extern (C) const(char)*** _NSGetEnviron();
+        private const(char)** environ;
 
         static this ()
         {
@@ -37,7 +38,7 @@ version (Posix)
     }
 
     else
-        private extern (C) extern char** environ;
+        private extern (C) __gshared const(char)** environ;
 }
 
 version (Windows)
@@ -175,9 +176,9 @@ class Process
         /**
          * Returns a string with a description of the process execution result.
          */
-        public char[] toString()
+        public const(char)[] toString()
         {
-            char[] str;
+            const(char)[] str;
 
             switch (reason)
             {
@@ -215,7 +216,7 @@ class Process
     static const uint DefaultStderrBufferSize   = 512;
     static const Redirect DefaultRedirectFlags  = Redirect.All;
 
-    private char[][]        _args;
+    private const(char)[][] _args;
     private char[][char[]]  _env;
     private char[]          _workDir;
     private PipeConduit     _stdin;
@@ -253,7 +254,7 @@ class Process
      * auto p = new Process("myprogram \"first argument\" second third");
      * ---
      */
-    public this(char[][] args ...)
+    public this(const(char)[][] args ...)
     {
         if(args.length == 1)
             _args = splitArgs(args[0]);
@@ -279,7 +280,7 @@ class Process
      * auto p = new Process(true, "myprogram \"first argument\" second third");
      * ---
      */
-    public this(bool copyEnv, char[][] args ...)
+    public this(bool copyEnv, const(char)[][] args ...)
     {
         _copyEnv = copyEnv;
         this(args);
@@ -306,7 +307,7 @@ class Process
      * auto p = new Process(command, env)
      * ---
      */
-    public this(char[] command, char[][char[]] env)
+    public this(const(char)[] command, char[][char[]] env)
     in
     {
         assert(command.length > 0);
@@ -387,7 +388,7 @@ class Process
     /**
      * Return the process' executable filename.
      */
-    public char[] programName()
+    public const(char)[] programName()
     {
         return (_args !is null ? _args[0] : null);
     }
@@ -395,7 +396,7 @@ class Process
     /**
      * Set the process' executable filename.
      */
-    public char[] programName(char[] name)
+    public const(char)[] programName(char[] name)
     {
         if (_args.length == 0)
         {
@@ -416,7 +417,7 @@ class Process
     /**
      * Return an array with the process' arguments.
      */
-    public char[][] args()
+    public const(char)[][] args()
     {
         return _args;
     }
@@ -435,7 +436,7 @@ class Process
      * p.args("myprogram", "first", "second argument", "third");
      * ---
      */
-    public char[][] args(char[] progname, char[][] args ...)
+    public const(char)[][] args(char[] progname, char[][] args ...)
     {
         return _args = progname ~ args;
     }
@@ -563,7 +564,7 @@ class Process
     /**
      * Return an UTF-8 string with the process' command line.
      */
-    public char[] toString()
+    public override immutable(char)[] toString()
     {
         char[] command;
 
@@ -584,7 +585,7 @@ class Process
                 command ~= _args[i].substitute("\\", "\\\\").substitute(`"`, `\"`);
             }
         }
-        return command;
+        return command.idup;
     }
 
     /**
@@ -1257,7 +1258,7 @@ class Process
                 {
                     // Child process
                     int rc;
-                    char*[] argptr;
+                    const(char)*[] argptr;
                     char*[] envptr;
 
                     // Note that for all the pipes, we can close both ends
@@ -1267,7 +1268,7 @@ class Process
                     // Replace stdin with the "read" pipe
                     if(pin !is null)
                     {
-                        if (dup2(pin.source.fileHandle(), STDIN_FILENO) < 0)
+                        if (dup2(pin.source.handle(), STDIN_FILENO) < 0)
                             throw new Exception("dup2 < 0");
                         pin.sink().close();
                         pin.source.close();
@@ -1276,7 +1277,7 @@ class Process
                     // Replace stdout with the "write" pipe
                     if(pout !is null)
                     {
-                        if (dup2(pout.sink.fileHandle(), STDOUT_FILENO) < 0)
+                        if (dup2(pout.sink.handle(), STDOUT_FILENO) < 0)
                             throw new Exception("dup2 < 0");
                         pout.source.close();
                         pout.sink.close();
@@ -1285,7 +1286,7 @@ class Process
                     // Replace stderr with the "write" pipe
                     if(perr !is null)
                     {
-                        if (dup2(perr.sink.fileHandle(), STDERR_FILENO) < 0)
+                        if (dup2(perr.sink.handle(), STDERR_FILENO) < 0)
                             throw new Exception("dup2 < 0");
                         perr.source.close();
                         perr.sink.close();
@@ -1310,7 +1311,7 @@ class Process
 
                     // Set the "write" pipe so that it closes upon a successful
                     // call to execv*()
-                    if (fcntl(cast(int) pexec.sink.fileHandle(), F_SETFD, FD_CLOEXEC) == 0)
+                    if (fcntl(cast(int) pexec.sink.handle(), F_SETFD, FD_CLOEXEC) == 0)
                     {
                         // Convert the arguments and the environment variables to
                         // the format expected by the execv() family of functions.
@@ -1320,7 +1321,7 @@ class Process
                         // Switch to the working directory if it has been set.
                         if (_workDir.length > 0)
                         {
-                            chdir(toStringz(_workDir));
+                            chdir(Utf.toStringz(_workDir));
                         }
 
                         // Replace the child fork with a new process. We always use the
@@ -1690,7 +1691,7 @@ class Process
      * character can be used to specify arguments with embedded spaces.
      * e.g. first "second param" third
      */
-    protected static char[][] splitArgs(ref char[] command, char[] delims = " \t\r\n")
+    protected static char[][] splitArgs(ref const(char)[] command, const(char)[] delims = " \t\r\n")
     in
     {
         assert(!contains(delims, '"'),
@@ -1732,7 +1733,7 @@ class Process
 
                 if (start != -1)
                 {
-                    args[argPos] ~= command[start .. i];
+                    args[argPos] ~= command[start .. i].dup;
                 }
                 chunks.length = 0;
             }
@@ -1740,7 +1741,7 @@ class Process
             {
                 if (start != -1)
                 {
-                    args ~= command[start .. i];
+                    args ~= command[start .. i].dup;
                 }
             }
             start = -1;
@@ -1780,7 +1781,7 @@ class Process
                         // what Unix shells do (i.e. a"b"c becomes abc).
                         if (start != -1)
                         {
-                            chunks ~= command[start .. i];
+                            chunks ~= command[start .. i].dup;
                             start = -1;
                         }
                         state = State.InsideQuotes;
@@ -1801,7 +1802,7 @@ class Process
 
                     if (c == '"')
                     {
-                        chunks ~= command[start .. i];
+                        chunks ~= command[start .. i].dup;
                         start = -1;
                         state = State.Start;
                     }
@@ -1868,11 +1869,11 @@ class Process
          * has a null pointer at the end. This is the format expected by
          * the execv*() family of POSIX functions.
          */
-        protected static char*[] toNullEndedArray(char[][] src)
+        protected static const(char)*[] toNullEndedArray(const(char)[][] src)
         {
             if (src !is null)
             {
-                char*[] dest = new char*[src.length + 1];
+                const(char)*[] dest = new char*[src.length + 1];
                 auto i = src.length;
 
                 // Add terminating null pointer to the array
@@ -1882,7 +1883,7 @@ class Process
                 {
                     --i;
                     // Add a terminating null character to each string
-                    dest[i] = toStringz(src[i]);
+                    dest[i] = Utf.toStringz(src[i]);
                 }
                 return dest;
             }
@@ -1917,7 +1918,7 @@ class Process
          * method is a combination of the execve() and execvp() POSIX system
          * calls.
          */
-        protected static int execvpe(char[] filename, char*[] argv, char*[] envp)
+        protected static int execvpe(const(char)[] filename, const(char)*[] argv, const(char)*[] envp)
         in
         {
             assert(filename.length > 0);
@@ -1930,7 +1931,7 @@ class Process
             if (!contains(filename, FileConst.PathSeparatorChar) &&
                 (str = getenv("PATH")) !is null)
             {
-                char[][] pathList = delimit(str[0 .. strlen(str)], ":");
+                const(char)[][] pathList = delimit(str[0 .. strlen(str)], ":");
 
                 char[] path_buf;
 
@@ -1978,14 +1979,14 @@ class Process
  */
 class ProcessCreateException: ProcessException
 {
-    public this(char[] command, char[] file, uint line)
+    public this(const(char)[] command, immutable(char)[] file, uint line)
     {
         this(command, SysError.lastMsg, file, line);
     }
 
-    public this(char[] command, char[] message, char[] file, uint line)
+    public this(const(char)[] command, const(char)[] message, immutable(char)[] file, uint line)
     {
-        super("Could not create process for " ~ command ~ " : " ~ message);
+        super(("Could not create process for " ~ command ~ " : " ~ message).idup, file, line);
     }
 }
 
@@ -1996,9 +1997,9 @@ class ProcessCreateException: ProcessException
  */
 class ProcessForkException: ProcessException
 {
-    public this(int pid, char[] file, uint line)
+    public this(int pid, immutable(char)[] file = __FILE__, size_t line = __LINE__)
     {
-        super(format("Could not fork process ", pid) ~ " : " ~ SysError.lastMsg);
+        super((format("Could not fork process ", pid) ~ " : " ~ SysError.lastMsg).idup, file, line);
     }
 }
 
@@ -2007,9 +2008,9 @@ class ProcessForkException: ProcessException
  */
 class ProcessKillException: ProcessException
 {
-    public this(int pid, char[] file, uint line)
+    public this(int pid, immutable(char)[] file = __FILE__, size_t line = __LINE__)
     {
-        super(format("Could not kill process ", pid) ~ " : " ~ SysError.lastMsg);
+        super((format("Could not kill process ", pid) ~ " : " ~ SysError.lastMsg).idup, file, line);
     }
 }
 
@@ -2019,9 +2020,9 @@ class ProcessKillException: ProcessException
  */
 class ProcessWaitException: ProcessException
 {
-    public this(int pid, char[] file, uint line)
+    public this(int pid, immutable(char)[] file = __FILE__, size_t line = __LINE__)
     {
-        super(format("Could not wait on process ", pid) ~ " : " ~ SysError.lastMsg);
+        super((format("Could not wait on process ", pid) ~ " : " ~ SysError.lastMsg).idup, file, line);
     }
 }
 
@@ -2031,7 +2032,7 @@ class ProcessWaitException: ProcessException
 /**
  *  append an int argument to a message
 */
-private char[] format (char[] msg, int value)
+private const(char)[] format (const(char)[] msg, int value)
 {
     char[10] tmp;
 

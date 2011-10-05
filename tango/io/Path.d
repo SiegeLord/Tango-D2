@@ -56,7 +56,7 @@ module tango.io.Path;
 
 private import  tango.sys.Common;
 public  import  tango.time.Time : Time, TimeSpan;
-private import  tango.io.model.IFile : FileConst, FileInfo;
+private import  tango.io.model.IFile;
 public  import  tango.core.Exception : IOException, IllegalArgumentException;
 
 private import  tango.util.Convert;

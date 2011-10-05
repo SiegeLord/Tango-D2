@@ -114,9 +114,9 @@ class OutOfMemoryException : Exception
  */
 class PlatformException : Exception
 {
-    this( immutable(char)[] msg )
+    this( immutable(char)[] msg, immutable(char)[] file = __FILE__, size_t line = __LINE__)
     {
-        super( msg );
+        super( msg, file, line );
     }
 }
 
@@ -268,9 +268,9 @@ class HostException : IOException
  */
 class ProcessException : PlatformException
 {
-    this( immutable(char)[] msg )
+    this( immutable(char)[] msg, immutable(char)[] file = __FILE__, size_t line = __LINE__)
     {
-        super( msg );
+        super( msg, file, line );
     }
 }
 
