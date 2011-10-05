@@ -40,7 +40,7 @@ private import  tango.core.Exception;
 
 ******************************************************************************/
 
-shared class FileBucket
+class FileBucket
 {
         /**********************************************************************
 
@@ -95,11 +95,11 @@ shared class FileBucket
 
         this (const(char)[] path, BlockSize block, uint initialRecords = 100)
         {
-                this.path = cast(shared(const(char)[]))path.dup;
+                this.path = path.dup;
                 this.block = block;
 
                 // open a storage file
-                this.file = new shared(File)(path, File.ReadWriteCreate);
+                this.file = new File(path, File.ReadWriteCreate);
 
                 // set initial file size (can be zero)
                 fileSize = initialRecords * block.capacity;
@@ -124,7 +124,7 @@ shared class FileBucket
 
         **********************************************************************/
 
-        char[] getFilePath ()
+        const(char)[] getFilePath ()
         {
                 return path;
         }
@@ -135,7 +135,7 @@ shared class FileBucket
 
         **********************************************************************/
 
-        synchronized long length () shared
+        long length ()
         {
                 return waterLine;
         }
@@ -147,9 +147,9 @@ shared class FileBucket
 
         **********************************************************************/
 
-        synchronized void[] get (char[] key) shared
+        void[] get (char[] key)
         {
-                shared(Record) *record = key in map;
+                Record *record = key in map;
                 if(record)
                 {
                     return record.read(this);
@@ -163,7 +163,7 @@ shared class FileBucket
 
         **********************************************************************/
 
-        synchronized void remove (char[] key) shared
+        void remove (immutable(char)[] key)
         {
                 map.remove(key);
         }
@@ -182,12 +182,12 @@ shared class FileBucket
 
         **********************************************************************/
 
-        synchronized void put (const(char)[] key, const(void)[] data) shared
+        void put (const(char)[] key, const(void)[] data)
         {
-                shared(Record) *record = key in map;
+                Record *record = key in map;
                 if(record is null)
                 {
-                    auto rr = new shared(Record);
+                    auto rr = new Record;
                     map[key.idup] =  rr;
                     record = &rr;
                 }
@@ -200,7 +200,7 @@ shared class FileBucket
 
         **********************************************************************/
 
-        synchronized void close () shared
+        void close ()
         {
                 if (file)
                 {
@@ -242,7 +242,7 @@ shared class FileBucket
 
                 **************************************************************/
 
-                synchronized void[] read (shared(FileBucket) bucket) shared
+                void[] read (FileBucket bucket)
                 {
                         void[] data = new ubyte [length];
 
@@ -260,7 +260,7 @@ shared class FileBucket
 
                 **************************************************************/
 
-                void write (shared(FileBucket) bucket, const(void)[] data, BlockSize block)
+                void write (FileBucket bucket, const(void)[] data, BlockSize block)
                 {
                         length = data.length;
 
@@ -297,4 +297,10 @@ shared class FileBucket
                         }
                 }
         }
+}
+
+
+int main()
+{
+    return 0;
 }

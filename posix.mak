@@ -27,7 +27,11 @@ SRC_CORE=tango/core/Array.d \
 	tango/core/Exception.d \
 	tango/core/Traits.d \
 	tango/core/Thread.d \
+	\
+	tango/sys/Environment.d \
 	tango/sys/Common.d \
+	tango/sys/Pipe.d \
+	tango/sys/Process.d \
 	tango/sys/consts/socket.d \
 	tango/sys/linux/consts/socket.d \
 	tango/sys/linux/consts/fcntl.d
@@ -235,8 +239,9 @@ else
 endif
 
 # generate all target for the examles
-#DIR_EXAMPLES=$(wildcard ./doc/example/*)
-DIR_EXAMPLES=./doc/example/concurrency ./doc/example/conduits ./doc/example/text ./doc/example/console ./doc/example/networking ./doc/example/sql
+#DIR_EXAMPLES=$(wildcard ./doc/example/*) uncomment when all examples work!
+# ./doc/example/conduits <-- not all of them convered
+DIR_EXAMPLES=./doc/example/concurrency ./doc/example/text ./doc/example/console ./doc/example/networking ./doc/example/sql ./doc/example/system
 SRC_EXAMPLES:=$(foreach DIR_EXAMPLE,$(DIR_EXAMPLES),$(wildcard $(DIR_EXAMPLE)/*.d))
 PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 
@@ -286,6 +291,7 @@ clean:
 		$(RM) generated
 		$(RM) unittest
 		$(RM) $(DOCDIR)
+		$(RM) $(PROG_EXAMPLES)
 
 # ==================== target pattern ========================
 # used for generating unittest (- means go ahead on errors).
