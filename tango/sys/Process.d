@@ -2040,22 +2040,19 @@ private const(char)[] format (const(char)[] msg, int value)
 }
 
 extern (C) uint sleep (uint s);
+
 debug (UnitTest)
 {
     import tango.io.Stdout;
-    import tango.stdc.stdio : printf, fflush, stdout;
 
     unittest
     {
-        char[] message = "hello world";
+        string message = "hello world";
         version(Windows)
-        {
-            char[] command = "cmd.exe /c echo " ~ message;
-        }
+            string command = "cmd.exe /c echo " ~ message;
         else
-            char[] command = "echo " ~ message;
-
-
+            string command = "echo " ~ message;
+        
         try
         {
             auto p = new Process(command, null);
@@ -2085,4 +2082,3 @@ debug (UnitTest)
         }
     }
 }
-

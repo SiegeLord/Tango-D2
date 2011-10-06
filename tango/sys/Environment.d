@@ -61,7 +61,7 @@ else
     }
     
     else
-        private extern (C) extern char** environ;
+        private extern (C) __gshared char** environ;
 
     private import core.stdc.stdlib;
     private import core.stdc.string;
