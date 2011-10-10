@@ -218,9 +218,15 @@ public class AppendSyslog: Filer
                     
                     this.file_path.rename(path);
                     
-                    if ( i + 1 == this.compress_index )
+                    if ( i + 1 == this.compress_index ) with (this.compress_cmd) 
                     {
-                        this.compress_cmd.execute();
+                        if ( isRunning )
+                        {
+                            wait();
+                            close();
+                        }       
+                        
+                        execute();
                     }                    
                 }
                 else this.file_path.remove();
