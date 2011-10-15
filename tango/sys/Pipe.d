@@ -13,7 +13,7 @@ private import tango.core.Exception;
 
 version (Posix)
 {
-    private import tango.stdc.posix.unistd;
+    private import core.sys.posix.unistd;
 }
 
 debug (PipeConduit)
@@ -57,10 +57,7 @@ class PipeConduit : Device
      */
     private this(Handle handle, uint bufferSize = DefaultBufferSize)
     {
-        version (Windows)
-                 io.handle = handle;
-            else
-               this.handle = handle;
+        this.io.handle = handle;
         _bufferSize = bufferSize;
     }
 
@@ -75,7 +72,7 @@ class PipeConduit : Device
     /**
      * Returns the buffer size for the PipeConduit.
      */
-    public override size_t bufferSize()
+    public override const size_t bufferSize()
     {
         return _bufferSize;
     }
@@ -83,7 +80,7 @@ class PipeConduit : Device
     /**
      * Returns the name of the device.
      */
-    public override char[] toString()
+    public override immutable(char)[] toString()
     {
         return "<pipe>";
     }
@@ -217,7 +214,7 @@ class Pipe
      */
     private final void error ()
     {
-        throw new IOException("Pipe error: " ~ SysError.lastMsg);
+        throw new IOException(("Pipe error: " ~ SysError.lastMsg).idup);
     }
 }
 

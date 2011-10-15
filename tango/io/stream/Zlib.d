@@ -16,17 +16,13 @@
 
 module tango.io.stream.Zlib;
 
-private import tango.util.compress.c.zlib;
-
-private import tango.stdc.stringz : fromStringz;
+private import tango.binding.zlib;
 
 private import tango.core.Exception : IOException;
-
 private import tango.io.device.Conduit : InputFilter, OutputFilter;
-
 private import tango.io.model.IConduit : InputStream, OutputStream, IConduit;
-
 private import tango.text.convert.Integer : toString;
+private import tango.text.convert.Utf : fromStringz;
 
 
 /* This constant controls the size of the input/output buffers we use

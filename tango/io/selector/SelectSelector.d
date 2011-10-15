@@ -191,11 +191,11 @@ public class SelectSelector: AbstractSelector
     public override void register(ISelectable conduit, Event events, Object attachment = null)
     in
     {
-        assert(conduit !is null && conduit.fileHandle());
+        assert(conduit !is null && conduit.handle());
     }
     body
     {
-        ISelectable.Handle handle = conduit.fileHandle();
+        ISelectable.Handle handle = conduit.handle();
 
         debug (selector)
             Stdout.format("--- SelectSelector.register(handle={0}, events=0x{1:x})\n",
@@ -287,7 +287,7 @@ public class SelectSelector: AbstractSelector
     {
         if (conduit !is null)
         {
-            ISelectable.Handle handle = conduit.fileHandle();
+            ISelectable.Handle handle = conduit.handle();
 
             debug (selector)
                 Stdout.format("--- SelectSelector.unregister(handle={0})\n",
@@ -482,7 +482,7 @@ public class SelectSelector: AbstractSelector
     {
         if(conduit !is null)
         {
-            if(auto k = conduit.fileHandle in _keys)
+            if(auto k = conduit.handle in _keys)
             {
                 return *k;
             }
@@ -553,7 +553,7 @@ private class SelectSelectionSet: ISelectionSet
 
         foreach (SelectionKey current; _keys)
         {
-            handle = current.conduit.fileHandle();
+            handle = current.conduit.handle();
 
             if (_readSet.isSet(handle))
                 events = Event.Read;

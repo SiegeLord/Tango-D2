@@ -13,8 +13,8 @@
 
 module tango.net.device.Multicast;
 
-public  import  tango.net.InternetAddress;
-public  import  tango.net.device.Datagram;
+public import tango.net.InternetAddress,
+              tango.net.UdpSocket;
 
 /******************************************************************************
         
@@ -52,7 +52,7 @@ public  import  tango.net.device.Datagram;
                 
 *******************************************************************************/
 
-class Multicast : Datagram
+class Multicast : UdpSocket
 {
         private InternetAddress group;
 
@@ -102,11 +102,12 @@ class Multicast : Datagram
                  * systems.
                  * Reference; http://markmail.org/thread/co53qzbsvqivqxgc
                  */
-                version (Posix) {
-                    native.addressReuse(reuse).bind(group);
-                } else {
-                    native.addressReuse(reuse).bind(new InternetAddress(group.port));
-                }
+                assert(false, "not implemented!");
+                //version (Posix) {
+                //    this.addressReuse(reuse).bind(group);
+                //} else {
+                //    this.addressReuse(reuse).bind(new InternetAddress(group.port));
+                //}
         }
         
         /***********************************************************************
@@ -119,8 +120,9 @@ class Multicast : Datagram
         Multicast loopback (bool yes = true)
         {
                 uint[1] onoff = yes;
-                native.setOption (SocketOptionLevel.IP, SocketOption.MULTICAST_LOOP, onoff);
-                return this;
+                assert(false, "not implemented!");
+                //this.setOption (SocketOptionLevel.IP, SocketOption.MULTICAST_LOOP, onoff); /* not available in druntime */
+                //return this;
         }
 
         /***********************************************************************
@@ -141,8 +143,9 @@ class Multicast : Datagram
         Multicast ttl (uint value=Subnet)
         {
                 uint[1] options = value;
-                native.setOption (SocketOptionLevel.IP, SocketOption.MULTICAST_TTL, options);
-                return this;
+                assert(false, "not implemented!");
+                //native.setOption (SocketOptionLevel.IP, SocketOption.MULTICAST_TTL, options); /* not available in druntime */
+                //return this;
         }
 
         /***********************************************************************
@@ -153,8 +156,9 @@ class Multicast : Datagram
 
         Multicast join ()
         {
-                native.joinGroup (group, true);
-                return this;
+                assert(false, "not implemented!");
+                //native.joinGroup (group, true);
+                //return this;
         }
 
         /***********************************************************************
@@ -165,8 +169,9 @@ class Multicast : Datagram
 
         Multicast leave ()
         {
-                native.joinGroup (group, false);
-                return this;
+                assert(false, "not implemented!");
+                //native.joinGroup (group, false);
+                //return this;
         }
 }
 

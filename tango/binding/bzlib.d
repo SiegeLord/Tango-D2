@@ -1,6 +1,6 @@
 /* Converted to D from bzlib.h by htod */
 
-module tango.util.compress.c.bzlib;
+module tango.binding.bzlib;
 
 /*-------------------------------------------------------------*/
 /*--- Public header file for the library.                   ---*/

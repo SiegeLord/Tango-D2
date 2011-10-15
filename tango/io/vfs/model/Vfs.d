@@ -104,6 +104,7 @@ interface VfsHost : VfsFolder
 
         Supports a model a bit like CSS selectors, where a selection
         of operands is made before applying some operation. For example:
+        
         ---
         // count of files in this folder
         auto count = folder.self.files;
@@ -117,6 +118,7 @@ interface VfsHost : VfsFolder
 
         The same approach is used to select the subtree descending from
         a folder:
+        
         ---
         // count of files in this tree
         auto count = folder.tree.files;
@@ -131,6 +133,7 @@ interface VfsHost : VfsFolder
         Filtering can be applied to the tree resulting in a sub-group.
         Group operations remain applicable. Note that various wildcard
         characters may be used in the filtering:
+        
         ---
         // select a subset of the resultant tree
         auto folders = folder.tree.subset("install");
@@ -140,6 +143,7 @@ interface VfsHost : VfsFolder
         ---
 
         Files are selected from a set of folders in a similar manner:
+        
         ---
         // files called "readme.txt" in this folder
         auto count = folder.self.catalog("readme.txt").files;
@@ -154,7 +158,9 @@ interface VfsHost : VfsFolder
         auto count = folder.tree.catalog(&filter).files;
         ---
 
+
         Sets of folders and files support iteration via foreach:
+        
         ---
         foreach (folder; root.tree)
                  Stdout.formatln ("folder name:{}", folder.name);
@@ -166,10 +172,12 @@ interface VfsHost : VfsFolder
                  Stdout.formatln ("file name:{}", file.name);
         ---
 
+
         Creating and opening a sub-folder is supported in a similar
         manner, where the single instance is 'selected' before the
         operation is applied. Open differs from create in that the
         folder must exist for the former:
+
         ---
         root.folder("myNewFolder").create;
 
@@ -177,6 +185,7 @@ interface VfsHost : VfsFolder
         ---
 
         File manipulation is handled in much the same way:
+
         ---
         root.file("myNewFile").create;
 
@@ -208,8 +217,8 @@ interface VfsFolder
                 Return a long name.
 
         ***********************************************************************/
-
-        char[] toString ();
+        
+        immutable(char)[] toString ();
 
         /***********************************************************************
 
@@ -319,7 +328,7 @@ interface VfsFolders
 
         ***********************************************************************/
 
-        uint files ();
+        size_t files ();
 
         /***********************************************************************
 
@@ -327,7 +336,7 @@ interface VfsFolders
 
         ***********************************************************************/
 
-        uint folders ();
+        size_t folders ();
 
         /***********************************************************************
 
@@ -335,7 +344,7 @@ interface VfsFolders
 
         ***********************************************************************/
 
-        uint entries ();
+        size_t entries ();
 
         /***********************************************************************
 
@@ -359,7 +368,7 @@ interface VfsFolders
 
         ***********************************************************************/
 
-        VfsFiles catalog (char[] pattern);
+        VfsFiles catalog (const(char)[] pattern);
 
         /***********************************************************************
 
@@ -393,7 +402,7 @@ interface VfsFiles
 
         ***********************************************************************/
 
-        uint files ();
+        size_t files ();
 
         /***********************************************************************
 
@@ -427,7 +436,7 @@ interface VfsFile
 
         ***********************************************************************/
 
-        char[] toString ();
+        immutable(char)[] toString ();
 
         /***********************************************************************
 

@@ -120,11 +120,16 @@ private import  tango.time.chrono.Hijri,
                 tango.time.chrono.ThaiBuddhist;
         
 version (Windows)
+{
          private import tango.text.locale.Win32;
+         alias tango.text.locale.Win32 nativeMethods;
+}
 
 version (Posix)
+{
          private import tango.text.locale.Posix;
-
+         alias tango.text.locale.Posix nativeMethods;
+}
 
 // Initializes an array.
 private template arrayOf(T) {

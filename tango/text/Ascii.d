@@ -15,31 +15,37 @@
 
 module tango.text.Ascii;
 
-version (Win32)
-        {
-        private extern (C) int memicmp (in char *, in char *, uint);
-        private extern (C) int memcmp (in char *, in char *, uint);
-        }
-
-version (Posix)
-        {
-        private extern (C) int memcmp (in char *, in char *, uint);
-        private extern (C) int strncasecmp (in char *, in char*, uint);
-        private alias strncasecmp memicmp;
-        }
+private import core.stdc.string;
 
 /******************************************************************************
 
-        Convert to lowercase in-place.
+        Convert to lowercase in-place for a single character
+
+******************************************************************************/
+char toLower(const(char) c)
+{
+	if (c>= 'A' && c <= 'Z')
+		return cast(char)(c + 32);
+	else
+		return c;
+}
+
+/******************************************************************************
+
+        Convert to lowercase in-place for a string
 
 ******************************************************************************/
 
-char[] toLower (char[] src)
+char[] toLower(const(char)[] src)
 {
-        foreach (ref c; src)
-                 if (c>= 'A' && c <= 'Z')
-                     c = cast(char)(c + 32);
-        return src;
+	return toLower(src.dup);
+}
+
+char[] toLower(char[] src)
+{
+	foreach (ref c; src)
+		c = toLower(c);
+	return src;
 }
 
 /******************************************************************************
@@ -50,10 +56,10 @@ char[] toLower (char[] src)
 
 char[] toLower (const(char[]) src, char[] dst)
 {
-        assert (dst.length >= src.length);
-        dst[0 .. src.length] = src [0 .. $];
+	assert (dst.length >= src.length);
+	dst[0 .. src.length] = src [0 .. $];
 
-        return toLower(dst [0  .. src.length]);
+	return toLower(dst [0  .. src.length]);
 }
 
 /******************************************************************************
@@ -90,17 +96,32 @@ char[] toUpper (const(char[]) src, char[] dst)
         
 ******************************************************************************/
 
-size_t icompare (const(char[]) s1, const(char[]) s2)
+int icompare (const(char[]) s1, const(char[]) s2)
 {
-        size_t len = s1.length;
-        if (s2.length < len)
-            len = s2.length;
-
-        size_t result = cast(size_t)memicmp (s1.ptr, s2.ptr, cast(uint)len);
-
-        if (result is 0)
-            result = cast(int)s1.length - cast(int)s2.length;
-        return result;
+	const(char)* ptr1 = s1.ptr;
+	const(char)* ptr2 = s2.ptr;
+	size_t len1 = s1.length;
+	size_t len2 = s2.length;
+	size_t min = (len1 < len2) ? len1 : len2;
+	
+	while(min--) {
+		if(toLower(*ptr1) == toLower(*ptr2)) {
+			ptr1++;
+			ptr2++;
+		} else if(ptr1 > ptr2) {
+			return 1;
+		} else {
+			return -1;
+		}
+	}
+	
+	if(len1 > len2) {
+		return 1;
+	} else if(len1 < len2) {
+		return -1;
+	}
+	
+	return 0;
 }
 
 

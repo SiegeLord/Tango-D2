@@ -1,38 +1,52 @@
 /*******************************************************************************
 
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
-
         license:        BSD style: $(LICENSE)
-        
         version:        Initial release: April 2004      
-        
         author:         Kris
 
 *******************************************************************************/
-
 module tango.net.Uri;
 
-private import  tango.core.Exception;
-private import  Integer = tango.text.convert.Integer;
-private import  core.stdc.string : memchr;
+private import core.stdc.string;
+private import Integer = tango.text.convert.Integer;
+private import Utf = tango.text.Unicode;
 
-/*******************************************************************************
 
-        Implements an RFC 2396 compliant URI specification. See 
-        <A HREF="http://ftp.ics.uci.edu/pub/ietf/uri/rfc2396.txt">this page</A>
-        for more information. 
-
-        The implementation fails the spec on two counts: it doesn't insist
-        on a scheme being present in the Uri, and it doesn't implement the
-        "Relative References" support noted in section 5.2. The latter can
-        be found in tango.util.PathUtil instead.
-        
-        Note that IRI support can be implied by assuming each of userinfo,
-        path, query, and fragment are UTF-8 encoded 
-        (see <A HREF="http://www.w3.org/2001/Talks/0912-IUC-IRI/paper.html">
-        this page</A> for further details).
-
-*******************************************************************************/
+/**
+ *      Implements an RFC 2396 compliant URI specification. See 
+ *      <A HREF="http://ftp.ics.uci.edu/pub/ietf/uri/rfc2396.txt">this page</A>
+ *      for more information. 
+ *
+ *      The implementation fails the spec on two counts: it doesn't insist
+ *      on a scheme being present in the Uri, and it doesn't implement the
+ *      "Relative References" support noted in section 5.2. The latter can
+ *      be found in tango.util.PathUtil instead.
+ *      
+ *      Note that IRI support can be implied by assuming each of userinfo,
+ *      path, query, and fragment are UTF-8 encoded 
+ *      (see <A HREF="http://www.w3.org/2001/Talks/0912-IUC-IRI/paper.html">
+ *      this page</A> for further details).
+ *
+ * 
+ * ---
+ * // unix ressource
+ * Uri uri = new Uri("file:///var/run/myapp/mysock.sock");
+ * 
+ * Stdout(uri.scheme);  // file
+ * Stdout(uri.path);    // /var/run/myapp/mysock.sock
+ * ---
+ * 
+ * ---
+ * // tcp ressource
+ * Uri uri = new Uri("tcp://localhost:12345");
+ * 
+ * Stdout(uri.scheme);  // tcp
+ * Stdout(uri.host);    // localhost
+ * Stdout(uri.port);    // 12345
+ * ---
+ * 
+ */
 
 class Uri
 {
@@ -57,9 +71,9 @@ class Uri
         public alias path        setPath;
         public alias fragment    setFragment;
 
-        public enum {InvalidPort = -1};
+        public enum {InvalidPort = 0};
 
-        private int             port_;
+        private ushort          port_;
         private const(char)[]   host_,
                                 path_,
                                 query_,
@@ -275,7 +289,7 @@ class Uri
 
         ***********************************************************************/
 
-        final short defaultPort (const(char)[] scheme)
+        final const short defaultPort (const(char)[] scheme)
         {
                 short* port = scheme in genericSchemes; 
                 if (port is null)
@@ -314,7 +328,7 @@ class Uri
 
         ***********************************************************************/
 
-        int port()
+        ushort port()
         {
                 return port_;
         }
@@ -326,7 +340,7 @@ class Uri
 
         ***********************************************************************/
 
-        int validPort()
+        ushort validPort()
         {
                 if (port_ is InvalidPort)
                     return defaultPort (scheme_);
@@ -417,7 +431,7 @@ class Uri
                    if (host_.length)
                        ret += consume (host_);
 
-                   if (port_ != InvalidPort && port_ != getDefaultPort(scheme_))
+                   if (port_ != InvalidPort && port_ != this.getDefaultPort(scheme_))
                       {
                       char[8] tmp;
                       ret += consume (":"), ret += consume (Integer.itoa (tmp, cast(uint) port_));
@@ -619,7 +633,7 @@ class Uri
                 if (c is ':')
                    {
                    scheme_ = uri [mark .. i].dup;   
-                   toLower (scheme_);
+                   scheme_ = Utf.toLower (scheme_);
                    mark = i + 1;
                    }
 
@@ -714,7 +728,7 @@ class Uri
 
         ***********************************************************************/
 
-        final Uri port (int port)
+        final Uri port (ushort port)
         {
                 this.port_ = port;
                 return this;
@@ -819,7 +833,7 @@ class Uri
                 for (size_t i=mark; i < len; ++i)
                      if (auth [i] is ':')
                         {
-                        port_ = Integer.atoi (auth [i+1 .. len]);
+                        port_ = cast(ushort)Integer.atoi (auth [i+1 .. len]);
                         len = i;
                         break;
                         }
@@ -839,20 +853,6 @@ class Uri
                          if (*p is '/')
                              return path [0 .. (p-path.ptr)+1];
                 return path;
-        }
-
-        /**********************************************************************
-
-                in-place conversion to lowercase 
-
-        **********************************************************************/
-
-        private final static char[] toLower (ref char[] src)
-        {
-                foreach (ref char c; src)
-                         if (c >= 'A' && c <= 'Z')
-                             c = cast(char)(c + ('a' - 'A'));
-                return src;
         }
 }
 

@@ -1,9 +1,11 @@
 module xmlsax;
 
-import tango.io.device.File;
-import tango.io.Stdout;
-import tango.time.StopWatch;
-import tango.text.xml.SaxParser;
+private import  tango.io.Stdout,
+                tango.io.File;
+
+private import  tango.time.StopWatch;
+
+private import  tango.text.xml.SaxParser;
 
 void main() 
 {       
@@ -33,63 +35,7 @@ void benchmark (int iterations, SaxParser!(char) parser)
         Stdout.formatln ("{} MB/s", (content.length * iterations) / (elapsed.stop * (1024 * 1024)));
 }
 
-
-
-
-private class EventsHandler(Ch = char) : SaxHandler!(Ch) {
-
-        public uint events;
-
-
-        public void setDocumentLocator(Locator!(Ch) locator) {
-                events++;
-        }
-
-        public void startDocument() {
-                events++;
-        }
-
-        public void endDocument() {
-                events++;
-        }
-
-        public void startPrefixMapping(Ch[] prefix, Ch[] uri) {
-                events++;
-        }
-
-        public void endPrefixMapping(Ch[] prefix) {
-                events++;
-        }                                               
-
-        public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute!(Ch)[] atts) {
-                events++;
-                foreach (ref attr; atts) {
-                        events++;
-                }
-        }
-
-        public void endElement(Ch[] uri, Ch[] localName, Ch[] qName) {
-                events++;
-        }
-
-        public void characters(Ch[] ch) {
-                events++;
-        }
-
-        public void ignorableWhitespace(Ch[] ch) {
-                events++;
-        }
-
-        public void processingInstruction(Ch[] target, Ch[] data) {
-                events++;
-        }
-
-        public void skippedEntity(Ch[] name) {
-                events++;
-        }       
-}
-
-private class LengthHandler(Ch = char) : SaxHandler!(Ch) {
+private class LengthHandler(T = char) : SaxHandler!(T) {
 
         public uint elm;
         public uint att;
@@ -97,28 +43,8 @@ private class LengthHandler(Ch = char) : SaxHandler!(Ch) {
         public uint elmlen;
         public uint attlen;
         public uint txtlen;
-
-        public void setDocumentLocator(Locator!(Ch) locator) {
-
-        }
-
-        public void startDocument() {
-                
-        }
-
-        public void endDocument() {
-                
-        }
-
-        public void startPrefixMapping(Ch[] prefix, Ch[] uri) {
-
-        }
-
-        public void endPrefixMapping(Ch[] prefix) {
-
-        }                                               
-
-        public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute!(Ch)[] atts) {
+        
+        public override void startElement(const(T)[] uri, const(T)[] localName, const(T)[] qName, Attribute!(T)[] atts) {
                 elm++;
                 elmlen += localName.length;
                 foreach (ref attr; atts) {
@@ -126,26 +52,10 @@ private class LengthHandler(Ch = char) : SaxHandler!(Ch) {
                         attlen += attr.localName.length;
                 }
         }
-
-        public void endElement(Ch[] uri, Ch[] localName, Ch[] qName) {
-                
-        }
-
-        public void characters(Ch[] ch) {
+        
+        public override void characters(const(T)[] ch) {
                 txt++;
                 txtlen += ch.length;
-        }
-
-        public void ignorableWhitespace(Ch[] ch) {
-
-        }
-
-        public void processingInstruction(Ch[] target, Ch[] data) {
-
-        }
-
-        public void skippedEntity(Ch[] name) {
-
-        }       
+        } 
 }
 

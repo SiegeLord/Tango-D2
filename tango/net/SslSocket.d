@@ -8,7 +8,7 @@
 
 *******************************************************************************/
 
-module tango.net.device.SSLSocket;
+module tango.net.SSLSocket;
 
 private import tango.net.util.PKI;
 

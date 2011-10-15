@@ -1,6 +1,6 @@
 module FileBucket;
 
-private import  tango.io.device.File;
+private import  tango.io.File;
 
 private import  tango.core.Exception;
 
@@ -26,13 +26,13 @@ private import  tango.core.Exception;
         is a contrived example:
         
         ---
-        char[] text = "this is a test";
+        string text = "this is a test";
 
         auto bucket = new FileBucket (new FilePath("bucket.bin"), FileBucket.HalfK);
 
         // insert some data, and retrieve it again
         bucket.put ("a key", text);
-        char[] b = cast(char[]) bucket.get ("a key");
+        const(char)[] b = cast(const(char)[]) bucket.get ("a key");
 
         assert (b == text);
         bucket.close;
@@ -54,7 +54,7 @@ class FileBucket
         }
 
         // basic capacity for each record
-        private char[]                  path;
+        private const(char)[]           path;
 
         // basic capacity for each record
         private BlockSize               block;
@@ -63,7 +63,7 @@ class FileBucket
         private File                    file;
 
         // pointers to file records
-        private Record[char[]]          map;
+        private Record[string]          map;
 
         // current file size
         private long                    fileSize;
@@ -93,13 +93,13 @@ class FileBucket
 
         **********************************************************************/
 
-        this (char[] path, BlockSize block, uint initialRecords = 100)
+        this (const(char)[] path, BlockSize block, uint initialRecords = 100)
         {
-                this.path = path;
+                this.path = path.dup;
                 this.block = block;
 
                 // open a storage file
-                file = new File (path, File.ReadWriteCreate);
+                this.file = new File(path, File.ReadWriteCreate);
 
                 // set initial file size (can be zero)
                 fileSize = initialRecords * block.capacity;
@@ -124,7 +124,7 @@ class FileBucket
 
         **********************************************************************/
 
-        char[] getFilePath ()
+        const(char)[] getFilePath ()
         {
                 return path;
         }
@@ -135,7 +135,7 @@ class FileBucket
 
         **********************************************************************/
 
-        synchronized long length ()
+        long length ()
         {
                 return waterLine;
         }
@@ -147,15 +147,13 @@ class FileBucket
 
         **********************************************************************/
 
-        synchronized void[] get (char[] key)
+        void[] get (char[] key)
         {
-                Record r = null;
-
-                if (key in map)
-                   {
-                   r = map [key];
-                   return r.read (this);
-                   }
+                Record *record = key in map;
+                if(record)
+                {
+                    return record.read(this);
+                }
                 return null;
         }
 
@@ -165,7 +163,7 @@ class FileBucket
 
         **********************************************************************/
 
-        synchronized void remove (char[] key)
+        void remove (immutable(char)[] key)
         {
                 map.remove(key);
         }
@@ -184,17 +182,16 @@ class FileBucket
 
         **********************************************************************/
 
-        synchronized void put (char[] key, void[] data)
+        void put (const(char)[] key, const(void)[] data)
         {
-                Record* r = key in map;
-
-                if (r is null)
-                   {
-                   auto rr = new Record;
-                   map [key] =  rr;
-                   r = &rr;
-                   }
-                r.write (this, data, block);
+                Record *record = key in map;
+                if(record is null)
+                {
+                    auto rr = new Record;
+                    map[key.idup] =  rr;
+                    record = &rr;
+                }
+                record.write(this, data, block);
         }
 
         /**********************************************************************
@@ -203,14 +200,14 @@ class FileBucket
 
         **********************************************************************/
 
-        synchronized void close ()
+        void close ()
         {
                 if (file)
-                   {
-                   file.detach;
-                   file = null;
-                   map = null;
-                   }
+                {
+                    file.detach();
+                    file = null;
+                    map = null;
+                }
         }
 
         /**********************************************************************
@@ -235,7 +232,7 @@ class FileBucket
 
                 private static void eof (FileBucket bucket)
                 {
-                        throw new IOException ("Unexpected EOF in FileBucket '"~bucket.path~"'");
+                        throw new IOException (("Unexpected EOF in FileBucket '" ~ bucket.path ~ "'").idup);
                 }
 
                 /**************************************************************
@@ -263,7 +260,7 @@ class FileBucket
 
                 **************************************************************/
 
-                void write (FileBucket bucket, void[] data, BlockSize block)
+                void write (FileBucket bucket, const(void)[] data, BlockSize block)
                 {
                         length = data.length;
 
@@ -290,16 +287,20 @@ class FileBucket
 
                         bucket.waterLine += capacity;
                         if (bucket.waterLine > bucket.fileSize)
-                           {
-                           // grow the filesize 
-                           bucket.fileSize = bucket.waterLine * 2;
+                        {
+                            // grow the filesize 
+                            bucket.fileSize = bucket.waterLine * 2;
 
-                           // expand the physical file size
-                           bucket.file.seek (bucket.fileSize);
-                           bucket.file.truncate ();
-                           }
+                            // expand the physical file size
+                            bucket.file.seek (bucket.fileSize);
+                            bucket.file.truncate ();
+                        }
                 }
         }
 }
 
 
+int main()
+{
+    return 0;
+}

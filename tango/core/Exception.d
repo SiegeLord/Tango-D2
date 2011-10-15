@@ -10,16 +10,39 @@ module tango.core.Exception;
 
 public import core.exception;
 
-private
-{
-    alias void  function( char[] file, size_t line, char[] msg = null ) assertHandlerType;
 
-    assertHandlerType   assertHandler   = null;
-}
+/**
+ * Basically all of tangos exceptions derive from one of the following exceptions.
+ * Most of them aren't specified here, because they transport a lot of specific
+ * information of the objects from which they are thrown.
+ * 
+ * But for information, here is a list of the hirarchy. 
+ * 
+ * - Exception (druntime)
+ *   - IOException
+ *     - SocketException
+ *       - TcpServerException
+ *       - LocalServerException
+ *       - UdpServerException
+ *     -
+ * 
+ * ---
+ * // example code
+ * try
+ * {
+ *      // put your code here
+ * }
+ * catch(Exception ex)
+ * {
+ *      Stdout(ex.toString());
+ * }
+ * ---
+ */
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /*
+ *  ---> need to clean up
 - Exception
   - OutOfMemoryException
   - SwitchException
@@ -52,6 +75,22 @@ private
 */
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * The basic exception thrown by the tango.io package. One should try to ensure
+ * that all Tango exceptions related to IO are derived from this one.
+ */
+class IOException : Exception
+{
+    this( immutable(char)[] msg )
+    {
+        super( msg );
+    }
+    
+    this(immutable(char)[] msg, immutable(char)[] file, size_t line)
+    {
+        super(msg, file, line);
+    }
+}
 
 /**
  * Thrown on an out of memory error.
@@ -75,9 +114,9 @@ class OutOfMemoryException : Exception
  */
 class PlatformException : Exception
 {
-    this( immutable(char)[] msg )
+    this( immutable(char)[] msg, immutable(char)[] file = __FILE__, size_t line = __LINE__)
     {
-        super( msg );
+        super( msg, file, line );
     }
 }
 
@@ -168,14 +207,6 @@ class UnicodeException : TextException
     }
 }
 
-
-/**
- * Base class for thread exceptions. See core.thread; of druntime!
- */
-/**
- * Base class for fiber exceptions. See core.thread; of druntime!
- */
-
 /**
  * Base class for ThreadPoolException
  */
@@ -192,18 +223,6 @@ class ThreadPoolException : Exception
  * Base class for synchronization exceptions.
  */
 class SyncException : PlatformException
-{
-    this( immutable(char)[] msg )
-    {
-        super( msg );
-    }
-}
-
-/**
- * The basic exception thrown by the tango.io package. One should try to ensure
- * that all Tango exceptions related to IO are derived from this one.
- */
-class IOException : PlatformException
 {
     this( immutable(char)[] msg )
     {
@@ -234,45 +253,9 @@ class ClusterException : IOException
 }
 
 /**
- * Base class for socket exceptions.
- */
-class SocketException : IOException
-{
-    this( immutable(char)[] msg )
-    {
-        super( msg );
-    }
-}
-
-
-/**
  * Base class for exception thrown by an InternetHost.
  */
 class HostException : IOException
-{
-    this( immutable(char)[] msg )
-    {
-        super( msg );
-    }
-}
-
-
-/**
- * Base class for exceptiond thrown by an Address.
- */
-class AddressException : IOException
-{
-    this( immutable(char)[] msg )
-    {
-        super( msg );
-    }
-}
-
-
-/**
- * Thrown when a socket failed to accept an incoming connection.
- */
-class SocketAcceptException : SocketException
 {
     this( immutable(char)[] msg )
     {
@@ -285,9 +268,9 @@ class SocketAcceptException : SocketException
  */
 class ProcessException : PlatformException
 {
-    this( immutable(char)[] msg )
+    this( immutable(char)[] msg, immutable(char)[] file = __FILE__, size_t line = __LINE__)
     {
-        super( msg );
+        super( msg, file, line );
     }
 }
 
@@ -392,27 +375,11 @@ class CorruptedIteratorException : NoSuchElementException
     }
 }
 
+/*******************************************************************************
 
-////////////////////////////////////////////////////////////////////////////////
-// Overrides
-////////////////////////////////////////////////////////////////////////////////
+        Internal Error Callbacks
 
-
-/**
- * Overrides the default assert hander with a user-supplied version.
- *
- * Params:
- *  h = The new assert handler.  Set to null to use the default handler.
- */
-void setAssertHandler( assertHandlerType h )
-{
-    assertHandler = h;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Internal Error Callbacks
-////////////////////////////////////////////////////////////////////////////////
-
+*******************************************************************************/
 
 /**
  * A callback for array bounds errors in D.  An ArrayBoundsException will be

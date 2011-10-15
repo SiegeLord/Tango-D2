@@ -14,7 +14,7 @@ module tango.io.device.FileMap;
 
 private import tango.sys.Common;
 
-private import tango.io.device.File,
+private import tango.io.File,
                tango.io.device.Array;
 
 /*******************************************************************************
@@ -24,16 +24,10 @@ private import tango.io.device.File,
 *******************************************************************************/
 
 version (Win32)
-         private extern (Windows)
-                        {
-                        BOOL   UnmapViewOfFile    (LPCVOID);
-                        BOOL   FlushViewOfFile    (LPCVOID, DWORD);
-                        LPVOID MapViewOfFile      (HANDLE, DWORD, DWORD, DWORD, DWORD);
-                        HANDLE CreateFileMappingA (HANDLE, LPSECURITY_ATTRIBUTES, DWORD, DWORD, DWORD, LPCTSTR);
-                        }
+    private import core.sys.windows.windows;
 
 version (Posix)
-         private import tango.stdc.posix.sys.mman;
+    private import core.sys.posix.sys.mman;
 
 
 /*******************************************************************************
@@ -273,7 +267,7 @@ class MappedFile
                         if (access & host.Access.Write)
                             protection |= PROT_WRITE;
 
-                        base = mmap (null, size, protection, flags, host.fileHandle, 0);
+                        base = mmap (null, size, protection, flags, host.handle, 0);
                         if (base is MAP_FAILED)
                            {
                            base = null;

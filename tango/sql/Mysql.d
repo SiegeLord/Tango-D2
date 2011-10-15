@@ -3,7 +3,7 @@
  *
  * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
  * License:   BSD style: $(LICENSE)
- * Authors:   mtachrono, tbolsh
+ * Authors:   tbolsh, Chrono
  *
  */
 module tango.sql.Mysql;
@@ -11,40 +11,45 @@ module tango.sql.Mysql;
 private import core.stdc.stdio;
 private import tango.text.convert.Utf;
 
-/*******************************************************************************
-	int main(char[][] args)
-	{
-		// declaration
-		MYSQL* conn;
-		MYSQL_RES* result;
-		string[string] row;
-		uint fields;
-		
-		// connect
-		conn = mysql_connect("localhost", "username", "password", "database");
-		if(!conn) {
-			printf("Error %u: %s\n", mysql_errno(conn), mysql_error(conn));
-		}
-		
-		// debug versions
-		printf("MySQL client version: %s\n", mysql_get_client_info());
-		printf("MySQL server version: %s\n", mysql_get_server_info(conn));
-		
-		// query
-		if(mysql_query(conn, "SELECT id FROM users")) {
-			printf("Error %u: %s\n", mysql_errno(conn), mysql_error(conn));
-		}
-		
-		// fetch result
-		result = mysql_store_result(conn);
-		while((row = mysql_fetch_assoc(result)) != null) {
-			foreach(field, value; row) {
-				writef("%s %s", field, value);
-			}
-			writeln();
-		}
-	}
-*******************************************************************************/
+/**
+ * This is just an example on how to use mysql.
+ * 
+ * ---
+ * int main(char[][] args)
+ * {
+ *      // declaration
+ *      MYSQL* conn;
+ *      MYSQL_RES* result;
+ *      string[string] row;
+ *      uint fields;
+ *      
+ *      // connect
+ *      conn = mysql_connect("localhost", "username", "password", "database");
+ *      if(!conn) {
+ *          printf("Error %u: %s\n", mysql_errno(conn), mysql_error(conn));
+ *      }
+ *      
+ *      // debug versions
+ *      printf("MySQL client version: %s\n", mysql_get_client_info());
+ *      printf("MySQL server version: %s\n", mysql_get_server_info(conn));
+ *      
+ *      // query
+ *      if(mysql_query(conn, "SELECT id FROM users")) {
+ *          printf("Error %u: %s\n", mysql_errno(conn), mysql_error(conn));
+ *      }
+ *      
+ *      // fetch result
+ *      result = mysql_store_result(conn);
+ *      while((row = mysql_fetch_assoc(result)) != null) {
+ *          foreach(field, value; row) {
+ *              writef("%s %s", field, value);
+ *          }
+ *          writeln();
+ *      }
+ * }
+ * ---
+ * 
+ **/
 
 /*
  * Datatypes

@@ -1,7 +1,7 @@
 /*******************************************************************************
-  copyright:   Copyright (c) 2006 Juan Jose Comellas. All rights reserved
+  copyright:   Copyright (c) 2006 Juan Jose handle. All rights reserved
   license:     BSD style: $(LICENSE)
-  author:      Juan Jose Comellas <juanjo@comellas.com.ar>
+  author:      Juan Jose handle <juanjo@handle.com.ar>
 *******************************************************************************/
 
 module tango.io.selector.EpollSelector;
@@ -233,11 +233,11 @@ version (linux)
         public override void register(ISelectable conduit, Event events, Object attachment = null)
         in
         {
-            assert(conduit !is null && conduit.fileHandle() >= 0);
+            assert(conduit !is null && conduit.handle() >= 0);
         }
         body
         {
-            auto key = conduit.fileHandle() in _keys;
+            auto key = conduit.handle() in _keys;
 
             if (key !is null)
             {
@@ -249,7 +249,7 @@ version (linux)
                 event.events = events;
                 event.data.ptr = cast(void*) key;
 
-                if (epoll_ctl(_epfd, EPOLL_CTL_MOD, conduit.fileHandle(), &event) != 0)
+                if (epoll_ctl(_epfd, EPOLL_CTL_MOD, conduit.handle(), &event) != 0)
                 {
                     checkErrno(__FILE__, __LINE__);
                 }
@@ -269,14 +269,14 @@ version (linux)
                 // an epoll_event. This also allows to to efficiently find the
                 // key corresponding to a handle in methods where this
                 // association is not provided automatically.
-                _keys[conduit.fileHandle()] = newkey;
-                auto x = conduit.fileHandle in _keys;
+                _keys[conduit.handle()] = newkey;
+                auto x = conduit.handle in _keys;
                 event.data.ptr = cast(void*) x;
-                if (epoll_ctl(_epfd, EPOLL_CTL_ADD, conduit.fileHandle(), &event) != 0)
+                if (epoll_ctl(_epfd, EPOLL_CTL_ADD, conduit.handle(), &event) != 0)
                 {
                     // failed, remove the file descriptor from the keys array,
                     // and throw an error.
-                    _keys.remove(conduit.fileHandle);
+                    _keys.remove(conduit.handle);
                     checkErrno(__FILE__, __LINE__);
                 }
             }
@@ -302,9 +302,9 @@ version (linux)
         {
             if (conduit !is null)
             {
-                if (epoll_ctl(_epfd, EPOLL_CTL_DEL, conduit.fileHandle(), null) == 0)
+                if (epoll_ctl(_epfd, EPOLL_CTL_DEL, conduit.handle(), null) == 0)
                 {
-                    _keys.remove(conduit.fileHandle());
+                    _keys.remove(conduit.handle());
                 }
                 else
                 {
@@ -314,7 +314,7 @@ version (linux)
                         case EBADF:
                         case EPERM:
                         case ENOENT:
-                            _keys.remove(conduit.fileHandle());
+                            _keys.remove(conduit.handle());
                             break;
 
                         default:
@@ -405,7 +405,7 @@ version (linux)
 
                         debug (selector)
                             Stdout.format("---   Event 0x{0:x} for handle {1}\n",
-                                        cast(uint) event.events, cast(int) key.conduit.fileHandle());
+                                        cast(uint) event.events, cast(int) key.conduit.handle());
 
                         rc = dg(key);
                         if (rc != 0)
@@ -444,7 +444,7 @@ version (linux)
         {
             if(conduit !is null)
             {
-                if(auto k = conduit.fileHandle in _keys)
+                if(auto k = conduit.handle in _keys)
                 {
                     return *k;
                 }

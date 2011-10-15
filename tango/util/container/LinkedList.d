@@ -1,13 +1,9 @@
 /*******************************************************************************
 
         copyright:      Copyright (c) 2008 Kris Bell. All rights reserved
-
         license:        BSD style: $(LICENSE)
-
         version:        Apr 2008: Initial release
-
         authors:        Kris
-
         Since:          0.99.7
 
         Based upon Doug Lea's Java collection package
@@ -17,10 +13,50 @@
 module tango.util.container.LinkedList;
 
 private import  tango.util.container.Slink;
-
 public  import  tango.util.container.Container;
+private import  tango.util.container.model.IContainer;
 
-private import tango.util.container.model.IContainer;
+/**
+ * Here's a small example on how to use a LinkedList. It'll print d, c, b, a within the first for each loop
+ * and z, y, b, a by the second. Of course you can also use other types than "char" with a LinkedList.
+ * 
+ * ---
+ * private import  tango.io.Stdout;
+ * private import  tango.util.container.LinkedList;
+ * 
+ * int main(char[][] args)
+ * {
+ *     // create list
+ *     auto list = new LinkedList!(char);
+ *     
+ *     // fill in container
+ *     list.add('a');
+ *     list.add('b');
+ *     list.add('c');
+ *     list.add('d');
+ *     
+ *     // print out one letter to each line
+ *     foreach(letter; list)
+ *         Stdout(letter).newline;
+ *     Stdout("---").newline;
+ *     
+ *     // remove letter from container
+ *     list.remove('c');
+ *     list.remove('d');
+ *     
+ *     // add others
+ *     list.add('y');
+ *     list.add('z');
+ *     
+ *     // print out one letter to each line
+ *     foreach(letter; list)
+ *        Stdout(letter).newline;
+ *     Stdout("---").newline;
+ *     
+ *     return 0;
+ * }
+ * ---
+ */
 
 /*******************************************************************************
 

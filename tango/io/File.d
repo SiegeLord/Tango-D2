@@ -15,7 +15,7 @@
 
 *******************************************************************************/
 
-module tango.io.device.File;
+module tango.io.File;
 
 private import tango.sys.Common;
 private import tango.io.device.Device;
@@ -28,11 +28,11 @@ private import tango.util.Convert;
 
 *******************************************************************************/
 
-version (Win32) {
-	private import Utf = tango.text.convert.Utf;
-} else {
+version(Posix)
+{
 	private import core.sys.posix.unistd;
 	private import core.sys.posix.fcntl;
+    private import core.sys.posix.sys.stat;
 }
 
 /*******************************************************************************
@@ -133,7 +133,36 @@ class File : Device, Device.Seek, Device.Truncate
 {
         public alias Device.read  read;
         public alias Device.write write;
+        
+        /***********************************************************************
 
+                Permissions
+
+        ***********************************************************************/
+        enum Permission : uint
+        {
+            // owner
+            ReadOwner   = S_IRUSR,
+            WriteOwner  = S_IWUSR,
+            ExeOwner    = S_IXUSR,
+            AllOwner    = S_IRWXU,
+            
+            // group
+            ReadGroup   = S_IRGRP,
+            WriteGroup  = S_IWGRP,
+            ExeGroup    = S_IXGRP,
+            AllGroup    = S_IRWXG,
+            
+            // Anyone
+            ReadOther   = S_IROTH,
+            WriteOther  = S_IWOTH,
+            ExeOther    = S_IXOTH,
+            AllOther    = S_IRWXO,
+            
+            // all
+            All         = AllOwner | AllGroup | AllOther,
+        };
+        
         /***********************************************************************
 
                 Fits into 32 bits ...
@@ -152,44 +181,48 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        enum Access : ubyte     {
-                                Read      = 0x01,       /// Is readable.
-                                Write     = 0x02,       /// Is writable.
-                                ReadWrite = 0x03,       /// Both.
-                                }
+        enum Access : ubyte
+        {
+                Read      = 0x01,       /// Is readable.
+                Write     = 0x02,       /// Is writable.
+                ReadWrite = 0x03,       /// Both.
+        }
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        enum Open : ubyte       {
-                                Exists=0,               /// Must exist.
-                                Create,                 /// Create or truncate.
-                                Sedate,                 /// Create if necessary.
-                                Append,                 /// Create if necessary.
-                                New,                    /// Can't exist.
-                                };
+        enum Open : ubyte
+        {
+                Exists=0,               /// Must exist.
+                Create,                 /// Create or truncate.
+                Sedate,                 /// Create if necessary.
+                Append,                 /// Create if necessary.
+                New,                    /// Can't exist.
+        };
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        enum Share : ubyte      {
-                                None=0,                 /// No sharing.
-                                Read,                   /// Shared reading.
-                                ReadWrite,              /// Open for anything.
-                                };
+        enum Share : ubyte
+        {
+                None=0,                 /// No sharing.
+                Read,                   /// Shared reading.
+                ReadWrite,              /// Open for anything.
+        };
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        enum Cache : ubyte      {
-                                None      = 0x00,       /// Don't optimize.
-                                Random    = 0x01,       /// Optimize for random.
-                                Stream    = 0x02,       /// Optimize for stream.
-                                WriteThru = 0x04,       /// Backing-cache flag.
-                                };
+        enum Cache : ubyte
+        {
+                None      = 0x00,       /// Don't optimize.
+                Random    = 0x01,       /// Optimize for random.
+                Stream    = 0x02,       /// Optimize for stream.
+                WriteThru = 0x04,       /// Backing-cache flag.
+        };
 
         /***********************************************************************
 
@@ -325,7 +358,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        static void[] get (char[] path, void[] dst = null)
+        static void[] get (const(char)[] path, void[] dst = null)
         {
                 scope file = new File (path);
 
@@ -658,8 +691,8 @@ class File : Device, Device.Seek, Device.Truncate
                         auto mode = Access[style.access] | Create[style.open];
 
                         // always open as a large file
-                        handle = core.sys.posix.fcntl.open(name, mode | O_LARGEFILE | addflags, access);
-                        if (handle is -1)
+                        this.io.handle = cast(Handle)core.sys.posix.fcntl.open(name, mode | O_LARGEFILE | addflags, access);
+                        if (this.io.handle is -1)
                             return false;
 
                         return true;
@@ -751,9 +784,9 @@ class File : Device, Device.Seek, Device.Truncate
                         return cast(long) stats.st_size;
                 }
 
-          /***************************************************************
+                /***************************************************************
 
-            Instructs the OS to flush it's internal buffers to
+                        Instructs the OS to flush it's internal buffers to
                         the disk device.
 
                         NOTE: due to OS and hardware design, data flushed
@@ -764,10 +797,48 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-          void sync ()
-          {
+                void sync ()
+                {
                          if (fsync (handle))
                              error;
+                }
+                
+                /***************************************************************
+                        
+                        Checks if a filename is a valid file and exists
+                        
+                ***************************************************************/
+                static bool exists(const(char)[] filename)
+                {
+                        auto file = new File();
+                        bool opened = file.open(filename, File.ReadExisting, 0);
+                        file.close();
+                        return opened;
+                    
+                }
+                
+                /***************************************************************
+                        
+                        Removes filename
+                        
+                ***************************************************************/
+                static bool remove(const(char)[] filename)
+                {
+                        char[512] zero = void;
+                        const(char)* name = toStringz (filename, zero);
+                        return (unlink(name) != -1);
+                }
+                
+                /***************************************************************
+                        
+                        changes permission
+                
+                ***************************************************************/
+                static bool setPermission(const(char)[] filename, Permission permission)
+                {
+                    char[512] zero = void;
+                    const(char)* name = toStringz (filename, zero);
+                    return (.chmod(name, permission) != -1);
                 }
         }
 }

@@ -7,8 +7,8 @@
 module tango.io.selector.model.ISelector;
 
 public import tango.time.Time;
-
 public import tango.io.model.IConduit;
+public import tango.io.model.ISelectable;
 
 /**
  * Events that are used to register a Conduit to a selector and are returned

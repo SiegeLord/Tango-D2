@@ -28,7 +28,7 @@
   (zlib format), rfc1951.txt (deflate format) and rfc1952.txt (gzip format).
 */
 
-module tango.util.compress.c.zlib;
+module tango.binding.zlib;
 
 extern (C):
 

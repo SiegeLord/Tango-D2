@@ -83,33 +83,6 @@ interface IConduit : InputStream, OutputStream
         }
 }
 
-
-/*******************************************************************************
-
-        Describes how to make an IO entity usable with selectors.
-
-*******************************************************************************/
-
-interface ISelectable
-{     
-        version (Windows) 
-                 alias void* Handle;   /// opaque OS file-handle         
-             else
-                typedef int Handle = -1;        /// opaque OS file-handle        
-
-        /***********************************************************************
-
-                Models a handle-oriented device. 
-
-                TODO: figure out how to avoid exposing this in the general
-                case
-
-        ***********************************************************************/
-
-        Handle fileHandle ();
-}
-
-
 /*******************************************************************************
         
         The common attributes of streams

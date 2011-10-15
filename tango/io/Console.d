@@ -597,9 +597,9 @@ struct Console
 
                         *******************************************************/
 
-                        private this (size_t handle)
+                        private this (Handle handle)
                         {
-                                this.handle = cast(Handle) handle;
+                                this.io.handle = cast(Handle) handle;
                                 redirected = (isatty(cast(int)handle) is 0);
                         }
                         }
