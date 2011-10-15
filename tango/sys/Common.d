@@ -40,10 +40,11 @@ struct SysError
 
         static uint lastCode ()
         {
-                version (Win32)
-                         return GetLastError;
-                     else
-                         return errno;
+                version (Win32) {
+                    return GetLastError;
+                } else {
+                    return errno;
+                }
         }
 
         /***********************************************************************

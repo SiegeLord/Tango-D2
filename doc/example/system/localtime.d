@@ -20,10 +20,10 @@ private import  tango.time.WallClock;
 void main ()
 {
         /// list of day names
-        static char[][] days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        immutable string[] days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
         /// list of month names
-        static char[][] months =
+        immutable string[] months =
         [
             "Jan", "Feb", "Mar", "Apr", "May", "Jun",
             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",

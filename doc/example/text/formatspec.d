@@ -10,7 +10,8 @@
 import tango.io.Stdout;
 import tango.text.locale.Locale;
 
-void main(){
+void main()
+{
     Stdout.layout = new Locale;
     double avogadros = 6.0221415e23;
     Stdout.formatln("I have {0:C} in cash.", 100);

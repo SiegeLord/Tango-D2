@@ -102,7 +102,7 @@ body
         do {
             remainlen -= 5;
             buff[i++] = _encodeTable[(remainder>>remainlen)&0b11111];
-        } while (remainlen > 5)
+        } while (remainlen > 5);
     }
     if (remainlen)
         buff[i++] = _encodeTable[(remainder<<(5-remainlen))&0b11111];

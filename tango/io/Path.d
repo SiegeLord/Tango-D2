@@ -55,44 +55,27 @@
 module tango.io.Path;
 
 private import  tango.sys.Common;
-
 public  import  tango.time.Time : Time, TimeSpan;
-
-private import  tango.io.model.IFile : FileConst, FileInfo;
-
+private import  tango.io.model.IFile;
 public  import  tango.core.Exception : IOException, IllegalArgumentException;
 
-private import tango.stdc.string : memmove;
-
+private import  tango.util.Convert;
+private import  tango.text.convert.Utf;
 
 /*******************************************************************************
 
-        Various imports
+        platform-specific functions
 
 *******************************************************************************/
 
-version (Win32)
-        {
-        version (Win32SansUnicode)
-                {
-                private extern (C) int strlen (const char *s);
-                private alias WIN32_FIND_DATA FIND_DATA;
-                }
-             else
-                {
-                private extern (C) int wcslen (const wchar *s);
-                private alias WIN32_FIND_DATAW FIND_DATA;
-                }
-        }
-
-version (Posix)
-        {
-        private import tango.stdc.stdio;
-        private import tango.stdc.string;
-        private import tango.stdc.posix.utime;
-        private import tango.stdc.posix.dirent;
-        }
-
+version(Posix)
+{
+    private import core.sys.posix.sys.stat;
+    private import core.sys.posix.utime;
+    private import core.sys.posix.fcntl;
+    private import core.sys.posix.unistd;
+    private import core.sys.posix.dirent;
+}
 
 /*******************************************************************************
 
@@ -700,9 +683,9 @@ package struct FS
 
                 ***************************************************************/
 
-                private static uint getInfo (const(char[]) name, ref stat_t stats)
+                private static uint getInfo (const(char)[] name, ref stat_t stats)
                 {
-                        if (posix.stat (name.ptr, &stats))
+                        if (core.sys.posix.sys.stat.stat(toStringz(name), &stats))
                             exception (name);
 
                         return stats.st_mode;
@@ -717,7 +700,7 @@ package struct FS
                 static bool exists (const(char[]) name)
                 {
                         stat_t stats = void;
-                        return posix.stat (name.ptr, &stats) is 0;
+                        return core.sys.posix.sys.stat.stat(toStringz(name), &stats) is 0;
                 }
 
                 /***************************************************************
@@ -830,40 +813,40 @@ package struct FS
 
                 static void copy (const(char)[] source, const(char)[] dest)
                 {
-                        auto src = posix.open (source.ptr, O_RDONLY, 0640);
+                        auto src = core.sys.posix.fcntl.open(source.ptr, O_RDONLY, tango.util.Convert.octal!640);
                         scope (exit)
                                if (src != -1)
-                                   posix.close (src);
+                                   core.sys.posix.unistd.close (src);
 
-                        auto dst = posix.open (dest.ptr, O_CREAT | O_RDWR, 0660);
+                        auto dst = core.sys.posix.fcntl.open (dest.ptr, O_CREAT | O_RDWR, tango.util.Convert.octal!660);
                         scope (exit)
                                if (dst != -1)
-                                   posix.close (dst);
+                                   core.sys.posix.unistd.close (dst);
 
                         if (src is -1 || dst is -1)
                             exception (source);
 
                         // copy content
                         ubyte[] buf = new ubyte [16 * 1024];
-                        auto read = posix.read (src, buf.ptr, buf.length);
+                        auto read = core.sys.posix.unistd.read (src, buf.ptr, buf.length);
                         while (read > 0)
                               {
                               auto p = buf.ptr;
                               do {
-                                 auto written = posix.write (dst, p, read);
+                                 auto written = core.sys.posix.unistd.write (dst, p, read);
                                  p += written;
                                  read -= written;
                                  if (written is -1)
                                      exception (dest);
                                  } while (read > 0);
-                              read = posix.read (src, buf.ptr, buf.length);
+                              read = core.sys.posix.unistd.read (src, buf.ptr, buf.length);
                               }
                         if (read is -1)
                             exception (source);
 
                         // copy timestamps
                         stat_t stats;
-                        if (posix.stat (source.ptr, &stats))
+                        if (core.sys.posix.sys.stat.stat (toStringz(source), &stats))
                             exception (source);
 
                         utimbuf utim;
@@ -882,7 +865,7 @@ package struct FS
 
                 static bool remove (const(char[]) name)
                 {
-                        return tango.stdc.stdio.remove(name.ptr) != -1;
+                        return core.stdc.stdio.remove(toStringz(name)) != -1;
                 }
 
                 /***************************************************************
@@ -893,7 +876,7 @@ package struct FS
 
                 static void rename (const(char)[] src, const(char)[] dst)
                 {
-                        if (tango.stdc.stdio.rename (src.ptr, dst.ptr) is -1)
+                        if (core.stdc.stdio.rename(toStringz(src), dst.ptr) is -1)
                             exception (src);
                 }
 
@@ -907,11 +890,11 @@ package struct FS
                 {
                         int fd;
 
-                        fd = posix.open (name.ptr, O_CREAT | O_WRONLY | O_TRUNC, 0660);
+                        fd = core.sys.posix.fcntl.open (name.ptr, O_CREAT | O_WRONLY | O_TRUNC, tango.util.Convert.octal!660);
                         if (fd is -1)
                             exception (name);
 
-                        if (posix.close(fd) is -1)
+                        if (core.sys.posix.unistd.close(fd) is -1)
                             exception (name);
                 }
 
@@ -923,7 +906,7 @@ package struct FS
 
                 static void createFolder (const(char[]) name)
                 {
-                        if (posix.mkdir (name.ptr, 0777))
+                        if (core.sys.posix.sys.stat.mkdir (name.ptr, tango.util.Convert.octal!777))
                             exception (name);
                 }
 
@@ -943,18 +926,18 @@ package struct FS
                 {
                         int             ret;
                         DIR*            dir;
-                        dirent          entry;
+                        dirent*         entry;
                         dirent*         pentry;
                         stat_t          sbuf;
                         const(char)[]   prefix;
                         char[]          sfnbuf;
 
-                        dir = tango.stdc.posix.dirent.opendir (folder.ptr);
+                        dir = core.sys.posix.dirent.opendir (folder.ptr);
                         if (! dir)
                               return ret;
 
                         scope (exit)
-                               tango.stdc.posix.dirent.closedir (dir);
+                               core.sys.posix.dirent.closedir (dir);
 
                         // ensure a trailing '/' is present
                         prefix = FS.padded (folder[0..$-1]);
@@ -965,11 +948,11 @@ package struct FS
                         while (true)
                               {
                               // pentry is null at end of listing, or on an error
-                              readdir_r (dir, &entry, &pentry);
+                              readdir_r (dir, entry, &pentry);
                               if (pentry is null)
                                   break;
 
-                              auto len = tango.stdc.string.strlen (entry.d_name.ptr);
+                              auto len = core.stdc.string.strlen (entry.d_name.ptr);
                               auto str = entry.d_name.ptr [0 .. len];
                               ++len;  // include the null
 
@@ -991,14 +974,16 @@ package struct FS
                                  info.folder = info.system = false;
 
                                  if (! stat (sfnbuf.ptr, &sbuf))
-                                    {
+                                 {
                                     info.folder = (sbuf.st_mode & S_IFDIR) != 0;
                                     if (info.folder is false)
+                                    {
                                         if ((sbuf.st_mode & S_IFREG) is 0)
                                              info.system = true;
                                         else
                                            info.bytes = cast(ulong) sbuf.st_size;
                                     }
+                                 }
                                  if (all || (info.hidden | info.system) is false)
                                      if ((ret = dg(info)) != 0)
                                           break;
@@ -1078,9 +1063,9 @@ struct PathParser
 
         ***********************************************************************/
 
-        const const(char)[] toString ()
+        const immutable(char)[] toString ()
         {
-                return fp [0 .. end_];
+                return fp [0 .. end_].idup;
         }
 
         /***********************************************************************
@@ -1193,10 +1178,12 @@ struct PathParser
                    {
                    if (ext_ is 0)
                        foreach (c; x)
+                       {
                                 if (c is '.')
                                     ++ext_;
                                 else
                                    break;
+                       }
                    x = x [ext_ .. $];
                    }
                 return x;
@@ -1325,12 +1312,13 @@ struct PathParser
                             // standard() or equivalent to convert first
                             case '\\':
                                  FS.exception ("unexpected '\\' character in path: ", path[0..end]);
-
+                                 break;
+                                 
                             version (Win32)
                             {
-                            case ':':
-                                 folder_ = i + 1;
-                                 break;
+                                case ':':
+                                    folder_ = i + 1;
+                                break;
                             }
 
                             default:
@@ -1568,11 +1556,13 @@ void createPath (const(char[]) path)
         void test (const(char)[] segment)
         {
                 if (segment.length)
+                {
                     if (! exists (segment))
                           createFolder (segment);
                     else
                        if (! isFolder (segment))
                              throw new IllegalArgumentException (("Path.createPath :: file/folder conflict: " ~ segment).idup);
+                }
         }
 
         foreach (i, char c; path)

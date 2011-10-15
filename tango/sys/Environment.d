@@ -61,10 +61,12 @@ else
     }
     
     else
-        private extern (C) extern char** environ;
+        private extern (C) __gshared char** environ;
 
-    import tango.stdc.posix.stdlib;
-    import tango.stdc.string;
+    private import core.stdc.stdlib;
+    private import core.stdc.string;
+    private import core.sys.posix.stdlib;
+    private import core.sys.posix.unistd;
 }
 
 
@@ -78,17 +80,6 @@ else
 struct Environment
 {
         public alias cwd directory;
-                    
-        /***********************************************************************
-
-                Throw an exception
-
-        ***********************************************************************/
-
-        private static void exception (char[] msg)
-        {
-                throw new PlatformException (msg);
-        }
         
         /***********************************************************************
 
@@ -99,7 +90,7 @@ struct Environment
 
         ***********************************************************************/
 
-        static char[] toAbsolute(char[] path)
+        static const(char)[] toAbsolute(const(char)[] path)
         {
             scope fp = new FilePath(path);
             if (fp.isAbsolute)
@@ -138,16 +129,19 @@ struct Environment
 
                 // rifle through the path (after converting to standard format)
                 foreach (pe; Text.patterns (standard(get("PATH")), FileConst.SystemPathString))
-                         if (bin.path(pe).exists)
-                             version (Windows)
-                                      return bin;
-                                  else
-                                     {
-                                     stat_t stats;
-                                     stat(bin.cString.ptr, &stats);
-                                     if (stats.st_mode & 0100)
-                                         return bin;
-                                     }
+                {
+                    if (bin.path(pe).exists)
+                    {
+                        version (Windows) {
+                            return bin;
+                        } else {
+                            stat_t stats;
+                            stat(bin.cString.ptr, &stats);
+                            if (stats.st_mode & 0x40)
+                                return bin;
+                        }
+                    }
+                }
                 return null;
         }
 
@@ -166,7 +160,7 @@ struct Environment
 
                 **************************************************************/
 
-                static char[] get (char[] variable, char[] def = null)
+                static char[] get (const(char)[] variable, const(char)[] def = null)
                 {
                         wchar[] var = toString16(variable) ~ "\0";
 
@@ -176,13 +170,13 @@ struct Environment
                            if (SysError.lastCode is ERROR_ENVVAR_NOT_FOUND)
                                return def;
                            else
-                              exception (SysError.lastMsg);
+                              throw new PlatformException(SysError.lastMsg);
                            }
 
                         auto buffer = new wchar[size];
                         size = GetEnvironmentVariableW(var.ptr, buffer.ptr, size);
                         if (size is 0)
-                            exception (SysError.lastMsg);
+                            throw new  PlatformException(SysError.lastMsg);
 
                         return toString (buffer[0 .. size]);
                 }
@@ -203,7 +197,7 @@ struct Environment
                             val = (toString16 (value) ~ "\0").ptr;
 
                         if (! SetEnvironmentVariableW(var, val))
-                              exception (SysError.lastMsg);
+                              throw new PlatformException(SysError.lastMsg);
                 }
 
                 /**************************************************************
@@ -267,7 +261,7 @@ struct Environment
                                 tmp[path.length] = 0;
 
                                 if (! SetCurrentDirectoryA (tmp.ptr))
-                                      exception ("Failed to set current directory");
+                                      throw new PlatformException ("Failed to set current directory");
                                 }
                              else
                                 {
@@ -280,7 +274,7 @@ struct Environment
                                 tmp[i] = 0;
 
                                 if (! SetCurrentDirectoryW (tmp.ptr))
-                                      exception ("Failed to set current directory");
+                                      throw new PlatformException ("Failed to set current directory");
                                 }
                 }
 
@@ -308,7 +302,7 @@ struct Environment
                                    path = standard (dir);
                                    }
                                 else
-                                   exception ("Failed to get current directory");
+                                   throw new PlatformException ("Failed to get current directory");
                                 }
                              else
                                 {
@@ -329,7 +323,7 @@ struct Environment
                                        path[$-1] = '/';
                                    }
                                 else
-                                   exception ("Failed to get current directory");
+                                   throw new PlatformException ("Failed to get current directory");
                                 }
 
                         return path;
@@ -352,12 +346,12 @@ struct Environment
 
                 **************************************************************/
 
-                static char[] get (char[] variable, char[] def = null)
+                static char[] get (const(char)[] variable, const(char)[] def = null)
                 {
                         char* ptr = getenv ((variable ~ '\0').ptr);
 
                         if (ptr is null)
-                            return def;
+                            return def.dup;
 
                         return ptr[0 .. strlen(ptr)].dup;
                 }
@@ -378,7 +372,7 @@ struct Environment
                            result = setenv ((variable ~ '\0').ptr, (value ~ '\0').ptr, 1);
 
                         if (result != 0)
-                            exception (SysError.lastMsg);
+                            throw new PlatformException (SysError.lastMsg.idup);
                 }
 
                 /**************************************************************
@@ -388,12 +382,12 @@ struct Environment
 
                 **************************************************************/
 
-                static char[][char[]] get ()
+                static string[string] get ()
                 {
-                        char[][char[]] arr;
+                        string[string] arr;
 
                         for (char** p = environ; *p; ++p)
-                            {
+                        {
                             size_t k = 0;
                             char* str = *p;
 
@@ -405,9 +399,9 @@ struct Environment
                             char* val = str;
                             while (*str++)
                                    ++k;
-                            arr[key] = val[0 .. k];
-                            }
-
+                            arr[key.idup] = val[0 .. k].idup;
+                        }
+                        
                         return arr;
                 }
 
@@ -423,8 +417,8 @@ struct Environment
                         tmp [path.length] = 0;
                         tmp[0..path.length] = path;
 
-                        if (tango.stdc.posix.unistd.chdir (tmp.ptr))
-                            exception ("Failed to set current directory");
+                        if (core.sys.posix.unistd.chdir (tmp.ptr))
+                            throw new PlatformException ("Failed to set current directory");
                 }
 
                 /**************************************************************
@@ -437,9 +431,9 @@ struct Environment
                 {
                         char[512] tmp = void;
 
-                        char *s = tango.stdc.posix.unistd.getcwd (tmp.ptr, tmp.length);
+                        char *s = core.sys.posix.unistd.getcwd (tmp.ptr, tmp.length);
                         if (s is null)
-                            exception ("Failed to get current directory");
+                            throw new PlatformException ("Failed to get current directory");
 
                         auto path = s[0 .. strlen(s)+1].dup;
                         if (path[$-2] is '/') // root path has the slash

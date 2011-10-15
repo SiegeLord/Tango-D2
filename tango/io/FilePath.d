@@ -24,10 +24,10 @@
 module tango.io.FilePath;
 
 private import  tango.io.Path;
+private import  tango.io.model.IFile;
 
-private import  tango.io.model.IFile : FileConst, FileInfo;
-
-private import tango.stdc.string : memmove;
+private import core.stdc.stdio;
+private import core.stdc.string;
 
 /*******************************************************************************
 
@@ -62,10 +62,10 @@ class FilePath : PathView
         private PathParser      p;              // the parsed path
         private bool            dir_;           // this represents a dir?
 
-		final FilePath opOpAssign(immutable(char)[] s : "~")(const(char)[] path)
-		{
-			return append(path);
-		}
+        final FilePath opOpAssign(immutable(char)[] s : "~")(const(char)[] path)
+        {
+            return append(path);
+        }
 
         /***********************************************************************
 
@@ -122,7 +122,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const immutable(char)[] toString ()
+        override const string toString()
         {
                 return  p.toString.idup;
         }

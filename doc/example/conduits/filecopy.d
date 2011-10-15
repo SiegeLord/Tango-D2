@@ -1,6 +1,5 @@
-
 private import  tango.io.Console,
-                tango.io.device.File;
+                tango.io.File;
 
 /*******************************************************************************
 

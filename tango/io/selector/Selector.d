@@ -122,6 +122,8 @@
  */
 module tango.io.selector.Selector;
 
+public import tango.io.selector.SelectorException;
+
 version (linux)
 {
     public import tango.io.selector.EpollSelector;

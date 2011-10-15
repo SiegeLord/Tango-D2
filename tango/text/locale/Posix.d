@@ -12,24 +12,18 @@
 
 module tango.text.locale.Posix;
 
-version (Posix)
+private import  tango.core.Exception;
+
+private import  tango.text.locale.Data,
+                tango.text.convert.Utf;
+
+private import  core.sys.posix.stdlib,
+                core.stdc.locale,
+                core.stdc.ctype,
+                core.stdc.string;
+
+int getUserCulture()
 {
-alias tango.text.locale.Posix nativeMethods;
-
-private import tango.core.Exception;
-private import tango.text.locale.Data;
-private import tango.stdc.ctype;
-private import tango.stdc.posix.stdlib;
-private import tango.stdc.string;
-private import tango.stdc.stringz;
-private import tango.stdc.locale;
-
-/*private extern(C) char* setlocale(int type, char* locale);
-private extern(C) void putenv(char*);
-
-private enum {LC_CTYPE, LC_NUMERIC, LC_TIME, LC_COLLATE, LC_MONETARY, LC_MESSAGES, LC_ALL, LC_PAPER, LC_NAME, LC_ADDRESS, LC_TELEPHONE, LC_MEASUREMENT, LC_IDENTIFICATION};*/
-
-int getUserCulture() {
   char* env = getenv("LC_ALL");
   if (!env || *env == '\0') {
     env = getenv("LANG");
@@ -66,10 +60,8 @@ int getUserCulture() {
   return 0;
 }
 
-import tango.io.Stdout;
-import tango.stdc.stdio;
-
-void setUserCulture(int lcid) {
+void setUserCulture(int lcid)
+{
   char[] name;
   try {
     name = CultureData.getDataFromCultureID(lcid).name ~ ".utf-8";
@@ -149,5 +141,4 @@ debug(UnitTest)
         assert(compareString(c, "Alphabet", 0, 8, "lphabet", 0, 7, true) != 0);
         assert(compareString(c, "Alphabet", 0, 7, "ZAlphabet", 1, 7, false) == 0);
     }
-}
 }

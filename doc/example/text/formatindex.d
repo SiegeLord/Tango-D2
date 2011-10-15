@@ -9,7 +9,8 @@
 
 import tango.io.Stdout;
 
-void main(){
+void main()
+{
     Stdout.formatln("Many {1} can now be {0} around to make {2} easier,\n and {1} can also be repeated.", 
                     "switched", "arguments", "localization");
 }

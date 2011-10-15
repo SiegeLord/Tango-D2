@@ -28,7 +28,7 @@ TODO
 
 import tango.core.ByteSwap : ByteSwap;
 import tango.io.device.Array : Array;
-import tango.io.device.File : File;
+import tango.io.File : File;
 import tango.io.FilePath : FilePath, PathView;
 import tango.io.device.FileMap : FileMap;
 import tango.io.stream.Zlib : ZlibInput, ZlibOutput;
@@ -967,7 +967,7 @@ class ZipBlockWriter : ZipWriter
      * Creates a ZipBlockWriter using the specified file on the local
      * filesystem.
      */
-    this(char[] path)
+    this(const(char)[] path)
     {
         file_output = new File(path, File.WriteCreate);
         this(file_output);
@@ -1711,7 +1711,7 @@ private:
 //
 // Convenience methods
 
-void createArchive(char[] archive, Method method, char[][] files...)
+void createArchive(const(char)[] archive, Method method, char[][] files...)
 {
     scope zw = new ZipBlockWriter(archive);
     zw.method = method;

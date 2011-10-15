@@ -56,7 +56,7 @@ class Conduit : IConduit
 
         this ()
         {
-                auto f = Fiber.getThis;
+                //auto f = Fiber.getThis;
                 //if (f)								 // optional scheduler [does not exist in druntime)
                 //    scheduler = f.event.scheduler;	 // optional scheduler [does not exist in druntime)
         }

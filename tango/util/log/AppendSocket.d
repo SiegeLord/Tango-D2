@@ -18,7 +18,7 @@ private import  tango.io.Console;
 
 private import  tango.io.stream.Buffered;
                 
-private import  tango.net.device.Socket,
+private import  tango.net.Socket,
                 tango.net.InternetAddress;
 
 /*******************************************************************************
@@ -62,7 +62,7 @@ public class AppendSocket : Appender
 
         ***********************************************************************/
 
-        Mask mask ()
+        override const Mask mask ()
         {
                 return mask_;
         }
@@ -73,7 +73,7 @@ public class AppendSocket : Appender
 
         ***********************************************************************/
 
-        char[] name ()
+        override const const(char)[] name()
         {
                 return this.classinfo.name;
         }
@@ -88,7 +88,7 @@ public class AppendSocket : Appender
                  
         ***********************************************************************/
 
-        void append (LogEvent event)
+        override void append (LogEvent event)
         {
                 auto layout = layout();
 
@@ -122,7 +122,7 @@ public class AppendSocket : Appender
                     
         ***********************************************************************/
 
-        void close ()
+        override void close ()
         {
                 if (conduit)
                     conduit.detach;

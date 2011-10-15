@@ -12,7 +12,7 @@ version(solaris){ version=has_urandom; }
 version(has_urandom) {
     private import Integer = tango.text.convert.Integer;
     import core.sync.mutex: Mutex;
-    import tango.io.device.File; // use stdc read/write?
+    import tango.io.File; // use stdc read/write?
 
     /// basic source that takes data from system random device
     /// This is an engine, do not use directly, use RandomG!(Urandom)

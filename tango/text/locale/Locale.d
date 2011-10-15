@@ -71,6 +71,7 @@ public class Locale : Layout!(char)
 
         ***********************************************************************/
 
+        /+
         protected override char[] unknown (char[] output, const(char)[] format, TypeInfo type, Arg p)
         {
                 switch (type.classinfo.name[9])
@@ -88,6 +89,7 @@ public class Locale : Layout!(char)
 
                 return "{unhandled argument type: ".dup ~ type.toString ~ '}';
         }
+        +/
 
         /**********************************************************************
 

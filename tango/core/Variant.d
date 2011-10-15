@@ -7,10 +7,11 @@
  */
 module tango.core.Variant;
 
-private import tango.core.Memory : GC;
-private import tango.core.Vararg;
-private import tango.core.Traits;
-private import tango.core.Tuple;
+private import  tango.core.Traits,
+                tango.core.Tuple;
+
+private import  core.vararg,
+                core.memory;
 
 private extern(C) Object _d_toObject(void*);
 
@@ -113,8 +114,8 @@ private
              */
             struct Array
             {
-                size_t length;
-                void* ptr;
+                size_t       length;
+                const(void)* ptr;
             }
             Array array;
 
@@ -133,7 +134,7 @@ private
          * Of course, the compiler could always re-order the length and ptr
          * assignment.  Oh well.
          */
-        void setArray(void* ptr, size_t length)
+        void setArray(const(void)* ptr, size_t length)
         {
             array.length = 0;
             array.ptr = ptr;
@@ -453,7 +454,7 @@ struct Variant
                     this.value.heap = cast(void[])buffer;
                 }
             }
-            return *this;
+            return this;
         }
     }
 
@@ -731,7 +732,7 @@ struct Variant
      * Returns:
      *  The string representation of the type contained within the Variant.
      */
-    char[] toString()
+    immutable(char)[] toString()
     {
         return type.toString;
     }
@@ -769,7 +770,7 @@ struct Variant
 
             foreach( i, ref v ; vs )
             {
-                version(DigitalMars) version(X86_64)
+                version(DigitalMars) { } version(X86_64)
                 {
                     scope void[] buffer;
                     uint len = 0;
@@ -784,7 +785,9 @@ struct Variant
                     Variant.fromPtr(types[i], buffer.ptr, v);
                 }
                 else
+                {
                     args = Variant.fromPtr(types[i], args, v);
+                }
             }
 
             return vs;
@@ -1046,7 +1049,7 @@ debug( UnitTest )
 
         {
             struct A { size_t l; void* p; }
-            char[] b = "123";
+            string b = "123";
             A a = *cast(A*)(&b);
 
             assert( a.l == b.length );
@@ -1258,8 +1261,6 @@ debug( UnitTest )
 
     version( EnableVararg )
     {
-        private import tango.core.Vararg;
-
         unittest
         {
             class A

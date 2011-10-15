@@ -20,13 +20,13 @@ class AES : BlockCipher
     private
     {
         // Round constants
-        enum uint[10] RCON = [
+        immutable uint[10] RCON = [
             0x01000000u, 0x02000000u, 0x04000000u, 0x08000000u, 0x10000000u,
             0x20000000u, 0x40000000u, 0x80000000u, 0x1B000000u, 0x36000000u
         ];
         
         // Sbox and its inverse
-        enum ubyte[256] S = [
+        immutable ubyte[256] S = [
             0x63u, 0x7cu, 0x77u, 0x7bu, 0xf2u, 0x6bu, 0x6fu, 0xc5u,
             0x30u, 0x01u, 0x67u, 0x2bu, 0xfeu, 0xd7u, 0xabu, 0x76u,
             0xcau, 0x82u, 0xc9u, 0x7du, 0xfau, 0x59u, 0x47u, 0xf0u,
@@ -97,7 +97,7 @@ class AES : BlockCipher
         ];
         
         // Round tables
-        enum uint[256] TE0 = [
+        immutable uint[256] TE0 = [
             0xc66363a5u, 0xf87c7c84u, 0xee777799u, 0xf67b7b8du,
             0xfff2f20du, 0xd66b6bbdu, 0xde6f6fb1u, 0x91c5c554u,
             0x60303050u, 0x02010103u, 0xce6767a9u, 0x562b2b7du,
@@ -633,7 +633,7 @@ class AES : BlockCipher
             0xcb84617bu, 0x32b670d5u, 0x6c5c7448u, 0xb85742d0u
         ];
 
-        enum uint BLOCK_SIZE = 16;
+        immutable uint BLOCK_SIZE = 16;
         
         uint ROUNDS, // Number of rounds depends on keysize
              s0, s1, s2, s3; // State
