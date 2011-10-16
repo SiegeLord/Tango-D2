@@ -369,7 +369,7 @@ class FileGroup : VfsFiles
 
         ***********************************************************************/
 
-        final size_t bytes ()
+        final ulong bytes ()
         {
                 return stats.bytes;
         }
