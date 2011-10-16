@@ -61,7 +61,7 @@ public import core.thread;
  */
 class Thread : core.thread.Thread
 {
-	///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     // Initialization
     ///////////////////////////////////////////////////////////////////////////
 
@@ -76,10 +76,11 @@ class Thread : core.thread.Thread
      * In:
      * fn must not be null.
      */
-    this( void function() fn, size_t sz = 0 ) {
-			super(fn, sz);
-	}
-	
+    this( void function() fn, size_t sz = 0 )
+    {
+            super(fn, sz);
+    }
+    
     /**
      * Initializes a thread object which is associated with a dynamic
      * D function.
@@ -91,10 +92,11 @@ class Thread : core.thread.Thread
      * In:
      * dg must not be null.
      */
-    this( void delegate() dg, size_t sz = 0 ) {
-			super(dg, sz);
-	}
-	
+    this( void delegate() dg, size_t sz = 0 )
+    {
+            super(dg, sz);
+    }
+
     /**
      * Suspends the calling thread for at least the supplied time, up to a
      * maximum of (uint.max - 1) milliseconds.
@@ -113,11 +115,12 @@ class Thread : core.thread.Thread
      * Thread.sleep( 5 );    // sleep for 5 seconds
      * -------------------------------------------------------------------------
      */
-    static void sleep( double period ) {
-			long lperiod = cast(long)(period * 10_000_000);
-			Thread.sleep(lperiod);
-	}
-	
+    static void sleep( double period )
+    {
+            long lperiod = cast(long)(period * 10_000_000);
+            typeof(super).sleep(lperiod);
+    }
+    
     /+
     /**
      * Suspends the calling thread for at least the supplied time, up to a
@@ -171,35 +174,7 @@ class Thread : core.thread.Thread
                 tin = tout;
             }
         }
-    }
-
-
-    /**
-     * Suspends the calling thread for at least the supplied time, up to a
-     * maximum of (uint.max - 1) milliseconds.
-     *
-     * Params:
-     *  period = The minimum duration the calling thread should be suspended,
-     *           in seconds.  Sub-second durations are specified as fractional
-     *           values.  Please note that because period is a floating-point
-     *           number, some accuracy may be lost for certain intervals.  For
-     *           this reason, the TimeSpan overload is preferred in instances
-     *           where an exact interval is required.
-     *
-     * In:
-     *  period must be less than (uint.max - 1) milliseconds.
-     *
-     * Example:
-     * -------------------------------------------------------------------------
-     * Thread.sleep( 0.05 ); // sleep for 50 milliseconds
-     * Thread.sleep( 5 );    // sleep for 5 seconds
-     * -------------------------------------------------------------------------
-     */
-    static void sleep( double period )
-    {
-      sleep( TimeSpan.interval( period ) );
-    }
-    +/
+    }+/
 }
 
 /**
@@ -268,14 +243,15 @@ class Fiber : core.thread.Fiber
      * In:
      *  fn must not be null.
      */
-    this( void function() fn, size_t sz = 0) {
-		if(sz) {
-			super(fn, sz);
-		} else {
-			super(fn);
-		}
-	}
-	
+    this( void function() fn, size_t sz = 0)
+    {
+        if(sz) {
+            super(fn, sz);
+        } else {
+            super(fn);
+        }
+    }
+    
     /**
      * Initializes a fiber object which is associated with a dynamic
      * D function.
@@ -287,11 +263,12 @@ class Fiber : core.thread.Fiber
      * In:
      *  dg must not be null.
      */
-    this( void delegate() dg, size_t sz = 0 ) {
-		if(sz) {
-			super(dg, sz);
-		} else {
-			super(dg);
-		}
-	} 
+    this( void delegate() dg, size_t sz = 0 )
+    {
+        if(sz) {
+            super(dg, sz);
+        } else {
+            super(dg);
+        }
+    }
 }
