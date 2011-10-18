@@ -25,8 +25,11 @@ SRC_CORE=tango/core/Array.d \
 	tango/core/BitArray.d \
 	tango/core/ByteSwap.d \
 	tango/core/Exception.d \
+	tango/core/RuntimeTraits.d \
 	tango/core/Traits.d \
 	tango/core/Thread.d \
+	tango/core/Variant.d \
+	tango/core/Version.d \
 	\
 	tango/sys/Environment.d \
 	tango/sys/Common.d \
@@ -241,7 +244,7 @@ endif
 # generate all target for the examles
 #DIR_EXAMPLES=$(wildcard ./doc/example/*) uncomment when all examples work!
 # ./doc/example/conduits <-- not all of them convered
-DIR_EXAMPLES=./doc/example/concurrency ./doc/example/text ./doc/example/console ./doc/example/networking ./doc/example/sql ./doc/example/system
+DIR_EXAMPLES=./doc/example/concurrency ./doc/example/text ./doc/example/console ./doc/example/networking ./doc/example/sql ./doc/example/system ./doc/example/traits
 SRC_EXAMPLES:=$(foreach DIR_EXAMPLE,$(DIR_EXAMPLES),$(wildcard $(DIR_EXAMPLE)/*.d))
 PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 
@@ -263,8 +266,8 @@ release:
 debug:
 		$(MAKE) MODEL=$(MODEL) BUILD=debug --no-print-directory -f $(MAKEFILE)
 unittest:
-		$(MAKE) unittest MODEL=$(MODEL) BUILD=release --no-print-directory -f $(MAKEFILE)
 		$(MAKE) unittest MODEL=$(MODEL) BUILD=debug --no-print-directory -f $(MAKEFILE)
+		$(MAKE) unittest MODEL=$(MODEL) BUILD=release --no-print-directory -f $(MAKEFILE)
 install:
 		$(MAKE) install MODEL=$(MODEL) BUILD=release --no-print-directory -f $(MAKEFILE)
 else
@@ -311,7 +314,7 @@ $(ROOT)/%.o:%.d
 
 # generate documentation of source file
 $(DOCDIR)/%.html:%.d
-		$(DMD) -o- -Df$@ $<
+		$(DMD) -o- -version=TangoDoc -Df$@ $<
 
 # generate examples
 %: %.d
