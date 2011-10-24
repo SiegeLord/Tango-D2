@@ -101,7 +101,7 @@ public class InternetAddress : Address
          */
         this (sockaddr* addr) 
         { 
-                sin = *(cast(sockaddr_in*)addr); 
+                this.sin = *(cast(sockaddr_in*)addr); 
         }
         
         /**

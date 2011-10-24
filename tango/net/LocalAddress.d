@@ -13,13 +13,13 @@ module tango.net.LocalAddress;
 private import core.sys.posix.sys.un;
 public import  tango.net.Address;
 
+
 /**
  * LocalAddress represents the Unix Domain Socket.
  */
 class LocalAddress : Address
 {
         private sockaddr_un sun;
-        private immutable(char)[] _path;
         
         /**
          * constructs a LocalAddress (unix domain socket) which is a filename in most cases. 
@@ -38,13 +38,18 @@ class LocalAddress : Address
         {
                 assert (path.length < 108);
                 
-                // save idup version of path
-                this._path = path.idup;
-                
                 // setup sun_path
                 this.sun.sun_family = AF_UNIX;
                 this.sun.sun_path[0..$] = 0;
-                this.sun.sun_path[0..this._path.length] = cast(const(byte[]))this._path[0..$];
+                this.sun.sun_path[0..path.length] = cast(const(byte[]))path[0..$];
+        }
+        
+        /**
+         * construct a LocalAddress by some sockaddr* structure.
+         */
+        this (sockaddr* addr) 
+        {
+                this.sun = *(cast(sockaddr_un*)addr);
         }
         
         /**
@@ -106,18 +111,19 @@ class LocalAddress : Address
          */
         override immutable(char)[] toString ()
         {
+                const(char)[] path = cast(const(char)[])this.sun.sun_path;
                 if (isAbstract)
-                    return ("unix:abstract=" ~ _path[1..$]).idup;
+                    return ("unix:abstract=" ~ path[1..$]).idup;
                 else
-                    return ("unix:path=" ~ _path).idup;
+                    return ("unix:path=" ~ path).idup;
         }
         
         /**
          * returns the path that was provided by the constructor
          */
-        final immutable(char)[] path ()
+        final immutable(char)[] path()
         {
-                return this._path;
+                return (cast(char[])this.sun.sun_path).idup;
         }
         
         /**
@@ -125,6 +131,6 @@ class LocalAddress : Address
          */
         final bool isAbstract ()
         {
-                return this._path[0] == 0;
+                return this.sun.sun_path[0] == 0;
         }
 }

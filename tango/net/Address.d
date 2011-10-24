@@ -22,6 +22,7 @@ private import  tango.core.Exception;
 
 private import  tango.net.Socket,
                 tango.net.NetHost,
+                tango.net.LocalAddress,
                 tango.net.InternetAddress;
 
 private import  Utf = tango.text.convert.Utf;
@@ -116,7 +117,9 @@ public abstract class Address
                         case AddressFamily.INET: 
                              return new InternetAddress(sa); 
                         case AddressFamily.INET6: 
-                             return new IPv6Address(sa); 
+                             return new IPv6Address(sa);
+                        case AddressFamily.UNIX:
+                             return new LocalAddress(sa);
                         default: 
                              return null; 
                 } 

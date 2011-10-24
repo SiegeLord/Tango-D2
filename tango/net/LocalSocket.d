@@ -65,6 +65,10 @@ class LocalSocket : Socket
 
     /**
      * connect function with addr and host
+     * ---
+     * LocalSocket socket = new LocalSocket();
+     * socket.connect("/var/run/foo/bar.sock");
+     * ---
      */
     public void connect(const(char)[] path)
     {

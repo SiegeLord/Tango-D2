@@ -28,6 +28,7 @@ private import  tango.io.device.Conduit,
 
 private import  tango.net.Address,
                 tango.net.InternetAddress,
+                tango.net.LocalAddress,
                 tango.net.SocketSet;
 
 /*******************************************************************************
@@ -343,7 +344,7 @@ class Socket : Conduit, ISelectable
                 
                 // normal connect
                 if(.connect(this.sock, address.name, address.nameLen) == -1) {
-                    throw new SocketException("Unable to connect socket: ", __FILE__, __LINE__);
+                    throw new SocketException("Unable to connect socket: ");
                 }
                 
                 return this;
@@ -564,7 +565,7 @@ class Socket : Conduit, ISelectable
         ssize_t receive (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 if (!buf.length)
-                    throw new SocketException("Socket.receive :: target buffer has 0 length", __FILE__, __LINE__);
+                    throw new SocketException("Socket.receive :: target buffer has 0 length");
 
                 return .recv(this.sock, buf.ptr, buf.length, flags);
         }
@@ -582,7 +583,7 @@ class Socket : Conduit, ISelectable
         ssize_t receiveFrom (void[] buf, SocketFlags flags, Address from)
         {
                 if (!buf.length)
-                    throw new SocketException("Socket.receiveFrom :: target buffer has 0 length", __FILE__, __LINE__);
+                    throw new SocketException("Socket.receiveFrom :: target buffer has 0 length");
 
                 assert(from.addressFamily() == family);
                 uint nameLen = from.nameLen();
@@ -609,7 +610,7 @@ class Socket : Conduit, ISelectable
         ssize_t receiveFrom (void[] buf, SocketFlags flags = SocketFlags.NONE)
         {
                 if (!buf.length)
-                    throw new SocketException("Socket.receiveFrom :: target buffer has 0 length", __FILE__, __LINE__);
+                    throw new SocketException("Socket.receiveFrom :: target buffer has 0 length");
 
                 return .recvfrom(sock, buf.ptr, buf.length, flags, null, null);
         }
@@ -658,7 +659,45 @@ class Socket : Conduit, ISelectable
         {
                 super.error (this.toString ~ " :: " ~ SysError.lastMsg);
         }
-
+        
+        /**
+         * will return the name of the peer associated with this socket, that was usually specified by connect.
+         * ---
+         * TcpSocket socket = ...
+         * Address peerAddress = localSocket.peerAddres();                      // fetch the peer address
+         * Stdout.formatln("Connecting from {}", peerAddress.toString());       // prints: 218.1.234.14:44980
+         * ---
+         */
+        public Address peerAddres()
+        {
+            sockaddr sa;
+            socklen_t sa_len = sa.sizeof;
+            
+            if(.getpeername(this.sock, &sa, &sa_len) !=  0)
+                throw new SocketException("Unable to call getpeername.");
+            
+            return Address.create(&sa);
+        }
+        
+        /**
+         * will return the local side of this connection
+         * ---
+         * TcpSocket socket = ...
+         * Address localAddress = socket.localAddres();                          // fetch the local address
+         * Stdout.formatln("Connecting from {}", localAddress.toString());       // prints: 127.0.0.1:8080
+         * ---
+         */
+        public Address localAddress()
+        {
+            sockaddr sa;
+            socklen_t sa_len = sa.sizeof;
+            
+            if(.getsockname(this.sock, &sa, &sa_len) !=  0)
+                throw new SocketException("Unable to call getsockname.");
+            
+            return Address.create(&sa);
+        }
+        
         /***********************************************************************
  
         ***********************************************************************/
