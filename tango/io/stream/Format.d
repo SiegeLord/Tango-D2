@@ -179,13 +179,26 @@ class FormatOutput(T) : OutputFilter
 
                 Output a newline and optionally flush
 
+		---
+		FormatOutput format = ...
+		format.newline();	// single newline
+		format.newline(2);	// two newlines
+		---
+
         ***********************************************************************/
-        final FormatOutput newline() {
+        final FormatOutput newline(uint count = 1)
+	{
+		// do eols
+		for(uint i = 0; i < count; i++)
 			sink.write(eol);
-			if (flushLines)
-				sink.flush;
-			return this;
-		}
+		
+		// flushing?
+		if (flushLines)
+			sink.flush;
+		
+		return this;
+	}
+
         /**********************************************************************
 
                 Control implicit flushing of newline(), where true enables
