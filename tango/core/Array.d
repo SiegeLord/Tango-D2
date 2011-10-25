@@ -3498,8 +3498,8 @@ version (TangoDoc)
 	  * return values are stored in another array.
 	  *
 	  * Params:
-	  *		func   = the function to apply.
 	  *		array  = the array.
+	  *		func   = the function to apply.
 	  *		buf    = a buffer in which to store the results. This will be resized if it does not have sufficient space.
 	  *
 	  * Returns:
@@ -3507,15 +3507,19 @@ version (TangoDoc)
 	  *		ith element is the result of applying func to the ith element of the
 	  *		input array
 	  */
-	Elem2[] map(Map2E func, Elem[] array, Elem2[] buf = null);
+	Elem2[] map(Elem[] array, Map2E func, Elem2[] buf = null);
 }
 else
 {
 	template map(Func, Array)
 	{
-		ReturnTypeOf!(Func)[] map(Func func, Array array, ReturnTypeOf!(Func)[] buf = null)
+		ReturnTypeOf!(Func)[] map(Array array, Func func, ReturnTypeOf!(Func)[] buf = null)
 		{
-			foreach (a; array) buf ~= func(a);
+			if (buf.length < array.length)
+			{
+				buf.length = array.length;
+			}
+			foreach (i, a; array) buf[i] = func(a);
 			return buf;
 		}
 	}
@@ -3548,18 +3552,19 @@ version (TangoDoc)
 	 * which is then returned.
 	 *
 	 * Params:
-	 *		func = the reductor function
 	 *		array = the array to reduce
+	 *		func = the reductor function
 	 *
 	 *	Returns: the single element reduction
 	 */
-	Elem reduce(Reduce2E func, Elem[] array);
+	Elem reduce(Elem[] array, Reduce2E func);
 }
 else
 {
-	template reduce(Func, Array)
+	template reduce(Array, Func)
 	{
-		ReturnTypeOf!(Func) reduce(Func func, Array array)
+		static assert(isCallableType!(Func)); 
+		ReturnTypeOf!(Func) reduce(Array array, Func func)
 		{
 			if (array.length == 0) return ReturnTypeOf!(Func).init;
 			auto e = array[0];
@@ -3594,32 +3599,44 @@ version( TangoDoc )
 	 * elements will be preserved. 
 	 * 
 	 * Params: 
-	 *  buf  = The array to scan. 
-	 *  pred = The evaluation predicate, which should return true if the 
-	 *         element satisfies the condition and false if not.  This 
-	 *         predicate may be any callable type. 
+	 *  array = The array to scan. 
+	 *  pred  = The evaluation predicate, which should return true if the 
+	 *          element satisfies the condition and false if not.  This 
+	 *          predicate may be any callable type. 
+	 *  buf   = an optional buffer into which elements are filtered. This
+	 *          is the array that gets returned to you.
 	 * 
 	 * Returns: 
 	 *  A new array with just the elements from buf that satisfy pred. 
+	 *
+	 * Notes:
+	 *	While most Array functions that take an output buffer size that buffer
+	 *  optimally, in this case, there is no way of knowing whether the output
+	 *  will be empty or the entire input array. If you have special knowledge
+	 *  in this regard, preallocating the output buffer will be advantageous.
 	 */ 
-	Elem[] filter( Elem[] buf, Pred1E pred ); 
+	Elem[] filter(Elem[] array, Pred1E pred, Elem[] buf = null); 
 } 
 else 
 { 
-	template filter( Elem, Pred ) 
+	template filter(Array, Pred) 
 	{ 
-		static assert( isCallableType!(Pred) ); 
+		static assert(isCallableType!(Pred)); 
 
-
-		Elem[] filter( Elem[] buf, Pred pred ) 
+		ParameterTupleOf!(Pred)[0][] filter(Array array, Pred pred, ParameterTupleOf!(Pred)[0][] buf = null) 
 		{ 
-			Elem[] r; 
-			for( size_t pos = 0, len = buf.length; pos < len; ++pos ) 
-			{ 
-				if( pred( buf[pos] ) ) 
-					r ~= buf[pos]; 
-			} 
-			return r; 
+			// Unfortunately, we don't know our output size -- it could be empty or
+			// the length of the input array. So we won't try to do anything fancy
+			// with preallocation.
+			buf.length = 0;
+			foreach (i, e; array)
+			{
+				if (pred(e))
+				{
+					buf ~= e;
+				}
+			}
+			return buf; 
 		} 
 	} 
 
