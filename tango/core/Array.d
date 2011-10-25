@@ -1209,7 +1209,17 @@ else
             return cnt;
         }
     }
-
+    
+    template count( Buf )
+    {
+        size_t count( Buf buf )
+        {
+            size_t cnt = 0;
+            foreach(ElemTypeOf!(Buf) cur; buf)
+                cnt++;
+            return cnt;
+        }
+    }
 
     template count( Buf, Pat )
     {

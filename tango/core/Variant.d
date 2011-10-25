@@ -773,7 +773,7 @@ struct Variant
                 version(DigitalMars) { } version(X86_64)
                 {
                     scope void[] buffer;
-                    uint len = 0;
+                    size_t len = 0;
 
                     foreach(argType; types)
                         len =  max(len,(argType.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1));

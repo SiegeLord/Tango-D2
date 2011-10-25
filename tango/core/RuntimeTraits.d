@@ -48,7 +48,7 @@ bool isDerived (ClassInfo derived, ClassInfo base)
     do
         if (derived is base)
             return true;
-    while ((derived = derived.base) !is null)
+    while ((derived = derived.base) !is null);
     return false;
 }
 

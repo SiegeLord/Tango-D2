@@ -32,9 +32,9 @@ template BaseTypeOf( T )
  */
 template isStringType( T )
 {
-	const bool isStringType = is( T : const(char)[] )  ||
-							  is( T : const(wchar)[] ) ||
-							  is( T : const(dchar)[] );
+    const bool isStringType = is( T : const(char)[] )  ||
+                              is( T : const(wchar)[] ) ||
+                              is( T : const(dchar)[] );
 }
 
 /**
@@ -160,7 +160,7 @@ template isAtomicType(T)
  */
 template isIntegral(T)
 {
-	static if( is( T == bool )
+    static if( is( T == bool )
             || is( T == byte )
             || is( T == short )
             || is( T == int )
@@ -479,6 +479,13 @@ template rankOfArray(T) {
     } else {
         const uint rankOfArray = 0;
     }
+}
+
+/**
+ * Returns all members of a specifc type
+ */
+template AllMembersOf(T) {
+    enum AllMembersOf = __traits(allMembers, T);
 }
 
 /// type of the keys of an AA
