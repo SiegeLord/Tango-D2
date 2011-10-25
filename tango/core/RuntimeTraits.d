@@ -233,7 +233,7 @@ ClassInfo[] baseTypes (ClassInfo type)
 }
 
 ///
-ModuleInfo moduleOf (ClassInfo type)
+ModuleInfo* moduleOf (ClassInfo type)
 {
     foreach (modula; ModuleInfo)
         foreach (klass; modula.localClasses)
