@@ -16,6 +16,6 @@ module tango.core.Version;
 
 /// Tango's version.
 public enum Tango {
-    Major = 1, /// Major version number.
+    Major = 2, /// Major version number.
     Minor = 0  /// Minor version number.
 }
