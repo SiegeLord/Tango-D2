@@ -161,8 +161,9 @@ package struct FS
         static inout(char[]) padded (inout(char[]) path, char c = '/')
         {
                 if (path.length && path[$-1] != c)
-                    path = path ~ c;
-                return path;
+                    return (path ~ c);
+                else
+                    return path;
         }
 
         /***********************************************************************
@@ -177,8 +178,9 @@ package struct FS
         static inout(char[]) paddedLeading (inout(char[]) path, char c = '/')
         {
                 if (path.length && path[0] != c)
-                    path = c ~ path;
-                return path;
+                    return (c ~ path);
+                else
+                    return path;
         }
 
         /***********************************************************************
@@ -191,8 +193,9 @@ package struct FS
         static inout(char[]) stripped (inout(char[]) path, char c = '/')
         {
                 if (path.length && path[$-1] is c)
-                    path = path [0 .. $-1];
-                return path;
+                    return(path [0 .. $-1]);
+                else
+                    return path;
         }
 
         /***********************************************************************

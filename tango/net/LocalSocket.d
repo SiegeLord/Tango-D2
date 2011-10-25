@@ -70,8 +70,9 @@ class LocalSocket : Socket
      * socket.connect("/var/run/foo/bar.sock");
      * ---
      */
-    public void connect(const(char)[] path)
+    public LocalSocket connect(const(char)[] path)
     {
-        return super.connect(new LocalAddress(path));
+        super.connect(new LocalAddress(path));
+	return this;
     }
 };
