@@ -3513,13 +3513,13 @@ version (TangoDoc)
 }
 else
 {
-	template map(TOut, TIn)
+
+	template map(Func, Array)
 	{
-		TOut[] map(TOut delegate(TIn) func, TIn[] array)
+		ReturnTypeOf!(Func)[] map(Func func, Array array)
 		{
-			TOut[] arr;
-			arr.length = array.length;
-			foreach (i, a; array) arr[i] = func(a);
+			ReturnTypeOf!(Func)[] arr;
+			foreach (a; array) arr ~= func(a);
 			return arr;
 		}
 	}
@@ -3557,22 +3557,20 @@ version (TangoDoc)
 	 *
 	 *	Returns: the single element reduction
 	 */
-	Elem reduce(Elem delegate(Elem, Elem) func, Elem[] array);
+	Elem reduce(Pred2E func, Elem[] array);
 }
 else
 {
-	template reduce(Func, Elem)
+
+	template reduce(Func, Array)
 	{
-		static assert (isCallableType!(Func));
-		Elem reduce(Func func, Elem[] array)
+		ReturnTypeOf!(Func) reduce(Func func, Array array)
 		{
-			if (array.length == 0)
-			{
-				return Elem.init;
-			}
+			if (array.length == 0) return ReturnTypeOf!(Func).init;
 			auto e = array[0];
-			foreach (a; array[1..$])
+			foreach (i, a; array)
 			{
+				if (i == 0) continue;
 				e = func(e, a);
 			}
 			return e;
