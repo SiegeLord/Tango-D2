@@ -3484,3 +3484,177 @@ else
       }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Map
+////////////////////////////////////////////////////////////////////////////////
+
+version (TangoDoc)
+{
+	/** Apply a function to each element an array. The function's
+	  * return values are stored in another array.
+	  *
+	  * Params:
+	  *		func   = the function to apply.
+	  *		array  = the array.
+	  *		buf    = a buffer in which to store the results. This will be resized if it does not have sufficient space.
+	  *
+	  * Returns:
+	  *		an array (the same as the buffer passed in, if possible) where the
+	  *		ith element is the result of applying func to the ith element of the
+	  *		input array
+	  *
+	  * Notes:
+	  *		Unlike other functions, the function supplied to map() must be a
+	  *		delegate. This is due to limitations in D's implicit template
+	  *		instantiation.
+	  */
+	Elem2[] map(Elem2 delegate(Elem) func, Elem[] array, Elem2[] buf = null);
+}
+else
+{
+	template map(TOut, TIn)
+	{
+		TOut[] map(TOut delegate(TIn) func, TIn[] array)
+		{
+			TOut[] arr;
+			arr.length = array.length;
+			foreach (i, a; array) arr[i] = func(a);
+			return arr;
+		}
+	}
+
+	debug (UnitTest)
+	{
+		unittest
+		{
+			auto arr = map((int i) { return i * 2L; }, [1, 17, 8, 12]);
+			assert(arr == [2L, 34L, 16L, 24L]);
+		}
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Reduce
+////////////////////////////////////////////////////////////////////////////////
+
+version (TangoDoc)
+{
+	/** Reduce an array of elements to a single element, using a user-supplied
+	 * reductor function.
+	 *
+	 * If the array is empty, return the default value for the element type.
+	 *
+	 * If the array contains only one element, return that element.
+	 *
+	 * Otherwise, the reductor function will be called on every member of the
+	 * array and on every resulting element until there is only one element,
+	 * which is then returned.
+	 *
+	 * Params:
+	 *		func = the reductor function
+	 *		array = the array to reduce
+	 *
+	 *	Returns: the single element reduction
+	 */
+	Elem reduce(Elem delegate(Elem, Elem) func, Elem[] array);
+}
+else
+{
+	template reduce(Func, Elem)
+	{
+		static assert (isCallableType!(Func));
+		Elem reduce(Func func, Elem[] array)
+		{
+			if (array.length == 0)
+			{
+				return Elem.init;
+			}
+			auto e = array[0];
+			foreach (a; array[1..$])
+			{
+				e = func(e, a);
+			}
+			return e;
+		}
+	}
+
+	debug (UnitTest)
+	{
+		unittest
+		{
+			auto result = reduce((int i, int j) { return i * j; }, [1, 17, 8, 12]);
+			assert(result == 1632);
+		}
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Filter
+////////////////////////////////////////////////////////////////////////////////
+
+version( TangoDoc ) 
+{ 
+	/** 
+	 * Performs a linear scan of buf from [0 .. buf.length$(RP), creating a new 
+	 * array with just the elements that satisfy pred.  The relative order of 
+	 * elements will be preserved. 
+	 * 
+	 * Params: 
+	 *  buf  = The array to scan. 
+	 *  pred = The evaluation predicate, which should return true if the 
+	 *         element satisfies the condition and false if not.  This 
+	 *         predicate may be any callable type. 
+	 * 
+	 * Returns: 
+	 *  A new array with just the elements from buf that satisfy pred. 
+	 */ 
+	Elem[] filter( Elem[] buf, Pred1E pred ); 
+} 
+else 
+{ 
+	template filter( Elem, Pred ) 
+	{ 
+		static assert( isCallableType!(Pred) ); 
+
+
+		Elem[] filter( Elem[] buf, Pred pred ) 
+		{ 
+			Elem[] r; 
+			for( size_t pos = 0, len = buf.length; pos < len; ++pos ) 
+			{ 
+				if( pred( buf[pos] ) ) 
+					r ~= buf[pos]; 
+			} 
+			return r; 
+		} 
+	} 
+
+	debug( UnitTest ) 
+	{ 
+		unittest 
+		{ 
+			void test( char[] buf, bool delegate( char ) dg, size_t num ) 
+			{ 
+				char[] r = filter( buf, dg ); 
+				assert( r.length == num ); 
+				size_t rpos = 0; 
+				foreach( pos, cur; buf ) 
+				{ 
+					if ( dg( cur ) ) 
+					{ 
+						assert( r[rpos] == cur ); 
+						rpos++; 
+					} 
+					assert( rpos == num ); 
+				} 
+			} 
+
+			test( "abcdefghij".dup, ( char c ) { return c == 'x'; }, 10 ); 
+			test( "xabcdefghi".dup, ( char c ) { return c == 'x'; },  9 ); 
+			test( "abcdefghix".dup, ( char c ) { return c == 'x'; },  9 ); 
+			test( "abxxcdefgh".dup, ( char c ) { return c == 'x'; },  8 ); 
+			test( "xaxbcdxxex".dup, ( char c ) { return c == 'x'; },  5 ); 
+		} 
+	} 
+} 
