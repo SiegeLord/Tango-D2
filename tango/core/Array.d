@@ -16,9 +16,12 @@ version( TangoDoc )
 {
     typedef int Num;
     typedef int Elem;
+    typedef int Elem2;
 
     typedef bool function( Elem )       Pred1E;
     typedef bool function( Elem, Elem ) Pred2E;
+    typedef Elem2 function( Elem, Elem ) Map2E;
+    typedef Elem function( Elem, Elem ) Reduce2E;
     typedef size_t function( size_t )   Oper1A;
 }
 
@@ -3503,24 +3506,17 @@ version (TangoDoc)
 	  *		an array (the same as the buffer passed in, if possible) where the
 	  *		ith element is the result of applying func to the ith element of the
 	  *		input array
-	  *
-	  * Notes:
-	  *		Unlike other functions, the function supplied to map() must be a
-	  *		delegate. This is due to limitations in D's implicit template
-	  *		instantiation.
 	  */
-	Elem2[] map(Elem2 delegate(Elem) func, Elem[] array, Elem2[] buf = null);
+	Elem2[] map(Map2E func, Elem[] array, Elem2[] buf = null);
 }
 else
 {
-
 	template map(Func, Array)
 	{
-		ReturnTypeOf!(Func)[] map(Func func, Array array)
+		ReturnTypeOf!(Func)[] map(Func func, Array array, ReturnTypeOf!(Func)[] buf = null)
 		{
-			ReturnTypeOf!(Func)[] arr;
-			foreach (a; array) arr ~= func(a);
-			return arr;
+			foreach (a; array) buf ~= func(a);
+			return buf;
 		}
 	}
 
@@ -3557,11 +3553,10 @@ version (TangoDoc)
 	 *
 	 *	Returns: the single element reduction
 	 */
-	Elem reduce(Pred2E func, Elem[] array);
+	Elem reduce(Reduce2E func, Elem[] array);
 }
 else
 {
-
 	template reduce(Func, Array)
 	{
 		ReturnTypeOf!(Func) reduce(Func func, Array array)
