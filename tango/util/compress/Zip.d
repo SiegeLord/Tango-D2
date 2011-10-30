@@ -2129,43 +2129,52 @@ static this()
     ];
 }
 
-inout(ubyte[]) utf8_to_cp437(inout(char[]) s)
+inout(ubyte)[] utf8_to_cp437(inout(char)[] s)
 {
-	alias typeof(return) ret_type; /* Some sort of strange bug here */
-    foreach( i,dchar c ; s )
+    alias typeof(return) ret_type; /* Some sort of strange bug here */
+    ubyte[] bug_6867(const(char)[] cs)
     {
-        if( !((32 <= c && c <= 126) || c == 0) )
+        foreach( i,dchar c ; cs )
         {
-            /* We got a character not in CP 437: we need to create a buffer to
-             * hold the new string.  Since UTF-8 is *always* larger than CP
-             * 437, we need, at most, an array of the same number of elements.
-             */
-            auto r = new ubyte[s.length];
-            r[0..i] = cast(ubyte[]) s[0..i];
-            size_t k=i;
-
-            foreach( dchar d ; s[i..$] )
+            if( !((32 <= c && c <= 126) || c == 0) )
             {
-                if( 32 <= d && d <= 126 || d == 0 )
-                    r[k++] = cast(ubyte)d;
+                /* We got a character not in CP 437: we need to create a buffer to
+                 * hold the new string.  Since UTF-8 is *always* larger than CP
+                 * 437, we need, at most, an array of the same number of elements.
+                 */
+                auto r = new ubyte[cs.length];
+                r[0..i] = cast(ubyte[]) cs[0..i];
+                size_t k=i;
 
-                else if( d == '\u2302' )
-                    r[k++] = '\x7f';
-
-                else if( auto e_ptr = d in utf8_to_cp437_map )
-                    r[k++] = *e_ptr;
-
-                else
+                foreach( dchar d ; cs[i..$] )
                 {
-                    throw new Exception("cannot encode character \""
-                            ~ Integer.toString(cast(uint)d).idup
-                            ~ "\" in codepage 437.");
-                }
-            }
+                    if( 32 <= d && d <= 126 || d == 0 )
+                        r[k++] = cast(ubyte)d;
 
-            return cast(ret_type)r[0..k];
+                    else if( d == '\u2302' )
+                        r[k++] = '\x7f';
+
+                    else if( auto e_ptr = d in utf8_to_cp437_map )
+                        r[k++] = *e_ptr;
+
+                    else
+                    {
+                        throw new Exception("cannot encode character \""
+                                ~ Integer.toString(cast(uint)d).idup
+                                ~ "\" in codepage 437.");
+                    }
+                }
+
+                return r[0..k];
+            }
         }
+
+        return null;
     }
+    
+    auto ret = bug_6867(s);
+    if (ret !is null)
+        return cast(ret_type)ret;
 
     // If we got here, then the entire string is printable ASCII, which just
     // happens to *also* be valid CP 437!  Huzzah!

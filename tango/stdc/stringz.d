@@ -70,7 +70,7 @@ const(char)*[] toStringz (char[] tmp, const(char)*[] dst, const(char[][]) string
  * Convert a C-style 0 terminated string to an array of char
  */
 
-inout(char[]) fromStringz (inout(char*) s)
+inout(char)[] fromStringz (inout(char)* s)
 {
         return s ? s[0 .. strlenz(s)] : null;
 }
@@ -91,7 +91,7 @@ const(wchar)* toString16z (const(wchar)[] s)
  * Convert a C-style 0 terminated string to an array of wchar
  */
 
-inout(wchar[]) fromString16z (inout(wchar*) s)
+inout(wchar)[] fromString16z (inout(wchar)* s)
 {
         return s ? s[0 .. strlenz(s)] : null;
 }
@@ -112,7 +112,7 @@ const(dchar)* toString32z (const(dchar)[] s)
  * Convert a C-style 0 terminated string to an array of dchar
  */
 
-inout(dchar[]) fromString32z (inout(dchar*) s)
+inout(dchar)[] fromString32z (inout(dchar)* s)
 {
         return s ? s[0 .. strlenz(s)] : null;
 }
@@ -121,7 +121,7 @@ inout(dchar[]) fromString32z (inout(dchar*) s)
  * portable strlen
  */
 
-size_t strlenz(T) (T* s)
+size_t strlenz(T) (const(T)* s)
 {
         size_t i;
 
