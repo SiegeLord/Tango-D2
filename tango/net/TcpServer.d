@@ -136,11 +136,12 @@ class TcpServer : ISelectable
         if(newsock == -1)
             return null;
         
-        // create tcpsocket or set native socket
+        // create tcpsocket
         if(recipient is null)
-            recipient = new TcpSocket(newsock);
-        else
-            recipient.native(newsock);
+            recipient = new TcpSocket();
+        
+        // set native socket
+        recipient.native(newsock, SocketState.Connected);
         
         // return it
         return recipient;

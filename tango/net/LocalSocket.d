@@ -53,17 +53,6 @@ class LocalSocket : Socket
     }
     
     /**
-     * construct a socket by an existing socket_t
-     * 
-     * params:
-     *  sock = a native socket_t socket.
-     */
-    this(socket_t sock)
-    {
-        super(AddressFamily.UNIX, SocketType.STREAM, ProtocolType.NONE, sock);
-    }
-
-    /**
      * connect function with addr and host
      * ---
      * LocalSocket socket = new LocalSocket();
@@ -72,7 +61,8 @@ class LocalSocket : Socket
      */
     public LocalSocket connect(const(char)[] path)
     {
-        super.connect(new LocalAddress(path));
-	return this;
+            // call super connect with an addr
+            super.connect(new LocalAddress(path));
+            return this;
     }
 };

@@ -126,11 +126,12 @@ class LocalServer : ISelectable
         if(newsock == -1)
             return null;
         
-        // create localsocket or set native socket 
+        // create localsocket 
         if(recipient is null)
-            recipient = new LocalSocket(newsock);
-        else
-            recipient.native(newsock);
+            recipient = new LocalSocket();
+        
+        // set native socket
+        recipient.native(newsock, SocketState.Connected);
         
         // return it
         return recipient;

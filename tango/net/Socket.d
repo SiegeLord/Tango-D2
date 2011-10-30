@@ -44,15 +44,6 @@ version (Windows)
 
 *******************************************************************************/
 
-enum
-{
-        SOCKET_ERROR = -1
-}
-
-/*******************************************************************************
-
-*******************************************************************************/
-
 private typedef int socket_t = ~0;
 
 /*******************************************************************************
@@ -159,6 +150,20 @@ enum SocketFlags
 
 /*******************************************************************************
 
+*******************************************************************************/
+
+enum SocketState
+{
+    Undefined,              // nothing was done yet
+    Initialized,            // socket was just initialized with the socket() syscall
+    Connected,              // socket has been connected with the connect() syscall
+    Bound,                  // socket has been bound with the bind() syscall
+    Listening,              // socket is listening with the listening() syscall
+    Closed,                 // socket was closed with the close() syscall or shutdown was performed
+}
+
+/*******************************************************************************
+
         A wrapper around the Berkeley API to implement the IConduit 
         abstraction and add stream-specific functionality.
 
@@ -173,6 +178,7 @@ class Socket : Conduit, ISelectable
         private SocketType      type;
         private AddressFamily   family;
         private ProtocolType    protocol;
+        private SocketState     state;
         private SocketSet       pending;        // synchronous timeouts
         
 
@@ -193,7 +199,7 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        this ()
+        public this ()
         {
                 this (AddressFamily.INET, SocketType.STREAM, ProtocolType.TCP);
         }
@@ -204,7 +210,7 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        this (Address addr) 
+        public this (Address addr) 
         { 
                 this (addr.addressFamily, SocketType.STREAM, ProtocolType.TCP); 
         }
@@ -223,12 +229,12 @@ class Socket : Conduit, ISelectable
          *  protocol = the protocol. example: ProtocolType.TCP, ProtocolType.NONE.
          *  sock = an internal structure or it'll be automatically created (default).
          */
-        this (AddressFamily family, SocketType type, ProtocolType protocol, socket_t sock = sock.init)
+        public this (AddressFamily family, SocketType type, ProtocolType protocol)
         {
             this.type = type;
             this.family = family;
             this.protocol = protocol;
-            this.reopen(sock);
+            this.state = SocketState.Undefined;
             version (Windows) {
                 if (scheduler)
                     scheduler.open(handle, toString);
@@ -237,13 +243,27 @@ class Socket : Conduit, ISelectable
         
         /***********************************************************************
 
-                Return the name of this device
+                Return the name of this device.
+                Example <TcpSocket>, <IpSocket> or <Socket>
 
         ***********************************************************************/
 
         override immutable(char)[] toString()
         {
-                return "<socket>";
+                switch(this.protocol)
+                {
+                        case ProtocolType.IP:
+                            return "<IpSocket>";
+                        
+                        case ProtocolType.TCP:
+                            return "<TcpSocket>";
+                            
+                        case ProtocolType.UDP:
+                            return "<UdpSocket>";
+                            
+                        default:
+                            return "<socket>";
+                }
         }
 
         /***********************************************************************
@@ -276,9 +296,11 @@ class Socket : Conduit, ISelectable
          * 
          * params:
          *  socket = a native socket handle, usually a socket_t type
+         *  state = set the current SocketState. (Initialized or Connected)
          */
-        void native(socket_t socket)
+        void native(socket_t socket, SocketState state = SocketState.Initialized)
         {
+            this.state = state;
             this.sock = socket;
         }
         
@@ -299,6 +321,8 @@ class Socket : Conduit, ISelectable
                 sock = cast(socket_t).socket(this.family, this.type, this.protocol);
                 if (sock == -1)
                     throw new SocketException("Unable to create socket: ");
+                else
+                    this.state = SocketState.Initialized;
             }
             
             this.sock = sock;
@@ -342,12 +366,31 @@ class Socket : Conduit, ISelectable
                     return this;
                 }
                 
+                // reopen before connect
+                if(this.sock == this.sock.init)
+                    this.reopen();
+                
                 // normal connect
                 if(.connect(this.sock, address.name, address.nameLen) == -1) {
                     throw new SocketException("Unable to connect socket: ");
                 }
                 
+                // set state to connected
+                this.state = SocketState.Connected;
                 return this;
+        }
+        
+        
+        /***********************************************************************
+
+                Returns true if the Socket is connected which depends
+                if the last I/O Operation was successfull.
+        
+        ***********************************************************************/
+        
+        public bool connected()
+        {
+            return (this.state == SocketState.Connected);
         }
 
         /***********************************************************************
@@ -370,6 +413,7 @@ class Socket : Conduit, ISelectable
         Socket shutdown (SocketShutdown how = SocketShutdown.BOTH)
         {
                 .shutdown (this.sock, how);
+                this.state = SocketState.Closed;
                 return this;
         }
 
@@ -385,8 +429,16 @@ class Socket : Conduit, ISelectable
 
         override void detach ()
         {
-                if (this.sock != this.sock.init)
-                    .close(this.sock);
+                // skip if the socket wasn't allocated before
+                if (this.sock == this.sock.init)
+                    return;
+                
+                // try and check against error
+                if(.close(this.sock) == -1)
+                    throw new SocketException("Couldn't close socket!");
+                
+                // set state and set to init value
+                this.state = SocketState.Closed;
                 this.sock = this.sock.init;
         }
         
@@ -404,7 +456,7 @@ class Socket : Conduit, ISelectable
         override size_t read (void[] dst)
         {
                 if (scheduler)
-                    return asyncRead (dst);
+                    return this.asyncRead (dst);
 
                 size_t x = Eof;
                 if (wait (true)) {
@@ -564,10 +616,19 @@ class Socket : Conduit, ISelectable
 
         ssize_t receive (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
-                if (!buf.length)
+                // check buffer length
+                if(!buf.length)
                     throw new SocketException("Socket.receive :: target buffer has 0 length");
 
-                return .recv(this.sock, buf.ptr, buf.length, flags);
+                // perform syscall and evaluate return value
+                ssize_t size = .recv(this.sock, buf.ptr, buf.length, flags);
+                if(size == -1)
+                    throw new SocketException("Socket.receive :: error after recv syscall");
+                else if(size == 0)
+                    this.state = SocketState.Closed;
+                    
+                // return size
+                return size;
         }
         
         /***********************************************************************
@@ -695,7 +756,7 @@ class Socket : Conduit, ISelectable
             if(.getsockname(this.sock, &sa, &sa_len) !=  0)
                 throw new SocketException("Unable to call getsockname.");
             
-            return Address.create(&sa);
+            return Address.create(&sa, sa_len);
         }
         
         /***********************************************************************
