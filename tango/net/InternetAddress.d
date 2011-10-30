@@ -97,11 +97,15 @@ public class InternetAddress : Address
         }
         
         /**
-         * construct an InternetAddress by some sockaddr* structure.
+         * construct an InternetAddress by some sockaddr_in* structure.
+         * 
+         * params:
+         *  sin = pointer to sockaddr_in. the structure will be copied
          */
-        this (sockaddr* addr) 
-        { 
-                this.sin = *(cast(sockaddr_in*)addr); 
+        this (sockaddr_in* sin) 
+        {
+                // this line copies the structure
+                this.sin = *sin;
         }
         
         /**

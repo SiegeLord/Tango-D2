@@ -10,8 +10,11 @@
 
 module tango.net.LocalAddress;
 
-private import core.sys.posix.sys.un;
-public import  tango.net.Address;
+private import  core.sys.posix.sys.un;
+public import   tango.net.Address;
+
+
+private import  Utf = tango.text.convert.Utf;
 
 
 /**
@@ -46,10 +49,14 @@ class LocalAddress : Address
         
         /**
          * construct a LocalAddress by some sockaddr* structure.
+         * 
+         * params:
+         *  sun = pointer to some sockaddr_un structure that will be copied
          */
-        this (sockaddr* addr) 
+        this (sockaddr_un* sun) 
         {
-                this.sun = *(cast(sockaddr_un*)addr);
+                // copy sun
+                this.sun = *sun;
         }
         
         /**
@@ -111,7 +118,7 @@ class LocalAddress : Address
          */
         override immutable(char)[] toString ()
         {
-                const(char)[] path = cast(const(char)[])this.sun.sun_path;
+                const(char)[] path = Utf.fromStringz(cast(const(char)*)this.sun.sun_path.ptr);
                 if (isAbstract)
                     return ("unix:abstract=" ~ path[1..$]).idup;
                 else
