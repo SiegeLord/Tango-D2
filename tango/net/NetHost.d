@@ -7,15 +7,16 @@
 *******************************************************************************/
 module tango.net.NetHost;
 
-private import core.sys.posix.netdb;
-private import core.sys.posix.unistd;
+private import  core.sys.posix.netdb;
+private import  core.sys.posix.unistd;
 
-private import tango.net.Socket,
-               tango.net.Address,
-               tango.net.InternetAddress;
+private import  tango.text.Stringz,
+                tango.net.Socket,
+                tango.net.Address,
+                tango.net.InternetAddress;
 
-private import Integer = tango.text.convert.Integer;
-private import Utf = tango.text.convert.Utf;
+private import  Integer = tango.text.convert.Integer;
+private import  Utf = tango.text.convert.Utf;
 
 /*******************************************************************************
 
@@ -47,7 +48,7 @@ public class NetHost
                 int i;
                 char* p;
 
-                name = Utf.fromStringz(he.h_name);
+                name = fromStringz(he.h_name);
 
                 for (i = 0;; i++)
                     {
@@ -60,7 +61,7 @@ public class NetHost
                    {
                    aliases = new char[][i];
                    for (i = 0; i != aliases.length; i++)
-                        aliases[i] = Utf.fromStringz(he.h_aliases[i]);
+                        aliases[i] = fromStringz(he.h_aliases[i]);
                    }
                 else
                    aliases = null;
@@ -93,7 +94,7 @@ public class NetHost
 
                 synchronized (NetHost.classinfo)
                 {
-                    auto he = gethostbyname(Utf.toStringz(name));
+                    auto he = gethostbyname(toStringz(name));
                     if(!he)
                         return false;
                         
@@ -131,7 +132,7 @@ public class NetHost
         {
                 synchronized (NetHost.classinfo)
                 {
-                    uint x = inet_addr(Utf.toStringz(addr));
+                    uint x = inet_addr(toStringz(addr));
                     return getHostByAddr(x);
                 }
         }
@@ -145,7 +146,7 @@ public class NetHost
             if(.gethostname(name.ptr, name.length) == -1)
                    throw new SocketException("Unable to obtain host name: ");
             
-            return Utf.fromStringz(name.ptr).dup;
+            return fromStringz(name.ptr).dup;
         }
 }
 

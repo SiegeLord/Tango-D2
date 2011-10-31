@@ -17,7 +17,8 @@ module tango.net.Address;
 
 private import  core.sys.posix.sys.un,
                 core.sys.posix.netdb,
-                core.sys.posix.sys.socket;
+                core.sys.posix.sys.socket,
+                core.stdc.string;
 
 private import  tango.core.Exception;
 
@@ -27,8 +28,7 @@ private import  tango.net.Socket,
                 tango.net.Internet6Address,
                 tango.net.InternetAddress;
 
-private import  Utf = tango.text.convert.Utf;
-private import  Integer = tango.text.convert.Integer;
+private import  tango.text.Stringz;
 
 /*******************************************************************************
 
@@ -128,18 +128,24 @@ public abstract class Address
                 { 
                         // INET
                         case AddressFamily.INET:
-                            assert(sa_len >= sockaddr_in.sizeof, "Address.create: sa is to small for converting to an InternetAddress.");
-                        return new InternetAddress(cast(sockaddr_in*)sa);
+                            assert(sa_len <= sockaddr_in.sizeof, "Address.create: sa is too big for converting to an InternetAddress.");
+                            sockaddr_in sin;
+                            memcpy(&sin, sa, sa_len);
+                        return new InternetAddress(&sin);
                         
                         // INET
                         case AddressFamily.INET6: 
-                            assert(sa_len >= sockaddr_in6.sizeof, "Address.create: sa is to small for converting to an Internet6Address");
-                        return new Internet6Address(cast(sockaddr_in6*)sa);
+                            assert(sa_len <= sockaddr_in6.sizeof, "Address.create: sa is too big for converting to an Internet6Address");
+                            sockaddr_in6 sin6;
+                            memcpy(&sin6, sa, sa_len);
+                        return new Internet6Address(&sin6);
                         
                         // UNIX
                         case AddressFamily.UNIX:
-                             assert(sa_len >= sockaddr_un.sizeof, "Address.create: sa is to small for converting to LocalAddress");
-                        return new LocalAddress(cast(sockaddr_un*)sa);
+                             assert(sa_len <= sockaddr_un.sizeof, "Address.create: sa is too big for converting to LocalAddress");
+                             sockaddr_un sun;
+                             memcpy(&sun, sa, sa_len);
+                        return new LocalAddress(&sun);
                         
                         // default
                         default: 
@@ -167,7 +173,7 @@ public abstract class Address
                                 AIFlags flags = cast(AIFlags)0) 
         { 
                 return resolveAll (host, port, af, flags)[0]; 
-        } 
+        }
          
         /*********************************************************************** 
   
@@ -202,7 +208,7 @@ public abstract class Address
                 hints.ai_flags = flags; 
                 hints.ai_family = (flags & AIFlags.PASSIVE && af == AddressFamily.UNSPEC) ? AddressFamily.INET6 : af; 
                 hints.ai_socktype = SocketType.STREAM; 
-                int error = getaddrinfo(Utf.toStringz(host), service.length == 0 ? null : Utf.toStringz(service), &hints, &info); 
+                int error = getaddrinfo(toStringz(host), service.length == 0 ? null : toStringz(service), &hints, &info); 
                 if (error != 0)  
                     throw new AddressException(("couldn't resolve " ~ host).idup); 
 
@@ -260,7 +266,7 @@ public abstract class Address
                 // Getting name info. Don't look up hostname, returns 
                 // numeric name. (NIFlags.NUMERICHOST)
                 getnameinfo (name, cast(int)nameLen, host.ptr, host.length, null, 0, NIFlags.NUMERICHOST); 
-                return Utf.fromStringz(host.ptr); 
+                return fromStringz(host.ptr); 
         } 
  
         /*********************************************************************** 

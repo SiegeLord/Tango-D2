@@ -15,7 +15,7 @@ module tango.text.locale.Posix;
 private import  tango.core.Exception;
 
 private import  tango.text.locale.Data,
-                tango.text.convert.Utf;
+                tango.text.Stringz;
 
 private import  core.sys.posix.stdlib,
                 core.stdc.locale,

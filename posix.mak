@@ -103,6 +103,7 @@ SRC_MATH=tango/math/Bessel.d \
 	
 SRC_TEXT=tango/text/Ascii.d \
 	tango/text/Arguments.d \
+	tango/text/Stringz.d \
 	tango/text/Unicode.d \
 	tango/text/UnicodeData.d \
 	tango/text/Util.d \
@@ -201,6 +202,7 @@ SRC_NET=tango/net/Uri.d \
 	tango/net/NetHost.d \
 	tango/net/Address.d \
 	tango/net/InternetAddress.d \
+	tango/net/Internet6Address.d \
 	tango/net/LocalAddress.d \
 	tango/net/LocalSocket.d \
 	tango/net/LocalServer.d \

@@ -60,7 +60,7 @@ private import  tango.io.model.IFile;
 public  import  tango.core.Exception : IOException, IllegalArgumentException;
 
 private import  tango.util.Convert;
-private import  tango.text.convert.Utf;
+private import  tango.text.Stringz;
 
 /*******************************************************************************
 

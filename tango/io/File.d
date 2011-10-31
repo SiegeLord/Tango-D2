@@ -19,7 +19,7 @@ module tango.io.File;
 
 private import tango.sys.Common;
 private import tango.io.device.Device;
-private import tango.text.convert.Utf;
+private import tango.text.Stringz;
 private import tango.util.Convert;
 
 /*******************************************************************************

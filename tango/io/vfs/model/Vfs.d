@@ -37,9 +37,9 @@ alias bool delegate(VfsInfo) VfsFilter;
 
 struct VfsStats
 {
-        ulong bytes;   /// Byte count of files.
-        uint  files;   /// Number of files.
-        uint  folders; /// Number of folders.
+        ulong bytes;     /// Byte count of files.
+        size_t  files;   /// Number of files.
+        size_t  folders; /// Number of folders.
 }
 
 /*******************************************************************************

@@ -22,7 +22,7 @@ private import tango.core.Exception : IOException;
 private import tango.io.device.Conduit : InputFilter, OutputFilter;
 private import tango.io.model.IConduit : InputStream, OutputStream, IConduit;
 private import tango.text.convert.Integer : toString;
-private import tango.text.convert.Utf : fromStringz;
+private import tango.text.Stringz : fromStringz;
 
 
 /* This constant controls the size of the input/output buffers we use

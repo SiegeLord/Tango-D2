@@ -11,9 +11,9 @@
 
 module tango.util.Convert;
 
-private import tango.core.Exception;
-private import tango.core.Traits;
-private import tango.core.Tuple : Tuple;
+private import  tango.core.Exception,
+                tango.core.Traits,
+                tango.core.Tuple;
 
 private import tango.math.Math;
 private import tango.text.convert.Utf;
@@ -318,11 +318,6 @@ template isMutableString(T)
         enum isMutableString = true;
     else
         enum isMutableString = false;
-}
-
-template isArrayType(T)
-{
-    enum isArrayType = isDynamicArrayType!(T) || isStaticArrayType!(T);
 }
 
 /*
@@ -1097,10 +1092,10 @@ D toString(D,S)(S value)
 
     else static if( isIntegerType!(S) )
         // TODO: Make sure this works with ulongs.
-        return mixin("tango.text.convert.Integer.toString"~StringNum!(D)~"(value)");
+        return mixin("tango.text.convert.Integer.toString"~StringNum!(D)~"(value).idup");
 
     else static if( isRealType!(S) )
-        return mixin("tango.text.convert.Float.toString"~StringNum!(D)~"(value)");
+        return mixin("tango.text.convert.Float.toString"~StringNum!(D)~"(value).idup");
 
     else static if( isDynamicArrayType!(S) || isStaticArrayType!(S) )
         mixin unsupported!("array type");

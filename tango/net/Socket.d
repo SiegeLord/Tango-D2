@@ -40,6 +40,10 @@ version (Windows)
          private import tango.sys.win32.WsaSock;
 }
 
+
+extern(C) int ioctl(int d, int request, ...);
+
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -442,8 +446,26 @@ class Socket : Conduit, ISelectable
                 this.sock = this.sock.init;
         }
         
-       /***********************************************************************
-
+        /***********************************************************************
+        
+                Returns the number of bytes that are available on this
+                socket. If this number is greater than 0, you should
+                be able to do a non-blocking read call.
+        
+        ***********************************************************************/
+        
+        public int bytesAvailable()
+        {
+            // on success ioctl returns 0. 0x541B = FIONREAD
+            int bytesAvail;
+            if(ioctl(this.sock, 0x541B, &bytesAvail) == 0)
+                return bytesAvail;
+            else
+                return -1;
+        }
+        
+        /***********************************************************************
+        
                 Read content from the socket. Note that the operation 
                 may timeout if method setTimeout() has been invoked with 
                 a non-zero value.
@@ -750,13 +772,13 @@ class Socket : Conduit, ISelectable
          */
         public Address localAddress()
         {
-            sockaddr sa;
-            socklen_t sa_len = sa.sizeof;
+            char buffer[1024] = void;
+            size_t buffer_len = buffer.length;
             
-            if(.getsockname(this.sock, &sa, &sa_len) !=  0)
+            if(.getsockname(this.sock, cast(sockaddr*)buffer.ptr, &buffer_len) !=  0)
                 throw new SocketException("Unable to call getsockname.");
             
-            return Address.create(&sa, sa_len);
+            return Address.create(cast(sockaddr*)buffer.ptr, buffer_len);
         }
         
         /***********************************************************************

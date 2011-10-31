@@ -9,7 +9,7 @@
 module tango.sql.Mysql;
 
 private import core.stdc.stdio;
-private import tango.text.convert.Utf;
+private import tango.text.Stringz;
 
 /**
  * This is just an example on how to use mysql.

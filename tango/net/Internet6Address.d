@@ -13,7 +13,9 @@ private import  core.sys.posix.netdb,
                 core.sys.posix.arpa.inet,
                 core.sys.posix.netinet.in_;
 
-private import  tango.net.NetHost;
+private import  tango.text.Stringz,
+                tango.net.NetHost;
+
 public import   tango.net.Address;
 
 
@@ -228,7 +230,7 @@ public:
         override char[] toAddrString()
         {
                 char[100] buff = 0;
-                return Utf.fromStringz(inet_ntop(AddressFamily.INET6, &sin.sin6_addr, buff.ptr, 100)).dup;
+                return fromStringz(inet_ntop(AddressFamily.INET6, &sin.sin6_addr, buff.ptr, 100)).dup;
         }
 
         /***********************************************************************

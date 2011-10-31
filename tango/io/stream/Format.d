@@ -186,18 +186,19 @@ class FormatOutput(T) : OutputFilter
 		---
 
         ***********************************************************************/
+        
         final FormatOutput newline(uint count = 1)
-	{
-		// do eols
-		for(uint i = 0; i < count; i++)
-			sink.write(eol);
+		{
+			// do eols
+			for(uint i = 0; i < count; i++)
+				sink.write(eol);
 		
-		// flushing?
-		if (flushLines)
-			sink.flush;
+			// flushing?
+			if (flushLines)
+				sink.flush;
 		
-		return this;
-	}
+			return this;
+		}
 
         /**********************************************************************
 

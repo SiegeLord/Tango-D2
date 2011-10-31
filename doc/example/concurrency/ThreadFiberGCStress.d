@@ -1,19 +1,33 @@
+/*******************************************************************************
+ * 
+ *      copyright:      Copyright (c) unknown. All rights reserved
+ *
+ *      license:        BSD style: $(LICENSE)
+ * 
+ *      version         Initial release
+ * 
+ *      author          unknown
+ * 
+ * This file is part of the tango software library. Distributed under the terms
+ * of the Boost Software License, Version 1.0. See LICENSE.TXT for more info.
+ *******************************************************************************/
 module ThreadFiberGCStress;
 
-import core.stdc.stdio;
-import core.sync.mutex;
-import tango.io.Stdout;
-import tango.core.Thread;
-import tango.core.Memory:GC;
-import tango.text.convert.Utf;
+private import  tango.io.Stdout,
+                tango.core.Thread,
+                tango.text.Stringz;
+                
+private import  core.stdc.stdio,
+                core.sync.mutex,
+                core.memory;
 
 Mutex tttt;
 
 void printESP(const(char)[] name){
-	size_t esp;
-	esp=cast(size_t)&esp;
+    size_t esp;
+    esp=cast(size_t)&esp;
     synchronized(tttt){ // here one can also use synchronized(tttt)
-    	printf("%s %p %p\n",toStringz(name),esp,esp & 0xF);
+    	printf("%s %p %p\n", toStringz(name),esp,esp & 0xF);
     }
 }
 

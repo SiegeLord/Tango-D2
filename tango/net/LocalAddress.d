@@ -11,11 +11,9 @@
 module tango.net.LocalAddress;
 
 private import  core.sys.posix.sys.un;
+
 public import   tango.net.Address;
-
-
-private import  Utf = tango.text.convert.Utf;
-
+private import  tango.text.Stringz;
 
 /**
  * LocalAddress represents the Unix Domain Socket.
@@ -118,7 +116,12 @@ class LocalAddress : Address
          */
         override immutable(char)[] toString ()
         {
-                const(char)[] path = Utf.fromStringz(cast(const(char)*)this.sun.sun_path.ptr);
+                // convert path from c string to d string
+                const(char)*  path_ptr  = cast(const(char)*)this.sun.sun_path.ptr;
+                size_t        path_len  = this.sun.sun_path.length;
+                const(char)[] path      = fromStringz(path_ptr, path_len);
+                
+                // abstract or path
                 if (isAbstract)
                     return ("unix:abstract=" ~ path[1..$]).idup;
                 else

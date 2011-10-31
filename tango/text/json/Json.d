@@ -81,7 +81,7 @@ class Json(T) : private JsonParser!(T)
         public alias NameValue*  Attribute;
         public alias JsonObject* Composite;
 
-                    /// enumerates the seven acceptable JSON value types
+        /// enumerates the seven acceptable JSON value types
         public enum Type {Null, String, RawString, Number, Object, Array, True, False};
 
         private Value root;
@@ -107,38 +107,38 @@ class Json(T) : private JsonParser!(T)
         
         final Value parse (const(T)[] json)
         {
-		nesting = 0;
-		attrib.reset;
-		values.reset;
-		objects.reset;
-		foreach (ref p; arrays)
-			p.index = 0;
-	
-		root = createValue;
-		if (super.reset (json)) {
-			if (curType is Token.BeginObject) {
-				root.set (parseObject);
-			} else {
-				if (curType is Token.BeginArray)
-					root.set (parseArray);
-				else
-					exception ("invalid json document");
-			}
-		}
-		return root;
+            nesting = 0;
+            attrib.reset;
+            values.reset;
+            objects.reset;
+            foreach (ref p; arrays)
+                p.index = 0;
+        
+            root = createValue;
+            if (super.reset (json)) {
+                if (curType is Token.BeginObject) {
+                    root.set (parseObject);
+                } else {
+                    if (curType is Token.BeginArray)
+                        root.set (parseArray);
+                    else
+                        throw new Exception ("invalid json document");
+                }
+            }
+            return root;
         }
         
-		/***********************************************************************
+        /***********************************************************************
 
-				Emit a text representation of this document to the given
-				delegate
+                Emit a text representation of this document to the given
+                delegate
 
-		***********************************************************************/
+        ***********************************************************************/
 
-		final void print (void delegate(const(T)[]) append, T[] separator = null)
-		{
-				root.print (append, separator);
-		}
+        final void print (void delegate(const(T)[]) append, T[] separator = null)
+        {
+                root.print (append, separator);
+        }
 
         /***********************************************************************
         
@@ -227,6 +227,21 @@ class Json(T) : private JsonParser!(T)
         {
                 return createValue.set (this, _arguments, _argptr);
         }
+        
+        /***********************************************************************
+        
+                Create a text array
+
+        ***********************************************************************/
+        
+        
+        final Value array(const(T)[][] values)
+        {
+                Value[] list;
+                foreach(value; values)
+                    list ~= createValue.set(value);
+                return createValue.set(list);
+        }
 
         /***********************************************************************
         
@@ -285,17 +300,6 @@ class Json(T) : private JsonParser!(T)
         private Attribute createAttribute ()
         {
                 return attrib.allocate;
-        }
-
-        /***********************************************************************
-        
-                Throw a generic exception
-
-        ***********************************************************************/
-        
-        private void exception (immutable(char)[] msg)
-        {
-                throw new Exception (msg.idup);
         }
 
         /***********************************************************************
@@ -384,7 +388,7 @@ class Json(T) : private JsonParser!(T)
         private Value[] parseArray ()
         {
                 if (nesting >= arrays.length)
-                    exception ("array nesting too deep within document");
+                    throw new Exception ("array nesting too deep within document");
 
                 auto array = &arrays[nesting++];
                 auto start = array.index;
@@ -398,7 +402,7 @@ class Json(T) : private JsonParser!(T)
                       }
 
                 if (super.curType != Token.EndArray)
-                    exception ("malformed array");
+                    throw new Exception ("malformed array");
 
                 --nesting;
                 return array.content [start .. array.index];
@@ -595,7 +599,7 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
         
-				const bool opEquals(ref const(JsonValue) t)
+                const bool opEquals(ref const(JsonValue) t)
                 {
                         return this.type is t.type;
                 }
@@ -623,7 +627,7 @@ class Json(T) : private JsonParser!(T)
                 const(T)[] toString (T[] dst = null)
                 {
                         if (type is Type.RawString)
-                            /* Bad dup */
+                            /* bad dup */
                             return string.dup;
 
                         if (type is Type.String)
@@ -757,6 +761,19 @@ class Json(T) : private JsonParser!(T)
                 
                 /***************************************************************
         
+                        If this is an array, then you can append Values
+
+                ***************************************************************/
+                
+                Value append(Value a)
+                {
+                    if(type is Type.Array)
+                        array ~= a;
+                    return &this;
+                }
+                
+                /***************************************************************
+        
                         Set this value to represent null
 
                 ***************************************************************/
@@ -862,42 +879,43 @@ class Json(T) : private JsonParser!(T)
                                     return;
                                 
                                 T[64] tmp = void;
-                                switch (val.type) {
-										case Type.String:
-											append (`"`), append(val.string), append(`"`);
-											break;
+                                switch (val.type)
+                                {
+                                    case Type.String:
+                                        append (`"`), append(val.string), append(`"`);
+                                        break;
 
-										case Type.RawString:
-											append (`"`), escape(val.string, append), append(`"`);
-											break;
+                                    case Type.RawString:
+                                        append (`"`), escape(val.string, append), append(`"`);
+                                        break;
 
-										case Type.Number:
-											append (Float.format (tmp, val.toNumber, decimals));
-											break;
+                                    case Type.Number:
+                                        append (Float.format (tmp, val.toNumber, decimals));
+                                        break;
 
-										case Type.Object:
-											auto obj = val.toObject;
-											debug assert(obj !is null);
-											printObject (val.toObject);
-											break;
+                                    case Type.Object:
+                                        auto obj = val.toObject;
+                                        debug assert(obj !is null);
+                                        printObject (val.toObject);
+                                        break;
 
-										case Type.Array:
-											printArray (val.toArray);
-											break;
+                                    case Type.Array:
+                                        printArray (val.toArray);
+                                        break;
 
-										case Type.True:
-											append ("true");
-											break;
+                                    case Type.True:
+                                        append ("true");
+                                        break;
 
-										case Type.False:
-											append ("false");
-											break;
+                                    case Type.False:
+                                        append ("false");
+                                        break;
 
-										default:
-											case Type.Null:
-											append ("null");
-											break;
-										}
+                                    default:
+                                        case Type.Null:
+                                        append ("null");
+                                        break;
+                                }
                         }
                         
                         printValue (&this);
@@ -952,10 +970,16 @@ class Json(T) : private JsonParser!(T)
                                    if (type is typeid(T[]))
                                        v.set (va_arg!(T[])(args));
                                    else
+                                   if (type is typeid(const(T)[]))
+                                        v.set (va_arg!(const(T)[])(args));
+                                   else
+                                   if (type is typeid(immutable(T)[]))
+                                        v.set (va_arg!(immutable(T)[])(args));
+                                   else
                                    if (type is typeid(void*))
                                        va_arg!(void*)(args);
                                    else
-                                      host.exception ("JsonValue.set :: unexpected type: "~type.toString);
+                                      throw new Exception ("JsonValue.set :: unexpected type: "~type.toString);
                                    }
                                 list ~= v;
                                 }
@@ -1048,18 +1072,18 @@ debug (UnitTest)
 {
         unittest
         {
-        with (new Json!(char))
-             {
-             root = object
-                  (
-                  pair ("edgar", value("friendly")),
-                  pair ("count", value(11.5)),
-                  pair ("array", value(array(1, 2)))
-                  );
+            with (new Json!(char))
+            {
+                root = object
+                (
+                    pair ("edgar", value("friendly")),
+                    pair ("count", value(11.5)),
+                    pair ("array", value(array(1, 2)))
+                );
 
-             char[] value = toString();
-             assert (value == `{"edgar":"friendly","count":11.5,"array":[1, 2]}`, value);
-             }
+            char[] value = toString();
+            assert (value == `{"edgar":"friendly","count":11.5,"array":[1, 2]}`, value);
+            }
         }
         
         unittest
