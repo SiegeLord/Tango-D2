@@ -43,7 +43,7 @@ class HttpGet : HttpClient
 
         ***********************************************************************/
 
-        this (char[] url)
+        this (const(char)[] url)
         {
                 this (new Uri(url));
         }

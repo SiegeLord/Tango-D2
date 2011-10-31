@@ -184,7 +184,7 @@ class Cookie //: IWritable
 
         ***********************************************************************/
 
-        void produce (size_t delegate(void[]) consume)
+        void produce (size_t delegate(const(void)[]) consume)
         {
                 consume (name);
 
@@ -289,9 +289,9 @@ class CookieStack
 
         **********************************************************************/
 
-        private final static void resize (ref Cookie[] cookies, int size)
+        private final static void resize (ref Cookie[] cookies, size_t size)
         {
-                int i = cookies.length;
+                size_t i = cookies.length;
                 
                 for (cookies.length=size; i < cookies.length; ++i)
                      cookies[i] = new Cookie();
@@ -366,7 +366,7 @@ class HttpCookiesView //: IWritable
 
         **********************************************************************/
 
-        void produce (size_t delegate(void[]) consume, char[] eol = HttpConst.Eol)
+        void produce (size_t delegate(const(void)[]) consume, const(char)[] eol = HttpConst.Eol)
         {
                 foreach (cookie; parse)
                          cookie.produce (consume), consume (eol);
@@ -427,7 +427,7 @@ class HttpCookies
 
         **********************************************************************/
 
-        this (HttpHeaders headers, HttpHeaderName name = HttpHeader.SetCookie)
+        this (HttpHeaders headers, const(HttpHeaderName) name = HttpHeader.SetCookie)
         {
                 this.headers = headers;
                 this.name = name;
@@ -525,7 +525,7 @@ class CookieParser : Iterator!(char)
 
                 ***************************************************************/
 
-                void setValue (int i)
+                void setValue (size_t i)
                 {   
                         token = content [mark..i];
                         //Print ("::name '%.*s'\n", name);
@@ -664,9 +664,9 @@ class CookieParser : Iterator!(char)
 
         ***********************************************************************/
 
-        bool parse (char[] header)
+        bool parse (const(char)[] header)
         {
-                super.set (array.assign (header));
+                super.set (array.assign (cast(void[]) header));
                 return next.ptr > null;
         }
 
