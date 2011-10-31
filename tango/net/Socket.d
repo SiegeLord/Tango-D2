@@ -773,7 +773,7 @@ class Socket : Conduit, ISelectable
         public Address localAddress()
         {
             char buffer[1024] = void;
-            size_t buffer_len = buffer.length;
+            uint buffer_len = cast(uint)buffer.length;
             
             if(.getsockname(this.sock, cast(sockaddr*)buffer.ptr, &buffer_len) !=  0)
                 throw new SocketException("Unable to call getsockname.");

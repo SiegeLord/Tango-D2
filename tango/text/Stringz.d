@@ -83,7 +83,7 @@ inout(char)[] fromStringz (inout(char)* s)
  * Convert a C-style 0 terminated string to an array of char
  */
 
-inout(char)[] fromStringz (inout(char)* s, uint length)
+inout(char)[] fromStringz (inout(char)* s, size_t length)
 {
         return s ? s[0 .. length] : null;
 }
