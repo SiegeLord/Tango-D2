@@ -44,7 +44,7 @@ class HttpPost : HttpClient
 
         ***********************************************************************/
 
-        this (char[] url)
+        this (const(char)[] url)
         {
                 this (new Uri(url));
         }
@@ -107,7 +107,7 @@ class HttpPost : HttpClient
 
         ***********************************************************************/
 
-        void[] write (void[] content, char[] type)
+        void[] write (const(void)[] content, const(char)[] type)
         {
                 auto headers = super.getRequestHeaders;
 
@@ -118,3 +118,19 @@ class HttpPost : HttpClient
         }
 }
 
+debug(HttpPost)
+{
+     import tango.io.Console;
+
+    void main()
+    {
+        auto page = new HttpPost("http://driv.pl/tango/index.php");
+        // Its important to set cookies below in order to parse post fields properly 
+        page.getRequestHeaders().add(HttpHeader.AcceptCharset, "UTF-8,*"); 
+        Cout("Enter your name: ").newline;
+        string name;
+        Cin.readln(name);
+        auto fields = "submit=send&nick=" ~ name;
+        Cout( cast(char[]) page.write(cast(void[]) fields, "application/x-www-form-urlencoded") )();
+    }
+}

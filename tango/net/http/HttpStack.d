@@ -23,12 +23,12 @@ private import  tango.core.Exception;
 
 version (Win32)
         {
-        extern (C) int memicmp (char *, char *, uint);
+        extern (C) int memicmp (char *, char *, size_t);
         }
 
 version (Posix) 
         {
-        extern (C) int strncasecmp (char *, char*, uint);
+        extern (C) int strncasecmp (char *, char*, size_t);
         }
 
 extern (C) void* memmove (void* dst, void* src, int n);
@@ -42,17 +42,17 @@ extern (C) void* memmove (void* dst, void* src, int n);
 
 class Token
 {
-        private char[] value;
+        private const(char)[] value;
 
-        Token set (char[] value)
+        Token set (const(char)[] value)
         {
                 this.value = value;
                 return this;
         }
 
-        char[] toString ()
+        immutable(char)[] toString ()
         {
-                return value;
+                return value.idup;
         }
 }
 
@@ -100,7 +100,7 @@ class HttpStack
 
                 // duplicate the content of each original token
                 for (int i=0; i < depth; ++i)
-                     clone.tokens[i].set (tokens[i].toString().dup);
+                     clone.tokens[i].set (tokens[i].toString());
 
                 return clone;
         }
@@ -140,7 +140,7 @@ class HttpStack
 
         **********************************************************************/
 
-        final Token findToken (char[] match)
+        final Token findToken (const(char)[] match)
         {
                 Token tok;
 
@@ -161,7 +161,7 @@ class HttpStack
 
         **********************************************************************/
 
-        final bool removeToken (char[] match)
+        final bool removeToken (const(char)[] match)
         {
                 for (int i=0; i < depth; ++i)
                      if (isMatch (tokens[i], match))
@@ -190,7 +190,7 @@ class HttpStack
 
         **********************************************************************/
 
-        final Token push (char[] content)
+        final Token push (const(char)[] content)
         {
                 return push().set (content);  
         }
@@ -241,11 +241,12 @@ class HttpStack
 
         **********************************************************************/
 
-        final static bool isMatch (ref Token token, char[] match)
+        final static bool isMatch (ref Token token, const(char)[] matchz)
         {
-                char[] target = token.toString();
+                char[] match = matchz.dup;
+                char[] target = token.toString().dup;
 
-                int length = target.length;
+                size_t length = target.length;
                 if (length > match.length)
                     length = match.length;
 
@@ -266,7 +267,7 @@ class HttpStack
 
         final static void resize (ref Token[] tokens, int size)
         {
-                int i = tokens.length;
+                size_t i = tokens.length;
 
                 // this should *never* realistically happen 
                 if (size > MaxHttpStackSize)
