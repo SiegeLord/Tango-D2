@@ -527,11 +527,11 @@ import tango.math.Math;
 /* ************************************************************************************************
     A range of characters
 **************************************************************************************************/
-struct CharRange(char_t)
+struct CharRange(T)
 {
-    char_t  l_, r_;
+    T  l_, r_;
 
-    static CharRange opCall(char_t c)
+    static CharRange opCall(T c)
     {
         CharRange cr;
         cr.l_ = c;
@@ -539,7 +539,7 @@ struct CharRange(char_t)
         return cr;
     }
 
-    static CharRange opCall(char_t a, char_t b)
+    static CharRange opCall(T a, T b)
     {
         CharRange cr;
         cr.l_ = min(a,b);
@@ -547,12 +547,12 @@ struct CharRange(char_t)
         return cr;
     }
 
-    char_t l()
+    T l()
     {
         return l_;
     }
 
-    char_t r()
+    T r()
     {
         return r_;
     }
@@ -576,7 +576,7 @@ struct CharRange(char_t)
         return 0;
     }
 
-    bool contains(char_t c)
+    bool contains(T c)
     {
         return c >= l_ && c <= r_;
     }
@@ -598,7 +598,7 @@ struct CharRange(char_t)
         ir.l_ = max(l_, cr.l_);
         ir.r_ = min(r_, cr.r_);
         if ( ir.l_ > ir.r_ )
-            ir.l_ = ir.r_ = char_t.min;
+            ir.l_ = ir.r_ = T.min;
         return ir;
     }
 
@@ -670,13 +670,13 @@ struct CharRange(char_t)
 /* ************************************************************************************************
     Represents a class of characters as used in regular expressions (e.g. [0-9a-z], etc.)
 **************************************************************************************************/
-struct CharClass(char_t)
+struct CharClass(T)
 {
-    alias CharRange!(char_t) range_t;
+    alias CharRange!(T) range_t;
 
     //---------------------------------------------------------------------------------------------
     // pre-defined character classes
-    static const CharClass!(char_t)
+    static const CharClass!(T)
         line_startend = {parts: [
             {l_:0x00, r_:0x00},
             {l_:0x0a, r_:0x0a},
@@ -695,9 +695,9 @@ struct CharClass(char_t)
         ]};
 
     // 8bit classes
-    static if ( is(char_t == char) )
+    static if ( is(T == char) )
     {
-        static const CharClass!(char_t)
+        static const CharClass!(T)
             any_char = {parts: [
                 {l_:0x01, r_:0xff}
             ]},
@@ -712,9 +712,9 @@ struct CharClass(char_t)
             ]};
     }
     // 16bit and 32bit classes
-    static if ( is(char_t == wchar) || is(char_t == dchar) )
+    static if ( is(T == wchar) || is(T == dchar) )
     {
-        static const CharClass!(char_t)
+        static const CharClass!(T)
             any_char = {parts: [
                 {l_:0x0001, r_:0xffff}
             ]},
@@ -764,7 +764,7 @@ struct CharClass(char_t)
         return parts.length <= 0;
     }
 
-    bool matches(char_t c)
+    bool matches(T c)
     {
         foreach ( p; parts )
         {
@@ -831,9 +831,9 @@ struct CharClass(char_t)
         parts ~= cr;
     }
 
-    void add(char_t c)
+    void add(T c)
     {
-        parts ~= CharRange!(char_t)(c);
+        parts ~= CharRange!(T)(c);
     }
 
     /* ********************************************************************************************
@@ -842,13 +842,13 @@ struct CharClass(char_t)
     void negate()
     {
         optimize;
-        char_t  start = char_t.min;
+        T  start = T.min;
 
         // first part touches left boundary of value range
         if ( parts.length > 0 && parts[0].l_ == start )
         {
             start = parts[0].r_;
-            if ( start < char_t.max )
+            if ( start < T.max )
                 ++start;
 
             foreach ( i, ref cr; parts[0 .. $-1] )
@@ -856,12 +856,12 @@ struct CharClass(char_t)
                 cr.l_ = start;
                 cr.r_ = parts[i+1].l_-1;
                 start = parts[i+1].r_;
-                if ( start < char_t.max )
+                if ( start < T.max )
                     ++start;
             }
-            if ( start != char_t.max ) {
+            if ( start != T.max ) {
                 parts[$-1].l_ = start;
-                parts[$-1].r_ = char_t.max;
+                parts[$-1].r_ = T.max;
             }
             else
                 parts.length = parts.length-1;
@@ -870,17 +870,17 @@ struct CharClass(char_t)
 
         foreach ( i, ref cr; parts )
         {
-            char_t tmp = cr.l_-1;
+            T tmp = cr.l_-1;
             cr.l_ = start;
             start = cr.r_;
-            if ( start < char_t.max )
+            if ( start < T.max )
                 ++start;
             cr.r_ = tmp;
         }
 
         // last part does not touch right boundary
-        if ( start != char_t.max )
-            parts ~= range_t(start, char_t.max);
+        if ( start != T.max )
+            parts ~= range_t(start, T.max);
     }
 
     void optimize()
@@ -900,7 +900,7 @@ struct CharClass(char_t)
                 continue;
             }
             parts[i].r_ = max(p.r_, parts[i].r_);
-            if ( parts[i].r_ >= char_t.max )
+            if ( parts[i].r_ >= T.max )
                 break;
         }
         parts.length = i+1;
@@ -970,11 +970,10 @@ unittest
 /* ************************************************************************************************
 
 **************************************************************************************************/
-private struct Predicate(char_t)
+private struct Predicate(T)
 {
-    alias char_t[]              string_t;
-    alias CharClass!(char_t)    cc_t;
-    alias CharRange!(char_t)    cr_t;
+    alias CharClass!(T)    cc_t;
+    alias CharRange!(T)    cr_t;
 
     // generic data
     enum Type {
@@ -1000,7 +999,7 @@ private struct Predicate(char_t)
     //
     // Keep in mind that data_str.length can't be modified directly unless the
     // new length is strictly greater than the old length. This is essentially
-    // because ubyte.sizeof can be less than char_t.sizeof. If you set
+    // because ubyte.sizeof can be less than T.sizeof. If you set
     // data_str.length to anything less than or equal to data_bmp.length,
     // data_str will not be reallocated: only the length value will change but
     // nothing will realize that not that much space has actually been
@@ -1013,9 +1012,9 @@ private struct Predicate(char_t)
     // -- Deewiant
     union {
         ubyte[]     data_bmp;
-        string_t    data_str;
+        immutable(T)[]    data_str;
     };
-    char_t      data_chr;
+    T      data_chr;
 
 
     void compile()
@@ -1040,7 +1039,7 @@ private struct Predicate(char_t)
         data_bmp.length = MAX_BITMAP_LENGTH/8;
         foreach ( p; input.parts )
         {
-            for ( char_t c = p.l_; c <= p.r_; ++c )
+            for ( T c = p.l_; c <= p.r_; ++c )
                 data_bmp[c/8] |= 1 << (c&7);
         }
         mode = type==Type.consume ? MatchMode.bitmap : MatchMode.bitmap_l;
@@ -1059,18 +1058,18 @@ private struct Predicate(char_t)
         size_t ind;
         foreach ( p; input.parts )
         {
-            for ( char_t c = p.l_; c <= p.r_; ++c )
+            for ( T c = p.l_; c <= p.r_; ++c )
                 data_str[ind++] = c;
         }
         mode = type==Type.consume ? MatchMode.string_search : MatchMode.string_search_l;
         return;
 */
     Lgeneric:
-        data_str = cast(char_t[])input.parts;
+        data_str = cast(immutable(T)[])input.parts;
         mode = type==Type.consume ? MatchMode.generic : MatchMode.generic_l;
     }
 
-    bool matches(char_t c)
+    bool matches(T c)
     {
         if ( type == Type.consume || type == Type.lookahead )
             return input.matches(c);
@@ -1153,7 +1152,7 @@ private struct Predicate(char_t)
         return input;
     }
 
-    void setInput(cc_t cc)
+    void setInput(const(cc_t) cc)
     {
         input = cc;
     }
@@ -1196,25 +1195,25 @@ import tango.text.convert.Format;
 **************************************************************************************************/
 class RegExpException : Exception
 {
-    this(string msg)
+    this(immutable(char)[] msg)
     {
-        super("RegExp: "~msg);
+        super(("RegExp: " ~ msg).idup);
     }
 }
 
 /* ************************************************************************************************
     TNFA state
 **************************************************************************************************/
-private class TNFAState(char_t)
+private class TNFAState(T)
 {
     bool    accept = false,
             visited = false;
     uint    index;
-    List!(TNFATransition!(char_t))  transitions;
+    List!(TNFATransition!(T))  transitions;
 
     this()
     {
-        transitions = new List!(TNFATransition!(char_t));
+        transitions = new List!(TNFATransition!(T));
     }
 }
 
@@ -1229,10 +1228,10 @@ private enum PriorityClass {
 /* ********************************************************************************
     TNFA tagged transition
 ***********************************************************************************/
-private class TNFATransition(char_t)
+private class TNFATransition(T)
 {
-    TNFAState!(char_t)  target;
-    Predicate!(char_t)  predicate;
+    TNFAState!(T)  target;
+    Predicate!(T)  predicate;
     uint                priority,
                         tag;        /// one-based tag number, 0 = untagged
     PriorityClass       priorityClass;
@@ -1253,14 +1252,14 @@ private class TNFATransition(char_t)
     *******************************************************************************/
     bool canFinish()
     {
-        TNFAState!(char_t)  t = target;
+        TNFAState!(T)  t = target;
         while (!t.accept) {
-            TNFATransition!(char_t) highestPriTrans;
+            TNFATransition!(T) highestPriTrans;
             foreach (trans; t.transitions) {
                 if (!highestPriTrans || highestPriTrans.priority > trans.priority)
                     highestPriTrans = trans;
             }
-            if (!(highestPriTrans.predicate.type == Predicate!(char_t).Type.epsilon))
+            if (!(highestPriTrans.predicate.type == Predicate!(T).Type.epsilon))
                 return false;
 
             t = highestPriTrans.target;
@@ -1273,10 +1272,10 @@ private class TNFATransition(char_t)
 /* ************************************************************************************************
     Fragments of TNFAs as used in the Thompson method
 **************************************************************************************************/
-private class TNFAFragment(char_t)
+private class TNFAFragment(T)
 {
-    alias TNFAState!(char_t)        state_t;
-    alias TNFATransition!(char_t)   trans_t;
+    alias TNFAState!(T)        state_t;
+    alias TNFATransition!(T)   trans_t;
 
     List!(trans_t)  entries,        /// transitions to be added to the entry state
                     exits,          /// transitions to be added to the exit state
@@ -1317,17 +1316,16 @@ private class TNFAFragment(char_t)
 /* ************************************************************************************************
     Tagged NFA
 **************************************************************************************************/
-private final class TNFA(char_t)
+private final class TNFA(T)
 {
-    alias TNFATransition!(char_t)   trans_t;
-    alias TNFAFragment!(char_t)     frag_t;
-    alias TNFAState!(char_t)        state_t;
-    alias Predicate!(char_t)        predicate_t;
-    alias char_t[]                  string_t;
-    alias CharRange!(char_t)        range_t;
-    alias CharClass!(char_t)        cc_t;
+    alias TNFATransition!(T)   trans_t;
+    alias TNFAFragment!(T)     frag_t;
+    alias TNFAState!(T)        state_t;
+    alias Predicate!(T)        predicate_t;
+    alias CharRange!(T)        range_t;
+    alias CharClass!(T)        cc_t;
 
-    string_t    pattern;
+    immutable(T)[]    pattern;
     state_t[]   states;
     state_t     start;
 
@@ -1336,7 +1334,7 @@ private final class TNFA(char_t)
     /* ********************************************************************************************
         Creates the TNFA from the given regex pattern
     **********************************************************************************************/
-    this(string_t regex)
+    this(const(T)[] regex)
     {
         next_tag        = 1;
         transitions     = new List!(trans_t);
@@ -1931,12 +1929,12 @@ private:
     //---------------------------------------------------------------------------------------------
     // Thompson constructions of NFA fragments
 
-    frag_t constructSingleChar(char_t c, predicate_t.Type type)
+    frag_t constructSingleChar(T c, predicate_t.Type type)
     {
         debug(tnfa) Stdout.formatln("constructCharFrag {}", c);
 
         trans_t trans = addTransition;
-        trans.predicate.appendInput(CharRange!(char_t)(c));
+        trans.predicate.appendInput(CharRange!(T)(c));
 
         trans.predicate.type = type;
 
@@ -1946,7 +1944,7 @@ private:
         return frag;
     }
 
-    frag_t constructChars(string_t chars, predicate_t.Type type)
+    frag_t constructChars(immutable(T)[] chars, predicate_t.Type type)
     {
         cc_t cc;
         for ( int i = 0; i < chars.length; ++i )
@@ -1986,7 +1984,7 @@ private:
             negated = true;
         }
 
-        char_t  last;
+        T  last;
         bool    have_range_start,
                 first_char = true;
         for ( ; !endOfPattern && peekPattern != ']'; )
@@ -2037,7 +2035,7 @@ private:
         }
         if ( !endOfPattern )
             readPattern;
-        if ( last != char_t.init )
+        if ( last != T.init )
             trans.predicate.appendInput(range_t(last));
         debug(tnfa) Stdout.formatln(" {}", pattern[oldCursor..cursor]);
 
@@ -2306,12 +2304,11 @@ import tango.core.Array;
 /* ************************************************************************************************
     Tagged DFA
 **************************************************************************************************/
-private class TDFA(char_t)
+private class TDFA(T)
 {
-    alias Predicate!(char_t)    predicate_t;
-    alias CharRange!(char_t)    range_t;
-    alias CharClass!(char_t)    charclass_t;
-    alias char_t[]              string_t;
+    alias Predicate!(T)    predicate_t;
+    alias CharRange!(T)    range_t;
+    alias CharClass!(T)    charclass_t;
 
     const uint CURRENT_POSITION_REGISTER = ~0;
 
@@ -2447,7 +2444,7 @@ private class TDFA(char_t)
                 {
                     if ( p.l_ >= lookup.length )
                         continue;
-                    for ( char_t c = p.l_; c <= min(p.r_, LOOKUP_LENGTH-1); ++c )
+                    for ( T c = p.l_; c <= min(p.r_, LOOKUP_LENGTH-1); ++c )
                         lookup[c] = cast(ubyte)i;
                 }
             }
@@ -2468,21 +2465,21 @@ private class TDFA(char_t)
         /* ****************************************************************************************
             Order transitions by the order of their predicates.
         ******************************************************************************************/
-        final int opCmp(Object o)
+        final override int opCmp(Object o)
         {
             Transition t = cast(Transition)o;
             assert(t !is null);
             return predicate.opCmp(t.predicate);
         }
 
-        final int opEquals(Object o)
+        final override bool opEquals(Object o)
         {
             auto t = cast(Transition)o;
             if ( t is null )
-                return 0;
+                return false;
             if ( equalTarget(t) && t.predicate == predicate )
-                return 1;
-            return 0;
+                return true;
+            return false;
         }
 
         bool equalTarget(Transition t)
@@ -2521,7 +2518,7 @@ private class TDFA(char_t)
     /* ********************************************************************************************
         Constructs the TDFA from the given TNFA using extended power set method
     **********************************************************************************************/
-    this(TNFA!(char_t) tnfa)
+    this(TNFA!(T) tnfa)
     {
         num_tags        = tnfa.tagCount;
 
@@ -2540,7 +2537,7 @@ private class TDFA(char_t)
 
         // apply lookbehind closure for string/line start
         predicate_t tmp_pred;
-        tmp_pred.setInput(CharClass!(char_t).line_startend);
+        tmp_pred.setInput(CharClass!(T).line_startend);
         subset_start = epsilonClosure(lookbehindClosure(epsilonClosure(subset_start, subset_start), tmp_pred), subset_start);
 
         start = addState;
@@ -2782,7 +2779,7 @@ private:
     **********************************************************************************************/
     class StateElement
     {
-        TNFAState!(char_t)  nfa_state;
+        TNFAState!(T)  nfa_state;
         int[uint]           tags;
         // use place-value priority with 2 places, value(maxPrio) > value(lastPrio)
         uint                maxPriority,
@@ -2799,7 +2796,7 @@ private:
             return false;
         }
 
-        int opCmp(Object o)
+        override int opCmp(Object o)
         {
             StateElement se = cast(StateElement)o;
             assert(se !is null);
@@ -2814,13 +2811,12 @@ private:
             return -1;
         }
 
-        string toString()
+        override immutable(char)[] toString()
         {
-            string str;
-            str = Format.convert("{} p{}.{} {{", nfa_state.index, maxPriority, lastPriority);
+            immutable(char)[] str = Format.convert("{} p{}.{} {{", nfa_state.index, maxPriority, lastPriority).idup;
             bool first = true;
             foreach ( k, v; tags ) {
-                str ~= Format.convert("{}m({},{})", first?"":",", k, v);
+                str ~= Format.convert("{}m({},{})", first?"":",", k, v).idup;
                 first = false;
             }
             str ~= "}";
@@ -2843,7 +2839,7 @@ private:
             this.elms = elms;
         }
 
-        int opApply(int delegate (ref TNFATransition!(char_t)) dg)
+        int opApply(int delegate (ref TNFATransition!(T)) dg)
         {
             int res;
             foreach ( elm; elms )
@@ -2858,9 +2854,9 @@ private:
             return res;
         }
 
-        string toString()
+        override immutable(char)[] toString()
         {
-            string str = "[ ";
+            immutable(char)[] str = "[ ";
             bool first = true;
             foreach ( s; elms ) {
                 if ( !first )
@@ -2877,7 +2873,7 @@ private:
     **********************************************************************************************/
     struct Mark
     {
-        char_t  c;
+        T  c;
         bool    end;    /// false = start of range
 
         int opCmp(Mark m)
@@ -2939,7 +2935,7 @@ private:
     **********************************************************************************************/
     predicate_t[] disjointPredicates(SubsetState state)
     {
-        alias CharRange!(char_t) range_t;
+        alias CharRange!(T) range_t;
         debug(tdfa) Stdout.formatln("disjointPredicates()");
 
         size_t num_marks;
@@ -2987,7 +2983,7 @@ private:
 
         size_t  next,
                 active = 1;
-        char_t  start = marks_[0].c,
+        T  start = marks_[0].c,
                 end;
         range_t[]   disjoint = new range_t[num_marks/2+1];
 
@@ -3496,7 +3492,7 @@ private:
                 // NOTE: The grounds for choosing the last element in sorted_elms
                 // are somewhat weak (empirical testing), but sofar no new
                 // regressions have been discovered. larsivi 20090827
-                TNFATransition!(char_t) highestPriTrans;
+                TNFATransition!(T) highestPriTrans;
                 if (!(sorted_elms[$-1] && sorted_elms[$-1].nfa_state &&
                             sorted_elms[$-1].nfa_state))
                     throw new Exception ("Something is NULL that is expected to
@@ -3661,7 +3657,7 @@ import tango.text.Util;
 /**************************************************************************************************
     Regular expression compiler and interpreter.
 **************************************************************************************************/
-class RegExpT(char_t)
+class RegExpT(T)
 {
     alias TDFA!(dchar)      tdfa_t;
     alias TNFA!(dchar)      tnfa_t;
@@ -3680,19 +3676,19 @@ class RegExpT(char_t)
             auto s = new Regex(r"p[1-5]\s*");
             ---
     **********************************************************************************************/
-    this(char_t[] pattern, char_t[] attributes=null)
+    this(T[] pattern, T[] attributes=null)
     {
         this(pattern, false, true);
     }
 
     /** ditto */
-    this(char_t[] pattern, bool swapMBS, bool unanchored, bool printNFA=false)
+    this(T[] pattern, bool swapMBS, bool unanchored, bool printNFA=false)
     {
         pattern_ = pattern;
 
         debug(TangoRegex) {}
         else { scope tnfa_t tnfa_; }
-        static if ( is(char_t == dchar) ) {
+        static if ( is(T == dchar) ) {
             tnfa_ = new tnfa_t(pattern_);
         }
         else {
@@ -3720,9 +3716,9 @@ class RegExpT(char_t)
             auto s = Regex(r"p[1-5]\s*");
             ---
     **********************************************************************************************/
-    static RegExpT!(char_t) opCall(char_t[] pattern, char_t[] attributes = null)
+    static RegExpT!(T) opCall(T[] pattern, T[] attributes = null)
     {
-        return new RegExpT!(char_t)(pattern, attributes);
+        return new RegExpT!(T)(pattern, attributes);
     }
 
     /**********************************************************************************************
@@ -3745,7 +3741,7 @@ class RegExpT(char_t)
             // qwerabcabcab[ab]qwer
             ---
     **********************************************************************************************/
-    public RegExpT!(char_t) search(char_t[] input)
+    public RegExpT!(T) search(T[] input)
     {
         input_ = input;
         next_start_ = 0;
@@ -3754,7 +3750,7 @@ class RegExpT(char_t)
     }
 
     /** ditto */
-    public int opApply(int delegate(ref RegExpT!(char_t)) dg)
+    public int opApply(int delegate(ref RegExpT!(T)) dg)
     {
         int result;
         while ( !result && test() )
@@ -3766,7 +3762,7 @@ class RegExpT(char_t)
         Search input for match.
         Returns: false for no match, true for match
     **********************************************************************************************/
-    bool test(char_t[] input)
+    bool test(T[] input)
     {
         this.input_ = input;
         next_start_ = 0;
@@ -3978,7 +3974,7 @@ class RegExpT(char_t)
         Returns:
             Slice of input for the requested submatch, or null if no such submatch exists.
     **********************************************************************************************/
-    char_t[] match(uint index)
+    T[] match(uint index)
     {
         if ( index > tdfa_.num_tags )
             return null;
@@ -3990,7 +3986,7 @@ class RegExpT(char_t)
     }
 
     /** ditto */
-    char_t[] opIndex(uint index)
+    T[] opIndex(uint index)
     {
         return match(index);
     }
@@ -3999,7 +3995,7 @@ class RegExpT(char_t)
         Return the slice of the input that precedes the matched substring.
         If no match was found, null is returned.
     **********************************************************************************************/
-    char_t[] pre()
+    T[] pre()
     {
         auto start = registers_[0];
         if ( start < 0 )
@@ -4011,7 +4007,7 @@ class RegExpT(char_t)
         Return the slice of the input that follows the matched substring.
         If no match was found, the whole slice of the input that was processed in the last test.
     **********************************************************************************************/
-    char_t[] post()
+    T[] post()
     {
         if ( registers_[1] >= 0 )
             return input_[next_start_ .. $];
@@ -4037,11 +4033,11 @@ class RegExpT(char_t)
             // qwer
             ---
     **********************************************************************************************/
-    char_t[][] split(char_t[] input)
+    T[][] split(T[] input)
     {
-        auto res = new char_t[][PREALLOC];
+        auto res = new T[][PREALLOC];
         uint index;
-        char_t[] tmp = input;
+        T[] tmp = input;
 
         foreach ( r; search(input) )
         {
@@ -4060,11 +4056,11 @@ class RegExpT(char_t)
     /**********************************************************************************************
         Returns a copy of the input with all matches replaced by replacement.
     **********************************************************************************************/
-    char_t[] replaceAll(char_t[] input, char_t[] replacement, char_t[] output_buffer=null)
+    T[] replaceAll(T[] input, T[] replacement, T[] output_buffer=null)
     {
-        char_t[] tmp = input;
+        T[] tmp = input;
         if ( output_buffer.length <= 0 )
-            output_buffer = new char_t[input.length+replacement.length];
+            output_buffer = new T[input.length+replacement.length];
         output_buffer.length = 0;
 
         foreach ( r; search(input) )
@@ -4082,11 +4078,11 @@ class RegExpT(char_t)
     /**********************************************************************************************
         Returns a copy of the input with the last match replaced by replacement.
     **********************************************************************************************/
-    char_t[] replaceLast(char_t[] input, char_t[] replacement, char_t[] output_buffer=null)
+    T[] replaceLast(T[] input, T[] replacement, T[] output_buffer=null)
     {
-        char_t[] tmp_pre, tmp_post;
+        T[] tmp_pre, tmp_post;
         if ( output_buffer.length <= 0 )
-            output_buffer = new char_t[input.length+replacement.length];
+            output_buffer = new T[input.length+replacement.length];
         output_buffer.length = 0;
 
         foreach ( r; search(input) ) {
@@ -4108,11 +4104,11 @@ class RegExpT(char_t)
     /**********************************************************************************************
         Returns a copy of the input with the first match replaced by replacement.
     **********************************************************************************************/
-    char_t[] replaceFirst(char_t[] input, char_t[] replacement, char_t[] output_buffer=null)
+    T[] replaceFirst(T[] input, T[] replacement, T[] output_buffer=null)
     {
-        char_t[] tmp = input;
+        T[] tmp = input;
         if ( output_buffer.length <= 0 )
-            output_buffer = new char_t[input.length+replacement.length];
+            output_buffer = new T[input.length+replacement.length];
         output_buffer.length = 0;
 
         if ( test(input) )
@@ -4130,12 +4126,12 @@ class RegExpT(char_t)
     /**********************************************************************************************
         Calls dg for each match and replaces it with dg's return value.
     **********************************************************************************************/
-    char_t[] replaceAll(char_t[] input, char_t[] delegate(RegExpT!(char_t)) dg, char_t[] output_buffer=null)
+    T[] replaceAll(T[] input, T[] delegate(RegExpT!(T)) dg, T[] output_buffer=null)
     {
-        char_t[]    tmp = input;
+        T[]    tmp = input;
         uint        offset;
         if ( output_buffer.length <= 0 )
-            output_buffer = new char_t[input.length];
+            output_buffer = new T[input.length];
         output_buffer.length = 0;
 
         foreach ( r; search(input) )
@@ -4158,15 +4154,15 @@ class RegExpT(char_t)
 
     **********************************************************************************************/
     // TODO: input-end special case
-    string compileToD(string func_name = "match", bool lexer=false)
+    string compileToD(immutable(char)[] func_name = "match", bool lexer=false)
     {
-        string code;
-        string str_type;
-        static if ( is(char_t == char) )
+        char[] code;
+        immutable(char)[] str_type;
+        static if ( is(T == char) )
             str_type = "char[]";
-        static if ( is(char_t == wchar) )
+        static if ( is(T == wchar) )
             str_type = "wchar[]";
-        static if ( is(char_t == dchar) )
+        static if ( is(T == dchar) )
             str_type = "dchar[]";
 
         if ( lexer )
@@ -4342,7 +4338,7 @@ class RegExpT(char_t)
                     if ( tdfa_.states[group].finishers.length > 1 )
                         throw new RegExpException("Lexer error: more than one finisher in flm lexer!");
                     if ( cmd.dst % 2 == 0 || cmd.dst >= tdfa_.num_tags )
-                        throw new RegExpException(Format.convert("Lexer error: unexpected dst register {} in flm lexer!", cmd.dst));
+                        throw new RegExpException(Format.convert("Lexer error: unexpected dst register {} in flm lexer!", cmd.dst).idup);
                     code ~= Format.convert("\n            match = input[0 .. r{}];\n            token = {};", cmd.src, cmd.dst/2);
                 }
                 else
@@ -4367,7 +4363,7 @@ class RegExpT(char_t)
     /*********************************************************************************************
         Get the pattern with which this regex was constructed.
     **********************************************************************************************/
-    public char_t[] pattern()
+    public T[] pattern()
     {
         return pattern_;
     }
@@ -4390,10 +4386,10 @@ class RegExpT(char_t)
     tdfa_t      tdfa_;
 private:
     const int   PREALLOC = 16;
-    char_t[]    input_,
+    T[]    input_,
                 pattern_;
 
-    string compileCommand(tdfa_t.Command cmd, char_t[] indent)
+    string compileCommand(tdfa_t.Command cmd, const(T)[] indent)
     {
         string  code,
                 dst;
@@ -4439,7 +4435,7 @@ class UtfException : Exception
 {
     size_t idx; /// index in string of where error occurred
 
-    this(char[] s, size_t i)
+    this(immutable(char)[] s, size_t i)
     {
         idx = i;
         super(s);
@@ -4554,7 +4550,7 @@ dchar decode(wchar[] s, ref size_t idx)
     }
     body
     {
-        char[] msg;
+        immutable(char)[] msg;
         dchar V;
         size_t i = idx;
         uint u = s[i];

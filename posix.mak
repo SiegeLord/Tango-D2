@@ -43,6 +43,7 @@ SRC_IO=tango/io/Console.d \
 	tango/io/Stdout.d \
 	tango/io/File.d \
 	tango/io/FilePath.d \
+	tango/io/FileScan.d \
 	tango/io/Path.d \
 	\
 	tango/io/device/Array.d \
@@ -246,7 +247,7 @@ endif
 # generate all target for the examles
 #DIR_EXAMPLES=$(wildcard ./doc/example/*) uncomment when all examples work!
 # ./doc/example/conduits <-- not all of them convered
-DIR_EXAMPLES=./doc/example/concurrency ./doc/example/text ./doc/example/console ./doc/example/networking ./doc/example/sql ./doc/example/system ./doc/example/traits
+DIR_EXAMPLES=./doc/example/concurrency ./doc/example/conduits ./doc/example/text ./doc/example/console ./doc/example/networking ./doc/example/sql ./doc/example/system ./doc/example/traits
 SRC_EXAMPLES:=$(foreach DIR_EXAMPLE,$(DIR_EXAMPLES),$(wildcard $(DIR_EXAMPLE)/*.d))
 PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 
