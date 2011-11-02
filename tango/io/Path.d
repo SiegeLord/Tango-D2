@@ -413,7 +413,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static Stamps timeStamps (const(char[]) name)
+                static Stamps timeStamps (const(char)[] name)
                 {
                         static Time convert (FILETIME time)
                         {
@@ -437,7 +437,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void timeStamps (const(char[]) name, Time accessed, Time modified)
+                static void timeStamps (const(char)[] name, Time accessed, Time modified)
                 {
                         void set (HANDLE h)
                         {
@@ -460,7 +460,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void copy (const(char[]) src, const(char[]) dst)
+                static void copy (const(char)[] src, const(char)[] dst)
                 {
                         version (Win32SansUnicode)
                                 {
@@ -597,7 +597,7 @@ package struct FS
                                       return FindNextFileW (h, &fileinfo);
                         }
 
-                        static T[] padded (T[] s, T[] ext)
+                        static const(T)[] padded (const(T)[] s, const(T)[] ext)
                         {
                                 if (s.length && s[$-1] is '/')
                                     return s ~ ext;
@@ -618,7 +618,7 @@ package struct FS
                         scope (exit)
                                FindClose (h);
 
-                        prefix = FS.padded (folder[0..$-1]);
+                        prefix = FS.padded (folder[0..$-1]).dup;
                         do {
                            version (Win32SansUnicode)
                                    {
@@ -2116,7 +2116,7 @@ char[] normalize (const(char[]) in_path, char[] buf = null)
 
                    if (c >= 'a' && c <= 'z')
                       {
-                      path[0] = c - 32;
+                      path[0] = cast(char) (c - 32);
                       idx = 2;
                       }
                    else

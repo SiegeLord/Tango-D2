@@ -16,7 +16,7 @@ alias WINBOOL BOOL;
 alias uint CALTYPE;
 alias uint CALID;
 alias char CCHAR;
-alias char* PCHAR;
+alias const(char)* PCHAR;
 alias uint COLORREF;
 alias uint TCOLORREF;
 alias char CHAR;
@@ -109,8 +109,8 @@ alias PCHAR LPCH;
 alias COLORREF* LPCOLORREF;
 alias PCHAR LPCSTR;
 alias TCHAR* LPCTSTR;
-alias wchar* LPCWCH;
-alias wchar* LPCWSTR;
+alias const(wchar)* LPCWCH;
+alias const(wchar)* LPCWSTR;
 alias DWORD* LPDWORD;
 alias HANDLE* LPHANDLE;
 alias int* LPINT;
@@ -185,7 +185,7 @@ alias GUID IID;
 alias IID* REFIID;
 
 // Cast a string literal to a ubyte*=PCHAR
-template _PCHAR( char[] a ){
+template _PCHAR( const(char)[] a ){
  const PCHAR _PCHAR = cast(PCHAR)a.ptr;
 }
 

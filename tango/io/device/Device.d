@@ -106,11 +106,11 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                override void dispose ()
+                void dispose ()
                 {
-                        if (io.handle != INVALID_HANDLE_VALUE)
-                            if (scheduler)
-                                scheduler.close (io.handle, toString);
+                        //if (io.handle != INVALID_HANDLE_VALUE)
+                           // if (scheduler)
+                              //  scheduler.close (io.handle, toString);
                         detach();
                 }
 
@@ -147,10 +147,10 @@ class Device : Conduit, ISelectable
                 {
                         DWORD bytes;
 
-                        if (! ReadFile (io.handle, dst.ptr, dst.length, &bytes, &io.asynch))
-                        //ReadFile (io.handle, dst.ptr, dst.length, &bytes, &io.asynch);
-                              if ((bytes = wait (scheduler.Type.Read, bytes, timeout)) is Eof)
-                                   return Eof;
+                        //if (! ReadFile (io.handle, dst.ptr, dst.length, &bytes, &io.asynch))
+                        ReadFile (io.handle, dst.ptr, dst.length, &bytes, &io.asynch);
+                             // if ((bytes = wait (scheduler.Type.Read, bytes, timeout)) is Eof)
+                                  // return Eof;
 
                         // synchronous read of zero means Eof
                         if (bytes is 0 && dst.length > 0)
@@ -173,14 +173,14 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                override size_t write (void[] src)
+                override size_t write (const(void)[] src)
                 {
                         DWORD bytes;
 
-                        if (! WriteFile (io.handle, src.ptr, src.length, &bytes, &io.asynch))
-                        //WriteFile (io.handle, src.ptr, src.length, &bytes, &io.asynch);
-                        if ((bytes = wait (scheduler.Type.Write, bytes, timeout)) is Eof)
-                             return Eof;
+                        //if (! WriteFile (io.handle, src.ptr, src.length, &bytes, &io.asynch))
+                        WriteFile (io.handle, cast(void*) src.ptr, src.length, &bytes, &io.asynch);
+                        //if ((bytes = wait (scheduler.Type.Write, bytes, timeout)) is Eof)
+                             //return Eof;
 
                         // update stream location?
                         if (io.track)
@@ -192,7 +192,7 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                protected final size_t wait (scheduler.Type type, uint bytes, uint timeout)
+               /* protected final size_t wait (scheduler.Type type, uint bytes, uint timeout)
                 {
                         while (true)
                               {
@@ -227,7 +227,7 @@ class Device : Conduit, ISelectable
 
                         // should never get here
                         assert(false);
-                }
+                }*/
         }
 
 

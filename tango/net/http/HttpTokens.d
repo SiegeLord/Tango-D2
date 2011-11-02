@@ -218,8 +218,8 @@ class HttpTokens
         {
                 char[] value = get (name);
 
-                if (value.length)
-                    date = TimeStamp.parse (value);
+               // if (value.length)
+                   // date = TimeStamp.parse (value);
 
                 return date;
         }

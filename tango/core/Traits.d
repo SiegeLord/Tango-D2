@@ -17,13 +17,22 @@ module tango.core.Traits;
 
 template BaseTypeOf( T )
 {
-    static if (is(T S : const(S)))
+	
+	static if ( is(T S : immutable(S)[]))	
+		alias S[] BaseTypeOf;
+	else static if ( is(T S : const(S)[]))	
+		alias S[] BaseTypeOf;
+	else static if (is(T S : const(S)))
         alias S BaseTypeOf;
     else static if (is(T S : shared(S)))
         alias S BaseTypeOf;
     else static if (is(T S : shared(const(S))))
         alias S BaseTypeOf;
-    else
+	else static if (is(T S : immutable(S)))
+		alias S BaseTypeOf;
+	else static if (is(T S : shared(immutable(S))))
+		alias S BaseTypeOf;
+	else
         alias T BaseTypeOf;
 }
 
@@ -32,9 +41,9 @@ template BaseTypeOf( T )
  */
 template isStringType( T )
 {
-    const bool isStringType = is( T : char[] )  ||
-                              is( T : wchar[] ) ||
-                              is( T : dchar[] );
+    enum bool isStringType = is( BaseTypeOf!(T) : char[] )  ||
+                              is( BaseTypeOf!(T) : wchar[] ) ||
+                              is( BaseTypeOf!(T) : dchar[] );
 }
 
 /**

@@ -18,7 +18,7 @@ private {
         import tango.sys.win32.Types : HINSTANCE, HMODULE, BOOL;
 
         extern (Windows) {
-            void* GetProcAddress(HINSTANCE, char*);
+            void* GetProcAddress(HINSTANCE, const(char)*);
             BOOL FreeLibrary(HMODULE);
 
             version (Win32SansUnicode)

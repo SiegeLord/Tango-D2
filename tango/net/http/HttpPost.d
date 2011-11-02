@@ -128,9 +128,9 @@ debug(HttpPost)
         // Its important to set cookies below in order to parse post fields properly 
         page.getRequestHeaders().add(HttpHeader.AcceptCharset, "UTF-8,*"); 
         Cout("Enter your name: ").newline;
-        string name;
+        char[] name;
         Cin.readln(name);
-        auto fields = "submit=send&nick=" ~ name;
+        char[] fields = "submit=send&nick=".dup ~ name;
         Cout( cast(char[]) page.write(cast(void[]) fields, "application/x-www-form-urlencoded") )();
     }
 }

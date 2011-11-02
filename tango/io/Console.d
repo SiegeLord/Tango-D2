@@ -502,7 +502,7 @@ struct Console
                                 {}
                              else
                                 {
-                                override size_t write (void[] src)
+                                override size_t write (const(void)[] src)
                                 {
                                 if (redirected)
                                     return super.write (src);

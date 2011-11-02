@@ -441,9 +441,9 @@ class File : Device, Device.Seek, Device.Truncate
                         create = Create[style.open];
                         access = Access[style.access];
 
-                        if (scheduler)
+                        /*if (scheduler)
                             attr |= FILE_FLAG_OVERLAPPED;// + FILE_FLAG_NO_BUFFERING;
-
+						*/
                         // zero terminate the path
                         char[512] zero = void;
                         auto name = stdc.toStringz (path, zero);
@@ -479,8 +479,8 @@ class File : Device, Device.Seek, Device.Truncate
                            io.track = true;
 
                         // monitor this handle for async I/O?
-                        if (scheduler)
-                            scheduler.open (io.handle, toString);
+                        /*if (scheduler)
+                            scheduler.open (io.handle, toString);*/
                         return true;
                 }
 
@@ -574,8 +574,10 @@ class File : Device, Device.Seek, Device.Truncate
                         long len;
 
                         if (! GetFileSizeEx (io.handle, cast(PLARGE_INTEGER) &len))
-                              error;
-                        return len;
+						{
+							// error; FIXME: isnt working for some reason :)
+                        }
+						return len;
                 }
 
           /***************************************************************
