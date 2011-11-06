@@ -77,7 +77,7 @@ class Lines(T) : Iterator!(T)
 
         ***********************************************************************/
 
-        final bool readln (ref T[] content)
+        final bool readln (ref const(T)[] content)
         {
                 content = super.next;
                 return content.ptr !is null;
@@ -90,9 +90,9 @@ class Lines(T) : Iterator!(T)
 
         ***********************************************************************/
 
-        protected size_t scan (void[] data)
+        protected size_t scan (const(void)[] data)
         {
-                auto content = (cast(T*) data.ptr) [0 .. data.length / T.sizeof];
+                auto content = (cast(const(T)*) data.ptr) [0 .. data.length / T.sizeof];
 
                 foreach (int i, T c; content)
                          if (c is '\n')

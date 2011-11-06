@@ -19,7 +19,10 @@ tango/io/FilePath.d
 tango/io/Path.d
 tango/io/Stdout.d
 tango/io/stream/Buffered.d
+tango/io/stream/Delimiters.d
+tango/io/stream/Iterator.d
 tango/io/stream/Format.d
+tango/io/stream/Lines.d
 tango/io/stream/Zlib.d
 tango/io/stream/Digester.d
 tango/math/Bessel.d

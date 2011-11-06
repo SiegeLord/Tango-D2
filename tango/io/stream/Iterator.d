@@ -52,7 +52,7 @@ protected import tango.io.device.Conduit : InputFilter, InputBuffer, InputStream
 class Iterator(T) : InputFilter
 {
         private InputBuffer     source;
-        protected T[]           slice,
+        protected const(T)[]    slice,
                                 delim;
 
         /***********************************************************************
@@ -61,7 +61,7 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        abstract protected size_t scan (void[] data);
+        abstract protected size_t scan (const(void)[] data);
 
         /***********************************************************************
 
@@ -96,7 +96,7 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        final T[] get ()
+        final const(T)[] get ()
         {
                 return slice;
         }
@@ -109,7 +109,7 @@ class Iterator(T) : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(ref T[]) dg)
+        int opApply (scope int delegate(ref const(T)[]) dg)
         {
                 bool more;
                 int  result;
@@ -128,7 +128,7 @@ class Iterator(T) : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(ref int, ref T[]) dg)
+        int opApply (scope int delegate(ref int, ref const(T)[]) dg)
         {
                 bool more;
                 int  result,
@@ -149,7 +149,7 @@ class Iterator(T) : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(ref int, ref T[], ref T[]) dg)
+        int opApply (scope int delegate(ref int, ref const(T)[], ref const(T)[]) dg)
         {
                 bool more;
                 int  result,
@@ -190,7 +190,7 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        final T[] next ()
+        final const(T)[] next ()
         {
                 if (consume() || slice.length)
                     return slice;
@@ -204,7 +204,7 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        protected final size_t set (T* content, size_t start, size_t end)
+        protected final size_t set (const(T)* content, size_t start, size_t end)
         {
                 slice = content [start .. end];
                 return end;
@@ -218,7 +218,7 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        protected final size_t set (T* content, size_t start, size_t end, size_t next)
+        protected final size_t set (const(T)* content, size_t start, size_t end, size_t next)
         {
                 slice = content [start .. end];
                 delim = content [end .. next+1];
@@ -258,7 +258,7 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        protected final bool has (T[] set, T match)
+        protected final bool has (const(T)[] set, T match)
         {
                 foreach (T c; set)
                          if (match is c)
@@ -279,9 +279,9 @@ class Iterator(T) : InputFilter
                     return true;
 
                 // consume trailing token
-                source.reader ((void[] arr)
+                source.reader ((const(void)[] arr)
                               {
-                              slice = (cast(T*) arr.ptr) [0 .. arr.length/T.sizeof];
+                              slice = (cast(const(T)*) arr.ptr) [0 .. arr.length/T.sizeof];
                               return cast(size_t)arr.length;
                               });
                 return false;

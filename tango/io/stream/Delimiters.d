@@ -35,7 +35,7 @@ private import tango.io.stream.Iterator;
 
 class Delimiters(T) : Iterator!(T)
 {
-        private T[] delim;
+        private const(T)[] delim;
 
         /***********************************************************************
 
@@ -67,7 +67,7 @@ class Delimiters(T) : Iterator!(T)
 
         ***********************************************************************/
 
-        this (T[] delim, InputStream stream = null)
+        this (const(T)[] delim, InputStream stream = null)
         {
                 this.delim = delim;
                 super (stream);
@@ -77,9 +77,9 @@ class Delimiters(T) : Iterator!(T)
 
         ***********************************************************************/
 
-        protected size_t scan (void[] data)
+        protected size_t scan (const(void)[] data)
         {
-                auto content = (cast(T*) data.ptr) [0 .. data.length / T.sizeof];
+                auto content = (cast(const(T)*) data.ptr) [0 .. data.length / T.sizeof];
 
                 if (delim.length is 1)
                    {
