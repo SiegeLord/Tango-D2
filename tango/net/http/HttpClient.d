@@ -707,7 +707,7 @@ class HttpClient
 
 private class ResponseLine : HttpTriplet
 {
-        private char[]          vers,
+        private const(char)[]   vers,
                                 reason;
         private int             status;
 
@@ -740,7 +740,7 @@ private class ResponseLine : HttpTriplet
 
         **********************************************************************/
 
-        char[] getVersion ()
+        const(char)[] getVersion ()
         {
                 return vers;
         }
@@ -751,7 +751,7 @@ private class ResponseLine : HttpTriplet
 
         **********************************************************************/
 
-        char[] getReason ()
+        const(char)[] getReason ()
         {
                 return reason;
         }

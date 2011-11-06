@@ -38,7 +38,7 @@ private import  Integer = tango.text.convert.Integer;
 
 class Cookie //: IWritable
 {
-        char[]          name,
+        const(char)[]   name,
                         path,
                         value,
                         domain,
@@ -65,7 +65,7 @@ class Cookie //: IWritable
 
         ***********************************************************************/
 
-        this (char[] name, char[] value)
+        this (const(char)[] name, const(char)[] value)
         {
                 setName (name);
                 setValue (value);
@@ -77,7 +77,7 @@ class Cookie //: IWritable
 
         ***********************************************************************/
 
-        Cookie setName (char[] name)
+        Cookie setName (const(char)[] name)
         {
                 this.name = name;
                 return this;
@@ -89,7 +89,7 @@ class Cookie //: IWritable
 
         ***********************************************************************/
 
-        Cookie setValue (char[] value)
+        Cookie setValue (const(char)[] value)
         {
                 this.value = value;
                 return this;
@@ -113,7 +113,7 @@ class Cookie //: IWritable
 
         ***********************************************************************/
 
-        Cookie setPath (char[] path)
+        Cookie setPath (const(char)[] path)
         {
                 this.path = path;
                 return this;
@@ -125,7 +125,7 @@ class Cookie //: IWritable
 
         ***********************************************************************/
 
-        Cookie setDomain (char[] domain)
+        Cookie setDomain (const(char)[] domain)
         {
                 this.domain = domain;
                 return this;
@@ -137,7 +137,7 @@ class Cookie //: IWritable
 
         ***********************************************************************/
 
-        Cookie setComment (char[] comment)
+        Cookie setComment (const(char)[] comment)
         {
                 this.comment = comment;
                 return this;
@@ -507,17 +507,17 @@ class CookieParser : Iterator!(char)
 
         ***********************************************************************/
 
-        protected size_t scan (void[] data)
+        protected size_t scan (const(void)[] data)
         {      
-                char    c;
-                int     mark,
-                        vrsn;
-                char[]  name,
-                        token;
-                Cookie  cookie;
+                char           c;
+                int            mark,
+                               vrsn;
+                const(char)[]  name,
+                               token;
+                Cookie         cookie;
 
-                State   state = State.Begin;
-                char[]  content = cast(char[]) data;
+                State          state = State.Begin;
+                const(char)[]  content = cast(const(char)[]) data;
 
                 /***************************************************************
 
@@ -539,25 +539,32 @@ class CookieParser : Iterator!(char)
                            cookie.setVersion (vrsn);
                            }
                         else
-                           switch (toLower (name))
-                                  {
-                                  case "$path":
-                                        if (cookie)
-                                            cookie.setPath (token); 
-                                        break;
+                           {
+                           if(name.length < 9)
+                              {
+                              char[8] temp;
+                              temp[0..name.length] = name[];
+                              switch (toLower (temp[0..name.length]))
+                                     {
+                                     case "$path":
+                                           if (cookie)
+                                               cookie.setPath (token); 
+                                           break;
 
-                                  case "$domain":
-                                        if (cookie)
-                                            cookie.setDomain (token); 
-                                        break;
+                                     case "$domain":
+                                           if (cookie)
+                                               cookie.setDomain (token); 
+                                           break;
 
-                                  case "$version":
-                                        vrsn = cast(int) Integer.parse (token); 
-                                        break;
+                                     case "$version":
+                                           vrsn = cast(int) Integer.parse (token); 
+                                           break;
 
-                                  default:
-                                       break;
-                                  }
+                                     default:
+                                          break;
+                                     }
+                               }
+                           }
                         state = State.Begin;
                 }
 

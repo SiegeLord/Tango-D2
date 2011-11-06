@@ -20,9 +20,9 @@ module tango.net.http.HttpTriplet;
 
 class HttpTriplet 
 {
-        protected char[]        line;
-        protected char[]        failed;
-        protected char[][3]     tokens;
+        protected const(char)[]        line;
+        protected const(char)[]        failed;
+        protected const(char)[][3]     tokens;
 
         /**********************************************************************
 
@@ -38,7 +38,7 @@ class HttpTriplet
 
         **********************************************************************/
 
-        bool parse (char[] line)
+        bool parse (const(char)[] line)
         {
                 int i;
                 int mark;
@@ -76,7 +76,7 @@ class HttpTriplet
 
         **********************************************************************/
 
-        final char[] error ()
+        final const(char)[] error ()
         {
                 return failed;
         }

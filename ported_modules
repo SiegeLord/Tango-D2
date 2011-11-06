@@ -59,6 +59,17 @@ tango/net/InternetAddress.d
 tango/net/Uri.d
 tango/net/model/UriView.d
 tango/net/util/c/OpenSSL.d
+tango/net/http/HttpClient.d
+tango/net/http/HttpConst.d
+tango/net/http/HttpCookies.d
+tango/net/http/HttpGet.d
+tango/net/http/HttpHeaders.d
+tango/net/http/HttpParams.d
+tango/net/http/HttpPost.d
+tango/net/http/HttpStack.d
+tango/net/http/HttpTokens.d
+tango/net/http/HttpTriplet.d
+tango/net/http/model/HttpParamsView.d
 tango/stdc/errno.d
 tango/stdc/stdarg.d
 tango/stdc/stringz.d
