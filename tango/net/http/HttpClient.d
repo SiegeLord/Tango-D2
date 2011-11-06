@@ -82,7 +82,7 @@ private import  Integer = tango.text.convert.Integer;
 class HttpClient
 {       
         /// callback for sending PUT content
-        alias void delegate (OutputBuffer) Pump;
+        alias scope void delegate (OutputBuffer) Pump;
         
         // this is struct rather than typedef to avoid compiler bugs
         private struct RequestMethod
@@ -601,7 +601,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        void read (void delegate(void[]) sink, size_t len = size_t.max)
+        void read (scope void delegate(void[]) sink, size_t len = size_t.max)
         {
                 while (true)
                       {

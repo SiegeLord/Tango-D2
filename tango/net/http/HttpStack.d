@@ -111,7 +111,7 @@ class HttpStack
 
         **********************************************************************/
 
-        int opApply (int delegate(ref Token) dg)
+        int opApply (scope int delegate(ref Token) dg)
         {
                 int result = 0;
 

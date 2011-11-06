@@ -72,7 +72,7 @@ class ChunkOutput : OutputFilter
 
         ***********************************************************************/
 
-        final void terminate (void delegate(OutputBuffer) headers = null)
+        final void terminate (scope void delegate(OutputBuffer) headers = null)
         {
                 output.append ("0\r\n");
                 if (headers)

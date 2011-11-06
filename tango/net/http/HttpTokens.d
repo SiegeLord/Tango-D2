@@ -230,7 +230,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        int opApply (int delegate(ref HttpToken) dg)
+        int opApply (scope int delegate(ref HttpToken) dg)
         {
                 HttpToken element;
                 int       result = 0;
@@ -251,7 +251,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        void produce (size_t delegate(const(void)[]) consume, const(char)[] eol = null)
+        void produce (scope size_t delegate(const(void)[]) consume, const(char)[] eol = null)
         {
                 foreach (Token token; stack)
                         {
@@ -352,7 +352,7 @@ class HttpTokens
 
                 **************************************************************/
 
-                int opApply (int delegate(ref HttpToken) dg)
+                int opApply (scope int delegate(ref HttpToken) dg)
                 {
                         HttpToken       element;
                         int             result = 0;
@@ -448,7 +448,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        protected void add (const(char)[] name, void delegate(OutputBuffer) value)
+        protected void add (const(char)[] name, scope void delegate(OutputBuffer) value)
         {
                 // save the buffer write-position
                 //int prior = output.limit;
