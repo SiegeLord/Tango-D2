@@ -23,15 +23,15 @@ private import  tango.core.Exception;
 
 version (Win32)
         {
-        extern (C) int memicmp (char *, char *, size_t);
+        extern (C) int memicmp (const(char) *, const(char) *, size_t);
         }
 
 version (Posix) 
         {
-        extern (C) int strncasecmp (char *, char*, size_t);
+        extern (C) int strncasecmp (const(char) *, const(char)*, size_t);
         }
 
-extern (C) void* memmove (void* dst, void* src, int n);
+extern (C) void* memmove (void* dst, const(void)* src, int n);
 
 
 /******************************************************************************
@@ -241,10 +241,9 @@ class HttpStack
 
         **********************************************************************/
 
-        final static bool isMatch (ref Token token, const(char)[] matchz)
+        final static bool isMatch (ref Token token, const(char)[] match)
         {
-                char[] match = matchz.dup;
-                char[] target = token.toString().dup;
+                const(char)[] target = token.toString();
 
                 size_t length = target.length;
                 if (length > match.length)

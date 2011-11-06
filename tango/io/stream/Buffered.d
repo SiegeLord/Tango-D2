@@ -425,7 +425,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final bool skip (int size)
+        final bool skip (ptrdiff_t size)
         {
                 if (size < 0)
                    {

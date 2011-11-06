@@ -601,7 +601,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        void read (scope void delegate(void[]) sink, size_t len = size_t.max)
+        void read (scope void delegate(const(void)[]) sink, size_t len = size_t.max)
         {
                 while (true)
                       {
@@ -609,7 +609,7 @@ class HttpClient
                       if (content.length > len)
                          {
                          sink (content [0 .. len]);
-                         input.skip (cast(int) len); // FIXME: tango.io.stream.Buffered.BufferedInput.skip (int size) -> size_t size
+                         input.skip (len);
                          break;
                          }
                       else
@@ -780,9 +780,9 @@ debug (HttpClient)
         void main()
         {
         // callback for client reader
-        void sink (void[] content)
+        void sink (const(void)[] content)
         {
-                Stdout (cast(char[]) content);
+                Stdout (cast(const(char)[]) content);
         }
 
         // create client for a GET request

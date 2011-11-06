@@ -187,6 +187,7 @@ class HttpTokens
                    if (split (token, element))
                        ret = trim (element.value);
                    }
+                /* Bad dup ?*/
                 return ret.dup;
         }
 
