@@ -177,7 +177,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        char[] get (char[] name, char[] ret = null)
+        char[] get (const(char)[] name, const(char)[] ret = null)
         {
                 Token token = stack.findToken (name);
                 if (token)
@@ -187,7 +187,7 @@ class HttpTokens
                    if (split (token, element))
                        ret = trim (element.value);
                    }
-                return ret;
+                return ret.dup;
         }
 
         /**********************************************************************
@@ -197,7 +197,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        int getInt (char[] name, int ret = -1)
+        int getInt (const(char)[] name, int ret = -1)
         {       
                 char[] value = get (name);
 
@@ -214,7 +214,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        Time getDate (char[] name, Time date = Time.epoch)
+        Time getDate (const(char)[] name, Time date = Time.epoch)
         {
                 char[] value = get (name);
 
@@ -251,7 +251,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        void produce (size_t delegate(void[]) consume, char[] eol = null)
+        void produce (size_t delegate(const(void)[]) consume, const(char)[] eol = null)
         {
                 foreach (Token token; stack)
                         {
@@ -286,7 +286,7 @@ class HttpTokens
 
         final private bool split (Token t, ref HttpToken element)
         {
-                auto s = t.toString();
+                auto s = t.toString().dup;
 
                 if (s.length)
                    {
@@ -340,9 +340,9 @@ class HttpTokens
 
                 **************************************************************/
 
-                this (HttpTokens tokens, char[] match)
+                this (HttpTokens tokens, const(char)[] match)
                 {
-                        this.match = match;
+                        this.match = match.dup;
                         this.tokens = tokens;
                 }
 
@@ -390,7 +390,7 @@ class HttpTokens
 
         private char[] trim (char[] source)
         {
-                int  front,
+                size_t  front,
                      back = source.length;
 
                 if (back)
@@ -426,7 +426,7 @@ class HttpTokens
 
                 foreach (Token token; stack)
                         {
-                        char[] content = token.toString;
+                        char[] content = token.toString().dup;
                         if (content.length)
                            {
                            if (first)
@@ -448,7 +448,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        protected void add (char[] name, void delegate(OutputBuffer) value)
+        protected void add (const(char)[] name, void delegate(OutputBuffer) value)
         {
                 // save the buffer write-position
                 //int prior = output.limit;
@@ -474,7 +474,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        protected void add (char[] name, char[] value)
+        protected void add (const(char)[] name, const(char)[] value)
         {
                 void addValue (OutputBuffer buffer)
                 {
@@ -490,7 +490,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        protected void addInt (char[] name, int value)
+        protected void addInt (const(char)[] name, size_t value)
         {
                 char[16] tmp = void;
 
@@ -503,7 +503,7 @@ class HttpTokens
                 
         **********************************************************************/
 
-        protected void addDate (char[] name, Time value)
+        protected void addDate (const(char)[] name, Time value)
         {
                 char[40] tmp = void;
 
@@ -517,7 +517,7 @@ class HttpTokens
                 
         **********************************************************************/
 
-        protected bool remove (char[] name)
+        protected bool remove (const(char)[] name)
         {
                 return stack.removeToken (name);
         }

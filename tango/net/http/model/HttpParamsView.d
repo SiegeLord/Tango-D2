@@ -44,7 +44,7 @@ interface HttpParamsView
 
         **********************************************************************/
 
-        char[] get (char[] name, char[] ret = null);
+        char[] get (const(char)[] name, const(char)[] ret = null);
 
         /**********************************************************************
                 
@@ -53,7 +53,7 @@ interface HttpParamsView
 
         **********************************************************************/
 
-        int getInt (char[] name, int ret = -1);
+        int getInt (const(char)[] name, int ret = -1);
 
         /**********************************************************************
                 
@@ -62,7 +62,7 @@ interface HttpParamsView
 
         **********************************************************************/
 
-        Time getDate (char[] name, Time ret = Time.epoch);
+        Time getDate (const(char)[] name, Time ret = Time.epoch);
 
         /**********************************************************************
 
@@ -70,5 +70,5 @@ interface HttpParamsView
 
         **********************************************************************/
 
-        void produce (size_t delegate(void[]) consume, char[] eol=null);
+        void produce (size_t delegate(const(void)[]) consume, const(char)[] eol=null);
 }

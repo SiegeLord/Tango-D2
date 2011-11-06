@@ -20,7 +20,7 @@ module tango.net.http.HttpConst;
 
 struct HttpConst
 {
-        const char[] Eol = "\r\n";
+        enum Eol = "\r\n";
 }
 
 /*******************************************************************************
@@ -32,7 +32,7 @@ struct HttpConst
 
 struct HttpHeaderName
 {
-        final char[] value;  
+        const(char)[] value;
 }
 
 /*******************************************************************************
@@ -44,66 +44,66 @@ struct HttpHeaderName
 struct HttpHeader
 {   
         // size of both the request & response buffer (per thread)
-        const int IOBufferSize                 = 16 * 1024;
+        enum int IOBufferSize                 = 16 * 1024;
 
         // maximum length for POST parameters (to avoid DOS ...)
-        const int MaxPostParamSize             = 4 * 1024;
+        enum int MaxPostParamSize             = 4 * 1024;
 
-        const HttpHeaderName Version           = {"HTTP/1.1"};
-        const HttpHeaderName TextHtml          = {"text/html"};
+        enum HttpHeaderName Version           = {"HTTP/1.1"};
+        enum HttpHeaderName TextHtml          = {"text/html"};
 
-        const HttpHeaderName Accept            = {"Accept:"};
-        const HttpHeaderName AcceptCharset     = {"Accept-Charset:"};
-        const HttpHeaderName AcceptEncoding    = {"Accept-Encoding:"};
-        const HttpHeaderName AcceptLanguage    = {"Accept-Language:"};
-        const HttpHeaderName AcceptRanges      = {"Accept-Ranges:"};
-        const HttpHeaderName Age               = {"Age:"};
-        const HttpHeaderName Allow             = {"Allow:"};
-        const HttpHeaderName Authorization     = {"Authorization:"};
-        const HttpHeaderName CacheControl      = {"Cache-Control:"};
-        const HttpHeaderName Connection        = {"Connection:"};
-        const HttpHeaderName ContentEncoding   = {"Content-Encoding:"};
-        const HttpHeaderName ContentLanguage   = {"Content-Language:"};
-        const HttpHeaderName ContentLength     = {"Content-Length:"};
-        const HttpHeaderName ContentLocation   = {"Content-Location:"};
-        const HttpHeaderName ContentRange      = {"Content-Range:"};
-        const HttpHeaderName ContentType       = {"Content-Type:"};
-        const HttpHeaderName Cookie            = {"Cookie:"};
-        const HttpHeaderName Date              = {"Date:"};
-        const HttpHeaderName ETag              = {"ETag:"};
-        const HttpHeaderName Expect            = {"Expect:"};
-        const HttpHeaderName Expires           = {"Expires:"};
-        const HttpHeaderName From              = {"From:"};
-        const HttpHeaderName Host              = {"Host:"};
-        const HttpHeaderName Identity          = {"Identity:"};
-        const HttpHeaderName IfMatch           = {"If-Match:"};
-        const HttpHeaderName IfModifiedSince   = {"If-Modified-Since:"};
-        const HttpHeaderName IfNoneMatch       = {"If-None-Match:"};
-        const HttpHeaderName IfRange           = {"If-Range:"};
-        const HttpHeaderName IfUnmodifiedSince = {"If-Unmodified-Since:"};
-        const HttpHeaderName KeepAlive         = {"Keep-Alive:"};
-        const HttpHeaderName LastModified      = {"Last-Modified:"};
-        const HttpHeaderName Location          = {"Location:"};
-        const HttpHeaderName MaxForwards       = {"Max-Forwards:"};
-        const HttpHeaderName MimeVersion       = {"MIME-Version:"};
-        const HttpHeaderName Pragma            = {"Pragma:"};
-        const HttpHeaderName ProxyAuthenticate = {"Proxy-Authenticate:"};
-        const HttpHeaderName ProxyConnection   = {"Proxy-Connection:"};
-        const HttpHeaderName Range             = {"Range:"};
-        const HttpHeaderName Referrer          = {"Referer:"};
-        const HttpHeaderName RetryAfter        = {"Retry-After:"};
-        const HttpHeaderName Server            = {"Server:"};
-        const HttpHeaderName ServletEngine     = {"Servlet-Engine:"};
-        const HttpHeaderName SetCookie         = {"Set-Cookie:"};
-        const HttpHeaderName SetCookie2        = {"Set-Cookie2:"};
-        const HttpHeaderName TE                = {"TE:"};
-        const HttpHeaderName Trailer           = {"Trailer:"};
-        const HttpHeaderName TransferEncoding  = {"Transfer-Encoding:"};
-        const HttpHeaderName Upgrade           = {"Upgrade:"};
-        const HttpHeaderName UserAgent         = {"User-Agent:"};
-        const HttpHeaderName Vary              = {"Vary:"};
-        const HttpHeaderName Warning           = {"Warning:"};
-        const HttpHeaderName WwwAuthenticate   = {"WWW-Authenticate:"};
+        enum HttpHeaderName Accept            = {"Accept:"};
+        enum HttpHeaderName AcceptCharset     = {"Accept-Charset:"};
+        enum HttpHeaderName AcceptEncoding    = {"Accept-Encoding:"};
+        enum HttpHeaderName AcceptLanguage    = {"Accept-Language:"};
+        enum HttpHeaderName AcceptRanges      = {"Accept-Ranges:"};
+        enum HttpHeaderName Age               = {"Age:"};
+        enum HttpHeaderName Allow             = {"Allow:"};
+        enum HttpHeaderName Authorization     = {"Authorization:"};
+        enum HttpHeaderName CacheControl      = {"Cache-Control:"};
+        enum HttpHeaderName Connection        = {"Connection:"};
+        enum HttpHeaderName ContentEncoding   = {"Content-Encoding:"};
+        enum HttpHeaderName ContentLanguage   = {"Content-Language:"};
+        enum HttpHeaderName ContentLength     = {"Content-Length:"};
+        enum HttpHeaderName ContentLocation   = {"Content-Location:"};
+        enum HttpHeaderName ContentRange      = {"Content-Range:"};
+        enum HttpHeaderName ContentType       = {"Content-Type:"};
+        enum HttpHeaderName Cookie            = {"Cookie:"};
+        enum HttpHeaderName Date              = {"Date:"};
+        enum HttpHeaderName ETag              = {"ETag:"};
+        enum HttpHeaderName Expect            = {"Expect:"};
+        enum HttpHeaderName Expires           = {"Expires:"};
+        enum HttpHeaderName From              = {"From:"};
+        enum HttpHeaderName Host              = {"Host:"};
+        enum HttpHeaderName Identity          = {"Identity:"};
+        enum HttpHeaderName IfMatch           = {"If-Match:"};
+        enum HttpHeaderName IfModifiedSince   = {"If-Modified-Since:"};
+        enum HttpHeaderName IfNoneMatch       = {"If-None-Match:"};
+        enum HttpHeaderName IfRange           = {"If-Range:"};
+        enum HttpHeaderName IfUnmodifiedSince = {"If-Unmodified-Since:"};
+        enum HttpHeaderName KeepAlive         = {"Keep-Alive:"};
+        enum HttpHeaderName LastModified      = {"Last-Modified:"};
+        enum HttpHeaderName Location          = {"Location:"};
+        enum HttpHeaderName MaxForwards       = {"Max-Forwards:"};
+        enum HttpHeaderName MimeVersion       = {"MIME-Version:"};
+        enum HttpHeaderName Pragma            = {"Pragma:"};
+        enum HttpHeaderName ProxyAuthenticate = {"Proxy-Authenticate:"};
+        enum HttpHeaderName ProxyConnection   = {"Proxy-Connection:"};
+        enum HttpHeaderName Range             = {"Range:"};
+        enum HttpHeaderName Referrer          = {"Referer:"};
+        enum HttpHeaderName RetryAfter        = {"Retry-After:"};
+        enum HttpHeaderName Server            = {"Server:"};
+        enum HttpHeaderName ServletEngine     = {"Servlet-Engine:"};
+        enum HttpHeaderName SetCookie         = {"Set-Cookie:"};
+        enum HttpHeaderName SetCookie2        = {"Set-Cookie2:"};
+        enum HttpHeaderName TE                = {"TE:"};
+        enum HttpHeaderName Trailer           = {"Trailer:"};
+        enum HttpHeaderName TransferEncoding  = {"Transfer-Encoding:"};
+        enum HttpHeaderName Upgrade           = {"Upgrade:"};
+        enum HttpHeaderName UserAgent         = {"User-Agent:"};
+        enum HttpHeaderName Vary              = {"Vary:"};
+        enum HttpHeaderName Warning           = {"Warning:"};
+        enum HttpHeaderName WwwAuthenticate   = {"WWW-Authenticate:"};
 }
 
 
@@ -165,8 +165,8 @@ enum HttpResponseCode
 
 struct HttpStatus
 {
-        final int     code; 
-        final char[]  name;  
+        int     code; 
+        const(char)[]  name;  
 }
 
 /*******************************************************************************
@@ -177,45 +177,47 @@ struct HttpStatus
 
 struct HttpResponses
 {       
-const:
-        static HttpStatus Continue                     = {HttpResponseCode.Continue, "Continue"};
-        static HttpStatus SwitchingProtocols           = {HttpResponseCode.SwitchingProtocols, "SwitchingProtocols"};
-        static HttpStatus OK                           = {HttpResponseCode.OK, "OK"};
-        static HttpStatus Created                      = {HttpResponseCode.Created, "Created"};
-        static HttpStatus Accepted                     = {HttpResponseCode.Accepted, "Accepted"};
-        static HttpStatus NonAuthoritativeInformation  = {HttpResponseCode.NonAuthoritativeInformation, "NonAuthoritativeInformation"};
-        static HttpStatus NoContent                    = {HttpResponseCode.NoContent, "NoContent"};
-        static HttpStatus ResetContent                 = {HttpResponseCode.ResetContent, "ResetContent"};
-        static HttpStatus PartialContent               = {HttpResponseCode.PartialContent, "PartialContent"};
-        static HttpStatus MultipleChoices              = {HttpResponseCode.MultipleChoices, "MultipleChoices"};
-        static HttpStatus MovedPermanently             = {HttpResponseCode.MovedPermanently, "MovedPermanently"};
-        static HttpStatus Found                        = {HttpResponseCode.Found, "Found"};
-        static HttpStatus TemporaryRedirect            = {HttpResponseCode.TemporaryRedirect, "TemporaryRedirect"};
-        static HttpStatus SeeOther                     = {HttpResponseCode.SeeOther, "SeeOther"};
-        static HttpStatus NotModified                  = {HttpResponseCode.NotModified, "NotModified"};
-        static HttpStatus UseProxy                     = {HttpResponseCode.UseProxy, "UseProxy"};
-        static HttpStatus BadRequest                   = {HttpResponseCode.BadRequest, "BadRequest"};
-        static HttpStatus Unauthorized                 = {HttpResponseCode.Unauthorized, "Unauthorized"};
-        static HttpStatus PaymentRequired              = {HttpResponseCode.PaymentRequired, "PaymentRequired"};
-        static HttpStatus Forbidden                    = {HttpResponseCode.Forbidden, "Forbidden"};
-        static HttpStatus NotFound                     = {HttpResponseCode.NotFound, "NotFound"};
-        static HttpStatus MethodNotAllowed             = {HttpResponseCode.MethodNotAllowed, "MethodNotAllowed"};
-        static HttpStatus NotAcceptable                = {HttpResponseCode.NotAcceptable, "NotAcceptable"};
-        static HttpStatus ProxyAuthenticationRequired  = {HttpResponseCode.ProxyAuthenticationRequired, "ProxyAuthenticationRequired"};
-        static HttpStatus RequestTimeout               = {HttpResponseCode.RequestTimeout, "RequestTimeout"};
-        static HttpStatus Conflict                     = {HttpResponseCode.Conflict, "Conflict"};
-        static HttpStatus Gone                         = {HttpResponseCode.Gone, "Gone"};
-        static HttpStatus LengthRequired               = {HttpResponseCode.LengthRequired, "LengthRequired"};
-        static HttpStatus PreconditionFailed           = {HttpResponseCode.PreconditionFailed, "PreconditionFailed"};
-        static HttpStatus RequestEntityTooLarge        = {HttpResponseCode.RequestEntityTooLarge, "RequestEntityTooLarge"};
-        static HttpStatus RequestURITooLarge           = {HttpResponseCode.RequestURITooLarge, "RequestURITooLarge"};
-        static HttpStatus UnsupportedMediaType         = {HttpResponseCode.UnsupportedMediaType, "UnsupportedMediaType"};
-        static HttpStatus RequestedRangeNotSatisfiable = {HttpResponseCode.RequestedRangeNotSatisfiable, "RequestedRangeNotSatisfiable"};
-        static HttpStatus ExpectationFailed            = {HttpResponseCode.ExpectationFailed, "ExpectationFailed"};
-        static HttpStatus InternalServerError          = {HttpResponseCode.InternalServerError, "InternalServerError"};
-        static HttpStatus NotImplemented               = {HttpResponseCode.NotImplemented, "NotImplemented"};
-        static HttpStatus BadGateway                   = {HttpResponseCode.BadGateway, "BadGateway"};
-        static HttpStatus ServiceUnavailable           = {HttpResponseCode.ServiceUnavailable, "ServiceUnavailable"};
-        static HttpStatus GatewayTimeout               = {HttpResponseCode.GatewayTimeout, "GatewayTimeout"};
-        static HttpStatus VersionNotSupported          = {HttpResponseCode.VersionNotSupported, "VersionNotSupported"};
+    enum 
+    {
+        HttpStatus Continue          = HttpStatus(HttpResponseCode.Continue, "Continue"),
+        SwitchingProtocols           = HttpStatus(HttpResponseCode.SwitchingProtocols, "SwitchingProtocols"),
+        OK                           = HttpStatus(HttpResponseCode.OK, "OK"),
+        Created                      = HttpStatus(HttpResponseCode.Created, "Created"),
+        Accepted                     = HttpStatus(HttpResponseCode.Accepted, "Accepted"),
+        NonAuthoritativeInformation  = HttpStatus(HttpResponseCode.NonAuthoritativeInformation, "NonAuthoritativeInformation"),
+        NoContent                    = HttpStatus(HttpResponseCode.NoContent, "NoContent"),
+        ResetContent                 = HttpStatus(HttpResponseCode.ResetContent, "ResetContent"),
+        PartialContent               = HttpStatus(HttpResponseCode.PartialContent, "PartialContent"),
+        MultipleChoices              = HttpStatus(HttpResponseCode.MultipleChoices, "MultipleChoices"),
+        MovedPermanently             = HttpStatus(HttpResponseCode.MovedPermanently, "MovedPermanently"),
+        Found                        = HttpStatus(HttpResponseCode.Found, "Found"),
+        TemporaryRedirect            = HttpStatus(HttpResponseCode.TemporaryRedirect, "TemporaryRedirect"),
+        SeeOther                     = HttpStatus(HttpResponseCode.SeeOther, "SeeOther"),
+        NotModified                  = HttpStatus(HttpResponseCode.NotModified, "NotModified"),
+        UseProxy                     = HttpStatus(HttpResponseCode.UseProxy, "UseProxy"),
+        BadRequest                   = HttpStatus(HttpResponseCode.BadRequest, "BadRequest"),
+        Unauthorized                 = HttpStatus(HttpResponseCode.Unauthorized, "Unauthorized"),
+        PaymentRequired              = HttpStatus(HttpResponseCode.PaymentRequired, "PaymentRequired"),
+        Forbidden                    = HttpStatus(HttpResponseCode.Forbidden, "Forbidden"),
+        NotFound                     = HttpStatus(HttpResponseCode.NotFound, "NotFound"),
+        MethodNotAllowed             = HttpStatus(HttpResponseCode.MethodNotAllowed, "MethodNotAllowed"),
+        NotAcceptable                = HttpStatus(HttpResponseCode.NotAcceptable, "NotAcceptable"),
+        ProxyAuthenticationRequired  = HttpStatus(HttpResponseCode.ProxyAuthenticationRequired, "ProxyAuthenticationRequired"),
+        RequestTimeout               = HttpStatus(HttpResponseCode.RequestTimeout, "RequestTimeout"),
+        Conflict                     = HttpStatus(HttpResponseCode.Conflict, "Conflict"),
+        Gone                         = HttpStatus(HttpResponseCode.Gone, "Gone"),
+        LengthRequired               = HttpStatus(HttpResponseCode.LengthRequired, "LengthRequired"),
+        PreconditionFailed           = HttpStatus(HttpResponseCode.PreconditionFailed, "PreconditionFailed"),
+        RequestEntityTooLarge        = HttpStatus(HttpResponseCode.RequestEntityTooLarge, "RequestEntityTooLarge"),
+        RequestURITooLarge           = HttpStatus(HttpResponseCode.RequestURITooLarge, "RequestURITooLarge"),
+        UnsupportedMediaType         = HttpStatus(HttpResponseCode.UnsupportedMediaType, "UnsupportedMediaType"),
+        RequestedRangeNotSatisfiable = HttpStatus(HttpResponseCode.RequestedRangeNotSatisfiable, "RequestedRangeNotSatisfiable"),
+        ExpectationFailed            = HttpStatus(HttpResponseCode.ExpectationFailed, "ExpectationFailed"),
+        InternalServerError          = HttpStatus(HttpResponseCode.InternalServerError, "InternalServerError"),
+        NotImplemented               = HttpStatus(HttpResponseCode.NotImplemented, "NotImplemented"),
+        BadGateway                   = HttpStatus(HttpResponseCode.BadGateway, "BadGateway"),
+        ServiceUnavailable           = HttpStatus(HttpResponseCode.ServiceUnavailable, "ServiceUnavailable"),
+        GatewayTimeout               = HttpStatus(HttpResponseCode.GatewayTimeout, "GatewayTimeout"),
+        VersionNotSupported          = HttpStatus(HttpResponseCode.VersionNotSupported, "VersionNotSupported"),
+    }
 }

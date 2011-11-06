@@ -87,7 +87,7 @@ class HttpClient
         // this is struct rather than typedef to avoid compiler bugs
         private struct RequestMethod
         {
-                final char[]            name;
+                const(char)[]            name;
         }    
                         
         // class members; there's a surprising amount of stuff here!
@@ -122,13 +122,13 @@ class HttpClient
                                         redirectionLimit = 5;
 
         // the http version being sent with requests
-        private char[]                  httpVersion;
+        private const(char)[]                  httpVersion;
 
         // http version id
         public enum Version {OnePointZero, OnePointOne};
 
         // standard set of request methods ...
-        static const RequestMethod      Get = {"GET"},
+        enum RequestMethod      Get = {"GET"},
                                         Put = {"PUT"},
                                         Head = {"HEAD"},
                                         Post = {"POST"},
@@ -145,7 +145,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        this (RequestMethod method, char[] url)
+        this (RequestMethod method, const(char)[] url)
         {
                 this (method, new Uri(url));
         }
@@ -181,7 +181,7 @@ class HttpClient
                 else
                    error ("invalid url provided to HttpClient ctor");
 
-                paramsOut.parse(new Array(uri.query)); 
+                paramsOut.parse(new Array(cast(void[]) uri.query)); 
                 
                 // default the http version to 1.0
                 setVersion (Version.OnePointZero);
@@ -334,7 +334,7 @@ class HttpClient
 
         HttpClient setVersion (Version v)
         {
-                static const char[][] versions = ["HTTP/1.0", "HTTP/1.1"];
+                enum versions = ["HTTP/1.0", "HTTP/1.1"];
 
                 httpVersion = versions[v];
                 return this;
@@ -490,7 +490,7 @@ class HttpClient
 
                 // attach/extend query parameters if user has added some
                 tokens.clear;
-                paramsOut.produce ((void[] p){if (tokens.readable) tokens.write("&"); 
+                paramsOut.produce ((const(void)[] p){if (tokens.readable) tokens.write("&"); 
                                     return uri.encode(&tokens.write, cast(char[]) p, uri.IncQuery);});
                 auto query = cast(char[]) tokens.slice;
 
@@ -609,7 +609,7 @@ class HttpClient
                       if (content.length > len)
                          {
                          sink (content [0 .. len]);
-                         input.skip (len);
+                         input.skip (cast(int) len); // FIXME: tango.io.stream.Buffered.BufferedInput.skip (int size) -> size_t size
                          break;
                          }
                       else
@@ -691,10 +691,10 @@ class HttpClient
 
         **********************************************************************/
 
-        private void error (char[] msg)
+        private void error (const(char)[] msg)
         {
                 close;
-                throw new IOException (msg);
+                throw new IOException (msg.idup);
         }
 }
 
