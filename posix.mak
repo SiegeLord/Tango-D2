@@ -43,6 +43,7 @@ SRC_IO=tango/io/Console.d \
 	tango/io/Stdout.d \
 	tango/io/File.d \
 	tango/io/FilePath.d \
+	tango/io/FileScan.d \
 	tango/io/Path.d \
 	\
 	tango/io/device/Array.d \
