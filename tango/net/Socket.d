@@ -376,7 +376,7 @@ class Socket : Conduit, ISelectable
                 
                 // normal connect
                 if(.connect(this.sock, address.name, address.nameLen) == -1) {
-                    throw new SocketException("Unable to connect socket: ");
+                    throw new SocketException("Unable to connect socket");
                 }
                 
                 // set state to connected
@@ -993,7 +993,7 @@ class Socket : Conduit, ISelectable
         {
                 uint len = cast(uint) result.length;
                 if(.getsockopt(sock, cast(int)level, cast(int)option, result.ptr, &len) == -1)
-                    throw new SocketException("unable to get socket option: ", __FILE__, __LINE__);
+                    throw new SocketException("unable to get socket option");
                 return len;
         }
 
@@ -1004,7 +1004,7 @@ class Socket : Conduit, ISelectable
         Socket setOption (SocketOptionLevel level, SocketOption option, void[] value)
         {
                 if(.setsockopt (sock, cast(int)level, cast(int)option, value.ptr, cast(int) value.length) == -1)
-                    throw new SocketException("Unable to set socket option: ", __FILE__, __LINE__);
+                    throw new SocketException("Unable to set socket option");
                 return this;
         }
         
@@ -1139,6 +1139,6 @@ class SocketException : IOException
     {
         auto errorcode = Socket.lastError();
         auto errormsg = SysError.lookup(errorcode);
-        super((msg ~ errormsg).idup, file, line);
+        super((msg ~ ": " ~ errormsg).idup, file, line);
     }
 }

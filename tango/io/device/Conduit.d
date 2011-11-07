@@ -292,9 +292,9 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        char[] text(T=char) (size_t max = -1)
+        char[] text (size_t max = -1)
         {
-                return cast(T[]) load (max);
+                return cast(char[])this.load(max);
         }
 
         /***********************************************************************

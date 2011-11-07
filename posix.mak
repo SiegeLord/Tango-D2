@@ -101,6 +101,37 @@ SRC_MATH=tango/math/Bessel.d \
 	tango/math/random/Twister.d \
 	tango/math/random/Ziggurat.d
 	
+SRC_NET=tango/net/Uri.d \
+	tango/net/Socket.d \
+	tango/net/SocketSet.d \
+	tango/net/NetHost.d \
+	tango/net/Address.d \
+	tango/net/InternetAddress.d \
+	tango/net/Internet6Address.d \
+	tango/net/LocalAddress.d \
+	tango/net/LocalSocket.d \
+	tango/net/LocalServer.d \
+	tango/net/TcpSocket.d \
+	tango/net/TcpServer.d \
+	tango/net/UdpSocket.d \
+	tango/net/UdpServer.d \
+	tango/net/Multicast.d \
+	\
+	tango/net/http/ChunkStream.d \
+	tango/net/http/HttpCookies.d \
+	tango/net/http/HttpHeaders.d \
+	tango/net/http/HttpPost.d \
+	tango/net/http/HttpTokens.d \
+	tango/net/http/HttpClient.d \
+	tango/net/http/HttpConst.d \
+	tango/net/http/HttpGet.d \
+	tango/net/http/HttpParams.d \
+	tango/net/http/HttpStack.d \
+	tango/net/http/HttpTriplet.d \
+	tango/net/http/model/HttpParamsView.d
+
+SRC_SQL=tango/sql/Mysql.d
+
 SRC_TEXT=tango/text/Ascii.d \
 	tango/text/Arguments.d \
 	tango/text/Stringz.d \
@@ -149,6 +180,7 @@ SRC_UTIL=tango/util/Convert.d \
 	tango/util/MinMax.d \
 	\
 	tango/util/container/more/Stack.d \
+	tango/util/container/CircularList.d \
 	tango/util/container/Container.d \
 	tango/util/container/LinkedList.d \
 	\
@@ -196,37 +228,6 @@ SRC_UTIL=tango/util/Convert.d \
 	tango/util/log/LayoutDate.d \
 	tango/util/log/model/ILogger.d
 
-SRC_NET=tango/net/Uri.d \
-	tango/net/Socket.d \
-	tango/net/SocketSet.d \
-	tango/net/NetHost.d \
-	tango/net/Address.d \
-	tango/net/InternetAddress.d \
-	tango/net/Internet6Address.d \
-	tango/net/LocalAddress.d \
-	tango/net/LocalSocket.d \
-	tango/net/LocalServer.d \
-	tango/net/TcpSocket.d \
-	tango/net/TcpServer.d \
-	tango/net/UdpSocket.d \
-	tango/net/UdpServer.d \
-	tango/net/Multicast.d \
-	\
-	tango/net/http/ChunkStream.d \
-	tango/net/http/HttpCookies.d \
-	tango/net/http/HttpHeaders.d \
-	tango/net/http/HttpPost.d \
-	tango/net/http/HttpTokens.d \
-	tango/net/http/HttpClient.d \
-	tango/net/http/HttpConst.d \
-	tango/net/http/HttpGet.d \
-	tango/net/http/HttpParams.d \
-	tango/net/http/HttpStack.d \
-	tango/net/http/HttpTriplet.d \
-	tango/net/http/model/HttpParamsView.d
-	
-SRC_SQL=tango/sql/Mysql.d
-
 # For now, 32 bit is the default model
 ifeq (,$(MODEL))
         MODEL:=32
@@ -246,7 +247,7 @@ endif
 # generate all target for the examles
 #DIR_EXAMPLES=$(wildcard ./doc/example/*) uncomment when all examples work!
 # ./doc/example/conduits <-- not all of them convered
-DIR_EXAMPLES=./doc/example/concurrency ./doc/example/text ./doc/example/console ./doc/example/networking ./doc/example/sql ./doc/example/system ./doc/example/traits
+DIR_EXAMPLES=./doc/example/concurrency ./doc/example/conduits ./doc/example/text ./doc/example/console ./doc/example/networking ./doc/example/sql ./doc/example/system ./doc/example/traits
 SRC_EXAMPLES:=$(foreach DIR_EXAMPLE,$(DIR_EXAMPLES),$(wildcard $(DIR_EXAMPLE)/*.d))
 PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 
