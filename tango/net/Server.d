@@ -77,4 +77,10 @@ abstract class Server : ISelectable
     *   backlog = number of maximal concurrent waiting clients
     */
     public abstract void listen(uint backlog = 32);
+    
+    /**
+     * 
+     * 
+     */
+    public abstract Socket accept(Socket recipient = null);
 }

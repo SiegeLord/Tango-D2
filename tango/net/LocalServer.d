@@ -116,7 +116,7 @@ class LocalServer : Server
      * recipient =  if not null, this class will be filled with the new client
      *              otherwise create a new LocalSocket.
      */
-    public LocalSocket accept(LocalSocket recipient = null)
+    public override LocalSocket accept(Socket recipient = null)
     {
         // accept new socket
         socket_t newsock = cast(socket_t).accept(this.sock, null, null);

@@ -126,7 +126,7 @@ class TcpServer : Server
      * returns:
      *  the new accepted TcpSocket or null, if timeout or an error occured.
      */
-    public TcpSocket accept(TcpSocket recipient = null)
+    public override TcpSocket accept(Socket recipient = null)
     {
         // accept new socket
         socket_t newsock = cast(socket_t).accept(this.sock, null, null);
