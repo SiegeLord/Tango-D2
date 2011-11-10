@@ -69,7 +69,7 @@ public class AppendSyslog: Filer
     {
         assert (path);
         assert (count < 1000);
-        assert (compress_begin == 2);
+        assert (compress_begin >= 2);
         
         // Get a unique fingerprint for this instance
         mask_ = register(path);
