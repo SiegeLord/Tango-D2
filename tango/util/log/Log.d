@@ -403,8 +403,16 @@ public struct Log
         ---
 
         Note that an internal workspace is used to format the message, which
-        is limited to 2000 bytes. Use "{.256}" truncation notation to limit
-        the size of individual message components, or use explicit formatting:
+        is limited to 2048 bytes. Use "{.256}" truncation notation to limit
+        the size of individual message components. You can also use your own
+        formatting buffer:
+        ---
+        log.buffer (new char[](4096));
+
+        log.warn ("a very long warning: {}", someLongWarning);
+        ---
+
+        Or you can use explicit formatting:
         ---
         char[4096] buf = void;
 
@@ -471,6 +479,8 @@ public class Logger : ILogger
         private Level           level_;
         private bool            additive_;
         private Appender        appender_;
+        private char[]          buffer_;
+        private size_t          buffer_size_;
 
         /***********************************************************************
 
@@ -771,6 +781,32 @@ public class Logger : ILogger
 
         /***********************************************************************
 
+                Get the current formatting buffer (null if none).
+
+        ***********************************************************************/
+
+        final char[] buffer ()
+        {
+                return buffer_;
+        }
+
+        /***********************************************************************
+
+                Set the current formatting buffer.
+
+                Set to null to use the default internal buffer.
+
+        ***********************************************************************/
+
+        final Logger buffer (char[] buf)
+        {
+                buffer_ = buf;
+                buffer_size_ = buf.length;
+                return this;
+        }
+
+        /***********************************************************************
+
                 Get time since this application started
 
         ***********************************************************************/
@@ -865,13 +901,33 @@ public class Logger : ILogger
 
         final Logger format (Level level, char[] fmt, TypeInfo[] types, ArgList args)
         {
-                char[2048] tmp = void;
-
                 if (types.length)
-                    append (level, Format.vprint (tmp, fmt, types, args));
+                {
+                    if (buffer_ is null)
+                        formatWithDefaultBuffer(level, fmt, types, args);
+                    else
+                        formatWithProvidedBuffer(level, fmt, types, args);
+                }
                 else
                    append (level, fmt);
                 return this;
+        }
+
+        private void formatWithDefaultBuffer(Level level, char[] fmt, TypeInfo[] types, ArgList args)
+        {
+            char[2048] tmp = void;
+            formatWithBuffer(level, fmt, types, args, tmp);
+        }
+
+        private void formatWithDefaultBuffer(Level level, char[] fmt, TypeInfo[] types, ArgList args)
+        {
+            formatWithBuffer(level, fmt, types, args, buffer_);
+            buffer_.length = buffer_size_;
+        }
+
+        private void formatWithBuffer(Level level, char[] fmt, TypeInfo[] types, ArgList args)
+        {
+            append (level, Format.vprint (buf, fmt, types, args));
         }
 
         /***********************************************************************
