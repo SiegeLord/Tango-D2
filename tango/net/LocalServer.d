@@ -9,18 +9,17 @@
 
 module tango.net.LocalServer;
 
-private import core.exception,
-               core.sys.posix.unistd,
-               core.sys.posix.sys.socket;
-               
-private import tango.io.model.ISelectable;
+private import  core.exception,
+                core.sys.posix.unistd,
+                core.sys.posix.sys.socket;
+       
+private import  tango.net.Server,
+                tango.net.Socket,
+                tango.net.LocalSocket,
+                tango.net.LocalAddress;
 
-private import tango.net.Socket,
-               tango.net.LocalSocket,
-               tango.net.LocalAddress;
 
-
-class LocalServer : ISelectable
+class LocalServer : Server
 {
     private socket_t        sock;       // native socket
     
@@ -87,7 +86,7 @@ class LocalServer : ISelectable
      * ---
      * 
      */
-    void bind(Address address)
+    public override void bind(Address address)
     {
         // check if correct address struct
         if(address.addressFamily != AddressFamily.UNIX)
@@ -104,7 +103,7 @@ class LocalServer : ISelectable
      * Params:
      *  backlog = amount of how many clients can be in the wait queue before getting accepted. default: 32
      */
-    void listen(int backlog = 32)
+    public override void listen(uint backlog = 32)
     {
         // set into listen mode
         if(.listen(this.sock, backlog) == -1)

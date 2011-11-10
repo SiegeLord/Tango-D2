@@ -9,15 +9,14 @@
 
 module tango.net.TcpServer;
 
-private import core.exception,
-               core.sys.posix.unistd,
-               core.sys.posix.sys.socket;
+private import  core.exception,
+                core.sys.posix.unistd,
+                core.sys.posix.sys.socket;
                 
-private import tango.io.model.ISelectable;
-
-private import tango.net.InternetAddress,
-               tango.net.UdpSocket,
-               tango.net.Address;
+private import  tango.net.Server,
+                tango.net.InternetAddress,
+                tango.net.UdpSocket,
+                tango.net.Address;
 
 /**
  * The UdpServer provides functionality to listen on a specific port and address
@@ -60,7 +59,7 @@ private import tango.net.InternetAddress,
  * ---
  * 
  */
-class TcpServer : ISelectable
+class TcpServer : Server
 {
     private socket_t        sock;       // native socket
     
@@ -172,7 +171,7 @@ class TcpServer : ISelectable
      * bind(new InternetAddress("localhost", 8080));      // hostname and port
      * ---
      */
-    public void bind(Address address)
+    public override void bind(Address address)
     {
         // check if correct address struct
         if(address.addressFamily != AddressFamily.INET && address.addressFamily !=  AddressFamily.INET6)
@@ -189,7 +188,7 @@ class TcpServer : ISelectable
      * Params:
      *  backlog = amount of how many clients can be in the wait queue before getting accepted. default: 32
      */
-    public void listen(uint backlog = 32)
+    public override void listen(uint backlog = 32)
     {
         // set into listen mode
         if(.listen(this.sock, backlog) == -1)

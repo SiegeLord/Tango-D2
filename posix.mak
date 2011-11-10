@@ -112,6 +112,7 @@ SRC_NET=tango/net/Uri.d \
 	tango/net/LocalAddress.d \
 	tango/net/LocalSocket.d \
 	tango/net/LocalServer.d \
+	tango/net/Server.d \
 	tango/net/TcpSocket.d \
 	tango/net/TcpServer.d \
 	tango/net/UdpSocket.d \
