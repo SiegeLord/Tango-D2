@@ -196,18 +196,34 @@ class Socket : Conduit, ISelectable
         {
                 return false;
         }
-
+        
         /***********************************************************************
         
-                Create a streaming Internet socket
+                Create an Socket without doing anything.
 
         ***********************************************************************/
 
-        public this ()
-        {
-                this (AddressFamily.INET, SocketType.STREAM, ProtocolType.TCP);
+        public this () 
+        { 
+                this.state = SocketState.Undefined;
         }
 
+        /***********************************************************************
+        
+                Create a socket by it's socket_t type
+                
+                params:
+                  socket = the raw socket
+                  state = the state of the socket see SocketState for all states.
+
+        ***********************************************************************/
+
+        public this (socket_t socket, SocketState state = SocketState.Initialized)
+        {
+                this.state = state;
+                this.sock = socket;
+        }
+        
         /***********************************************************************
         
                 Create an Internet Socket with the provided characteristics
@@ -218,12 +234,7 @@ class Socket : Conduit, ISelectable
         { 
                 this (addr.addressFamily, SocketType.STREAM, ProtocolType.TCP); 
         }
-                                
-        /***********************************************************************
         
-                Create an Internet socket
-
-        ***********************************************************************/
         /**
          * construct a new socket
          * 
@@ -753,13 +764,13 @@ class Socket : Conduit, ISelectable
          */
         public Address peerAddres()
         {
-            sockaddr sa;
-            socklen_t sa_len = sa.sizeof;
+            char buffer[1024] = void;
+            uint buffer_len = cast(uint)buffer.length;
             
-            if(.getpeername(this.sock, &sa, &sa_len) !=  0)
+            if(.getpeername(this.sock, cast(sockaddr*)buffer.ptr, &buffer_len) !=  0)
                 throw new SocketException("Unable to call getpeername.");
             
-            return Address.create(&sa);
+            return Address.create(cast(sockaddr*)buffer.ptr, buffer_len);
         }
         
         /**
