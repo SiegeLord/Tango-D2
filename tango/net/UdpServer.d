@@ -59,7 +59,7 @@ private import  tango.net.Server,
  * ---
  * 
  */
-class TcpServer : Server
+class UdpServer : Server
 {
     private socket_t        sock;       // native socket
     
@@ -144,7 +144,7 @@ class TcpServer : Server
         recipient.native(newsock, SocketState.Connected);
         
         // return it
-        return recipient;
+        return cast(UdpSocket)recipient;
     }
 
     /**

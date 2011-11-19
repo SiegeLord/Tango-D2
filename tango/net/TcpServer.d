@@ -143,7 +143,7 @@ class TcpServer : Server
         recipient.native(newsock, SocketState.Connected);
         
         // return it
-        return recipient;
+        return cast(TcpSocket)recipient;
     }
 
     /**

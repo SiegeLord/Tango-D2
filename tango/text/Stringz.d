@@ -105,7 +105,7 @@ const(wchar)* toString16z (const(wchar)[] s)
  * Convert a C-style 0 terminated string to an array of wchar
  */
 
-inout(wchar[]) fromString16z (inout(wchar)* s)
+inout(wchar)[] fromString16z (inout(wchar)* s)
 {
         return s ? s[0 .. strlenz!(const wchar)(s)] : null;
 }
@@ -126,7 +126,7 @@ const(dchar)* toString32z (const(dchar)[] s)
  * Convert a C-style 0 terminated string to an array of dchar
  */
 
-inout(dchar[]) fromString32z (inout(dchar)* s)
+inout(dchar)[] fromString32z (inout(dchar)* s)
 {
         return s ? s[0 .. strlenz!(const dchar)(s)] : null;
 }

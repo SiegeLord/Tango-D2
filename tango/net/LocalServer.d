@@ -133,7 +133,7 @@ class LocalServer : Server
         recipient.native(newsock, SocketState.Connected);
         
         // return it
-        return recipient;
+        return cast(LocalSocket)recipient;
     }
     
     /**
