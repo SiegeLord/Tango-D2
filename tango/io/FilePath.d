@@ -652,7 +652,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        static inout(char[]) padded (inout(char[]) path, char c = FileConst.PathSeparatorChar)
+        static inout(char)[] padded (inout(char)[] path, char c = FileConst.PathSeparatorChar)
         {
                 return FS.padded (path, c);
         }
