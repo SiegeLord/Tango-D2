@@ -179,7 +179,7 @@ class ConversionException : Exception
 
 private:
 
-typedef int Missing;
+alias int Missing;
 
 /*
  * So, how is this module structured?

@@ -21,7 +21,7 @@ interface ISelectable
         version (Windows) 
             alias void* Handle;             /// opaque OS file-handle         
         else
-            typedef int Handle = -1;        /// opaque OS file-handle        
+            alias int Handle;        /// opaque OS file-handle        
 
         /***********************************************************************
 

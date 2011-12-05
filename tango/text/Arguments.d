@@ -283,6 +283,7 @@ class Arguments
               }
               ---
         ***********************************************************************/
+        
         public this(const(char)[][] input, bool sloppy=false, const(char)[] sp="-", const(char)[] lp="--", char eq='=')
         {
             this(sp, lp, eq);
@@ -308,7 +309,7 @@ class Arguments
         {
                 const(char)[][] tmp;
                 foreach (s; quotes(input, " "))
-                         tmp ~= s;
+                        tmp ~= s;
                 return parse (tmp, sloppy);
         }
 
