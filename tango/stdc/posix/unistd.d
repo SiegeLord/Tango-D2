@@ -19,10 +19,10 @@ const STDIN_FILENO  = 0;
 const STDOUT_FILENO = 1;
 const STDERR_FILENO = 2;
 
-char*   optarg;
-int     optind;
-int     opterr;
-int     optopt;
+__gshared char*   optarg;
+__gshared int     optind;
+__gshared int     opterr;
+__gshared int     optopt;
 
 int     access(in char*, int);
 uint    alarm(uint);

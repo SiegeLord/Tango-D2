@@ -266,14 +266,14 @@ version( Win32 )
     version (GNU)
     {
         extern(C){
-            extern FILE[_NFILE]* _imp___iob;
+            extern __gshared FILE[_NFILE]* _imp___iob;
         }
 
-        FILE* stdin;
-        FILE* stdout;
-        FILE* stderr;
-        FILE* stdaux;
-        FILE* stdprn;
+        __gshared FILE* stdin;
+        __gshared FILE* stdout;
+        __gshared FILE* stderr;
+        __gshared FILE* stdaux;
+        __gshared FILE* stdprn;
 
         static this()
         {
@@ -286,14 +286,14 @@ version( Win32 )
     }
     else version (LDC) {
         extern(C){
-            extern FILE[_NFILE]* _imp___iob;
+            extern __gshared FILE[_NFILE]* _imp___iob;
         }
 
-        FILE* stdin;
-        FILE* stdout;
-        FILE* stderr;
-        FILE* stdaux;
-        FILE* stdprn;
+        __gshared FILE* stdin;
+        __gshared FILE* stdout;
+        __gshared FILE* stderr;
+        __gshared FILE* stdaux;
+        __gshared FILE* stdprn;
 
         static this()
         {
@@ -307,14 +307,14 @@ version( Win32 )
     else
     {
         extern(C){
-            extern FILE[_NFILE] _iob;
+            extern __gshared FILE[_NFILE] _iob;
         }
 
-       FILE* stdin  = &_iob[0];
-       FILE* stdout = &_iob[1];
-       FILE* stderr = &_iob[2];
-       FILE* stdaux = &_iob[3];
-       FILE* stdprn = &_iob[4];
+       __gshared FILE* stdin  = &_iob[0];
+       __gshared FILE* stdout = &_iob[1];
+       __gshared FILE* stderr = &_iob[2];
+       __gshared FILE* stdaux = &_iob[3];
+       __gshared FILE* stdprn = &_iob[4];
     }
 } else version( linux ) {
     enum
@@ -324,19 +324,19 @@ version( Win32 )
         _IONBF = 2,
     }
 
-    extern(C) extern FILE* stdin;
-    extern(C) extern FILE* stdout;
-    extern(C) extern FILE* stderr;
+    extern(C) extern __gshared FILE* stdin;
+    extern(C) extern __gshared FILE* stdout;
+    extern(C) extern __gshared FILE* stderr;
 }
 else version( darwin )
 {
-    extern(C) extern FILE* __stdinp;
-    extern(C) extern FILE* __stdoutp;
-    extern(C) extern FILE* __stderrp;
+    extern(C) extern __gshared FILE* __stdinp;
+    extern(C) extern __gshared FILE* __stdoutp;
+    extern(C) extern __gshared FILE* __stderrp;
 
-    FILE* stdin;
-    FILE* stdout;
-    FILE* stderr;
+    __gshared FILE* stdin;
+    __gshared FILE* stdout;
+    __gshared FILE* stderr;
 
     static this()
     {
@@ -347,13 +347,13 @@ else version( darwin )
 }
 else version( freebsd )
 {
-    extern(C) extern FILE* __stdinp;
-    extern(C) extern FILE* __stdoutp;
-    extern(C) extern FILE* __stderrp;
+    extern(C) extern __gshared FILE* __stdinp;
+    extern(C) extern __gshared FILE* __stdoutp;
+    extern(C) extern __gshared FILE* __stderrp;
 
-    FILE* stdin;
-    FILE* stdout;
-    FILE* stderr;
+    __gshared FILE* stdin;
+    __gshared FILE* stdout;
+    __gshared FILE* stderr;
 
     static this()
     {
@@ -364,11 +364,11 @@ else version( freebsd )
 }
 else version( solaris )
 {
-    extern(C) extern FILE[_NFILE] __iob;
+    extern(C) extern __gshared FILE[_NFILE] __iob;
     
-    FILE* stdin  = &__iob[0];
-    FILE* stdout = &__iob[1];
-    FILE* stderr = &__iob[2];
+    __gshared FILE* stdin  = &__iob[0];
+    __gshared FILE* stdout = &__iob[1];
+    __gshared FILE* stderr = &__iob[2];
 }
 else
 {

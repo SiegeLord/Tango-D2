@@ -43,7 +43,7 @@ version( linux )
     private
     {
         alias c_long __fd_mask;
-        const __NFDBITS = 8 * __fd_mask.sizeof;
+        const int __NFDBITS = 8 * __fd_mask.sizeof;
 
         extern (D) int __FDELT( int d )
         {
@@ -52,7 +52,7 @@ version( linux )
 
         extern (D) int __FDMASK( int d )
         {
-            return cast(__fd_mask) 1 << ( d % __NFDBITS );
+            return cast(__fd_mask) (1 << ( d % __NFDBITS ));
         }
     }
 
@@ -70,7 +70,7 @@ version( linux )
 
     extern (D) int  FD_ISSET( int fd, fd_set* fdset )
     {
-        return fdset.fds_bits[__FDELT( fd )] & __FDMASK( fd );
+        return cast(int)(fdset.fds_bits[__FDELT( fd )] & __FDMASK( fd ));
     }
 
     extern (D) void FD_SET( int fd, fd_set* fdset )
