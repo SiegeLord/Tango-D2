@@ -6,7 +6,7 @@ I see this as a rough first pass at porting this library... making it more D2 li
 
 What works so far:
 
-See 'ported_modules' file. More modules may work, but only the listed ones pass the import + unittest test.
+Modules that have not been yet ported are located in the unported folder. All those located in the tango folder are ported, in the sense that they pass the import+unittest test (sometimes imperfectly on 64 bits due to DMD bugs). See also the ported_modules list which enumerates the ported modules.
 
 Some notables:
 
