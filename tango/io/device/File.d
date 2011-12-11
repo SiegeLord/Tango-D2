@@ -356,7 +356,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        static void set (char[] path, void[] content)
+        static void set (const(char)[] path, void[] content)
         {
                 scope file = new File (path, ReadWriteCreate);
                 file.write (content);
@@ -368,7 +368,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        static void append (char[] path, void[] content)
+        static void append (const(char)[] path, void[] content)
         {
                 scope file = new File (path, WriteAppending);
                 file.write (content);
@@ -391,7 +391,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                protected bool open (const(char[]) path, Style style, DWORD addattr)
+                protected bool open (const(char)[] path, Style style, DWORD addattr)
                 {
                         DWORD   attr,
                                 share,
