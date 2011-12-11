@@ -157,7 +157,7 @@ class Pipe
         {
             int fd[2];
 
-            if (pipe(fd) == 0)
+            if (pipe(fd.ptr) == 0)
             {
                 _source = new PipeConduit(cast(ISelectable.Handle) fd[0], bufferSize);
                 _sink = new PipeConduit(cast(ISelectable.Handle) fd[1], bufferSize);

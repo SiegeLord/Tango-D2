@@ -28,7 +28,7 @@ version (Posix)
     version (darwin)
     {
         extern (C) char*** _NSGetEnviron();
-        private char** environ;
+        private __gshared char** environ;
 
         static this ()
         {
@@ -37,7 +37,7 @@ version (Posix)
     }
 
     else
-        private extern (C) extern char** environ;
+        private extern (C) extern __gshared char** environ;
 }
 
 version (Windows)
@@ -175,9 +175,9 @@ class Process
         /**
          * Returns a string with a description of the process execution result.
          */
-        public char[] toString()
+        public const(char)[] toString()
         {
-            char[] str;
+            const(char)[] str;
 
             switch (reason)
             {
@@ -210,20 +210,20 @@ class Process
         }
     }
 
-    static const uint DefaultStdinBufferSize    = 512;
-    static const uint DefaultStdoutBufferSize   = 8192;
-    static const uint DefaultStderrBufferSize   = 512;
-    static const Redirect DefaultRedirectFlags  = Redirect.All;
+    enum uint DefaultStdinBufferSize    = 512;
+    enum uint DefaultStdoutBufferSize   = 8192;
+    enum uint DefaultStderrBufferSize   = 512;
+    enum Redirect DefaultRedirectFlags  = Redirect.All;
 
-    private char[][]        _args;
-    private char[][char[]]  _env;
-    private char[]          _workDir;
-    private PipeConduit     _stdin;
-    private PipeConduit     _stdout;
-    private PipeConduit     _stderr;
-    private bool            _running = false;
-    private bool            _copyEnv = false;
-    private Redirect        _redirect = DefaultRedirectFlags;
+    private const(char)[][]        _args;
+    private const(char)[][char[]]  _env;
+    private const(char)[]          _workDir;
+    private PipeConduit            _stdin;
+    private PipeConduit            _stdout;
+    private PipeConduit            _stderr;
+    private bool                   _running = false;
+    private bool                   _copyEnv = false;
+    private Redirect               _redirect = DefaultRedirectFlags;
 
     version (Windows)
     {
@@ -253,7 +253,7 @@ class Process
      * auto p = new Process("myprogram \"first argument\" second third");
      * ---
      */
-    public this(char[][] args ...)
+    public this(const(char)[][] args ...)
     {
         if(args.length == 1)
             _args = splitArgs(args[0]);
@@ -279,7 +279,7 @@ class Process
      * auto p = new Process(true, "myprogram \"first argument\" second third");
      * ---
      */
-    public this(bool copyEnv, char[][] args ...)
+    public this(bool copyEnv, const(char)[][] args ...)
     {
         _copyEnv = copyEnv;
         this(args);
@@ -306,7 +306,7 @@ class Process
      * auto p = new Process(command, env)
      * ---
      */
-    public this(char[] command, char[][char[]] env)
+    public this(const(char)[] command, const(char)[][char[]] env)
     in
     {
         assert(command.length > 0);
@@ -346,7 +346,7 @@ class Process
      * auto p = new Process(args, env)
      * ---
      */
-    public this(char[][] args, char[][char[]] env)
+    public this(const(char)[][] args, const(char)[][char[]] env)
     in
     {
         assert(args.length > 0);
@@ -361,7 +361,7 @@ class Process
     /**
      * Indicate whether the process is running or not.
      */
-    public bool isRunning()
+    public const bool isRunning()
     {
         return _running;
     }
@@ -372,7 +372,7 @@ class Process
      * Returns: an int with the process ID if the process is running;
      *          -1 if not.
      */
-    public int pid()
+    public const int pid()
     {
         version (Windows)
         {
@@ -387,7 +387,7 @@ class Process
     /**
      * Return the process' executable filename.
      */
-    public char[] programName()
+    public const const(char)[] programName()
     {
         return (_args !is null ? _args[0] : null);
     }
@@ -395,7 +395,7 @@ class Process
     /**
      * Set the process' executable filename.
      */
-    public char[] programName(char[] name)
+    public const(char)[] programName(const(char)[] name)
     {
         if (_args.length == 0)
         {
@@ -407,7 +407,7 @@ class Process
     /**
      * Set the process' executable filename, return 'this' for chaining
      */
-    public Process setProgramName(char[] name)
+    public Process setProgramName(const(char)[] name)
     {
         programName = name;
         return this;
@@ -416,7 +416,7 @@ class Process
     /**
      * Return an array with the process' arguments.
      */
-    public char[][] args()
+    public const const(char[])[] args()
     {
         return _args;
     }
@@ -435,7 +435,7 @@ class Process
      * p.args("myprogram", "first", "second argument", "third");
      * ---
      */
-    public char[][] args(char[] progname, char[][] args ...)
+    public const(char)[][] args(const(char)[] progname, const(char)[][] args ...)
     {
         return _args = progname ~ args;
     }
@@ -454,7 +454,7 @@ class Process
      * p.setArgs("myprogram", "first", "second argument", "third").execute();
      * ---
      */
-    public Process setArgs(char[] progname, char[][] args ...)
+    public Process setArgs(const(char)[] progname, const(char)[][] args ...)
     {
         this.args(progname, args);
         return this;
@@ -464,7 +464,7 @@ class Process
      * If true, the environment from the current process will be copied to the
      * child process.
      */
-    public bool copyEnv()
+    public const bool copyEnv()
     {
         return _copyEnv;
     }
@@ -498,7 +498,7 @@ class Process
      *
      * Note that if copyEnv is set to true, this value is ignored.
      */
-    public char[][char[]] env()
+    public const const(char[])[const(char)[]] env()
     {
         return _env;
     }
@@ -525,7 +525,7 @@ class Process
      * p.env = env;
      * ---
      */
-    public char[][char[]] env(char[][char[]] env)
+    public const(char)[][char[]] env(const(char)[][char[]] env)
     {
         _copyEnv = false;
         return _env = env;
@@ -553,7 +553,7 @@ class Process
      * p.setEnv(env).execute();
      * ---
      */
-    public Process setEnv(char[][char[]] env)
+    public Process setEnv(const(char)[][char[]] env)
     {
         _copyEnv = false;
         _env = env;
@@ -563,11 +563,11 @@ class Process
     /**
      * Return an UTF-8 string with the process' command line.
      */
-    public char[] toString()
+    public immutable(char)[] toString()
     {
-        char[] command;
+        immutable(char)[] command;
 
-        for (uint i = 0; i < _args.length; ++i)
+        for (size_t i = 0; i < _args.length; ++i)
         {
             if (i > 0)
             {
@@ -593,7 +593,7 @@ class Process
      * Returns: a string with the working directory; null if the working
      *          directory is the current directory.
      */
-    public char[] workDir()
+    public const const(char)[] workDir()
     {
         return _workDir;
     }
@@ -607,7 +607,7 @@ class Process
      *
      * Returns: the directory set.
      */
-    public char[] workDir(char[] dir)
+    public const(char)[] workDir(const(char)[] dir)
     {
         return _workDir = dir;
     }
@@ -622,7 +622,7 @@ class Process
      *
      * Returns: a reference to this process.
      */
-    public Process setWorkDir(char[] dir)
+    public Process setWorkDir(const(char)[] dir)
     {
         _workDir = dir;
         return this;
@@ -650,7 +650,7 @@ class Process
      * stderr to stdout, and you redirect stdout to a pipe, only stdout will
      * be non-null.
      */
-    public Redirect redirect()
+    public const Redirect redirect()
     {
         return _redirect;
     }
@@ -683,7 +683,7 @@ class Process
      * Without this flag, a console window will be allocated if it doesn't
      * already exist.
      */
-    public bool gui()
+    public const bool gui()
     {
         version(Windows)
             return _gui;
@@ -793,7 +793,7 @@ class Process
      * Deprecated: Use constructor or properties to set up process for
      * execution.
      */
-    deprecated public void execute(char[] arg1, char[][] args ...)
+    deprecated public void execute(const(char)[] arg1, const(char)[][] args ...)
     in
     {
         assert(!_running);
@@ -833,7 +833,7 @@ class Process
      * Deprecated: use properties or the constructor to set these parameters
      * instead.
      */
-    deprecated public void execute(char[] command, char[][char[]] env)
+    deprecated public void execute(const(char)[] command, const(char)[][const(char)[]] env)
     in
     {
         assert(!_running);
@@ -888,7 +888,7 @@ class Process
      * p.execute(args, null);
      * ---
      */
-    deprecated public void execute(char[][] args, char[][char[]] env)
+    deprecated public void execute(const(char)[][] args, const(char)[][char[]] env)
     in
     {
         assert(!_running);
@@ -1257,8 +1257,8 @@ class Process
                 {
                     // Child process
                     int rc;
-                    char*[] argptr;
-                    char*[] envptr;
+                    const(char)*[] argptr;
+                    const(char)*[] envptr;
 
                     // Note that for all the pipes, we can close both ends
                     // because dup2 opens a duplicate file descriptor to the
@@ -1690,7 +1690,7 @@ class Process
      * character can be used to specify arguments with embedded spaces.
      * e.g. first "second param" third
      */
-    protected static char[][] splitArgs(ref char[] command, char[] delims = " \t\r\n")
+    protected static const(char)[][] splitArgs(ref const(char)[] command, const(char)[] delims = " \t\r\n")
     in
     {
         assert(!contains(delims, '"'),
@@ -1705,8 +1705,8 @@ class Process
             InsideQuotes
         }
 
-        char[][]    args = null;
-        char[][]    chunks = null;
+        const(char)[][]    args = null;
+        const(char)[][]    chunks = null;
         int         start = -1;
         char        c;
         int         i;
@@ -1868,11 +1868,11 @@ class Process
          * has a null pointer at the end. This is the format expected by
          * the execv*() family of POSIX functions.
          */
-        protected static char*[] toNullEndedArray(char[][] src)
+        protected static const(char)*[] toNullEndedArray(const(char)[][] src)
         {
             if (src !is null)
             {
-                char*[] dest = new char*[src.length + 1];
+                const(char)*[] dest = new const(char)*[src.length + 1];
                 auto i = src.length;
 
                 // Add terminating null pointer to the array
@@ -1898,9 +1898,9 @@ class Process
          * array has a null pointer at the end. This is the format expected by
          * the execv*() family of POSIX functions for environment variables.
          */
-        protected static char*[] toNullEndedArray(char[][char[]] src)
+        protected static const(char)*[] toNullEndedArray(const(char)[][char[]] src)
         {
-            char*[] dest;
+            const(char)*[] dest;
 
             foreach (key, value; src)
             {
@@ -1917,7 +1917,7 @@ class Process
          * method is a combination of the execve() and execvp() POSIX system
          * calls.
          */
-        protected static int execvpe(char[] filename, char*[] argv, char*[] envp)
+        protected static int execvpe(const(char)[] filename, const(char)*[] argv, const(char)*[] envp)
         in
         {
             assert(filename.length > 0);
@@ -1930,7 +1930,7 @@ class Process
             if (!contains(filename, FileConst.PathSeparatorChar) &&
                 (str = getenv("PATH")) !is null)
             {
-                char[][] pathList = delimit(str[0 .. strlen(str)], ":");
+                const(char)[][] pathList = delimit(str[0 .. strlen(str)], ":");
 
                 char[] path_buf;
 
@@ -1947,7 +1947,7 @@ class Process
                         path_buf[] = path ~ filename ~ '\0';
                     }
 
-                    rc = execve(path_buf.ptr, argv.ptr, (envp.length == 0 ? environ : envp.ptr));
+                    rc = execve(path_buf.ptr, argv.ptr, (envp.length == 0 ? cast(const(char)**)environ : envp.ptr));
 
                     // If the process execution failed because of an error
                     // other than ENOENT (No such file or directory) we
@@ -1965,7 +1965,7 @@ class Process
                                     (argv[0])[0 .. strlen(argv[0])],
                                     argv.length, (envp.length > 0 ? "envp" : "null"));
 
-                rc = execve(argv[0], argv.ptr, (envp.length == 0 ? environ : envp.ptr));
+                rc = execve(argv[0], argv.ptr, (envp.length == 0 ? cast(const(char)**)environ : envp.ptr));
             }
             return rc;
         }
@@ -1978,14 +1978,14 @@ class Process
  */
 class ProcessCreateException: ProcessException
 {
-    public this(char[] command, char[] file, uint line)
+    public this(const(char)[] command, const(char)[] file, uint line)
     {
         this(command, SysError.lastMsg, file, line);
     }
 
-    public this(char[] command, char[] message, char[] file, uint line)
+    public this(const(char)[] command, const(char)[] message, const(char)[] file, uint line)
     {
-        super("Could not create process for " ~ command ~ " : " ~ message);
+        super("Could not create process for " ~ command.idup ~ " : " ~ message.idup);
     }
 }
 
@@ -1996,9 +1996,9 @@ class ProcessCreateException: ProcessException
  */
 class ProcessForkException: ProcessException
 {
-    public this(int pid, char[] file, uint line)
+    public this(int pid, const(char)[] file, uint line)
     {
-        super(format("Could not fork process ", pid) ~ " : " ~ SysError.lastMsg);
+        super(format("Could not fork process ", pid).idup ~ " : " ~ SysError.lastMsg.idup);
     }
 }
 
@@ -2007,9 +2007,9 @@ class ProcessForkException: ProcessException
  */
 class ProcessKillException: ProcessException
 {
-    public this(int pid, char[] file, uint line)
+    public this(int pid, const(char)[] file, uint line)
     {
-        super(format("Could not kill process ", pid) ~ " : " ~ SysError.lastMsg);
+        super(format("Could not kill process ", pid).idup ~ " : " ~ SysError.lastMsg.idup);
     }
 }
 
@@ -2019,9 +2019,9 @@ class ProcessKillException: ProcessException
  */
 class ProcessWaitException: ProcessException
 {
-    public this(int pid, char[] file, uint line)
+    public this(int pid, const(char)[] file, uint line)
     {
-        super(format("Could not wait on process ", pid) ~ " : " ~ SysError.lastMsg);
+        super(format("Could not wait on process ", pid).idup ~ " : " ~ SysError.lastMsg.idup);
     }
 }
 
@@ -2031,7 +2031,7 @@ class ProcessWaitException: ProcessException
 /**
  *  append an int argument to a message
 */
-private char[] format (char[] msg, int value)
+private char[] format (const(char)[] msg, int value)
 {
     char[10] tmp;
 
@@ -2046,13 +2046,13 @@ debug (UnitTest)
 
     unittest
     {
-        char[] message = "hello world";
+        const(char)[] message = "hello world";
         version(Windows)
         {
-            char[] command = "cmd.exe /c echo " ~ message;
+            const(char)[] command = "cmd.exe /c echo " ~ message;
         }
         else
-            char[] command = "echo " ~ message;
+            const(char)[] command = "echo " ~ message;
 
 
         try

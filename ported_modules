@@ -110,6 +110,7 @@ tango/stdc/posix/sys/mman.d
 tango/stdc/posix/sys/wait.d
 tango/sys/Common.d
 tango/sys/Pipe.d
+tango/sys/Process.d
 tango/sys/SharedLib.d
 tango/sys/Environment.d
 tango/sys/consts/fcntl.d

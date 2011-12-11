@@ -62,7 +62,7 @@ int     link(in char*, in char*);
 //off_t   lseek(int, off_t, int);
 c_long  pathconf(in char*, int);
 int     pause();
-int     pipe(int[2]);
+int     pipe(int*);
 ssize_t read(int, void*, size_t);
 ssize_t readlink(in char*, char*, size_t);
 int     rmdir(in char*);
