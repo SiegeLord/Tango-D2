@@ -185,6 +185,7 @@ SRC_UTIL=tango/util/Convert.d \
 	tango/util/container/more/Stack.d \
 	tango/util/container/CircularList.d \
 	tango/util/container/Container.d \
+	tango/util/container/HashMap.d \
 	tango/util/container/LinkedList.d \
 	\
 	tango/util/compress/Zip.d \
