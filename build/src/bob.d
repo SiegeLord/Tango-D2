@@ -9,6 +9,7 @@
         author:         larsivi, sleets, kris
 
 *******************************************************************************/
+module bob;
 
 private import tango.text.Util;
 private import tango.io.Stdout;
@@ -24,7 +25,7 @@ private import tango.sys.Environment;
       
 *******************************************************************************/
 
-void main (char[][] arg)
+void main (immutable(char)[][] arg)
 {
         Args args;
 
@@ -32,7 +33,7 @@ void main (char[][] arg)
            {
            try {
                Path.remove (args.lib);
-               }catch (Object o){}
+               }catch (Throwable o){}
            new Linux (args);
            new MacOSX (args);
            new FreeBSD (args);
@@ -59,7 +60,7 @@ class Windows : FileFilter
 
         int dmd ()
         {
-                void compile (char[] cmd, FilePath file)
+                void compile (const(char)[] cmd, FilePath file)
                 {
                         auto temp = objname (file);
                         if (args.quick is false || isOverdue (file, temp))
@@ -93,7 +94,7 @@ class Windows : FileFilter
 
         int ldc ()
         {
-                char[] compile (FilePath file, char[] cmd)
+                char[] compile (FilePath file, const(char)[] cmd)
                 {
                         auto temp = objname (file, ".o");
                         if (args.quick is false || isOverdue (file, temp))
@@ -147,7 +148,7 @@ class Linux : FileFilter
                 register ("linux", "gdc", &gdc);
         }
 
-        private char[] compile (FilePath file, char[] cmd)
+        private char[] compile (FilePath file, const(char)[] cmd)
         {
                 auto temp = objname (file, ".o");
                 if (args.quick is false || isOverdue(file, temp))
@@ -161,8 +162,8 @@ class Linux : FileFilter
 
         int dmd ()
         {
-                char[] gcc = gcc00;
-                char[] march;
+                const(char)[] gcc = gcc00;
+                const(char)[] march;
 
                 if (args.march.length)
                 {
@@ -197,8 +198,8 @@ class Linux : FileFilter
 
         int ldc ()
         {
-                char[] gcc = gcc00;
-                char[] march;
+                const(char)[] gcc = gcc00;
+                const(char)[] march;
 
                 if (args.march.length)
                 {
@@ -230,8 +231,8 @@ class Linux : FileFilter
 
         int gdc ()
         {
-                char[] gcc = gcc00;
-                char[] march;
+                const(char)[] gcc = gcc00;
+                const(char)[] march;
 
                 if (args.march.length)
                 {
@@ -279,7 +280,7 @@ class MacOSX : FileFilter
                 register ("osx", "gdc", &gdc);
         }
 
-        private char[] compile (FilePath file, char[] cmd)
+        private char[] compile (FilePath file, const(char)[] cmd)
         {
                 auto temp = objname (file, ".o");
                 if (args.quick is false || isOverdue(file, temp))
@@ -379,7 +380,7 @@ class FreeBSD : FileFilter
                 register ("freebsd", "gdc", &gdc);
         }
 
-        private char[] compile (FilePath file, char[] cmd)
+        private char[] compile (FilePath file, const(char)[] cmd)
         {
                 auto temp = objname (file, ".o");
                 if (args.quick is false || isOverdue(file, temp))
@@ -478,7 +479,7 @@ class Solaris : FileFilter
                 register ("solaris", "gdc", &gdc);
         }
 
-        private char[] compile (FilePath file, char[] cmd)
+        private char[] compile (FilePath file, const(char)[] cmd)
         {
                 auto temp = objname (file, ".o");
                 if (args.quick is false || isOverdue(file, temp))
@@ -578,7 +579,7 @@ class FileFilter
         Array                   libs;
         Args                    args;
         int                     count;
-        char[]                  suffix;
+        const(char)[]                  suffix;
         bool[char[]]            excluded;         
         static Builder[char[]]  builders;
 
@@ -586,7 +587,7 @@ class FileFilter
 
         ***********************************************************************/
 
-        static void register (char[] platform, char[] compiler, Builder builder)
+        static void register (const(char)[] platform, const(char)[] compiler, Builder builder)
         {
                 builders [platform~compiler] = builder;
         }
@@ -595,13 +596,13 @@ class FileFilter
 
         ***********************************************************************/
 
-        static Builder builder (char[] platform, char[] compiler)
+        static Builder builder (const(char)[] platform, const(char)[] compiler)
         {       
                 auto s = platform~compiler;
                 auto b = s in builders;
                 if (b)
                     return *b;
-                throw new Exception ("unsupported combination of "~platform~" and "~compiler);
+                throw new Exception ("unsupported combination of "~platform.idup~" and "~compiler.idup);
         }
 
         /***********************************************************************
@@ -645,7 +646,7 @@ class FileFilter
 
         ***********************************************************************/
 
-        final FilePath[] scan (char[] suffix)
+        final FilePath[] scan (const(char)[] suffix)
         {
                 this.suffix = suffix;
                 auto files = sweep (FilePath(args.root~"/tango"));
@@ -684,7 +685,7 @@ class FileFilter
 
         ***********************************************************************/
 
-        final void exclude (char[] path)
+        final void exclude (const(char)[] path)
         {
                 assert(FilePath(path).exists, "FileFilter.exclude: Path does not exist: " ~ path);
                 assert(path[$-1] != '/', "FileFilter.exclude: Inconsistent path syntax, no trailing '/' allowed: " ~ path);
@@ -695,7 +696,7 @@ class FileFilter
 
         ***********************************************************************/
 
-        final void include (char[] path)
+        final void include (const(char)[] path)
         {
                 assert(path in excluded, "FileFilter.include: Path need to be excluded first: " ~ path);
                 excluded.remove (path);
@@ -722,7 +723,7 @@ class FileFilter
               
         ***********************************************************************/
         
-        private char[] objname (FilePath fp, char[] ext=".obj")
+        private char[] objname (FilePath fp, const(char)[] ext=".obj")
         {
                 auto tmp = fp.folder [args.root.length+1 .. $] ~ fp.name ~ args.flags;
                 foreach (i, ref c; tmp)
@@ -735,7 +736,7 @@ class FileFilter
               
         ***********************************************************************/
         
-        private bool isOverdue (FilePath fp, char[] objfile)
+        private bool isOverdue (FilePath fp, const(char)[] objfile)
         {
                 if (! Path.exists (objfile))
                       return true;
@@ -749,7 +750,7 @@ class FileFilter
 
         ***********************************************************************/
 
-        private void addToLib (char[] obj)
+        private void addToLib (const(char)[] obj)
         {
                 version (Windows)
                          const Eol = "\r\n";
@@ -795,7 +796,7 @@ class FileFilter
               
         ***********************************************************************/
         
-        void exec (char[] cmd)
+        void exec (const(char)[] cmd)
         {
                 exec (split(cmd, " "), null, null);
         }
@@ -804,7 +805,7 @@ class FileFilter
               
         ***********************************************************************/
         
-        void exec (char[][] cmd, char[][char[]] env, char[] workDir)
+        void exec (const(char)[][] cmd, const(char)[][char[]] env, const(char)[] workDir)
         {
                 if (args.verbose)
                    {
@@ -827,7 +828,7 @@ class FileFilter
                    Stdout.stream.copy (proc.stdout);
                    auto result = proc.wait;
                    if (result.status != 0 || result.reason != Process.Result.Exit)
-                       throw new Exception (result.toString);
+                       throw new Exception (result.toString.idup);
                    }
         }
 }
@@ -846,7 +847,7 @@ struct Args
                 verbose,
                 dynamic;
 
-        char[]  os,
+        const(char)[]  os,
                 gc,
                 lib,
                 root,
@@ -856,24 +857,24 @@ struct Args
                 march;
                 
 
-        char[]  usage = "Bob is a build tool for the sole purpose to compile the Tango library.\n"
-                        "Usage: bob <options> tango-path\n"
-                        "Arguments:\n"
-                        "\t[-v]\t\t\tverbose output\n"
-                        "\t[-q]\t\t\tquick execution\n"
-                        "\t[-i]\t\t\tinhibit execution\n"
-                        "\t[-u]\t\t\tinclude user modules\n"
-                        "\t[-d]\t\t\tbuild Tango as a dynamic/shared library\n"
-                        "\t[-m=64|32]\tCompile for 32/64 bit\n"
-                        "\t[-r=dmd|gdc|ldc]\tinclude a runtime target\n"
-                        "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"                        
-                        "\t[-g=basic|cdgc|stub]\tspecify the GC implementation to include in the runtime\n"
-                        "\t[-o=\"options\"]\t\tspecify D compiler options\n"
-                        "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
-                        "\t[-p=sysname]\t\tdetermines package filtering (windows|linux|osx|freebsd|solaris)\n\n"
-                        "Example: .\\build\\bin\\win32\\bob.exe -vu -r=dmd -c=dmd .\n\n";
+        const(char)[]  usage = "Bob is a build tool for the sole purpose to compile the Tango library.\n"
+                               "Usage: bob <options> tango-path\n"
+                               "Arguments:\n"
+                               "\t[-v]\t\t\tverbose output\n"
+                               "\t[-q]\t\t\tquick execution\n"
+                               "\t[-i]\t\t\tinhibit execution\n"
+                               "\t[-u]\t\t\tinclude user modules\n"
+                               "\t[-d]\t\t\tbuild Tango as a dynamic/shared library\n"
+                               "\t[-m=64|32]\tCompile for 32/64 bit\n"
+                               "\t[-r=dmd|gdc|ldc]\tinclude a runtime target\n"
+                               "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"                        
+                               "\t[-g=basic|cdgc|stub]\tspecify the GC implementation to include in the runtime\n"
+                               "\t[-o=\"options\"]\t\tspecify D compiler options\n"
+                               "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
+                               "\t[-p=sysname]\t\tdetermines package filtering (windows|linux|osx|freebsd|solaris)\n\n"
+                               "Example: .\\build\\bin\\win32\\bob.exe -vu -r=dmd -c=dmd .\n\n";
 
-        bool populate (char[][] arg)
+        bool populate (const(char)[][] arg)
         {       
                 auto args = new Arguments;
                 auto q = args('q');
