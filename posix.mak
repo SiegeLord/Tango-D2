@@ -27,7 +27,6 @@ SRC_CORE=tango/core/Array.d \
 	tango/core/Exception.d \
 	tango/core/RuntimeTraits.d \
 	tango/core/Traits.d \
-	tango/core/Thread.d \
 	tango/core/Variant.d \
 	tango/core/Version.d \
 	\
