@@ -3,6 +3,7 @@ tango/core/BitManip.d
 tango/core/ByteSwap.d
 tango/core/Exception.d
 tango/core/Memory.d
+tango/core/Octal.d
 
 tango/core/sync/Atomic.d
 tango/core/Thread.d
