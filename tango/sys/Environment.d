@@ -23,6 +23,8 @@ private import  tango.io.model.IFile;
 
 private import  Text = tango.text.Util;
 
+private import  tango.core.Octal;
+
 /*******************************************************************************
 
         Platform decls
@@ -145,7 +147,7 @@ struct Environment
                                      {
                                      stat_t stats;
                                      stat(bin.cString.ptr, &stats);
-                                     if (stats.st_mode & 0100)
+                                     if (stats.st_mode & octal!(100))
                                          return bin;
                                      }
                 return null;

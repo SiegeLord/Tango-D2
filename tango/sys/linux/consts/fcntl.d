@@ -1,5 +1,6 @@
 module tango.sys.linux.consts.fcntl;
 import tango.stdc.posix.config;
+private import tango.core.Octal;
 
 static if( __USE_LARGEFILE64 )
 {
@@ -24,17 +25,17 @@ enum { FD_CLOEXEC = 1 }
 enum { F_RDLCK = 0 }
 enum { F_UNLCK = 2 }
 enum { F_WRLCK = 1 }
-enum { O_CREAT = 0100  }
-enum { O_EXCL = 0200  }
-enum { O_NOCTTY = 0400 }
-enum { O_TRUNC = 01000  }
-enum { O_NOFOLLOW = 00400000 }
-enum { O_APPEND = 02000  }
-enum { O_NONBLOCK = 04000 }
-enum { O_SYNC = 010000  }
-enum { O_DSYNC = 010000  } // optional synchronized io
-enum { O_RSYNC = 010000  } // optional synchronized io
-enum { O_ACCMODE = 0003 }
-enum { O_RDONLY = 00  }
-enum { O_WRONLY = 01  }
-enum { O_RDWR = 02  }
+enum { O_CREAT = octal!(100)  }
+enum { O_EXCL = octal!(200)  }
+enum { O_NOCTTY = octal!(400) }
+enum { O_TRUNC = octal!(1000)  }
+enum { O_NOFOLLOW = octal!(400000) }
+enum { O_APPEND = octal!(2000)  }
+enum { O_NONBLOCK = octal!(4000) }
+enum { O_SYNC = octal!(10000)  }
+enum { O_DSYNC = octal!(10000)  } // optional synchronized io
+enum { O_RSYNC = octal!(10000)  } // optional synchronized io
+enum { O_ACCMODE = octal!(3) }
+enum { O_RDONLY = octal!(0)  }
+enum { O_WRONLY = octal!(1)  }
+enum { O_RDWR = octal!(2)  }

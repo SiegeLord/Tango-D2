@@ -12,6 +12,7 @@ private import tango.stdc.posix.config;
 public import tango.stdc.posix.sys.types; // for id_t, pid_t
 public import tango.stdc.posix.signal;    // for siginfo_t (XSI)
 //public import tango.stdc.posix.resource; // for rusage (XSI)
+private import tango.core.Octal;
 
 extern (C):
 
@@ -69,10 +70,10 @@ else version( darwin )
 
     private
     {
-        const _WSTOPPED = 0177;
+        const _WSTOPPED = octal!(177);
     }
 
-    extern (D) int _WSTATUS(int status)         { return (status & 0177);           }
+    extern (D) int _WSTATUS(int status)         { return (status & octal!(177));           }
     extern (D) int  WEXITSTATUS( int status )   { return (status >> 8);             }
     extern (D) int  WIFCONTINUED( int status )  { return status == 0x13;            }
     extern (D) bool WIFEXITED( int status )     { return _WSTATUS(status) == 0;     }
@@ -92,10 +93,10 @@ else version( freebsd )
 
     private
     {
-        const _WSTOPPED = 0177;
+        const _WSTOPPED = octal!(177);
     }
 
-    extern (D) int _WSTATUS(int status)         { return (status & 0177);           }
+    extern (D) int _WSTATUS(int status)         { return (status & octal!(177));           }
     extern (D) int  WEXITSTATUS( int status )   { return (status >> 8);             }
     extern (D) int  WIFCONTINUED( int status )  { return status == 0x13;            }
     extern (D) bool WIFEXITED( int status )     { return _WSTATUS(status) == 0;     }
@@ -109,18 +110,18 @@ else version( freebsd )
 }
 else version( solaris )
 {	
-	const WCONTFLG		= 0177777;
+	const WCONTFLG		= octal!(177777);
 	
-    const WNOHANG       = 0100;
-    const WUNTRACED     = 0004;
-	const WCONTINUED	= 0010;
+    const WNOHANG       = octal!(100);
+    const WUNTRACED     = octal!(4);
+	const WCONTINUED	= octal!(10);
 	
-	extern (D) int  WWORD( int status )			{ return (status & 0177777);			}
+	extern (D) int  WWORD( int status )			{ return (status & octal!(177777));			}
     extern (D) int  WEXITSTATUS( int status )   { return (status >> 8) & 0xFF;			}
     extern (D) int  WIFCONTINUED( int status )  { return WWORD(status) == WCONTFLG;		}
     extern (D) bool WIFEXITED( int status )     { return (status & 0xFF) == 0;			}
     extern (D) bool WIFSIGNALED( int status )	{ return (status & 0xFF) > 0 && (status & 0xFF00) == 0; }
-    extern (D) bool WIFSTOPPED( int status )	{ return (status & 0xFF) == 0177 && (status & 0xFF00) != 0; }
+    extern (D) bool WIFSTOPPED( int status )	{ return (status & 0xFF) == octal!(177) && (status & 0xFF00) != 0; }
     extern (D) int  WSTOPSIG( int status )		{ return (status >> 8) & 0xFF;			}
     extern (D) int  WTERMSIG( int status )		{ return status & 0x7F;					}
 }

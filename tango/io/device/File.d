@@ -23,6 +23,8 @@ private import tango.io.device.Device;
 
 private import stdc = tango.stdc.stringz;
 
+private import tango.core.Octal;
+
 /*******************************************************************************
 
         platform-specific functions
@@ -618,7 +620,7 @@ class File : Device, Device.Seek, Device.Truncate
                 ***************************************************************/
 
                 protected bool open (const(char[]) path, Style style,
-                                     int addflags, int access = 0666)
+                                     int addflags, int access = octal!(666))
                 {
                         alias int[] Flags;
 

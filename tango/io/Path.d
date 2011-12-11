@@ -64,6 +64,8 @@ public  import  tango.core.Exception : IOException, IllegalArgumentException;
 
 private import tango.stdc.string : memmove;
 
+private import tango.core.Octal;
+
 
 /*******************************************************************************
 
@@ -830,12 +832,12 @@ package struct FS
 
                 static void copy (const(char)[] source, const(char)[] dest)
                 {
-                        auto src = posix.open (source.ptr, O_RDONLY, 0640);
+                        auto src = posix.open (source.ptr, O_RDONLY, octal!(640));
                         scope (exit)
                                if (src != -1)
                                    posix.close (src);
 
-                        auto dst = posix.open (dest.ptr, O_CREAT | O_RDWR, 0660);
+                        auto dst = posix.open (dest.ptr, O_CREAT | O_RDWR, octal!(660));
                         scope (exit)
                                if (dst != -1)
                                    posix.close (dst);
@@ -907,7 +909,7 @@ package struct FS
                 {
                         int fd;
 
-                        fd = posix.open (name.ptr, O_CREAT | O_WRONLY | O_TRUNC, 0660);
+                        fd = posix.open (name.ptr, O_CREAT | O_WRONLY | O_TRUNC, octal!(660));
                         if (fd is -1)
                             exception (name);
 
@@ -923,7 +925,7 @@ package struct FS
 
                 static void createFolder (const(char[]) name)
                 {
-                        if (posix.mkdir (name.ptr, 0777))
+                        if (posix.mkdir (name.ptr, octal!(777)))
                             exception (name);
                 }
 

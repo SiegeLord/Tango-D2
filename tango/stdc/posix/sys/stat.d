@@ -13,6 +13,7 @@ private import tango.stdc.stdint;
 private import tango.stdc.posix.time;     // for timespec
 public import tango.stdc.stddef;          // for size_t
 public import tango.stdc.posix.sys.types; // for off_t, mode_t
+private import tango.core.Octal;
 
 extern (C):
 
@@ -148,9 +149,9 @@ version( linux )
       }
     }
 
-    const S_IRUSR   = 0400;
-    const S_IWUSR   = 0200;
-    const S_IXUSR   = 0100;
+    const S_IRUSR   = octal!(400);
+    const S_IWUSR   = octal!(200);
+    const S_IXUSR   = octal!(100);
     const S_IRWXU   = S_IRUSR | S_IWUSR | S_IXUSR;
 
     const S_IRGRP   = S_IRUSR >> 3;
@@ -163,9 +164,9 @@ version( linux )
     const S_IXOTH   = S_IXGRP >> 3;
     const S_IRWXO   = S_IRWXG >> 3;
 
-    const S_ISUID   = 04000;
-    const S_ISGID   = 02000;
-    const S_ISVTX   = 01000;
+    const S_ISUID   = octal!(4000);
+    const S_ISGID   = octal!(2000);
+    const S_ISVTX   = octal!(1000);
 
     private
     {
@@ -216,9 +217,9 @@ else version( darwin )
         long[2]     st_qspare;
     }
 
-    const S_IRUSR   = 0400;
-    const S_IWUSR   = 0200;
-    const S_IXUSR   = 0100;
+    const S_IRUSR   = octal!(400);
+    const S_IWUSR   = octal!(200);
+    const S_IXUSR   = octal!(100);
     const S_IRWXU   = S_IRUSR | S_IWUSR | S_IXUSR;
 
     const S_IRGRP   = S_IRUSR >> 3;
@@ -231,9 +232,9 @@ else version( darwin )
     const S_IXOTH   = S_IXGRP >> 3;
     const S_IRWXO   = S_IRWXG >> 3;
 
-    const S_ISUID   = 04000;
-    const S_ISGID   = 02000;
-    const S_ISVTX   = 01000;
+    const S_ISUID   = octal!(4000);
+    const S_ISGID   = octal!(2000);
+    const S_ISVTX   = octal!(1000);
 
     private
     {
@@ -283,24 +284,24 @@ else version( freebsd )
         byte[16 - timespec.sizeof] padding;
     }
 
-    const S_IRUSR   = 0000400;
-    const S_IWUSR   = 0000200;
-    const S_IXUSR   = 0000100;
-    const S_IRWXU   = 0000700;
+    const S_IRUSR   = octal!(400);
+    const S_IWUSR   = octal!(200);
+    const S_IXUSR   = octal!(100);
+    const S_IRWXU   = octal!(700);
 
-    const S_IRGRP   = 0000040;
-    const S_IWGRP   = 0000020;
-    const S_IXGRP   = 0000010;
-    const S_IRWXG   = 0000070;
+    const S_IRGRP   = octal!(40);
+    const S_IWGRP   = octal!(20);
+    const S_IXGRP   = octal!(10);
+    const S_IRWXG   = octal!(70);
 
-    const S_IROTH   = 0000004;
-    const S_IWOTH   = 0000002;
-    const S_IXOTH   = 0000001;
-    const S_IRWXO   = 0000007;
+    const S_IROTH   = octal!(4);
+    const S_IWOTH   = octal!(2);
+    const S_IXOTH   = octal!(1);
+    const S_IRWXO   = octal!(7);
 
-    const S_ISUID   = 0004000;
-    const S_ISGID   = 0002000;
-    const S_ISVTX   = 0001000;
+    const S_ISUID   = octal!(4000);
+    const S_ISGID   = octal!(2000);
+    const S_ISVTX   = octal!(1000);
 
     private
     {
@@ -402,23 +403,23 @@ else version( solaris )
     S_ISUID     = 0x800,    /* set user id on execution */
     S_ISGID     = 0x400,    /* set group id on execution */
     S_ISVTX     = 0x200,    /* save swapped text even after use */
-    S_IREAD     = 00400,    /* read permission, owner */
-    S_IWRITE    = 00200,    /* write permission, owner */
-    S_IEXEC     = 00100,    /* execute/search permission, owner */
+    S_IREAD     = octal!(400),    /* read permission, owner */
+    S_IWRITE    = octal!(200),    /* write permission, owner */
+    S_IEXEC     = octal!(100),    /* execute/search permission, owner */
     S_ENFMT     = S_ISGID,  /* record locking enforcement flag */
 
-    S_IRWXU     = 00700,    /* read, write, execute: owner */
-    S_IRUSR     = 00400,    /* read permission: owner */
-    S_IWUSR     = 00200,    /* write permission: owner */
-    S_IXUSR     = 00100,    /* execute permission: owner */
-    S_IRWXG     = 00070,    /* read, write, execute: group */
-    S_IRGRP     = 00040,    /* read permission: group */
-    S_IWGRP     = 00020,    /* write permission: group */
-    S_IXGRP     = 00010,    /* execute permission: group */
-    S_IRWXO     = 00007,    /* read, write, execute: other */
-    S_IROTH     = 00004,    /* read permission: other */
-    S_IWOTH     = 00002,    /* write permission: other */
-    S_IXOTH     = 00001     /* execute permission: other */
+    S_IRWXU     = octal!(700),    /* read, write, execute: owner */
+    S_IRUSR     = octal!(400),    /* read permission: owner */
+    S_IWUSR     = octal!(200),    /* write permission: owner */
+    S_IXUSR     = octal!(100),    /* execute permission: owner */
+    S_IRWXG     = octal!(70),    /* read, write, execute: group */
+    S_IRGRP     = octal!(40),    /* read permission: group */
+    S_IWGRP     = octal!(20),    /* write permission: group */
+    S_IXGRP     = octal!(10),    /* execute permission: group */
+    S_IRWXO     = octal!(7),    /* read, write, execute: other */
+    S_IROTH     = octal!(4),    /* read permission: other */
+    S_IWOTH     = octal!(2),    /* write permission: other */
+    S_IXOTH     = octal!(1)     /* execute permission: other */
   }
 
     extern (D) bool S_ISFIFO(mode_t mode)   { return (mode & 0xF000) == 0x1000; }
@@ -485,40 +486,40 @@ int mknod(in 3char*, mode_t, dev_t);
 
 version( linux )
 {
-    const S_IFMT    = 0170000;
-    const S_IFBLK   = 0060000;
-    const S_IFCHR   = 0020000;
-    const S_IFIFO   = 0010000;
-    const S_IFREG   = 0100000;
-    const S_IFDIR   = 0040000;
-    const S_IFLNK   = 0120000;
-    const S_IFSOCK  = 0140000;
+    const S_IFMT    = octal!(170000);
+    const S_IFBLK   = octal!(60000);
+    const S_IFCHR   = octal!(20000);
+    const S_IFIFO   = octal!(10000);
+    const S_IFREG   = octal!(100000);
+    const S_IFDIR   = octal!(40000);
+    const S_IFLNK   = octal!(120000);
+    const S_IFSOCK  = octal!(140000);
 
     int mknod(in char*, mode_t, dev_t);
 }
 else version( darwin )
 {
-    const S_IFMT    = 0170000;
-    const S_IFBLK   = 0060000;
-    const S_IFCHR   = 0020000;
-    const S_IFIFO   = 0010000;
-    const S_IFREG   = 0100000;
-    const S_IFDIR   = 0040000;
-    const S_IFLNK   = 0120000;
-    const S_IFSOCK  = 0140000;
+    const S_IFMT    = octal!(170000);
+    const S_IFBLK   = octal!(60000);
+    const S_IFCHR   = octal!(20000);
+    const S_IFIFO   = octal!(10000);
+    const S_IFREG   = octal!(100000);
+    const S_IFDIR   = octal!(40000);
+    const S_IFLNK   = octal!(120000);
+    const S_IFSOCK  = octal!(140000);
 
     int mknod(in char*, mode_t, dev_t);
 }
 else version( freebsd )
 {
-    const S_IFMT    = 0170000;
-    const S_IFBLK   = 0060000;
-    const S_IFCHR   = 0020000;
-    const S_IFIFO   = 0010000;
-    const S_IFREG   = 0100000;
-    const S_IFDIR   = 0040000;
-    const S_IFLNK   = 0120000;
-    const S_IFSOCK  = 0140000;
+    const S_IFMT    = octal!(170000);
+    const S_IFBLK   = octal!(60000);
+    const S_IFCHR   = octal!(20000);
+    const S_IFIFO   = octal!(10000);
+    const S_IFREG   = octal!(100000);
+    const S_IFDIR   = octal!(40000);
+    const S_IFLNK   = octal!(120000);
+    const S_IFSOCK  = octal!(140000);
 
     int mknod(in char*, mode_t, dev_t);
 }
