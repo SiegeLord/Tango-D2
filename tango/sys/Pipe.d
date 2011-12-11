@@ -75,7 +75,7 @@ class PipeConduit : Device
     /**
      * Returns the buffer size for the PipeConduit.
      */
-    public override size_t bufferSize()
+    public override const size_t bufferSize()
     {
         return _bufferSize;
     }
@@ -83,7 +83,7 @@ class PipeConduit : Device
     /**
      * Returns the name of the device.
      */
-    public override char[] toString()
+    public override immutable(char)[] toString()
     {
         return "<pipe>";
     }
@@ -123,7 +123,7 @@ class PipeConduit : Device
          * Write a chunk of bytes to the file from the provided array 
          * (typically that belonging to an IBuffer).
          */
-        protected override uint write (void[] src)
+        protected override uint write (const(void)[] src)
         {
             DWORD written;
 
@@ -217,7 +217,7 @@ class Pipe
      */
     private final void error ()
     {
-        throw new IOException("Pipe error: " ~ SysError.lastMsg);
+        throw new IOException("Pipe error: " ~ SysError.lastMsg.idup);
     }
 }
 
