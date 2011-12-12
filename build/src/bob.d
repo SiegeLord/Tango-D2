@@ -53,7 +53,7 @@ class Windows : FileFilter
         {
                 super (args);
                 exclude ("tango/stdc/posix");
-                include ("tango/sys/win32");
+                //include ("tango/sys/win32");
                 register ("windows", "dmd", &dmd);
                 register ("windows", "ldc", &ldc);
         }
@@ -68,19 +68,15 @@ class Windows : FileFilter
                         addToLib (temp);
                 }
 
-                auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
+                auto dmd = "dmd -c -I"~args.root~" "~args.flags~" -of";
                 libs ("-c -n -p256\n"~args.lib~"\n");
 
-                exclude ("tango/core/rt/compiler/dmd/posix");
-                exclude ("tango/core/rt/compiler/dmd/darwin");
                 foreach (file; scan(".d"))
                          compile (dmd, file);
 
                 foreach (file; scan(".c"))
                          compile ("dmc -c -mn -6 -r -o", file);
 
-                if (args.core)
-                    addToLib (args.root~"/tango/core/rt/compiler/dmd/minit.obj");
                 File.set("tango.lsp", libs.slice);
                 exec ("lib @tango.lsp");
 
@@ -88,7 +84,7 @@ class Windows : FileFilter
                 if (args.quick)
                     exec ("cmd /q /c del tango.lsp");
                 else
-                   exec ("cmd /q /c del tango.lsp *.obj");
+                    exec ("cmd /q /c del tango.lsp *.obj");
                 return count;
         }
 
@@ -103,22 +99,10 @@ class Windows : FileFilter
                 }
 
                 auto gcc = "gcc -c -o";
-                auto ldc = "ldc -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
+                auto ldc = "ldc -c -I"~args.root~" "~args.flags~" -of";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, ldc);
                          addToLib(obj);
-                }
-
-                if (args.core) {
-                    foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc);
-                             addToLib(obj);
-                    }
-
-                    foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc);
-                            addToLib(obj);
-                    }
                 }
 
                 File.set("tango.lsp", libs.slice);
@@ -171,25 +155,10 @@ class Linux : FileFilter
                     gcc = (args.march == "64") ? gcc64 : gcc32;
                 }
 
-                auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root ~
-                    march~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
-                exclude ("tango/core/rt/compiler/dmd/windows");
-                exclude ("tango/core/rt/compiler/dmd/darwin");
+                auto dmd = "dmd -c -I"~args.root~march~" "~args.flags~" -of";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, dmd);
                          addToLib(obj);
-                }
-
-                if (args.core) {
-                    foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc);
-                             addToLib(obj);
-                    }
-
-                    foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc);
-                            addToLib(obj);
-                    }
                 }
 
                 makeLib(args.march == "32");
@@ -207,22 +176,10 @@ class Linux : FileFilter
                     gcc = (args.march == "64") ? gcc64 : gcc32;
                 }
 
-                auto ldc = "ldc -c -I"~args.root~"/tango/core " ~ march ~ " -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
+                auto ldc = "ldc -c " ~ march ~ " -I"~args.root~" "~args.flags~" -of";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, ldc);
                          addToLib(obj);
-                }
-
-                if (args.core) {
-                    foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc);
-                             addToLib(obj);
-                    }
-
-                    foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc);
-                            addToLib(obj);
-                    }
                 }
 
                 makeLib(args.march == "32");
@@ -240,24 +197,12 @@ class Linux : FileFilter
                     gcc = (args.march == "64") ? gcc64 : gcc32;
                 }
 
-                auto gdc = "gdc -c -I"~args.root~"/tango/core -I"~args.root ~
-                    march ~ " "~args.flags~" -o";
+                auto gdc = "gdc -c -I"~args.root ~ march ~ " "~args.flags~" -o";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, gdc);
                          addToLib(obj);
                 }
 
-                if (args.core) {
-                    foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc);
-                             addToLib(obj);
-                    }
-
-                    foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc);
-                            addToLib(obj);
-                    }
-                }
                 makeLib(args.march == "32");
                 return count;
         }
@@ -274,7 +219,7 @@ class MacOSX : FileFilter
         this (ref Args args)
         {
                 super (args);
-                include ("tango/sys/darwin");
+                //include ("tango/sys/darwin");
                 register ("osx", "dmd", &dmd);
                 register ("osx", "ldc", &ldc);
                 register ("osx", "gdc", &gdc);
@@ -293,23 +238,10 @@ class MacOSX : FileFilter
 
         int dmd ()
         {
-                auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
-                exclude ("tango/core/rt/compiler/dmd/windows");
+                auto dmd = "dmd -c -I"~args.root~" "~args.flags~" -of";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, dmd);
                          addToLib(obj);
-                }
-
-                if (args.core) {
-                    foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc32);
-                             addToLib(obj);
-                    }
-
-                    foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc32);
-                            addToLib(obj);
-                    }
                 }
 
                 makeLib(true);
@@ -318,22 +250,10 @@ class MacOSX : FileFilter
 
         int ldc ()
         {
-                auto ldc = "ldc -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
+                auto ldc = "ldc -c -I"~args.root~" "~args.flags~" -of";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, ldc);
                          addToLib(obj);
-                }
-
-                if (args.core) {
-                    foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc);
-                             addToLib(obj);
-                    }
-
-                    foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc);
-                            addToLib(obj);
-                    }
                 }
 
                 makeLib;
@@ -342,22 +262,10 @@ class MacOSX : FileFilter
 
         int gdc ()
         {
-                auto gdc = "gdc -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -o";
+                auto gdc = "gdc -c -I"~args.root~" "~args.flags~" -o";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, gdc);
                          addToLib(obj);
-                }
-
-                if (args.core) {
-                    foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc);
-                             addToLib(obj);
-                    }
-
-                    foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc);
-                            addToLib(obj);
-                    }
                 }
 
                 makeLib;
@@ -374,7 +282,7 @@ class FreeBSD : FileFilter
         this (ref Args args)
         {
                 super (args);
-                include ("tango/sys/freebsd");
+                //include ("tango/sys/freebsd");
                 register ("freebsd", "dmd", &dmd);
                 register ("freebsd", "ldc", &ldc);
                 register ("freebsd", "gdc", &gdc);
@@ -393,24 +301,10 @@ class FreeBSD : FileFilter
 
         int dmd ()
         {
-                auto dmd = "dmd -version=freebsd -c -I"~args.root~"/tango/core -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
-                exclude ("tango/core/rt/compiler/dmd/windows");
-                exclude ("tango/core/rt/compiler/dmd/darwin"); 
+                auto dmd = "dmd -version=freebsd -c -I"~args.root~" "~args.flags~" -of";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, dmd);
                          addToLib(obj);
-                }
-
-                if (args.core) {
-                    foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc32);
-                             addToLib(obj);
-                    }
-
-                    foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc32);
-                            addToLib(obj);
-                    }
                 }
 
                 makeLib(true);
@@ -419,22 +313,10 @@ class FreeBSD : FileFilter
 
         int ldc ()
         {
-                auto ldc = "ldc -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
+                auto ldc = "ldc -c -I"~args.root~" "~args.flags~" -of";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, ldc);
                          addToLib(obj);
-                }
-
-                if (args.core) {
-                    foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc);
-                             addToLib(obj);
-                    }
-
-                    foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc);
-                            addToLib(obj);
-                    }
                 }
 
                 makeLib;
@@ -443,22 +325,10 @@ class FreeBSD : FileFilter
 
         int gdc ()
         {
-                auto gdc = "gdc -fversion=freebsd  -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -o";
+                auto gdc = "gdc -fversion=freebsd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -o";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, gdc);
                          addToLib(obj);
-                }
-
-                if (args.core) {
-                    foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc);
-                             addToLib(obj);
-                    }
-
-                    foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc);
-                            addToLib(obj);
-                    }
                 }
 
                 makeLib;
@@ -473,7 +343,7 @@ class Solaris : FileFilter
         this (ref Args args)
         {
                 super (args);
-                include ("tango/sys/solaris");
+                // include ("tango/sys/solaris");
                 register ("solaris", "dmd", &dmd);
                 register ("solaris", "ldc", &ldc);
                 register ("solaris", "gdc", &gdc);
@@ -492,25 +362,10 @@ class Solaris : FileFilter
 
         int dmd ()
         {
-                auto dmd = "dmd -version=solaris -c -I"~args.root~"/tango/core -I"~args.root~" 
--I"~args.root~"/tango/core/vendor "~args.flags~" -of";
-                exclude ("tango/core/rt/compiler/dmd/windows"); 
-                exclude ("tango/core/rt/compiler/dmd/darwin");
+                auto dmd = "dmd -version=solaris -c -I"~args.root~" "~args.flags~" -of";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, dmd);
                          addToLib(obj);
-                }
-
-                if (args.core) {
-                    foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc32);
-                             addToLib(obj);
-                    }
-
-                    foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc32);
-                            addToLib(obj);
-                    }
                 }
 
                 makeLib(true);
@@ -519,23 +374,10 @@ class Solaris : FileFilter
 
         int ldc ()
         {
-                auto ldc = "ldc -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" 
--I"~args.root~"/tango/core/vendor "~args.flags~" -of";
+                auto ldc = "ldc -c -I"~args.root~" "~args.flags~" -of";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, ldc);
                          addToLib(obj);
-                }
-
-                if (args.core) {
-                    foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc);
-                             addToLib(obj);
-                    }
-
-                    foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc);
-                            addToLib(obj);
-                    }
                 }
 
                 makeLib;
@@ -544,22 +386,10 @@ class Solaris : FileFilter
 
         int gdc ()
         {
-                auto gdc = "gdc -fversion=solaris  -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -o";
+                auto gdc = "gdc -fversion=solaris -c -I"~args.root~" "~args.flags~" -o";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, gdc);
                          addToLib(obj);
-                }
-
-                if (args.core) {
-                    foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc);
-                             addToLib(obj);
-                    }
-
-                    foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc);
-                            addToLib(obj);
-                    }
                 }
 
                 makeLib;
@@ -615,31 +445,11 @@ class FileFilter
 
                 libs = new Array (0, 1024 * 16);
 
-                if (args.core is false)
-                    exclude ("tango/core");
-
-                exclude ("tango/sys/win32");
-                exclude ("tango/sys/darwin");
-                exclude ("tango/sys/freebsd");
+                //exclude ("tango/sys/win32");
+                //exclude ("tango/sys/darwin");
+                //exclude ("tango/sys/freebsd");
                 exclude ("tango/sys/linux");
-                exclude ("tango/sys/solaris");
-
-                exclude ("tango/core/rt/gc/stub");
-                exclude ("tango/core/rt/gc/basic");
-                exclude ("tango/core/rt/gc/cdgc");
-
-                exclude ("tango/core/rt/compiler/dmd");
-                exclude ("tango/core/rt/compiler/gdc");
-                exclude ("tango/core/rt/compiler/ldc");
-                
-                exclude ("tango/core/vendor/ldc");
-                exclude ("tango/core/vendor/gdc");
-                exclude ("tango/core/vendor/std");
-                
-                include ("tango/core/rt/compiler/"~args.target);
-                include ("tango/core/rt/gc/"~args.gc);
-                //dmd has the std module name hardcoded :(
-                include ("tango/core/vendor/"~ ((args.target == "dmd") ? "std" : args.target));
+                //exclude ("tango/sys/solaris");
         }
 
         /***********************************************************************
@@ -840,21 +650,19 @@ class FileFilter
 
 struct Args
 {
-        bool    core,
-                user,
+        bool    user,
                 quick,
                 inhibit,
                 verbose,
                 dynamic;
 
         const(char)[]  os,
-                gc,
-                lib,
-                root,
-                flags,
-                target,
-                compiler,
-                march;
+                       gc,
+                       lib,
+                       root,
+                       flags,
+                       compiler,
+                       march;
                 
 
         const(char)[]  usage = "Bob is a build tool for the sole purpose to compile the Tango library.\n"
@@ -866,13 +674,12 @@ struct Args
                                "\t[-u]\t\t\tinclude user modules\n"
                                "\t[-d]\t\t\tbuild Tango as a dynamic/shared library\n"
                                "\t[-m=64|32]\tCompile for 32/64 bit\n"
-                               "\t[-r=dmd|gdc|ldc]\tinclude a runtime target\n"
                                "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"                        
                                "\t[-g=basic|cdgc|stub]\tspecify the GC implementation to include in the runtime\n"
                                "\t[-o=\"options\"]\t\tspecify D compiler options\n"
                                "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
                                "\t[-p=sysname]\t\tdetermines package filtering (windows|linux|osx|freebsd|solaris)\n\n"
-                               "Example: .\\build\\bin\\win32\\bob.exe -vu -r=dmd -c=dmd .\n\n";
+                               "Example: .\\build\\bin\\win32\\bob.exe -vu -c=dmd .\n\n";
 
         bool populate (const(char)[][] arg)
         {       
@@ -885,7 +692,6 @@ struct Args
                 auto p = args('p').smush.params(1);
                 auto o = args('o').smush.params(1).defaults("-release");
                 auto c = args('c').smush.params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
-                auto r = args('r').smush.params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
                 auto g = args('g').smush.params(1).defaults("basic").restrict("basic", "cdgc", "stub");
                 auto n = args(null).params(1).required.title("tango-path");
                 auto h = args("help").aliased('h').aliased('?').halt;
@@ -923,7 +729,6 @@ struct Args
                 if (args.parse (arg))
                    {
                    user = u.set;
-                   core = r.set;
                    quick = q.set;
                    inhibit = i.set;
                    verbose = v.set;
@@ -931,7 +736,6 @@ struct Args
                    os = p.assigned[0];
                    root = n.assigned[0];
                    flags = o.assigned[0];
-                   target = r.assigned[0];
                    compiler = c.assigned[0];
                    gc = g.assigned[0];
                    lib = l.assigned[0];
