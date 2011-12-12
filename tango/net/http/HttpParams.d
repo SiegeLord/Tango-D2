@@ -39,6 +39,7 @@ class HttpParams : HttpTokens, HttpParamsView
 {
         // tell compiler to expose super.parse() also
         alias HttpTokens.parse parse;
+        alias HttpTokens.addInt addInt;
 
         private Delimiters!(char) amp;
 
@@ -101,7 +102,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void addInt (char[] name, int value)
+        void addInt (const(char)[] name, int value)
         {
                 super.addInt (name, value);
         }
@@ -113,7 +114,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void addDate (char[] name, Time value)
+        void addDate (const(char)[] name, Time value)
         {
                 super.addDate (name, value);
         }

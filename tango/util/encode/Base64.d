@@ -287,7 +287,7 @@ body
         if (padCount == 0)
             paddedPos = 0;
 
-        const(char)[] nonPadded = data[0..(length - paddedPos)];
+        const(char)[] nonPadded = data[0..($ - paddedPos)];
         foreach(piece; nonPadded)
         {
             ubyte next = _decodeTable[piece];
@@ -307,7 +307,7 @@ body
         // this will try and decode whatever is left, even if it isn't terminated properly (ie: missing last one or two =)
         if (paddedPos)
         {
-            const(char)[] padded = data[(length - paddedPos) .. length];
+            const(char)[] padded = data[($ - paddedPos) .. $];
             foreach(char piece; padded)
             {
                 ubyte next = _decodeTable[piece];

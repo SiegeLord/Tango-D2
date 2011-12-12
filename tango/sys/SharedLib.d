@@ -311,7 +311,7 @@ final class SharedLib {
 
             void load_(LoadMode mode, bool throwExceptions) {
                 version (Win32SansUnicode)
-                         handle = LoadLibraryA((this.path_ ~ \0).ptr);
+                         handle = LoadLibraryA((this.path_ ~ "\0").ptr);
                     else {
                          wchar[1024] tmp = void;
                          auto i = MultiByteToWideChar (CP_UTF8, 0,
@@ -354,7 +354,7 @@ final class SharedLib {
                 if (mode & LoadMode.Global) mode_ |= RTLD_GLOBAL;
                 if (mode & LoadMode.Local) mode_ |= RTLD_LOCAL;
 
-                handle = dlopen((this.path_ ~ \0).ptr, mode_);
+                handle = dlopen((this.path_ ~ "\0").ptr, mode_);
                 if (handle is null && throwExceptions) {
                     throw new SharedLibException("Couldn't load shared library: " ~ fromStringz(dlerror()).idup);
                 }
