@@ -28,7 +28,10 @@ Anything that's hard to port... like intrinsics/anything that's Tango's runtime 
 
 How to use it:
 
-Just manually import/compile modules you want. Tools like xfbuild (https://bitbucket.org/h3r3tic/xfbuild/wiki/Home) are of great help here. Building the whole library won't be supported for awhile.
+It is possible to use the binary bob building tool (located in build/bin/linux{32|64}/bob) like so:
+
+cd PathToTango
+./build/bin/linux64/bob -vu -o"-d" .
 
 Contact:
 
