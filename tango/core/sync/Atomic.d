@@ -723,7 +723,7 @@ version(LDC){
                     oldV=nextVal;
                     newV=oldV+incV;
                     auto nextVal=atomicCAS!(T)(val,newV,oldV);
-                } while(nextVal!=oldV)
+                } while(nextVal!=oldV);
                 return oldV;
             }
         }
@@ -746,7 +746,7 @@ T atomicOp(T)(ref T val, T delegate(T) f){
         newV=f(oldV);
         nextV=aCas!(T)(val,newV,oldV);
         if (nextV is oldV || newV is oldV) return oldV;
-    } while(++i<200)
+    } while(++i<200);
     while (true){
         thread_yield();
         oldV=val;
