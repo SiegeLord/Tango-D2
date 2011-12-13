@@ -1754,7 +1754,7 @@ BOOL wglDescribeLayerPlane(HDC, int, int, uint, TLAYERPLANEDESCRIPTOR*);
 int wglGetLayerPaletteEntries(HDC, int, int, int, void*);
 int wglSetLayerPaletteEntries(HDC, int, int, int, void*);
 DWORD WNetGetResourceParentA(PNETRESOURCEA, POINTER, DWORD*);
-BOOL WriteFile(THANDLE, void*, DWORD, DWORD*, LPOVERLAPPED);
+BOOL WriteFile(THANDLE, LPCVOID, DWORD, DWORD*, LPOVERLAPPED);
 BOOL CancelWaitableTimer(HANDLE hTimer);
 HANDLE OpenWaitableTimerA(DWORD dwDesiredAccess, BOOL bInheritHandle, LPCSTR lpTimerName);
 HANDLE OpenWaitableTimerW(DWORD dwDesiredAccess, BOOL bInheritHandle, LPCWSTR lpTimerName);

@@ -120,7 +120,7 @@ alias PCHAR LPTCH;
 alias TCHAR* LPTSTR;
 alias int LRESULT;
 alias POINTER LPVOID;
-alias POINTER LPCVOID;
+alias const(POINTER) LPCVOID;
 alias wchar* LPWCH;
 alias wchar* LPWORD;
 alias wchar* LPWSTR;
@@ -185,7 +185,7 @@ alias GUID IID;
 alias IID* REFIID;
 
 // Cast a string literal to a ubyte*=PCHAR
-template _PCHAR( char[] a ){
+template _PCHAR( const(char)[] a ){
  const PCHAR _PCHAR = cast(PCHAR)a.ptr;
 }
 

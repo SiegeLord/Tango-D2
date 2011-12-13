@@ -582,7 +582,7 @@ package struct FS
                 {
                         HANDLE                  h;
                         int                     ret;
-                        char[]                  prefix;
+                        const(char)[]           prefix;
                         char[MAX_PATH+1]        tmp = void;
                         FIND_DATA               fileinfo = void;
 
@@ -599,10 +599,10 @@ package struct FS
                                       return FindNextFileW (h, &fileinfo);
                         }
 
-                        static T[] padded (T[] s, T[] ext)
+                        static T[] padded (const(T)[] s, const(T)[] ext)
                         {
                                 if (s.length && s[$-1] is '/')
-                                    return s ~ ext;
+                                    return cast(T[])(s ~ ext); // Should be a safe cast here
                                 return s ~ "/" ~ ext;
                         }
 
@@ -2118,7 +2118,7 @@ char[] normalize (const(char[]) in_path, char[] buf = null)
 
                    if (c >= 'a' && c <= 'z')
                       {
-                      path[0] = c - 32;
+                      path[0] = cast(char)(c - 32);
                       idx = 2;
                       }
                    else

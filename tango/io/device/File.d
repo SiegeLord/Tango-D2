@@ -443,6 +443,7 @@ class File : Device, Device.Seek, Device.Truncate
                         create = Create[style.open];
                         access = Access[style.access];
 
+                        version(TangoRuntime)
                         if (scheduler)
                             attr |= FILE_FLAG_OVERLAPPED;// + FILE_FLAG_NO_BUFFERING;
 
@@ -481,6 +482,7 @@ class File : Device, Device.Seek, Device.Truncate
                            io.track = true;
 
                         // monitor this handle for async I/O?
+                        version(TangoRuntime)
                         if (scheduler)
                             scheduler.open (io.handle, toString);
                         return true;
@@ -560,7 +562,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                const long position ()
+                long position ()
                 {
                         return *cast(long*) &io.asynch.Offset;
                 }
@@ -571,7 +573,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                const long length ()
+                long length ()
                 {
                         long len;
 

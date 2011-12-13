@@ -18,15 +18,15 @@ private {
         import tango.sys.win32.Types : HINSTANCE, HMODULE, BOOL;
 
         extern (Windows) {
-            void* GetProcAddress(HINSTANCE, char*);
+            void* GetProcAddress(HINSTANCE, const(char)*);
             BOOL FreeLibrary(HMODULE);
 
             version (Win32SansUnicode)
-                     HINSTANCE LoadLibraryA(char*);
+                     HINSTANCE LoadLibraryA(const(char)*);
                 else {
                    enum {CP_UTF8 = 65001}
-                   HINSTANCE LoadLibraryW(wchar*);
-                   int MultiByteToWideChar(uint, uint, char*, int, wchar*, int);
+                   HINSTANCE LoadLibraryW(const(wchar)*);
+                   int MultiByteToWideChar(uint, uint, const(char)*, int, wchar*, int);
                 }
         }
     }

@@ -227,7 +227,7 @@ version (Win32)
 
                 socket_t socket(int af, int type, int protocol);
                 int ioctlsocket(socket_t s, int cmd, uint* argp);
-                uint inet_addr(char* cp);
+                uint inet_addr(const(char)* cp);
                 int bind(socket_t s, Address.sockaddr* name, int namelen);
                 int connect(socket_t s, Address.sockaddr* name, int namelen);
                 int listen(socket_t s, int backlog);
@@ -236,17 +236,17 @@ version (Win32)
                 int shutdown(socket_t s, int how);
                 int getpeername(socket_t s, Address.sockaddr* name, int* namelen);
                 int getsockname(socket_t s, Address.sockaddr* name, int* namelen);
-                int send(socket_t s, void* buf, int len, int flags);
-                int sendto(socket_t s, void* buf, int len, int flags, Address.sockaddr* to, int tolen);
+                int send(socket_t s, const(void)* buf, int len, int flags);
+                int sendto(socket_t s, const(void)* buf, int len, int flags, Address.sockaddr* to, int tolen);
                 int recv(socket_t s, void* buf, int len, int flags);
                 int recvfrom(socket_t s, void* buf, int len, int flags, Address.sockaddr* from, int* fromlen);
                 int select(int nfds, SocketSet.fd* readfds, SocketSet.fd* writefds, SocketSet.fd* errorfds, SocketSet.timeval* timeout);
                 int getsockopt(socket_t s, int level, int optname, void* optval, int* optlen);
-                int setsockopt(socket_t s, int level, int optname, void* optval, int optlen);
+                int setsockopt(socket_t s, int level, int optname, const(void)* optval, int optlen);
                 int gethostname(void* namebuffer, int buflen);
                 char* inet_ntoa(uint ina);
-                NetHost.hostent* gethostbyname(char* name);
-                NetHost.hostent* gethostbyaddr(void* addr, int len, int type);
+                NetHost.hostent* gethostbyname(const(char)* name);
+                NetHost.hostent* gethostbyaddr(const(void)* addr, int len, int type);
                 /**
                 The gai_strerror function translates error codes of getaddrinfo,
                 freeaddrinfo and getnameinfo to a human readable string, suitable
@@ -263,7 +263,7 @@ version (Win32)
                 interface, but unlike the latter functions, getaddrinfo() is reentrant
                 and allows programs to eliminate IPv4-versus-IPv6 dependencies.(C) MAN
                 */
-                int function(char* node, char* service, Address.addrinfo* hints, Address.addrinfo** res) getaddrinfo;
+                int function(const(char)* node, const(char)* service, Address.addrinfo* hints, Address.addrinfo** res) getaddrinfo;
 
                 /**
                 The freeaddrinfo() function frees the memory that was allocated for the
@@ -361,8 +361,8 @@ else
                 int getsockname(socket_t s, Address.sockaddr* name, int* namelen);
                 int send(socket_t s, const(void)* buf, size_t len, int flags);
                 int sendto(socket_t s, const(void)* buf, size_t len, int flags, Address.sockaddr* to, int tolen);
-                int recv(socket_t s, const(void)* buf, size_t len, int flags);
-                int recvfrom(socket_t s, const(void)* buf, size_t len, int flags, Address.sockaddr* from, int* fromlen);
+                int recv(socket_t s, void* buf, size_t len, int flags);
+                int recvfrom(socket_t s, void* buf, size_t len, int flags, Address.sockaddr* from, int* fromlen);
                 int select(int nfds, SocketSet.fd* readfds, SocketSet.fd* writefds, SocketSet.fd* errorfds, SocketSet.timeval* timeout);
                 int getsockopt(socket_t s, int level, int optname, void* optval, int* optlen);
                 int setsockopt(socket_t s, int level, int optname, const(void)* optval, int optlen);
@@ -1194,15 +1194,15 @@ public abstract class Address
                            { // *old* windows, let's fall back to NetHost
                            uint port = toInt(service);
                            if (flags & AIFlags.PASSIVE && host is null)
-                               return [new IPv4Address(0, port)];
+                               return [new IPv4Address(0, cast(ushort)port)];
 
                            auto nh = new NetHost;
                            if (!nh.getHostByName(host))
-                                throw new AddressException("couldn't resolve " ~ host);
+                                throw new AddressException("couldn't resolve " ~ host.idup);
 
                            retVal.length = nh.addrList.length;
                            foreach (i, addr; nh.addrList)
-                                    retVal[i] = new IPv4Address(addr, port);
+                                    retVal[i] = new IPv4Address(addr, cast(ushort)port);
                            return retVal;
                            }
                         }

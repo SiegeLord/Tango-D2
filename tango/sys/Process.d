@@ -1062,7 +1062,7 @@ class Process
             char[] command;
             foreach(a; _args)
             {
-              char[] nextarg = a.substitute(`"`, `\"`);
+              const(char)[] nextarg = a.substitute(`"`, `\"`);
               //
               // find all instances where \\" occurs, and double all the
               // backslashes.  Otherwise, it will fall under rule 1, and those
@@ -1847,7 +1847,7 @@ class Process
          * This is the format expected by the CreateProcess() Windows API for
          * the environment variables.
          */
-        protected static char[] toNullEndedBuffer(char[][char[]] src)
+        protected static char[] toNullEndedBuffer(const(char)[][char[]] src)
         {
             char[] dest;
 

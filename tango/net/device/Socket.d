@@ -366,7 +366,8 @@ class Socket : Conduit, ISelectable
                         .bind (handle, cast(Address.sockaddr*)&local, local.sizeof);
         
                         ConnectEx (handle, addr.name, addr.nameLen, null, 0, null, &overlapped);
-                        wait (scheduler.Type.Connect);
+                        version(TangoRuntime)
+                           wait (scheduler.Type.Connect);
                         patch (handle, SO_UPDATE_CONNECT_CONTEXT);
                 }
         
@@ -378,6 +379,7 @@ class Socket : Conduit, ISelectable
                 {
                         TransmitFile (berkeley.sock, cast(HANDLE) handle, 
                                       0, 0, &overlapped, null, 0);
+                        version(TangoRuntime)
                         if (wait (scheduler.Type.Transfer) is Eof)
                             berkeley.exception ("Socket.copy :: ");
                 }
@@ -400,6 +402,7 @@ class Socket : Conduit, ISelectable
                         WSABUF buf = {dst.length, dst.ptr};
 
                         WSARecv (cast(HANDLE) berkeley.sock, &buf, 1, &bytes, &flags, &overlapped, null);
+                        version(TangoRuntime)
                         if ((bytes = wait (scheduler.Type.Read, bytes)) is Eof)
                              return Eof;
 
@@ -423,9 +426,10 @@ class Socket : Conduit, ISelectable
                 private size_t asyncWrite (const(void)[] src)
                 {
                         DWORD bytes;
-                        WSABUF buf = {src.length, src.ptr};
+                        WSABUF buf = {src.length, cast(void*)src.ptr};
 
                         WSASend (cast(HANDLE) berkeley.sock, &buf, 1, &bytes, 0, &overlapped, null);
+                        version(TangoRuntime)
                         if ((bytes = wait (scheduler.Type.Write, bytes)) is Eof)
                              return Eof;
                         return bytes;
@@ -435,42 +439,45 @@ class Socket : Conduit, ISelectable
 
                 ***************************************************************/
 
-                private size_t wait (scheduler.Type type, uint bytes=0)
+                version(TangoRuntime)
                 {
-                        while (true)
-                              {
-                              auto code = WSAGetLastError;
-                              if (code is ERROR_HANDLE_EOF ||
-                                  code is ERROR_BROKEN_PIPE)
-                                  return Eof;
-
-                              if (scheduler)
+                   private size_t wait (scheduler.Type type, uint bytes=0)
+                   {
+                           while (true)
                                  {
-                                 if (code is ERROR_SUCCESS || 
-                                     code is ERROR_IO_PENDING || 
-                                     code is ERROR_IO_INCOMPLETE)
+                                 auto code = WSAGetLastError;
+                                 if (code is ERROR_HANDLE_EOF ||
+                                     code is ERROR_BROKEN_PIPE)
+                                     return Eof;
+
+                                 if (scheduler)
                                     {
-                                    DWORD flags;
+                                    if (code is ERROR_SUCCESS || 
+                                        code is ERROR_IO_PENDING || 
+                                        code is ERROR_IO_INCOMPLETE)
+                                       {
+                                       DWORD flags;
 
-                                    if (code is ERROR_IO_INCOMPLETE)
-                                        super.error ("timeout"); 
+                                       if (code is ERROR_IO_INCOMPLETE)
+                                           super.error ("timeout"); 
 
-                                    auto handle = fileHandle;
-                                    scheduler.await (handle, type, timeout);
-                                    if (WSAGetOverlappedResult (handle, &overlapped, &bytes, false, &flags))
-                                        return bytes;
+                                       auto handle = fileHandle;
+                                       scheduler.await (handle, type, timeout);
+                                       if (WSAGetOverlappedResult (handle, &overlapped, &bytes, false, &flags))
+                                           return bytes;
+                                       }
+                                    else
+                                       error;
                                     }
                                  else
-                                    error;
+                                    if (code is ERROR_SUCCESS)
+                                        return bytes;
+                                    else
+                                       error;
                                  }
-                              else
-                                 if (code is ERROR_SUCCESS)
-                                     return bytes;
-                                 else
-                                    error;
-                              }
-                        // should never get here
-                        assert (false);
+                           // should never get here
+                           assert (false);
+                   }
                 }
         
                 /***************************************************************
@@ -627,7 +634,8 @@ class ServerSocket : Socket
 
                         auto target = recipient.berkeley.sock;
                         AcceptEx (berkeley.sock, target, tmp.ptr, 0, 64, 64, &bytes, &overlapped);
-                        wait (scheduler.Type.Accept);
+                        version(TangoRuntime)
+                           wait (scheduler.Type.Accept);
                         patch (target, SO_UPDATE_ACCEPT_CONTEXT, &berkeley.sock);
                 }
         }

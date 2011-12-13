@@ -106,12 +106,15 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                override void dispose ()
+                version(TangoRuntime)
                 {
-                        if (io.handle != INVALID_HANDLE_VALUE)
-                            if (scheduler)
-                                scheduler.close (io.handle, toString);
-                        detach();
+                   override void dispose ()
+                   {
+                           if (io.handle != INVALID_HANDLE_VALUE)
+                               if (scheduler)
+                                   scheduler.close (io.handle, toString);
+                           detach();
+                   }
                 }
 
                 /***************************************************************
@@ -147,10 +150,16 @@ class Device : Conduit, ISelectable
                 {
                         DWORD bytes;
 
-                        if (! ReadFile (io.handle, dst.ptr, dst.length, &bytes, &io.asynch))
-                        //ReadFile (io.handle, dst.ptr, dst.length, &bytes, &io.asynch);
-                              if ((bytes = wait (scheduler.Type.Read, bytes, timeout)) is Eof)
-                                   return Eof;
+                        version(TangoRuntime)
+                        {
+                           if (! ReadFile (io.handle, dst.ptr, dst.length, &bytes, &io.asynch))
+                                 if ((bytes = wait (scheduler.Type.Read, bytes, timeout)) is Eof)
+                                      return Eof;
+                        }
+                        else
+                        {
+                           ReadFile (io.handle, dst.ptr, dst.length, &bytes, &io.asynch);
+                        }
 
                         // synchronous read of zero means Eof
                         if (bytes is 0 && dst.length > 0)
@@ -173,14 +182,20 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                override size_t write (void[] src)
+                override size_t write (const(void)[] src)
                 {
                         DWORD bytes;
 
-                        if (! WriteFile (io.handle, src.ptr, src.length, &bytes, &io.asynch))
-                        //WriteFile (io.handle, src.ptr, src.length, &bytes, &io.asynch);
-                        if ((bytes = wait (scheduler.Type.Write, bytes, timeout)) is Eof)
-                             return Eof;
+                        version(TangoRuntime)
+                        {
+                           if (! WriteFile (io.handle, src.ptr, src.length, &bytes, &io.asynch))
+                              if ((bytes = wait (scheduler.Type.Write, bytes, timeout)) is Eof)
+                                   return Eof;
+                        }
+                        else
+                        {
+                           WriteFile (io.handle, src.ptr, src.length, &bytes, &io.asynch);
+                        }
 
                         // update stream location?
                         if (io.track)
@@ -192,41 +207,44 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                protected final size_t wait (scheduler.Type type, uint bytes, uint timeout)
+                version(TangoRuntime)
                 {
-                        while (true)
-                              {
-                              auto code = GetLastError;
-                              if (code is ERROR_HANDLE_EOF ||
-                                  code is ERROR_BROKEN_PIPE)
-                                  return Eof;
-
-                              if (scheduler)
+                   protected final size_t wait (scheduler.Type type, uint bytes, uint timeout)
+                   {
+                           while (true)
                                  {
-                                 if (code is ERROR_SUCCESS ||
-                                     code is ERROR_IO_PENDING ||
-                                     code is ERROR_IO_INCOMPLETE)
-                                    {
-                                    if (code is ERROR_IO_INCOMPLETE)
-                                        super.error ("timeout");
+                                 auto code = GetLastError;
+                                 if (code is ERROR_HANDLE_EOF ||
+                                     code is ERROR_BROKEN_PIPE)
+                                     return Eof;
 
-                                    io.task = cast(void*) tango.core.Thread.Fiber.getThis;
-                                    scheduler.await (io.handle, type, timeout);
-                                    if (GetOverlappedResult (io.handle, &io.asynch, &bytes, false))
-                                        return bytes;
+                                 if (scheduler)
+                                    {
+                                    if (code is ERROR_SUCCESS ||
+                                        code is ERROR_IO_PENDING ||
+                                        code is ERROR_IO_INCOMPLETE)
+                                       {
+                                       if (code is ERROR_IO_INCOMPLETE)
+                                           super.error ("timeout");
+
+                                       io.task = cast(void*) tango.core.Thread.Fiber.getThis;
+                                       scheduler.await (io.handle, type, timeout);
+                                       if (GetOverlappedResult (io.handle, &io.asynch, &bytes, false))
+                                           return bytes;
+                                       }
+                                    else
+                                       error;
                                     }
                                  else
-                                    error;
+                                    if (code is ERROR_SUCCESS)
+                                        return bytes;
+                                    else
+                                       error;
                                  }
-                              else
-                                 if (code is ERROR_SUCCESS)
-                                     return bytes;
-                                 else
-                                    error;
-                              }
 
-                        // should never get here
-                        assert(false);
+                           // should never get here
+                           assert(false);
+                   }
                 }
         }
 
