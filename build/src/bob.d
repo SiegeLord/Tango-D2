@@ -53,7 +53,7 @@ class Windows : FileFilter
         {
                 super (args);
                 exclude ("tango/stdc/posix");
-                //include ("tango/sys/win32");
+                include ("tango/sys/win32");
                 register ("windows", "dmd", &dmd);
                 register ("windows", "ldc", &ldc);
         }
@@ -445,7 +445,7 @@ class FileFilter
 
                 libs = new Array (0, 1024 * 16);
 
-                //exclude ("tango/sys/win32");
+                exclude ("tango/sys/win32");
                 //exclude ("tango/sys/darwin");
                 //exclude ("tango/sys/freebsd");
                 exclude ("tango/sys/linux");
