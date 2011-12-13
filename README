@@ -8,6 +8,8 @@ What works so far:
 
 Modules that have not been yet ported are located in the unported folder. All those located in the tango folder are ported, in the sense that they pass the import+unittest test (sometimes imperfectly on 64 bits due to DMD bugs). See also the ported_modules list which enumerates the ported modules.
 
+I do the porting on Linux, so that is the most tested platform. It generally should also compile on Windows, but might not pass all the unit-tests, since dmd does weird things with unittests on Windows. All other platforms probably don't compile at all.
+
 Some notables:
 
 tango.io.Stdout and the imported modules (notably tango.io.Console, tango.text.convert.Layout and tango.core.Thread (maybe))
@@ -28,7 +30,7 @@ Anything that's hard to port... like intrinsics/anything that's Tango's runtime 
 
 How to use it:
 
-It is possible to use the binary bob building tool (located in build/bin/linux{32|64}/bob) like so:
+It is possible to use the binary bob building tool (located in build/bin/*/bob) like so:
 
 cd PathToTango
 ./build/bin/linux64/bob -vu .
