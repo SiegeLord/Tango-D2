@@ -128,6 +128,7 @@ tango/sys/win32/Types.d
 tango/sys/win32/UserGdi.d
 tango/sys/win32/WsaSock.d
 tango/sys/win32/consts/socket.d
+tango/sys/win32/consts/errno.d
 tango/text/Arguments.d
 tango/text/Ascii.d
 tango/text/Util.d
