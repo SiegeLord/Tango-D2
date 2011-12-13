@@ -108,6 +108,6 @@ debug(UnitTest)
 
         unittest
         {
-                auto p = new Delimiters!(char) (", ", new Array("blah"));
+                auto p = new Delimiters!(char) (", ", new Array("blah".dup));
         }
 }

@@ -148,7 +148,7 @@ class UnicodeBom(T) : BomSniffer
                        setup (info.encoding, true);
 
                        // strip BOM from content
-                       content = content [info.bom.length .. length];
+                       content = content [info.bom.length .. $];
                        }
                     else
                        // can this encoding be defaulted?

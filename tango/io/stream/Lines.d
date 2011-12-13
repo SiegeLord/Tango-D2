@@ -120,7 +120,7 @@ debug(UnitTest)
 
         unittest
         {
-                auto p = new Lines!(char) (new Array("blah"));
+                auto p = new Lines!(char) (new Array("blah".dup));
         }
 }
 
@@ -136,7 +136,7 @@ debug (Lines)
 
         void main()
         {
-                auto lines = new Lines!(char)(new Array("one\ntwo\r\nthree"));
+                auto lines = new Lines!(char)(new Array("one\ntwo\r\nthree".dup));
                 foreach (i, line, delim; lines)
                          Cout (line) (delim);
         }

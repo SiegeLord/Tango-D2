@@ -1310,7 +1310,7 @@ class Text(T) : TextView!(T)
                            if(dst.length < length)
                                 dst.length = length;
                            dst[] = slice()[];
-                           return dst[0..length];
+                           return dst[0..this.length];
                 }
 
                 static if (is (T == wchar))
@@ -1330,7 +1330,7 @@ class Text(T) : TextView!(T)
                            if(dst.length < length)
                                 dst.length = length;
                            dst[] = slice()[];
-                           return dst[0..length];
+                           return dst[0..this.length];
                 }
 
                 static if (is (T == dchar))

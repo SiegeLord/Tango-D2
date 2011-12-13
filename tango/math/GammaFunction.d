@@ -23,9 +23,9 @@ private import tango.math.Math;
 private import tango.math.IEEE;
 private import tango.math.ErrorFunction;
 
-version(Windows) { // Some tests only pass on DMD Windows
+version(Windows) { // Some tests only pass on DMD Windows - Not in my testing, SiegeLord
     version(DigitalMars) {
-    version = FailsOnLinux;
+    //version = FailsOnLinux;
 }
 }
 
