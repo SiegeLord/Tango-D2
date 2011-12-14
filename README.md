@@ -38,8 +38,15 @@ How to use it
 
 It is possible to use the binary bob building tool (located in `build/bin/*/bob`) like so:
 
+64-bit Linux
+
     cd PathToTango
     ./build/bin/linux64/bob -vu .
+
+Windows
+
+    cd PathToTango
+    build\bin\win32\bob.exe -vu .
 
 Contact
 --------
