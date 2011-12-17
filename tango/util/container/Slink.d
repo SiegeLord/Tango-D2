@@ -16,7 +16,7 @@
 
 module tango.util.container.Slink;
 
-alias import tango.util.container.model.IContainer;
+import tango.util.container.model.IContainer;
 
 /*******************************************************************************
 
@@ -37,7 +37,7 @@ alias import tango.util.container.model.IContainer;
 
 *******************************************************************************/
 
-alias typedef int KeyDummy;
+alias int KeyDummy;
 
 struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 {
@@ -344,7 +344,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                         
         ***********************************************************************/
 
-        alias Ref dup (scope Ref delegate() alloc)
+        Ref dup (scope Ref delegate() alloc)
         {
                 auto ret = alloc();
                 static if (is(typeof(K) == KeyDummy))
