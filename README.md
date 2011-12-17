@@ -48,6 +48,8 @@ Windows
     cd PathToTango
     build\bin\win32\bob.exe -vu .
 
+DMD is the primary testing compiler, but LDC2 seems to compile the library as well.
+
 Contact
 --------
 
