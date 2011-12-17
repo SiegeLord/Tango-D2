@@ -179,7 +179,7 @@ class ConversionException : Exception
 
 private:
 
-typedef int Missing;
+alias int Missing;
 
 /*
  * So, how is this module structured?
@@ -743,9 +743,9 @@ D toBool(D,S)(S value)
     {
         mixin unsupported!("pointer type");
     }
-    else static if( is( S == typedef ) )
+    else static if( is( S == alias ) )
     {
-        mixin unsupported!("typedef'ed type");
+        mixin unsupported!("alias'ed type");
     }
     // +/
     else static if( isPOD!(S) || isObject!(S) )
@@ -1192,7 +1192,7 @@ D toImpl(D,S)(S value)
     static if( is( D == S ) )
         return value;
 
-    else static if( is( S BaseType == typedef ) )
+    else static if( is( S BaseType == alias ) )
         return toImpl!(D,BaseType)(value);
 
     else static if( is( S BaseType == enum ) )

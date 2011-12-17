@@ -1374,7 +1374,7 @@ package struct LogEvent
 
 public class Appender
 {
-        typedef int Mask;
+        alias int Mask;
 
         private Appender        next_;
         private Level           level_;

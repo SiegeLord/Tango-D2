@@ -16,9 +16,9 @@
 
 module tango.util.container.RedBlack;
 
-private import tango.util.container.model.IContainer;
+alias import tango.util.container.model.IContainer;
 
-private typedef int AttributeDummy;
+alias typedef int AttributeDummy;
 
 /*******************************************************************************
 

@@ -101,9 +101,9 @@ interface IConduit : InputStream, OutputStream
 interface ISelectable
 {
         version (Windows)
-                 alias void* Handle;   /// Opaque OS file-handle.
-             else
-                typedef int Handle = -1;        /// Opaque OS file-handle.
+            alias void* Handle;   /// Opaque OS file-handle.
+        else
+            alias int Handle = -1;        /// Opaque OS file-handle.
 
         /***********************************************************************
 

@@ -815,8 +815,8 @@ version (WithVariant)
                        case TypeCode.ENUM:
                             return dispatch (result, format, (cast(TypeInfo_Enum) type).base, p);
 
-                       case TypeCode.TYPEDEF:
-                            return dispatch (result, format, (cast(TypeInfo_Typedef) type).base, p);
+                       //case TypeCode.TYPEDEF:
+                       //     return dispatch (result, format, (cast(TypeInfo_Typedef) type).base, p);
 
                        default:
                             return unknown (result, format, type, p);
@@ -1030,7 +1030,7 @@ private enum TypeCode
         DELEGATE = 'D',
         FUNCTION = 'F',
         POINTER = 'P',
-        TYPEDEF = 'T',
+        //TYPEDEF = 'T',
         INTERFACE = 'I',
         CFLOAT = 'q',
         CDOUBLE = 'r',

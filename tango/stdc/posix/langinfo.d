@@ -10,7 +10,7 @@ private import tango.stdc.locale;
 private import tango.text.locale.Posix;
 
 
-typedef int nl_item;
+alias int nl_item;
 
 /*
   Return the current locale's value for ITEM.

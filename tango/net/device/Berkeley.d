@@ -219,7 +219,7 @@ version (Win32)
     
         private import tango.sys.win32.WsaSock;
 
-        private typedef int socket_t = ~0;
+        private alias int socket_t = ~0;
 
         package extern (Windows)
         {
@@ -344,7 +344,7 @@ else
 {
         private import tango.stdc.errno;
 
-        private typedef int socket_t = -1;
+        private alias int socket_t = -1;
 
         package extern (C)
         {

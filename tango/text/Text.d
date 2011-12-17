@@ -1521,7 +1521,7 @@ class Text(T) : TextView!(T)
 
 class TextView(T) : UniText
 {
-        public typedef int delegate (const(T)[] a, const(T)[] b) Comparator;
+        alias int delegate (const(T)[] a, const(T)[] b) Comparator;
 
         /***********************************************************************
 

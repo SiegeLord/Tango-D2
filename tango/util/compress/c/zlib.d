@@ -953,7 +953,7 @@ int inflateBack(z_streamp strm,
    routines until it reads a complete deflate stream and writes out all of the
    uncompressed data, or until it encounters an error.  The function's
    parameters and return types are defined above in the in_func and out_func
-   typedefs.  inflateBack() will call in(in_desc, &buf) which should return the
+   aliass.  inflateBack() will call in(in_desc, &buf) which should return the
    number of bytes of provided input, and a pointer to that input in buf.  If
    there is no input available, in() must return zero--buf is ignored in that
    case--and inflateBack() will return a buffer error.  inflateBack() will call
@@ -1115,7 +1115,7 @@ int uncompress(Bytef*  dest,
 */
 
 
-typedef voidp gzFile;
+alias voidp gzFile;
 
 gzFile gzopen(char* path, char* mode);
 /*
