@@ -219,7 +219,16 @@ version (Win32)
     
         private import tango.sys.win32.WsaSock;
 
-        private alias int socket_t = ~0;
+        //private alias int socket_t = ~0;
+        private struct socket_t
+        {
+			this(int _payload)
+			{
+				payload = _payload;
+			}
+			int payload = ~0;
+			alias payload this;
+		}
 
         package extern (Windows)
         {
@@ -344,7 +353,16 @@ else
 {
         private import tango.stdc.errno;
 
-        private alias int socket_t = -1;
+        //private alias int socket_t = -1;
+        private struct socket_t
+        {
+			this(int _payload)
+			{
+				payload = _payload;
+			}
+			int payload = -1;
+			alias payload this;
+		}
 
         package extern (C)
         {
@@ -2061,7 +2079,7 @@ public class SocketSet
                 import tango.core.BitManip;
 
                 size_t nfdbits;
-                socket_t _maxfd = 0;
+                socket_t _maxfd = socket_t(0);
 
                 const uint fdelt(socket_t s)
                 {
@@ -2191,8 +2209,11 @@ public class SocketSet
                 {
                         if (s > _maxfd)
                                 _maxfd = s;
-
-                        bts(cast(size_t*)&first[fdelt(s)], cast(size_t)s % nfdbits);
+                        
+                        version(LDC)
+                            bts(cast(uint*)&first[fdelt(s)], cast(uint)s % nfdbits);
+                        else
+                            bts(cast(size_t*)&first[fdelt(s)], cast(size_t)s % nfdbits);
                 }
                 else
                 {
@@ -2230,7 +2251,10 @@ public class SocketSet
                 }
                 else version (Posix)
                 {
-                        btr(cast(size_t*)&first[fdelt(s)], cast(size_t)s % nfdbits);
+                        version(LDC)
+                            btr(cast(uint*)&first[fdelt(s)], cast(uint)s % nfdbits);
+                        else
+                            btr(cast(size_t*)&first[fdelt(s)], cast(size_t)s % nfdbits);
 
                         // If we're removing the biggest file descriptor we've
                         // entered so far we need to recalculate this value
