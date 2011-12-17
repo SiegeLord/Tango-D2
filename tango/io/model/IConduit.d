@@ -103,7 +103,7 @@ interface ISelectable
         version (Windows)
             alias void* Handle;   /// Opaque OS file-handle.
         else
-            alias int Handle = -1;        /// Opaque OS file-handle.
+            alias int Handle;/* = -1;*/        /// Opaque OS file-handle.
 
         /***********************************************************************
 
