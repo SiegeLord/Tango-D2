@@ -14,12 +14,12 @@
 module ThreadFiberGCStress;
 
 private import  tango.io.Stdout,
-                tango.core.Thread,
                 tango.text.Stringz;
                 
 private import  core.stdc.stdio,
                 core.sync.mutex,
-                core.memory;
+                core.memory,
+                core.thread;
 
 Mutex tttt;
 
