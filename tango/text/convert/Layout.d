@@ -33,10 +33,7 @@ private import  Utf = tango.text.convert.Utf;
 private import  Float = tango.text.convert.Float,
                 Integer = tango.text.convert.Integer;
 
-version(DigitalMars)
-    private import  tango.io.model.IConduit;
-else
-    private import  tango.io.model.IConduit : OutputStream;
+private import  tango.io.model.IConduit;
 
 version(WithVariant)
         private import tango.core.Variant;
