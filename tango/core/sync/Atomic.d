@@ -125,12 +125,13 @@ template atomicValueIsProperlyAligned( T )
  * Keep in mind even with a full barrier you still normally need two of them, to avoid that the
  * other process reorders loads (for example) and still sees things in the wrong order.
 */
+/* llvm_memory_barrier gone?
 version( LDC )
 {
     void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
         llvm_memory_barrier(ll,ls,sl,ss,device);
     }
-} else version(D_InlineAsm_X86){
+} else */version(D_InlineAsm_X86){
     void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
         static if (device) {
             if (ls || sl || ll || ss){
