@@ -1192,8 +1192,8 @@ D toImpl(D,S)(S value)
     static if( is( D == S ) )
         return value;
 
-    else static if( is( S BaseType == alias ) )
-        return toImpl!(D,BaseType)(value);
+    /*else static if( is( S BaseType == typedef ) )
+        return toImpl!(D,BaseType)(value);*/
 
     else static if( is( S BaseType == enum ) )
         return toImpl!(D,BaseType)(value);
