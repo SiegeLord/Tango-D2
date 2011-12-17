@@ -32,9 +32,9 @@ template BaseTypeOf( T )
  */
 template isStringType( T )
 {
-    const bool isStringType = is( T : char[] )  ||
-                              is( T : wchar[] ) ||
-                              is( T : dchar[] );
+    const bool isStringType = is( T : const(char)[] )  ||
+                              is( T : const(wchar)[] ) ||
+                              is( T : const(dchar)[] );
 }
 
 /**
