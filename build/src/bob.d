@@ -55,7 +55,7 @@ class Windows : FileFilter
                 exclude ("tango/stdc/posix");
                 include ("tango/sys/win32");
                 register ("windows", "dmd", &dmd);
-                register ("windows", "ldc", &ldc);
+                register ("windows", "ldc2", &ldc2);
         }
 
         int dmd ()
@@ -88,7 +88,7 @@ class Windows : FileFilter
                 return count;
         }
 
-        int ldc ()
+        int ldc2 ()
         {
                 char[] compile (FilePath file, const(char)[] cmd)
                 {
@@ -99,9 +99,9 @@ class Windows : FileFilter
                 }
 
                 auto gcc = "gcc -c -o";
-                auto ldc = "ldc -c -I"~args.root~" "~args.flags~" -of";
+                auto ldc2 = "ldc2 -c -I"~args.root~" "~args.flags~" -of";
                 foreach (file; scan(".d")) {
-                         auto obj = compile (file, ldc);
+                         auto obj = compile (file, ldc2);
                          addToLib(obj);
                 }
 
@@ -128,7 +128,7 @@ class Linux : FileFilter
                 super (args);
                 include ("tango/sys/linux");
                 register ("linux", "dmd", &dmd);
-                register ("linux", "ldc", &ldc);
+                register ("linux", "ldc2", &ldc2);
                 register ("linux", "gdc", &gdc);
         }
 
@@ -165,7 +165,7 @@ class Linux : FileFilter
                 return count;
         }
 
-        int ldc ()
+        int ldc2 ()
         {
                 const(char)[] gcc = gcc00;
                 const(char)[] march;
@@ -176,9 +176,9 @@ class Linux : FileFilter
                     gcc = (args.march == "64") ? gcc64 : gcc32;
                 }
 
-                auto ldc = "ldc -c " ~ march ~ " -I"~args.root~" "~args.flags~" -of";
+                auto ldc2 = "ldc2 -c " ~ march ~ " -I"~args.root~" "~args.flags~" -of";
                 foreach (file; scan(".d")) {
-                         auto obj = compile (file, ldc);
+                         auto obj = compile (file, ldc2);
                          addToLib(obj);
                 }
 
@@ -221,7 +221,7 @@ class MacOSX : FileFilter
                 super (args);
                 //include ("tango/sys/darwin");
                 register ("osx", "dmd", &dmd);
-                register ("osx", "ldc", &ldc);
+                register ("osx", "ldc2", &ldc2);
                 register ("osx", "gdc", &gdc);
         }
 
@@ -248,11 +248,11 @@ class MacOSX : FileFilter
                 return count;
         }
 
-        int ldc ()
+        int ldc2 ()
         {
-                auto ldc = "ldc -c -I"~args.root~" "~args.flags~" -of";
+                auto ldc2 = "ldc2 -c -I"~args.root~" "~args.flags~" -of";
                 foreach (file; scan(".d")) {
-                         auto obj = compile (file, ldc);
+                         auto obj = compile (file, ldc2);
                          addToLib(obj);
                 }
 
@@ -284,7 +284,7 @@ class FreeBSD : FileFilter
                 super (args);
                 //include ("tango/sys/freebsd");
                 register ("freebsd", "dmd", &dmd);
-                register ("freebsd", "ldc", &ldc);
+                register ("freebsd", "ldc2", &ldc2);
                 register ("freebsd", "gdc", &gdc);
         }
 
@@ -311,11 +311,11 @@ class FreeBSD : FileFilter
                 return count;
         }
 
-        int ldc ()
+        int ldc2 ()
         {
-                auto ldc = "ldc -c -I"~args.root~" "~args.flags~" -of";
+                auto ldc2 = "ldc2 -c -I"~args.root~" "~args.flags~" -of";
                 foreach (file; scan(".d")) {
-                         auto obj = compile (file, ldc);
+                         auto obj = compile (file, ldc2);
                          addToLib(obj);
                 }
 
@@ -345,7 +345,7 @@ class Solaris : FileFilter
                 super (args);
                 // include ("tango/sys/solaris");
                 register ("solaris", "dmd", &dmd);
-                register ("solaris", "ldc", &ldc);
+                register ("solaris", "ldc2", &ldc2);
                 register ("solaris", "gdc", &gdc);
         }
 
@@ -372,11 +372,11 @@ class Solaris : FileFilter
                 return count;
         }
 
-        int ldc ()
+        int ldc2 ()
         {
-                auto ldc = "ldc -c -I"~args.root~" "~args.flags~" -of";
+                auto ldc2 = "ldc2 -c -I"~args.root~" "~args.flags~" -of";
                 foreach (file; scan(".d")) {
-                         auto obj = compile (file, ldc);
+                         auto obj = compile (file, ldc2);
                          addToLib(obj);
                 }
 
@@ -674,7 +674,7 @@ struct Args
                                "\t[-u]\t\t\tinclude user modules\n"
                                "\t[-d]\t\t\tbuild Tango as a dynamic/shared library\n"
                                "\t[-m=64|32]\tCompile for 32/64 bit\n"
-                               "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"                        
+                               "\t[-c=dmd|gdc|ldc2]\tspecify a compiler to use\n"                        
                                "\t[-g=basic|cdgc|stub]\tspecify the GC implementation to include in the runtime\n"
                                "\t[-o=\"options\"]\t\tspecify D compiler options\n"
                                "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
@@ -691,7 +691,7 @@ struct Args
                 auto l = args('l').smush.params(1);
                 auto p = args('p').smush.params(1);
                 auto o = args('o').smush.params(1).defaults("-release");
-                auto c = args('c').smush.params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
+                auto c = args('c').smush.params(1).defaults("dmd").restrict("dmd", "gdc", "ldc2");
                 auto g = args('g').smush.params(1).defaults("basic").restrict("basic", "cdgc", "stub");
                 auto n = args(null).params(1).required.title("tango-path");
                 auto h = args("help").aliased('h').aliased('?').halt;
