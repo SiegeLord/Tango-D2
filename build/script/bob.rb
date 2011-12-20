@@ -319,9 +319,9 @@ module Bob
 				arch = "-m32" unless Arch.is64bit?
 			end
 			
-			linux_dmd = "dmd -c -I#{@args.root}/tango/core -I#{@args.root} -I#{@args.root}/tango/core/vendor #{@args.flags} -of#{@args.objs}/"
-			linux_ldc = "ldmd -c #{arch} -I#{@args.root}/tango/core -I#{@args.root}/tango/core/rt/compiler/ldc -I#{@args.root} -I#{@args.root}/tango/core/vendor #{@args.flags} -of#{@args.objs}/"
-			linux_gdc = "gdmd -c -I#{@args.root}/tango/core -I#{@args.root} -I#{@args.root}/tango/core/vendor #{@args.flags} -of#{@args.objs}/"
+			linux_dmd = "dmd -c -I#{@args.root}/tango/core -I#{@args.root} #{@args.flags} -of#{@args.objs}/"
+			linux_ldc = "ldmd -c #{arch} -I#{@args.root}/tango/core -I#{@args.root} #{@args.flags} -of#{@args.objs}/"
+			linux_gdc = "gdmd -c -I#{@args.root}/tango/core -I#{@args.root} #{@args.flags} -of#{@args.objs}/"
 
 			osx_dmd = linux_dmd[0 ... 4] + "-version=darwin -version=osx " + linux_dmd[4 .. -1]
 			osx_ldc = linux_ldc
@@ -397,22 +397,6 @@ module Bob
 			exclude("tango/sys/freebsd");
 			exclude("tango/sys/linux");
 			exclude("tango/sys/solaris");
-
-			exclude("tango/core/rt/gc/stub");
-			exclude("tango/core/rt/gc/basic");
-			exclude("tango/core/rt/gc/cdgc");
-            
-			exclude("tango/core/rt/compiler/dmd");
-			exclude("tango/core/rt/compiler/gdc");
-			exclude("tango/core/rt/compiler/ldc");
-
-			exclude("tango/core/vendor/ldc")
-			exclude("tango/core/vendor/gdc")
-			exclude("tango/core/vendor/std")
-
-			include("tango/core/rt/compiler/" + args.target)
-			include("tango/core/vendor/" + ((args.target == "dmd") ? "std" : args.target))
-			include("tango/core/rt/gc/#{@args.gc}")
 		end
 
 		def self.register (platform, compiler, symbol, object)
@@ -533,11 +517,8 @@ module Bob
 				addToLib(temp)
 			end
 
-			dmd = "dmd -c -I#{@args.root}/tango/core -I#{@args.root} -I#{@args.root}/tango/core/vendor #{@args.flags} -of#{@args.objs}/";
+			dmd = "dmd -c -I#{@args.root}/tango/core -I#{@args.root} #{@args.flags} -of#{@args.objs}/";
 			@libs << "-c -n -p256\n#{@args.lib}\n"
-
-			exclude("tango/core/rt/compiler/dmd/posix")
-			exclude("tango/core/rt/compiler/dmd/darwin")
 
 			scan(".d") do |file|
 				compile(dmd, file)
@@ -545,9 +526,7 @@ module Bob
 
 			scan(".c") do |file|
 				compile("dmc -c -mn -6 -r -o#{@args.objs}/", file)
-			end		
-
-			addToLib(@args.root + "/tango/core/rt/compiler/dmd/minit.obj", false) if @args.core
+			end
 
 			File.open("tango.lsp", "w+") do |file|
 				file.puts(@libs.string)
@@ -591,9 +570,6 @@ module Bob
 		end
 
 		def dmd ()
-			exclude("tango/core/rt/compiler/dmd/darwin") unless @os == "osx"		
-			exclude("tango/core/rt/compiler/dmd/windows")
-
 			scan(".d") do |file|
 				obj = compile(file, @dmd)
 				addToLib(obj)
