@@ -319,9 +319,9 @@ module Bob
 				arch = "-m32" unless Arch.is64bit?
 			end
 			
-			linux_dmd = "dmd -c -I#{@args.root}/tango/core -I#{@args.root} #{@args.flags} -of#{@args.objs}/"
-			linux_ldc = "ldmd -c #{arch} -I#{@args.root}/tango/core -I#{@args.root} #{@args.flags} -of#{@args.objs}/"
-			linux_gdc = "gdmd -c -I#{@args.root}/tango/core -I#{@args.root} #{@args.flags} -of#{@args.objs}/"
+			linux_dmd = "dmd -c -I#{@args.root} #{@args.flags} -of#{@args.objs}/"
+			linux_ldc = "ldmd -c #{arch} -I#{@args.root} #{@args.flags} -of#{@args.objs}/"
+			linux_gdc = "gdmd -c -I#{@args.root} #{@args.flags} -of#{@args.objs}/"
 
 			osx_dmd = linux_dmd[0 ... 4] + "-version=darwin -version=osx " + linux_dmd[4 .. -1]
 			osx_ldc = linux_ldc
@@ -413,21 +413,14 @@ module Bob
 		def scan (suffix, &block)
 			@suffix = suffix
 
-			pwd = Dir.pwd
-
-			Dir.chdir(File.join(@args.root, "tango"))		
-			pattern = File.join("**", "*" + suffix)
+			pattern = File.join(@args.root, "tango", "**", "*" + suffix)
 
 			Dir[pattern].each do |file|
-				f = File.join(@args.root, "tango", file)
-
-				unless @excluded.contains_key?(f)
+				unless @excluded.contains_key?(file)
 					@count += 1
-					block.call(f)
+					block.call(file)
 				end
 			end
-
-			Dir.chdir(pwd)
 		end	
 
 		def exclude (path)
@@ -517,7 +510,7 @@ module Bob
 				addToLib(temp)
 			end
 
-			dmd = "dmd -c -I#{@args.root}/tango/core -I#{@args.root} #{@args.flags} -of#{@args.objs}/";
+			dmd = "dmd -c -I#{@args.root} #{@args.flags} -of#{@args.objs}/";
 			@libs << "-c -n -p256\n#{@args.lib}\n"
 
 			scan(".d") do |file|
