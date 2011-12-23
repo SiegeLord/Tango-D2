@@ -222,13 +222,13 @@ version (Win32)
         //private alias int socket_t = ~0;
         private struct socket_t
         {
-			this(int _payload)
-			{
-				payload = _payload;
-			}
-			int payload = ~0;
-			alias payload this;
-		}
+            this(int _payload)
+            {
+               payload = _payload;
+            }
+            int payload = ~0;
+            alias payload this;
+         }
 
         package extern (Windows)
         {
@@ -339,7 +339,7 @@ version (Win32)
                 WSAIoctl (s, SIO_GET_EXTENSION_FUNCTION_POINTER,
                           &transmitG, transmitG.sizeof, &TransmitFile,
                           TransmitFile.sizeof, &result, null, null);
-                closesocket (cast(socket_t) s);
+                closesocket (cast(socket_t)(cast(int)s));
         }
 
         static ~this()
