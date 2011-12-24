@@ -34,12 +34,12 @@ Building the Libary
 
 You can just checkout the libary and start building it. There is a Makefile for GNU/Linux to build the libary. I assume that you're using dmd to compile it! Just type the following commands to your console.
 
- * cd /usr/include/d/dmd
- * git clone git://github.com/mtachrono/tango.git tango
- * cd tango
- * make -f posix.mak
- * make install -f posix.mak
-    
+    $ cd /usr/include/d/dmd
+    $ git clone git://github.com/mtachrono/tango.git tango
+    $ cd tango
+    $ make -f posix.mak
+    $ make install -f posix.mak
+ 
 your build is generated into generated/$(BUILD)/$(MODEL)/libtango2.lib
 and installed into /usr/lib$(MODEL)/libtango2.lib
     
