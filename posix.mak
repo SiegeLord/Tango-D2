@@ -38,7 +38,8 @@ SRC_CORE=tango/core/Array.d \
 	tango/sys/linux/consts/socket.d \
 	tango/sys/linux/consts/fcntl.d
 
-SRC_IO=tango/io/Console.d \
+SRC_IO=tango/io/CircularBuffer.d \
+	tango/io/Console.d \
 	tango/io/Stdin.d \
 	tango/io/Stdout.d \
 	tango/io/File.d \
