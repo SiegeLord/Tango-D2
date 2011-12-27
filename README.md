@@ -40,11 +40,12 @@ You can just checkout the libary and start building it. There is a Makefile for 
     $ make -f posix.mak
     $ make install -f posix.mak
  
-your build is generated into generated/$(BUILD)/$(MODEL)/libtango2.lib
-and installed into /usr/lib$(MODEL)/libtango2.lib
-    
-example: generated/release/32/libtango2.lib -> /usr/lib32/libtango2.lib
-example: generated/debug/64/libtango2.lib -> /usr/lib64/libtango2.lib
+Your build is generated into `generated/$(BUILD)/$(MODEL)/libtango2.lib`
+and installed into `/usr/lib$(MODEL)/libtango2.lib`
+
+### example
+   `generated/release/32/libtango2.lib` -> `/usr/lib32/libtango2.lib`
+   `generated/debug/64/libtango2.lib` -> `/usr/lib64/libtango2.lib`
 
 Makefile Targets
 --------
