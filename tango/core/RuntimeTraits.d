@@ -566,7 +566,7 @@ debug (UnitTest)
     }
 
     unittest {
-        typedef int myint;
+        alias int myint;
         assert (typeid(myint) !is null, "null typeid(myint)");
         assert (isInteger (typeid(myint)));
     }
