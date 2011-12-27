@@ -10,6 +10,9 @@
  */
 module tango.core.Vararg;
 
+public import core.vararg;
+
+/+
 /**
 
   Gdc 
@@ -62,3 +65,4 @@ else
         public import tango.stdc.stdarg;
     }
 }
++/

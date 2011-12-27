@@ -173,7 +173,8 @@ version( TangoDoc )
 }
 else version( LDC )
 {
-    public import ldc.bitmanip;
+    //public import ldc.bitmanip;
+    public import core.bitop;
 }
 else
 {

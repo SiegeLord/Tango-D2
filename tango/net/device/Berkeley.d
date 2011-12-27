@@ -2210,10 +2210,7 @@ public class SocketSet
                         if (s > _maxfd)
                                 _maxfd = s;
                         
-                        version(LDC)
-                            bts(cast(uint*)&first[fdelt(s)], cast(uint)s % nfdbits);
-                        else
-                            bts(cast(size_t*)&first[fdelt(s)], cast(size_t)s % nfdbits);
+                        bts(cast(size_t*)&first[fdelt(s)], cast(size_t)s % nfdbits);
                 }
                 else
                 {
@@ -2251,10 +2248,7 @@ public class SocketSet
                 }
                 else version (Posix)
                 {
-                        version(LDC)
-                            btr(cast(uint*)&first[fdelt(s)], cast(uint)s % nfdbits);
-                        else
-                            btr(cast(size_t*)&first[fdelt(s)], cast(size_t)s % nfdbits);
+                        btr(cast(size_t*)&first[fdelt(s)], cast(size_t)s % nfdbits);
 
                         // If we're removing the biggest file descriptor we've
                         // entered so far we need to recalculate this value
