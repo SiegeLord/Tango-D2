@@ -23,7 +23,8 @@ There is some basic stuff that is quite useable in the current version. More mod
  * tango.util.container.*
  * tango.math.*
  * ... and some parts of the others ...
-    
+ * ... an overhauled tango.net.* module ...
+ 
 What you cannot expect!
 --------
 
@@ -43,9 +44,10 @@ You can just checkout the libary and start building it. There is a Makefile for 
 Your build is generated into `generated/$(BUILD)/$(MODEL)/libtango2.lib`
 and installed into `/usr/lib$(MODEL)/libtango2.lib`
 
-### example
-   `generated/release/32/libtango2.lib` -> `/usr/lib32/libtango2.lib`
-   `generated/debug/64/libtango2.lib` -> `/usr/lib64/libtango2.lib`
+### Output
+move `generated/release/32/libtango2.lib` to `/usr/lib32/libtango2.lib`
+
+move `generated/debug/64/libtango2.lib` to `/usr/lib64/libtango2.lib`
 
 Makefile Targets
 --------
