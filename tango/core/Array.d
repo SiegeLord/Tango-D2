@@ -16,9 +16,12 @@ version( TangoDoc )
 {
     alias int Num;
     alias int Elem;
+    alias int Elem2;
 
     alias bool function( Elem )       Pred1E;
     alias bool function( Elem, Elem ) Pred2E;
+    alias Elem2 function( Elem, Elem ) Map2E;
+    alias Elem function( Elem, Elem ) Reduce2E;
     alias size_t function( size_t )   Oper1A;
 }
 
@@ -916,7 +919,7 @@ version( TangoDoc )
      * Returns:
      *  The index of the first match or buf.length if no match was found.
      */
-    size_t findAdj( Elem[] buf, Pred2E pred = Pred2E.init );
+    size_t findAdj( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 
 }
 else
@@ -3484,3 +3487,184 @@ else
       }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Map
+////////////////////////////////////////////////////////////////////////////////
+
+version (TangoDoc)
+{
+	/** Apply a function to each element an array. The function's
+	  * return values are stored in another array.
+	  *
+	  * Params:
+	  *		array  = the array.
+	  *		func   = the function to apply.
+	  *		buf    = a buffer in which to store the results. This will be resized if it does not have sufficient space.
+	  *
+	  * Returns:
+	  *		an array (the same as the buffer passed in, if possible) where the
+	  *		ith element is the result of applying func to the ith element of the
+	  *		input array
+	  */
+	Elem2[] map(Elem[] array, Map2E func, Elem2[] buf = null);
+}
+else
+{
+	template map(Func, Array)
+	{
+		ReturnTypeOf!(Func)[] map(Array array, Func func, ReturnTypeOf!(Func)[] buf = null)
+		{
+			if (buf.length < array.length)
+			{
+				buf.length = array.length;
+			}
+			foreach (i, a; array) buf[i] = func(a);
+			return buf;
+		}
+	}
+
+	debug (UnitTest)
+	{
+		unittest
+		{
+			auto arr = map((int i) { return i * 2L; }, [1, 17, 8, 12]);
+			assert(arr == [2L, 34L, 16L, 24L]);
+		}
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Reduce
+////////////////////////////////////////////////////////////////////////////////
+
+version (TangoDoc)
+{
+	/** Reduce an array of elements to a single element, using a user-supplied
+	 * reductor function.
+	 *
+	 * If the array is empty, return the default value for the element type.
+	 *
+	 * If the array contains only one element, return that element.
+	 *
+	 * Otherwise, the reductor function will be called on every member of the
+	 * array and on every resulting element until there is only one element,
+	 * which is then returned.
+	 *
+	 * Params:
+	 *		array = the array to reduce
+	 *		func = the reductor function
+	 *
+	 *	Returns: the single element reduction
+	 */
+	Elem reduce(Elem[] array, Reduce2E func);
+}
+else
+{
+	template reduce(Array, Func)
+	{
+		static assert(isCallableType!(Func)); 
+		ReturnTypeOf!(Func) reduce(Array array, Func func)
+		{
+			if (array.length == 0) return ReturnTypeOf!(Func).init;
+			auto e = array[0];
+			foreach (i, a; array)
+			{
+				if (i == 0) continue;
+				e = func(e, a);
+			}
+			return e;
+		}
+	}
+
+	debug (UnitTest)
+	{
+		unittest
+		{
+			auto result = reduce((int i, int j) { return i * j; }, [1, 17, 8, 12]);
+			assert(result == 1632);
+		}
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Filter
+////////////////////////////////////////////////////////////////////////////////
+
+version( TangoDoc ) 
+{ 
+	/** 
+	 * Performs a linear scan of buf from [0 .. buf.length$(RP), creating a new 
+	 * array with just the elements that satisfy pred.  The relative order of 
+	 * elements will be preserved. 
+	 * 
+	 * Params: 
+	 *  array = The array to scan. 
+	 *  pred  = The evaluation predicate, which should return true if the 
+	 *          element satisfies the condition and false if not.  This 
+	 *          predicate may be any callable type. 
+	 *  buf   = an optional buffer into which elements are filtered. This
+	 *          is the array that gets returned to you.
+	 * 
+	 * Returns: 
+	 *  A new array with just the elements from buf that satisfy pred. 
+	 *
+	 * Notes:
+	 *	While most Array functions that take an output buffer size that buffer
+	 *  optimally, in this case, there is no way of knowing whether the output
+	 *  will be empty or the entire input array. If you have special knowledge
+	 *  in this regard, preallocating the output buffer will be advantageous.
+	 */ 
+	Elem[] filter(Elem[] array, Pred1E pred, Elem[] buf = null); 
+} 
+else 
+{ 
+	template filter(Array, Pred) 
+	{ 
+		static assert(isCallableType!(Pred)); 
+
+		ParameterTupleOf!(Pred)[0][] filter(Array array, Pred pred, ParameterTupleOf!(Pred)[0][] buf = null) 
+		{ 
+			// Unfortunately, we don't know our output size -- it could be empty or
+			// the length of the input array. So we won't try to do anything fancy
+			// with preallocation.
+			buf.length = 0;
+			foreach (i, e; array)
+			{
+				if (pred(e))
+				{
+					buf ~= e;
+				}
+			}
+			return buf; 
+		} 
+	} 
+
+	debug( UnitTest ) 
+	{ 
+		unittest 
+		{ 
+			void test( char[] buf, bool delegate( char ) dg, size_t num ) 
+			{ 
+				char[] r = filter( buf, dg ); 
+				assert( r.length == num ); 
+				size_t rpos = 0; 
+				foreach( pos, cur; buf ) 
+				{ 
+					if ( dg( cur ) ) 
+					{ 
+						assert( r[rpos] == cur ); 
+						rpos++; 
+					} 
+					assert( rpos == num ); 
+				} 
+			} 
+
+			test( "abcdefghij".dup, ( char c ) { return c == 'x'; }, 10 ); 
+			test( "xabcdefghi".dup, ( char c ) { return c == 'x'; },  9 ); 
+			test( "abcdefghix".dup, ( char c ) { return c == 'x'; },  9 ); 
+			test( "abxxcdefgh".dup, ( char c ) { return c == 'x'; },  8 ); 
+			test( "xaxbcdxxex".dup, ( char c ) { return c == 'x'; },  5 ); 
+		} 
+	} 
+} 
