@@ -22,10 +22,10 @@ private import tango.util.container.more.Stack;
 class JsonParser(T)
 {
         public enum Token
-               {
+        {
                Empty, Name, String, Number, BeginObject, EndObject, 
                BeginArray, EndArray, True, False, Null
-               }
+        }
 
         private enum State {Object, Array};
 
@@ -266,14 +266,14 @@ class JsonParser(T)
                             if (match ("null", Token.Null))
                                 return true;
                             expected ("'null'", str.ptr);
-							goto case;
-							
+                            goto case;
+                            
                        case 't':
                             if (match ("true", Token.True))
                                 return true;
                             expected ("'true'", str.ptr);
-							goto case;
-							
+                            goto case;
+                            
                        case 'f':
                             if (match ("false", Token.False))
                                 return true;
@@ -590,9 +590,7 @@ unittest
         assert(!p.next);
 
         assert(p.state.size == 0);
-
-}
-
+    }
 }
 
 

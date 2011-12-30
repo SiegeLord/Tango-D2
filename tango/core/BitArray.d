@@ -56,7 +56,7 @@ struct BitArray
     {
         return len;
     }
-	
+    
     /**
      * Resizes this array to newlen bits.  If newlen is larger than the current
      * length, the new bits will be initialized to zero.

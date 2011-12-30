@@ -81,12 +81,7 @@ public import core.exception;
  */
 class IOException : Exception
 {
-    this( immutable(char)[] msg )
-    {
-        super( msg );
-    }
-    
-    this(immutable(char)[] msg, immutable(char)[] file, size_t line)
+    this(immutable(char)[] msg, immutable(char)[] file = __FILE__, size_t line = __LINE__)
     {
         super(msg, file, line);
     }

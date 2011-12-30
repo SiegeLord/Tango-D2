@@ -15,17 +15,20 @@
 *******************************************************************************/
 module tango.net.Address;
 
-private import  core.sys.posix.netdb;
-private import  core.sys.posix.sys.socket;
+private import  core.sys.posix.sys.un,
+                core.sys.posix.netdb,
+                core.sys.posix.sys.socket,
+                core.stdc.string;
 
 private import  tango.core.Exception;
 
 private import  tango.net.Socket,
                 tango.net.NetHost,
+                tango.net.LocalAddress,
+                tango.net.Internet6Address,
                 tango.net.InternetAddress;
 
-private import  Utf = tango.text.convert.Utf;
-private import  Integer = tango.text.convert.Integer;
+private import  tango.text.Stringz;
 
 /*******************************************************************************
 
@@ -106,21 +109,49 @@ public abstract class Address
         /***********************************************************************
 
                 Address factory
+                
+                params:
+                    sa = a pointer to a sockaddr which will be copied
+                    sa_len = the length of the sa structure
+                
+                returns:
+                    cast(Address)InternetAddress
+                    cast(Address)Internet6Address
+                    cast(Address)LocalAddress
+                    null
 
         ***********************************************************************/
 
-        static Address create (sockaddr* sa) 
-        { 
+        static Address create (sockaddr* sa, socklen_t sa_len = sockaddr.sizeof) 
+        {
                 switch  (sa.sa_family) 
                 { 
-                        case AddressFamily.INET: 
-                             return new InternetAddress(sa); 
+                        // INET
+                        case AddressFamily.INET:
+                            assert(sa_len <= sockaddr_in.sizeof, "Address.create: sa is too big for converting to an InternetAddress.");
+                            sockaddr_in sin;
+                            memcpy(&sin, sa, sa_len);
+                        return new InternetAddress(&sin);
+                        
+                        // INET
                         case AddressFamily.INET6: 
-                             return new IPv6Address(sa); 
+                            assert(sa_len <= sockaddr_in6.sizeof, "Address.create: sa is too big for converting to an Internet6Address");
+                            sockaddr_in6 sin6;
+                            memcpy(&sin6, sa, sa_len);
+                        return new Internet6Address(&sin6);
+                        
+                        // UNIX
+                        case AddressFamily.UNIX:
+                             assert(sa_len <= sockaddr_un.sizeof, "Address.create: sa is too big for converting to LocalAddress");
+                             sockaddr_un sun;
+                             memcpy(&sun, sa, sa_len);
+                        return new LocalAddress(&sun);
+                        
+                        // default
                         default: 
                              return null; 
-                } 
-        } 
+                }
+        }
 
         /*********************************************************************** 
   
@@ -142,7 +173,7 @@ public abstract class Address
                                 AIFlags flags = cast(AIFlags)0) 
         { 
                 return resolveAll (host, port, af, flags)[0]; 
-        } 
+        }
          
         /*********************************************************************** 
   
@@ -177,7 +208,7 @@ public abstract class Address
                 hints.ai_flags = flags; 
                 hints.ai_family = (flags & AIFlags.PASSIVE && af == AddressFamily.UNSPEC) ? AddressFamily.INET6 : af; 
                 hints.ai_socktype = SocketType.STREAM; 
-                int error = getaddrinfo(Utf.toStringz(host), service.length == 0 ? null : Utf.toStringz(service), &hints, &info); 
+                int error = getaddrinfo(toStringz(host), service.length == 0 ? null : toStringz(service), &hints, &info); 
                 if (error != 0)  
                     throw new AddressException(("couldn't resolve " ~ host).idup); 
 
@@ -235,7 +266,7 @@ public abstract class Address
                 // Getting name info. Don't look up hostname, returns 
                 // numeric name. (NIFlags.NUMERICHOST)
                 getnameinfo (name, cast(int)nameLen, host.ptr, host.length, null, 0, NIFlags.NUMERICHOST); 
-                return Utf.fromStringz(host.ptr); 
+                return fromStringz(host.ptr); 
         } 
  
         /*********************************************************************** 
@@ -319,260 +350,9 @@ public class UnknownAddress : Address
         }
 }
 
-/******************************************************************************* 
-        
-        IPv6 is the next-generation Internet Protocol version
-        designated as the successor to IPv4, the first
-        implementation used in the Internet that is still in
-        dominant use currently.
-	        			
-        More information: http://ipv6.com/
-				
-        IPv6 supports 128-bit address space as opposed to 32-bit
-        address space of IPv4.
-				
-        IPv6 is written as 8 blocks of 4 octal digits (16 bit)
-        separated by a colon (":"). Zero block can be replaced by "::".
-	        			
-        For example:
-        
-        ---
-        0000:0000:0000:0000:0000:0000:0000:0001
-        is equal
-        ::0001
-        is equal
-        ::1
-        is analogue IPv4 127.0.0.1
-				
-        0000:0000:0000:0000:0000:0000:0000:0000
-        is equal
-        ::
-        is analogue IPv4 0.0.0.0
-				
-        2001:cdba:0000:0000:0000:0000:3257:9652 
-        is equal
-        2001:cdba::3257:9652
-				
-        IPv4 address can be submitted through IPv6 as ::ffff:xx.xx.xx.xx,
-        where xx.xx.xx.xx 32-bit IPv4 addresses.
-				
-        ::ffff:51b0:ec6d
-        is equal
-        ::ffff:81.176.236.109
-        is analogue IPv4 81.176.236.109
-				
-        The URL for the IPv6 address will be of the form:
-        http://[2001:cdba:0000:0000:0000:0000:3257:9652]/
-				
-        If needed to specify a port, it will be listed after the
-        closing square bracket followed by a colon.
-				
-        http://[2001:cdba:0000:0000:0000:0000:3257:9652]:8080/
-        address: "2001:cdba:0000:0000:0000:0000:3257:9652"
-        port: 8080
-				
-        IPv6Address can be used as well as IPv4Address.
-				
-        scope addr = new IPv6Address(8080); 
-        address: "::"
-        port: 8080
-				
-        scope addr_2 = new IPv6Address("::1", 8081); 
-        address: "::1"
-        port: 8081
-				
-        scope addr_3 = new IPv6Address("::1"); 
-        address: "::1"
-        port: PORT_ANY
-				
-        Also in the IPv6Address constructor can specify the service name
-        or port as string
-				
-        scope addr_3 = new IPv6Address("::", "ssh"); 
-        address: "::"
-        port: 22 (ssh service port)
-				
-        scope addr_4 = new IPv6Address("::", "8080"); 
-        address: "::"
-        port: 8080
-        ---
-				
-*******************************************************************************/ 
-				
-class IPv6Address : Address 
-{ 
-protected:
-        /*********************************************************************** 
-         
-        ***********************************************************************/ 
- 
-        struct sockaddr_in6 
-        { 
-                ushort sin_family; 
-                ushort sin_port; 
-                 
-                uint sin6_flowinfo; 
-                ubyte[16] sin6_addr; 
-                uint sin6_scope_id; 
-        } 
-         
-        sockaddr_in6 sin; 
- 
-        /*********************************************************************** 
- 
-         ***********************************************************************/ 
- 
-        this () 
-        { 
-        } 
- 
-        /***********************************************************************
+/*******************************************************************************
 
-        ***********************************************************************/
-
-        this (sockaddr* sa) 
-        { 
-                sin = *cast(sockaddr_in6*)sa; 
-        } 
-         
-        /*********************************************************************** 
- 
-        ***********************************************************************/ 
- 
-        override sockaddr* name() 
-        { 
-                return cast(sockaddr*)&sin; 
-        } 
- 
-        /*********************************************************************** 
- 
-        ***********************************************************************/ 
- 
-        override int nameLen() 
-        { 
-                return sin.sizeof; 
-        } 
- 
- public: 
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        override AddressFamily addressFamily()
-        {
-                return AddressFamily.INET6;
-        }
-
- 
-        const ushort PORT_ANY = 0; 
-  
-        /*********************************************************************** 
- 
-         ***********************************************************************/ 
- 
-        ushort port() 
-        { 
-                return ntohs(sin.sin_port); 
-        } 
- 				
-        /*********************************************************************** 
- 
-                Create IPv6Address with zero address
-
-        ***********************************************************************/ 
- 				
-        this (int port) 
-        { 
-          this ("::", port);
-        } 
-				
-        /*********************************************************************** 
- 
-                -port- can be PORT_ANY 
-                -addr- is an IP address or host name 
- 
-        ***********************************************************************/ 
-				
-        this (const(char)[] addr, int port = PORT_ANY) 
-        { 
-                version (Win32) 
-                        { 
-                        if (!getaddrinfo) 
-                             exception ("This platform does not support IPv6."); 
-                        } 
-                addrinfo* info; 
-                addrinfo hints; 
-                hints.ai_family = AddressFamily.INET6; 
-                int error = getaddrinfo((addr ~ '\0').ptr, null, &hints, &info); 
-                if (error != 0)  
-                    throw new AddressException("failed to create IPv6Address: "); 
-                 
-                sin = *cast(sockaddr_in6*)(info.ai_addr); 
-                sin.sin_port = htons(cast(ushort) port); 
-        } 
-               
-        /*********************************************************************** 
- 
-                -service- can be a port number or service name 
-                -addr- is an IP address or host name 
- 
-        ***********************************************************************/ 
- 
-        this (char[] addr, char[] service) 
-        { 
-                version (Win32) 
-                        { 
-                        if(! getaddrinfo) 
-                             exception ("This platform does not support IPv6."); 
-                        } 
-                addrinfo* info; 
-                addrinfo hints; 
-                hints.ai_family = AddressFamily.INET6; 
-                int error = getaddrinfo((addr ~ '\0').ptr, (service ~ '\0').ptr, &hints, &info); 
-                if (error != 0)  
-                    throw new AddressException("failed to create IPv6Address: "); 
-                sin = *cast(sockaddr_in6*)(info.ai_addr); 
-        } 
- 
-        /*********************************************************************** 
-  
-        ***********************************************************************/ 
- 
-        ubyte[] addr() 
-        { 
-                return sin.sin6_addr; 
-        } 
- 
-        /*********************************************************************** 
-  
-        ***********************************************************************/ 
- 
-        version (Posix)
-        override char[] toAddrString()
-        {
-                char[100] buff = 0;
-                return Utf.fromStringz(inet_ntop(AddressFamily.INET6, &sin.sin6_addr, buff.ptr, 100)).dup;
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        override char[] toPortString()
-        {
-                return Integer.toString(this.port());
-        }
- 
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        override immutable(char)[] toString() 
-        { 
-                return ("[" ~ toAddrString ~ "]:" ~ toPortString).idup; 
-        } 
-}
+*******************************************************************************/
 
 /**
  * Base class for exceptiond thrown by an Address.
@@ -584,18 +364,3 @@ class AddressException : IOException
         super( msg );
     }
 }
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-debug(UnitTest)
-{
-        unittest
-        {
-        IPv6Address ia = new IPv6Address("7628:0d18:11a3:09d7:1f34:8a2e:07a0:765d", 8080);
-        assert(ia.toString() == "[7628:d18:11a3:9d7:1f34:8a2e:7a0:765d]:8080");
-        //assert(ia.toString() == "[7628:0d18:11a3:09d7:1f34:8a2e:07a0:765d]:8080");
-        }
-}
-

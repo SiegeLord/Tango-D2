@@ -13,16 +13,16 @@ import tango.core.tools.Demangler;
 import tango.core.Runtime;
 import tango.core.Thread;
 import tango.core.Traits: ctfe_i2a;
-import tango.stdc.string;
-import tango.stdc.stringz : fromStringz;
-import tango.stdc.stdlib: abort;
+import tango.text.convert.Utf;
+import core.stdc.string;
+import core.sys.posix.stdlib: abort;
 version(Windows){
     import tango.core.tools.WinStackTrace;
 } else {
-    import tango.stdc.posix.ucontext;
-    import tango.stdc.posix.sys.types: pid_t,pthread_t;
-    import tango.stdc.signal;
-    import tango.stdc.stdlib;
+    import core.sys.posix.ucontext;
+    import core.sys.posix.sys.types: pid_t,pthread_t;
+    import core.stdc.signal;
+    import core.stdc.stdlib;
 }
 version(linux){
     import tango.core.tools.LinuxStackTrace;

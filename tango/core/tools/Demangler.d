@@ -52,7 +52,7 @@
 module tango.core.tools.Demangler;
 
 import tango.core.Traits: ctfe_i2a;
-import tango.stdc.string: memmove,memcpy;
+import core.stdc.string: memmove,memcpy;
 
 debug(traceDemangler) import tango.io.Stdout;
 

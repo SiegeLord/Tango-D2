@@ -14,11 +14,11 @@ import std.stdio;
 
 void main()
 {
-	// long form
-	std.stdio.writeln("Hello Phobos!");
-	tango.io.Console.Cout("Hello Tango!").newline;
+    // long form
+    std.stdio.writeln("Hello Phobos!");
+    tango.io.Console.Cout("Hello Tango!").newline;
  
-	// short form
-	writeln("Hello Phobos!");
-	Cout("Hello Tango!").newline;
+    // short form
+    writeln("Hello Phobos!");
+    Cout("Hello Tango!").newline;
 }

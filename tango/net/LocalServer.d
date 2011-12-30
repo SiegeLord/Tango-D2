@@ -9,18 +9,17 @@
 
 module tango.net.LocalServer;
 
-private import core.exception,
-               core.sys.posix.unistd,
-               core.sys.posix.sys.socket;
-               
-private import tango.io.model.ISelectable;
+private import  core.exception,
+                core.sys.posix.unistd,
+                core.sys.posix.sys.socket;
+       
+private import  tango.net.Server,
+                tango.net.Socket,
+                tango.net.LocalSocket,
+                tango.net.LocalAddress;
 
-private import tango.net.Socket,
-               tango.net.LocalSocket,
-               tango.net.LocalAddress;
 
-
-class LocalServer : ISelectable
+class LocalServer : Server
 {
     private socket_t        sock;       // native socket
     
@@ -87,7 +86,7 @@ class LocalServer : ISelectable
      * ---
      * 
      */
-    void bind(Address address)
+    public override void bind(Address address)
     {
         // check if correct address struct
         if(address.addressFamily != AddressFamily.UNIX)
@@ -104,7 +103,7 @@ class LocalServer : ISelectable
      * Params:
      *  backlog = amount of how many clients can be in the wait queue before getting accepted. default: 32
      */
-    void listen(int backlog = 32)
+    public override void listen(uint backlog = 32)
     {
         // set into listen mode
         if(.listen(this.sock, backlog) == -1)
@@ -117,7 +116,7 @@ class LocalServer : ISelectable
      * recipient =  if not null, this class will be filled with the new client
      *              otherwise create a new LocalSocket.
      */
-    public LocalSocket accept(LocalSocket recipient = null)
+    public override LocalSocket accept(Socket recipient = null)
     {
         // accept new socket
         socket_t newsock = cast(socket_t).accept(this.sock, null, null);
@@ -126,14 +125,15 @@ class LocalServer : ISelectable
         if(newsock == -1)
             return null;
         
-        // create localsocket or set native socket 
+        // create localsocket 
         if(recipient is null)
-            recipient = new LocalSocket(newsock);
-        else
-            recipient.native(newsock);
+            recipient = new LocalSocket();
+        
+        // set native socket
+        recipient.native(newsock, SocketState.Connected);
         
         // return it
-        return recipient;
+        return cast(LocalSocket)recipient;
     }
     
     /**

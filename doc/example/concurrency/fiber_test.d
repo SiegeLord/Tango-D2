@@ -1,5 +1,5 @@
-import core.stdc.stdio;
-import tango.core.Thread;
+private import  core.stdc.stdio,
+                core.thread;
 
 void main()
 {

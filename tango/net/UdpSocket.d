@@ -49,17 +49,6 @@ class UdpSocket : Socket
                 super (AddressFamily.INET, SocketType.DGRAM, ProtocolType.UDP);
         }
         
-        /**
-         * construct a socket by an existing socket_t
-         * 
-         * params:
-         *  sock = a native socket_t socket.
-         */
-        public this(socket_t sock)
-        {
-                super(AddressFamily.INET, SocketType.DGRAM, ProtocolType.UDP, sock);
-        }
-
         /***********************************************************************
 
                 Populate the provided array from the socket. This will stall
