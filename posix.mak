@@ -303,6 +303,9 @@ clean:
 		$(RM) $(DOCDIR)
 		$(RM) $(PROG_EXAMPLES)
 
+source:
+		@echo $(SRC)
+
 # ==================== target pattern ========================
 # used for generating unittest (- means go ahead on errors).
 $(ROOT)/unittest/%:%.d

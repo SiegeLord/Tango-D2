@@ -4,25 +4,25 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Jun 2004 : Initial release 
+        version:        Jun 2004 : Initial release
         version:        Dec 2006 : South pacific version
-        
+
         author:         Kris
 
 *******************************************************************************/
 
-module tango.net.device.Multicast;
+module tango.net.Multicast;
 
 public import tango.net.InternetAddress,
               tango.net.UdpSocket;
 
 /******************************************************************************
-        
+
         MulticastConduit sends and receives data on a multicast group, as
         described by a class-D address. To send data, the recipient group
         should be handed to the write() method. To receive, the socket is
         bound to an available local adapter/port as a listener and must
-        join() the group before it becomes eligible for input from there. 
+        join() the group before it becomes eligible for input from there.
 
         While MulticastConduit is a flavour of datagram, it doesn't support
         being connected to a specific endpoint.
@@ -49,7 +49,7 @@ public import tango.net.InternetAddress,
         Note that class D addresses range from 225.0.0.0 to 239.255.255.255
 
         see: http://www.kohala.com/start/mcast.api.txt
-                
+
 *******************************************************************************/
 
 class Multicast : UdpSocket
@@ -59,7 +59,7 @@ class Multicast : UdpSocket
         enum {Host=0, Subnet=1, Site=32, Region=64, Continent=128, Unrestricted=255}
 
         /***********************************************************************
-        
+
                 Create a writable multicast socket
 
         ***********************************************************************/
@@ -70,13 +70,13 @@ class Multicast : UdpSocket
         }
 
         /***********************************************************************
-        
+
                 Create a read/write multicast socket
 
                 This flavour is necessary only for a multicast receiver
                 (e.g. use this ctor in conjunction with SocketListener).
 
-                You should specify both a group address and a port to 
+                You should specify both a group address and a port to
                 listen upon. The resultant socket will be bound to the
                 specified port (locally), and listening on the class-D
                 address. Expect this to fail without a network adapter
@@ -85,7 +85,7 @@ class Multicast : UdpSocket
                 The reuse parameter dictates how to behave when the port
                 is already in use. Default behaviour is to throw an IO
                 exception, and the alternate is to force usage.
-                
+
                 To become eligible for incoming group datagrams, you must
                 also invoke the join() method
 
@@ -109,9 +109,9 @@ class Multicast : UdpSocket
                 //    this.addressReuse(reuse).bind(new InternetAddress(group.port));
                 //}
         }
-        
+
         /***********************************************************************
-                
+
                 Enable/disable the receipt of multicast packets sent
                 from the same adapter. The default state is OS specific
 
@@ -126,8 +126,8 @@ class Multicast : UdpSocket
         }
 
         /***********************************************************************
-                
-                Set the number of hops (time to live) of this socket. 
+
+                Set the number of hops (time to live) of this socket.
                 Convenient values are
                 ---
                 Host:           packets are restricted to the same host
@@ -150,7 +150,7 @@ class Multicast : UdpSocket
 
         /***********************************************************************
 
-                Add this socket to the listening group 
+                Add this socket to the listening group
 
         ***********************************************************************/
 
@@ -162,7 +162,7 @@ class Multicast : UdpSocket
         }
 
         /***********************************************************************
-        
+
                 Remove this socket from the listening group
 
         ***********************************************************************/
