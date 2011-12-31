@@ -898,7 +898,7 @@ void loadOpenSSL()
         version(Posix)
         {
             version(darwin){
-                char[][] loadPathCrypto = [ "/usr/lib/libcrypto.dylib", "libcrypto.dylib" ];
+                string[] loadPathCrypto = [ "/usr/lib/libcrypto.dylib", "libcrypto.dylib" ];
                 cryptolib = loadLib(loadPathCrypto);
                 if (cryptolib !is null) bindCrypto(cryptolib);
             } else {

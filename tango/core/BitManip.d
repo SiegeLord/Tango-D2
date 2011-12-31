@@ -7,6 +7,9 @@
  */
 module tango.core.BitManip;
 
+public import core.bitop;
+
+version (none):
 
 version( TangoDoc )
 {
