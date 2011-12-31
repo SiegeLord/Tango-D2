@@ -37,7 +37,7 @@ private import tango.util.container.model.IContainer;
 
 *******************************************************************************/
 
-private typedef int KeyDummy;
+private alias int KeyDummy;
 
 struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 {
@@ -69,7 +69,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                         return set (v, n);
                 }
 
-                final int hash()
+                final size_t hash()
                 {
                         return typeid(K).getHash(&key);
                 }
@@ -309,10 +309,10 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                         
         ***********************************************************************/
 
-        final Ref nth (int n)
+        final Ref nth (size_t n)
         {
                 auto p = &this;
-                for (int i; i < n; ++i)
+                for (size_t i; i < n; ++i)
                      p = p.next;
                 return p;
         }

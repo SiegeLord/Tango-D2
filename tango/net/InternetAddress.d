@@ -9,11 +9,13 @@
 
 module tango.net.InternetAddress;
 
-private import core.sys.posix.arpa.inet;
-private import core.sys.posix.netinet.in_;
+private import  core.sys.posix.arpa.inet,
+                core.sys.posix.netinet.in_;
 
-private import tango.net.NetHost;
-public import  tango.net.Address;
+private import  tango.text.Stringz,
+                tango.net.NetHost;
+                
+public import   tango.net.Address;
 
 /**
  * InternetAddress represents an Endpoint in the Internet (IP Version 4).
@@ -97,11 +99,15 @@ public class InternetAddress : Address
         }
         
         /**
-         * construct an InternetAddress by some sockaddr* structure.
+         * construct an InternetAddress by some sockaddr_in* structure.
+         * 
+         * params:
+         *  sin = pointer to sockaddr_in. the structure will be copied
          */
-        this (sockaddr* addr) 
-        { 
-                sin = *(cast(sockaddr_in*)addr); 
+        this (sockaddr_in* sin) 
+        {
+                // this line copies the structure
+                this.sin = *sin;
         }
         
         /**
@@ -159,7 +165,7 @@ public class InternetAddress : Address
                     const(char)* addr = inet_ntop(AddressFamily.INET, &sin.sin_addr, buff.ptr, buff.length);
                 }
                 
-                return (Utf.fromStringz(addr) ~ ":" ~ Integer.toString(this.port())).idup;
+                return (fromStringz(addr) ~ ":" ~ Integer.toString(this.port())).idup;
         }
         
         /**
@@ -172,7 +178,7 @@ public class InternetAddress : Address
         {
                 synchronized (InternetAddress.classinfo)
                 {
-                    return ntohl(inet_addr(Utf.toStringz(addr)));
+                    return ntohl(inet_addr(toStringz(addr)));
                 }
         }
 }

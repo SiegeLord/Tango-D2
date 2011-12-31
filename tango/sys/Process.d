@@ -6,18 +6,19 @@
 
 module tango.sys.Process;
 
-private import tango.io.model.IFile;
-private import tango.io.Console;
-private import tango.sys.Common;
-private import tango.sys.Pipe;
-private import tango.core.Exception;
-private import tango.text.Util;
+private import  tango.io.model.IFile;
+private import  tango.io.Console;
+private import  tango.sys.Common;
+private import  tango.sys.Pipe;
+private import  tango.core.Exception;
 
-private import Integer = tango.text.convert.Integer;
-private import Utf = tango.text.convert.Utf;
+private import  tango.text.Util,
+                tango.text.Stringz;
 
-private import core.stdc.stdlib;
-private import core.stdc.string;
+private import  Integer = tango.text.convert.Integer;
+
+private import  core.stdc.stdlib;
+private import  core.stdc.string;
 
 version (Posix)
 {
@@ -1321,7 +1322,7 @@ class Process
                         // Switch to the working directory if it has been set.
                         if (_workDir.length > 0)
                         {
-                            chdir(Utf.toStringz(_workDir));
+                            chdir(toStringz(_workDir));
                         }
 
                         // Replace the child fork with a new process. We always use the
@@ -1883,7 +1884,7 @@ class Process
                 {
                     --i;
                     // Add a terminating null character to each string
-                    dest[i] = Utf.toStringz(src[i]);
+                    dest[i] = toStringz(src[i]);
                 }
                 return dest;
             }

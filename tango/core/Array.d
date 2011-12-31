@@ -14,12 +14,12 @@ private import tango.core.Traits;
 
 version( TangoDoc )
 {
-    typedef int Num;
-    typedef int Elem;
+    alias int Num;
+    alias int Elem;
 
-    typedef bool function( Elem )       Pred1E;
-    typedef bool function( Elem, Elem ) Pred2E;
-    typedef size_t function( size_t )   Oper1A;
+    alias bool function( Elem )       Pred1E;
+    alias bool function( Elem, Elem ) Pred2E;
+    alias size_t function( size_t )   Oper1A;
 }
 
 
@@ -1209,7 +1209,17 @@ else
             return cnt;
         }
     }
-
+    
+    template count( Buf )
+    {
+        size_t count( Buf buf )
+        {
+            size_t cnt = 0;
+            foreach(ElemTypeOf!(Buf) cur; buf)
+                cnt++;
+            return cnt;
+        }
+    }
 
     template count( Buf, Pat )
     {

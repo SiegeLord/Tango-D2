@@ -283,6 +283,7 @@ class Arguments
               }
               ---
         ***********************************************************************/
+        
         public this(const(char)[][] input, bool sloppy=false, const(char)[] sp="-", const(char)[] lp="--", char eq='=')
         {
             this(sp, lp, eq);
@@ -308,7 +309,7 @@ class Arguments
         {
                 const(char)[][] tmp;
                 foreach (s; quotes(input, " "))
-                         tmp ~= s;
+                        tmp ~= s;
                 return parse (tmp, sloppy);
         }
 
@@ -397,10 +398,24 @@ class Arguments
         
         final Argument get (const(char)[] name)
         {
-                auto a = name in args;
-                if (a is null)
-                   {name=name.dup; return args[name] = new Argument(name);}
-                return *a;
+                auto argument = name in args;
+                if (argument is null) {
+                    name = name.dup;
+                    return args[name] = new Argument(name);
+                }
+                return *argument;
+        }
+        
+        /***********************************************************************
+
+                Just checks if an argument is present and returns true or false.
+        
+        ***********************************************************************/
+        
+        final bool contains (const(char)[] name)
+        {
+            auto argument = name in this.args;
+            return argument !is null;
         }
 
         /***********************************************************************

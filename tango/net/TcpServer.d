@@ -9,15 +9,14 @@
 
 module tango.net.TcpServer;
 
-private import core.exception,
-               core.sys.posix.unistd,
-               core.sys.posix.sys.socket;
+private import  core.exception,
+                core.sys.posix.unistd,
+                core.sys.posix.sys.socket;
                 
-private import tango.io.model.ISelectable;
-
-private import tango.net.InternetAddress,
-               tango.net.TcpSocket,
-               tango.net.Address;
+private import  tango.net.Server,
+                tango.net.InternetAddress,
+                tango.net.TcpSocket,
+                tango.net.Address;
 
 /**
  * The TcpServer provides the functionality to listen on a specific port and address
@@ -59,7 +58,7 @@ private import tango.net.InternetAddress,
  * ---
  * 
  */
-class TcpServer : ISelectable
+class TcpServer : Server
 {
     private socket_t        sock;       // native socket
     
@@ -127,7 +126,7 @@ class TcpServer : ISelectable
      * returns:
      *  the new accepted TcpSocket or null, if timeout or an error occured.
      */
-    public TcpSocket accept(TcpSocket recipient = null)
+    public override TcpSocket accept(Socket recipient = null)
     {
         // accept new socket
         socket_t newsock = cast(socket_t).accept(this.sock, null, null);
@@ -136,14 +135,15 @@ class TcpServer : ISelectable
         if(newsock == -1)
             return null;
         
-        // create tcpsocket or set native socket
+        // create tcpsocket
         if(recipient is null)
-            recipient = new TcpSocket(newsock);
-        else
-            recipient.native(newsock);
+            recipient = new TcpSocket();
+        
+        // set native socket
+        recipient.native(newsock, SocketState.Connected);
         
         // return it
-        return recipient;
+        return cast(TcpSocket)recipient;
     }
 
     /**
@@ -170,7 +170,7 @@ class TcpServer : ISelectable
      * bind(new InternetAddress("localhost", 8080));      // hostname and port
      * ---
      */
-    public void bind(Address address)
+    public override void bind(Address address)
     {
         // check if correct address struct
         if(address.addressFamily != AddressFamily.INET && address.addressFamily !=  AddressFamily.INET6)
@@ -187,7 +187,7 @@ class TcpServer : ISelectable
      * Params:
      *  backlog = amount of how many clients can be in the wait queue before getting accepted. default: 32
      */
-    public void listen(uint backlog = 32)
+    public override void listen(uint backlog = 32)
     {
         // set into listen mode
         if(.listen(this.sock, backlog) == -1)

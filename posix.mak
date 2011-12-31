@@ -25,8 +25,10 @@ SRC_CORE=tango/core/Array.d \
 	tango/core/BitArray.d \
 	tango/core/ByteSwap.d \
 	tango/core/Exception.d \
+	tango/core/RuntimeTraits.d \
 	tango/core/Traits.d \
-	tango/core/Thread.d \
+	tango/core/Variant.d \
+	tango/core/Version.d \
 	\
 	tango/sys/Environment.d \
 	tango/sys/Common.d \
@@ -36,10 +38,13 @@ SRC_CORE=tango/core/Array.d \
 	tango/sys/linux/consts/socket.d \
 	tango/sys/linux/consts/fcntl.d
 
-SRC_IO=tango/io/Console.d \
+SRC_IO=tango/io/CircularBuffer.d \
+	tango/io/Console.d \
+	tango/io/Stdin.d \
 	tango/io/Stdout.d \
 	tango/io/File.d \
 	tango/io/FilePath.d \
+	tango/io/FileScan.d \
 	tango/io/Path.d \
 	\
 	tango/io/device/Array.d \
@@ -98,8 +103,41 @@ SRC_MATH=tango/math/Bessel.d \
 	tango/math/random/Twister.d \
 	tango/math/random/Ziggurat.d
 	
+SRC_NET=tango/net/Uri.d \
+	tango/net/Socket.d \
+	tango/net/SocketSet.d \
+	tango/net/NetHost.d \
+	tango/net/Address.d \
+	tango/net/InternetAddress.d \
+	tango/net/Internet6Address.d \
+	tango/net/LocalAddress.d \
+	tango/net/LocalSocket.d \
+	tango/net/LocalServer.d \
+	tango/net/Server.d \
+	tango/net/TcpSocket.d \
+	tango/net/TcpServer.d \
+	tango/net/UdpSocket.d \
+	tango/net/UdpServer.d \
+	tango/net/Multicast.d \
+	\
+	tango/net/http/ChunkStream.d \
+	tango/net/http/HttpCookies.d \
+	tango/net/http/HttpHeaders.d \
+	tango/net/http/HttpPost.d \
+	tango/net/http/HttpTokens.d \
+	tango/net/http/HttpClient.d \
+	tango/net/http/HttpConst.d \
+	tango/net/http/HttpGet.d \
+	tango/net/http/HttpParams.d \
+	tango/net/http/HttpStack.d \
+	tango/net/http/HttpTriplet.d \
+	tango/net/http/model/HttpParamsView.d
+
+SRC_SQL=tango/sql/Mysql.d
+
 SRC_TEXT=tango/text/Ascii.d \
 	tango/text/Arguments.d \
+	tango/text/Stringz.d \
 	tango/text/Unicode.d \
 	tango/text/UnicodeData.d \
 	tango/text/Util.d \
@@ -145,7 +183,9 @@ SRC_UTIL=tango/util/Convert.d \
 	tango/util/MinMax.d \
 	\
 	tango/util/container/more/Stack.d \
+	tango/util/container/CircularList.d \
 	tango/util/container/Container.d \
+	tango/util/container/HashMap.d \
 	tango/util/container/LinkedList.d \
 	\
 	tango/util/compress/Zip.d \
@@ -192,36 +232,6 @@ SRC_UTIL=tango/util/Convert.d \
 	tango/util/log/LayoutDate.d \
 	tango/util/log/model/ILogger.d
 
-SRC_NET=tango/net/Uri.d \
-	tango/net/Socket.d \
-	tango/net/SocketSet.d \
-	tango/net/NetHost.d \
-	tango/net/Address.d \
-	tango/net/InternetAddress.d \
-	tango/net/LocalAddress.d \
-	tango/net/LocalSocket.d \
-	tango/net/LocalServer.d \
-	tango/net/TcpSocket.d \
-	tango/net/TcpServer.d \
-	tango/net/UdpSocket.d \
-	tango/net/UdpServer.d \
-	tango/net/Multicast.d \
-	\
-	tango/net/http/ChunkStream.d \
-	tango/net/http/HttpCookies.d \
-	tango/net/http/HttpHeaders.d \
-	tango/net/http/HttpPost.d \
-	tango/net/http/HttpTokens.d \
-	tango/net/http/HttpClient.d \
-	tango/net/http/HttpConst.d \
-	tango/net/http/HttpGet.d \
-	tango/net/http/HttpParams.d \
-	tango/net/http/HttpStack.d \
-	tango/net/http/HttpTriplet.d \
-	tango/net/http/model/HttpParamsView.d
-	
-SRC_SQL=tango/sql/Mysql.d
-
 # For now, 32 bit is the default model
 ifeq (,$(MODEL))
         MODEL:=32
@@ -241,7 +251,7 @@ endif
 # generate all target for the examles
 #DIR_EXAMPLES=$(wildcard ./doc/example/*) uncomment when all examples work!
 # ./doc/example/conduits <-- not all of them convered
-DIR_EXAMPLES=./doc/example/concurrency ./doc/example/text ./doc/example/console ./doc/example/networking ./doc/example/sql ./doc/example/system
+DIR_EXAMPLES=./doc/example/concurrency ./doc/example/conduits ./doc/example/text ./doc/example/console ./doc/example/networking ./doc/example/sql ./doc/example/system ./doc/example/traits
 SRC_EXAMPLES:=$(foreach DIR_EXAMPLE,$(DIR_EXAMPLES),$(wildcard $(DIR_EXAMPLE)/*.d))
 PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 
@@ -263,8 +273,8 @@ release:
 debug:
 		$(MAKE) MODEL=$(MODEL) BUILD=debug --no-print-directory -f $(MAKEFILE)
 unittest:
-		$(MAKE) unittest MODEL=$(MODEL) BUILD=release --no-print-directory -f $(MAKEFILE)
 		$(MAKE) unittest MODEL=$(MODEL) BUILD=debug --no-print-directory -f $(MAKEFILE)
+		$(MAKE) unittest MODEL=$(MODEL) BUILD=release --no-print-directory -f $(MAKEFILE)
 install:
 		$(MAKE) install MODEL=$(MODEL) BUILD=release --no-print-directory -f $(MAKEFILE)
 else
@@ -293,6 +303,9 @@ clean:
 		$(RM) $(DOCDIR)
 		$(RM) $(PROG_EXAMPLES)
 
+source:
+		@echo $(SRC)
+
 # ==================== target pattern ========================
 # used for generating unittest (- means go ahead on errors).
 $(ROOT)/unittest/%:%.d
@@ -311,7 +324,7 @@ $(ROOT)/%.o:%.d
 
 # generate documentation of source file
 $(DOCDIR)/%.html:%.d
-		$(DMD) -o- -Df$@ $<
+		$(DMD) -o- -version=TangoDoc -Df$@ $<
 
 # generate examples
 %: %.d

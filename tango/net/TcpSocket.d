@@ -44,17 +44,6 @@ class TcpSocket : Socket
     }
     
     /**
-     * construct a socket by an existing socket_t
-     * 
-     * params:
-     *  sock = a native socket_t socket.
-     */
-    this(socket_t sock)
-    {
-        super(AddressFamily.INET, SocketType.STREAM, ProtocolType.TCP, sock);
-    }
-
-    /**
      * connect function with addr and host
      */
     public Socket connect(const(char)[] addr, ushort port = InternetAddress.PORT_ANY)

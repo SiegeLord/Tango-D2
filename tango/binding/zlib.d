@@ -1115,7 +1115,7 @@ int uncompress(Bytef*  dest,
 */
 
 
-typedef voidp gzFile;
+alias voidp gzFile;
 
 gzFile gzopen(char* path, char* mode);
 /*

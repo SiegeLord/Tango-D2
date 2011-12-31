@@ -693,7 +693,7 @@ private int parseShortDay(T) (ref T* p)
 
 private int parseFullDay(T) (ref T* p)
 {
-        static  T[][] days =
+        static  const(T)[][] days =
                 [
                 "Sunday", 
                 "Monday", 

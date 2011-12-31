@@ -48,7 +48,7 @@ bool isDerived (ClassInfo derived, ClassInfo base)
     do
         if (derived is base)
             return true;
-    while ((derived = derived.base) !is null)
+    while ((derived = derived.base) !is null);
     return false;
 }
 
@@ -233,7 +233,7 @@ ClassInfo[] baseTypes (ClassInfo type)
 }
 
 ///
-ModuleInfo moduleOf (ClassInfo type)
+ModuleInfo* moduleOf (ClassInfo type)
 {
     foreach (modula; ModuleInfo)
         foreach (klass; modula.localClasses)
@@ -566,7 +566,7 @@ debug (UnitTest)
     }
 
     unittest {
-        typedef int myint;
+        alias int myint;
         assert (typeid(myint) !is null, "null typeid(myint)");
         assert (isInteger (typeid(myint)));
     }

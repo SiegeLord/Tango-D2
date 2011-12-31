@@ -1,39 +1,44 @@
 /*******************************************************************************
-
-        copyright:      Copyright (c) 2005 Kris. All rights reserved
-
-        license:        BSD style: $(LICENSE)
-
-        version:        Initial release: 2005
-
-        author:         Kris, Keinfarbton
-
-        This module provides a general-purpose formatting system to
-        convert values to text suitable for display. There is support
-        for alignment, justification, and common format specifiers for
-        numbers.
-
-        Layout can be customized via configuring various handlers and
-        associated meta-data. This is utilized to plug in text.locale
-        for handling custom formats, date/time and culture-specific
-        conversions.
-
-        The format notation is influenced by that used by the .NET
-        and ICU frameworks, rather than C-style printf or D-style
-        writef notation.
-
-******************************************************************************/
-
+ * 
+ *      copyright:      Copyright (c) 2005 Kris. All rights reserved
+ *
+ *      license:        BSD style: $(LICENSE)
+ * 
+ *      version:        Initial release: 2005
+ *                      Okt 2011. Some D2 adjustments. 
+ * 
+ *      author:         Kris, Keinfarbton
+ * 
+ *      This file is part of the tango software library. Distributed
+ *      under the terms of the Boost Software License, Version 1.0.
+ *      See LICENSE.TXT for more info.
+ * 
+ *      This module provides a general-purpose formatting system to
+ *      convert values to text suitable for display. There is support
+ *      for alignment, justification, and common format specifiers for
+ *      numbers.
+ *
+ *      Layout can be customized via configuring various handlers and
+ *      associated meta-data. This is utilized to plug in text.locale
+ *      for handling custom formats, date/time and culture-specific
+ *      conversions.
+ *
+ *      The format notation is influenced by that used by the .NET
+ *      and ICU frameworks, rather than C-style printf or D-style
+ *      writef notation.
+ * 
+ *******************************************************************************/
 module tango.text.convert.Layout;
 
 private import core.vararg;
-private import tango.core.Exception;
-private import tango.core.Traits;
-private import Utf = tango.text.convert.Utf;
-private import Float = tango.text.convert.Float;
-private import Integer = tango.text.convert.Integer;
 
-
+private import  tango.core.Exception,
+                tango.core.Traits,
+                tango.util.Convert,
+                tango.text.Stringz,
+                Utf = tango.text.convert.Utf,
+                Float = tango.text.convert.Float,
+                Integer = tango.text.convert.Integer;
 
 version(DigitalMars)
     private import  tango.io.model.IConduit;
@@ -64,7 +69,8 @@ class Layout(T)
         public alias convert opCall;
         public alias scope size_t delegate (const(T)[]) Sink;
         public alias const(void)* Arg;
-        public enum Type {
+        public enum Type
+        {
             UNKNOWN,
             CHAR,
             BYTE,
@@ -89,8 +95,7 @@ class Layout(T)
             STRING,
             WSTRING,
             DSTRING,
-            CSTRING,
-            OBJECT
+            CSTRING
         };
         
         static if (is (DateTimeLocale))
@@ -115,16 +120,35 @@ class Layout(T)
         }
 
         /**********************************************************************
+        
+            formats a specific string and returns it as a string
+            
+            ---
+            // how to use sprint
+            const(char)[] result = Format.sprint("{} {}!", "Hello", "World");
+            ---
 
         **********************************************************************/
 
-        public final T[] sprint (T[] result, const(T)[] formatStr, ...)
+        public final T[] sprint (Char, S...)(in Char[] fmt, S args)
         {
-                return vprint (result, formatStr, _arguments, _argptr);
+            T[] output;
+
+            size_t sink (const(T)[] s)
+            {
+                    output ~= s;
+                    return s.length;
+            }
+
+            convert(&sink, fmt, args);
+            return output;
         }
 
         /**********************************************************************
-
+            
+            this formatter works exactly the same way as sprint works, but it's
+            without template usage. 
+            
         **********************************************************************/
 
         public final T[] vprint (T[] result, const(T[]) formatStr, TypeInfo[] arguments, va_list args)
@@ -144,7 +168,7 @@ class Layout(T)
                         return len;
                 }
 
-                core.stdc.stdio.printf("Layout vsprintf needs to get fixed!!!");
+                core.stdc.stdio.printf("Layout vprint needs to get fixed!!!");
                 //convert (&sink, arguments, args, formatStr);
                 return result [0 .. cast(size_t) (p-result.ptr)];
         }
@@ -225,6 +249,10 @@ class Layout(T)
         }
 
         /**********************************************************************
+        
+            This function basically does a compile time check
+            of all arguments and creates an internal array that is later
+            processed for the text formatting.
 
         **********************************************************************/
 
@@ -240,7 +268,17 @@ class Layout(T)
                 alias typeof(argument) T;
                 alias BaseTypeOf!(T) S;
                 
-                static if( !isStringType!(T) && isArrayType!(T) ) {
+                static if( isCallableType!(T) && is(ReturnTypeOf!(argument) == const(char)[])) {
+                    // it's a callable type
+                    import core.stdc.stdio;
+                    //alias ReturnTypeOf!(argument) sadsada;
+                    //auto b = a;
+                    core.stdc.stdio.printf("callable type\n");
+                    
+                    storedTypes ~= Type.DELEGATE;
+                    storedArguments ~= &argument;
+                    
+                } else static if( !isStringType!(T) && isArrayType!(T) ) {
                     // it's an array like int[] or long[], we need to loop through every element
                     size_t length = 0;
                     length += sink("[");
@@ -268,7 +306,17 @@ class Layout(T)
                     Arg storedArgument = &argument;
                     Type storedType = Type.UNKNOWN;
                     
-                    static if(is(S == byte)) {
+                    static if(__traits(hasMember, S, "toString")) {
+                        // toString method implemented, use it!
+                        const(char)[] str = argument.toString();
+                        storedArgument = &str;
+                        storedType = Type.STRING;
+                    } else static if(is(S == enum)) {
+                        // it's an enum, convert it to string!
+                        const(char)[] str = to!string(argument);
+                        storedArgument = &str;
+                        storedType = Type.STRING;
+                    } else static if(is(S == byte)) {
                         storedType = Type.BYTE;
                     } else static if(is(S == short)) {
                         storedType = Type.SHORT;
@@ -314,8 +362,6 @@ class Layout(T)
                         storedType = Type.CSTRING;
                     } else static if(is(T : const(void*))) {
                         storedType = Type.VOID;
-                    } else static if(is(T : Object)) {
-                        storedType = Type.OBJECT;
                     } else static if(is(S == char)) {
                         storedType = Type.CHAR;
                     }
@@ -482,6 +528,11 @@ class Layout(T)
         }
 
         /***********************************************************************
+        
+            this function takes a type and a generic argument to format
+            it in the approporated manner. bascially every argument will
+            sooner or later pass this function to be formated and converted
+            to a string.
 
         ***********************************************************************/
 
@@ -522,9 +573,6 @@ class Layout(T)
                 case Type.LONG:
                     return integer (result, *cast(long*) p, format, ulong.max);
                 
-                case Type.OBJECT:
-                    return (*cast(Object*)p).toString();
-                    
                 case Type.FLOAT:
                     return floater(result, *cast(float*) p, format);
                     
@@ -562,7 +610,7 @@ class Layout(T)
                     return Utf.fromString32(*cast(dchar[]*)p, result);
                     
                 case Type.CSTRING:
-                    return Utf.fromStringz(*cast(char**)p);
+                    return fromStringz(*cast(char**)p);
                 
                 case Type.UNKNOWN:
                     return cast(T[])"{unknown type}";
@@ -601,43 +649,38 @@ class Layout(T)
                 bool pad = true;
 
                 for (auto p=format.ptr, e=p+format.length; p < e; ++p)
-                     switch (*p)
-                            {
-                            case '.':
-                                 pad = false;
-                                 break;
-                            case 'e':
-                            case 'E':
-                                 exp = 0;
-                                 break;
-                            case 'x':
-                            case 'X':
-                                 double d = v;
-                                 return integer (output, *cast(long*) &d, "x#");
-                            default:
-                                 auto c = cast(T)*p;
-                                 if (c >= '0' && c <= '9')
-                                    {
-                                    dec = c - '0', c = p[1];
-                                    if (c >= '0' && c <= '9' && ++p < e)
-                                        dec = dec * 10 + c - '0';
-                                    }
-                                 break;
-                            }
-
+                {
+                    switch (*p)
+                    {
+                        case '.':
+                             pad = false;
+                             break;
+                        case 'e':
+                        case 'E':
+                             exp = 0;
+                             break;
+                        case 'x':
+                        case 'X':
+                             double d = v;
+                             return integer (output, *cast(long*) &d, "x#");
+                        default:
+                             auto c = cast(T)*p;
+                             if (c >= '0' && c <= '9')
+                                {
+                                dec = c - '0', c = p[1];
+                                if (c >= '0' && c <= '9' && ++p < e)
+                                    dec = dec * 10 + c - '0';
+                                }
+                             break;
+                    }
+                }
+                
                 return Float.format (output, v, dec, exp, pad);
         }
-
+        
         /**********************************************************************
 
-        **********************************************************************/
-
-        private void error (char[] msg)
-        {
-                throw new IllegalArgumentException (cast(immutable(char)[])msg);
-        }
-
-        /**********************************************************************
+            This funtion fills sink with spaces defined in the count parameter
 
         **********************************************************************/
 

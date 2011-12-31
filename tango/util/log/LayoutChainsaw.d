@@ -12,9 +12,9 @@
 
 module tango.util.log.LayoutChainsaw;
 
-private import  tango.core.Thread;
-
 private import  tango.util.log.Log;
+
+private import  core.thread;
 
 /*******************************************************************************
 
