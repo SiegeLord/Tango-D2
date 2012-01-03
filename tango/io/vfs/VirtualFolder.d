@@ -13,11 +13,6 @@
 module tango.io.vfs.VirtualFolder;
 
 
-version(D_Version2)
-	mixin("private alias const(char)[] cstring;");
-else
-	private alias char[] cstring;
-
 
 private import tango.core.Exception;
 
@@ -43,10 +38,10 @@ private import tango.text.Util : head, locatePrior;
 
 class VirtualFolder : VfsHost
 {
-        private cstring                  name_;
-        private VfsFile[cstring]         files;
-        private VfsFolder[cstring]       mounts;
-        private VfsFolderEntry[cstring]  folders;
+        private const(char)[]                  name_;
+        private VfsFile[const(char)[]]         files;
+        private VfsFolder[const(char)[]]       mounts;
+        private VfsFolderEntry[const(char)[]]  folders;
         private VirtualFolder           parent;
 
         /***********************************************************************
@@ -56,7 +51,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        this (cstring name)
+        this (const(char)[] name)
         {
                 validate (this.name_ = name);
         }
@@ -67,7 +62,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final cstring name()
+        final const(char)[] name()
         {
                 return name_;
         }
@@ -99,7 +94,7 @@ class VirtualFolder : VfsHost
 
         VfsHost mount (VfsFolder folder, in char[] _name = null)
         {
-					cstring name = _name;
+					const(char)[] name = _name;
                 assert (folder);
                 if (name.length is 0)
                     name = folder.name;
@@ -149,7 +144,7 @@ class VirtualFolder : VfsHost
 
         VfsHost dismount (VfsFolder folder)
         {
-                cstring name = null;
+                const(char)[] name = null;
 
                 // check this is a child, and locate the mapped name
                 foreach (key, value; mounts)
@@ -226,8 +221,8 @@ class VirtualFolder : VfsHost
 
         final VfsFolderEntry folder (in char[] path)
         {
-                cstring tail;
-                auto text = head (path, cast(cstring)FileConst.PathSeparatorString, tail);
+                const(char)[] tail;
+                auto text = head (path, cast(const(char)[])FileConst.PathSeparatorString, tail);
 
                 auto child = text in mounts;
                 if (child)
@@ -359,7 +354,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        private final void validate (cstring name)
+        private final void validate (const(char)[] name)
         {       
                 assert (name);
                 if (locatePrior(name, cast(const(char))'.') != name.length ||

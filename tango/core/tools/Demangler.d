@@ -14,7 +14,7 @@
  *       Stdout("demangle [--help] [--level 0-9] mangledName1 [mangledName2...]").newline;
  *   }
  *
- *   int main(cstring[]args){
+ *   int main(const(char)[][]args){
  *       uint start=1;
  *       if (args.length>1) {
  *           if (args[start]=="--help"){
@@ -51,13 +51,6 @@
 
 module tango.core.tools.Demangler;
 
-
-version(D_Version2)
-	mixin("private alias const(char)[] cstring;");
-else
-	private alias char[] cstring;
-
-
 import tango.core.Traits: ctfe_i2a;
 import tango.stdc.string: memmove,memcpy;
 
@@ -66,7 +59,7 @@ debug(traceDemangler) import tango.io.Stdout;
 
 
 version(DigitalMars) version(Windows) {
-    bool isMD5Hashed(cstring name) {
+    bool isMD5Hashed(const(char)[] name) {
         if (name.length < 34 || (name.length >= 2 && name[0..2] != "_D")) {
             return false;
         }
@@ -81,7 +74,7 @@ version(DigitalMars) version(Windows) {
     }
     
 
-    cstring decompressOMFSymbol(cstring garbled, char[]* buf) {
+    const(char)[] decompressOMFSymbol(const(char)[] garbled, char[]* buf) {
         int ungarbledLength = 0;
         bool compressed = false;
 
@@ -141,7 +134,7 @@ version(DigitalMars) version(Windows) {
                         return garbled;
                     }
 
-                    cstring match = ungarbled[matchStart .. matchStart + matchLen];
+                    const(char)[] match = ungarbled[matchStart .. matchStart + matchLen];
                     ungarbled[ui .. ui+matchLen] = match;
                     ui += matchLen;
                 }
@@ -155,7 +148,7 @@ version(DigitalMars) version(Windows) {
 
 /// decompresses a symbol and returns the full symbol, and possibly a reduced buffer space
 /// (does something only on windows with DMD)
-cstring decompressSymbol(cstring func,char[] *buf){
+const(char)[] decompressSymbol(const(char)[] func,char[] *buf){
     version(DigitalMars) version(Windows){
         if (isMD5Hashed(func)) {
             func = func[0..$-32];
@@ -165,7 +158,7 @@ cstring decompressSymbol(cstring func,char[] *buf){
     return func;
 }
 
-uint toUint(cstring s){
+uint toUint(const(char)[] s){
     uint res=0;
     for (int i=0;i<s.length;++i){
         if (s[i]>='0'&& s[i]<='9'){
@@ -283,15 +276,15 @@ public class Demangler
     /// this represents a single demangling request, and is the place where the real work is done
     /// some more cleanup would probably be in order (maybe remove Buffer)
     struct DemangleInstance{
-        debug(traceDemangler) private cstring[] _trace;
-        private cstring input;
+        debug(traceDemangler) private const(char)[][] _trace;
+        private const(char)[] input;
         private uint _templateDepth;
         Buffer output;
         Demangler prefs;
         
         struct BufState{
             DemangleInstance* dem;
-            cstring input;
+            const(char)[] input;
             size_t len;
             static BufState opCall(ref DemangleInstance dem){
                 BufState res;
@@ -311,7 +304,7 @@ public class Demangler
                 dem.output.length=len;
                 return false;
             }
-            cstring sliceFrom(){
+            const(char)[] sliceFrom(){
                 return dem.output.data[len..dem.output.length];
             }
         }
@@ -320,7 +313,7 @@ public class Demangler
             return BufState(this);
         }
 
-        static DemangleInstance opCall(Demangler prefs,cstring input,cstring output){
+        static DemangleInstance opCall(Demangler prefs,const(char)[] input,const(char)[] output){
              char[] buff = new char[output.length];
 					input = decompressSymbol(input, &buff);
 					output = buff;
@@ -335,13 +328,13 @@ public class Demangler
 
         debug (traceDemangler)
         {
-            private void trace (cstring where)
+            private void trace (const(char)[] where)
             {
                 if (_trace.length > 500)
                     throw new Exception ("Infinite recursion");
                 
                 int len=_trace.length;
-                cstring spaces = "            ";
+                const(char)[] spaces = "            ";
                 spaces=spaces[0 .. ((len<spaces.length)?len:spaces.length)];
                 if (input.length < 50)
                     Stdout.formatln ("{}{} : {{{}}", spaces, where, input);
@@ -350,10 +343,10 @@ public class Demangler
                 _trace ~= where;
             }
 
-            private void report (T...) (cstring fmt, T args)
+            private void report (T...) (const(char)[] fmt, T args)
             {
                 int len=_trace.length;
-                cstring spaces = "            ";
+                const(char)[] spaces = "            ";
                 spaces=spaces[0 .. ((len<spaces.length)?len:spaces.length)];
                 Stdout (spaces);
                 Stdout.formatln (fmt, args);
@@ -364,7 +357,7 @@ public class Demangler
                 //auto tmp = _trace[$-1];
                 _trace = _trace[0..$-1];
                 int len=_trace.length;
-                cstring spaces = "            ";
+                const(char)[] spaces = "            ";
                 spaces=spaces[0 .. ((len<spaces.length)?len:spaces.length)];
                 Stdout(spaces);
                 if (!result)
@@ -374,13 +367,13 @@ public class Demangler
             }
         }
 
-        cstring slice(){
+        const(char)[] slice(){
             return output.slice;
         }
 
-        private cstring consume (uint amt)
+        private const(char)[] consume (uint amt)
         {
-            cstring tmp = input[0 .. amt];
+            const(char)[] tmp = input[0 .. amt];
             input = input[amt .. $];
             return tmp;
         }
@@ -436,7 +429,7 @@ public class Demangler
             auto posCar=checkpoint();
             if (! symbolName ())
                 return false;
-            cstring car=posCar.sliceFrom();
+            const(char)[] car=posCar.sliceFrom();
             
             // undocumented
             auto pos=checkpoint();
@@ -479,13 +472,13 @@ public class Demangler
             auto pos=checkpoint();
             if (! symbolName (aliasHack))
                 return false;
-            cstring car=pos.sliceFrom();
+            const(char)[] car=pos.sliceFrom();
 
             auto pos1=checkpoint();
             output.append (".");
             if (typedqualifiedName ())
             {
-                cstring cdr=pos1.sliceFrom()[1..$];
+                const(char)[] cdr=pos1.sliceFrom()[1..$];
                 if (prefs.foldDefaults && cdr.length>=car.length && cdr[0..car.length]==car){
                     memmove(&output.data[pos.len],&output.data[pos1.len+1],output.length-pos1.len);
                     output.length+=pos.len-pos1.len-1;
@@ -535,7 +528,7 @@ public class Demangler
             if (! number (chars))
                 return false;
 
-            cstring original = input;
+            const(char)[] original = input;
             version(all){
                 if (input.length < chars) {
                     // this may happen when the symbol gets hashed by MD5
@@ -583,7 +576,7 @@ public class Demangler
             if (! numberNoParse ())
                 return false;
             char[10] numberBuf;
-            cstring str = pos.sliceFrom();
+            const(char)[] str = pos.sliceFrom();
             if (str.length>numberBuf.length){
                 return pos.reset();
             }
@@ -595,8 +588,8 @@ public class Demangler
 
             bool done = false;
 
-            cstring original = input;
-            cstring working = input;
+            const(char)[] original = input;
+            const(char)[] working = input;
 
             while (done == false)
             {
@@ -612,7 +605,7 @@ public class Demangler
                 if (chars < input.length && chars > 0)
                 {
                     // cut the string from the right side to the number
-                    // cstring original = input;
+                    // const(char)[] original = input;
                     // input = input[0 .. chars];
                     // uint len = input.length;
                     debug(traceDemangler) report ("trying {}/{}", chars, input.length);
@@ -709,7 +702,7 @@ public class Demangler
             if (count > input.length)
                 return false;
 
-            cstring name = consume (count);
+            const(char)[] name = consume (count);
             output.append (name);
             debug(traceDemangler) report (">>> name={}", name);
 
@@ -765,12 +758,12 @@ public class Demangler
                     auto pos2=checkpoint();
                     if (! type ())
                         return false;
-                    cstring keytype=pos2.sliceFrom();
+                    const(char)[] keytype=pos2.sliceFrom();
                     output.append ("[");
                     auto pos3=checkpoint();
                     if (type ())
                     {
-                        cstring subtype=pos3.sliceFrom();
+                        const(char)[] subtype=pos3.sliceFrom();
                         output.append ("]");
                         if (subtype.length<=keytype.length){
                             auto pos4=checkpoint();
@@ -992,7 +985,7 @@ public class Demangler
             auto pos3=checkpoint();
             if (! type ())
                 return pos.reset();
-            cstring retT=pos3.sliceFrom();
+            const(char)[] retT=pos3.sliceFrom();
             auto pos4=checkpoint();
             output.append(retT);
             memmove(&output.data[pos2.len+retT.length],&output.data[pos2.len],pos3.len-pos2.len+1);
@@ -1069,7 +1062,7 @@ public class Demangler
         {
             debug(traceDemangler) trace ("typeNamed");
             auto pos=checkpoint();
-            cstring kind;
+            const(char)[] kind;
             switch (input[0])
             {
                 case 'I':
@@ -1376,7 +1369,7 @@ private struct Buffer
     char[] data;
     size_t     length;
 
-    void append (cstring s)
+    void append (const(char)[] s)
     {
         assert(this.length+s.length<=data.length);
         size_t len=this.length+s.length;
@@ -1397,7 +1390,7 @@ private struct Buffer
         append (b.slice);
     }
 
-    cstring slice ()
+    const(char)[] slice ()
     {
         return data[0 .. this.length];
     }

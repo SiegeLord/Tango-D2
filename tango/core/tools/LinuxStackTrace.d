@@ -53,7 +53,7 @@ version(D_Version2)
         void clear();
     }
 		
-		private cstring ulongToUtf8 (char[] tmp, ulong val)
+		private const(char)[] ulongToUtf8 (char[] tmp, ulong val)
 		in {
 			 assert (tmp.length > 19, "atoi buffer should be more than 19 chars wide");
 			 }
@@ -99,8 +99,6 @@ version(D_Version2)
         }
     }
 }
-private alias const(char)[] cstring;
-
 
 
 version(linux){
@@ -116,7 +114,7 @@ version(linux){
     import tango.core.Runtime;
 
     class SymbolException:Exception {
-        this(cstring msg,cstring file,long lineNr,Exception next=null){
+        this(const(char)[] msg,const(char)[] file,long lineNr,Exception next=null){
             super(msg.idup,file.idup,cast(uint)lineNr,next);
         }
     }
@@ -302,15 +300,15 @@ version(linux){
 
     struct StaticSectionInfo{
         Elf_Ehdr header;
-        cstring stringTable;
+        const(char)[] stringTable;
         Elf_Sym[] sym;
         ubyte[] debugLine;   //contents of the .debug_line section, if available
-        cstring fileName;
+        const(char)[] fileName;
         void* mmapBase;
         size_t mmapLen;
         /// initalizer
-        static StaticSectionInfo opCall(Elf_Ehdr header, cstring stringTable, Elf_Sym[] sym,
-            ubyte[] debugLine, cstring fileName, void* mmapBase=null, size_t mmapLen=0) {
+        static StaticSectionInfo opCall(Elf_Ehdr header, const(char)[] stringTable, Elf_Sym[] sym,
+            ubyte[] debugLine, const(char)[] fileName, void* mmapBase=null, size_t mmapLen=0) {
             StaticSectionInfo newV;
             newV.header=header;
             newV.stringTable=stringTable;
@@ -337,7 +335,7 @@ version(linux){
             return 0;
         }
         /// loops on the static symbols
-        static int opApply(int delegate(ref cstring sNameP,ref size_t startAddr,
+        static int opApply(int delegate(ref const(char)[] sNameP,ref size_t startAddr,
             ref size_t endAddr, ref bool pub) loop){
             for (size_t isect=0;isect<_nGSections;++isect){
                 StaticSectionInfo *sec=&(_gSections[isect]);
@@ -358,7 +356,7 @@ version(linux){
                     } else {
                         debug(elf) printf("symbol name out of bounds %p\n",symb.st_value);
                     }
-                    cstring symbName=sName[0..(sName?strlen(sName):0)];
+                    const(char)[] symbName=sName[0..(sName?strlen(sName):0)];
                     size_t endAddr=symb.st_value+symb.st_size;
                     auto res=loop(symbName,symb.st_value,endAddr,isPublic);
                     if (res) return res;
@@ -367,13 +365,13 @@ version(linux){
             return 0;
         }
         /// returns a new section to fill out
-        static StaticSectionInfo *addGSection(Elf_Ehdr header,cstring stringTable, Elf_Sym[] sym,
-            ubyte[] debugLine, cstring fileName,void *mmapBase=null, size_t mmapLen=0){
+        static StaticSectionInfo *addGSection(Elf_Ehdr header,const(char)[] stringTable, Elf_Sym[] sym,
+            ubyte[] debugLine, const(char)[] fileName,void *mmapBase=null, size_t mmapLen=0){
             if (_nGSections>=MAX_SECTS){
                 throw new Exception("too many static sections",__FILE__,__LINE__);
             }
             auto len=fileName.length;
-            cstring newFileName;
+            const(char)[] newFileName;
             if (_fileNameBuf.length< _nFileBuf+len) {
                 newFileName=fileName[0..len].dup;
             } else {
@@ -392,7 +390,7 @@ version(linux){
                 //dwarf stores the directory component of filenames separately
                 //dmd doesn't care, and directory components are in the filename
                 //linked in gcc produced files still use them
-                cstring dir;
+                const(char)[] dir;
                 //assumption: if exactAddress=false, it's a return address
                 if (find_line_number(section.debugLine, info.address, !info.exactAddress, dir, info.file, info.line))
                     break;
@@ -585,7 +583,7 @@ version(linux){
             scope(exit){
                 buffer[] = 0;
             }
-            cstring tmp;
+            const(char)[] tmp;
             cleanEnd: for(size_t i = buffer.length - 1; i >= 0; i--){
                 switch(buffer[i]){
                     case 0, '\r', '\n':
@@ -605,7 +603,7 @@ Lsplit:
                     continue;
                 }
             }else{
-                cstring[] tok = delimit(tmp, " \t");
+                const(char)[][] tok = delimit(tmp, " \t");
                 if(tok.length < 6){
                     // no source file
                     continue;
@@ -632,9 +630,9 @@ Lsplit:
                 // no execute
                 continue;
             }
-            cstring addr = tok[0] ~ "\u0000";
-            cstring source = tok[$-1] ~ "\u0000";
-            const cstring marker = "\x7FELF"c;
+            const(char)[] addr = tok[0] ~ "\u0000";
+            const(char)[] source = tok[$-1] ~ "\u0000";
+            const const(char)[] marker = "\x7FELF"c;
 
             void* start, end;
             if(2 != sscanf(addr.ptr, "%zX-%zX", &start, &end)){
@@ -688,7 +686,7 @@ Lsplit:
     }
 
 
-    private void dwarf_error(cstring msg) {
+    private void dwarf_error(const(char)[] msg) {
         Runtime.console.stderr("Tango stacktracer DWARF error: ");
         Runtime.console.stderr(msg);
         Runtime.console.stderr("\n");
@@ -778,7 +776,7 @@ Lsplit:
         }
 
         //null terminated string
-        cstring str() {
+        const(char)[] str() {
             char* start = cast(char*)&data[read_pos];
             size_t len = strlen(start);
             read_pos += len + 1;
@@ -802,7 +800,7 @@ Lsplit:
     //debug_line = contents of the .debug_line section
     //is_return_address = true if address is a return address (found by stacktrace)
     bool find_line_number(ubyte[] debug_line, size_t address, bool is_return_address,
-        ref cstring out_directory, ref cstring out_file, ref long out_line)
+        ref const(char)[] out_directory, ref const(char)[] out_file, ref long out_line)
     {
         DwarfReader rd = DwarfReader(debug_line);
 
@@ -822,7 +820,7 @@ Lsplit:
         }
 
         //include_directories
-        void reparse_dirs(void delegate(int idx, cstring d) entry) {
+        void reparse_dirs(void delegate(int idx, const(char)[] d) entry) {
             int idx = 1;
             for (;;) {
                 auto s = rd.str();
@@ -834,7 +832,7 @@ Lsplit:
             }
         }
         //file_names
-        void reparse_files(void delegate(int idx, int dir, cstring fn) entry) {
+        void reparse_files(void delegate(int idx, int dir, const(char)[] fn) entry) {
             int idx = 1;
             for (;;) {
                 auto s = rd.str();
@@ -1022,14 +1020,14 @@ Lsplit:
         //resolve found_file to the actual filename & directory strings
         int dir;
         rd.read_pos = found_file.filenames;
-        reparse_files((int idx, int a_dir, cstring a_file) {
+        reparse_files((int idx, int a_dir, const(char)[] a_file) {
             if (idx == found_file.file) {
                 dir = a_dir;
                 out_file = a_file;
             }
         });
         rd.read_pos = found_file.directories;
-        reparse_dirs((int idx, cstring a_dir) {
+        reparse_dirs((int idx, const(char)[] a_dir) {
             if (idx == dir) {
                 out_directory = a_dir;
             }

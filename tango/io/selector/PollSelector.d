@@ -7,11 +7,6 @@
 module tango.io.selector.PollSelector;
 
 
-version(D_Version2)
-	mixin("private alias const(char[]) cstring;");
-else
-	private alias char[] cstring;
-
 
 version (Posix)
 {

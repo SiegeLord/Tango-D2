@@ -15,11 +15,6 @@
 module tango.io.vfs.ZipFolder;
 
 
-version(D_Version2)
-	mixin("private alias const(char)[] cstring;");
-else
-	private alias char[] cstring;
-
 
 import Path = tango.io.Path;
 import tango.io.device.File : File;
@@ -62,8 +57,8 @@ private
             FileEntry file;
         }
 
-        cstring fullname;
-        cstring name;
+        const(char)[] fullname;
+        const(char)[] name;
 
         /+
         invariant()
@@ -266,7 +261,7 @@ private
 
     struct DirEntry
     {
-        Entry*[cstring] children;
+        Entry*[const(char)[]] children;
     }
 
     struct FileEntry
@@ -298,7 +293,7 @@ class ZipFolder : ZipSubFolder
      * is specified as true, then modification of the archive will be
      * explicitly disallowed.
      */
-    this(cstring path, bool readonly=false)
+    this(const(char)[] path, bool readonly=false)
     out { assert( valid ); }
     body
     {
@@ -472,13 +467,13 @@ else
      * setting this is to change where the archive will be written to when
      * flushed to disk.
      */
-    final cstring path() { return _path; }
-    final cstring path(cstring v) { return _path = v; } /// ditto
+    final const(char)[] path() { return _path; }
+    final const(char)[] path(const(char)[] v) { return _path = v; } /// ditto
 
 private:
     ZipReader zr;
     Entry* root;
-    cstring _path;
+    const(char)[] _path;
     bool _readonly;
     bool modified = false;
 
@@ -514,7 +509,7 @@ private:
             this.modified = true;
     }
 
-    void resetArchive(cstring path, bool readonly=false)
+    void resetArchive(const(char)[] path, bool readonly=false)
     out { assert( valid ); }
     body
     {
@@ -561,7 +556,7 @@ private:
             {
                 // That's CURrent ENTity, not current OR currant...
                 Entry* curent = root;
-                cstring h,t;
+                const(char)[] h,t;
                 headTail(name,h,t);
                 while( t.nz() )
                 {
@@ -640,7 +635,7 @@ private:
 class ZipSubFolder : VfsFolder, VfsSync
 {
     ///
-    final cstring name()
+    final const(char)[] name()
     in { assert( valid ); }
     body
     {
@@ -713,7 +708,7 @@ class ZipSubFolder : VfsFolder, VfsSync
 
         // h is the "head" of the path, t is the remainder.  ht is both
         // joined together.
-        cstring h,t,ht;
+        const(char)[] h,t,ht;
         ht = path;
 
         do
@@ -966,7 +961,7 @@ private:
 class ZipFile : VfsFile
 {
     ///
-    final cstring name()
+    final const(char)[] name()
     in { assert( valid ); }
     body
     {
@@ -1201,7 +1196,7 @@ else
     Entry* entry;
 
     Entry* parent;
-    cstring name_;
+    const(char)[] name_;
 
     this()
     out { assert( !valid ); }
@@ -1225,7 +1220,7 @@ else
         this.reset(archive, parent, entry);
     }
 
-    this(ZipFolder archive, Entry* parent, cstring name)
+    this(ZipFolder archive, Entry* parent, const(char)[] name)
     in
     {
         assert( archive !is null );
@@ -1281,7 +1276,7 @@ else
         this.name_ = null;
     }
 
-    final void reset(ZipFolder archive, Entry* parent, cstring name)
+    final void reset(ZipFolder archive, Entry* parent, const(char)[] name)
     in
     {
         assert( archive !is null );
@@ -1382,9 +1377,9 @@ else
 private:
     ZipFolder archive;
     Entry* parent;
-    cstring name;
+    const(char)[] name;
 
-    this(ZipFolder archive, Entry* parent, cstring name)
+    this(ZipFolder archive, Entry* parent, const(char)[] name)
     in
     {
         assert( archive !is null );
@@ -1622,40 +1617,40 @@ private:
 
 private:
 
-void error(cstring msg)
+void error(const(char)[] msg)
 {
     throw new Exception(msg.idup);
 }
 
-void mutate_error(cstring method)
+void mutate_error(const(char)[] method)
 {
     error(method ~ ": mutating the contents of a ZipFolder "
             "is not supported yet; terribly sorry");
 }
 
-bool nz(cstring s)
+bool nz(const(char)[] s)
 {
     return s.length > 0;
 }
 
-bool zero(cstring s)
+bool zero(const(char)[] s)
 {
     return s.length == 0;
 }
 
-bool single_path_part(cstring s)
+bool single_path_part(const(char)[] s)
 {
     foreach( c ; s )
         if( c == '/' ) return false;
     return true;
 }
 
-cstring dir_app(cstring dir, cstring name)
+const(char)[] dir_app(const(char)[] dir, const(char)[] name)
 {
     return dir ~ (dir[$-1]!='/' ? "/" : "") ~ name;
 }
 
-void headTail(cstring path, out cstring head, out cstring tail)
+void headTail(const(char)[] path, out const(char)[] head, out const(char)[] tail)
 {
     foreach( i,dchar c ; path[1..$] )
         if( c == '/' )
@@ -1673,7 +1668,7 @@ debug (UnitTest)
 {
 unittest
 {
-    cstring h,t;
+    const(char)[] h,t;
 
     headTail("/a/b/c", h, t);
     assert( h == "/a" );

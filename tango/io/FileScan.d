@@ -14,11 +14,6 @@
 module tango.io.FileScan;
 
 
-version(D_Version2)
-	mixin("private alias const(char[]) cstring;");
-else
-	private alias char[] cstring;
-
 
 public  import tango.io.FilePath;
 
@@ -55,7 +50,7 @@ class FileScan
         alias sweep     opCall;
 
         FilePath[]      fileSet;
-        cstring[]        errorSet;
+        const(char)[][]        errorSet;
         FilePath[]      folderSet;
         
         /***********************************************************************
@@ -84,7 +79,7 @@ class FileScan
 
         ***********************************************************************/
 
-        public cstring[] errors ()
+        public const(char)[][] errors ()
         {
                 return errorSet;
         }
@@ -118,7 +113,7 @@ class FileScan
         
         ***********************************************************************/
         
-        FileScan sweep (cstring path, bool recurse=true)
+        FileScan sweep (const(char)[] path, bool recurse=true)
         {
                 return sweep (path, cast(Filter) null, recurse);
         }
@@ -130,7 +125,7 @@ class FileScan
         
         ***********************************************************************/
         
-        FileScan sweep (cstring path, cstring match, bool recurse=true)
+        FileScan sweep (const(char)[] path, const(char)[] match, bool recurse=true)
         {
                 return sweep (path, (FilePath fp, bool isDir)
                              {return isDir || fp.suffix == match;}, recurse);
@@ -143,7 +138,7 @@ class FileScan
 
         ***********************************************************************/
         
-        FileScan sweep (cstring path, Filter filter, bool recurse=true)
+        FileScan sweep (const(char)[] path, Filter filter, bool recurse=true)
         {
                 errorSet = null, fileSet = folderSet = null;
                 return scan (new FilePath(path), filter, recurse);

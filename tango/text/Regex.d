@@ -69,22 +69,6 @@
 module tango.text.Regex;
 
 
-version(D_Version2)
-{
-	mixin(
-	"private alias const(char)[] cstring;
-	private alias const(wchar)[] wcstring;
-	private alias const(dchar)[] dcstring;
-	");
-}
-else
-{
-	private alias char[] cstring;
-	private alias wchar[] wcstring;
-	private alias dchar[] dcstring;
-}
-
-
 debug(TangoRegex) import tango.io.Stdout;
 
 /* *****************************************************************************
@@ -1790,13 +1774,13 @@ private:
         zero_one_xr, zero_more_xr, one_more_xr,     // extra-reluctant
         open_par_nm, occur_g, occur_ng
     }
-    const cstring[] operator_names = ["EOS", "concat", "|", "(", ")", "?", "*", "+", "??", "*?", "+?", "??x", "*?x", "+?x", "(?", "{x,y}", "{x,y}?"];
+    const const(char)[][] operator_names = ["EOS", "concat", "|", "(", ")", "?", "*", "+", "??", "*?", "+?", "??x", "*?x", "+?x", "(?", "{x,y}", "{x,y}?"];
 
     /// Actions for to-postfix transformation
     enum Act {
         pua, poc, poa, pca, don, err
     }
-    const cstring[] action_names = ["push+advance", "pop+copy", "pop+advance", "pop+copy+advance", "done", "error"];
+    const const(char)[][] action_names = ["push+advance", "pop+copy", "pop+advance", "pop+copy+advance", "done", "error"];
 
     /// Action lookup for to-postfix transformation
     const Act[] action_lookup =
@@ -2836,7 +2820,7 @@ private:
 
         string toString()
         {
-            cstring str;
+            const(char)[] str;
             str = Format.convert("{} p{}.{} {{", nfa_state.index, maxPriority, lastPriority);
             bool first = true;
             foreach ( k, v; tags ) {
@@ -4172,14 +4156,14 @@ class RegExpT(char_t)
 
     **********************************************************************************************/
     // TODO: input-end special case
-    cstring compileToD(cstring func_name = "match", bool lexer=false)
+    const(char)[] compileToD(const(char)[] func_name = "match", bool lexer=false)
     {
-        cstring code;
-        cstring str_type;
+        const(char)[] code;
+        const(char)[] str_type;
         static if ( is(char_t == char) )
-            str_type = "cstring";
+            str_type = "const(char)[]";
         static if ( is(char_t == wchar) )
-            str_type = "wcstring";
+            str_type = "const(wchar)[]";
         static if ( is(char_t == dchar) )
             str_type = "dchar[]";
 
@@ -4409,7 +4393,7 @@ private:
 
     string compileCommand(tdfa_t.Command cmd, in char_t[] indent)
     {
-        cstring  code,
+        const(char)[]  code,
                 dst;
         code ~= Format.convert("\n{}r{} = ", indent, cmd.dst);
         if ( cmd.src == tdfa_.CURRENT_POSITION_REGISTER )
@@ -4451,7 +4435,7 @@ class UtfException : Exception
 {
     size_t idx; /// index in string of where error occurred
 
-    this(cstring s, size_t i)
+    this(const(char)[] s, size_t i)
     {
         idx = i;
         super(s.idup);
@@ -4476,7 +4460,7 @@ bool isValidDchar(dchar c)
  * thrown and idx remains unchanged.
  */
 
-dchar decode(in cstring s, ref size_t idx)
+dchar decode(in const(char)[] s, ref size_t idx)
     {
         size_t len = s.length;
         dchar V;
@@ -4555,7 +4539,7 @@ dchar decode(in cstring s, ref size_t idx)
 
 /*  ditto */
 
-dchar decode(wcstring s, ref size_t idx)
+dchar decode(const(wchar)[] s, ref size_t idx)
     in
     {
         assert(idx >= 0 && idx < s.length);
@@ -4566,7 +4550,7 @@ dchar decode(wcstring s, ref size_t idx)
     }
     body
     {
-        cstring msg;
+        const(char)[] msg;
         dchar V;
         size_t i = idx;
         uint u = s[i];
@@ -4612,7 +4596,7 @@ dchar decode(wcstring s, ref size_t idx)
 
 /*  ditto */
 
-dchar decode(dcstring s, ref size_t idx)
+dchar decode(const(dchar)[] s, ref size_t idx)
     in
     {
         assert(idx >= 0 && idx < s.length);
@@ -4639,14 +4623,14 @@ dchar decode(dcstring s, ref size_t idx)
  * Encodes character c and appends it to array s[].
  */
 
-void encode(ref cstring s, dchar c)
+void encode(ref const(char)[] s, dchar c)
     in
     {
         assert(isValidDchar(c));
     }
     body
     {
-        cstring r = s;
+        const(char)[] r = s;
 
         if (c <= 0x7F)
         {
@@ -4689,14 +4673,14 @@ void encode(ref cstring s, dchar c)
 
 /*  ditto */
 
-void encode(ref wcstring s, dchar c)
+void encode(ref const(wchar)[] s, dchar c)
     in
     {
         assert(isValidDchar(c));
     }
     body
     {
-        wcstring r = s;
+        const(wchar)[] r = s;
 
         if (c <= 0xFFFF)
         {
@@ -4715,7 +4699,7 @@ void encode(ref wcstring s, dchar c)
 
 /*  ditto */
 
-void encode(ref dcstring s, dchar c)
+void encode(ref const(dchar)[] s, dchar c)
     in
     {
         assert(isValidDchar(c));

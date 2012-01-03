@@ -11,12 +11,6 @@
 module tango.io.vfs.FtpFolder;
 
 
-version(D_Version2)
-	mixin("private alias const(char)[] cstring;");
-else
-	private alias char[] cstring;
-
-
 private {
     import tango.net.ftp.FtpClient;
     import tango.io.vfs.model.Vfs;
@@ -26,19 +20,19 @@ private {
     import Time = tango.time.Time;
 }
 
-private cstring fixName(cstring toFix) {
-    if (containsPattern(toFix, cast(cstring)"/"))
+private const(char)[] fixName(const(char)[] toFix) {
+    if (containsPattern(toFix, cast(const(char)[])"/"))
         toFix = toFix[(locatePrior(toFix, cast(const(char))'/') + 1) .. $];
     return toFix;
 }
 
-private cstring checkFirst(cstring toFix) {
+private const(char)[] checkFirst(const(char)[] toFix) {
     for(; toFix.length>0 && toFix[$-1] == '/';)
         toFix = toFix[0 .. ($-1)];
     return toFix;
 }
 
-private cstring checkLast(cstring toFix) {
+private const(char)[] checkLast(const(char)[] toFix) {
 for(;toFix.length>1 &&  toFix[0] == '/' && toFix[1] == '/' ;)
         toFix = toFix[1 .. $];
     if(toFix.length && toFix[0] != '/')
@@ -46,11 +40,11 @@ for(;toFix.length>1 &&  toFix[0] == '/' && toFix[1] == '/' ;)
     return toFix;
 }
 
-private cstring checkCat(cstring first, cstring last) {
+private const(char)[] checkCat(const(char)[] first, const(char)[] last) {
     return checkFirst(first) ~ checkLast(last);
 }
 
-private FtpFileInfo[] getEntries(FTPConnection ftp, cstring path = "") {
+private FtpFileInfo[] getEntries(FTPConnection ftp, const(char)[] path = "") {
     FtpFileInfo[] orig = ftp.ls(path);
     FtpFileInfo[] temp2;
     FtpFileInfo[] use;
@@ -74,7 +68,7 @@ private FtpFileInfo[] getEntries(FTPConnection ftp, cstring path = "") {
     return orig;
 }
 
-private FtpFileInfo[] getFiles(FTPConnection ftp, cstring path = "") {
+private FtpFileInfo[] getFiles(FTPConnection ftp, const(char)[] path = "") {
     FtpFileInfo[] infos = getEntries(ftp, path);
     FtpFileInfo[] return_;
     foreach(FtpFileInfo info; infos) {
@@ -84,7 +78,7 @@ private FtpFileInfo[] getFiles(FTPConnection ftp, cstring path = "") {
     return return_;
 }
 
-private FtpFileInfo[] getFolders(FTPConnection ftp, cstring path = "") {
+private FtpFileInfo[] getFolders(FTPConnection ftp, const(char)[] path = "") {
     FtpFileInfo[] infos = getEntries(ftp, path);
     FtpFileInfo[] return_;
     foreach(FtpFileInfo info; infos) {
@@ -101,11 +95,11 @@ private FtpFileInfo[] getFolders(FTPConnection ftp, cstring path = "") {
 
 class FtpFolderEntry: VfsFolderEntry {
 
-    cstring toString_, name_, username_, password_;
+    const(char)[] toString_, name_, username_, password_;
     uint port_;
 
-    public this(cstring server, cstring path, cstring username = "",
-                cstring password = "", uint port = 21)
+    public this(const(char)[] server, const(char)[] path, const(char)[] username = "",
+                const(char)[] password = "", uint port = 21)
     in {
         assert(server.length > 0);
     }
@@ -198,11 +192,11 @@ class FtpFolderEntry: VfsFolderEntry {
 
 class FtpFolder: VfsFolder {
 
-    cstring toString_, name_, username_, password_;
+    const(char)[] toString_, name_, username_, password_;
     uint port_;
 
-    public this(cstring server, cstring path, cstring username = "",
-                cstring password = "", uint port = 21)
+    public this(const(char)[] server, const(char)[] path, const(char)[] username = "",
+                const(char)[] password = "", uint port = 21)
     in {
         assert(server.length > 0);
     }
@@ -218,7 +212,7 @@ class FtpFolder: VfsFolder {
      Return a short name
      ***********************************************************************/
 
-    final cstring name() {
+    final const(char)[] name() {
         return fixName(name_);
     }
 
@@ -263,7 +257,7 @@ class FtpFolder: VfsFolder {
                 conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -293,7 +287,7 @@ class FtpFolder: VfsFolder {
                 conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -323,7 +317,7 @@ class FtpFolder: VfsFolder {
                 conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -360,7 +354,7 @@ class FtpFolder: VfsFolder {
                 conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -413,7 +407,7 @@ class FtpFolder: VfsFolder {
                     conn.close();
             }
 
-            cstring connect = toString_;
+            const(char)[] connect = toString_;
 
             if(connect[$ - 1] == '/') {
                 connect = connect[0 .. ($ - 1)];
@@ -462,13 +456,13 @@ class FtpFolder: VfsFolder {
 
 class FtpFolders: VfsFolders {
 
-    cstring toString_, name_, username_, password_;
+    const(char)[] toString_, name_, username_, password_;
     uint port_;
     bool flat_;
     FtpFileInfo[] infos_;
 
-    package this(cstring server, cstring path, cstring username = "",
-                 cstring password = "", uint port = 21, FtpFileInfo[] infos = null,
+    package this(const(char)[] server, const(char)[] path, const(char)[] username = "",
+                 const(char)[] password = "", uint port = 21, FtpFileInfo[] infos = null,
                  bool flat = false)
     in {
         assert(server.length > 0);
@@ -483,8 +477,8 @@ class FtpFolders: VfsFolders {
         flat_ = flat;
     }
 
-    public this(cstring server, cstring path, cstring username = "",
-                cstring password = "", uint port = 21, bool flat = false)
+    public this(const(char)[] server, const(char)[] path, const(char)[] username = "",
+                const(char)[] password = "", uint port = 21, bool flat = false)
     in {
         assert(server.length > 0);
     }
@@ -505,7 +499,7 @@ class FtpFolders: VfsFolders {
                 conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -536,7 +530,7 @@ class FtpFolders: VfsFolders {
                 conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -579,7 +573,7 @@ class FtpFolders: VfsFolders {
                 conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -607,7 +601,7 @@ class FtpFolders: VfsFolders {
                 conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -635,7 +629,7 @@ class FtpFolders: VfsFolders {
                 conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -663,7 +657,7 @@ class FtpFolders: VfsFolders {
                 conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -697,7 +691,7 @@ class FtpFolders: VfsFolders {
                 conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -736,7 +730,7 @@ class FtpFolders: VfsFolders {
                 conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -777,7 +771,7 @@ class FtpFolders: VfsFolders {
                 conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -814,13 +808,13 @@ class FtpFolders: VfsFolders {
 
 class FtpFile: VfsFile {
 
-    cstring toString_, name_, username_, password_;
+    const(char)[] toString_, name_, username_, password_;
     uint port_;
     bool conOpen;
     FTPConnection conn;
 
-    public this(cstring server, cstring path, cstring username = "",
-                cstring password = "", uint port = 21)
+    public this(const(char)[] server, const(char)[] path, const(char)[] username = "",
+                const(char)[] password = "", uint port = 21)
     in {
         assert(server.length > 0);
     }
@@ -836,7 +830,7 @@ class FtpFile: VfsFile {
      Return a short name
      ***********************************************************************/
 
-    final cstring name() {
+    final const(char)[] name() {
         return fixName(name_);
     }
 
@@ -867,7 +861,7 @@ class FtpFile: VfsFile {
 
         bool return_;
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -903,7 +897,7 @@ class FtpFile: VfsFile {
                     conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -976,7 +970,7 @@ class FtpFile: VfsFile {
                     conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -1003,7 +997,7 @@ class FtpFile: VfsFile {
                     conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -1030,7 +1024,7 @@ class FtpFile: VfsFile {
                     conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -1074,7 +1068,7 @@ class FtpFile: VfsFile {
                     conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -1108,7 +1102,7 @@ class FtpFile: VfsFile {
                     conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -1138,7 +1132,7 @@ class FtpFile: VfsFile {
                     conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];
@@ -1169,12 +1163,12 @@ class FtpFile: VfsFile {
 
 class FtpFiles: VfsFiles {
 
-    cstring toString_, name_, username_, password_;
+    const(char)[] toString_, name_, username_, password_;
     uint port_;
     FtpFileInfo[] infos_;
 
-    public this(cstring server, cstring path, cstring username = "",
-                cstring password = "", uint port = 21, FtpFileInfo[] infos = null)
+    public this(const(char)[] server, const(char)[] path, const(char)[] username = "",
+                const(char)[] password = "", uint port = 21, FtpFileInfo[] infos = null)
     in {
         assert(server.length > 0);
     }
@@ -1201,7 +1195,7 @@ class FtpFiles: VfsFiles {
                 conn.close();
         }
 
-        cstring connect = toString_;
+        const(char)[] connect = toString_;
 
         if(connect[$ - 1] == '/') {
             connect = connect[0 .. ($ - 1)];

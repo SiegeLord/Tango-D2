@@ -7,13 +7,6 @@
 module tango.io.selector.EpollSelector;
 
 
-version(D_Version2)
-	mixin("private alias const(char[]) cstring;");
-else
-	private alias char[] cstring;
-
-
-
 version (linux)
 {
     public import tango.io.model.IConduit;

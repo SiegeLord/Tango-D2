@@ -13,12 +13,6 @@
 module tango.io.vfs.LinkedFolder;
 
 
-version(D_Version2)
-	mixin("private alias const(char[]) cstring;");
-else
-	private alias char[] cstring;
-
-
 private import tango.io.vfs.model.Vfs;
 
 private import tango.core.Exception;
@@ -68,7 +62,7 @@ class LinkedFolder : VirtualFolder
 
         ***********************************************************************/
 
-        this (cstring name)
+        this (const(char)[] name)
         {
                 super (name);
         }
@@ -88,7 +82,7 @@ class LinkedFolder : VirtualFolder
 
         ***********************************************************************/
 
-        final VfsHost mount (VfsFolder folder, cstring name=null)
+        final VfsHost mount (VfsFolder folder, const(char)[] name=null)
         {
                 // traverse to the end of the list
                 auto link = &head;
@@ -126,7 +120,7 @@ class LinkedFolder : VirtualFolder
 
         ***********************************************************************/
 
-        final override VfsFile file (cstring path)
+        final override VfsFile file (in char[] path)
         {
                 auto link = head;
                 while (link)

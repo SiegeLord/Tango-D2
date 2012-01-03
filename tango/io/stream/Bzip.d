@@ -13,11 +13,6 @@
 module tango.io.stream.Bzip;
 
 
-version(D_Version2)
-	mixin("private alias const(char)[] cstring;");
-else
-	private alias char[] cstring;
-
 
 private import tango.util.compress.c.bzlib;
 
@@ -572,7 +567,7 @@ import tango.io.device.Array : Array;
 
 unittest
 {
-    const cstring message =
+    const(char)[] message =
         "All dwarfs are by nature dutiful, serious, literate, obedient "
         "and thoughtful people whose only minor failing is a tendency, "
         "after one drink, to rush at enemies screaming \"Arrrrrrgh!\" and "

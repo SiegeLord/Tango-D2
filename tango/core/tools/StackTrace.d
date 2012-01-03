@@ -11,13 +11,6 @@
 module tango.core.tools.StackTrace;
 
 
-version(D_Version2)
-{
-	mixin("private alias const(char[]) cstring;");
-}
-else
-	private alias char[] cstring;
-
 import tango.core.tools.Demangler;
 import tango.core.Runtime;
 import tango.core.Thread;
@@ -102,7 +95,7 @@ extern(C) bool rt_symbolizeFrameInfo(ref FrameInfo fInfo,TraceContext* context,c
 }
 
 // names of the functions that should be ignored for the backtrace
-int[cstring] internalFuncs;
+int[const(char)[]] internalFuncs;
 static this(){
     internalFuncs["D5tango4core10stacktrace10StackTrace20defaultAddrBacktraceFPS5tango4core10stacktrace10StackTrace12TraceContextPS5tango4core10stacktrace10StackTrace12TraceContextPkkPiZk"]=1;
     internalFuncs["_D5tango4core10stacktrace10StackTrace20defaultAddrBacktraceFPS5tango4core10stacktrace10StackTrace12TraceContextPS5tango4core10stacktrace10StackTrace12TraceContextPmmPiZm"]=1;
@@ -126,7 +119,7 @@ static this(){
 /// returns the name of the function at the given adress (if possible)
 /// function@ and then the address. For delegates you can use .funcptr
 /// does not demangle
-cstring nameOfFunctionAt(void* addr, char[] buf){
+const(char)[] nameOfFunctionAt(void* addr, char[] buf){
     FrameInfo fInfo;
     fInfo.clear();
     fInfo.address=cast(size_t)addr;
@@ -137,7 +130,7 @@ cstring nameOfFunctionAt(void* addr, char[] buf){
     }
 }
 /// ditto
-cstring nameOfFunctionAt(void * addr){
+const(char)[] nameOfFunctionAt(void * addr){
     char[1024] buf;
     return nameOfFunctionAt(addr,buf).dup;
 }

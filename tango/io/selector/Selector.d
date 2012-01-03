@@ -7,11 +7,6 @@
 module tango.io.selector.Selector;
 
 
-version(D_Version2)
-	mixin("private alias const(char)[] cstring;");
-else
-	private alias char[] cstring;
-
 
 /**
  * A multiplexor of conduit I/O events.

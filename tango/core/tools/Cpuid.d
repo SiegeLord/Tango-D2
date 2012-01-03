@@ -41,11 +41,6 @@ BUGS:   Currently only works on x86 CPUs.
 module tango.core.tools.Cpuid;
 
 
-version(D_Version2)
-	mixin("private alias const(char[]) cstring;");
-else
-	private alias char[] cstring;
-
 
 // If optimizing for a particular processor, it is generally better
 // to identify based on features rather than model. NOTE: Normally
@@ -93,9 +88,9 @@ public:
     /// Returns vendor string, for display purposes only.
     /// Do NOT use this to determine features!
     /// Note that some CPUs have programmable vendorIDs.
-    cstring vendor()     {return cast(cstring) vendorID;}
+    const(char)[] vendor()     {return cast(const(char)[]) vendorID;}
     /// Returns processor string, for display purposes only
-    cstring processor()  {return processorName;}    
+    const(char)[] processor()  {return processorName;}    
     
     /// The data caches. If there are fewer than 5 physical caches levels,
     /// the remaining levels are set to uint.max (== entire memory space)

@@ -13,11 +13,6 @@
 module tango.io.vfs.model.Vfs;
 
 
-version(D_Version2)
-	mixin("private alias const(char[]) cstring;");
-else
-	private alias char[] cstring;
-
 
 private import tango.time.Time : Time;
 
@@ -67,7 +62,7 @@ interface VfsHost : VfsFolder
 
         **********************************************************************/
 
-        VfsHost mount (VfsFolder folder, cstring name=null);
+        VfsHost mount (VfsFolder folder, in char[] name=null);
 
         /***********************************************************************
 
@@ -94,7 +89,7 @@ interface VfsHost : VfsFolder
 
         **********************************************************************/
 
-        VfsHost map (VfsFile target, cstring name);
+        VfsHost map (VfsFile target, in char[] name);
 
         /***********************************************************************
 
@@ -103,7 +98,7 @@ interface VfsHost : VfsFolder
 
         ***********************************************************************/
 
-        VfsHost map (VfsFolderEntry target, cstring name);
+        VfsHost map (VfsFolderEntry target, in char[] name);
 }
 
 
@@ -208,7 +203,7 @@ interface VfsFolder
 
         ***********************************************************************/
 
-        cstring name ();
+        const(char)[] name ();
 
         /***********************************************************************
 
@@ -216,7 +211,7 @@ interface VfsFolder
 
         ***********************************************************************/
 
-        cstring toString ();
+        string toString ();
 
         /***********************************************************************
 
@@ -224,7 +219,7 @@ interface VfsFolder
 
         ***********************************************************************/
 
-        VfsFile file (cstring path);
+        VfsFile file (in char[] path);
 
         /***********************************************************************
 
@@ -232,7 +227,7 @@ interface VfsFolder
 
         ***********************************************************************/
 
-        VfsFolderEntry folder (cstring path);
+        VfsFolderEntry folder (in char[] path);
 
         /***********************************************************************
 
@@ -298,9 +293,9 @@ interface VfsFolder
 
         void verify (VfsFolder folder, bool mounting);
 
-        //VfsFolder copy(VfsFolder from, cstring to);
-        //VfsFolder move(Entry from, VfsFolder toFolder, cstring toName);
-        //cstring absolutePath(cstring path);
+        //VfsFolder copy(VfsFolder from, const(char)[] to);
+        //VfsFolder move(Entry from, VfsFolder toFolder, const(char)[] toName);
+        //const(char)[] absolutePath(const(char)[] path);
 }
 
 
@@ -426,7 +421,7 @@ interface VfsFile
 
         ***********************************************************************/
 
-        cstring name ();
+        const(char)[] name ();
 
         /***********************************************************************
 
@@ -434,7 +429,7 @@ interface VfsFile
 
         ***********************************************************************/
 
-        cstring toString ();
+        const(char)[] toString ();
 
         /***********************************************************************
 

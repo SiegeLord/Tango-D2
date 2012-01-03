@@ -15,8 +15,6 @@
  */
 module tango.core.Atomic;
 
-private alias const(char[]) cstring;
-
 
 
 

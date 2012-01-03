@@ -15,15 +15,6 @@
 module tango.io.FileSystem;
 
 
-version(D_Version2)
-{
-	mixin("private alias const(char)[] cstring;");
-	mixin("private alias const(wchar)[] wcstring;");
-}
-else
-	private alias char[] cstring;
-
-
 private import tango.sys.Common;
 
 private import tango.io.FilePath;
@@ -88,7 +79,7 @@ struct FileSystem
 
         ***********************************************************************/
 
-        deprecated static FilePath toAbsolute (FilePath target, cstring prefix=null)
+        deprecated static FilePath toAbsolute (FilePath target, const(char)[] prefix=null)
         {
                 if (! target.isAbsolute)
                    {
@@ -113,7 +104,7 @@ struct FileSystem
 
         ***********************************************************************/
 
-        deprecated static cstring toAbsolute (cstring path, cstring prefix=null)
+        deprecated static const(char)[] toAbsolute (const(char)[] path, const(char)[] prefix=null)
         {
                 scope target = new FilePath (path);
                 return toAbsolute (target, prefix).toString;
@@ -132,7 +123,7 @@ struct FileSystem
 
         ***********************************************************************/
 
-        deprecated static bool equals (cstring path1, cstring path2, cstring prefix=null)
+        deprecated static bool equals (const(char)[] path1, const(char)[] path2, const(char)[] prefix=null)
         {
                 scope p1 = new FilePath (path1);
                 scope p2 = new FilePath (path2);
@@ -164,7 +155,7 @@ struct FileSystem
 
                 version (Win32SansUnicode)
                 {
-                        private static void windowsPath(cstring path, ref cstring result)
+                        private static void windowsPath(const(char)[] path, ref const(char)[] result)
                         {
                                 result[0..path.length] = path;
                                 result[path.length] = 0;
@@ -173,7 +164,7 @@ struct FileSystem
                 }
                 else
                 {
-                        private static void windowsPath(cstring path, ref wcstring result)
+                        private static void windowsPath(const(char)[] path, ref const(wchar)[] result)
                         {
                                 assert (path.length < result.length);
                                 auto i = MultiByteToWideChar (CP_UTF8, 0, 
@@ -192,7 +183,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                deprecated static void setDirectory (cstring path)
+                deprecated static void setDirectory (const(char)[] path)
                 {
                         version (Win32SansUnicode)
                                 {
@@ -226,9 +217,9 @@ struct FileSystem
 
                 ***************************************************************/
 
-                deprecated static cstring getDirectory ()
+                deprecated static const(char)[] getDirectory ()
                 {
-                        cstring path;
+                        const(char)[] path;
 
                         version (Win32SansUnicode)
                                 {
@@ -273,11 +264,11 @@ struct FileSystem
 
                 ***************************************************************/
 
-                static cstring[] roots ()
+                static const(char)[][] roots ()
                 {
                         int             len;
-                        cstring          str;
-                        cstring[]        roots;
+                        const(char)[]          str;
+                        const(char)[][]        roots;
 
                         // acquire drive strings
                         len = GetLogicalDriveStringsA (0, null);
@@ -296,7 +287,7 @@ struct FileSystem
                     volumePathBufferLen = MAX_PATH + 6
                 }
                 
-                private static TCHAR[] getVolumePath(cstring folder, TCHAR[] volPath_,
+                private static TCHAR[] getVolumePath(const(char)[] folder, TCHAR[] volPath_,
                                                      bool trailingBackslash)
                 in {
                     assert (volPath_.length > 5);
@@ -365,7 +356,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                static long freeSpace(cstring folder, bool superuser = false)
+                static long freeSpace(const(char)[] folder, bool superuser = false)
                 {
                     scope fp = new FilePath(folder);
 
@@ -404,7 +395,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                static ulong totalSpace(cstring folder, bool superuser = false)
+                static ulong totalSpace(const(char)[] folder, bool superuser = false)
                 {
                     version (Win32SansUnicode) {
                         alias GetDiskFreeSpaceExA GetDiskFreeSpaceEx;
@@ -468,7 +459,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                deprecated static void setDirectory (cstring path)
+                deprecated static void setDirectory (const(char)[] path)
                 {
                         char[512] tmp = void;
                         tmp [path.length] = 0;
@@ -486,7 +477,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                deprecated static cstring getDirectory ()
+                deprecated static const(char)[] getDirectory ()
                 {
                         char[512] tmp = void;
 
@@ -505,7 +496,7 @@ struct FileSystem
 
                  ***************************************************************/
 
-                static cstring[] roots ()
+                static const(char)[][] roots ()
                 {
                         version(darwin)
                         {
@@ -513,8 +504,8 @@ struct FileSystem
                         }
                         else
                         {
-                            cstring path = "";
-                            cstring[] list;
+                            const(char)[] path = "";
+                            const(char)[][] list;
                             int spaces;
 
                             auto fc = new File("/etc/mtab");
@@ -574,7 +565,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                static long freeSpace(cstring folder, bool superuser = false)
+                static long freeSpace(const(char)[] folder, bool superuser = false)
                 {
                     scope fp = new FilePath(folder);
                     statvfs_t info;
@@ -609,7 +600,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                static long totalSpace(cstring folder, bool superuser = false)
+                static long totalSpace(const(char)[] folder, bool superuser = false)
                 {
                     scope fp = new FilePath(folder);
                     statvfs_t info;

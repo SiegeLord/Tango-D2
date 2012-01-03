@@ -10,11 +10,6 @@
 module tango.core.tools.TraceExceptions;
 
 
-version(D_Version2)
-	mixin("private alias const(char[]) cstring;");
-else
-	private alias char[] cstring;
-
 import tango.core.tools.StackTrace;
 
 extern (C) void  rt_setTraceHandler( TraceHandler h );

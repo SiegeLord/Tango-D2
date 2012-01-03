@@ -7,12 +7,6 @@
 module tango.io.selector.AbstractSelector;
 
 
-version(D_Version2)
-	mixin("private alias const(char)[] cstring;");
-else
-	private alias char[] cstring;
-
-
 public import tango.io.model.IConduit;
 public import tango.io.selector.SelectorException;
 

@@ -9,9 +9,6 @@
  */
 module tango.core.BitArray;
 
-private alias const(char[]) cstring;
-
-
 
 
 private import tango.core.BitManip;

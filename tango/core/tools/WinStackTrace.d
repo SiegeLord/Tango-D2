@@ -10,10 +10,6 @@
 module tango.core.tools.WinStackTrace;
 
 version(Windows) {
-version(D_Version2)
-	mixin("private alias char[] cstring;");
-else
-	private alias char[] cstring;
 
 import core.thread;
 
@@ -22,7 +18,7 @@ import core.thread;
 version(D_Version2)
 {
 
-	private cstring intToUtf8 (char[] tmp, uint val)
+	private const(char)[] intToUtf8 (char[] tmp, uint val)
 	in {
 		 assert (tmp.length > 9, "atoi buffer should be more than 9 chars wide");
 		 }
@@ -37,9 +33,9 @@ version(D_Version2)
 			return tmp [cast(size_t)(p - tmp.ptr) .. $];
 	}
 
-	// convert uint to cstring, within the given buffer
+	// convert uint to const(char)[], within the given buffer
 	// Returns a valid slice of the populated buffer
-	private cstring ulongToUtf8 (char[] tmp, ulong val)
+	private const(char)[] ulongToUtf8 (char[] tmp, ulong val)
 	in {
 		 assert (tmp.length > 19, "atoi buffer should be more than 19 chars wide");
 		 }
@@ -257,7 +253,7 @@ version(D_Version2)
         } else {
             hProcess=GetCurrentProcess();
         }
-        return addrToSymbolDetails(fInfo.address, hProcess, (cstring func, cstring file, int line, ptrdiff_t addrOffset) {
+        return addrToSymbolDetails(fInfo.address, hProcess, (const(char)[] func, const(char)[] file, int line, ptrdiff_t addrOffset) {
             if (func.length > buf.length) {
                 buf[] = func[0..buf.length];
                 fInfo.func = buf;
@@ -474,7 +470,7 @@ void walkStack(LPCONTEXT ContextRecord, HANDLE hProcess, HANDLE hThread, void de
 }
 
 
-bool addrToSymbolDetails(size_t addr, HANDLE hProcess, void delegate(cstring func, cstring file, int line, ptrdiff_t addrOffset) dg) {
+bool addrToSymbolDetails(size_t addr, HANDLE hProcess, void delegate(const(char)[] func, const(char)[] file, int line, ptrdiff_t addrOffset) dg) {
     ubyte buffer[256];
 
     SYMBOL_INFO* symbol_info = cast(SYMBOL_INFO*)buffer.ptr;
@@ -1095,7 +1091,7 @@ class ModuleDebugInfo {
         }
     }
     
-    char* bufferString(cstring str) {
+    char* bufferString(const(char)[] str) {
         char[] res;
         res.alloc(str.length+1, false);
         res[0..$-1] = str[];
@@ -1182,7 +1178,7 @@ static this() {
     globalDebugInfo = new GlobalDebugInfo;
 }
 
-extern(C) void _initLGPLHostExecutableDebugInfo(cstring progName) {
+extern(C) void _initLGPLHostExecutableDebugInfo(const(char)[] progName) {
     scope info = new DebugInfo(progName);
     // we'll let it die now :)
 }
@@ -1250,7 +1246,7 @@ class DebugInfo {
     ModuleDebugInfo info;
     
     
-    this(cstring filename) {
+    this(const(char)[] filename) {
         info = new ModuleDebugInfo;
         ParseCVFile(filename);
         assert (globalDebugInfo !is null);
@@ -1258,7 +1254,7 @@ class DebugInfo {
     }
      
     private {
-        int ParseCVFile(cstring filename) {
+        int ParseCVFile(const(char)[] filename) {
             FILE* debugfile;
 
             if (filename == "") return (-1);
@@ -1723,7 +1719,7 @@ class DebugInfo {
         OMFDirHeader g_cvHeader;
         OMFDirEntry g_cvEntries[];
         OMFModuleFull g_cvModules[];
-        cstring g_filename;
+        const(char)[] g_filename;
         char* g_filenameStringz;
     }
 }
@@ -1972,8 +1968,8 @@ extern (C) {
         minfo.addDebugInfo(addr, file, func, line);
     }
     
-    char* ModuleDebugInfo_bufferString(ModuleDebugInfo minfo, cstring str) {
-        cstring res;
+    char* ModuleDebugInfo_bufferString(ModuleDebugInfo minfo, const(char)[] str) {
+        const(char)[] res;
         res.alloc(str.length+1, false);
         res[0..$-1] = str[];
         res[str.length] = 0;
@@ -2008,7 +2004,7 @@ static this() {
 
     char modNameBuf[512] = 0;
     int modNameLen = GetModuleFileNameExA(GetCurrentProcess(), null, modNameBuf.ptr, modNameBuf.length-1);
-    cstring modName = modNameBuf[0..modNameLen];
+    const(char)[] modName = modNameBuf[0..modNameLen];
     SymSetOptions(SYMOPT_DEFERRED_LOADS/+ | SYMOPT_UNDNAME+/);
     SymInitialize(GetCurrentProcess(), null, false);
     DWORD64 base;
@@ -2022,7 +2018,7 @@ static this() {
     SYMBOL_INFO sym;
     sym.SizeOfStruct = SYMBOL_INFO.sizeof; 
 
-    extern(C) void function(cstring) initTrace;
+    extern(C) void function(const(char)[]) initTrace;
     if (SymFromName(GetCurrentProcess(), cast(char*)"__initLGPLHostExecutableDebugInfo", &sym)) {
         initTrace = cast(typeof(initTrace))sym.Address;
         assert (initTrace !is null); 

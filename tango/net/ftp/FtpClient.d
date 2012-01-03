@@ -11,11 +11,6 @@
 module tango.net.ftp.FtpClient;
 
 
-version(D_Version2)
-	mixin("private alias const(char)[] cstring;");
-else
-	private alias char[] cstring;
-
 
 private 
 {
@@ -71,20 +66,20 @@ enum FtpFormat
  ******************************************************************************/
 struct FtpAddress 
 {
-    static FtpAddress* opCall(cstring str) {
+    static FtpAddress* opCall(const(char)[] str) {
         if(str.length == 0)
             return null;
         try {
             auto ret = new FtpAddress;
             //remove ftp://
-            auto i = locatePattern(str, cast(cstring)"ftp://");
+            auto i = locatePattern(str, cast(const(char)[])"ftp://");
             if(i == 0)
                 str = str[6 .. $];
 
             //check for username and/or password user[:pass]@
             i = locatePrior(str, cast(const(char))'@');
             if(i != str.length) {
-                cstring up = str[0 .. i];
+                const(char)[] up = str[0 .. i];
                 str = str[i + 1 .. $];
                 i = locate(up, ':');
                 if(i != up.length) {
@@ -118,10 +113,10 @@ struct FtpAddress
         }
     }
 
-    cstring address;
-    cstring directory;
-    cstring user = "anonymous";
-    cstring pass = "anonymous@anonymous";
+    const(char)[] address;
+    const(char)[] directory;
+    const(char)[] user = "anonymous";
+    const(char)[] pass = "anonymous@anonymous";
     uint port = 21;
 }
 
@@ -159,7 +154,7 @@ struct FtpResponse
      With some responses, the message may contain parseable information.
      For example, this is true of the 257 response.
      **********************************************************************/
-    cstring message = null;
+    const(char)[] message = null;
 }
 
 /******************************************************************************
@@ -208,11 +203,11 @@ struct FtpFeature
     /**********************************************************************
      The command which is supported, e.g. SIZE.
      **********************************************************************/
-    cstring command = null;
+    const(char)[] command = null;
     /**********************************************************************
      Parameters for this command; e.g. facts for MLST.
      **********************************************************************/
-    cstring params = null;
+    const(char)[] params = null;
 }
 
 /******************************************************************************
@@ -254,7 +249,7 @@ struct FtpFileInfo
     /**********************************************************************
      The filename.
      **********************************************************************/
-    cstring name = null;
+    const(char)[] name = null;
     /**********************************************************************
      Its type.
      **********************************************************************/
@@ -275,11 +270,11 @@ struct FtpFileInfo
     /**********************************************************************
      The file's mime type, if known.
      **********************************************************************/
-    cstring mime = null;
+    const(char)[] mime = null;
     /***********************************************************************
      An associative array of all facts returned by the server, lowercased.
      ***********************************************************************/
-    cstring[cstring] facts;
+    const(char)[][const(char)[]] facts;
 }
 
 /*******************************************************************************
@@ -337,7 +332,7 @@ class FTPConnection: Telnet
     FtpFeature[] supportedFeatures_ = null;
     FtpConnectionDetail inf_;
     size_t restartPos_ = 0;
-    cstring currFile_ = "";
+    const(char)[] currFile_ = "";
     Socket dataSocket_;
     TimeSpan timeout_ = TimeSpan.fromMillis(5000);
 
@@ -391,8 +386,8 @@ class FTPConnection: Telnet
 
     }
 
-    public this(cstring hostname, cstring username = "anonymous",
-            cstring password = "anonymous@anonymous", uint port = 21) {
+    public this(const(char)[] hostname, const(char)[] username = "anonymous",
+            const(char)[] password = "anonymous@anonymous", uint port = 21) {
         this.connect(hostname, username, password, port);
     }
 
@@ -413,8 +408,8 @@ class FTPConnection: Telnet
     /************************************************************************
      Changed Since: 0.99.8
      ************************************************************************/
-    public void connect(cstring hostname, cstring username = "anonymous",
-            cstring password = "anonymous@anonymous", uint port = 21)
+    public void connect(const(char)[] hostname, const(char)[] username = "anonymous",
+            const(char)[] password = "anonymous@anonymous", uint port = 21)
     in {
         // We definitely need a hostname and port.
         assert(hostname.length > 0);
@@ -477,7 +472,7 @@ class FTPConnection: Telnet
         delete inf_.listen;
     }
 
-    public void setActive(cstring ip, ushort port, cstring listen_ip = null,
+    public void setActive(const(char)[] ip, ushort port, const(char)[] listen_ip = null,
             ushort listen_port = 0)
     in {
         assert(ip.length > 0);
@@ -498,7 +493,7 @@ class FTPConnection: Telnet
             inf_.listen = new IPv4Address(listen_ip, listen_port);
     }
 
-    public void cd(cstring dir)
+    public void cd(const(char)[] dir)
     in {
         assert(dir.length > 0);
     }
@@ -516,14 +511,14 @@ class FTPConnection: Telnet
             exception(fr);
     }
 
-    public cstring cwd() {
+    public const(char)[] cwd() {
         sendCommand("PWD");
         auto response = readResponse("257");
 
         return parse257(response);
     }
 
-    public void chmod(cstring path, int mode)
+    public void chmod(const(char)[] path, int mode)
     in {
         assert(path.length > 0);
         assert(mode >= 0 && (mode >> 16) == 0);
@@ -536,7 +531,7 @@ class FTPConnection: Telnet
         readResponse("200");
     }
 
-    public void del(cstring path)
+    public void del(const(char)[] path)
     in {
         assert(path.length > 0);
     }
@@ -549,7 +544,7 @@ class FTPConnection: Telnet
             rm(path);
     }
 
-    public void rm(cstring path)
+    public void rm(const(char)[] path)
     in {
         assert(path.length > 0);
     }
@@ -558,7 +553,7 @@ class FTPConnection: Telnet
         readResponse("250");
     }
 
-    public void rename(cstring old_path, cstring new_path)
+    public void rename(const(char)[] old_path, const(char)[] new_path)
     in {
         assert(old_path.length > 0);
         assert(new_path.length > 0);
@@ -575,7 +570,7 @@ class FTPConnection: Telnet
     /***********************************************************************
      Added Since: 0.99.8
      ***********************************************************************/
-    int exist(cstring file) {
+    int exist(const(char)[] file) {
         try {
             auto fi = getFileInfo(file);
             if(fi.type == FtpFileType.file) {
@@ -591,7 +586,7 @@ class FTPConnection: Telnet
         return 0;
     }
 
-    public size_t size(cstring path, FtpFormat format = FtpFormat.image)
+    public size_t size(const(char)[] path, FtpFormat format = FtpFormat.image)
     in {
         assert(path.length > 0);
     }
@@ -624,7 +619,7 @@ class FTPConnection: Telnet
     /***********************************************************************
      Added Since: 0.99.8
      ***********************************************************************/
-    Time modified(cstring file)
+    Time modified(const(char)[] file)
     in {
         assert(file.length > 0);
     }
@@ -636,7 +631,7 @@ class FTPConnection: Telnet
         return this.parseTimeval(response.message);
     }
 
-    protected Time parseTimeval(cstring timeval) {
+    protected Time parseTimeval(const(char)[] timeval) {
         if(timeval.length < 14)
             throw new FtpException("CLIENT: Unable to parse timeval", "501");
 
@@ -654,7 +649,7 @@ class FTPConnection: Telnet
         this.readResponse("200");
     }
 
-    public cstring mkdir(cstring path)
+    public const(char)[] mkdir(const(char)[] path)
     in {
         assert(path.length > 0);
     }
@@ -673,7 +668,7 @@ class FTPConnection: Telnet
         if(response.code != "211")
             delete supportedFeatures_;
         else {
-            cstring[] lines = Text.splitLines(response.message);
+            const(char)[][] lines = Text.splitLines(response.message);
 
             // There are two more lines than features, but we also have FEAT.
             supportedFeatures_ = new FtpFeature[lines.length - 1];
@@ -691,13 +686,13 @@ class FTPConnection: Telnet
         }
     }
 
-    public void sendCommand(cstring command, cstring[] parameters...) {
+    public void sendCommand(const(char)[] command, const(char)[][] parameters...) {
 
-        cstring socketCommand = command;
+        const(char)[] socketCommand = command;
 
         // Send the command, parameters, and then a CRLF.
 
-        foreach(cstring param; parameters) {
+        foreach(const(char)[] param; parameters) {
             socketCommand ~= " " ~ param;
 
         }
@@ -711,7 +706,7 @@ class FTPConnection: Telnet
         sendData(socketCommand);
     }
 
-    public FtpResponse readResponse(cstring expected_code) {
+    public FtpResponse readResponse(const(char)[] expected_code) {
         debug(FtpDebug) {
             Stdout.formatln("[readResponse] Expected Response {0}",
                     expected_code)();
@@ -734,7 +729,7 @@ class FTPConnection: Telnet
         Time end_time = Clock.now + TimeSpan.fromMillis(2500) * 10;
 
         FtpResponse response;
-        cstring single_line = null;
+        const(char)[] single_line = null;
 
         // Danger, Will Robinson, don't fall into an endless loop from a malicious server.
         while(Clock.now < end_time) {
@@ -780,7 +775,7 @@ class FTPConnection: Telnet
         return response;
     }
 
-    protected cstring parse257(FtpResponse response) {
+    protected const(char)[] parse257(FtpResponse response) {
         char[] path = new char[response.message.length];
         size_t pos = 1, len = 0;
 
@@ -937,7 +932,7 @@ class FTPConnection: Telnet
                 throw new FtpException("CLIENT: Unable to parse address", "501");
 
             // Now put it into something std.socket will understand.
-            cstring address = r.match(1) ~ "." ~ r.match(2) ~ "." ~ r.match(3) ~ "." ~ r.match(4);
+            const(char)[] address = r.match(1) ~ "." ~ r.match(2) ~ "." ~ r.match(3) ~ "." ~ r.match(4);
             uint port = (((cast(int) Integer.parse(r.match(5))) << 8) + (r.match(7).
                            length > 0 ? cast(int) Integer.parse(r.match(7)) : 0));
 
@@ -960,7 +955,7 @@ class FTPConnection: Telnet
      return sock;
      */
 
-    public bool isSupported(cstring command)
+    public bool isSupported(const(char)[] command)
     in {
         assert(command.length > 0);
     }
@@ -977,7 +972,7 @@ class FTPConnection: Telnet
         return false;
     }
 
-    public bool is_supported(cstring command) {
+    public bool is_supported(const(char)[] command) {
         if(this.supportedFeatures_.length == 0)
             return false;
 
@@ -1052,7 +1047,7 @@ class FTPConnection: Telnet
     /*****************************************************************************
      Changed Since: 0.99.8
      *****************************************************************************/
-    public Socket processDataCommand(cstring command, cstring[] parameters...) {
+    public Socket processDataCommand(const(char)[] command, const(char)[][] parameters...) {
         // Create a connection.
         Socket data = this.getDataSocket();
         scope(failure) {
@@ -1074,7 +1069,7 @@ class FTPConnection: Telnet
         return data;
     }
 
-    public FtpFileInfo[] ls(cstring path = "")
+    public FtpFileInfo[] ls(const(char)[] path = "")
     // default to current dir
     in {
         assert(path.length == 0 || path[path.length - 1] != '/');
@@ -1108,11 +1103,11 @@ class FTPConnection: Telnet
             this.finishDataCommand(data);
 
             // Each line is something in that directory.
-            cstring[] lines = Text.splitLines(cast(cstring) listing.slice());
+            const(char)[][] lines = Text.splitLines(cast(const(char)[]) listing.slice());
             scope(exit)
                 delete lines;
 
-            foreach(cstring line; lines) {
+            foreach(const(char)[] line; lines) {
                 if(line.length == 0)
                     continue;
                 // Parse each line exactly like MLST does.
@@ -1246,7 +1241,7 @@ class FTPConnection: Telnet
             throw new FtpException("CLIENT: Timeout when sending data", "420");
     }
 
-    protected FtpFileInfo[] sendListCommand(cstring path) {
+    protected FtpFileInfo[] sendListCommand(const(char)[] path) {
         FtpFileInfo[] dir;
         Socket data = null;
 
@@ -1261,11 +1256,11 @@ class FTPConnection: Telnet
         this.finishDataCommand(data);
 
         // Split out the lines.  Most of the time, it's one-to-one.
-        cstring[] lines = Text.splitLines(cast(cstring) listing.slice());
+        const(char)[][] lines = Text.splitLines(cast(const(char)[]) listing.slice());
         scope(exit)
             delete lines;
 
-        foreach(cstring line; lines) {
+        foreach(const(char)[] line; lines) {
             if(line.length == 0)
                 continue;
             // If there are no spaces, or if there's only one... skip the line.
@@ -1282,12 +1277,12 @@ class FTPConnection: Telnet
         return dir;
     }
 
-    protected FtpFileInfo parseListLine(cstring line) {
+    protected FtpFileInfo parseListLine(const(char)[] line) {
         FtpFileInfo info;
         size_t pos = 0;
 
         // Convenience function to parse a word from the line.
-        cstring parse_word() {
+        const(char)[] parse_word() {
             size_t start = 0, end = 0;
 
             // Skip whitespace before.
@@ -1360,11 +1355,11 @@ class FTPConnection: Telnet
                 parse_word();
 
                 // Group or size in bytes
-                cstring group_or_size = parse_word();
+                const(char)[] group_or_size = parse_word();
                 size_t oldpos = pos;
 
                 // Size in bytes or month
-                cstring size_or_month = parse_word();
+                const(char)[] size_or_month = parse_word();
 
                 if(!Text.contains("0123456789", size_or_month[0])) {
                     // Oops, no size here - go back to previous column
@@ -1385,7 +1380,7 @@ class FTPConnection: Telnet
                 // Might be a link entry - additional test here
                 if(info.type == FtpFileType.other) {
                     // Is name like 'name -> /some/other/path'?
-                    size_t pos2 = Text.locatePattern(info.name, cast(cstring)" -> ");
+                    size_t pos2 = Text.locatePattern(info.name, cast(const(char)[])" -> ");
                     if(pos2 != info.name.length) {
                         // It is a link - split into target and name
                         info.facts["target"] = info.name[pos2 + 4 .. info.name.length];
@@ -1415,7 +1410,7 @@ class FTPConnection: Telnet
                 delete r;
 
                 // This will either be <DIR>, or a number.
-                cstring dir_or_size = parse_word();
+                const(char)[] dir_or_size = parse_word();
 
                 if(dir_or_size.length < 0)
                     return info;
@@ -1445,7 +1440,7 @@ class FTPConnection: Telnet
         return info;
     }
 
-    protected FtpFileInfo parseMlstLine(cstring line) {
+    protected FtpFileInfo parseMlstLine(const(char)[] line) {
         FtpFileInfo info;
 
         // After this loop, filename_pos will be location of space + 1.
@@ -1464,11 +1459,11 @@ class FTPConnection: Telnet
 
         // Everything else is frosting on top.
         if(filename_pos > 1) {
-            cstring[]
+            const(char)[][]
                     temp_facts = Text.delimit(line[0 .. filename_pos - 1], cast(const(char)[])";");
 
             // Go through each fact and parse them into the array.
-            foreach(cstring fact; temp_facts) {
+            foreach(const(char)[] fact; temp_facts) {
                 int pos = Text.locate(fact, '=');
                 if(pos == fact.length)
                     continue;
@@ -1517,7 +1512,7 @@ class FTPConnection: Telnet
         return info;
     }
 
-    public FtpFileInfo getFileInfo(cstring path)
+    public FtpFileInfo getFileInfo(const(char)[] path)
     in {
         assert(path.length > 0);
     }
@@ -1555,7 +1550,7 @@ class FTPConnection: Telnet
         }
     }
 
-    public void put(cstring path, cstring local_file,
+    public void put(const(char)[] path, const(char)[] local_file,
             FtpProgress progress = null, FtpFormat format = FtpFormat.image)
     in {
         assert(path.length > 0);
@@ -1593,7 +1588,7 @@ class FTPConnection: Telnet
      progress =        a delegate to call with progress information
      format =          what format to send the data in
      ********************************************************************************/
-    public void put(cstring path, InputStream stream = null,
+    public void put(const(char)[] path, InputStream stream = null,
             FtpProgress progress = null, FtpFormat format = FtpFormat.image)
     in {
         assert(path.length > 0);
@@ -1623,7 +1618,7 @@ class FTPConnection: Telnet
      progress =        a delegate to call with progress information
      format =          what format to send the data in
      ********************************************************************************/
-    public void append(cstring path, InputStream stream,
+    public void append(const(char)[] path, InputStream stream,
             FtpProgress progress = null, FtpFormat format = FtpFormat.image)
     in {
         assert(path.length > 0);
@@ -1690,7 +1685,7 @@ class FTPConnection: Telnet
      progress =        a delegate to call with progress information
      format =          what format to read the data in
      **********************************************************************************/
-    public void get(cstring path, cstring local_file,
+    public void get(const(char)[] path, const(char)[] local_file,
             FtpProgress progress = null, FtpFormat format = FtpFormat.image)
     in {
         assert(path.length > 0);
@@ -1738,7 +1733,7 @@ class FTPConnection: Telnet
      progress =        a delegate to call with progress information
      format =          what format to read the data in
      ***********************************************************************************/
-    public void get(cstring path, OutputStream stream,
+    public void get(const(char)[] path, OutputStream stream,
             FtpProgress progress = null, FtpFormat format = FtpFormat.image)
     in {
         assert(path.length > 0);
@@ -1760,7 +1755,7 @@ class FTPConnection: Telnet
     /*****************************************************************************
      Added Since: 0.99.8
      *****************************************************************************/
-    public InputStream input(cstring path) {
+    public InputStream input(const(char)[] path) {
         type(FtpFormat.image);
         dataSocket_ = this.processDataCommand("RETR", path);
         return dataSocket_;
@@ -1769,7 +1764,7 @@ class FTPConnection: Telnet
     /*****************************************************************************
      Added Since: 0.99.8
      *****************************************************************************/
-    public OutputStream output(cstring path) {
+    public OutputStream output(const(char)[] path) {
         type(FtpFormat.image); 
         dataSocket_ = this.processDataCommand("STOR", path);
         return dataSocket_;

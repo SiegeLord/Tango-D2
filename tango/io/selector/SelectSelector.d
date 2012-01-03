@@ -7,11 +7,6 @@
 module tango.io.selector.SelectSelector;
 
 
-version(D_Version2)
-	mixin("private alias const(char)[] cstring;");
-else
-	private alias char[] cstring;
-
 
 public import tango.io.model.IConduit;
 
@@ -739,12 +734,12 @@ version (Windows)
             /**
              * Dump the contents of a HandleSet into stdout.
              */
-            void dump(cstring name = null)
+            void dump(const(char)[] name = null)
             {
                 if (_buffer !is null && _buffer.length > 0 && _buffer[0] > 0)
                 {
-                    cstring handleStr = new char[16];
-                    cstring handleListStr;
+                    const(char)[] handleStr = new char[16];
+                    const(char)[] handleListStr;
                     bool isFirst = true;
 
                     if (name is null)
@@ -871,12 +866,12 @@ else version (Posix)
             /**
              * Dump the contents of a HandleSet into stdout.
              */
-            void dump(cstring name = null)
+            void dump(const(char)[] name = null)
             {
                 if (_buffer !is null && _buffer.length > 0)
                 {
-                    cstring handleStr = new char[16];
-                    cstring handleListStr;
+                    const(char)[] handleStr = new char[16];
+                    const(char)[] handleListStr;
                     bool isFirst = true;
 
                     if (name is null)

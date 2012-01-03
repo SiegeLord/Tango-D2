@@ -13,12 +13,6 @@
 module tango.io.vfs.FileFolder;
 
 
-version(D_Version2)
-	mixin("private alias const(char)[] cstring;");
-else
-	private alias char[] cstring;
-
-
 private import tango.io.device.File;
 
 private import Path = tango.io.Path;
@@ -40,7 +34,7 @@ private import tango.time.Time : Time;
 
 class FileFolder : VfsFolder
 {
-        private cstring          path;
+        private const(char)[]          path;
         private VfsStats        stats;
 
         /***********************************************************************
@@ -52,7 +46,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        this (cstring path, bool create=false)
+        this (const(char)[] path, bool create=false)
         {
                 this.path = open (Path.standard(path.dup), create);
         }
@@ -63,7 +57,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private this (cstring path, cstring name)
+        private this (const(char)[] path, const(char)[] name)
         {
                 this.path = Path.join (path, name);
         }
@@ -74,7 +68,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private this (FileFolder parent, cstring name, bool create=false)
+        private this (FileFolder parent, const(char)[] name, bool create=false)
         {
                 assert (parent);
                 this.path = open (Path.join(parent.path, name), create);
@@ -86,7 +80,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final cstring name ()
+        final const(char)[] name ()
         {
                 return Path.parse(path).name;
         }
@@ -262,9 +256,9 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private cstring[] files (ref VfsStats stats, VfsFilter filter = null)
+        private const(char)[][] files (ref VfsStats stats, VfsFilter filter = null)
         {
-                cstring[] files;
+                const(char)[][] files;
 
                 foreach (info; Path.children (path))
                          if (info.folder is false)
@@ -284,7 +278,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private cstring error (string msg)
+        private const(char)[] error (string msg)
         {
                 throw new VfsException (msg);
         }
@@ -295,7 +289,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private cstring open (in char[] path, bool create)
+        private const(char)[] open (in char[] path, bool create)
         {
                 if (Path.exists (path))
                    {
@@ -321,8 +315,8 @@ class FileFolder : VfsFolder
 
 class FileGroup : VfsFiles
 {
-        private cstring[]        group;          // set of filtered filenames
-        private cstring[]        hosts;          // set of containing folders
+        private const(char)[][]        group;          // set of filtered filenames
+        private const(char)[][]        hosts;          // set of containing folders
         private VfsStats        stats;          // stats for contained files
 
         /***********************************************************************
@@ -562,14 +556,14 @@ private class FolderGroup : VfsFolders
 
 private class FolderHost : VfsFolderEntry
 {       
-        private cstring          path;
+        private const(char)[]          path;
         private FileFolder      parent;
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private this (FileFolder parent, cstring path)
+        private this (FileFolder parent, const(char)[] path)
         {
                 this.path = path;
                 this.parent = parent;
@@ -624,7 +618,7 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        this (cstring path = null)
+        this (const(char)[] path = null)
         {
                 this.path.parse (path);
         }
@@ -635,7 +629,7 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        final cstring name()
+        final const(char)[] name()
         {
                 return path.file;
         }

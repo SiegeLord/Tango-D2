@@ -7,12 +7,6 @@
 module tango.io.selector.model.ISelector;
 
 
-version(D_Version2)
-	mixin("private alias const(char[]) cstring;");
-else
-	private alias char[] cstring;
-
-
 public import tango.time.Time;
 
 public import tango.io.model.IConduit;
