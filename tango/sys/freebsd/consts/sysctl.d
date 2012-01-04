@@ -218,5 +218,5 @@ enum SysCtl {
 
 
 int sysctl(int*, uint , void* , size_t* , void* , size_t);
-int sysctlbyname(/*const*/ char* , void* , size_t* , void* , size_t);
-int sysctlnametomib(/*const*/ char* , int* , size_t*);
+int sysctlbyname(in char* , void* , size_t* , void* , size_t);
+int sysctlnametomib(in char* , int* , size_t*);

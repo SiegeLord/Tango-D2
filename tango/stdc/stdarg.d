@@ -11,7 +11,9 @@ module tango.stdc.stdarg;
 
 debug(PRINTF) import tango.stdc.stdio: printf;
 
+public import core.stdc.stdarg;
 
+/+
 version( GNU )
 {
     public import std.c.stdarg;
@@ -349,3 +351,4 @@ else
     static assert(0);
 }
 }
++/

@@ -7,6 +7,9 @@
  */
 module tango.core.BitManip;
 
+public import core.bitop;
+
+version (none):
 
 version( TangoDoc )
 {
@@ -173,7 +176,8 @@ version( TangoDoc )
 }
 else version( LDC )
 {
-    public import ldc.bitmanip;
+    //public import ldc.bitmanip;
+    public import core.bitop;
 }
 else
 {
