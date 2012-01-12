@@ -19,7 +19,15 @@ public  import tango.io.FilePath;
 
 private import tango.core.Exception;
 
+pragma(msg, "tango.io.FileScan is deprecated. Please use tango.io.FilePath.toList or tango.io.vfs.* instead.");
+
+deprecated:
+
 /*******************************************************************************
+    This module is deprecated because it doesn't support file globbing
+    or regexes for matching files and because it ignores folders that
+    it doesn't recurse into (a non-recursive scan will never return any
+    folders).
 
         Recursively scan files and directories, adding filtered files to
         an output structure as we go. This can be used to produce a list
@@ -41,12 +49,12 @@ private import tango.core.Exception;
         ---
 
         This is unlikely the most efficient method to scan a vast number of
-        files, but operates in a convenient manner
+        files, but operates in a convenient manner.
         
 *******************************************************************************/
 
 class FileScan
-{       
+{
         alias sweep     opCall;
 
         FilePath[]      fileSet;

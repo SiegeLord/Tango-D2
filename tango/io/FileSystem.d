@@ -8,12 +8,11 @@
         version:        Mar 2004: Initial release
         version:        Feb 2007: Now using mutating paths
 
-        author:         Kris, Chris Sauls (Win95 file support)
+        authors:         Kris, Chris Sauls (Win95 file support)
 
 *******************************************************************************/
 
 module tango.io.FileSystem;
-
 
 private import tango.sys.Common;
 
@@ -33,7 +32,7 @@ version (Win32)
         private extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPSTR);
         private import tango.stdc.stringz : fromString16z, fromStringz;
 
-        enum {        
+        enum {
             FILE_DEVICE_DISK = 7,
             IOCTL_DISK_BASE = FILE_DEVICE_DISK,
             METHOD_BUFFERED = 0,

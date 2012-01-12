@@ -1,15 +1,15 @@
 /**
  *   Linux Stacktracing
  *
- *   Functions to parse the ELF format and create a symbolic trace
+ *   Functions to parse the ELF format and create a symbolic trace.
  *
  *   The core Elf handling was taken from Thomas Kühne flectioned,
  *   with some minor pieces taken from winterwar/wm4
- *   But the routines and flow have been (sometime heavily) changed
+ *   But the routines and flow have been (sometime heavily) changed.
  *
- *  Copyright: 2009 Fawzi, Thomas Kühne, wm4
- *  License:   tango license
- *  Authors:   Fawzi Mohamed
+ *  Copyright: Copyright (C) 2009 Fawzi, Thomas Kühne, wm4
+ *  License:   Tango License
+ *  Author:    Fawzi Mohamed
  */
 module tango.core.tools.LinuxStackTrace;
 

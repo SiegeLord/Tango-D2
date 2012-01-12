@@ -455,6 +455,39 @@ else
         return !archive.readonly;
     }
 
+    // workaround for a bug in gdb. See ticket #190
+    version (GNU) 
+    {
+        override VfsFolder close(bool commit = true)
+        {
+            assert( valid );
+            return closeImpl(commit);
+        }
+
+        override VfsFolder sync()
+        { 
+            assert( valid ); 
+            return syncImpl();
+        }
+    }
+    else
+    {
+        override VfsFolder close(bool commit = true)
+        in { assert( valid ); }
+        body
+        {
+            return closeImpl(commit);
+        }   
+
+
+        override VfsFolder sync()
+        in { assert( valid ); }
+        body
+        {
+            return syncImpl();
+        }
+    }
+
     /**
      * Closes this folder object.  If commit is true, then the folder is
      * sync'ed before being closed.

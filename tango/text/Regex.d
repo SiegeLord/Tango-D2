@@ -4708,3 +4708,65 @@ void encode(ref const(dchar)[] s, dchar c)
     {
         s ~= c;
     }
+
+debug(UnitTest)
+{
+    unittest
+    {
+        // match a fixed string
+        Regex r;
+        r = new Regex("abc");
+        assert(r.test("abc123"));
+        assert(r.test("feabc123"));
+        assert(!r.test("abe123"));
+
+        // match a non-ASCII string
+        r = new Regex("☃");
+        assert(r.test("a☃c123"));
+
+        // capture
+        r = new Regex("☃(c)");
+        assert(r.test("a☃c123"));
+        assert(r.match(1) == "c");
+
+        // dot
+        r = new Regex("..");
+        assert(r.test("a☃c123"));
+
+        // dot capture
+        r = new Regex("(..)");
+        assert(r.test("a☃c123"));
+        assert(r.match(1) == "a☃");
+
+        // two captures
+        r = new Regex("(.)(.)");
+        assert(r.test("a☃c123"));
+        assert(r.match(1) == "a");
+        assert(r.match(2) == "☃");
+
+        // multiple letters
+        r = new Regex(".*(e+).*");
+        assert(r.test("aeeeeec123"));
+        assert(r.match(1) == "eeeee", "Expected: eeeee Got: " ~ r.match(1));
+        assert(!r.test("abfua"));
+
+        // multiple snowmen
+        r = new Regex(".*(☃+).*");
+        assert(r.test("a☃☃☃☃☃c123"));
+        assert(r.match(1) == "☃☃☃☃☃", "Expected: ☃☃☃☃☃ Got: " ~ r.match(1));
+        assert(!r.test("abeua"));
+
+        // multiple snowmen
+        r = new Regex("(☃*)");
+        assert(r.test("a☃☃☃☃☃c123"));
+        assert(r.match(0) == "☃☃☃☃☃");
+        assert(r.match(1) == "☃☃☃☃☃");
+        assert(r.test("abeua"));
+    }
+
+    debug(RegexTestOnly)
+    {
+        import tango.io.Stdout;
+        void main() { Stdout("All tests pass").newline(); }
+    }
+}

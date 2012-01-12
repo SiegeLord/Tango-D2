@@ -2,15 +2,13 @@
 /**
  *   Stacktracing
  *
- *   Functions to generate a stacktrace
+ *   Functions to generate a stacktrace.
  *
- *  Copyright: 2009 Fawzi
- *  License:   tango license
- *  Authors:   Fawzi Mohamed
+ *  Copyright: Copyright (C) 2009 Fawzi
+ *  License:   Tango License
+ *  Author:    Fawzi Mohamed
  */
 module tango.core.tools.StackTrace;
-
-
 import tango.core.tools.Demangler;
 import tango.core.Runtime;
 import tango.core.Thread;

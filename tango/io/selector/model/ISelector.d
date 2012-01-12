@@ -1,7 +1,7 @@
 /*******************************************************************************
   copyright:   Copyright (c) 2006 Juan Jose Comellas. All rights reserved
   license:     BSD style: $(LICENSE)
-  author:      Juan Jose Comellas <juanjo@comellas.com.ar>
+  author:      Juan Jose Comellas $(EMAIL juanjo@comellas.com.ar)
 *******************************************************************************/
 
 module tango.io.selector.model.ISelector;

@@ -1,7 +1,7 @@
 /*******************************************************************************
   copyright:   Copyright (c) 2006 Juan Jose Comellas. All rights reserved
   license:     BSD style: $(LICENSE)
-  author:      Juan Jose Comellas <juanjo@comellas.com.ar>
+  author:      Juan Jose Comellas $(EMAIL juanjo@comellas.com.ar)
 *******************************************************************************/
 
 module tango.io.selector.AbstractSelector;
@@ -334,18 +334,21 @@ abstract class AbstractSelector: ISelector
      * throw an exception with the description of the error.
      *
      * Params:
-     * file     = name of the source file where the check is being made; you
+     * file     = Name of the source file where the check is being made; you
      *            would normally use __FILE__ for this parameter.
-     * line     = line number of the source file where this method was called;
+     * line     = Line number of the source file where this method was called;
      *            you would normally use __LINE__ for this parameter.
      *
-     * Throws:
-     * RegisteredConduitException when the conduit should not be registered
-     * but it is (EEXIST); UnregisteredConduitException when the conduit
-     * should be registered but it isn't (ENOENT);
-     * InterruptedSystemCallException when a system call has been interrupted
-     * (EINTR); OutOfMemoryException if a memory allocation fails (ENOMEM);
-     * SelectorException for any of the other cases in which errno is not 0.
+     * $(UL
+     * $(LI $(B RegisteredConduitException) when the conduit
+     *      should not be registered but it is (EEXIST).)
+     * $(LI $(B UnregisteredConduitException) when the conduit
+     *      should be registered but it isn't (ENOENT).)
+     * $(LI $(B InterruptedSystemCallException) when a system call has been
+     *      interrupted (EINTR).)
+     * $(LI $(B OutOfMemoryException) if a memory allocation fails (ENOMEM).)
+     * $(LI $(B SelectorException) for any of the other cases
+     *      in which errno is not 0.))
      */
     protected void checkErrno(string file, size_t line)
     {

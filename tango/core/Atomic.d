@@ -4,18 +4,16 @@
  * may be performed using the specified memory barrier or a less granular
  * barrier if the hardware does not support the version requested.  This
  * model is based on a design by Alexander Terekhov as outlined in
- * <a href=http://groups.google.com/groups?threadm=3E4820EE.6F408B25%40web.de>
- * this thread</a>.  Another useful reference for memory ordering on modern
- * architectures is <a href=http://www.linuxjournal.com/article/8211>this
- * article by Paul McKenney</a>.
+ * $(LINK2 http://groups.google.com/groups?threadm=3E4820EE.6F408B25%40web.de,
+ * this thread).  Another useful reference for memory ordering on modern
+ * architectures is $(LINK2 http://www.linuxjournal.com/article/8211, this
+ * article by Paul McKenney).
  *
  * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
  * License:   BSD style: $(LICENSE)
  * Authors:   Sean Kelly
  */
 module tango.core.Atomic;
-
-
 
 
 pragma(msg, "tango.core.Atomic is deprecated. Please use tango.core.sync.Atomic instead.");
@@ -106,9 +104,9 @@ version( TangoDoc )
 
     /**
      * Supported msync values:
-     *  msync.raw
-     *  msync.hlb
-     *  msync.acq
+     *  msync.raw,
+     *  msync.hlb,
+     *  msync.acq,
      *  msync.seq
      */
     template atomicLoad( msync ms, T )
@@ -137,10 +135,10 @@ version( TangoDoc )
 
     /**
      * Supported msync values:
-     *  msync.raw
-     *  msync.ssb
-     *  msync.acq
-     *  msync.rel
+     *  msync.raw,
+     *  msync.ssb,
+     *  msync.acq,
+     *  msync.rel,
      *  msync.seq
      */
     template atomicStore( msync ms, T )
@@ -167,10 +165,10 @@ version( TangoDoc )
 
     /**
      * Supported msync values:
-     *  msync.raw
-     *  msync.ssb
-     *  msync.acq
-     *  msync.rel
+     *  msync.raw,
+     *  msync.ssb,
+     *  msync.acq,
+     *  msync.rel,
      *  msync.seq
      */
     template atomicStoreIf( msync ms, T )
@@ -201,10 +199,10 @@ version( TangoDoc )
 
     /**
      * Supported msync values:
-     *  msync.raw
-     *  msync.ssb
-     *  msync.acq
-     *  msync.rel
+     *  msync.raw,
+     *  msync.ssb,
+     *  msync.acq,
+     *  msync.rel,
      *  msync.seq
      */
     template atomicIncrement( msync ms, T )
@@ -241,10 +239,10 @@ version( TangoDoc )
 
     /**
      * Supported msync values:
-     *  msync.raw
-     *  msync.ssb
-     *  msync.acq
-     *  msync.rel
+     *  msync.raw,
+     *  msync.ssb,
+     *  msync.acq,
+     *  msync.rel,
      *  msync.seq
      */
     template atomicDecrement( msync ms, T )

@@ -1,11 +1,11 @@
 /**
  *   Stacktracing
  *
- *   Inclusion of this module activates traced exceptions using the tango own tracers if possible
+ *   Inclusion of this module activates traced exceptions using the tango own tracers if possible.
  *
- *  Copyright: 2009 h3r3tic 
- *  License:   tango license, apache 2.0
- *  Authors:   Tomasz Stachowiak (h3r3tic)
+ *  Copyright: Copyright (C) 2009 h3r3tic
+ *  License:   Tango License, Apache 2.0
+ *  Author:    Tomasz Stachowiak (h3r3tic)
  */
 module tango.core.tools.WinStackTrace;
 

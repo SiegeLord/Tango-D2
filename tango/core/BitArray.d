@@ -458,7 +458,7 @@ struct BitArray
      *  rhs = The array to compare against.
      *
      * Returns:
-     *  zero if not equal and non-zero otherwise.
+     *  false if not equal and non-zero otherwise.
      */
     const bool opEquals(ref const(BitArray) rhs)
     {
