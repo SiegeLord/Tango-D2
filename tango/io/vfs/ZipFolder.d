@@ -4,7 +4,7 @@
 
     license:    BSD style: $(LICENSE)
 
-    version:    The Great Namechange: February 2008
+    version:    The Great Namechange: February 2008$(BR)
 
                 Initial release: December 2007
 
@@ -13,8 +13,6 @@
 *******************************************************************************/
 
 module tango.io.vfs.ZipFolder;
-
-
 
 import Path = tango.io.Path;
 import tango.io.device.File : File;
@@ -276,6 +274,334 @@ private
             assert( (zn && tn)
           /* zn xor tn */ || (!(zn&&tn)&&(zn||tn)) );
         }
+    }
+}
+
+// ************************************************************************ //
+// ************************************************************************ //
+
+/**
+ * This class represents a folder in an archive.  In addition to supporting
+ * the sync operation, you can also use the archive member to get a reference
+ * to the underlying ZipFolder instance.
+ */
+class ZipSubFolder : VfsFolder, VfsSync
+{
+    ///
+    final const(char)[] name()
+    in { assert( valid ); }
+    body
+    {
+        return entry.name;
+    }
+
+    ///
+    final override string toString()
+    in { assert( valid ); }
+    body
+    {
+        return entry.fullname.idup;
+    }
+
+    ///
+    final VfsFile file(in char[] path)
+    in
+    {
+        assert( valid );
+        assert( !Path.parse(path).isAbsolute );
+    }
+    body
+    {
+        auto fp = Path.parse(path);
+        auto dir = fp.path;
+        auto name = fp.file;
+
+        if (dir.length > 0 && '/' == dir[$-1]) {
+            dir = dir[0..$-1];
+        }
+		
+        // If the file is in another directory, then we need to look up that
+        // up first.
+        if( dir.nz() )
+        {
+            auto dir_ent = this.folder(dir);
+            auto dir_obj = dir_ent.open;
+            return dir_obj.file(name);
+        }
+        else
+        {
+            // Otherwise, we need to check and see whether the file is in our
+            // entry list.
+            if( auto file_entry = (name in this.entry.dir.children) )
+            {
+                // It is; create a new object for it.
+                return new ZipFile(archive, this.entry, *file_entry);
+            }
+            else
+            {
+                // Oh dear... return a holding object.
+                return new ZipFile(archive, this.entry, name);
+            }
+        }
+    }
+
+    ///
+    final VfsFolderEntry folder(in char[] path)
+    in
+    {
+        assert( valid );
+        assert( !Path.parse(path).isAbsolute );
+    }
+    body
+    {
+        // Locate the folder in question.  We do this by "walking" the
+        // path components.  If we find a component that doesn't exist,
+        // then we create a ZipSubFolderEntry for the remainder.
+        Entry* curent = this.entry;
+
+        // h is the "head" of the path, t is the remainder.  ht is both
+        // joined together.
+        const(char)[] h,t,ht;
+        ht = path;
+
+        do
+        {
+            // Split ht at the first path separator.
+            assert( ht.nz() );
+            headTail(ht,h,t);
+
+            // Look for a pre-existing subentry
+            auto subent = (h in curent.dir.children);
+            if( t.nz() && !!subent )
+            {
+                // Move to the subentry, and split the tail on the next
+                // iteration.
+                curent = *subent;
+                ht = t;
+            }
+            else
+                // If the next component doesn't exist, return a folder entry.
+                // If the tail is empty, return a folder entry as well (let
+                // the ZipSubFolderEntry do the last lookup.)
+                return new ZipSubFolderEntry(archive, curent, ht);
+        }
+        while( true );
+        //assert(false);
+    }
+
+    ///
+    final VfsFolders self()
+    in { assert( valid ); }
+    body
+    {
+        return new ZipSubFolderGroup(archive, this, false);
+    }
+
+    ///
+    final VfsFolders tree()
+    in { assert( valid ); }
+    body
+    {
+        return new ZipSubFolderGroup(archive, this, true);
+    }
+
+    ///
+    final int opApply(int delegate(ref VfsFolder) dg)
+    in { assert( valid ); }
+    body
+    {
+        int result = 0;
+
+        foreach( _,childEntry ; this.entry.dir.children )
+        {
+            if( childEntry.isDir )
+            {
+                VfsFolder childFolder = new ZipSubFolder(archive, childEntry);
+                if( (result = dg(childFolder)) != 0 )
+                    break;
+            }
+        }
+
+        return result;
+    }
+
+    ///
+    final VfsFolder clear()
+    in { assert( valid ); }
+    body
+    {
+version( ZipFolder_NonMutating )
+{
+        mutate_error("VfsFolder.clear");
+        assert(false);
+}
+else
+{
+        // MUTATE
+        enforce_mutable;
+
+        // Disposing of the underlying entry subtree should do our job for us.
+        entry.dispose_children;
+        mutate;
+        return this;
+}
+    }
+
+    ///
+    final bool writable()
+    in { assert( valid ); }
+    body
+    {
+        return !archive.readonly;
+    }
+
+    /**
+     * Closes this folder object.  If commit is true, then the folder is
+     * sync'ed before being closed.
+     */
+    override VfsFolder close(bool commit = true)
+    in { assert( valid ); }
+    body
+    {
+        // MUTATE
+        if( commit ) sync;
+
+        // Just clean up our pointers
+        archive = null;
+        entry = null;
+        return this;
+    }
+
+    /**
+     * This will flush any changes to the archive to disk.  Note that this
+     * applies to the entire archive, not just this folder and its contents.
+     */
+    override VfsFolder sync()
+    in { assert( valid ); }
+    body
+    {
+        // MUTATE
+        archive.sync;
+        return this;
+    }
+
+    ///
+    final void verify(VfsFolder folder, bool mounting)
+    in { assert( valid ); }
+    body
+    {
+        auto zipfolder = cast(ZipSubFolder) folder;
+
+        if( mounting
+                && zipfolder !is null
+                && zipfolder.archive is archive )
+        {
+            auto src = this.toString;
+            auto dst = zipfolder.toString;
+
+            auto len = src.length > dst.length ? dst.length : src.length;
+
+            if( src[0..len] == dst[0..len] )
+                error(`folders "`~dst~`" and "`~src~`" in archive "`
+                        ~archive.path~`" overlap`);
+        }
+    }
+
+    /**
+     * Returns a reference to the underlying ZipFolder instance.
+     */
+    final ZipFolder archive() { return _archive; }
+
+private:
+    ZipFolder _archive;
+    Entry* entry;
+    VfsStats stats;
+
+    final ZipFolder archive(ZipFolder v) { return _archive = v; }
+
+    this(ZipFolder archive, Entry* entry)
+    {
+        this.reset(archive, entry);
+    }
+
+    final void reset(ZipFolder archive, Entry* entry)
+    in
+    {
+        assert( archive !is null );
+        assert( entry.isDir );
+    }
+    out { assert( valid ); }
+    body
+    {
+        this.archive = archive;
+        this.entry = entry;
+    }
+
+    final bool valid()
+    {
+        return( (archive !is null) && !archive.closed );
+    }
+
+    final void enforce_mutable()
+    in { assert( valid ); }
+    body
+    {
+        if( archive.readonly )
+            // TODO: exception
+            throw new Exception("cannot mutate a read-only Zip archive");
+    }
+
+    final void mutate()
+    in { assert( valid ); }
+    body
+    {
+        enforce_mutable;
+        archive.modified = true;
+    }
+
+    final ZipSubFolder[] folders(bool collect)
+    in { assert( valid ); }
+    body
+    {
+        ZipSubFolder[] folders;
+        stats = stats.init;
+
+        foreach( _,childEntry ; entry.dir.children )
+        {
+            if( childEntry.isDir )
+            {
+                if( collect ) folders ~= new ZipSubFolder(archive, childEntry);
+                ++ stats.folders;
+            }
+            else
+            {
+                assert( childEntry.isFile );
+                stats.bytes += childEntry.fileSize;
+                ++ stats.files;
+            }
+        }
+
+        return folders;
+    }
+
+    final Entry*[] files(ref VfsStats stats, VfsFilter filter = null)
+    in { assert( valid ); }
+    body
+    {
+        Entry*[] files;
+
+        foreach( _,childEntry ; entry.dir.children )
+        {
+            if( childEntry.isFile )
+                if( filter is null || filter(childEntry.vfsInfo) )
+                {
+                    files ~= childEntry;
+                    stats.bytes += childEntry.fileSize;
+                    ++stats.files;
+                }
+        }
+
+        return files;
     }
 }
 
@@ -621,334 +947,6 @@ private:
                 }
             }
         }
-    }
-}
-
-// ************************************************************************ //
-// ************************************************************************ //
-
-/**
- * This class represents a folder in an archive.  In addition to supporting
- * the sync operation, you can also use the archive member to get a reference
- * to the underlying ZipFolder instance.
- */
-class ZipSubFolder : VfsFolder, VfsSync
-{
-    ///
-    final const(char)[] name()
-    in { assert( valid ); }
-    body
-    {
-        return entry.name;
-    }
-
-    ///
-    final override string toString()
-    in { assert( valid ); }
-    body
-    {
-        return entry.fullname.idup;
-    }
-
-    ///
-    final VfsFile file(in char[] path)
-    in
-    {
-        assert( valid );
-        assert( !Path.parse(path).isAbsolute );
-    }
-    body
-    {
-        auto fp = Path.parse(path);
-        auto dir = fp.path;
-        auto name = fp.file;
-
-        if (dir.length > 0 && '/' == dir[$-1]) {
-            dir = dir[0..$-1];
-        }
-		
-        // If the file is in another directory, then we need to look up that
-        // up first.
-        if( dir.nz() )
-        {
-            auto dir_ent = this.folder(dir);
-            auto dir_obj = dir_ent.open;
-            return dir_obj.file(name);
-        }
-        else
-        {
-            // Otherwise, we need to check and see whether the file is in our
-            // entry list.
-            if( auto file_entry = (name in this.entry.dir.children) )
-            {
-                // It is; create a new object for it.
-                return new ZipFile(archive, this.entry, *file_entry);
-            }
-            else
-            {
-                // Oh dear... return a holding object.
-                return new ZipFile(archive, this.entry, name);
-            }
-        }
-    }
-
-    ///
-    final VfsFolderEntry folder(in char[] path)
-    in
-    {
-        assert( valid );
-        assert( !Path.parse(path).isAbsolute );
-    }
-    body
-    {
-        // Locate the folder in question.  We do this by "walking" the
-        // path components.  If we find a component that doesn't exist,
-        // then we create a ZipSubFolderEntry for the remainder.
-        Entry* curent = this.entry;
-
-        // h is the "head" of the path, t is the remainder.  ht is both
-        // joined together.
-        const(char)[] h,t,ht;
-        ht = path;
-
-        do
-        {
-            // Split ht at the first path separator.
-            assert( ht.nz() );
-            headTail(ht,h,t);
-
-            // Look for a pre-existing subentry
-            auto subent = (h in curent.dir.children);
-            if( t.nz() && !!subent )
-            {
-                // Move to the subentry, and split the tail on the next
-                // iteration.
-                curent = *subent;
-                ht = t;
-            }
-            else
-                // If the next component doesn't exist, return a folder entry.
-                // If the tail is empty, return a folder entry as well (let
-                // the ZipSubFolderEntry do the last lookup.)
-                return new ZipSubFolderEntry(archive, curent, ht);
-        }
-        while( true );
-        //assert(false);
-    }
-
-    ///
-    final VfsFolders self()
-    in { assert( valid ); }
-    body
-    {
-        return new ZipSubFolderGroup(archive, this, false);
-    }
-
-    ///
-    final VfsFolders tree()
-    in { assert( valid ); }
-    body
-    {
-        return new ZipSubFolderGroup(archive, this, true);
-    }
-
-    ///
-    final int opApply(int delegate(ref VfsFolder) dg)
-    in { assert( valid ); }
-    body
-    {
-        int result = 0;
-
-        foreach( _,childEntry ; this.entry.dir.children )
-        {
-            if( childEntry.isDir )
-            {
-                VfsFolder childFolder = new ZipSubFolder(archive, childEntry);
-                if( (result = dg(childFolder)) != 0 )
-                    break;
-            }
-        }
-
-        return result;
-    }
-
-    ///
-    final VfsFolder clear()
-    in { assert( valid ); }
-    body
-    {
-version( ZipFolder_NonMutating )
-{
-        mutate_error("VfsFolder.clear");
-        assert(false);
-}
-else
-{
-        // MUTATE
-        enforce_mutable;
-
-        // Disposing of the underlying entry subtree should do our job for us.
-        entry.dispose_children;
-        mutate;
-        return this;
-}
-    }
-
-    ///
-    final bool writable()
-    in { assert( valid ); }
-    body
-    {
-        return !archive.readonly;
-    }
-
-    /**
-     * Closes this folder object.  If commit is true, then the folder is
-     * sync'ed before being closed.
-     */
-    override VfsFolder close(bool commit = true)
-    in { assert( valid ); }
-    body
-    {
-        // MUTATE
-        if( commit ) sync;
-
-        // Just clean up our pointers
-        archive = null;
-        entry = null;
-        return this;
-    }
-
-    /**
-     * This will flush any changes to the archive to disk.  Note that this
-     * applies to the entire archive, not just this folder and its contents.
-     */
-    override VfsFolder sync()
-    in { assert( valid ); }
-    body
-    {
-        // MUTATE
-        archive.sync;
-        return this;
-    }
-
-    ///
-    final void verify(VfsFolder folder, bool mounting)
-    in { assert( valid ); }
-    body
-    {
-        auto zipfolder = cast(ZipSubFolder) folder;
-
-        if( mounting
-                && zipfolder !is null
-                && zipfolder.archive is archive )
-        {
-            auto src = this.toString;
-            auto dst = zipfolder.toString;
-
-            auto len = src.length > dst.length ? dst.length : src.length;
-
-            if( src[0..len] == dst[0..len] )
-                error(`folders "`~dst~`" and "`~src~`" in archive "`
-                        ~archive.path~`" overlap`);
-        }
-    }
-
-    /**
-     * Returns a reference to the underlying ZipFolder instance.
-     */
-    final ZipFolder archive() { return _archive; }
-
-private:
-    ZipFolder _archive;
-    Entry* entry;
-    VfsStats stats;
-
-    final ZipFolder archive(ZipFolder v) { return _archive = v; }
-
-    this(ZipFolder archive, Entry* entry)
-    {
-        this.reset(archive, entry);
-    }
-
-    final void reset(ZipFolder archive, Entry* entry)
-    in
-    {
-        assert( archive !is null );
-        assert( entry.isDir );
-    }
-    out { assert( valid ); }
-    body
-    {
-        this.archive = archive;
-        this.entry = entry;
-    }
-
-    final bool valid()
-    {
-        return( (archive !is null) && !archive.closed );
-    }
-
-    final void enforce_mutable()
-    in { assert( valid ); }
-    body
-    {
-        if( archive.readonly )
-            // TODO: exception
-            throw new Exception("cannot mutate a read-only Zip archive");
-    }
-
-    final void mutate()
-    in { assert( valid ); }
-    body
-    {
-        enforce_mutable;
-        archive.modified = true;
-    }
-
-    final ZipSubFolder[] folders(bool collect)
-    in { assert( valid ); }
-    body
-    {
-        ZipSubFolder[] folders;
-        stats = stats.init;
-
-        foreach( _,childEntry ; entry.dir.children )
-        {
-            if( childEntry.isDir )
-            {
-                if( collect ) folders ~= new ZipSubFolder(archive, childEntry);
-                ++ stats.folders;
-            }
-            else
-            {
-                assert( childEntry.isFile );
-                stats.bytes += childEntry.fileSize;
-                ++ stats.files;
-            }
-        }
-
-        return folders;
-    }
-
-    final Entry*[] files(ref VfsStats stats, VfsFilter filter = null)
-    in { assert( valid ); }
-    body
-    {
-        Entry*[] files;
-
-        foreach( _,childEntry ; entry.dir.children )
-        {
-            if( childEntry.isFile )
-                if( filter is null || filter(childEntry.vfsInfo) )
-                {
-                    files ~= childEntry;
-                    stats.bytes += childEntry.fileSize;
-                    ++stats.files;
-                }
-        }
-
-        return files;
     }
 }
 
