@@ -343,10 +343,10 @@ class DataOutput : OutputFilter
 
         ***********************************************************************/
 
-        final uint array (void[] src)
+        final ulong array (void[] src)
         {
                 auto len = src.length;
-                int32 (len);
+                int64 (len);
                 output.write (src);
                 return len;
         }

@@ -459,8 +459,10 @@ else
     version (GNU) 
     {
         override VfsFolder close(bool commit = true)
+        in { assert( valid ); }
+        body
         {
-            assert( valid );
+            
             return closeImpl(commit);
         }
 
@@ -492,9 +494,7 @@ else
      * Closes this folder object.  If commit is true, then the folder is
      * sync'ed before being closed.
      */
-    override VfsFolder close(bool commit = true)
-    in { assert( valid ); }
-    body
+    protected VfsFolder closeImpl(bool commit = true)
     {
         // MUTATE
         if( commit ) sync;
@@ -509,8 +509,8 @@ else
      * This will flush any changes to the archive to disk.  Note that this
      * applies to the entire archive, not just this folder and its contents.
      */
-    override VfsFolder sync()
-    in { assert( valid ); }
+    protected VfsFolder syncImpl()
+		in { assert( valid ); }
     body
     {
         // MUTATE
@@ -668,9 +668,8 @@ class ZipFolder : ZipSubFolder
      * flushed out to disk.  If false, changes will simply be discarded.
      */
     final override VfsFolder close(bool commit = true)
-    in { assert( valid ); }
-    body
     {
+				assert( valid );
         debug( ZipFolder )
             Stderr.formatln("ZipFolder.close({})",commit);
 
@@ -698,7 +697,6 @@ class ZipFolder : ZipSubFolder
      * Flushes all changes to the archive out to disk.
      */
     final override VfsFolder sync()
-    in { assert( valid ); }
     out
     {
         assert( valid );
@@ -706,6 +704,7 @@ class ZipFolder : ZipSubFolder
     }
     body
     {
+				assert( valid );
         debug( ZipFolder )
             Stderr("ZipFolder.sync()").newline;
 
