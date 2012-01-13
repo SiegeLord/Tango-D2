@@ -150,10 +150,6 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final char[] cString ()
-        {
-                return p.fp [0 .. p.end_+1];
-        }
         
         final const const(char)[] cString ()
         {
@@ -167,7 +163,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final char[] root ()
+        final const const(char)[] root ()
         {
                 return p.root;
         }
@@ -184,7 +180,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final char[] folder ()
+        final const const(char)[] folder ()
         {
                 return p.folder;
         }
@@ -207,7 +203,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final char[] parent ()
+        final const(char)[] parent ()
         {
                 return p.parent;
         }
@@ -218,7 +214,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final char[] name ()
+        final const const(char)[] name ()
         {
                 return p.name;
         }
@@ -232,7 +228,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final char[] ext ()
+        final const(char)[] ext ()
         {
                 return p.ext;
         }
@@ -244,7 +240,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final char[] suffix ()
+        final const const(char)[] suffix ()
         {
                 return p.suffix;
         }
@@ -255,7 +251,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final char[] path ()
+        final const const(char)[] path ()
         {
                 return p.path;
         }
@@ -266,7 +262,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final char[] file ()
+        final const const(char)[] file ()
         {
                 return p.file;
         }
@@ -366,7 +362,9 @@ class FilePath : PathView
 
         final FilePath replace (char from, char to)
         {
-                .replace (path, from, to);
+								auto p = path.dup;
+                .replace (p, from, to);
+								path = p;
                 return this;
         }
 
@@ -385,7 +383,9 @@ class FilePath : PathView
 
         final FilePath standard ()
         {
-                .standard (path);
+								auto p = path.dup;
+                .standard (p);
+								path = p;
                 return this;
         }
 
@@ -401,7 +401,9 @@ class FilePath : PathView
 
         final FilePath native ()
         {
-                .native (path);
+								auto p = path.dup;
+                .native (p);
+								path = p;
                 return this;
         }
 
@@ -414,14 +416,16 @@ class FilePath : PathView
 
         final FilePath cat (const(char)[][] others...)
         {
+                auto fp = p.fp.dup;
                 foreach (other; others)
                         {
                         auto len = p.end_ + other.length;
                         expand (len);
-                        p.fp [p.end_ .. len] = other;
-                        p.fp [len] = 0;
+                        fp [p.end_ .. len] = other;
+                        fp [len] = 0;
                         p.end_ = cast(int)len;
                         }
+												p.fp = fp;
                 return parse;
         }
 
@@ -475,16 +479,17 @@ class FilePath : PathView
         final FilePath set (const(char)[] path, bool convert = false)
         {
                 p.end_ = cast(int)path.length;
-
+								auto fp = p.fp.dup;
                 expand (p.end_);
                 if (p.end_)
                    {
-                   p.fp[0 .. p.end_] = path;
+                   fp[0 .. p.end_] = path;
                    if (convert)
-                       .standard (p.fp [0 .. p.end_]);
+                       .standard (fp [0 .. p.end_]);
                    }
 
-                p.fp[p.end_] = '\0';
+                fp[p.end_] = '\0';
+								p.fp = fp;
                 return parse;
         }
 
@@ -596,11 +601,13 @@ class FilePath : PathView
 
         final FilePath pop ()
         {
+
+					
                 version (SpecialPop)
                          p.end_ = p.parent.length;
                    else
                       p.end_ = cast(int)p.pop.length;
-                p.fp[p.end_] = '\0';
+                p.fp = p.fp[0 .. p.end_] ~ '\0';
                 return parse;
         }
 
@@ -705,10 +712,11 @@ class FilePath : PathView
 
         private final int adjust (int head, int tail, int len, const(char)[] sub)
         {
+								auto fp = p.fp.dup;
                 len = cast(int)(sub.length - len);
 
                 // don't destroy self-references!
-                if (len && sub.ptr >= p.fp.ptr+head+len && sub.ptr < p.fp.ptr+p.fp.length)
+                if (len && sub.ptr >= fp.ptr+head+len && sub.ptr < fp.ptr+fp.length)
                    {
                    char[512] tmp = void;
                    assert (sub.length < tmp.length);
@@ -719,13 +727,14 @@ class FilePath : PathView
                 expand (len + p.end_);
 
                 // slide tail around to insert or remove space
-                memmove (p.fp.ptr+tail+len, p.fp.ptr+tail, p.end_ +1 - tail);
+                memmove (fp.ptr+tail+len, fp.ptr+tail, p.end_ +1 - tail);
 
                 // copy replacement
-                memmove (p.fp.ptr + head, sub.ptr, sub.length);
+                memmove (fp.ptr + head, sub.ptr, sub.length);
 
                 // adjust length
                 p.end_ += len;
+								p.fp = fp;
                 return len;
         }
 
@@ -1093,7 +1102,7 @@ interface PathView
 
         ***********************************************************************/
 
-        char[] cString ();
+       
         const const(char)[] cString ();
 
         /***********************************************************************
@@ -1103,7 +1112,7 @@ interface PathView
 
         ***********************************************************************/
 
-        char[] root ();
+        const const(char)[] root ();
 
         /***********************************************************************
 
@@ -1115,7 +1124,7 @@ interface PathView
 
         ***********************************************************************/
 
-        char[] folder ();
+        const const(char)[] folder ();
 
         /***********************************************************************
 
@@ -1124,7 +1133,7 @@ interface PathView
 
         ***********************************************************************/
 
-        char[] name ();
+        const const(char)[] name ();
 
         /***********************************************************************
 
@@ -1135,7 +1144,7 @@ interface PathView
 
         ***********************************************************************/
 
-        char[] ext ();
+        const(char)[] ext ();
 
         /***********************************************************************
 
@@ -1144,7 +1153,7 @@ interface PathView
 
         ***********************************************************************/
 
-        char[] suffix ();
+        const const(char)[] suffix ();
 
         /***********************************************************************
 
@@ -1152,7 +1161,7 @@ interface PathView
 
         ***********************************************************************/
 
-        char[] path ();
+        const const(char)[] path ();
 
         /***********************************************************************
 
@@ -1160,7 +1169,7 @@ interface PathView
 
         ***********************************************************************/
 
-        char[] file ();
+        const const(char)[] file ();
 
         /***********************************************************************
 

@@ -262,9 +262,9 @@ struct FileHeader
     Data* data;
     static assert( Data.sizeof == 42 );
 
-    char[] file_name;
+    const(char)[] file_name;
     ubyte[] extra_field;
-    char[] file_comment;
+    const(char)[] file_comment;
 
     bool usingDataDescriptor()
     {
@@ -536,11 +536,10 @@ interface ZipReader
 interface ZipWriter
 {
     void finish();
-    void putFile(ZipEntryInfo info, char[] path);
-    void putFile(ZipEntryInfo info, char[] path);
+    void putFile(ZipEntryInfo info, in char[] path);
     void putStream(ZipEntryInfo info, InputStream source);
     void putEntry(ZipEntryInfo info, ZipEntry entry);
-    void putData(ZipEntryInfo info, void[] data);
+    void putData(ZipEntryInfo info, in void[] data);
     Method method();
     Method method(Method);
 }
@@ -967,7 +966,7 @@ class ZipBlockWriter : ZipWriter
      * Creates a ZipBlockWriter using the specified file on the local
      * filesystem.
      */
-    this(char[] path)
+    this(in char[] path)
     {
         file_output = new File(path, File.WriteCreate);
         this(file_output);
@@ -1010,7 +1009,7 @@ class ZipBlockWriter : ZipWriter
     /**
      * Adds a file from the local filesystem to the archive.
      */
-    void putFile(ZipEntryInfo info, char[] path)
+    void putFile(ZipEntryInfo info, in char[] path)
     {
         scope file = new File(path);
         scope(exit) file.close();
@@ -1038,10 +1037,10 @@ class ZipBlockWriter : ZipWriter
     /**
      * Adds a file using the contents of the given array to the archive.
      */
-    void putData(ZipEntryInfo info, void[] data)
+    void putData(ZipEntryInfo info, in void[] data)
     {
         //scope mc = new MemoryConduit(data);
-        scope mc = new Array(data);
+        scope mc = new Array(cast(void[])data);
         scope(exit) mc.close;
         put_compressed(info, mc);
     }
@@ -1064,8 +1063,8 @@ private:
     {
         FileHeaderData data;
         long header_position;
-        char[] filename;
-        char[] comment;
+        const(char)[] filename;
+        const(char)[] comment;
         ubyte[] extra;
     }
     Entry[] entries;
@@ -1295,7 +1294,7 @@ private:
      * stream.  It also appends a new Entry with the data and filename.
      */
     void put_local_header(LocalFileHeaderData data,
-            char[] file_name)
+            in char[] file_name)
     {
         auto f_name = Path.normalize(file_name);
         auto p = Path.parse(f_name);
@@ -1510,12 +1509,12 @@ private:
 struct ZipEntryInfo
 {
     /// Full path and file name of this file.
-    char[] name;
+    const(char)[] name;
     /// Modification timestamp.  If this is left uninitialised when passed to
     /// a ZipWriter, it will be reset to the current system time.
     Time modified = Time.min;
     /// Comment on the file.
-    char[] comment;
+    const(char)[] comment;
 }
 
 //////////////////////////////////////////////////////////////////////////////
