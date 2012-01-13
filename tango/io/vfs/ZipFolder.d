@@ -462,7 +462,6 @@ else
         in { assert( valid ); }
         body
         {
-            
             return closeImpl(commit);
         }
 

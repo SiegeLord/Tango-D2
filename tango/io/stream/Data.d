@@ -66,7 +66,7 @@ class DataInput : InputFilter
         protected InputStream   input;
         private Allocate        allocator;
 
-        private alias void[] delegate (uint) Allocate;
+        private alias void[] delegate (size_t) Allocate;
 
         /***********************************************************************
 
@@ -78,7 +78,7 @@ class DataInput : InputFilter
         {
                 super (input = BufferedInput.create (stream));
 
-                allocator = (uint bytes){return new void[bytes];};
+                allocator = (size_t bytes){return new void[bytes];};
         }
 
         /***********************************************************************
@@ -120,9 +120,9 @@ class DataInput : InputFilter
 
         ***********************************************************************/
 
-        final uint array (void[] dst)
+        final size_t array (void[] dst)
         {
-                auto len = int32;
+                auto len = cast(size_t)int64;
                 if (len > dst.length)
                     conduit.error ("DataInput.readArray :: dst array is too small");
                 eat (dst.ptr, len);
@@ -150,7 +150,7 @@ class DataInput : InputFilter
 
         final void[] array ()
         {
-                auto len = int32;
+                auto len = cast(size_t)int64;
                 auto dst = allocator (len);
                 eat (dst.ptr, len);
                 return dst;
