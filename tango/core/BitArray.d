@@ -46,13 +46,18 @@ struct BitArray
             temp[pos] = val;
         return temp;
     }*/
-		
-		this(bool[] bits)
-		{
-			this.length = bits.length;
-			foreach( pos, val; bits )
+    this(size_t _len, uint* _ptr)
+    {
+        len = _len;
+        ptr = _ptr;
+    }
+
+    this(bool[] bits)
+    {
+        this.length = bits.length;
+        foreach( pos, val; bits )
             this[pos] = val;
-		}
+    }
 
     /**
      * Get the number of bits in this array.
@@ -155,11 +160,11 @@ struct BitArray
      * Params:
      *  bits = The initialization value.
      */
-		 
+
     this(this)
     {
-		ptr = ptr;
-		len = len;
+        ptr = ptr;
+        len = len;
     }
     void opAssign( bool[] bits )
     {
@@ -366,8 +371,8 @@ struct BitArray
     {
       unittest
       {
-        static uint x = 0b1100011000;
-        static BitArray ba = { 10, &x };
+        uint x = 0b1100011000;
+        auto ba = BitArray(10, &x);
 
         ba.sort;
         for( size_t i = 0; i < 6; ++i )
@@ -384,7 +389,7 @@ struct BitArray
      * Params:
      *  dg = The supplied code as a delegate.
      */
-    int opApply( int delegate(ref bool) dg )
+    int opApply(scope int delegate(ref bool) dg )
     {
         int result;
 
@@ -401,7 +406,7 @@ struct BitArray
 
 
     /** ditto */
-    int opApply( int delegate(ref size_t, ref bool) dg )
+    int opApply(scope int delegate(ref size_t, ref bool) dg )
     {
         int result;
 

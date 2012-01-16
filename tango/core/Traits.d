@@ -27,6 +27,17 @@ template BaseTypeOf( T )
         alias T BaseTypeOf;
 }
 
+template InoutTypeOf(T, M)
+{
+    static assert(is(BaseTypeOf!(T) == BaseTypeOf!(M)));
+    static if (is(immutable(BaseTypeOf!(T)) == T) && is(immutable(BaseTypeOf!(T)) == M))
+        alias immutable(BaseTypeOf!(T)) InoutTypeOf;
+    else static if ((is(BaseTypeOf!(T) == T) && is(BaseTypeOf!(T) == M)))
+        alias BaseTypeOf!(T) InoutTypeOf;
+    else
+        alias const(BaseTypeOf!(T)) InoutTypeOf;
+}
+
 /**
  * Evaluates to true if T is char[], wchar[], or dchar[].
  */

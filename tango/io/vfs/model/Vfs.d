@@ -57,17 +57,17 @@ interface VfsHost : VfsFolder
                 tree of virtual folders are detected and trapped.
 
                 The second argument represents an optional name that the
-                mount should be known as, instead of the name exposed by 
+                mount should be known as, instead of the name exposed by
                 the provided folder (it is not an alias).
 
         **********************************************************************/
 
-        VfsHost mount (VfsFolder folder, in char[] name=null);
+        VfsHost mount (VfsFolder folder, const(char)[] name=null);
 
         /***********************************************************************
 
-                Add a set of child folders. The children cannot 'overlap' 
-                with others in the tree of the same type. Circular references 
+                Add a set of child folders. The children cannot 'overlap'
+                with others in the tree of the same type. Circular references
                 are detected and trapped.
 
         ***********************************************************************/
@@ -76,7 +76,7 @@ interface VfsHost : VfsFolder
 
         /**********************************************************************
 
-                Unhook a child folder 
+                Unhook a child folder
 
         **********************************************************************/
 
@@ -89,7 +89,7 @@ interface VfsHost : VfsFolder
 
         **********************************************************************/
 
-        VfsHost map (VfsFile target, in char[] name);
+        VfsHost map (VfsFile target, const(char)[] name);
 
         /***********************************************************************
 
@@ -98,7 +98,7 @@ interface VfsHost : VfsFolder
 
         ***********************************************************************/
 
-        VfsHost map (VfsFolderEntry target, in char[] name);
+        VfsHost map (VfsFolderEntry target, const(char)[] name);
 }
 
 
@@ -130,8 +130,8 @@ interface VfsHost : VfsFolder
         auto folders = folder.tree;
         ---
 
-        Filtering can be applied to the tree resulting in a sub-group. 
-        Group operations remain applicable. Note that various wildcard 
+        Filtering can be applied to the tree resulting in a sub-group.
+        Group operations remain applicable. Note that various wildcard
         characters may be used in the filtering:
         ---
         // select a subset of the resultant tree
@@ -177,7 +177,7 @@ interface VfsHost : VfsFolder
 
         root.folder("myExistingFolder").open;
         ---
-      
+
         File manipulation is handled in much the same way:
         ---
         root.file("myNewFile").create;
@@ -186,11 +186,11 @@ interface VfsHost : VfsFolder
         root.file("myCopiedFile").copy(source);
         ---
 
-        The principal benefits of these approaches are twofold: 1) it 
-        turns out to be notably more efficient in terms of traversal, and 
-        2) there's no casting required, since there is a clean separation 
+        The principal benefits of these approaches are twofold: 1) it
+        turns out to be notably more efficient in terms of traversal, and
+        2) there's no casting required, since there is a clean separation
         between files and folders.
-        
+
         See VfsFile for more information on file handling
 
 *******************************************************************************/
@@ -215,23 +215,23 @@ interface VfsFolder
 
         /***********************************************************************
 
-                Return a contained file representation 
+                Return a contained file representation
 
         ***********************************************************************/
 
-        VfsFile file (in char[] path);
+        VfsFile file (const(char)[] path);
 
         /***********************************************************************
 
-                Return a contained folder representation 
+                Return a contained folder representation
 
         ***********************************************************************/
 
-        VfsFolderEntry folder (in char[] path);
+        VfsFolderEntry folder (const(char)[] path);
 
         /***********************************************************************
 
-                Returns a folder set containing only this one. Statistics 
+                Returns a folder set containing only this one. Statistics
                 are inclusive of entries within this folder only
 
         ***********************************************************************/
@@ -240,7 +240,7 @@ interface VfsFolder
 
         /***********************************************************************
 
-                Returns a subtree of folders. Statistics are inclusive of 
+                Returns a subtree of folders. Statistics are inclusive of
                 files within this folder and all others within the tree
 
         ***********************************************************************/
@@ -249,12 +249,12 @@ interface VfsFolder
 
         /***********************************************************************
 
-                Iterate over the set of immediate child folders. This is 
+                Iterate over the set of immediate child folders. This is
                 useful for reflecting the hierarchy
 
         ***********************************************************************/
 
-        int opApply (int delegate(ref VfsFolder) dg);
+        int opApply (scope int delegate(ref VfsFolder) dg);
 
         /***********************************************************************
 
@@ -276,7 +276,7 @@ interface VfsFolder
 
                 Close and/or synchronize changes made to this folder. Each
                 driver should take advantage of this as appropriate, perhaps
-                combining multiple files together, or possibly copying to a 
+                combining multiple files together, or possibly copying to a
                 remote location
 
         ***********************************************************************/
@@ -285,8 +285,8 @@ interface VfsFolder
 
         /***********************************************************************
 
-                A folder is being added or removed from the hierarchy. Use 
-                this to test for validity (or whatever) and throw exceptions 
+                A folder is being added or removed from the hierarchy. Use
+                this to test for validity (or whatever) and throw exceptions
                 as necessary
 
         ***********************************************************************/
@@ -301,7 +301,7 @@ interface VfsFolder
 
 /*******************************************************************************
 
-        Operations upon a set of folders 
+        Operations upon a set of folders
 
 *******************************************************************************/
 
@@ -313,11 +313,11 @@ interface VfsFolders
 
         ***********************************************************************/
 
-        int opApply (int delegate(ref VfsFolder) dg);
+        int opApply (scope int delegate(ref VfsFolder) dg);
 
         /***********************************************************************
 
-                Return the number of files 
+                Return the number of files
 
         ***********************************************************************/
 
@@ -325,7 +325,7 @@ interface VfsFolders
 
         /***********************************************************************
 
-                Return the number of folders 
+                Return the number of folders
 
         ***********************************************************************/
 
@@ -341,7 +341,7 @@ interface VfsFolders
 
         /***********************************************************************
 
-                Return the total size of contained files 
+                Return the total size of contained files
 
         ***********************************************************************/
 
@@ -353,7 +353,7 @@ interface VfsFolders
 
         ***********************************************************************/
 
-        VfsFolders subset (in char[]  pattern);
+        VfsFolders subset (const(char)[]  pattern);
 
        /***********************************************************************
 
@@ -361,7 +361,7 @@ interface VfsFolders
 
         ***********************************************************************/
 
-        VfsFiles catalog (in char[]  pattern);
+        VfsFiles catalog (const(char)[]  pattern);
 
         /***********************************************************************
 
@@ -387,11 +387,11 @@ interface VfsFiles
 
         ***********************************************************************/
 
-        int opApply (int delegate(ref VfsFile) dg);
+        int opApply (scope int delegate(ref VfsFile) dg);
 
         /***********************************************************************
 
-                Return the total number of entries 
+                Return the total number of entries
 
         ***********************************************************************/
 
@@ -399,7 +399,7 @@ interface VfsFiles
 
         /***********************************************************************
 
-                Return the total size of all files 
+                Return the total size of all files
 
         ***********************************************************************/
 
@@ -409,11 +409,11 @@ interface VfsFiles
 
 /*******************************************************************************
 
-        A specific file representation 
+        A specific file representation
 
 *******************************************************************************/
 
-interface VfsFile 
+interface VfsFile
 {
         /***********************************************************************
 
@@ -423,8 +423,8 @@ interface VfsFile
 
         const(char)[] name ();
 
-        /***********************************************************************
-
+        /**********************************************************************
+ 
                 Return a long name
 
         ***********************************************************************/
@@ -510,13 +510,13 @@ interface VfsFile
         ***********************************************************************/
 
         VfsFile dup ();
-        
+
         /***********************************************************************
-        
+
                 The modified time of the folder
-        
+
         ***********************************************************************/
-        
+
         Time modified ();
 }
 
@@ -527,7 +527,7 @@ interface VfsFile
 
 *******************************************************************************/
 
-interface VfsFolderEntry 
+interface VfsFolderEntry
 {
         /***********************************************************************
 

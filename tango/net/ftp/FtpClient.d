@@ -10,8 +10,6 @@
 
 module tango.net.ftp.FtpClient;
 
-
-
 private 
 {
     import tango.net.ftp.Telnet;
@@ -72,12 +70,12 @@ struct FtpAddress
         try {
             auto ret = new FtpAddress;
             //remove ftp://
-            auto i = locatePattern(str, cast(const(char)[])"ftp://");
+            auto i = locatePattern(str, "ftp://");
             if(i == 0)
                 str = str[6 .. $];
 
             //check for username and/or password user[:pass]@
-            i = locatePrior(str, cast(const(char))'@');
+            i = locatePrior(str, '@');
             if(i != str.length) {
                 const(char)[] up = str[0 .. i];
                 str = str[i + 1 .. $];
@@ -90,7 +88,7 @@ struct FtpAddress
             }
 
             //check for port
-            i = locatePrior(str, cast(const(char))':');
+            i = locatePrior(str, ':');
             if(i != str.length) {
                 ret.port = cast(uint) Integer.toLong(str[i + 1 .. $]);
                 str = str[0 .. i];
@@ -524,7 +522,7 @@ class FTPConnection: Telnet
         assert(mode >= 0 && (mode >> 16) == 0);
     }
     body {
-        char[] tmp = "000".dup;
+        char[3] tmp = "000";
         // Convert our octal parameter to a string.
         Integer.format(tmp, cast(long) mode, "o");
         sendCommand("SITE CHMOD", tmp, path);
@@ -1474,7 +1472,7 @@ class FTPConnection: Telnet
             // Do we have a type?
             if("type" in info.facts) {
                 // Some reflection might be nice here.
-                switch(cast(immutable)Ascii.toLower(info.facts["type"].dup)) {
+                switch(Ascii.toLower(info.facts["type"].dup)) {
                     case "file":
                         info.type = FtpFileType.file;
                     break;

@@ -6,8 +6,6 @@
 
 module tango.io.selector.SelectorException;
 
-
-
 //private import tango.core.Exception;
 
 

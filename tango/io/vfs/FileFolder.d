@@ -12,7 +12,6 @@
 
 module tango.io.vfs.FileFolder;
 
-
 private import tango.io.device.File;
 
 private import Path = tango.io.Path;
@@ -34,12 +33,12 @@ private import tango.time.Time : Time;
 
 class FileFolder : VfsFolder
 {
-        private const(char)[]          path;
+        private const(char)[]   path;
         private VfsStats        stats;
 
         /***********************************************************************
 
-                Create a file folder with the given path. 
+                Create a file folder with the given path.
 
                 Option 'create' will create the path when set true, 
                 or reference an existing path otherwise
@@ -107,7 +106,7 @@ class FileFolder : VfsFolder
         ***********************************************************************/
 
         final void verify (VfsFolder folder, bool mounting)
-        {       
+        {
                 if (mounting && cast(FileFolder) folder)
                    {
                    auto src = Path.FS.padded (this.toString);
@@ -128,7 +127,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final VfsFile file (in char[] name)
+        final VfsFile file (const(char)[] name)
         {
                 return new FileHost (Path.join (path, name));
         }
@@ -139,7 +138,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final VfsFolderEntry folder (in char[] path)
+        final VfsFolderEntry folder (const(char)[] path)
         {
                 return new FolderHost (this, path);
         }
@@ -196,13 +195,13 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFolder) dg)
+        final int opApply (scope int delegate(ref VfsFolder) dg)
         {
                 int result;
 
-                foreach (folder; folders(true))  
+                foreach (folder; folders(true))
                         {
-                        VfsFolder x = folder;  
+                        VfsFolder x = folder;
                         if ((result = dg(x)) != 0)
                              break;
                         }
@@ -224,7 +223,7 @@ class FileFolder : VfsFolder
         }
 
         /***********************************************************************
-        
+
                 Sweep owned folders 
 
         ***********************************************************************/
@@ -243,11 +242,11 @@ class FileFolder : VfsFolder
                             }
                          else
                             {
-                            stats.bytes += info.bytes; 
+                            stats.bytes += info.bytes;
                            ++stats.files;
                             }
 
-                return folders;         
+                return folders;
         }
 
         /***********************************************************************
@@ -256,9 +255,9 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private const(char)[][] files (ref VfsStats stats, VfsFilter filter = null)
+        private char[][] files (ref VfsStats stats, VfsFilter filter = null)
         {
-                const(char)[][] files;
+                char[][] files;
 
                 foreach (info; Path.children (path))
                          if (info.folder is false)
@@ -289,7 +288,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private const(char)[] open (in char[] path, bool create)
+        private const(char)[] open (const(char)[] path, bool create)
         {
                 if (Path.exists (path))
                    {
@@ -315,8 +314,8 @@ class FileFolder : VfsFolder
 
 class FileGroup : VfsFiles
 {
-        private const(char)[][]        group;          // set of filtered filenames
-        private const(char)[][]        hosts;          // set of containing folders
+        private const(char)[][] group;          // set of filtered filenames
+        private const(char)[][] hosts;          // set of containing folders
         private VfsStats        stats;          // stats for contained files
 
         /***********************************************************************
@@ -342,18 +341,18 @@ class FileGroup : VfsFiles
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFile) dg)
+        final int opApply (scope int delegate(ref VfsFile) dg)
         {
                 int  result;
                 auto host = new FileHost;
 
-                foreach (file; group)    
-                        {    
+                foreach (file; group)
+                        {
                         VfsFile x = host;
-                        host.path.parse (file);
+                        host.path = Path.PathParser!(const(char))(file);
                         if ((result = dg(x)) != 0)
                              break;
-                        } 
+                        }
                 return result;
         }
 
@@ -411,7 +410,7 @@ private class FolderGroup : VfsFolders
 
         private this (FileFolder root, bool recurse)
         {
-                members = root ~ scan (root, recurse);   
+                members = root ~ scan (root, recurse);
         }
 
         /***********************************************************************
@@ -420,13 +419,13 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFolder) dg)
+        final int opApply (scope int delegate(ref VfsFolder) dg)
         {
                 int  result;
 
-                foreach (folder; members)  
+                foreach (folder; members)
                         {
-                        VfsFolder x = folder;  
+                        VfsFolder x = folder;
                         if ((result = dg(x)) != 0)
                              break;
                         }
@@ -492,14 +491,13 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final VfsFolders subset (in char[] pattern)
+        final VfsFolders subset (const(char)[] pattern)
         {  
-                Path.PathParser parser;
                 auto set = new FolderGroup;
 
-                foreach (folder; members)    
-                         if (Path.patternMatch (parser.parse(folder.path).name, pattern))
-                             set.members ~= folder; 
+                foreach (folder; members)
+                         if (Path.patternMatch (Path.PathParser!(const(char))(folder.path).name, pattern))
+                             set.members ~= folder;
                 return set;
         }
 
@@ -509,7 +507,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final FileGroup catalog (in char[] pattern)
+        final FileGroup catalog (const(char)[] pattern)
         {
                 bool foo (VfsInfo info)
                 {
@@ -526,7 +524,7 @@ private class FolderGroup : VfsFolders
         ***********************************************************************/
 
         final FileGroup catalog (VfsFilter filter = null)
-        {       
+        {
                 return new FileGroup (this, filter);
         }
 
@@ -536,7 +534,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        private final FileFolder[] scan (FileFolder root, bool recurse) 
+        private final FileFolder[] scan (FileFolder root, bool recurse)
         {
                 auto folders = root.folders (recurse);
                 if (recurse)
@@ -556,7 +554,7 @@ private class FolderGroup : VfsFolders
 
 private class FolderHost : VfsFolderEntry
 {       
-        private const(char)[]          path;
+        private const(char)[]   path;
         private FileFolder      parent;
 
         /***********************************************************************
@@ -612,7 +610,7 @@ private class FolderHost : VfsFolderEntry
 
 private class FileHost : VfsFile
 {
-        private Path.PathParser path;
+        private Path.PathParser!(const(char)) path;
 
         /***********************************************************************
 
@@ -620,7 +618,7 @@ private class FileHost : VfsFile
 
         this (const(char)[] path = null)
         {
-                this.path.parse (path);
+                this.path = Path.PathParser!(const(char))(path);
         }
 
         /***********************************************************************

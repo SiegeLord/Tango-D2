@@ -70,7 +70,7 @@ class Patterns : Iterator!(char)
 
         ***********************************************************************/
 
-        this (T[] pattern, InputStream stream = null)
+        this (const(T)[] pattern, InputStream stream = null)
         {
                 regex = new Regex (pattern, "");
                 super (stream);
@@ -80,9 +80,9 @@ class Patterns : Iterator!(char)
 
         ***********************************************************************/
 
-        protected size_t scan (void[] data)
+        protected override size_t scan (const(void)[] data)
         {
-                auto content = (cast(T*) data.ptr) [0 .. data.length / T.sizeof];
+                auto content = (cast(const(T)*) data.ptr) [0 .. data.length / T.sizeof];
 
                 if (regex.test (content))
                    {
@@ -107,6 +107,6 @@ debug(UnitTest)
 
         unittest
         {
-                auto p = new Patterns ("b.*", new Array("blah"));
+                auto p = new Patterns ("b.*", new Array("blah".dup));
         }
 }

@@ -241,16 +241,16 @@ public class Demangler
     }
     
     /** Demangles the given string. */
-    public char[] demangle (char[] input)
+    public inout(char)[] demangle (inout(char)[] input)
     {
         char[4096] buf=void;
         auto res=DemangleInstance(this,input,buf);
         if (res.mangledName() && res.input.length==0){
-            return res.slice.dup;
+            return cast(inout(char)[])res.slice.dup;
         } else {
             if (res.slice.length) res.output.append(" ");
             if (res.type() && res.input.length==0){
-                return res.slice.dup;
+                return cast(inout(char)[])res.slice.dup;
             } else {
                 return input;
             }
@@ -258,15 +258,15 @@ public class Demangler
     }
 
     /** Demangles the given string using output to hold the result. */
-    public char[] demangle (char[] input, char[] output)
+    public inout(char)[] demangle (inout(char)[] input, char[] output)
     {
         auto res=DemangleInstance(this,input,output);
         if (res.mangledName () && res.input.length==0) {
-            return res.slice.dup;
+            return cast(inout(char)[])res.slice;
         } else {
             if (res.slice.length) res.output.append(" ");
             if (res.type() && res.input.length==0) {
-                return res.slice.dup;
+                return cast(inout(char)[])res.slice;
             } else {
                 return input;
             }

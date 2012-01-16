@@ -27,6 +27,8 @@ private import tango.io.device.Conduit;
 
 private import tango.io.stream.Buffered;
 
+version = DataIntArrayLength;
+
 /*******************************************************************************
 
         A simple way to read binary data from an arbitrary InputStream,
@@ -122,7 +124,10 @@ class DataInput : InputFilter
 
         final size_t array (void[] dst)
         {
-                auto len = cast(size_t)int64;
+                version(DataIntArrayLength)
+                    auto len = cast(size_t)int32;
+                else
+                    auto len = cast(size_t)int64;
                 if (len > dst.length)
                     conduit.error ("DataInput.readArray :: dst array is too small");
                 eat (dst.ptr, len);
@@ -150,7 +155,10 @@ class DataInput : InputFilter
 
         final void[] array ()
         {
-                auto len = cast(size_t)int64;
+                version(DataIntArrayLength)
+                    auto len = cast(size_t)int32;
+                else
+                    auto len = cast(size_t)int64;
                 auto dst = allocator (len);
                 eat (dst.ptr, len);
                 return dst;
@@ -346,7 +354,10 @@ class DataOutput : OutputFilter
         final ulong array (void[] src)
         {
                 auto len = src.length;
-                int64 (len);
+                version(DataIntArrayLength)
+                    int32 (len);
+                else
+                    int64 (len);
                 output.write (src);
                 return len;
         }
@@ -459,7 +470,7 @@ debug (UnitTest)
                 auto buf = new Array(32);
 
                 auto output = new DataOutput (buf);
-                output.array ("blah blah");
+                output.array ("blah blah".dup);
                 output.int32 (1024);
 
                 auto input = new DataInput (buf);

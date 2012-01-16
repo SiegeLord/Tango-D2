@@ -152,7 +152,7 @@ package struct FS
 
         ***********************************************************************/
 
-        static void exception (const(char[]) filename)
+        static void exception (const(char)[] filename)
         {
                 exception (filename[0..$-1] ~ ": ", SysError.lastMsg);
         }
@@ -163,7 +163,7 @@ package struct FS
 
         ***********************************************************************/
 
-        static void exception (const(char[]) prefix, const(char[]) error)
+        static void exception (const(char)[] prefix, const(char)[] error)
         {
                 throw new IOException ((prefix ~ error).idup);
         }
@@ -223,7 +223,7 @@ package struct FS
 
         ***********************************************************************/
 
-        static char[] join (const(char[])[] paths...)
+        static char[] join (const(char)[][] paths...)
         {
                 char[] result;
 
@@ -250,7 +250,7 @@ package struct FS
 
         ***********************************************************************/
 
-        static char[] strz (const(char[]) src, char[] dst)
+        static char[] strz (const(char)[] src, char[] dst)
         {
                 auto i = src.length + 1;
                 if (dst.length < i)
@@ -274,7 +274,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static wchar[] toString16 (wchar[] tmp, const(char[]) path)
+                private static wchar[] toString16 (wchar[] tmp, const(char)[] path)
                 {
                         auto i = MultiByteToWideChar (CP_UTF8, 0,
                                                       cast(PCHAR)path.ptr, path.length,
@@ -301,7 +301,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static bool fileInfo (const(char[]) name, ref WIN32_FILE_ATTRIBUTE_DATA info)
+                private static bool fileInfo (const(char)[] name, ref WIN32_FILE_ATTRIBUTE_DATA info)
                 {
                         version (Win32SansUnicode)
                                 {
@@ -324,7 +324,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static DWORD getInfo (const(char[]) name, ref WIN32_FILE_ATTRIBUTE_DATA info)
+                private static DWORD getInfo (const(char)[] name, ref WIN32_FILE_ATTRIBUTE_DATA info)
                 {
                         if (! fileInfo (name, info))
                               exception (name);
@@ -337,7 +337,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static DWORD getFlags (const(char[]) name)
+                private static DWORD getFlags (const(char)[] name)
                 {
                         WIN32_FILE_ATTRIBUTE_DATA info = void;
 
@@ -350,7 +350,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool exists (const(char[]) name)
+                static bool exists (const(char)[] name)
                 {
                         WIN32_FILE_ATTRIBUTE_DATA info = void;
 
@@ -363,7 +363,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static ulong fileSize (const(char[]) name)
+                static ulong fileSize (const(char)[] name)
                 {
                         WIN32_FILE_ATTRIBUTE_DATA info = void;
 
@@ -378,7 +378,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool isWritable (const(char[]) name)
+                static bool isWritable (const(char)[] name)
                 {
                         return (getFlags(name) & FILE_ATTRIBUTE_READONLY) is 0;
                 }
@@ -389,7 +389,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool isFolder (const(char[]) name)
+                static bool isFolder (const(char)[] name)
                 {
                         return (getFlags(name) & FILE_ATTRIBUTE_DIRECTORY) != 0;
                 }
@@ -400,7 +400,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool isFile (const(char[]) name)
+                static bool isFile (const(char)[] name)
                 {
                         return (getFlags(name) & FILE_ATTRIBUTE_DIRECTORY) == 0;
                 }
@@ -415,7 +415,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static Stamps timeStamps (const(char[]) name)
+                static Stamps timeStamps (const(char)[] name)
                 {
                         static Time convert (FILETIME time)
                         {
@@ -439,7 +439,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void timeStamps (const(char[]) name, Time accessed, Time modified)
+                static void timeStamps (const(char)[] name, Time accessed, Time modified)
                 {
                         void set (HANDLE h)
                         {
@@ -462,7 +462,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void copy (const(char[]) src, const(char[]) dst)
+                static void copy (const(char)[] src, const(char)[] dst)
                 {
                         version (Win32SansUnicode)
                                 {
@@ -486,7 +486,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool remove (const(char[]) name)
+                static bool remove (const(char)[] name)
                 {
                         if (isFolder(name))
                            {
@@ -514,7 +514,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void rename (const(char[]) src, const(char[]) dst)
+                static void rename (const(char)[] src, const(char)[] dst)
                 {
                         const int Typical = MOVEFILE_REPLACE_EXISTING +
                                             MOVEFILE_COPY_ALLOWED     +
@@ -540,7 +540,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void createFile (const(char[]) name)
+                static void createFile (const(char)[] name)
                 {
                         createFile (name, null);
                 }
@@ -551,7 +551,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void createFolder (const(char[]) name)
+                static void createFolder (const(char)[] name)
                 {
                         version (Win32SansUnicode)
                                 {
@@ -578,7 +578,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static int list (const(char[]) folder, scope int delegate(ref FileInfo) dg, bool all=false)
+                static int list (const(char)[] folder, scope int delegate(ref FileInfo) dg, bool all=false)
                 {
                         HANDLE                  h;
                         int                     ret;
@@ -660,7 +660,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static void createFile (const(char[]) name, scope void delegate(HANDLE) dg)
+                private static void createFile (const(char)[] name, scope void delegate(HANDLE) dg)
                 {
                         HANDLE h;
 
@@ -702,7 +702,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static uint getInfo (const(char[]) name, ref stat_t stats)
+                private static uint getInfo (const(char)[] name, ref stat_t stats)
                 {
                         if (posix.stat (name.ptr, &stats))
                             exception (name);
@@ -716,7 +716,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool exists (const(char[]) name)
+                static bool exists (const(char)[] name)
                 {
                         stat_t stats = void;
                         return posix.stat (name.ptr, &stats) is 0;
@@ -728,7 +728,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static ulong fileSize (const(char[]) name)
+                static ulong fileSize (const(char)[] name)
                 {
                         stat_t stats = void;
 
@@ -742,7 +742,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool isWritable (const(char[]) name)
+                static bool isWritable (const(char)[] name)
                 {
                         stat_t stats = void;
 
@@ -755,7 +755,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool isFolder (const(char[]) name)
+                static bool isFolder (const(char)[] name)
                 {
                         stat_t stats = void;
 
@@ -768,7 +768,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool isFile (const(char[]) name)
+                static bool isFile (const(char)[] name)
                 {
                         stat_t stats = void;
 
@@ -785,7 +785,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static Stamps timeStamps (const(char[]) name)
+                static Stamps timeStamps (const(char)[] name)
                 {
                         static Time convert (typeof(stat_t.st_mtime) secs)
                         {
@@ -811,7 +811,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void timeStamps (const(char[]) name, Time accessed, Time modified)
+                static void timeStamps (const(char)[] name, Time accessed, Time modified)
                 {
                         utimbuf time = void;
                         time.actime = cast(time_t)(accessed - Time.epoch1970).seconds;
@@ -882,7 +882,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool remove (const(char[]) name)
+                static bool remove (const(char)[] name)
                 {
                         return tango.stdc.stdio.remove(name.ptr) != -1;
                 }
@@ -905,7 +905,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void createFile (const(char[]) name)
+                static void createFile (const(char)[] name)
                 {
                         int fd;
 
@@ -923,7 +923,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void createFolder (const(char[]) name)
+                static void createFolder (const(char)[] name)
                 {
                         if (posix.mkdir (name.ptr, octal!(777)))
                             exception (name);
@@ -941,7 +941,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static int list (const(char[]) folder, scope int delegate(ref FileInfo) dg, bool all=false)
+                static int list (const(char)[] folder, scope int delegate(ref FileInfo) dg, bool all=false)
                 {
                         int             ret;
                         DIR*            dir;
@@ -1039,14 +1039,14 @@ package struct FS
 
 *******************************************************************************/
 
-struct PathParser
+struct PathParser(char_t = char)
 {
-        package const(char)[]  fp;              // filepath with trailing
-        package int     end_,                   // before any trailing 0
-                        ext_,                   // after rightmost '.'
-                        name_,                  // file/dir name
-                        folder_,                // path before name
-                        suffix_;                // including leftmost '.'
+        package char_t[]       fp;                     // filepath with trailing
+        package int            end_,                   // before any trailing 0
+                               ext_,                   // after rightmost '.'
+                               name_,                  // file/dir name
+                               folder_,                // path before name
+                               suffix_;                // including leftmost '.'
 
         /***********************************************************************
 
@@ -1054,7 +1054,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        PathParser parse (in char[] path)
+        PathParser parse (char_t[] path)
         {
                 return parse (path, path.length);
         }
@@ -1067,10 +1067,16 @@ struct PathParser
 
         ***********************************************************************/
 
-        PathParser dup ()
+        PathParser dup () const
         {
-                auto ret = this;
+                PathParser ret;
                 ret.fp = fp.dup;
+                ret.end_ = end_;
+                ret.ext_ = ext_;
+                ret.name_ = name_;
+                ret.folder_ = folder_;
+                ret.suffix_ = suffix_;
+
                 return ret;
         }
 
@@ -1080,7 +1086,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const const(char)[] toString ()
+        inout(char_t)[] toString () inout
         {
                 return fp [0 .. end_];
         }
@@ -1092,7 +1098,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const const(char)[] root ()
+        inout(char_t)[] root () inout
         {
                 return fp [0 .. folder_];
         }
@@ -1109,7 +1115,7 @@ struct PathParser
 
 
         
-        const const(char)[] folder ()
+        inout(char_t)[] folder () inout
         {
                 return fp [folder_ .. name_];
         }
@@ -1131,7 +1137,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const(char)[] parent ()
+        inout(char_t)[] parent () inout
         {
                 auto p = path;
                 if (name.length is 0)
@@ -1160,7 +1166,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const(char)[] pop ()
+        inout(char_t)[] pop () inout
         {
                 return FS.stripped (path);
         }
@@ -1171,7 +1177,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const const(char)[] name ()
+        inout(char_t)[] name () inout
         {
                 return fp [name_ .. suffix_];
         }
@@ -1185,7 +1191,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const(char)[] ext ()
+        char_t[] ext ()
         {
                 auto x = suffix;
                 if (x.length)
@@ -1208,7 +1214,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const const(char)[] suffix ()
+        inout(char_t)[] suffix () inout
         {
                 return fp [suffix_ .. end_];
         }
@@ -1219,7 +1225,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const const(char)[] path ()
+        inout(char_t)[] path () inout
         {
                 return fp [0 .. name_];
         }
@@ -1230,7 +1236,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const const(char)[] file ()
+        inout(char_t)[] file () inout
         {
                 return fp [name_ .. end_];
         }
@@ -1284,7 +1290,7 @@ struct PathParser
         {       
                 return FS.stripped(s) == FS.stripped(toString);
         }*/
-        const bool equals (const(char[]) s)
+        const bool equals (const(char)[] s)
         {
                 return FS.stripped(s) == FS.stripped(toString);
         }
@@ -1299,7 +1305,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        package PathParser parse (in char[] path, size_t end)
+        package PathParser parse (char_t[] path, size_t end)
         {
                 end_ = cast(int)end;
                 fp = path;
@@ -1353,7 +1359,7 @@ struct PathParser
 
 *******************************************************************************/
 
-bool exists (const(char[]) name)
+bool exists (const(char)[] name)
 {
         char[512] tmp = void;
         return FS.exists (FS.strz(name, tmp));
@@ -1368,7 +1374,7 @@ bool exists (const(char[]) name)
 
 *******************************************************************************/
 
-Time modified (const(char[]) name)
+Time modified (const(char)[] name)
 {
         return timeStamps(name).modified;
 }
@@ -1382,7 +1388,7 @@ Time modified (const(char[]) name)
 
 *******************************************************************************/
 
-Time accessed (const(char[]) name)
+Time accessed (const(char)[] name)
 {
         return timeStamps(name).accessed;
 }
@@ -1396,7 +1402,7 @@ Time accessed (const(char[]) name)
 
 *******************************************************************************/
 
-Time created (const(char[]) name)
+Time created (const(char)[] name)
 {
         return timeStamps(name).created;
 }
@@ -1407,7 +1413,7 @@ Time created (const(char[]) name)
 
 *******************************************************************************/
 
-ulong fileSize (const(char[]) name)
+ulong fileSize (const(char)[] name)
 {
         char[512] tmp = void;
         return FS.fileSize (FS.strz(name, tmp));
@@ -1419,7 +1425,7 @@ ulong fileSize (const(char[]) name)
 
 *******************************************************************************/
 
-bool isWritable (const(char[]) name)
+bool isWritable (const(char)[] name)
 {
         char[512] tmp = void;
         return FS.isWritable (FS.strz(name, tmp));
@@ -1431,7 +1437,7 @@ bool isWritable (const(char[]) name)
 
 *******************************************************************************/
 
-bool isFolder (const(char[]) name)
+bool isFolder (const(char)[] name)
 {
         char[512] tmp = void;
         return FS.isFolder (FS.strz(name, tmp));
@@ -1444,7 +1450,7 @@ bool isFolder (const(char[]) name)
 
 *******************************************************************************/
 
-bool isFile (const(char[]) name)
+bool isFile (const(char)[] name)
 {
         char[512] tmp = void;
         return FS.isFile (FS.strz(name, tmp));
@@ -1460,7 +1466,7 @@ bool isFile (const(char[]) name)
 
 *******************************************************************************/
 
-FS.Stamps timeStamps (const(char[]) name)
+FS.Stamps timeStamps (const(char)[] name)
 {
         char[512] tmp = void;
         return FS.timeStamps (FS.strz(name, tmp));
@@ -1474,7 +1480,7 @@ FS.Stamps timeStamps (const(char[]) name)
 
 *******************************************************************************/
 
-void timeStamps (const(char[]) name, Time accessed, Time modified)
+void timeStamps (const(char)[] name, Time accessed, Time modified)
 {
         char[512] tmp = void;
         FS.timeStamps (FS.strz(name, tmp), accessed, modified);
@@ -1487,7 +1493,7 @@ void timeStamps (const(char[]) name, Time accessed, Time modified)
 
 *******************************************************************************/
 
-bool remove (const(char[]) name)
+bool remove (const(char)[] name)
 {
         char[512] tmp = void;
         return FS.remove (FS.strz(name, tmp));
@@ -1528,7 +1534,7 @@ char[][] remove (char[][] paths)
 
 *******************************************************************************/
 
-void createFile (const(char[]) name)
+void createFile (const(char)[] name)
 {
         char[512] tmp = void;
         FS.createFile (FS.strz(name, tmp));
@@ -1540,7 +1546,7 @@ void createFile (const(char[]) name)
 
 *******************************************************************************/
 
-void createFolder (const(char[]) name)
+void createFolder (const(char)[] name)
 {
         char[512] tmp = void;
         FS.createFolder (FS.strz(name, tmp));
@@ -1562,7 +1568,7 @@ void createFolder (const(char[]) name)
 
 *******************************************************************************/
 
-void createPath (const(char[]) path)
+void createPath (const(char)[] path)
 {
         void test (const(char)[] segment)
         {
@@ -1586,7 +1592,7 @@ void createPath (const(char[]) path)
 
 *******************************************************************************/
 
-void rename (const(char[]) src, const(char[]) dst)
+void rename (const(char)[] src, const(char)[] dst)
 {
         char[512] tmp1 = void;
         char[512] tmp2 = void;
@@ -1600,7 +1606,7 @@ void rename (const(char[]) src, const(char[]) dst)
 
 *******************************************************************************/
 
-void copy (const(char[]) src, const(char[]) dst)
+void copy (const(char)[] src, const(char)[] dst)
 {
         char[512] tmp1 = void;
         char[512] tmp2 = void;
@@ -1631,7 +1637,7 @@ void copy (const(char[]) src, const(char[]) dst)
 
 *******************************************************************************/
 
-FS.Listing children (const(char[]) path, bool all=false)
+FS.Listing children (const(char)[] path, bool all=false)
 {
         return FS.Listing (path, all);
 }
@@ -1649,7 +1655,7 @@ FS.Listing children (const(char[]) path, bool all=false)
 
 *******************************************************************************/
 
-char[][] collate (const(char[]) path, const(char[]) pattern, bool recurse=false)
+char[][] collate (const(char)[] path, const(char)[] pattern, bool recurse=false)
 {
         char[][] list;
 
@@ -1673,7 +1679,7 @@ char[][] collate (const(char[]) path, const(char[]) pattern, bool recurse=false)
 
 *******************************************************************************/
 
-char[] join (const(char[])[] paths...)
+char[] join (const(char)[][] paths...)
 {
         return FS.join (paths);
 }
@@ -1799,9 +1805,9 @@ char[] replace (char[] path, char from, char to)
 
 *******************************************************************************/
 
-PathParser parse (in char[] path)
+PathParser!(char_t) parse(char_t) (char_t[] path)
 {
-        PathParser p;
+        PathParser!(char_t) p;
 
         p.parse (path);
         return p;
@@ -1881,7 +1887,7 @@ debug(UnitTest)
 
 ******************************************************************************/
 
-bool patternMatch (const(char[]) filename, const(char[]) pattern)
+bool patternMatch (const(char)[] filename, const(char)[] pattern)
 in
 {
         // Verify that pattern[] is valid
@@ -2054,7 +2060,7 @@ debug (UnitTest)
 
 *******************************************************************************/
 
-char[] normalize (const(char[]) in_path, char[] buf = null)
+char[] normalize (const(char)[] in_path, char[] buf = null)
 {
 	    char[] path;            // Mutable path
         size_t  idx;            // Current position

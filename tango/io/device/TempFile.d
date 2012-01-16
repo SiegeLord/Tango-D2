@@ -17,7 +17,7 @@ import tango.math.random.Kiss : Kiss;
 import tango.io.device.Device : Device;
 import tango.io.device.File;
 import tango.stdc.stringz : toStringz;
-import std.conv;
+import tango.core.Octal;
 /******************************************************************************
  ******************************************************************************/
 

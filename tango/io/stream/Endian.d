@@ -109,7 +109,7 @@ class EndianOutput (T) : OutputFilter, OutputFilter.Mutator
 
         ***********************************************************************/
 
-        final override size_t write (void[] src)
+        final override size_t write (const(void)[] src)
         {
                 size_t writer (void[] dst)
                 {
@@ -147,7 +147,7 @@ debug (UnitTest)
 
         unittest
         {
-                auto inp = new EndianInput!(dchar)(new Array("hello world"d));
+                auto inp = new EndianInput!(dchar)(new Array("hello world"d.dup));
                 auto oot = new EndianOutput!(dchar)(new Array(64));
                 oot.copy (inp);
                 assert (oot.output.slice == "hello world"d);

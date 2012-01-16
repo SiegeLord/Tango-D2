@@ -101,14 +101,14 @@ struct Environment
 
         ***********************************************************************/
 
-        static const(char)[] toAbsolute(const(char)[] path)
+        static char[] toAbsolute(char[] path)
         {
             scope fp = new FilePath(path);
             if (fp.isAbsolute)
                 return path;
 
             fp.absolute(cwd);
-            return fp.toString;
+            return fp.cString[0..$-1];
         }
 
         /***********************************************************************
@@ -120,7 +120,7 @@ struct Environment
 
         ***********************************************************************/
 
-        static FilePath exePath (const(char)[] file)
+        static FilePath exePath (char[] file)
         {
                 auto bin = new FilePath (file);
 

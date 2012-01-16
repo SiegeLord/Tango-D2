@@ -2,13 +2,13 @@
 
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
-        license:        BSD:  
-                        AFL 3.0: 
+        license:        BSD:
+                        AFL 3.0:
 
         version:        Mar 2004: Initial release
         version:        Feb 2007: Now using mutating paths
 
-        authors:         Kris, Chris Sauls (Win95 file support)
+        authors:        Kris, Chris Sauls (Win95 file support)
 
 *******************************************************************************/
 
@@ -67,70 +67,6 @@ struct FileSystem
 {
         /***********************************************************************
 
-                Convert the provided path to an absolute path, using the
-                current working directory where prefix is not provided. 
-                If the given path is already an absolute path, return it 
-                intact.
-
-                Returns the provided path, adjusted as necessary
-
-                deprecated: see FilePath.absolute
-
-        ***********************************************************************/
-
-        deprecated static FilePath toAbsolute (FilePath target, const(char)[] prefix=null)
-        {
-                if (! target.isAbsolute)
-                   {
-                   if (prefix is null)
-                       prefix = getDirectory;
-
-                   target.prepend (target.padded(prefix));
-                   }
-                return target;
-        }
-
-        /***********************************************************************
-
-                Convert the provided path to an absolute path, using the
-                current working directory where prefix is not provided. 
-                If the given path is already an absolute path, return it 
-                intact.
-
-                Returns the provided path, adjusted as necessary
-
-                deprecated: see FilePath.absolute
-
-        ***********************************************************************/
-
-        deprecated static const(char)[] toAbsolute (const(char)[] path, const(char)[] prefix=null)
-        {
-                scope target = new FilePath (path);
-                return toAbsolute (target, prefix).toString;
-        }
-
-        /***********************************************************************
-
-                Compare to paths for absolute equality. The given prefix
-                is prepended to the paths where they are not already in
-                absolute format (start with a '/'). Where prefix is not
-                provided, the current working directory will be used
-
-                Returns true if the paths are equivalent, false otherwise
-
-                deprecated: see FilePath.equals
-
-        ***********************************************************************/
-
-        deprecated static bool equals (const(char)[] path1, const(char)[] path2, const(char)[] prefix=null)
-        {
-                scope p1 = new FilePath (path1);
-                scope p2 = new FilePath (path2);
-                return (toAbsolute(p1, prefix) == toAbsolute(p2, prefix)) is 0;
-        }
-
-        /***********************************************************************
-
         ***********************************************************************/
 
         private static void exception (string msg)
@@ -154,23 +90,22 @@ struct FileSystem
 
                 version (Win32SansUnicode)
                 {
-                        private static void windowsPath(const(char)[] path, ref const(char)[] result)
+                        private static void windowsPath(const(char)[] path, ref char[] result)
                         {
                                 result[0..path.length] = path;
                                 result[path.length] = 0;
-												result = result[0 .. path.length] ~ '\0';				
                         }
                 }
                 else
                 {
-                        private static void windowsPath(const(char)[] path, ref const(wchar)[] result)
+                        private static void windowsPath(const(char)[] path, ref wchar[] result)
                         {
                                 assert (path.length < result.length);
-                                auto i = MultiByteToWideChar (CP_UTF8, 0, 
-                                                              cast(PCHAR)path.ptr, 
-                                                              path.length, 
+                                auto i = MultiByteToWideChar (CP_UTF8, 0,
+                                                              cast(PCHAR)path.ptr,
+                                                              path.length,
                                                               result.ptr, result.length);
-                                result = result[0 .. i] ~ '\0';
+                                result[i] = 0;
                         }
                 }
 
@@ -216,9 +151,9 @@ struct FileSystem
 
                 ***************************************************************/
 
-                deprecated static const(char)[] getDirectory ()
+                deprecated static char[] getDirectory ()
                 {
-                        const(char)[] path;
+                        char[] path;
 
                         version (Win32SansUnicode)
                                 {
@@ -227,7 +162,7 @@ struct FileSystem
                                 GetCurrentDirectoryA (len, dir.ptr);
                                 if (len)
                                    {
-                                   dir[len-1] = '/';                                   
+                                   dir[len-1] = '/';
                                    path = standard (dir);
                                    }
                                 else
@@ -246,9 +181,7 @@ struct FileSystem
                                 if (len && i)
                                    {
                                    path = standard (dir[0..i]);
-														path.length = path.length-1;
-														path ~= '/';
-
+                                   path[$-1] = '/';
                                    }
                                 else
                                    exception ("Failed to get current directory");
@@ -263,11 +196,11 @@ struct FileSystem
 
                 ***************************************************************/
 
-                static const(char)[][] roots ()
+                static char[][] roots ()
                 {
                         int             len;
-                        const(char)[]          str;
-                        const(char)[][]        roots;
+                        char[]          str;
+                        char[][]        roots;
 
                         // acquire drive strings
                         len = GetLogicalDriveStringsA (0, null);
@@ -277,7 +210,7 @@ struct FileSystem
                            GetLogicalDriveStringsA (len, cast(PCHAR)str.ptr);
 
                            // split roots into seperate strings
-                           roots = Text.delimit (str [0 .. $-1], cast(const(char)[])"\0");
+                           roots = Text.delimit (str [0 .. $-1], "\0");
                            }
                         return roots;
                 }
@@ -308,16 +241,16 @@ struct FileSystem
                     // we'd like to open a volume
                     volPath_[0..4] = `\\.\`;
 
-                    if (!GetVolumePathName(tmp.ptr, volPath_.ptr+4, volPath_.length-4)) 
+                    if (!GetVolumePathName(tmp.ptr, volPath_.ptr+4, volPath_.length-4))
                         exception ("GetVolumePathName failed");
-                    
+
                     TCHAR[] volPath;
 
                     // the path could have the volume/network prefix already
                     if (volPath_[4..6] != `\\`) {
-                        volPath = fromStringzT(volPath_.ptr).dup;
+                        volPath = fromStringzT(volPath_.ptr);
                     } else {
-                        volPath = fromStringzT(volPath_[4..$].ptr).dup;
+                        volPath = fromStringzT(volPath_[4..$].ptr);
                     }
 
                     // GetVolumePathName returns a path with a trailing backslash
@@ -331,17 +264,17 @@ struct FileSystem
  
                 /***************************************************************
  
-                        Request how much free space in bytes is available on the 
+                        Request how much free space in bytes is available on the
                         disk/mountpoint where folder resides.
 
-                        If a quota limit exists for this area, that will be taken 
+                        If a quota limit exists for this area, that will be taken
                         into account unless superuser is set to true.
 
-                        If a user has exceeded the quota, a negative number can 
+                        If a user has exceeded the quota, a negative number can
                         be returned.
 
                         Note that the difference between total available space
-                        and free space will not equal the combined size of the 
+                        and free space will not equal the combined size of the
                         contents on the file system, since the numbers for the
                         functions here are calculated from the used blocks,
                         including those spent on metadata and file nodes.
@@ -359,7 +292,7 @@ struct FileSystem
                 {
                     scope fp = new FilePath(folder);
 
-                    const bool wantTrailingBackslash = true;                    
+                    const bool wantTrailingBackslash = true;
                     TCHAR[volumePathBufferLen] volPathBuf;
                     auto volPath = getVolumePath(fp.native.toString, volPathBuf, wantTrailingBackslash);
 
@@ -403,10 +336,10 @@ struct FileSystem
                         alias GetDiskFreeSpaceExW GetDiskFreeSpaceEx;
                         alias CreateFileW CreateFile;
                     }
-                    
+
                     scope fp = new FilePath(folder);
 
-                    bool wantTrailingBackslash = (false == superuser);                    
+                    bool wantTrailingBackslash = (false == superuser);
                     TCHAR[volumePathBufferLen] volPathBuf;
                     auto volPath = getVolumePath(fp.native.toString, volPathBuf, wantTrailingBackslash);
 
@@ -426,7 +359,7 @@ struct FileSystem
                         if (h == INVALID_HANDLE_VALUE) {
                             exception ("Failed to open volume for reading");
                         }
-                                               
+
                         if (0 == DeviceIoControl(
                                 h, IOCTL_DISK_GET_LENGTH_INFO, null , 0,
                                 cast(void*)&lenInfo, lenInfo.sizeof, &numBytes, &overlap
@@ -476,7 +409,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                deprecated static const(char)[] getDirectory ()
+                deprecated static char[] getDirectory ()
                 {
                         char[512] tmp = void;
 
@@ -484,7 +417,7 @@ struct FileSystem
                         if (s is null)
                             exception ("Failed to get current directory");
 
-                        auto path = s[0 .. strlen(s)+1].dup;
+                        auto path = s[0 .. strlen(s)+1];
                         path[$-1] = '/';
                         return path;
                 }
@@ -495,7 +428,7 @@ struct FileSystem
 
                  ***************************************************************/
 
-                static const(char)[][] roots ()
+                static char[][] roots ()
                 {
                         version(darwin)
                         {
@@ -503,15 +436,15 @@ struct FileSystem
                         }
                         else
                         {
-                            const(char)[] path = "";
-                            const(char)[][] list;
+                            char[] path;
+                            char[][] list;
                             int spaces;
 
                             auto fc = new File("/etc/mtab");
                             scope (exit)
                                    fc.close;
-                            
-                            auto content = new char[cast(int) fc.length];
+
+                            auto content = new char[cast(size_t)fc.length];
                             fc.input.read (content);
                             
                             for(int i = 0; i < content.length; i++)
@@ -521,7 +454,7 @@ struct FileSystem
                                 {
                                     spaces = 0;
                                     list ~= path;
-                                    path = "";
+                                    path.length = 0;
                                 }
                                 else if(spaces == 1)
                                 {
@@ -533,24 +466,24 @@ struct FileSystem
                                     else path ~= content[i];
                                 }
                             }
-                            
+
                             return list;
                         }
                 }
 
                 /***************************************************************
  
-                        Request how much free space in bytes is available on the 
+                        Request how much free space in bytes is available on the
                         disk/mountpoint where folder resides.
 
-                        If a quota limit exists for this area, that will be taken 
+                        If a quota limit exists for this area, that will be taken
                         into account unless superuser is set to true.
 
-                        If a user has exceeded the quota, a negative number can 
+                        If a user has exceeded the quota, a negative number can
                         be returned.
 
                         Note that the difference between total available space
-                        and free space will not equal the combined size of the 
+                        and free space will not equal the combined size of the
                         contents on the file system, since the numbers for the
                         functions here are calculated from the used blocks,
                         including those spent on metadata and file nodes.
@@ -566,7 +499,7 @@ struct FileSystem
 
                 static long freeSpace(const(char)[] folder, bool superuser = false)
                 {
-                    scope fp = new FilePath(folder);
+                    scope fp = new FilePath(folder.dup);
                     statvfs_t info;
                     int res = statvfs(fp.native.cString.ptr, &info);
                     if (res == -1)
@@ -601,7 +534,7 @@ struct FileSystem
 
                 static long totalSpace(const(char)[] folder, bool superuser = false)
                 {
-                    scope fp = new FilePath(folder);
+                    scope fp = new FilePath(folder.dup);
                     statvfs_t info;
                     int res = statvfs(fp.native.cString.ptr, &info);
                     if (res == -1)
@@ -641,13 +574,13 @@ debug (FileSystem)
         foo (path);
 
         path.set ("..");
-        foo (path); 
+        foo (path);
 
         path.set ("...");
-        foo (path); 
+        foo (path);
 
         path.set (r"/x/y/.file");
-        foo (path); 
+        foo (path);
 
         path.suffix = ".foo";
         foo (path);

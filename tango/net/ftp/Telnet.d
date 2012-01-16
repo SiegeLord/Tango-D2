@@ -1,26 +1,26 @@
 /*******************************************************************************
-                                                                                
-        copyright:      Copyright (c) 2006 UWB. All rights reserved             
-                                                                                
-        license:        BSD style: $(LICENSE)                                   
-                                                                                
-        version:        Initial release: June 2006                              
+
+        copyright:      Copyright (c) 2006 UWB. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Initial release: June 2006
                         Tango Mods by Lester L Martin: August 2008
-                                                                                
-        author:         UWB                                                     
-                                                                                
+
+        author:         UWB
+
 *******************************************************************************/
 
 module tango.net.ftp.Telnet;
 
-private 
+private
 {
         import tango.core.Exception;
         import tango.io.stream.Lines;
         import tango.net.device.Socket;
 }
 
-class Telnet 
+class Telnet
 {
         /// The Socket that is used to send commands.
         Socket socket_;
@@ -31,7 +31,7 @@ class Telnet
         /// Send a line over the Socket Conduit.
         ///
         /// buf = the bytes to send
-        void sendline(in void[] buf) 
+        void sendline(const(void)[] buf)
         {
                 sendData(buf);
                 sendData("\r\n");
@@ -40,7 +40,7 @@ class Telnet
         /// Send a line over the Socket Conduit.
         ///
         /// buf = the bytes to send
-        void sendData(in void[] buf) 
+        void sendData(const(void)[] buf)
         {
                 socket_.write(buf);
         }
@@ -48,11 +48,11 @@ class Telnet
         /// Read a CRLF terminated line from the socket.
         ///
         /// Returns: the line read
-        const(char)[] readLine() 
+        const(char)[] readLine()
         {
-                char[] to_return; 
-                iterator.readln(to_return); 
-                return to_return; 
+                char[] to_return;
+                iterator.readln(to_return);
+                return to_return;
         }
 
         /************************************************************************
@@ -65,11 +65,11 @@ class Telnet
                 the Socket instance used
          *      Since: 0.99.8
          */
-        Socket findAvailableServer(in char[] hostname, int port) 
+        Socket findAvailableServer(const(char)[] hostname, int port)
         {
                 socket_ = new Socket;
                 socket_.connect(hostname, port);
-                iterator = new Lines!(char)(socket_); 
+                iterator = new Lines!(char)(socket_);
                 return socket_;
         }
 

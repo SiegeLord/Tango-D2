@@ -11,7 +11,7 @@ module tango.stdc.posix.sys.shm;
 private import tango.stdc.posix.config;
 public import tango.stdc.posix.sys.types; // for pid_t, time_t, key_t, size_t
 public import tango.stdc.posix.sys.ipc;
-private import std.conv;
+private import tango.core.Octal;
 extern (C):
 
 //

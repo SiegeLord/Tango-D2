@@ -17,7 +17,7 @@ private import tango.net.device.Socket;
 private import tango.net.util.c.OpenSSL;
 
 /*******************************************************************************
-    
+
     SSLSocket is a sub-class of Socket. It's purpose is to
     provide SSL encryption at the socket level as well as easily fit into
     existing Tango network applications that may already be using Socket.
@@ -29,11 +29,11 @@ private import tango.net.util.c.OpenSSL;
     SSLSockets have two modes:
 
     1. Client mode, useful for connecting to existing servers, but not
-    accepting new connections. Accepting a new connection will cause 
+    accepting new connections. Accepting a new connection will cause
     the library to stall on a write on connection.
 
     2. Server mode, useful for creating an SSL server, but not connecting
-    to an existing server. Connection will cause the library to stall on a 
+    to an existing server. Connection will cause the library to stall on a
     read on connection.
 
     Example SSL client
@@ -80,7 +80,7 @@ class SSLSocket : Socket
 
         Creates a Client Mode SSLSocket
 
-        This is overriding the Socket ctor in order to emulate the 
+        This is overriding the Socket ctor in order to emulate the
         existing free-list frameowrk.
 
         Specifying anything other than ProtocolType.TCP or SocketType.STREAM will
@@ -107,7 +107,7 @@ class SSLSocket : Socket
         Creates a SSLSocket
 
         This class allows the ability to turn a regular Socket into an
-        SSLSocket. It also gives the ability to change an SSLSocket 
+        SSLSocket. It also gives the ability to change an SSLSocket
         into Server Mode or ClientMode.
 
         Params:
@@ -139,8 +139,8 @@ class SSLSocket : Socket
 
     /*******************************************************************************
 
-        Release this SSLSocket. 
-        
+        Release this SSLSocket.
+
         As per Socket.detach.
 
     *******************************************************************************/
@@ -154,7 +154,7 @@ class SSLSocket : Socket
             sslSocket = null;
         }
         super.detach();
-    }    
+    }
 
     /*******************************************************************************
 
@@ -178,7 +178,7 @@ class SSLSocket : Socket
 
     /*******************************************************************************
 
-         Reads from the underlying socket stream. If needed, setTimeout will 
+         Reads from the underlying socket stream. If needed, setTimeout will
         set the max length of time the read will take before returning.
 
         As per Socket.read
@@ -235,12 +235,12 @@ class SSLSocket : Socket
                         }
                     }
                     else if (BIO_should_io_special(sslSocket)) // wasn't write, wasn't read.. something "special" just wait for the socket to become ready...
-                        Thread.sleep(.05); 
+                        Thread.sleep(.05);
                     else
                         break;
                 }
                 else
-                {                    
+                {
                     rtn = bytesRead;
                     break;
                 }
@@ -280,7 +280,7 @@ class SSLSocket : Socket
         Used in conjuction with the above ctor with the create flag disabled. It is
         useful for accepting a new socket into a SSLSocket, and then re-using
         the Server's existing SSLCtx.
-    
+
         Params:
             ctx = SSLCtx class as provided by PKI
             clientMode = if true, the socket will be in Client Mode, Server otherwise.
@@ -310,7 +310,7 @@ class SSLSocket : Socket
             if (rtn)
                 rtn = BIO_push(rtn, socketBio);
             if (!rtn)
-                BIO_free_all(socketBio);            
+                BIO_free_all(socketBio);
         }
 
         if (rtn is null)
@@ -323,7 +323,7 @@ class SSLSocket : Socket
 /*******************************************************************************
 
     SSLServerSocket is a sub-class of ServerSocket. It's purpose is to provide
-    SSL encryption at the socket level as well as easily tie into existing 
+    SSL encryption at the socket level as well as easily tie into existing
     Tango applications that may already be using ServerSocket.
 
     SSLServerSocket requires the OpenSSL library, and uses a dynamic binding
@@ -363,7 +363,7 @@ class SSLServerSocket : ServerSocket
 
     /*******************************************************************************
 
-        Constructs a new SSLServerSocket. This constructor is similar to 
+        Constructs a new SSLServerSocket. This constructor is similar to
         ServerSocket, except it takes a SSLCtx as provided by PKI.
 
         Params:
@@ -380,21 +380,22 @@ class SSLServerSocket : ServerSocket
         sslCtx = ctx;
     }
 
+    alias ServerSocket.accept accept;
+
     /*******************************************************************************
 
-      Accepts a new conection and copies the provided server SSLCtx to a new
+      Accepts a new connection and copies the provided server SSLCtx to a new
       SSLSocket.
 
     *******************************************************************************/
 
-    override Socket accept (Socket recipient = null)
+    SSLSocket accept (SSLSocket recipient = null)
     {
-			assert(Socket.classinfo is SSLSocket.classinfo);
         if (recipient is null)
             recipient = new SSLSocket(false);
 
         super.accept (recipient);
-        (cast(SSLSocket)cast(void*)recipient).setCtx(sslCtx, false);
+        recipient.setCtx(sslCtx, false);
         return recipient;
     }
 }
@@ -405,7 +406,7 @@ class SSLServerSocket : ServerSocket
 
 version(Test)
 {
-    import tetra.util.Test; 
+    import tetra.util.Test;
     import tango.io.Stdout;
     import tango.io.device.File;
     import tango.io.FilePath;
@@ -445,16 +446,16 @@ version(Test)
                         PrivateKey privateKey;
                         try
                         {
-                            publicCertificate = new Certificate(cast(char[])File.get ("public.pem")); 
+                            publicCertificate = new Certificate(cast(char[])File.get ("public.pem"));
                             privateKey = new PrivateKey(cast(char[])File.get ("private.pem"));
-                        }                        
+                        }
                         catch (Exception ex)
                         {
                             privateKey = new PrivateKey(2048);
                             publicCertificate = new Certificate();
                             publicCertificate.privateKey(privateKey).serialNumber(123).dateBeforeOffset(t1).dateAfterOffset(t2);
                             publicCertificate.setSubject("CA", "Alberta", "Place", "None", "First Last", "no unit", "email@example.com").sign(publicCertificate, privateKey);
-                        }                        
+                        }
                         auto sslCtx = new SSLCtx();
                         sslCtx.certificate(publicCertificate).privateKey(privateKey).checkKey();
                         auto s3 = new SSLSocket(mySock, sslCtx);
@@ -499,7 +500,7 @@ version(Test)
                 {
                     s1.setTimeout(t2);
                     while (bytesRead != s1.Eof)
-                        bytesRead = s1.read(result);                
+                        bytesRead = s1.read(result);
                     if (s1.hadTimeout)
                         return Test.Status.Success;
                     else
@@ -508,13 +509,13 @@ version(Test)
                 else
                     messages ~= Stdout.layout()("Received wrong results: (bytesRead: {}), (result: {})", bytesRead, result[0..bytesRead]);
             }
-            return Test.Status.Failure;    
+            return Test.Status.Failure;
         }
 
         auto t = new Test("tetra.net.SSLSocket");
         t["SSL_CTX"] = &sslCTXTest;
         t["Read/Write"] = &sslReadWriteTest;
-        t["Read/Write Timeout"] = &sslReadWriteTestWithTimeout; 
+        t["Read/Write Timeout"] = &sslReadWriteTestWithTimeout;
         t.run();
     }
 }

@@ -12,8 +12,6 @@
 
 module tango.io.stream.Bzip;
 
-
-
 private import tango.util.compress.c.bzlib;
 
 private import tango.core.Exception : IOException;
@@ -567,7 +565,7 @@ import tango.io.device.Array : Array;
 
 unittest
 {
-    const(char)[] message =
+    enum immutable(char)[] message =
         "All dwarfs are by nature dutiful, serious, literate, obedient "
         "and thoughtful people whose only minor failing is a tendency, "
         "after one drink, to rush at enemies screaming \"Arrrrrrgh!\" and "

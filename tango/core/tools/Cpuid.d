@@ -5,7 +5,7 @@
  Some of this information was extremely difficult to track down. Some of the
  documents below were found only in cached versions stored by search engines!
   This code relies on information found in:
-    
+
 $(UL
   $(LI "Intel(R) 64 and IA-32 Architectures Software Developers Manual,
       Volume 2A: Instruction Set Reference, A-M" (2007).)
@@ -41,8 +41,6 @@ BUGS:   Currently only works on x86 CPUs.
 */
 
 module tango.core.tools.Cpuid;
-
-
 
 // If optimizing for a particular processor, it is generally better
 // to identify based on features rather than model. NOTE: Normally

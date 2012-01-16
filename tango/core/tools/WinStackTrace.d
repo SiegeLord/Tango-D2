@@ -11,69 +11,62 @@ module tango.core.tools.WinStackTrace;
 
 version(Windows) {
 
-import core.thread;
+import tango.core.thread;
 
 
-	
 version(D_Version2)
 {
 
-	private const(char)[] intToUtf8 (char[] tmp, uint val)
-	in {
-		 assert (tmp.length > 9, "atoi buffer should be more than 9 chars wide");
-		 }
-	body
-	{
-			char* p = tmp.ptr + tmp.length;
+    private const(char)[] intToUtf8 (char[] tmp, uint val)
+    in {
+         assert (tmp.length > 9, "atoi buffer should be more than 9 chars wide");
+         }
+    body
+    {
+            char* p = tmp.ptr + tmp.length;
 
-			do {
-				 *--p = cast(char)((val % 10) + '0');
-				 } while (val /= 10);
+            do {
+                 *--p = cast(char)((val % 10) + '0');
+                 } while (val /= 10);
 
-			return tmp [cast(size_t)(p - tmp.ptr) .. $];
-	}
+            return tmp [cast(size_t)(p - tmp.ptr) .. $];
+    }
 
-	// convert uint to const(char)[], within the given buffer
-	// Returns a valid slice of the populated buffer
-	private const(char)[] ulongToUtf8 (char[] tmp, ulong val)
-	in {
-		 assert (tmp.length > 19, "atoi buffer should be more than 19 chars wide");
-		 }
-	body
-	{
-			char* p = tmp.ptr + tmp.length;
+    // convert uint to const(char)[], within the given buffer
+    // Returns a valid slice of the populated buffer
+    private const(char)[] ulongToUtf8 (char[] tmp, ulong val)
+    in {
+         assert (tmp.length > 19, "atoi buffer should be more than 19 chars wide");
+         }
+    body
+    {
+            char* p = tmp.ptr + tmp.length;
 
-			do {
-				 *--p = cast(char)((val % 10) + '0');
-				 } while (val /= 10);
+            do {
+                 *--p = cast(char)((val % 10) + '0');
+                 } while (val /= 10);
 
-			return tmp [cast(size_t)(p - tmp.ptr) .. $];
-	}
-
-
-	// function to compare two strings
-	private int stringCompare (in char[] s1, in char[] s2)
-	{
-			auto len = s1.length;
-
-			if (s2.length < len)
-					len = s2.length;
-
-			int result = memcmp(s1.ptr, s2.ptr, len);
-
-			if (result == 0)
-					result = (s1.length<s2.length)?-1:((s1.length==s2.length)?0:1);
-
-			return result;
-	}
+            return tmp [cast(size_t)(p - tmp.ptr) .. $];
+    }
 
 
+    // function to compare two strings
+    private int stringCompare (in char[] s1, in char[] s2)
+    {
+            auto len = s1.length;
 
+            if (s2.length < len)
+                    len = s2.length;
 
+            int result = memcmp(s1.ptr, s2.ptr, len);
 
+            if (result == 0)
+                    result = (s1.length<s2.length)?-1:((s1.length==s2.length)?0:1);
 
+            return result;
+    }
 
-		package struct FrameInfo{
+package struct FrameInfo{
         /// line number in the source of the most likely start adress (0 if not available)
         size_t line;
         /// number of the stack frame (starting at 0 for the top frame)
@@ -92,11 +85,11 @@ version(D_Version2)
         /// this is the raw adress returned by the backtracing function
         size_t address;
         /// file (image) of the current adress
-        char[] file;
+        const(char)[] file;
         /// name of the function, if possible demangled
         char[] func;
         /// extra information (for example calling arguments)
-        char[] extra;
+        const(char)[] extra;
         /// if the address is exact or it is the return address
         bool exactAddress;
         /// if this function is an internal functions (for example the backtracing function itself)
@@ -107,7 +100,7 @@ version(D_Version2)
         static FramePrintHandler defaultFramePrintingFunction;
         /// writes out the current frame info
         
-			void writeOut(void delegate(in char[])sink){
+        void writeOut(void delegate(in char[])sink){
 
             if (defaultFramePrintingFunction){
                 defaultFramePrintingFunction(&this,sink);
@@ -156,9 +149,6 @@ version(D_Version2)
         }
     }
 }
-
-
-
 
     private {
         import tango.core.tools.Demangler;
@@ -261,7 +251,7 @@ version(D_Version2)
                 buf[0..func.length] = func;
                 fInfo.func = buf[0..func.length];
             }
-            fInfo.file = file.dup;
+            fInfo.file = file;
             fInfo.line = line;
             fInfo.offsetSymb = addrOffset;
         });
@@ -280,17 +270,17 @@ private {
 
 struct Context
 {
-		void*           bstack,
-										tstack;
-		Context*        within;
-		Context*        next,
-										prev;
+    void*    bstack,
+             tstack;
+    Context* within;
+    Context* next,
+             prev;
 }
-						
+
 extern(C) Context* D4core6thread6Thread10topContextMFZPS4core6thread6Thread7Context(core.thread.Thread);
 alias D4core6thread6Thread10topContextMFZPS4core6thread6Thread7Context Thread_topContext;
 
-						
+
 void walkStack(LPCONTEXT ContextRecord, HANDLE hProcess, HANDLE hThread, void delegate(size_t[]) traceReceiver) {
     const int maxStackSpace = 32;
     const int maxHeapSpace      = 256;
@@ -371,14 +361,13 @@ void walkStack(LPCONTEXT ContextRecord, HANDLE hProcess, HANDLE hThread, void de
         stacktrace[0] = ContextRecord.Eip;
         
         version (StacktraceTryToBeSmart) {
-            core.thread.Thread tobj = core.thread.Thread.getThis();
+            Thread tobj = Thread.getThis();
         }
         
         while (!foundMain && phase < Phase.GiveUp) {
             version (StacktraceSpam) printf("starting a new tracing phase\n");
             
             version (StacktraceTryToBeSmart) {
-
                 auto curStack = Thread_topContext(tobj);
             }
             
@@ -1121,7 +1110,7 @@ class GlobalDebugInfo {
     ModuleDebugInfo tail;
     
     
-     int opApply(int delegate(ref ModuleDebugInfo) dg) {
+     int opApply(scope int delegate(ref ModuleDebugInfo) dg) {
 			synchronized(this)
 			{
         for (auto it = head; it !is null; it = it.next) {
@@ -2019,7 +2008,7 @@ static this() {
     sym.SizeOfStruct = SYMBOL_INFO.sizeof; 
 
     extern(C) void function(const(char)[]) initTrace;
-    if (SymFromName(GetCurrentProcess(), cast(char*)"__initLGPLHostExecutableDebugInfo", &sym)) {
+    if (SymFromName(GetCurrentProcess(), "__initLGPLHostExecutableDebugInfo".ptr, &sym)) {
         initTrace = cast(typeof(initTrace))sym.Address;
         assert (initTrace !is null); 
         initTrace(modName);

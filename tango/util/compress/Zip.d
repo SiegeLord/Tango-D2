@@ -536,10 +536,10 @@ interface ZipReader
 interface ZipWriter
 {
     void finish();
-    void putFile(ZipEntryInfo info, in char[] path);
+    void putFile(ZipEntryInfo info, const(char)[] path);
     void putStream(ZipEntryInfo info, InputStream source);
     void putEntry(ZipEntryInfo info, ZipEntry entry);
-    void putData(ZipEntryInfo info, in void[] data);
+    void putData(ZipEntryInfo info, const(void)[] data);
     Method method();
     Method method(Method);
 }
@@ -966,7 +966,7 @@ class ZipBlockWriter : ZipWriter
      * Creates a ZipBlockWriter using the specified file on the local
      * filesystem.
      */
-    this(in char[] path)
+    this(const(char)[] path)
     {
         file_output = new File(path, File.WriteCreate);
         this(file_output);
@@ -1009,7 +1009,7 @@ class ZipBlockWriter : ZipWriter
     /**
      * Adds a file from the local filesystem to the archive.
      */
-    void putFile(ZipEntryInfo info, in char[] path)
+    void putFile(ZipEntryInfo info, const(char)[] path)
     {
         scope file = new File(path);
         scope(exit) file.close();
@@ -1037,10 +1037,10 @@ class ZipBlockWriter : ZipWriter
     /**
      * Adds a file using the contents of the given array to the archive.
      */
-    void putData(ZipEntryInfo info, in void[] data)
+    void putData(ZipEntryInfo info, const(void)[] data)
     {
         //scope mc = new MemoryConduit(data);
-        scope mc = new Array(cast(void[])data);
+        scope mc = new Array(data.dup);
         scope(exit) mc.close;
         put_compressed(info, mc);
     }
@@ -1294,7 +1294,7 @@ private:
      * stream.  It also appends a new Entry with the data and filename.
      */
     void put_local_header(LocalFileHeaderData data,
-            in char[] file_name)
+            const(char)[] file_name)
     {
         auto f_name = Path.normalize(file_name);
         auto p = Path.parse(f_name);

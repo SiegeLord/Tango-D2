@@ -156,29 +156,29 @@ class SerialPort : Device
                 }
             }
         } else version(Posix) {
-            auto dev = FilePath("/dev");
+            auto dev = FilePath("/dev".dup);
             FilePath[] serPorts = dev.toList((FilePath path, bool isFolder) {
                 if(isFolder) return false;
                 version(linux) {
-                    auto r = rest(path.name.dup, "ttyUSB");
-                    if(r is null) r = rest(path.name.dup, "ttyS");
+                    auto r = rest(path.name, "ttyUSB");
+                    if(r is null) r = rest(path.name, "ttyS");
                     if(r.length == 0) return false;
                     return isInRange(r, '0', '9');
                 } else version (darwin) { // untested
-                    auto r = rest(path.name.dup, "cu");
+                    auto r = rest(path.name, "cu");
                     if(r.length == 0) return false;
                     return true;
                 } else version(freebsd) { // untested
-                    auto r = rest(path.name.dup, "cuaa");
-                    if(r is null) r = rest(path.name.dup, "cuad");
+                    auto r = rest(path.name, "cuaa");
+                    if(r is null) r = rest(path.name, "cuad");
                     if(r.length == 0) return false;
                     return isInRange(r, '0', '9');
                 } else version(openbsd) { // untested
-                    auto r = rest(path.name.dup, "tty");
+                    auto r = rest(path.name, "tty");
                     if(r.length != 2) return false;
                     return isInRange(r, '0', '9');
                 } else version(solaris) { // untested
-                    auto r = rest(path.name.dup, "tty");
+                    auto r = rest(path.name, "tty");
                     if(r.length != 1) return false;
                     return isInRange(r, 'a', 'z');
                 } else {
@@ -187,7 +187,7 @@ class SerialPort : Device
             });
             _ports.length = serPorts.length;
             foreach(i, path; serPorts) {
-                _ports[i] = path.name.dup;
+                _ports[i] = path.name;
             }
         }
         sort(_ports);
@@ -325,13 +325,13 @@ class SerialPort : Device
         }
 
 
-        private static char[] rest (char[] str, in char[] prefix) {
+        private static inout(char)[] rest (inout(char)[] str, in char[] prefix) {
             if(str.length < prefix.length) return null;
             if(str[0..prefix.length] != prefix) return null;
             return str[prefix.length..$];
         }
 
-        private static bool isInRange (char[] str, char lower, char upper) {
+        private static bool isInRange (const(char)[] str, char lower, char upper) {
             foreach(c; str) {
                 if(c < lower || c > upper) return false;
             }

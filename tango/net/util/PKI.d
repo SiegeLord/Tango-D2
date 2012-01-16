@@ -240,7 +240,7 @@ class SSLCtx
                 
     *******************************************************************************/
 
-    SSLCtx caCertsPath(char[] path)
+    SSLCtx caCertsPath(const(char)[] path)
     {
         if (!SSL_CTX_load_verify_locations(_ctx, null, toStringz(path)))
             throwOpenSSLError();
@@ -698,7 +698,7 @@ class PrivateKey
 
     *******************************************************************************/
 
-    ubyte[] sign(ubyte[] data, ubyte[] sigbuf)
+    ubyte[] sign(const(ubyte)[] data, ubyte[] sigbuf)
     {
         uint maxSize = RSA_size(cast(RSA *)_evpKey.pkey);
         if (sigbuf.length < maxSize)
@@ -1014,7 +1014,7 @@ class Certificate
     *******************************************************************************/
 
     // this kinda sucks.. but it has to be done in a certain order..
-    Certificate setSubject(char[] country, char[] stateProvince, char[] city, char[] organization, char[] cn, char[] organizationalUnit = null, char[] email = null)
+    Certificate setSubject(const(char)[] country, const(char)[] stateProvince, const(char)[] city, const(char)[] organization, const(char)[] cn, const(char)[] organizationalUnit = null, const(char)[] email = null)
     in
     {
         assert(country);
@@ -1171,7 +1171,7 @@ class Certificate
         return rtn;    
     }
 
-    private void addNameEntry(X509_NAME *name, in char *type, char[] value)
+    private void addNameEntry(X509_NAME *name, const(char) *type, const(char)[] value)
     {
         if (!X509_NAME_add_entry_by_txt(name, type, MBSTRING_ASC, toStringz(value), cast(int) value.length, -1, 0))
             throwOpenSSLError();

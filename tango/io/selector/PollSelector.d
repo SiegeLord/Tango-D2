@@ -6,8 +6,6 @@
 
 module tango.io.selector.PollSelector;
 
-
-
 version (Posix)
 {
     public import tango.io.model.IConduit;
@@ -345,7 +343,7 @@ version (Posix)
          * you should not erase or add any items from the selector while
          * iterating, although you can register existing conduits again.
          */
-        public int opApply(int delegate(ref SelectionKey sk) dg)
+        public int opApply(scope int delegate(ref SelectionKey sk) dg)
         {
             int result = 0;
             foreach(k; _keys)
@@ -387,7 +385,7 @@ version (Posix)
         /**
          * Iterate over all the Conduits that have received events.
          */
-        int opApply(int delegate(ref SelectionKey) dg)
+        int opApply(scope int delegate(ref SelectionKey) dg)
         {
             int rc = 0;
             int nLeft = numSelected;

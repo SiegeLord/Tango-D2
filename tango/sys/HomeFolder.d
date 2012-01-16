@@ -23,7 +23,7 @@ import tango.sys.Environment;
 
 version (Posix)
 {
-    import core.exception;
+    import tango.core.Exception;
     import tango.stdc.stdlib;
     import tango.stdc.posix.pwd;
     import tango.stdc.errno;
@@ -104,7 +104,7 @@ version (Posix)
         -----
     ******************************************************************************/
 
-    const(char)[] expandTilde (const(char)[] inputPath)
+    inout(char)[] expandTilde (inout(char)[] inputPath)
     {
             // Return early if there is no tilde in path.
             if (inputPath.length < 1 || inputPath[0] != '~')
@@ -123,7 +123,7 @@ version (Posix)
 
     ******************************************************************************/
 
-    private const(char)[] expandFromEnvironment(const(char)[] path)
+    private inout(char)[] expandFromEnvironment(inout(char)[] path)
     in
     {
         assert(path.length >= 1);
@@ -134,12 +134,12 @@ version (Posix)
         // Get HOME and use that to replace the tilde.
         char[] home = homeFolder;
         if (home is null)
-            return path;
+            return cast(inout)path;
 
         if (home[$-1] == '/')
             home = home[0..$-1];
 
-        return Path.join(home, path[1..$]);
+        return cast(inout)Path.join(home, path[1..$]);
 
     }
 
@@ -150,7 +150,7 @@ version (Posix)
 
     ******************************************************************************/
 
-    private const(char)[] expandFromDatabase(const(char)[] path)
+    private inout(char)[] expandFromDatabase(inout(char)[] path)
     {
         assert(path.length > 2 || (path.length == 2 && path[1] != '/'));
         assert(path[0] == '~');
@@ -194,10 +194,10 @@ version (Posix)
                 {
                     auto pwdirlen = strlen(result.pw_dir);
 
-                    path = Path.join(result.pw_dir[0..pwdirlen].dup, path[last_char..$]);
+                    path = cast(inout)Path.join(result.pw_dir[0..pwdirlen].dup, path[last_char..$]);
                 }
 
-                return path;
+                return cast(inout)path;
             }
 
             if (tango.stdc.errno.errno() != ERANGE)
@@ -269,12 +269,12 @@ version (Windows)
         -----
     ******************************************************************************/
 
-    char[] expandTilde(char[] inputPath)
+    inout(char)[] expandTilde(inout(char)[] inputPath)
     {
-        inputPath = Path.standard(inputPath);
+        inputPath = Path.standard(inputPath.dup);
 
         if (inputPath.length < 1 || inputPath[0] != '~') {
-            return inputPath;
+            return cast(inout)inputPath;
         }
 
         if (inputPath.length == 1 || inputPath[1] == '/') {
@@ -284,7 +284,7 @@ version (Windows)
         return expandOtherUser(inputPath);
     }
 
-    private char[] expandCurrentUser(char[] path)
+    private inout(char)[] expandCurrentUser(inout(char)[] path)
     {
         auto userProfileDir = homeFolder;
         auto offset = TextUtil.locate(path, '/');
@@ -293,13 +293,13 @@ version (Windows)
             return userProfileDir;
         }
 
-        return Path.join(userProfileDir, path[offset+1..$]);
+        return cast(inout)Path.join(userProfileDir, path[offset+1..$]);
     }
 
-    private char[] expandOtherUser(char[] path)
+    private inout(char)[] expandOtherUser(inout(char)[] path)
     {
         auto profileDir = Path.parse(homeFolder).parent;
-        return Path.join(profileDir, path[1..$]);
+        return cast(inout)Path.join(profileDir, path[1..$]);
     }
 }
 

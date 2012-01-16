@@ -69,7 +69,7 @@ extern(C) Exception.TraceInfo rt_createTraceContext( void* ptr );
 
 alias Exception.TraceInfo function( void* ptr = null ) TraceHandler;
 
-/// builds a backtrace of addresses, the addresses are addresses of the *next* instruction, 
+/// builds a backtrace of addresses, the addresses are addresses of the *next* instruction,
 /// *return* addresses, the most likely the calling instruction is the one before them
 /// (stack top excluded)
 extern(C) size_t rt_addrBacktrace(TraceContext* context, TraceContext *contextOut,size_t*traceBuf,size_t bufLength,int *flags){
@@ -81,7 +81,7 @@ extern(C) size_t rt_addrBacktrace(TraceContext* context, TraceContext *contextOu
 }
 
 /// tries to sybolize a frame information, this should try to build the best
-/// backtrace information, if possible finding the calling context, thus 
+/// backtrace information, if possible finding the calling context, thus
 /// if fInfo.exactAddress is false the address might be changed to the one preceding it
 /// returns true if it managed to at least find the function name
 extern(C) bool rt_symbolizeFrameInfo(ref FrameInfo fInfo,TraceContext* context,char[] buf){
@@ -168,35 +168,35 @@ class BasicTraceInfo: Throwable.TraceInfo{
             addrPrecision=AddrPrecision.AllReturn;
     }
     /// loops on the stacktrace
-        override int opApply( scope int delegate(ref char[]) dg )
-        {
-            return opApply( (ref size_t, ref char[] buf)
-                            {
-                                return dg( buf );
-                            } );
-        }
-				
-			override int opApply(scope int delegate(ref size_t line, ref char[] func) loopBody)
-			{
-					FrameInfo fInfo;
-					for (size_t iframe=0;iframe<traceAddresses.length;++iframe){
-							char[2048] buf;
-							char[1024] buf2;
-							fInfo.clear();
-							fInfo.address=cast(size_t)traceAddresses[iframe];
-							fInfo.iframe=cast(ptrdiff_t)iframe;
-							fInfo.exactAddress=(addrPrecision & 2) || (iframe==0 && (addrPrecision & 1));
-							rt_symbolizeFrameInfo(fInfo,&context,buf);
-							
-							auto r= fInfo.func in internalFuncs;
-							fInfo.internalFunction |= (r !is null);
-							fInfo.func = demangler.demangle(fInfo.func.dup,buf2);
-							int res=loopBody(fInfo.iframe, cast(char[])fInfo.func);
-							if (res) return res;
-					}
-					return 0;
-			}	
-    int opApply( int delegate( ref FrameInfo fInfo ) loopBody){
+    override int opApply(scope int delegate(ref char[]) dg )
+    {
+        return opApply( (ref size_t, ref char[] buf)
+                        {
+                            return dg( buf );
+                        } );
+    }
+
+    override int opApply(scope int delegate(ref size_t line, ref char[] func) loopBody)
+    {
+            FrameInfo fInfo;
+            for (size_t iframe=0;iframe<traceAddresses.length;++iframe){
+                    char[2048] buf;
+                    char[1024] buf2;
+                    fInfo.clear();
+                    fInfo.address=cast(size_t)traceAddresses[iframe];
+                    fInfo.iframe=cast(ptrdiff_t)iframe;
+                    fInfo.exactAddress=(addrPrecision & 2) || (iframe==0 && (addrPrecision & 1));
+                    rt_symbolizeFrameInfo(fInfo,&context,buf);
+
+                    auto r= fInfo.func in internalFuncs;
+                    fInfo.internalFunction |= (r !is null);
+                    fInfo.func = demangler.demangle(fInfo.func.dup,buf2);
+                    int res=loopBody(fInfo.iframe, fInfo.func);
+                    if (res) return res;
+            }
+            return 0;
+    }
+    int opApply(scope int delegate( ref FrameInfo fInfo ) loopBody){
         FrameInfo fInfo;
         for (size_t iframe=0;iframe<traceAddresses.length;++iframe){
             char[2048] buf;
@@ -206,7 +206,7 @@ class BasicTraceInfo: Throwable.TraceInfo{
             fInfo.iframe=cast(ptrdiff_t)iframe;
             fInfo.exactAddress=(addrPrecision & 2) || (iframe==0 && (addrPrecision & 1));
             rt_symbolizeFrameInfo(fInfo,&context,buf);
-            
+
             auto r= fInfo.func in internalFuncs;
             fInfo.internalFunction |= (r !is null);
             fInfo.func = demangler.demangle(fInfo.func,buf2);
@@ -223,8 +223,6 @@ class BasicTraceInfo: Throwable.TraceInfo{
              buf ~= i ? "\n" ~ line : line;
          return buf;
      }
-		
-		
 }
 
 version(linux){
@@ -355,7 +353,7 @@ Exception.TraceInfo basicTracer( void* ptr = null ){
     } catch (Throwable e){
         Runtime.console.stderr("tracer got exception:\n");
         Runtime.console.stderr(e.msg);
-			Runtime.console.stderr(e.toString);	
+        Runtime.console.stderr(e.toString);
         Runtime.console.stderr("\n");
     }
     return res;
@@ -399,8 +397,7 @@ version(Posix){
         tc.hasContext=ctx is null;
         if (tc.hasContext) tc.context=*(cast(ucontext_t*)ctx);
         Exception.TraceInfo info=basicTracer(&tc);
-				
-				
+
         info.opApply((ref char[] s) { Runtime.console.stderr(s); return 0;});
 
         Runtime.console.stderr("Stacktrace signal handler abort().\n");
@@ -408,7 +405,7 @@ version(Posix){
     }
 
     sigaction_t fault_action;
-        
+
     void setupSegfaultTracer(){
         //use an alternative stack; this is useful when infinite recursion
         //  triggers a SIGSEGV
@@ -426,7 +423,7 @@ version(Posix){
             sigaction(sig, &fault_action, null);
         }
     }
-    
+
     version(noSegfaultTrace){
     } else {
         static this(){

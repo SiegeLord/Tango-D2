@@ -312,7 +312,7 @@ extern (C)
     alias int function(int type, ubyte *m, uint m_length, ubyte *sigret, uint *siglen, RSA *rsa) tRSA_sign;
     alias int function(int type, ubyte *m, uint m_length, ubyte *sigbuf, uint siglen, RSA *rsa) tRSA_verify;
     alias void function(MD5_CTX *c) tMD5_Init;
-    alias void function(MD5_CTX *c, void *data, size_t len) tMD5_Update;
+    alias void function(MD5_CTX *c, in void *data, size_t len) tMD5_Update;
     alias void function(ubyte *md, MD5_CTX *c) tMD5_Final;
     alias int function(EVP_CIPHER_CTX *ctx, EVP_CIPHER *type, void *impl, ubyte *key, ubyte *iv) tEVP_EncryptInit_ex;
     alias int function(EVP_CIPHER_CTX *ctx, EVP_CIPHER *type, void *impl, ubyte *key, ubyte*iv) tEVP_DecryptInit_ex;
@@ -722,7 +722,7 @@ SharedLib loadLib(const(char)[][] loadPath)
             rtn = SharedLib.load(path);
         catch (SharedLibException ex)
         {
-            scope fp = new FilePath(path);
+            scope fp = new FilePath(path.dup);
             try
                 rtn = SharedLib.load(fp.absolute(Environment.cwd()).toString);
             catch (SharedLibException ex)

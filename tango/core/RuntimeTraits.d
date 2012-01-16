@@ -203,7 +203,7 @@ struct applyInterfaces
     }
 
     ///
-    int opApply (int delegate (ref ClassInfo) dg)
+    int opApply (scope int delegate (ref ClassInfo) dg)
     {
         int result = 0;
         for (; type; type = type.base)
@@ -564,7 +564,5 @@ debug (UnitTest)
         assert (!isDynamicArray (typeid(int[4])));
         assert (isStaticArray (typeid(int[4])));
     }
-
-
 
 }
