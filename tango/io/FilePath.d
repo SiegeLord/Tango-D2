@@ -482,7 +482,7 @@ class FilePath : PathView
 
                 expand (p.end_);
 
-				auto fp = p.fp.dup;
+                auto fp = p.fp.dup;
 
                 if (p.end_) 
                 {
@@ -495,7 +495,7 @@ class FilePath : PathView
                 }
 
                 fp[p.end_] = '\0';
-				p.fp = fp;
+                p.fp = fp;
 
                 return parse;
         }
