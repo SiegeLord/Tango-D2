@@ -860,7 +860,7 @@ private:
                     null));
     }
 
-    void mutate_write(uint bytes, in void[] src)
+    void mutate_write(size_t bytes, in void[] src)
     {
         if( !(bytes == 0 || bytes == IConduit.Eof) )
             this.modified = true;
@@ -1468,7 +1468,7 @@ class ZipSubFolderGroup : VfsFolders
         return result;
     }
 
-    final uint files()
+    final size_t files()
     in { assert( valid ); }
     body
     {
@@ -1480,14 +1480,14 @@ class ZipSubFolderGroup : VfsFolders
         return files;
     }
 
-    final uint folders()
+    final size_t folders()
     in { assert( valid ); }
     body
     {
         return members.length;
     }
 
-    final uint entries()
+    final size_t entries()
     in { assert( valid ); }
     body
     {
@@ -1600,7 +1600,7 @@ class ZipFileGroup : VfsFiles
         return result;
     }
 
-    final uint files()
+    final size_t files()
     in { assert( valid ); }
     body
     {
@@ -1816,7 +1816,7 @@ class EventSeekInputStream : InputStream //, IConduit.Seek
     {
         void delegate()                     close; ///
         void delegate()                     clear; ///
-        void delegate(uint, void[])         read; ///
+        void delegate(size_t, void[])       read; ///
         void delegate(long, long, Anchor)   seek; ///
     }
 
@@ -1899,7 +1899,7 @@ class EventSeekOutputStream : OutputStream //, IConduit.Seek
     {
         void delegate()                     close; ///
         void delegate()                     flush; ///
-        void delegate(uint, in void[])         write; ///
+        void delegate(size_t, in void[])    write; ///
         void delegate(long, long, Anchor)   seek; ///
     }
 

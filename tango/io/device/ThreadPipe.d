@@ -237,7 +237,7 @@ class ThreadPipe : Conduit
      * the quantity provided. Eof is returned when an end-of-flow condition
      * arises.
      */
-    size_t write(void[] src)
+    size_t write(const(void)[] src)
     {
         //
         // don't block for empty write
@@ -283,7 +283,7 @@ debug(UnitTest)
 
     unittest
     {
-        uint[] source = new uint[1000];
+        size_t[] source = new size_t[1000];
         foreach(i, ref x; source)
             x = i;
 

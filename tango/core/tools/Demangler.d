@@ -538,7 +538,7 @@ public class Demangler
             }
             
             input = input[0 .. chars];
-            uint len = input.length;
+            size_t len = input.length;
             if (templateInstanceName())
             {
                 input = original[len - input.length .. $];

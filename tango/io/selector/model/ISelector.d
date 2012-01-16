@@ -127,7 +127,7 @@ interface ISelectionSet
     /**
      * Returns the number of SelectionKey's in the set.
      */
-    public abstract uint length();
+    public abstract size_t length();
 
     /**
      * Operator to iterate over a set via a foreach block.  Note that any

@@ -371,7 +371,7 @@ class FtpFolder: VfsFolder {
 
         FtpFileInfo[] reverse(FtpFileInfo[] infos) {
             FtpFileInfo[] reversed;
-            for(int i = infos.length - 1; i >= 0; i--) {
+            for(size_t i = infos.length - 1; i >= 0; i--) {
                 reversed ~= infos[i];
             }
             return reversed;
@@ -563,7 +563,7 @@ class FtpFolders: VfsFolders {
      Return the number of files
      ***********************************************************************/
 
-    final uint files() {
+    final size_t files() {
         FTPConnection conn;
 
     
@@ -591,7 +591,7 @@ class FtpFolders: VfsFolders {
      Return the number of folders
      ***********************************************************************/
 
-    final uint folders() {
+    final size_t folders() {
         FTPConnection conn;
 
     
@@ -619,7 +619,7 @@ class FtpFolders: VfsFolders {
      Return the total number of entries (files + folders)
      ***********************************************************************/
 
-    final uint entries() {
+    final size_t entries() {
         FTPConnection conn;
 
     
@@ -1230,7 +1230,7 @@ class FtpFiles: VfsFiles {
      Return the total number of entries
      ***********************************************************************/
 
-    final uint files() {
+    final size_t files() {
         return infos_.length;
     }
 

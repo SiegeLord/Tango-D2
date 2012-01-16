@@ -431,7 +431,7 @@ class TempFile : File
     /*
      * Generates a new random file name, sans directory.
      */
-    private char[] randomName(uint length=DEFAULT_LENGTH,
+    private char[] randomName(size_t length=DEFAULT_LENGTH,
             const(char)[] prefix=DEFAULT_PREFIX,
             const(char)[] suffix=DEFAULT_SUFFIX)
     {
@@ -439,7 +439,7 @@ class TempFile : File
         scope(exit) delete junk;
 
         foreach( ref c ; junk )
-            c = JUNK_CHARS[Kiss.instance.toInt($)];
+            c = JUNK_CHARS[Kiss.instance.toInt(cast(uint)$)];
 
         return prefix~junk~suffix;
     }

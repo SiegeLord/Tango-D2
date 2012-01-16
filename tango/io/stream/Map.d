@@ -95,7 +95,7 @@ class MapInput(T) : Lines!(T)
 
         ***********************************************************************/
 
-        final MapInput load (ref T[][T[]] properties)
+        final MapInput load (ref const(T)[][const(T)[]] properties)
         {
                 foreach (name, value; this)
                          properties[name.idup] = value.dup;
@@ -114,7 +114,7 @@ class MapInput(T) : Lines!(T)
 
 class MapOutput(T) : OutputFilter
 {
-        private T[] eol;
+        private const(T)[] eol;
 
         private const T[] prefix = "# ";
         private const T[] equals = " = ";
@@ -129,7 +129,7 @@ class MapOutput(T) : OutputFilter
 
         ***********************************************************************/
 
-        this (OutputStream stream, T[] newline = NL)
+        this (OutputStream stream, const(T)[] newline = NL)
         {
                 super (BufferedOutput.create (stream));
                 eol = newline;
@@ -167,7 +167,7 @@ class MapOutput(T) : OutputFilter
 
         ***********************************************************************/
 
-        final MapOutput append (T[] name, T[] value)
+        final MapOutput append (const(T)[] name, const(T)[] value)
         {
                 sink.write (name);
                 sink.write (equals);
@@ -182,7 +182,7 @@ class MapOutput(T) : OutputFilter
 
         ***********************************************************************/
 
-        final MapOutput append (T[][T[]] properties)
+        final MapOutput append (const(T)[][const(T)[]] properties)
         {
                 foreach (key, value; properties)
                          append (key, value);
@@ -207,7 +207,7 @@ debug (UnitTest)
                 auto input = new MapInput!(char)(buf);
                 auto output = new MapOutput!(char)(buf);
 
-                char[][char[]] map;
+                const(char)[][const(char)[]] map;
                 map["foo"] = "bar";
                 map["foo2"] = "bar2";
                 output.append(map).flush;

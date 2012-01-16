@@ -124,14 +124,14 @@ debug (UnitTest)
         {
                 Array output;
 
-                auto inp = new TypedInput!(char)(new Array("hello world"));
+                auto inp = new TypedInput!(char)(new Array("hello world".dup));
                 auto oot = new TypedOutput!(char)(output = new Array(20));
 
                 foreach (x; inp)
                          oot.write (x);
                 assert (output.slice == "hello world");
 
-                auto xx = new TypedInput!(char)(new UtfInput!(char, dchar)(new Array("hello world"d)));
+                auto xx = new TypedInput!(char)(new UtfInput!(char, dchar)(new Array("hello world"d.dup)));
                 char[] yy;
                 foreach (x; xx)
                          yy ~= x;

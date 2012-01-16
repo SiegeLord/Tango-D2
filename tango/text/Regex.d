@@ -613,17 +613,17 @@ struct CharRange(char_t)
             if ( contains(cr) )
             {
                 d.l_ = l_;
-                d.r_ = cr.l_-1;
+                d.r_ = cast(char_t)(cr.l_-1);
                 if ( d.l_ <= d.r_ )
                     sr ~= d;
-                d.l_ = cr.r_+1;
+                d.l_ = cast(char_t)(cr.r_+1);
                 d.r_ = r_;
                 if ( d.l_ <= d.r_ )
                     sr ~= d;
             }
             else if ( cr.r_ > l_ )
             {
-                d.l_ = cr.r_+1;
+                d.l_ = cast(char_t)(cr.r_+1);
                 d.r_ = r_;
                 if ( d.l_ <= d.r_ )
                     sr ~= d;
@@ -631,7 +631,7 @@ struct CharRange(char_t)
             else if ( cr.l_ < r_ )
             {
                 d.l_ = l_;
-                d.r_ = cr.l_-1;
+                d.r_ = cast(char_t)(cr.l_-1);
                 if ( d.l_ <= d.r_ )
                     sr ~= d;
             }
@@ -858,7 +858,7 @@ struct CharClass(char_t)
             foreach ( i, ref cr; parts[0 .. $-1] )
             {
                 cr.l_ = start;
-                cr.r_ = parts[i+1].l_-1;
+                cr.r_ = cast(char_t)(parts[i+1].l_-1);
                 start = parts[i+1].r_;
                 if ( start < char_t.max )
                     ++start;
@@ -874,7 +874,7 @@ struct CharClass(char_t)
 
         foreach ( i, ref cr; parts )
         {
-            char_t tmp = cr.l_-1;
+            char_t tmp = cast(char_t)(cr.l_-1);
             cr.l_ = start;
             start = cr.r_;
             if ( start < char_t.max )
@@ -1213,7 +1213,7 @@ private class TNFAState(char_t)
 {
     bool    accept = false,
             visited = false;
-    uint    index;
+    size_t    index;
     List!(TNFATransition!(char_t))  transitions;
 
     this()
@@ -2324,8 +2324,8 @@ private class TDFA(char_t)
     **********************************************************************************************/
     struct Command
     {
-        uint        dst,    /// register index to recieve data
-                    src;    /// register index or CURRENT_POSITION_REGISTER for current position
+        size_t        dst,    /// register index to recieve data
+                      src;    /// register index or CURRENT_POSITION_REGISTER for current position
 
         string toString()
         {
@@ -2358,8 +2358,8 @@ private class TDFA(char_t)
 
     struct TagIndex
     {
-        uint    tag,
-                index;
+        size_t    tag,
+                  index;
     }
 
     /* ********************************************************************************************
@@ -2371,12 +2371,12 @@ private class TDFA(char_t)
             GENERIC, MIXED, LOOKUP
         }
 
-        const uint  LOOKUP_LENGTH = 256,
-                    INVALID_STATE = 255;
+        const size_t  LOOKUP_LENGTH = 256,
+                      INVALID_STATE = 255;
 
         bool            accept = false;
         bool            reluctant = false;
-        uint            index;
+        size_t          index;
         Transition[]    transitions,
                         generic_transitions;
         Command[]       finishers;
@@ -2671,7 +2671,7 @@ private class TDFA(char_t)
         }
 
         // renumber registers continuously
-        uint[uint]  regNums;
+        size_t[size_t]  regNums;
 
         for ( next_register = 0; next_register < num_tags; ++next_register )
             regNums[next_register] = next_register;
@@ -3192,7 +3192,7 @@ private:
     SubsetState lookbehindClosure(SubsetState from, predicate_t pred)
     {
         List!(StateElement) stack = new List!(StateElement);
-        StateElement[uint]  closure;
+        StateElement[size_t]  closure;
 
         foreach ( e; from.elms )
         {
@@ -3271,7 +3271,7 @@ private:
         ++firstFreeIndex;
 
         List!(StateElement) stack = new List!(StateElement);
-        StateElement[uint]  closure;
+        StateElement[size_t]  closure;
 
         foreach ( e; from.elms )
         {
@@ -3976,12 +3976,12 @@ class RegExpT(char_t)
         Returns:
             Slice of input for the requested submatch, or null if no such submatch exists.
     **********************************************************************************************/
-    char_t[] match(uint index)
+    char_t[] match(size_t index)
     {
         if ( index > tdfa_.num_tags )
             return null;
-        int start   = last_start_+registers_[index*2],
-            end     = last_start_+registers_[index*2+1];
+        sizediff_t start   = last_start_+registers_[index*2],
+                   end     = last_start_+registers_[index*2+1];
         if ( start >= 0 && start < end && end <= input_.length )
             return input_[start .. end];
         return null;
@@ -4215,7 +4215,7 @@ class RegExpT(char_t)
         code ~= "\n        dchar c = cast(dchar)input[p];\n        if ( c & 0x80 )\n            decode(input, next_p);";
         code ~= "\n        else\n            next_p = p+1;\n        switch ( s )\n        {";
 
-        uint[] finish_states;
+        size_t[] finish_states;
         foreach ( s; tdfa_.states )
         {
             code ~= Format.convert("\n            case {}:", s.index);
@@ -4295,7 +4295,7 @@ class RegExpT(char_t)
         }
 
         // create finisher groups
-        uint[][uint] finisherGroup;
+        size_t[][size_t] finisherGroup;
         foreach ( fs; finish_states )
         {
             // check if finisher group with same commands exists
@@ -4380,7 +4380,7 @@ class RegExpT(char_t)
         return tdfa_.num_tags;
     }
 
-    int[]       registers_;
+    size_t[]       registers_;
     size_t      next_start_,
                 last_start_;
 

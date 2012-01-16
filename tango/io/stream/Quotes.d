@@ -51,7 +51,7 @@ private import tango.io.stream.Iterator;
 
 class Quotes(T) : Iterator!(T)
 {
-        private T[] delim;
+        private const(T)[] delim;
 
         /***********************************************************************
 
@@ -60,7 +60,7 @@ class Quotes(T) : Iterator!(T)
 
         ***********************************************************************/
 
-        this (T[] delim, InputStream stream = null)
+        this (const(T)[] delim, InputStream stream = null)
         {
                 super (stream);
                 this.delim = delim;
@@ -117,7 +117,7 @@ debug (UnitTest)
 
         unittest
         {
-                char[][] expected =
+                const(char)[][] expected =
                          [
                          `0`
                          ,``

@@ -678,7 +678,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        static T[] convert(T)(void[] x)
+        static T[] convert(T)(const(void)[] x)
         {
                 return (cast(T*) x.ptr) [0 .. (x.length / T.sizeof)];
         }

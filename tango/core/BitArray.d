@@ -24,7 +24,7 @@ private import tango.core.BitManip;
 struct BitArray
 {
     size_t  len;
-    uint*   ptr;
+    size_t*   ptr;
 
 
     /**
@@ -83,7 +83,7 @@ struct BitArray
             if( newdim != olddim )
             {
                 // Create a fake array so we can use D's realloc machinery
-                uint[] buf = ptr[0 .. olddim];
+                size_t[] buf = ptr[0 .. olddim];
 
                 buf.length = newdim; // realloc
                 ptr = buf.ptr;
@@ -120,7 +120,7 @@ struct BitArray
     {
         BitArray ba;
 
-        uint[] buf = ptr[0 .. dim].dup;
+        size_t[] buf = ptr[0 .. dim].dup;
         ba.len = len;
         ba.ptr = buf.ptr;
         return ba;
@@ -223,7 +223,7 @@ struct BitArray
     }
     body
     {
-        ptr = cast(uint*)target.ptr;
+        ptr = cast(size_t*)target.ptr;
         len = numbits;
     }
 
@@ -366,8 +366,10 @@ struct BitArray
     {
       unittest
       {
-        static uint x = 0b1100011000;
-        static BitArray ba = { 10, &x };
+        static size_t x = 0b1100011000;
+        static BitArray ba;
+        ba.len = 10;
+        ba.ptr = &x;
 
         ba.sort;
         for( size_t i = 0; i < 6; ++i )
@@ -464,8 +466,8 @@ struct BitArray
     {
         if( this.length() != rhs.length() )
             return 0; // not equal
-        const uint* p1 = this.ptr;
-        const uint* p2 = rhs.ptr;
+        const size_t* p1 = this.ptr;
+        const size_t* p2 = rhs.ptr;
         size_t n = this.length / 32;
         size_t i;
         for( i = 0; i < n; ++i )
@@ -473,8 +475,8 @@ struct BitArray
             if( p1[i] != p2[i] )
             return 0; // not equal
         }
-        int rest = cast(int)(this.length & cast(size_t)31u);
-        uint mask = ~((~0u)<<rest);
+        sizediff_t rest = cast(int)(this.length & cast(size_t)31u);
+        size_t mask = ~((~0u)<<rest);
         return (rest == 0) || (p1[i] & mask) == (p2[i] & mask);
     }
 
@@ -513,8 +515,8 @@ struct BitArray
         auto len = this.length;
         if( rhs.length < len )
             len = rhs.length;
-        uint* p1 = this.ptr;
-        uint* p2 = rhs.ptr;
+        size_t* p1 = this.ptr;
+        size_t* p2 = rhs.ptr;
         size_t n = len / 32;
         size_t i;
         for( i = 0; i < n; ++i )
