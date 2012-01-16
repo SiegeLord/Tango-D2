@@ -55,21 +55,7 @@ private extern (C)
         real powl  (real base, real exp);
 
         int printf (char*, ...);
-        version (Windows)
-                {
-                alias ecvt econvert;
-                alias ecvt fconvert;
-                }
-        else
-           {
-           alias ecvtl econvert;
-           alias ecvtl fconvert;
-           }
 
-        char* ecvt (double d, int digits, int* decpt, int* sign);
-        char* fcvt (double d, int digits, int* decpt, int* sign);
-        char* ecvtl (real d, int digits, int* decpt, int* sign);
-        char* fcvtl (real d, int digits, int* decpt, int* sign);
 }
 
 /******************************************************************************
@@ -237,13 +223,7 @@ version (float_internal)
          str = convertl (buf.ptr, x, decimals, &exp, &sign, mode is 5);
 version (float_dtoa)
          str = dtoa (x, mode, decimals, &exp, &sign, &end);
-version (float_lib)
-        {
-        if (mode is 5)
-            str = fconvert (x, decimals, &exp, &sign);
-        else
-           str = econvert (x, decimals, &exp, &sign);
-        }
+
 
         auto p = dst.ptr;
         if (sign)

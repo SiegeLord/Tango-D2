@@ -40,8 +40,8 @@ then
     DL="-ldl -L.  -ltango-$DC-tst -lz -lbz2 -o $EXE"
 fi
 
-echo build/bin/${PLATFORM}32/bob -r=$DC -m=$ARCH -c=$DC -p=$PLATFORM -l=libtango-$DC-tst -o=\"-m$ARCH -unittest $OPTIONS\" . 
-build/bin/${PLATFORM}32/bob -r=$DC -m=$ARCH -c=$DC -p=$PLATFORM -l=libtango-$DC-tst -o="-m$ARCH -unittest $OPTIONS" . 
+echo build/bin/${PLATFORM}$ARCH/bob -m=$ARCH -c=$DC -p=$PLATFORM -l=libtango-$DC-tst -o=\"-m$ARCH -unittest $OPTIONS\" . 
+build/bin/${PLATFORM}$ARCH/bob -m=$ARCH -c=$DC -p=$PLATFORM -l=libtango-$DC-tst -o="-m$ARCH -unittest $OPTIONS -debug -debug=UnitTest -gc"  . 
 
 
 echo "Compiled Library"
@@ -61,16 +61,14 @@ DFILES=""
 for f in `find tango -name "*.d" | grep -v tango.core.rt | grep -v tango.core.vendor | grep -v -i win32`
 do
     DFILES="$DFILES $f"
-    echo $f | sed -e"s/.d$/;/g" -e "sX/X.Xg" -e"s/^tango/import tango/g" >> $EXE.d
+    #echo $f | sed -e"s/.d$/;/g" -e "sX/X.Xg" -e"s/^tango/import tango/g" >> $EXE.d
 done
 
 cat >> $EXE.d <<EOF
 
+import tango.all;
 import tango.io.Stdout;
 import tango.core.Runtime;
-import tango.core.tools.TraceExceptions;
-
-import tango.stdc.stdio : printf;
 
 bool tangoUnitTester()
 {
@@ -90,7 +88,7 @@ bool tangoUnitTester()
             catch (Exception e) {
                 countFailed++;
                 Stdout(" - Unittest failed.").newline;
-                e.writeOut(delegate void(char[]s){ Stdout(s); });
+                Stdout(e).nl;
                 continue;
             }
             Stdout(" - Success.").newline;
@@ -114,7 +112,7 @@ then
 fi
 
 echo "$DC $EXE.d $DFILES $OPTIONS -m$ARCH -unittest -L-L. -L-ltango-$DC-tst  $DL -L-lz -L-lbz2"
-$DC $EXE.d $DFILES $OPTIONS -m$ARCH -Itango/core/vendor -unittest -L-L. -L-ltango-$DC-tst  $DL -L-lz -L-lbz2  #&& rm $EXE.d && rm libtango-$DC-tst.a
+$DC $EXE.d $DFILES $OPTIONS -m$ARCH -Itango/core/vendor -unittest -debug -debug=UnitTest -L-L. -L-ltango-$DC-tst -gc $DL -L-lz -L-lbz2  #&& rm $EXE.d && rm libtango-$DC-tst.a
 
 ./runUnittests_$DC
 

@@ -1041,7 +1041,7 @@ package struct FS
 
 struct PathParser
 {
-        package char[]  fp;              // filepath with trailing
+        package const(char)[]  fp;              // filepath with trailing
         package int     end_,                   // before any trailing 0
                         ext_,                   // after rightmost '.'
                         name_,                  // file/dir name
@@ -1054,7 +1054,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        PathParser parse (char[] path)
+        PathParser parse (in char[] path)
         {
                 return parse (path, path.length);
         }
@@ -1092,7 +1092,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] root ()
+        const const(char)[] root ()
         {
                 return fp [0 .. folder_];
         }
@@ -1107,10 +1107,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] folder ()
-        {
-                return fp [folder_ .. name_];
-        }
+
         
         const const(char)[] folder ()
         {
@@ -1134,7 +1131,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] parent ()
+        const(char)[] parent ()
         {
                 auto p = path;
                 if (name.length is 0)
@@ -1163,7 +1160,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] pop ()
+        const(char)[] pop ()
         {
                 return FS.stripped (path);
         }
@@ -1174,7 +1171,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] name ()
+        const const(char)[] name ()
         {
                 return fp [name_ .. suffix_];
         }
@@ -1188,7 +1185,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] ext ()
+        const(char)[] ext ()
         {
                 auto x = suffix;
                 if (x.length)
@@ -1211,7 +1208,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] suffix ()
+        const const(char)[] suffix ()
         {
                 return fp [suffix_ .. end_];
         }
@@ -1222,7 +1219,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] path ()
+        const const(char)[] path ()
         {
                 return fp [0 .. name_];
         }
@@ -1233,7 +1230,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] file ()
+        const const(char)[] file ()
         {
                 return fp [name_ .. end_];
         }
@@ -1273,7 +1270,7 @@ struct PathParser
 
         const bool isChild ()
         {
-                return folder.length > 0;
+                return folder().length > 0;
         }
 
         /***********************************************************************
@@ -1302,7 +1299,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        package PathParser parse (char[] path, size_t end)
+        package PathParser parse (in char[] path, size_t end)
         {
                 end_ = cast(int)end;
                 fp = path;
@@ -1802,7 +1799,7 @@ char[] replace (char[] path, char from, char to)
 
 *******************************************************************************/
 
-PathParser parse (char[] path)
+PathParser parse (in char[] path)
 {
         PathParser p;
 
