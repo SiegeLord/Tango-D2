@@ -479,17 +479,24 @@ class FilePath : PathView
         final FilePath set (const(char)[] path, bool convert = false)
         {
                 p.end_ = cast(int)path.length;
-								auto fp = p.fp.dup;
+
                 expand (p.end_);
-                if (p.end_)
-                   {
+
+				auto fp = p.fp.dup;
+
+                if (p.end_) 
+                {
                    fp[0 .. p.end_] = path;
-                   if (convert)
+
+                   if (convert) 
+                   {
                        .standard (fp [0 .. p.end_]);
                    }
+                }
 
                 fp[p.end_] = '\0';
-								p.fp = fp;
+				p.fp = fp;
+
                 return parse;
         }
 
@@ -700,8 +707,10 @@ class FilePath : PathView
         private final void expand (size_t size)
         {
                 ++size;
-                if (p.fp.length < size)
+                if (p.fp.length < size) 
+                {
                     p.fp.length = (size + 127) & ~127;
+                }
         }
 
         /***********************************************************************
