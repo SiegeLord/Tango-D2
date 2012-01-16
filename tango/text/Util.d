@@ -525,9 +525,9 @@ T[] tail(T, S) (T[] src, S[] pattern, out T[] head)
 
 ******************************************************************************/
 
-const(T)[][] delimit(T) (const(T)[] src, const(T)[] set)
+T[][] delimit(T, M) (T[] src, const(M)[] set)
 {
-        const(T)[][] result;
+        T[][] result;
 
         foreach (segment; delimiters (src, set))
                  result ~= segment;
@@ -545,13 +545,13 @@ const(T)[][] delimit(T) (const(T)[] src, const(T)[] set)
 
 ******************************************************************************/
 
-const(T)[][] split(T) (const(T)[] src, const(T)[] pattern)
+inout(T)[][] split(T) (inout(T)[] src, const(T)[] pattern)
 {
         const(T)[][] result;
 
-        foreach (segment; patterns (src, pattern))
+        foreach (segment; patterns (cast(const(T)[])src, pattern))
                  result ~= segment;
-        return result;
+        return cast(inout(T)[][])result;
 }
 
 /******************************************************************************
@@ -566,10 +566,10 @@ const(T)[][] split(T) (const(T)[] src, const(T)[] pattern)
 ******************************************************************************/
 
 alias toLines splitLines;
-const(T)[][] toLines(T) (const(T)[] src)
+T[][] toLines(T) (T[] src)
 {
 
-        const(T)[][] result;
+        T[][] result;
 
         foreach (line; lines (src))
                  result ~= line;
@@ -587,7 +587,7 @@ const(T)[][] toLines(T) (const(T)[] src)
 
 ******************************************************************************/
 
-const(T)[] lineOf(T) (const(T)[] src, size_t index)
+T[] lineOf(T) (T[] src, size_t index)
 {
         int i = 0;
         foreach (line; lines (src))
@@ -887,7 +887,7 @@ size_t mismatch(T) (const(T)* s1, const(T)* s2, size_t length)
         
 ******************************************************************************/
 
-LineFruct!(T) lines(T) (const(T)[] src)
+LineFruct!(T) lines(T) (T[] src)
 {
         LineFruct!(T) lines;
         lines.src = src;
@@ -913,9 +913,9 @@ LineFruct!(T) lines(T) (const(T)[] src)
         
 ******************************************************************************/
 
-DelimFruct!(T) delimiters(T) (const(T)[] src, const(T)[] set)
+DelimFruct!(T, M) delimiters(T, M) (T[] src, const(M)[] set)
 {
-        DelimFruct!(T) elements;
+        DelimFruct!(T, M) elements;
         elements.set = set;
         elements.src = src;
         return elements;
@@ -961,9 +961,9 @@ PatternFruct!(T) patterns(T) (const(T)[] src, const(T)[] pattern, const(T)[] sub
         
 ******************************************************************************/
 
-QuoteFruct!(T) quotes(T) (const(T)[] src, const(T)[] set)
+QuoteFruct!(T, M) quotes(T, M) (T[] src, const(M)[] set)
 {
-        QuoteFruct!(T) quotes;
+        QuoteFruct!(T, M) quotes;
         quotes.set = set;
         quotes.src = src;
         return quotes;
@@ -1233,14 +1233,14 @@ size_t jhash (const(void)[] x, size_t c = 0)
 
 private struct LineFruct(T)
 {
-        private const(T)[] src;
+        private T[] src;
 
-        int opApply (scope int delegate (ref const(T)[] line) dg)
+        int opApply (scope int delegate (ref T[] line) dg)
         {
                 int        ret;
                 size_t     pos,
                            mark;
-                const(T)[] line;
+                T[] line;
 
                 enum T nl = '\n';
                 enum T cr = '\r';
@@ -1273,17 +1273,17 @@ private struct LineFruct(T)
         
 ******************************************************************************/
 
-private struct DelimFruct(T)
+private struct DelimFruct(T, M)
 {
-        private const(T)[] src;
-        private const(T)[] set;
+        private T[] src;
+        private const(M)[] set;
 
-        int opApply (scope int delegate (ref const(T)[] token) dg)
+        int opApply (scope int delegate (ref T[] token) dg)
         {
-                int        ret;
-                size_t     pos,
-                           mark;
-                const(T)[] token;
+                int     ret;
+                size_t  pos,
+                        mark;
+                T[]     token;
 
                 // optimize for single delimiter case
                 if (set.length is 1)
@@ -1360,16 +1360,16 @@ private struct PatternFruct(T)
         
 ******************************************************************************/
 
-private struct QuoteFruct(T)
+private struct QuoteFruct(T, M)
 {
-        private const(T)[] src;
-        private const(T)[] set;
+        private T[]        src;
+        private const(M)[] set;
         
         int opApply (scope int delegate (ref const(T)[] token) dg)
         {
-                int        ret;
-                size_t     mark;
-                const(T)[] token;
+                int     ret;
+                size_t  mark;
+                T[]     token;
 
                 if (set.length)
                     for (size_t i=0; i < src.length; ++i)
