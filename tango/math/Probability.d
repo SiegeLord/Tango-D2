@@ -733,9 +733,9 @@ unittest {
  *
  * The Geometric Distribution is a special case of the negative binomial
  * distribution.
- * -----------------------
+ * --
  * geometricDistribution(k, p) = negativeBinomialDistribution(k, 1, p);
- * -----------------------
+ * --
  * References:
  * $(LINK http://mathworld.wolfram.com/NegativeBinomialDistribution.html)
  */

@@ -35,16 +35,16 @@ version( TangoDoc )
      * For example, to convert the string "123" into an equivalent integer
      * value, you would use:
      *
-     * -----
+     * --
      * auto v = to!(int)("123");
-     * -----
+     * --
      *
      * You may also specify a default value which should be returned in the
      * event that the conversion cannot take place:
      *
-     * -----
+     * --
      * auto v = to!(int)("abc", 456);
-     * -----
+     * --
      *
      * The function will attempt to preserve the input value as exactly as
      * possible, given the limitations of the destination format.  For
@@ -55,7 +55,7 @@ version( TangoDoc )
      * strings.  Capitalised names indicate classes of types.  Conversions
      * between types in the same class are also possible.
      *
-     * -----
+     * --
      * bool         <-- Integer (0/!0), Char ('t'/'f'), String ("true"/"false")
      * Integer      <-- bool, Real, Char ('0'-'9'), String
      * Real         <-- Integer, String
@@ -63,7 +63,7 @@ version( TangoDoc )
      * Complex      <-- Integer, Real, Imaginary
      * Char         <-- bool, Integer (0-9)
      * String       <-- bool, Integer, Real, Char
-     * -----
+     * --
      *
      * Conversions between arrays and associative arrays are also supported,
      * and are done element-by-element.
@@ -72,21 +72,21 @@ version( TangoDoc )
      * appropriate static and instance member functions.  Given a type
      * the_type, any of the following members of a type T may be used:
      *
-     * -----
+     * --
      * the_type to_the_type();
      * static T from_the_type(the_type);
-     * -----
+     * --
      *
      * You may also use "camel case" names:
      *
-     * -----
+     * --
      * the_type toTheType();
      * static T fromTheType(the_type);
-     * -----
+     * --
      *
      * Arrays and associative arrays can also be explicitly supported:
      *
-     * -----
+     * --
      * the_type[] to_the_type_array();
      * the_type[] toTheTypeArray();
      *
@@ -98,15 +98,15 @@ version( TangoDoc )
      *
      * static T from_int_to_the_type_map(the_type[int]);
      * static T fromIntToTheTypeMap(the_type[int]);
-     * -----
+     * --
      *
      * If you have more complex requirements, you can also use the generic to
      * and from templated members:
      *
-     * -----
+     * --
      * the_type to(the_type)();
      * static T from(the_type)(the_type);
-     * -----
+     * --
      *
      * These templates will have the_type explicitly passed to them in the
      * template instantiation.
@@ -114,12 +114,12 @@ version( TangoDoc )
      * Finally, strings are given special support.  The following members will
      * be checked for:
      *
-     * -----
+     * --
      * char[]  toString();
      * wchar[] toString16();
      * dchar[] toString32();
      * char[]  toString();
-     * -----
+     * --
      *
      * The "toString_" method corresponding to the destination string type will be
      * tried first.  If this method does not exist, then the function will

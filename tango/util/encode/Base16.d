@@ -15,7 +15,7 @@
     This module is used to decode and encode hex char[] arrays.
 
     Example:
-    ---
+    
     char[] blah = "Hello there, my name is Jeff.";
 
     scope encodebuf = new char[allocateEncodeSize(cast(ubyte[])blah)];
@@ -24,7 +24,7 @@
     scope decodebuf = new ubyte[encoded.length];
     if (cast(char[])decode(encoded, decodebuf) == "Hello there, my name is Jeff.")
         Stdout("yay").newline;
-    ---
+    
 
     Since v1.0
 
@@ -72,11 +72,11 @@ size_t allocateEncodeSize(size_t length)
     buff = buffer large enough to hold encoded data
 
     Example:
-    ---
+    
     char[512] encodebuf;
     char[] myEncodedString = encode(cast(ubyte[])"Hello, how are you today?", encodebuf);
     Stdout(myEncodedString).newline; // 48656C6C6F2C20686F772061726520796F7520746F6461793F
-    ---
+    
 
 
 *******************************************************************************/
@@ -106,10 +106,10 @@ body
     data = what is to be encoded
 
     Example:
-    ---
+    
     char[] myEncodedString = encode(cast(ubyte[])"Hello, how are you today?");
     Stdout(myEncodedString).newline; // 48656C6C6F2C20686F772061726520796F7520746F6461793F
-    ---
+    
 
 
 *******************************************************************************/
@@ -142,10 +142,10 @@ body
     data = what is to be decoded
 
     Example:
-    ---
+    
     char[] myDecodedString = cast(char[])decode("48656C6C6F2C20686F772061726520796F7520746F6461793F");
     Stdout(myDecodeString).newline; // Hello, how are you today?
-    ---
+    
 
 *******************************************************************************/
 
@@ -176,11 +176,11 @@ body
     buff = a big enough array to hold the decoded data
 
     Example:
-    ---
+    
     ubyte[512] decodebuf;
     char[] myDecodedString = cast(char[])decode("48656C6C6F2C20686F772061726520796F7520746F6461793F", decodebuf);
     Stdout(myDecodeString).newline; // Hello, how are you today?
-    ---
+    
 
 *******************************************************************************/
 

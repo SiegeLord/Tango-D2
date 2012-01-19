@@ -15,9 +15,9 @@
         Use as a standalone formatter in the same manner as Layout, or
         combine with other entities such as Stdout. To enable a French
         Stdout, do the following:
-        ---
+        
         Stdout.layout = new Locale (Culture.getCulture ("fr-FR"));
-        ---
+        
         
         Note that Stdout is a shared entity, so every usage of it will
         be affected by the above example. For applications supporting 

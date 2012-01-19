@@ -18,11 +18,11 @@
   * 5 UUIDs instead, which use SHA-1.
   *
   * To use this module:
-  * ---
+  * 
   * import tango.util.uuid.NamespaceGenV3;
   * auto dnsNamespace = Uuid.parse("6ba7b810-9dad-11d1-80b4-00c04fd430c8");
   * auto uuid = newUuid(namespace, "rainbow.flotilla.example.org");
-  * ---
+  * 
   */
 module tango.util.uuid.NamespaceGenV3;
 

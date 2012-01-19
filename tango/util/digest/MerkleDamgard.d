@@ -21,7 +21,7 @@ public  import tango.util.digest.Digest;
 
         Extending MerkleDamgard to create a custom hash function requires 
         the implementation of a number of abstract methods. These include:
-        ---
+        
         public uint digestSize();
         protected void reset();
         protected void createDigest(ubyte[] buf);
@@ -29,15 +29,15 @@ public  import tango.util.digest.Digest;
         protected uint addSize();
         protected void padMessage(ubyte[] data);
         protected void transform(ubyte[] data);
-        ---
+        
 
         In addition there exist two further abstract methods; these methods
         have empty default implementations since in some cases they are not 
         required$(CLN)
-        ---
+        
         protected abstract void padLength(ubyte[] data, ulong length);
         protected abstract void extend();
-        ---
+        
 
         The method padLength() is required to implement the SHA series of
         Hash functions and also the Tiger algorithm. Method extend() is 

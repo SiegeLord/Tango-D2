@@ -28,7 +28,7 @@ private import tango.core.Exception : NoSuchElementException;
 
         Hash table implementation of a Map
 
-        ---
+        
         Iterator iterator ()
         int opApply (scope int delegate(ref V value) dg)
         int opApply (scope int delegate(ref K key, ref V value) dg)
@@ -61,7 +61,7 @@ private import tango.core.Exception : NoSuchElementException;
         float threshold ()
         void buckets (size_t cap)
         void threshold (float desired)
-        ---
+        
 
 *******************************************************************************/
 

@@ -29,7 +29,7 @@ version(Windows) { // Some tests only pass on DMD Windows - Not in my testing, S
 }
 }
 
-//------------------------------------------------------------------
+//
 
 /// The maximum value of x for which gamma(x) < real.infinity.
 enum real MAXGAMMA = 1755.5483429L;
@@ -871,7 +871,7 @@ unittest { // also tested by the normal distribution
     b1= 2.82847e-25;
     version(FailsOnLinux)  assert(betaIncompleteInv(0.01, b1, 9e-26) == 0x1.549696104490aa9p-830);
 
-    // --- Problematic cases ---
+    //  Problematic cases 
     // This is a situation where the series expansion fails to converge
     assert( isNaN(betaIncompleteInv(0.12167, 4.0640301659679627772e19L, 0.0813601)));
     // This next result is almost certainly erroneous.
@@ -1110,7 +1110,7 @@ body {
      *
      *          inf.      k
      *   a  -x   -       x
-     *  x  e     >   ----------
+     *  x  e     >   -
      *           -     -
      *          k=0   | (a+k+1)
      *

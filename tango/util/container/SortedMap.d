@@ -28,7 +28,7 @@ private import tango.core.Exception : NoSuchElementException;
 
         RedBlack trees of (key, value) pairs
 
-        ---
+        
         Iterator iterator (bool forward)
         Iterator iterator (K key, bool forward)
         int opApply (scope int delegate (ref V value) dg)
@@ -61,7 +61,7 @@ private import tango.core.Exception : NoSuchElementException;
         SortedMap clear ()
         SortedMap reset ()
         SortedMap comparator (Comparator c)
-        ---
+        
 
 *******************************************************************************/
 

@@ -31,7 +31,7 @@ version( TangoDoc )
      *  The bit number of the first bit set.
      *  The return value is undefined if v is zero.
      * Example:
-     * ---
+     * 
      * import tango.core.BitManip;
      *
      * int main()
@@ -46,7 +46,7 @@ version( TangoDoc )
      *     printf("bsr(x%x) = %d\n", v, x);
      *     return 0;
      * }
-     * ---
+     * 
      * Output:
      *  bsf(x21) = 0$(BR)
      *  bsr(x21) = 5
@@ -78,15 +78,15 @@ version( TangoDoc )
      * p = a non-NULL pointer to an array of size_ts.
      * index = a bit number, starting with bit 0 of p[0],
      * and progressing. It addresses bits like the expression:
-    ---
+    
     p[index / (size_t.sizeof*8)] & (1 << (index & ((size_t.sizeof*8) - 1)))
-    ---
+    
      * Returns:
      *  A non-zero value if the bit was set, and a zero
      *  if it was clear.
      *
      * Example:
-     * ---
+     * 
     import tango.core.BitManip;
 
     int main()
@@ -113,7 +113,7 @@ version( TangoDoc )
 
         return 0;
     }
-     * ---
+     * 
      * Output:
      *<pre>
      *btc(array, 35) = 0

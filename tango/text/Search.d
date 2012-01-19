@@ -49,7 +49,7 @@ SearchFruct!(T) search(T) (const(T)[] what)
         Convenient bundle of lightweight find utilities, without the
         hassle of IFTI problems. Create one of these using the find() 
         function:
-        ---
+        
         auto match = find ("foo");
         auto content = "wumpus foo bar"
 
@@ -59,7 +59,7 @@ SearchFruct!(T) search(T) (const(T)[] what)
 
         // search again - returns length when no match found
         assert (match.forward(content, index+1) is content.length);
-        ---
+        
 
         Searching operates both forward and backward, with an optional
         start offset (can be more convenient than slicing the content).
@@ -191,14 +191,14 @@ private struct FindFruct(T)
                 between all matches within the given content. Substitution
                 text is also injected in place of each match, and null can
                 be used to indicate removal instead:
-                ---
+                
                 char[] result;
 
                 auto match = find ("foo");
                 foreach (token; match.tokens ("$foo&&foo*", "bar"))
                          result ~= token;
                 assert (result == "$bar&&bar*");
-                ---
+                
                 
                 This mechanism avoids internal heap activity.                
 
@@ -213,14 +213,14 @@ private struct FindFruct(T)
 
                 Returns a foreach() iterator which exposes the indices of
                 all matches within the given content:
-                ---
+                
                 int count;
 
                 auto f = find ("foo");
                 foreach (index; f.indices("$foo&&foo*"))
                          ++count;
                 assert (count is 2);
-                ---
+                
 
         ***********************************************************************/
 
@@ -261,7 +261,7 @@ private struct FindFruct(T)
         Convenient bundle of welterweight search utilities, without the
         hassle of IFTI problems. Create one of these using the search() 
         function:
-        ---
+        
         auto match = search ("foo");
         auto content = "wumpus foo bar"
 
@@ -271,7 +271,7 @@ private struct FindFruct(T)
 
         // search again - returns length when no match found
         assert (match.forward(content, index+1) is content.length);
-        ---
+        
 
         Searching operates both forward and backward, with an optional
         start offset (can be more convenient than slicing the content).
@@ -437,14 +437,14 @@ private struct SearchFruct(T)
                 between all matches within the given content. Substitution
                 text is also injected in place of each match, and null can
                 be used to indicate removal instead:
-                ---
+                
                 char[] result;
 
                 auto match = search ("foo");
                 foreach (token; match.tokens("$foo&&foo*", "bar"))
                          result ~= token;
                 assert (result == "$bar&&bar*");
-                ---
+                
                 
                 This mechanism avoids internal heap activity             
 
@@ -459,14 +459,14 @@ private struct SearchFruct(T)
 
                 Returns a foreach() iterator which exposes the indices of
                 all matches within the given content:
-                ---
+                
                 int count;
 
                 auto match = search ("foo");
                 foreach (index; match.indices("$foo&&foo*"))
                          ++count;
                 assert (count is 2);
-                ---
+                
 
         ***********************************************************************/
 

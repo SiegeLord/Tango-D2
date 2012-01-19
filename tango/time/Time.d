@@ -33,11 +33,11 @@ module tango.time.Time;
     example of how to do this).
 
     Example:
-    -------------------
+    -
     Time start = Clock.now;
     Thread.sleep(0.150);
     Stdout.formatln("slept for {} ms", (Clock.now-start).millis);
-    -------------------
+    -
 
     See_Also: tango.core.Thread, tango.time.Clock
 
@@ -99,10 +99,10 @@ struct TimeSpan
          * Get the number of ticks that this timespan represents.  This can be
          * used to construct another TimeSpan:
          *
-         * --------
+         * --
          * long ticks = myTimeSpan.ticks;
          * TimeSpan copyOfMyTimeSpan = TimeSpan(ticks);
-         * --------
+         * --
          */
         const long ticks()
         {
@@ -498,10 +498,10 @@ struct Time
                 This value can be used to construct another Time struct by
                 writing:
 
-                ---------
+                
                 long ticks = myTime.ticks;
                 Time copyOfMyTime = Time(ticks);
-                ---------
+                
 
 
                 Returns: A long represented by the time of this 
@@ -675,10 +675,10 @@ struct Time
 
                 Returns: A TimeSpan representing this Time as Unix time.
 
-                -------------------------------------
+                -
                 auto unixTime = Clock.now.unix.seconds;
                 auto javaTime = Clock.now.unix.millis;
-                -------------------------------------
+                -
 
         **********************************************************************/
 
@@ -698,13 +698,13 @@ struct Time
 
         This is handy for dealing strictly with a 24-hour clock instead of
         potentially thousands of years. For example:
-        ---
+        
         auto time = Clock.now.time;
         assert (time.millis < 1000);
         assert (time.seconds < 60);
         assert (time.minutes < 60);
         assert (time.hours < 24);
-        ---
+        
 
         You can create a TimeOfDay from an existing Time or TimeSpan instance
         via the respective time() method. To convert back to a TimeSpan, use
@@ -752,13 +752,13 @@ struct TimeOfDay
          * maximum value for that field, they will be stored as that value.
          *
          * example:
-         * --------------
+         * --
          * auto tod = TimeOfDay(100, 100, 100, 10000);
          * assert(tod.hours == 100);
          * assert(tod.minutes == 100);
          * assert(tod.seconds == 100);
          * assert(tod.millis == 10000);
-         * --------------
+         * --
          */
         static TimeOfDay opCall (uint hours, uint minutes, uint seconds, uint millis=0)
         {

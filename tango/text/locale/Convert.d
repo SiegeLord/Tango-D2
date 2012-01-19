@@ -93,7 +93,7 @@ private struct Result
    * Returns: A string representation of the value of this instance as specified by format and formatService.
    * Remarks: See $(LINK2 datetimeformat.html, Time Formatting) for more information about date and time formatting.
    * Examples:
-   * ---
+   * 
    * import tango.io.Print, tango.text.locale.Core, tango.time.WallClock;
    *
    * void main() {
@@ -165,7 +165,7 @@ private struct Result
    * // RFC1123:                 ven., 26 mai 2006 10:04:57 GMT
    * // Sortable:                2006-05-26T10:04:57
    * // Year:                    mai 2006
-   * ---
+   * 
 
 ******************************************************************************/
 

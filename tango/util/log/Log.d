@@ -11,12 +11,12 @@
 
 
         Simplified, pedestrian usage:
-        ---
+        
         import tango.util.log.Config;
 
         Log ("hello world");
         Log ("temperature is {} degrees", 75);
-        ---
+        
 
         Generic usage:
 
@@ -24,7 +24,7 @@
         a particular portion of code. The names are generally hierarchical in
         nature, using dot notation (with '.') to separate each named section.
         For example, a typical name might be something like "mail.send.writer"
-        ---
+        
         import tango.util.log.Log;
 
         auto log = Log.lookup ("mail.send.writer");
@@ -33,42 +33,42 @@
         log.error ("an exception message: {}", exception);
 
         etc ...
-        ---
+        
 
         It is considered good form to pass a logger instance as a function or
         class-ctor argument, or to assign a new logger instance during static
         class construction. For example: if it were considered appropriate to
         have one logger instance per class, each might be constructed like so:
-        ---
+        
         private Logger log;
 
         static this()
         {
             log = Log.lookup (nameOfThisClassOrStructOrModule);
         }
-        ---
+        
 
         Messages passed to a Logger are assumed to be either self-contained
         or configured with "{}" notation a la Layout & Stdout:
-        ---
+        
         log.warn ("temperature is {} degrees!", 101);
-        ---
+        
 
         Note that an internal workspace is used to format the message, which
         is limited to 2000 bytes. Use "{.256}" truncation notation to limit
         the size of individual message components, or use explicit formatting:
-        ---
+        
         char[4096] buf = void;
 
         log.warn (log.format (buf, "a very long message: {}", someLongMessage));
-        ---
+        
 
         To avoid overhead when constructing arguments passed to formatted
         messages, you should check to see whether a logger is active or not:
-        ---
+        
         if (log.warn)
             log.warn ("temperature is {} degrees!", complexFunction());
-        ---
+        
 
         tango.log closely follows both the API and the behaviour as documented
         at the official Log4J site, where you'll find a good tutorial. Those
@@ -372,7 +372,7 @@ public struct Log
         a particular portion of code. The names are generally hierarchical in
         nature, using dot notation (with '.') to separate each named section.
         For example, a typical name might be something like "mail.send.writer"
-        ---
+        
         import tango.util.log.Log;format
 
         auto log = Log.lookup ("mail.send.writer");
@@ -381,42 +381,42 @@ public struct Log
         log.error ("an exception message: {}", exception.toString);
 
         etc ...
-        ---
+        
 
         It is considered good form to pass a logger instance as a function or
         class-ctor argument, or to assign a new logger instance during static
         class construction. For example: if it were considered appropriate to
         have one logger instance per class, each might be constructed like so:
-        ---
+        
         private Logger log;
 
         static this()
         {
             log = Log.lookup (nameOfThisClassOrStructOrModule);
         }
-        ---
+        
 
         Messages passed to a Logger are assumed to be either self-contained
         or configured with "{}" notation a la Layout & Stdout:
-        ---
+        
         log.warn ("temperature is {} degrees!", 101);
-        ---
+        
 
         Note that an internal workspace is used to format the message, which
         is limited to 2000 bytes. Use "{.256}" truncation notation to limit
         the size of individual message components, or use explicit formatting:
-        ---
+        
         char[4096] buf = void;
 
         log.warn (log.format (buf, "a very long warning: {}", someLongWarning));
-        ---
+        
 
         To avoid overhead when constructing argument passed to formatted
         messages, you should check to see whether a logger is active or not:
-        ---
+        
         if (log.enabled (log.Warn))
             log.warn ("temperature is {} degrees!", complexFunction());
-        ---
+        
 
         The above will be handled implicitly by the logging system when
         macros are added to the language (used to be handled implicitly

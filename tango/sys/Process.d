@@ -132,7 +132,7 @@ enum Redirect
  * process if many processes are created.
  *
  * Examples:
- * ---
+ * 
  * try
  * {
  *     auto p = new Process ("ls -al", null);
@@ -147,7 +147,7 @@ enum Redirect
  * }
  * catch (ProcessException e)
  *        Stdout.formatln ("Process execution failed: {}", e);
- * ---
+ * 
  */
 class Process
 {
@@ -248,10 +248,10 @@ class Process
      *            also be empty.
      *
      * Examples:
-     * ---
+     * 
      * auto p = new Process("myprogram", "first argument", "second", "third");
      * auto p = new Process("myprogram \"first argument\" second third");
-     * ---
+     * 
      */
     public this(const(char)[][] args ...)
     {
@@ -274,10 +274,10 @@ class Process
      *            also be empty.
      *
      * Examples:
-     * ---
+     * 
      * auto p = new Process(true, "myprogram", "first argument", "second", "third");
      * auto p = new Process(true, "myprogram \"first argument\" second third");
-     * ---
+     * 
      */
     public this(bool copyEnv, const(char)[][] args ...)
     {
@@ -295,7 +295,7 @@ class Process
      *            variables; the variable name must be the key of each entry.
      *
      * Examples:
-     * ---
+     * 
      * char[] command = "myprogram \"first argument\" second third";
      * char[][char[]] env;
      *
@@ -304,7 +304,7 @@ class Process
      * env["MYVAR2"] = "second";
      *
      * auto p = new Process(command, env)
-     * ---
+     * 
      */
     public this(const(char)[] command, const(char)[][char[]] env)
     in
@@ -328,7 +328,7 @@ class Process
      *            variables; the variable name must be the key of each entry.
      *
      * Examples:
-     * ---
+     * 
      * char[][] args;
      * char[][char[]] env;
      *
@@ -344,7 +344,7 @@ class Process
      * env["MYVAR2"] = "second";
      *
      * auto p = new Process(args, env)
-     * ---
+     * 
      */
     public this(const(char)[][] args, const(char)[][char[]] env)
     in
@@ -431,9 +431,9 @@ class Process
      * Returns: the arugments that were set.
      *
      * Examples:
-     * ---
+     * 
      * p.args("myprogram", "first", "second argument", "third");
-     * ---
+     * 
      */
     public const(char)[][] args(const(char)[] progname, const(char)[][] args ...)
     {
@@ -450,9 +450,9 @@ class Process
      * Returns: a reference to this for chaining
      *
      * Examples:
-     * ---
+     * 
      * p.setArgs("myprogram", "first", "second argument", "third").execute();
-     * ---
+     * 
      */
     public Process setArgs(const(char)[] progname, const(char)[][] args ...)
     {
@@ -516,14 +516,14 @@ class Process
      *
      * Returns: the env set.
      * Examples:
-     * ---
+     * 
      * char[][char[]] env;
      *
      * env["MYVAR1"] = "first";
      * env["MYVAR2"] = "second";
      *
      * p.env = env;
-     * ---
+     * 
      */
     public const(char)[][char[]] env(const(char)[][char[]] env)
     {
@@ -544,14 +544,14 @@ class Process
      *
      * Returns: A reference to this process object
      * Examples:
-     * ---
+     * 
      * char[][char[]] env;
      *
      * env["MYVAR1"] = "first";
      * env["MYVAR2"] = "second";
      *
      * p.setEnv(env).execute();
-     * ---
+     * 
      */
     public Process setEnv(const(char)[][char[]] env)
     {
@@ -878,7 +878,7 @@ class Process
      * Use properties or the constructor to set these parameters instead.
      *
      * Examples:
-     * ---
+     * 
      * auto p = new Process();
      * char[][] args;
      *
@@ -886,7 +886,7 @@ class Process
      * args ~= "-l";
      *
      * p.execute(args, null);
-     * ---
+     * 
      */
     deprecated public void execute(const(char)[][] args, const(char)[][char[]] env)
     in

@@ -15,10 +15,10 @@
         formatting is performed (below).
 
         Reference links:
-        ---
+        
         http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
         http://msdn.microsoft.com/en-us/library/system.globalization.datetimeformatinfo(VS.71).aspx
-        ---
+        
 
 ******************************************************************************/
 
@@ -154,26 +154,26 @@ struct DateTimeLocale
                 character codes indicated on the right, above. For example,
                 a layout of "dddd, dd MMM yyyy HH':'mm':'ss zzzz" will emit
                 something like this:
-                ---
+                
                 Monday, 30 Mar 2009 19:04:02 -08:00
-                ---
+                
 
                 Using these format indicators with Layout (Stdout etc) is
                 straightforward. Formatting integers, for example, is done
                 like so:
-                ---
+                
                 Stdout.formatln ("{:u}", 5);
                 Stdout.formatln ("{:b}", 5);
                 Stdout.formatln ("{:x}", 5);
-                ---
+                
 
                 Formatting date/time values is similar, where the format
                 indicators are provided after the colon:
-                ---
+                
                 Stdout.formatln ("{:t}", Clock.now);
                 Stdout.formatln ("{:D}", Clock.now);
                 Stdout.formatln ("{:dddd, dd MMMM yyyy HH:mm}", Clock.now);
-                ---
+                
 
         **********************************************************************/
 

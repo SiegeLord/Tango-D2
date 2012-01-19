@@ -525,7 +525,7 @@ else
  * in the following example.
  *
  * Example:
- * -----------------------------------------------------------------------------
+ * --
  * class DerivedThread : Thread
  * {
  *     this()
@@ -552,7 +552,7 @@ else
  * // start both threads
  * derived.start();
  * composed.start();
- * -----------------------------------------------------------------------------
+ * --
  */
 class Thread
 {
@@ -946,10 +946,10 @@ class Thread
      *  period must be less than (uint.max - 1) milliseconds.
      *
      * Example:
-     * -------------------------------------------------------------------------
+     * -
      * Thread.sleep( 0.05 ); // sleep for 50 milliseconds
      * Thread.sleep( 5 );    // sleep for 5 seconds
-     * -------------------------------------------------------------------------
+     * -
      */
     static void sleep( double period )
     in
@@ -1005,10 +1005,10 @@ class Thread
      *  period must be less than (uint.max - 1) milliseconds.
      *
      * Example:
-     * -------------------------------------------------------------------------
+     * -
      * Thread.sleep( TimeSpan.milliseconds( 50 ) ); // sleep for 50 milliseconds
      * Thread.sleep( TimeSpan.seconds( 5 ) );       // sleep for 5 seconds
-     * -------------------------------------------------------------------------
+     * -
      */
     static void sleep( TimeSpan period )
     in
@@ -1065,10 +1065,10 @@ class Thread
      *  period must be less than (uint.max - 1) milliseconds.
      *
      * Example:
-     * -------------------------------------------------------------------------
+     * -
      * Thread.sleep( 0.05 ); // sleep for 50 milliseconds
      * Thread.sleep( 5 );    // sleep for 5 seconds
-     * -------------------------------------------------------------------------
+     * -
      */
     static void sleep( double period )
     {
@@ -2857,7 +2857,7 @@ private char[] ptrToStr(size_t addr,char[]buf){
  * derivation or composition, as in the following example.
  *
  * Example:
- * ----------------------------------------------------------------------
+ * -
  * class DerivedFiber : Fiber
  * {
  *     this()
@@ -2892,7 +2892,7 @@ private char[] ptrToStr(size_t addr,char[]buf){
  * // since each fiber has run to completion, each should have state TERM
  * assert( derived.state == Fiber.State.TERM );
  * assert( composed.state == Fiber.State.TERM );
- * ----------------------------------------------------------------------
+ * -
  *
  * Authors: Based on a design by Mikola Lysenko.
  */

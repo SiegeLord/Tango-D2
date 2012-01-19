@@ -35,7 +35,7 @@ version (Posix)
         flaws found in older algorithms.
         
         Mersenne Twister has the following desirable properties:
-        ---
+        
         1. It was designed to have a period of 2^19937 - 1 (the creators
            of the algorithm proved this property).
            
@@ -47,7 +47,7 @@ version (Posix)
            the stringent Diehard tests.
            
         4. It is fast.
-        ---
+        
 
 *******************************************************************************/
 

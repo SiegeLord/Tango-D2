@@ -276,10 +276,10 @@ class FilePath : PathView
                 Returns true if all fields are identical. Note that some
                 combinations of operations may not produce an identical
                 set of fields. For example:
-                ---
+                
                 FilePath("/foo").append("bar").pop == "/foo";
                 FilePath("/foo/").append("bar").pop != "/foo/";
-                ---
+                
 
                 The latter is different due to variance in how append
                 injects data, and how pop is expected to operate under
@@ -301,10 +301,10 @@ class FilePath : PathView
                 Does this FilePath match the given text? Note that some
                 combinations of operations may not produce an identical
                 set of fields. For example:
-                ---
+                
                 FilePath("/foo").append("bar").pop == "/foo";
                 FilePath("/foo/").append("bar").pop != "/foo/";
-                ---
+                
 
                 The latter Is Different due to variance in how append
                 injects data, and how pop is expected to operate under
@@ -764,9 +764,9 @@ class FilePath : PathView
 
                 List the set of filenames within this folder, using
                 the provided filter to control the list:
-                ---
+                
                 bool delegate (FilePath path, bool isFolder) Filter;
-                ---
+                
 
                 Returning true from the filter includes the given path,
                 whilst returning false excludes it. Parameter 'isFolder'

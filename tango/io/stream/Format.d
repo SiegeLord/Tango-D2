@@ -37,7 +37,7 @@ else version (GNU)
         dchar (UTF8, UTF16, or UTF32).
 
         FormatOutput exposes this style of usage:
-        ---
+        
         auto print = new FormatOutput!(char) (...);
 
         print ("hello");                    // => hello
@@ -53,7 +53,7 @@ else version (GNU)
         print.format ("abc {}:{}", 1, 2);   // => abc 1:2
         print.format ("abc {1}:{0}", 1, 2); // => abc 2:1
         print.format ("abc ", 1);           // => abc
-        ---
+        
 
         Note that the last example does not throw an exception. There
         are several use-cases where dropping an argument is legitimate,
@@ -61,35 +61,35 @@ else version (GNU)
 
         Flushing the output is achieved through the flush() method, or
         via an empty pair of parens:
-        ---
+        
         print ("hello world") ();
         print ("hello world").flush;
 
         print.format ("hello {}", "world") ();
         print.format ("hello {}", "world").flush;
-        ---
+        
 
         Special character sequences, such as "\n", are written directly to
         the output without any translation (though an output-filter could
         be inserted to perform translation as required). Platform-specific
         newlines are generated instead via the newline() method, which also
         flushes the output when configured to do so:
-        ---
+        
         print ("hello ") ("world").newline;
         print.format ("hello {}", "world").newline;
         print.formatln ("hello {}", "world");
-        ---
+        
 
         The format() method supports the range of formatting options
         exposed by tango.text.convert.Layout and extensions thereof;
         including the full I18N extensions where configured in that
         manner. To create a French instance of FormatOutput:
-        ---
+        
         import tango.text.locale.Locale;
 
         auto locale = new Locale (Culture.getCulture ("fr-FR"));
         auto print = new FormatOutput!(char) (locale, ...);
-        ---
+        
 
         Note that FormatOutput is *not* intended to be thread-safe.
 

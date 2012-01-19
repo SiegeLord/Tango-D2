@@ -28,7 +28,7 @@ public  import  tango.net.device.Datagram;
         being connected to a specific endpoint.
 
         Sending and receiving via a multicast group:
-        ---
+        
         auto group = new InternetAddress ("225.0.0.10", 8080);
 
         // listen for datagrams on the group address (via port 8080)
@@ -40,7 +40,7 @@ public  import  tango.net.device.Datagram;
         // we are listening also ...
         char[8] tmp;
         auto bytes = multi.read (tmp);
-        ---
+        
 
         Note that this example is expecting to receive its own broadcast;
         thus it may be necessary to enable loopback operation (see below)
@@ -127,14 +127,14 @@ class Multicast : Datagram
                 
                 Set the number of hops (time to live) of this socket. 
                 Convenient values are
-                ---
+                
                 Host:           packets are restricted to the same host
                 Subnet:         packets are restricted to the same subnet
                 Site:           packets are restricted to the same site
                 Region:         packets are restricted to the same region
                 Continent:      packets are restricted to the same continent
                 Unrestricted:   packets are unrestricted in scope
-                ---
+                
 
         ***********************************************************************/
 

@@ -26,7 +26,7 @@ private import tango.util.container.model.IContainer;
 
         Circular linked list
 
-        ---
+        
         Iterator iterator ()
         int opApply (scope int delegate(ref V value) dg)
 
@@ -66,7 +66,7 @@ private import tango.util.container.model.IContainer;
         CircularList clear ()
         CircularList reset ()
         CircularList check ()
-        ---
+        
 
 *******************************************************************************/
 

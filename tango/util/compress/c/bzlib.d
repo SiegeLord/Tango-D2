@@ -2,12 +2,12 @@
 
 module tango.util.compress.c.bzlib;
 
-/*-------------------------------------------------------------*/
-/*--- Public header file for the library.                   ---*/
-/*---                                               bzlib.h ---*/
-/*-------------------------------------------------------------*/
+/*-*/
+/* Public header file for the library.                   */
+/*                                               bzlib.h */
+/*-*/
 
-/* ------------------------------------------------------------------
+/* 
    This file is part of bzip2/libbzip2, a program and library for
    lossless, block-sorting data compression.
 
@@ -19,7 +19,7 @@ module tango.util.compress.c.bzlib;
 
    This program is released under the terms of the license contained
    in the file LICENSE.
-   ------------------------------------------------------------------ */
+    */
 
 extern(C):
 
@@ -264,6 +264,6 @@ const(char) * BZ2_bzerror(BZFILE *b, int *errnum);
 
 }
 
-/*-------------------------------------------------------------*/
-/*--- end                                           bzlib.h ---*/
-/*-------------------------------------------------------------*/
+/*-*/
+/* end                                           bzlib.h */
+/*-*/

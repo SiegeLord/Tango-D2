@@ -868,10 +868,10 @@ unittest
  * Calculates the inverse hyperbolic sine of x.
  *
  *  Mathematically,
- *  ---------------
+ *  
  *  asinh(x) =  log( x + sqrt( x*x + 1 )) // if x >= +0
  *  asinh(x) = -log(-x + sqrt( x*x + 1 )) // if x <= -0
- *  -------------
+ *  -
  *
  *    $(TABLE_SV
  *    $(SVH x,                asinh(x)       )
@@ -1463,10 +1463,10 @@ unittest {
  * There are branch cuts along both the negative real and negative
  * imaginary axes. For pure imaginary arguments, use one of the
  * following forms, depending on which branch is required.
- * ------------
+ * 
  *    log( 0.0 + yi) = log(-y) + PI_2i  // y<=-0.0
  *    log(-0.0 + yi) = log(-y) - PI_2i  // y<=-0.0
- * ------------
+ * 
  */
 creal log(creal z)
 {

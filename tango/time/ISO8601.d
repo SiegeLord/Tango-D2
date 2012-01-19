@@ -126,7 +126,7 @@ public struct ExtendedDate {
  * ExtendedDate.year instead of the Time's year value.
  *
  * Examples:
- * ---
+ * 
  * Time t;
  * ExtendedDate ed;
  *
@@ -143,7 +143,7 @@ public struct ExtendedDate {
  * parseDate("1234abcd",       t);    // January 1st, 1234; return value is 4
  * parseDate("12abcdef",       t);    // January 1st, 1200; return value is 2
  * parseDate("abcdefgh",       t);    // January 1st, 0001; return value is 0
- * ---
+ * 
  */
 public size_t parseDate(T)(T[] src, ref DT dt) {
    auto fd = FullDate(dt);
@@ -324,7 +324,7 @@ private size_t doIso8601Date(T)(
  * will be precisely 00:00 in either case.
  *
  * Examples:
- * ---
+ * 
  * Time t;
  * ExtendedDate ed;
  *
@@ -340,7 +340,7 @@ private size_t doIso8601Date(T)(
  * parseTime("24:00:01",      ed); // 00:00:00; return value is 5; endOfDay
  * parseTime("30",             t); // 00:00:00; return value is 0
  * parseTime("21:32:43-12:34", t); // 10:06:43; day increased by one
- * ---
+ * 
  */
 public size_t parseTime(T)(T[] src, ref DT dt) {
    auto fd = FullDate(dt);
@@ -525,7 +525,7 @@ private size_t doIso8601Time(T)(
  * time, this function requires it.
  *
  * Examples:
- * ---
+ * 
  * Time t;
  *
  * // January 1st, 2008 00:01:00
@@ -544,7 +544,7 @@ private size_t doIso8601Time(T)(
  * parseDateAndTime("200512-01T10:02",          t);
  * parseDateAndTime("1985-04-12T10:15:30+0400", t);
  * parseDateAndTime("1902-03-04T050607",        t);
- * ---
+ * 
  */
 public size_t parseDateAndTime(T)(T[] src, ref DT dt) {
    FullDate fd;

@@ -555,20 +555,20 @@ interface ZipWriter
  * contents of the archive via an iteration interface.  For instance, to loop
  * over all files in an archive, one can use either
  *
- * -----
+ * --
  *  foreach( entry ; reader )
  *      ...
- * -----
+ * --
  *
  * Or
  *
- * -----
+ * --
  *  while( reader.more )
  *  {
  *      auto entry = reader.get;
  *      ...
  *  }
- * -----
+ * --
  *
  * See the ZipEntry class for more information on the contents of entries.
  *

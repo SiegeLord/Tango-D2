@@ -46,23 +46,23 @@
         Note that several common text operations can be constructed through
         combining tango.text.Text with tango.text.Util e.g. lines of text
         can be processed thusly:
-        ---
+        
         auto source = new Text!(char)("one\ntwo\nthree");
 
         foreach (line; Util.lines(source.slice))
                  // do something with line
-        ---
+        
 
         Speaking a bit like Yoda might be accomplished as follows:
-        ---
+        
         auto dst = new Text!(char);
 
         foreach (element; Util.delims ("all cows eat grass", " "))
                  dst.prepend (element);
-        ---
+        
 
         Below is an overview of the API and class hierarchy:
-        ---
+        
         class Text(T) : TextView!(T)
         {
                 // set or reset the content
@@ -191,7 +191,7 @@
                 // replace all with text (null == remove all)
                 void replace(T[]);
         }
-        ---
+        
 
 *******************************************************************************/
 
@@ -562,23 +562,23 @@ class Text(T) : TextView!(T)
 
                 Return a search iterator for a given pattern. The iterator
                 sets the current text selection as appropriate. For example:
-                ---
+                
                 auto t = new Text ("hello world");
                 auto s = t.search ("world");
 
                 assert (s.next);
                 assert (t.selection == "world");
-                ---
+                
 
                 Replacing patterns operates in a similar fashion:
-                ---
+                
                 auto t = new Text ("hello world");
                 auto s = t.search ("world");
 
                 // replace all instances of "world" with "everyone"
                 assert (s.replace ("everyone"));
                 assert (s.count is 0);
-                ---
+                
 
         ***********************************************************************/
 
@@ -1285,7 +1285,7 @@ class Text(T) : TextView!(T)
                 dst will be resized as required to house the conversion.
                 To minimize heap allocation during subsequent conversions,
                 apply the following pattern:
-                ---
+                
                 Text  string;
 
                 wchar[] buffer;
@@ -1293,7 +1293,7 @@ class Text(T) : TextView!(T)
 
                 if (result.length > buffer.length)
                     buffer = result;
-                ---
+                
                 You can also provide a buffer from the stack, but the output
                 will be moved to the heap if said buffer is not large enough
 

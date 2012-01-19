@@ -21,20 +21,20 @@
         them. That is, for those scenarios where C functions might typically
         return -1 these functions return length instead. This operate nicely
         with D slices:
-        ---
+        
         auto text = "happy:faces";
         
         assert (text[0 .. locate (text, ':')] == "happy");
         
         assert (text[0 .. locate (text, '!')] == "happy:faces");
-        ---
+        
 
         The contains() function is more convenient for trivial lookup
         cases:
-        ---
+        
         if (contains ("fubar", '!'))
             ...
-        ---
+        
 
         Note that where some functions expect a size_t as an argument, the
         D template-matching algorithm will fail where an int is provided
@@ -45,15 +45,15 @@
 
         Applying the D "import alias" mechanism to this module is highly
         recommended, in order to limit namespace pollution:
-        ---
+        
         import Util = tango.text.Util;
 
         auto s = Util.trim ("  foo ");
-        ---
+        
                 
 
         Function templates:
-        ---
+        
         trim (source)                               // trim whitespace
         triml (source)                              // trim whitespace
         trimr (source)                              // trim whitespace
@@ -91,7 +91,7 @@
         quotes (str, set)                           // foreach quotes
         delimiters (str, set)                       // foreach delimiters
         patterns (str, pattern)                     // foreach patterns
-        ---
+        
 
         Please note that any 'pattern' referred to within this module
         refers to a pattern of characters, and not some kind of regex
@@ -880,10 +880,10 @@ size_t mismatch(T) (const(T)* s1, const(T)* s2, size_t length)
         by a \n or \r\n combination. The line terminator is stripped from
         each resultant array.
 
-        ---
+        
         foreach (line; lines ("one\ntwo\nthree"))
                  ...
-        ---
+        
         
 ******************************************************************************/
 
@@ -906,10 +906,10 @@ LineFruct!(T) lines(T) (const(T)[] src)
         Splitting on a single delimiter is considerably faster than
         splitting upon a set of alternatives.
 
-        ---
+        
         foreach (segment; delimiters ("one,two;three", ",;"))
                  ...
-        ---
+        
         
 ******************************************************************************/
 
@@ -930,10 +930,10 @@ DelimFruct!(T) delimiters(T) (const(T)[] src, const(T)[] set)
         each of the segments, and an optional sub argument enables 
         replacement.
         
-        ---
+        
         foreach (segment; patterns ("one, two, three", ", "))
                  ...
-        ---
+        
         
 ******************************************************************************/
 
@@ -954,10 +954,10 @@ PatternFruct!(T) patterns(T) (const(T)[] src, const(T)[] pattern, const(T)[] sub
         the set of delimiters is ignored inside a pair of quotes. Note
         that an unterminated quote will consume remaining content.
         
-        ---
+        
         foreach (quote; quotes ("one two 'three four' five", " "))
                  ...
-        ---
+        
         
 ******************************************************************************/
 
@@ -976,12 +976,12 @@ QuoteFruct!(T) quotes(T) (const(T)[] src, const(T)[] set)
         This is handy for collating I18N components, or as a simplistic
         and lightweight formatter. Indices range from zero through nine. 
         
-        ---
+        
         // write ordered text to the console
         char[64] tmp;
 
         Cout (layout (tmp, "%1 is after %0", "zero", "one")).newline;
-        ---
+        
 
 *******************************************************************************/
 

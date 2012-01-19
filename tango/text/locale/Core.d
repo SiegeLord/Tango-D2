@@ -176,7 +176,7 @@ public interface IFormatService {
  * culture. "es-MX" is a specific culture.
  * $(BR)$(BR)Instances of $(LINK2 #DateTimeFormat, DateTimeFormat) and $(LINK2 #NumberFormat, NumberFormat) cannot be created for neutral cultures.
  * Examples:
- * ---
+ * 
  * import tango.io.Stdout, tango.text.locale.Core;
  *
  * void main() {
@@ -195,7 +195,7 @@ public interface IFormatService {
  * // name: it-IT
  * // parent: it
  * // isNeutral: false
- * ---
+ * 
  */
 public class Culture : IFormatService {
 
@@ -457,7 +457,7 @@ version (Posix) {
    * Params: value = The Culture instance representing the user's _current culture.
    * Examples:
    * The following examples shows how to change the _current culture.
-   * ---
+   * 
    * import tango.io.Print, tango.text.locale.Common;
    *
    * void main() {
@@ -472,7 +472,7 @@ version (Posix) {
    * // Produces the following output:
    * // The current culture is English (United Kingdom).
    * // The current culture is now Greek (Greece).
-   * ---
+   * 
    */
   public static void current(Culture value) {
     checkNeutral(value);
@@ -576,7 +576,7 @@ version (Posix) {
    * Returns: true is the current Culture represents a neutral culture; otherwise, false.
    * Examples:
    * The following example displays which cultures using Chinese are neutral.
-   * ---
+   * 
    * import tango.io.Print, tango.text.locale.Common;
    *
    * void main() {
@@ -599,7 +599,7 @@ version (Posix) {
    * // Chinese (Singapore) - specific
    * // Chinese (Macao S.A.R.) - specific
    * // Chinese (Traditional) - neutral
-   * ---
+   * 
    */
   public const bool isNeutral() {
     return cultureData_.isNeutral;
@@ -726,7 +726,7 @@ version (Posix) {
  * Remarks: Region does not represent user preferences. It does not depend on the user's language or culture.
  * Examples:
  * The following example displays some of the properties of the Region class:
- * ---
+ * 
  * import tango.io.Print, tango.text.locale.Common;
  *
  * void main() {
@@ -744,7 +744,7 @@ version (Posix) {
  * // isMetric:          true
  * // currencySymbol:    £
  * // isoCurrencySymbol: GBP
- * ---
+ * 
  */
 public class Region {
 
@@ -898,7 +898,7 @@ public class Region {
  * Examples:
  * The following example shows how to retrieve an instance of NumberFormat for a Culture
  * and use it to display number formatting information.
- * ---
+ * 
  * import tango.io.Print, tango.text.locale.Common;
  *
  * void main(char[][] args) {
@@ -926,7 +926,7 @@ public class Region {
  * // The currency symbol for English (Trinidad and Tobago) is 'TT$'
  * // The currency symbol for English (Zimbabwe) is 'Z$'
  * // The currency symbol for English (Republic of the Philippines) is 'Php'
- *---
+ *
  */
 public class NumberFormat : IFormatService {
 
@@ -1090,7 +1090,7 @@ version (Clone)
    * Throws: Exception if the property is being set and the instance is read-only.
    * Examples:
    * The following example shows the effect of changing numberDecimalDigits.
-   * ---
+   * 
    * import tango.io.Print, tango.text.locale.Common;
    *
    * void main() {
@@ -1109,7 +1109,7 @@ version (Clone)
    * // Produces the following output:
    * // 5,678.00
    * // 5,678.000000
-   * ---
+   * 
    */
   public final void numberDecimalDigits(int value) {
     checkReadOnly();
@@ -1138,7 +1138,7 @@ version (Clone)
    * Params: value = The format pattern for negative numbers.
    * Examples:
    * The following example shows the effect of the different patterns.
-   * ---
+   * 
    * import tango.io.Print, tango.text.locale.Common;
    *
    * void main() {
@@ -1162,7 +1162,7 @@ version (Clone)
    * // - 5,678.00
    * // 5,678.00-
    * // 5,678.00 -
-   * ---
+   * 
    */
   public final void numberNegativePattern(int value) {
     checkReadOnly();

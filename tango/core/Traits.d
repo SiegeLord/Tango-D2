@@ -502,7 +502,7 @@ debug( UnitTest )
     static assert( staticArraySize!(char[2])==2);
 }
 
-// ------- CTFE -------
+// - CTFE -
 
 /// compile time integer to string
 char [] ctfe_i2a(int i){

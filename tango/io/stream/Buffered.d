@@ -224,13 +224,13 @@ class BufferedInput : InputFilter, InputBuffer
                 .dup'd before the buffer is compressed or repopulated.
 
                 Examples:
-                ---
+                
                 // create a buffer with some content
                 auto buffer = new Buffer ("hello world");
 
                 // consume everything unread
                 auto slice = buffer.slice (buffer.readable);
-                ---
+                
 
         ***********************************************************************/
 

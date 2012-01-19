@@ -36,7 +36,7 @@ version (Posix)
 
         Timer for measuring small intervals, such as the duration of a 
         subroutine or other reasonably small period.
-        ---
+        
         StopWatch elapsed;
 
         elapsed.start;
@@ -45,7 +45,7 @@ version (Posix)
         // ...
 
         double i = elapsed.stop;
-        ---
+        
 
         The measured interval is in units of seconds, using floating-
         point to represent fractions. This approach is more flexible 

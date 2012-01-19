@@ -235,12 +235,12 @@ unittest {
    
    It is defined in this way to allow cache-efficient multiplication.
    This function is equivalent to:
-    ----
+    -
     for (int i = 0; i< right.length; ++i) {
         dest[left.length + i] = multibyteMulAdd(dest[i..left.length+i],
                 left, right[i], 0);
     }
-    ----
+    -
  */
 void multibyteMultiplyAccumulate(uint [] dest, in uint[] left, in uint [] right)
 {

@@ -804,14 +804,14 @@ class Uri : UriView
                 Authority is the section after the scheme, but before the 
                 path, query or fragment; it typically represents a host.
                
-                ---
+                
                     ^(([^@]*)@?)([^:]*)?(:(.*))?
                      12         3       4 5
                   
                 2 isolates userinfo
                 3 isolates host
                 5 isolates port
-                ---
+                
 
         ***********************************************************************/
 
