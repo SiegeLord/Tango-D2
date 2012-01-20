@@ -77,8 +77,8 @@ class UtfInput(T, S) : InputFilter, InputFilter.Mutator
                            return super.read (dst);
                 else
                    {
-                   uint   consumed,
-                          produced;
+                   size_t   consumed,
+                            produced;
 
                    size_t reader (const(void)[] src)
                    {

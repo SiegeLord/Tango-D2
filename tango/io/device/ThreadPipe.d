@@ -283,7 +283,7 @@ debug(UnitTest)
 
     unittest
     {
-        uint[] source = new uint[1000];
+        auto source = new size_t[1000];
         foreach(i, ref x; source)
             x = i;
 

@@ -497,7 +497,7 @@ private class Connection
                            const(char)[] content = line.get;
                            if (content.length > 4 && content[0..5] == "VALUE")
                               {
-                              auto i = 0;
+                              size_t i = 0;
 
                               // parse the incoming content-length
                               for (i=content.length; content[--i] != ' ';)

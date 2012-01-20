@@ -24,7 +24,7 @@ private import tango.core.BitManip;
 struct BitArray
 {
     size_t  len;
-    uint*   ptr;
+    size_t* ptr;
 
 
     /**
@@ -46,7 +46,7 @@ struct BitArray
             temp[pos] = val;
         return temp;
     }*/
-    this(size_t _len, uint* _ptr)
+    this(size_t _len, size_t* _ptr)
     {
         len = _len;
         ptr = _ptr;
@@ -88,7 +88,7 @@ struct BitArray
             if( newdim != olddim )
             {
                 // Create a fake array so we can use D's realloc machinery
-                uint[] buf = ptr[0 .. olddim];
+                size_t[] buf = ptr[0 .. olddim];
 
                 buf.length = newdim; // realloc
                 ptr = buf.ptr;
@@ -125,7 +125,7 @@ struct BitArray
     {
         BitArray ba;
 
-        uint[] buf = ptr[0 .. dim].dup;
+        size_t[] buf = ptr[0 .. dim].dup;
         ba.len = len;
         ba.ptr = buf.ptr;
         return ba;
@@ -228,7 +228,7 @@ struct BitArray
     }
     body
     {
-        ptr = cast(uint*)target.ptr;
+        ptr = cast(size_t*)target.ptr;
         len = numbits;
     }
 
@@ -371,7 +371,7 @@ struct BitArray
     {
       unittest
       {
-        uint x = 0b1100011000;
+        size_t x = 0b1100011000;
         auto ba = BitArray(10, &x);
 
         ba.sort;
@@ -469,8 +469,8 @@ struct BitArray
     {
         if( this.length() != rhs.length() )
             return 0; // not equal
-        const uint* p1 = this.ptr;
-        const uint* p2 = rhs.ptr;
+        const size_t* p1 = this.ptr;
+        const size_t* p2 = rhs.ptr;
         size_t n = this.length / 32;
         size_t i;
         for( i = 0; i < n; ++i )
@@ -518,8 +518,8 @@ struct BitArray
         auto len = this.length;
         if( rhs.length < len )
             len = rhs.length;
-        uint* p1 = this.ptr;
-        uint* p2 = rhs.ptr;
+        size_t* p1 = this.ptr;
+        size_t* p2 = rhs.ptr;
         size_t n = len / 32;
         size_t i;
         for( i = 0; i < n; ++i )

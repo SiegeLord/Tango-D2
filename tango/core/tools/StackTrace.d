@@ -244,7 +244,7 @@ size_t defaultAddrBacktrace(TraceContext* context,TraceContext*contextOut,
     version(LibCBacktrace){
         //if (context!is null) return 0; // now it just gives a local trace, uncomment & skip?
         *flags=AddrPrecision.TopExact;
-        return cast(size_t)backtrace(cast(void**)traceBuf,length);
+        return cast(size_t)backtrace(cast(void**)traceBuf,cast(int)length);
     } else version (Windows){
         return winAddrBacktrace(context,contextOut,traceBuf,length,flags);
     } else {

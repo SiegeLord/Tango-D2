@@ -1462,7 +1462,7 @@ class FTPConnection: Telnet
 
             // Go through each fact and parse them into the array.
             foreach(const(char)[] fact; temp_facts) {
-                int pos = Text.locate(fact, '=');
+                size_t pos = Text.locate(fact, '=');
                 if(pos == fact.length)
                     continue;
 

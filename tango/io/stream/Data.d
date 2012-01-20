@@ -355,7 +355,7 @@ class DataOutput : OutputFilter
         {
                 auto len = src.length;
                 version(DataIntArrayLength)
-                    int32 (len);
+                    int32 (cast(int)len);
                 else
                     int64 (len);
                 output.write (src);

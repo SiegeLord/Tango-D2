@@ -156,12 +156,12 @@ class BzipOutput : OutputFilter
         check_valid();
         scope(failure) kill_bzs();
 
-        bzs.avail_in = src.length;
+        bzs.avail_in = cast(uint)src.length;
         bzs.next_in = cast(ubyte*)src.ptr;
 
         do
         {
-            bzs.avail_out = out_chunk.length;
+            bzs.avail_out = cast(uint)out_chunk.length;
             bzs.next_out = out_chunk.ptr;
 
             auto ret = BZ2_bzCompress(&bzs, BZ_RUN);
@@ -242,7 +242,7 @@ class BzipOutput : OutputFilter
 
         do
         {
-            bzs.avail_out = out_chunk.length;
+            bzs.avail_out = cast(uint)out_chunk.length;
             bzs.next_out = out_chunk.ptr;
 
             auto ret = BZ2_bzCompress(&bzs, BZ_FINISH);
@@ -405,7 +405,7 @@ class BzipInput : InputFilter
 
         bool finished = false;
 
-        bzs.avail_out = dst.length;
+        bzs.avail_out = cast(uint)dst.length;
         bzs.next_out = cast(ubyte*)dst.ptr;
 
         do
@@ -416,7 +416,7 @@ class BzipInput : InputFilter
                 if( len == IConduit.Eof )
                     return IConduit.Eof;
 
-                bzs.avail_in = len;
+                bzs.avail_in = cast(uint)len;
                 bzs.next_in = in_chunk.ptr;
             }
 

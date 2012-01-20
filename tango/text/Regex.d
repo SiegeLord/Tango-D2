@@ -614,17 +614,17 @@ struct CharRange(char_t)
             if ( contains(cr) )
             {
                 d.l_ = l_;
-                d.r_ = cast(char)(cr.l_-1);
+                d.r_ = cast(char_t)(cr.l_-1);
                 if ( d.l_ <= d.r_ )
                     sr ~= d;
-                d.l_ = cast(char)(cr.r_+1);
+                d.l_ = cast(char_t)(cr.r_+1);
                 d.r_ = r_;
                 if ( d.l_ <= d.r_ )
                     sr ~= d;
             }
             else if ( cr.r_ > l_ )
             {
-                d.l_ = cast(char)(cr.r_+1);
+                d.l_ = cast(char_t)(cr.r_+1);
                 d.r_ = r_;
                 if ( d.l_ <= d.r_ )
                     sr ~= d;
@@ -632,7 +632,7 @@ struct CharRange(char_t)
             else if ( cr.l_ < r_ )
             {
                 d.l_ = l_;
-                d.r_ = cast(char)(cr.l_-1);
+                d.r_ = cast(char_t)(cr.l_-1);
                 if ( d.l_ <= d.r_ )
                     sr ~= d;
             }
@@ -859,7 +859,7 @@ struct CharClass(char_t)
             foreach ( i, ref cr; parts[0 .. $-1] )
             {
                 cr.l_ = start;
-                cr.r_ = cast(char)(parts[i+1].l_-1);
+                cr.r_ = cast(char_t)(parts[i+1].l_-1);
                 start = parts[i+1].r_;
                 if ( start < char_t.max )
                     ++start;
@@ -875,7 +875,7 @@ struct CharClass(char_t)
 
         foreach ( i, ref cr; parts )
         {
-            char_t tmp = cast(char)(cr.l_-1);
+            char_t tmp = cast(char_t)(cr.l_-1);
             cr.l_ = start;
             start = cr.r_;
             if ( start < char_t.max )
@@ -1214,7 +1214,7 @@ private class TNFAState(char_t)
 {
     bool    accept = false,
             visited = false;
-    uint    index;
+    size_t  index;
     List!(TNFATransition!(char_t))  transitions;
 
     this()
@@ -2377,7 +2377,7 @@ private class TDFA(char_t)
 
         bool            accept = false;
         bool            reluctant = false;
-        uint            index;
+        size_t          index;
         Transition[]    transitions,
                         generic_transitions;
         Command[]       finishers;
@@ -3193,7 +3193,7 @@ private:
     SubsetState lookbehindClosure(SubsetState from, predicate_t pred)
     {
         List!(StateElement) stack = new List!(StateElement);
-        StateElement[uint]  closure;
+        StateElement[size_t]  closure;
 
         foreach ( e; from.elms )
         {
@@ -3272,7 +3272,7 @@ private:
         ++firstFreeIndex;
 
         List!(StateElement) stack = new List!(StateElement);
-        StateElement[uint]  closure;
+        StateElement[size_t]  closure;
 
         foreach ( e; from.elms )
         {
@@ -3934,7 +3934,7 @@ class RegExpT(char_t)
                 foreach ( cmd; t.commands )
                 {
                     if ( cmd.src == tdfa_.CURRENT_POSITION_REGISTER )
-                        registers_[cmd.dst] = p;
+                        registers_[cmd.dst] = cast(int)p;
                     else
                         registers_[cmd.dst] = registers_[cmd.src];
                 }
@@ -3986,8 +3986,8 @@ class RegExpT(char_t)
     {
         if ( index > tdfa_.num_tags )
             return null;
-        int start   = last_start_+registers_[index*2],
-            end     = last_start_+registers_[index*2+1];
+        int start   = cast(int)(last_start_+registers_[index*2]),
+            end     = cast(int)(last_start_+registers_[index*2+1]);
         if ( start >= 0 && start < end && end <= input_.length )
             return input_[start .. end];
         return null;
@@ -4221,7 +4221,7 @@ class RegExpT(char_t)
         code ~= "\n        dchar c = cast(dchar)input[p];\n        if ( c & 0x80 )\n            decode(input, next_p);";
         code ~= "\n        else\n            next_p = p+1;\n        switch ( s )\n        {";
 
-        uint[] finish_states;
+        size_t[] finish_states;
         foreach ( s; tdfa_.states )
         {
             code ~= Format.convert("\n            case {}:", s.index);
@@ -4301,7 +4301,7 @@ class RegExpT(char_t)
         }
 
         // create finisher groups
-        uint[][uint] finisherGroup;
+        size_t[][size_t] finisherGroup;
         foreach ( fs; finish_states )
         {
             // check if finisher group with same commands exists
