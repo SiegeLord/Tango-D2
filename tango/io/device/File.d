@@ -46,16 +46,16 @@ version (Win32)
 
         Serial input and output is straightforward. In this example we
         copy a file directly to the console:
-        ---
+        
         // open a file for reading
         auto from = new File ("test.txt");
 
         // stream directly to console
         Stdout.copy (from);
-        ---
+        
 
         And here we copy one file to another:
-        ---
+        
         // open file for reading
         auto from = new File ("test.txt");
 
@@ -65,22 +65,22 @@ version (Win32)
         // copy file and close
         to.copy.close;
         from.close;
-        ---
+        
 
         You can use InputStream.load() to load a file directly into memory:
-        ---
+        
         auto file = new File ("test.txt");
         auto content = file.load;
         file.close;
-        ---
+        
 
         Or use a convenience static function within File:
-        ---
+        
         auto content = File.get ("test.txt");
-        ---
+        
 
         A more explicit version with a similar result would be:
-        ---
+        
         // open file for reading
         auto file = new File ("test.txt");
 
@@ -90,23 +90,23 @@ version (Win32)
         // read the file content. Return value is the number of bytes read
         auto bytes = file.read (content);
         file.close;
-        ---
+        
 
         Conversely, one may write directly to a File like so:
-        ---
+        
         // open file for writing
         auto to = new File ("text.txt", File.WriteCreate);
 
         // write an array of content to it
         auto bytes = to.write (content);
-        ---
+        
 
         There are equivalent static functions, File.set() and
         File.append(), which set or append file content respectively.
 
         File can happily handle random I/O. Here we use seek() to
         relocate the file pointer:
-        ---
+        
         // open a file for reading and writing
         auto file = new File ("random.bin", File.ReadWriteCreate);
 
@@ -121,7 +121,7 @@ version (Win32)
         auto bytes = file.read (tmp);
 
         file.close;
-        ---
+        
 
         Note that File is unbuffered by default - wrap an instance within
         tango.io.stream.Buffered for buffered I/O.

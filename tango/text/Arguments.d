@@ -20,31 +20,31 @@ version=dashdash;       // -- everything assigned to the null argument
 /*******************************************************************************
 
         Command-line argument parser. Simple usage is:
-        ---
+        
         auto args = new Arguments;
         args.parse ("-a -b", true);
         auto a = args("a");
         auto b = args("b");
         if (a.set && b.set)
             ...
-        ---
+        
 
         Argument parameters are assigned to the last known target, such
         that multiple parameters accumulate:
-        ---
+        
         args.parse ("-a=1 -a=2 foo", true);
         assert (args('a').assigned.length is 3);
-        ---
+        
 
         That example results in argument 'a' assigned three parameters.
         Two parameters are explicitly assigned using '=', while a third
         is implicitly assigned. Implicit parameters are often useful for
         collecting filenames or other parameters without specifying the
         associated argument:
-        ---
+        
         args.parse ("thisfile.txt thatfile.doc -v", true);
         assert (args(null).assigned.length is 2);
-        ---
+        
         The 'null' argument is always defined and acts as an accumulator
         for parameters left uncaptured by other arguments. In the above
         instance it was assigned both parameters. 
@@ -54,12 +54,12 @@ version=dashdash;       // -- everything assigned to the null argument
         parser to create argument declaration on-the-fly, which can be
         handy for trivial usage. However, most features require the a-
         priori declaration of arguments:
-        ---
+        
         args = new Arguments;
         args('x').required;
         if (! args.parse("-x"))
               // x not supplied!
-        ---
+        
 
         Sloppy arguments are disabled in that example, and a required
         argument 'x' is declared. The parse() method will fail if the
@@ -70,32 +70,32 @@ version=dashdash;       // -- everything assigned to the null argument
         chained together and the following example shows argument "foo"
         being made required, with one parameter, aliased to 'f', and
         dependent upon the presence of another argument "bar":
-        ---
+        
         args("foo").required.params(1).aliased('f').requires("bar");
         args("help").aliased('?').aliased('h');
-        ---
+        
 
         Parameters can be constrained to a set of matching text values,
         and the parser will fail on mismatched input:
-        ---
+        
         args("greeting").restrict("hello", "yo", "gday");
         args("enabled").restrict("true", "false", "t", "f", "y", "n");  
-        ---
+        
 
         A set of declared arguments may be configured in this manner
         and the parser will return true only where all conditions are
         met. Where a error condition occurs you may traverse the set
         of arguments to find out which argument has what error. This
         can be handled like so, where arg.error holds a defined code:
-        ---
+        
         if (! args.parse (...))
               foreach (arg; args)
                        if (arg.error)
                            ...
-        ---
+        
        
         Error codes are as follows:
-        ---
+        
         None:           ok (zero)
         ParamLo:        too few params for an argument
         ParamHi:        too many params for an argument
@@ -104,14 +104,14 @@ version=dashdash;       // -- everything assigned to the null argument
         Conflict:       conflicting argument is present
         Extra:          unexpected argument (see sloppy)
         Option:         parameter does not match options
-        ---
+        
         
         A simpler way to handle errors is to invoke an internal format
         routine, which constructs error messages on your behalf:
-        ---
+        
         if (! args.parse (...))
               stderr (args.errors(&stderr.layout.sprint));
-        ---
+        
 
         Note that messages are constructed via a layout handler and
         the messages themselves may be customized (for i18n purposes).
@@ -120,22 +120,22 @@ version=dashdash;       // -- everything assigned to the null argument
         The parser make a distinction between a short and long prefix, 
         in that a long prefix argument is always distinct while short
         prefix arguments may be combined as a shortcut:
-        ---
+        
         args.parse ("--foo --bar -abc", true);
         assert (args("foo").set);
         assert (args("bar").set);
         assert (args("a").set);
         assert (args("b").set);
         assert (args("c").set);
-        ---
+        
 
         In addition, short-prefix arguments may be "smushed" with an
         associated parameter when configured to do so:
-        ---
+        
         args('o').params(1).smush;
         if (args.parse ("-ofile"))
             assert (args('o').assigned[0] == "file");
-        ---
+        
 
         There are two callback varieties supports, where one is invoked
         when an associated argument is parsed and the other is invoked
@@ -146,7 +146,7 @@ version=dashdash;       // -- everything assigned to the null argument
         "-" and "--" via the constructor. You might, for example, need 
         to specify a "/" indicator instead, and use ':' for explicitly
         assigning parameters:
-        ---
+        
         auto args = new Args ("/", "-", ':');
         args.parse ("-foo:param -bar /abc");
         assert (args("foo").set);
@@ -155,14 +155,14 @@ version=dashdash;       // -- everything assigned to the null argument
         assert (args("b").set);
         assert (args("c").set);
         assert (args("foo").assigned.length is 1);
-        ---
+        
 
         Returning to an earlier example we can declare some specifics:
-        ---
+        
         args('v').params(0);
         assert (args.parse (`-v thisfile.txt thatfile.doc`));
         assert (args(null).assigned.length is 2);
-        ---
+        
 
         Note that the -v flag is now in front of the implicit parameters
         but ignores them because it is declared to consume none. That is,
@@ -178,9 +178,9 @@ version=dashdash;       // -- everything assigned to the null argument
         text from the user, including whitespace and other special chars.
         Such parameter values should be quoted on the commandline, and be
         assigned explicitly rather than implicitly:
-        ---
+        
         args.parse (`--comment="-- a comment --"`);
-        ---
+        
 
         Without the explicit assignment, the text content might otherwise 
         be considered the start of another argument (due to how argv/argc
@@ -191,10 +191,10 @@ version=dashdash;       // -- everything assigned to the null argument
         to terminate argument processing in a similar manner. Such values
         are considered to be implicit, and are assigned to preceding args
         in the usual right to left fashion (or to the null argument):
-        ---
+        
         args.parse (`-- -thisfile --thatfile`);
         assert (args(null).assigned.length is 2);
-        ---
+        
         
 *******************************************************************************/
 
@@ -245,11 +245,11 @@ class Arguments
                 
                 Returns false where an error condition occurred, whereupon the 
                 arguments should be traversed to discover said condition(s):
-                ---
+                
                 auto args = new Arguments;
                 if (! args.parse (...))
                       stderr (args.errors(&stderr.layout.sprint));
-                ---
+                
 
         ***********************************************************************/
         
@@ -268,11 +268,11 @@ class Arguments
                 
                 Returns false where an error condition occurred, whereupon the 
                 arguments should be traversed to discover said condition(s):
-                ---
+                
                 auto args = new Arguments;
                 if (! args.parse (...))
                       Stderr (args.errors(&Stderr.layout.sprint));
-                ---
+                
 
         ***********************************************************************/
         
@@ -369,9 +369,9 @@ class Arguments
                 Construct a string of error messages, using the given
                 delegate to format the output. You would typically pass
                 the system formatter here, like so:
-                ---
+                
                 auto msgs = args.errors (&stderr.layout.sprint);
-                ---
+                
 
                 The messages are replacable with custom (i18n) versions
                 instead, using the errors(char[][]) method 
@@ -396,14 +396,14 @@ class Arguments
                 that arguments are passed to the formatter in the following
                 order, and these should be indexed appropriately by each of
                 the error messages (see examples in errmsg above):
-                ---
+                
                 index 0: the argument name
                 index 1: number of parameters
                 index 2: configured minimum parameters
                 index 3: configured maximum parameters
                 index 4: conflicting/dependent argument (or invalid param)
                 index 5: array of configured parameter options
-                ---
+                
 
         ***********************************************************************/
 
@@ -505,7 +505,7 @@ class Arguments
                 /***************************************************************
                 
                         Error identifiers:
-                        ---
+                        
                         None:           ok
                         ParamLo:        too few params for an argument
                         ParamHi:        too many params for an argument
@@ -514,7 +514,7 @@ class Arguments
                         Conflict:       conflicting argument is present
                         Extra:          unexpected argument (see sloppy)
                         Option:         parameter does not match options
-                        ---
+                        
 
                 ***************************************************************/
         

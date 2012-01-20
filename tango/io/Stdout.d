@@ -14,7 +14,7 @@
         to console, consider tango.text.convert.Format instead.
 
         Stdout &amp; Stderr expose this style of usage:
-        ---
+        
         Stdout ("hello");                    // => hello
         Stdout (1);                          // => 1
         Stdout (3.14);                       // => 3.14
@@ -28,7 +28,7 @@
         Stdout.format ("abc {}:{}", 1, 2);   // => abc 1:2
         Stdout.format ("abc {1}:{0}", 1, 2); // => abc 2:1
         Stdout.format ("abc ", 1);           // => abc
-        ---
+        
 
         Note that the last example does not throw an exception. There
         are several use-cases where dropping an argument is legitimate,
@@ -36,35 +36,35 @@
 
         Flushing the output is achieved through the flush() method, or
         via an empty pair of parens:
-        ---
+        
         Stdout ("hello world") ();
         Stdout ("hello world").flush;
 
         Stdout.format ("hello {}", "world") ();
         Stdout.format ("hello {}", "world").flush;
-        ---
+        
 
         Special character sequences, such as "\n", are written directly to
         the output without any translation (though an output-filter could
         be inserted to perform translation as required). Platform-specific
         newlines are generated instead via the newline() method, which also
         flushes the output when configured to do so:
-        ---
+        
         Stdout ("hello ") ("world").newline;
         Stdout.format ("hello {}", "world").newline;
         Stdout.formatln ("hello {}", "world");
-        ---
+        
 
         The format() method of both Stderr and Stdout support the range
         of formatting options provided by tango.text.convert.Layout and
         extensions thereof; including the full I18N extensions where it
         has been configured in that manner. To enable a French Stdout,
         do the following:
-        ---
+        
         import tango.text.locale.Locale;
 
         Stdout.layout = new Locale (Culture.getCulture ("fr-FR"));
-        ---
+        
 
         Note that Stdout is a shared entity, so every usage of it will
         be affected by the above example. For applications supporting
@@ -73,18 +73,18 @@
 
         Stdout.layout can also be used for formatting without outputting
         to the console such as in the following example:
-        ---
+        
         char[] str = Stdout.layout.convert("{} and {}", 42, "abc");
         //str is "42 and abc"
-        ---
+        
         This can be useful if you already have Stdout imported.
 
         Note also that the output-stream in use is exposed by these
         global instances ~ this can be leveraged, for instance, to copy a
         file to the standard output:
-        ---
+        
         Stdout.copy (new File ("myfile"));
-        ---
+        
 
         Note that Stdout is *not* intended to be thread-safe. Use either
         tango.util.log.Trace or the standard logging facilities in order

@@ -243,7 +243,7 @@ public:
  each is returned as an int, for speed.
 
  Example:
- ----
+ -
     real a=3.5;
     // Set all the flags to zero
     resetIeeeFlags();
@@ -263,7 +263,7 @@ public:
     func();
     assert(ieeeFlags == f);
 
- ----
+ -
  */
 struct IeeeFlags
 {
@@ -394,10 +394,10 @@ enum RoundingMode : short {
  *
  * When changing the rounding mode, it is almost always necessary to restore it
  * at the end of the function. Typical usage:
----
+
     auto oldrounding = setIeeeRounding(RoundingMode.ROUNDDOWN);
     scope (exit) setIeeeRounding(oldrounding);
----
+
  */
 RoundingMode setIeeeRounding(RoundingMode roundingmode) {
    version(D_InlineAsm_X86) {

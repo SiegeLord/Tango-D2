@@ -13,11 +13,11 @@
 
         Applying the D "import alias" mechanism to this module is highly
         recommended, in order to limit namespace pollution:
-        ---
+        
         import Integer = tango.text.convert.Integer;
 
         auto i = Integer.parse ("32767");
-        ---
+        
         
 *******************************************************************************/
 
@@ -131,9 +131,9 @@ dchar[] toString32 (long i, const(dchar[]) fmt = null)
 
         Supports format specifications via an array, where format follows
         the notation given below:
-        ---
+        
         type width prefix
-        ---
+        
 
         Type is one of [d, g, u, b, x, o] or uppercase equivalent, and
         dictates the conversion radix or other semantics.
@@ -141,7 +141,7 @@ dchar[] toString32 (long i, const(dchar[]) fmt = null)
         Width is optional and indicates a minimum width for zero-padding,
         while the optional prefix is one of ['#', ' ', '+'] and indicates
         what variety of prefix should be placed in the output. e.g.
-        ---
+        
         "d"     => integer
         "u"     => unsigned
         "o"     => octal
@@ -157,7 +157,7 @@ dchar[] toString32 (long i, const(dchar[]) fmt = null)
         "d8"    => decimal padded to 8 places as required
         "b8"    => binary padded to 8 places as required
         "b8#"   => binary padded to 8 places and prefixed with "0b"
-        ---
+        
 
         Note that the specified width is exclusive of the prefix, though
         the width padding will be shrunk as necessary in order to ensure

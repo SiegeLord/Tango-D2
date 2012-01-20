@@ -27,48 +27,48 @@ private import Float = tango.text.convert.Float;
 
         Parse json text into a set of inter-related structures. Typical 
         usage is as follows:
-        ---
+        
         auto json = new Json!(char);
         json.parse (`{"t": true, "n":null, "array":["world", [4, 5]]}`);    
-        ---   
+           
 
         Converting back to text format employs a delegate. This one emits 
         document content to the console:
-        ---
+        
         json.print ((char[] s) {Stdout(s);}); 
-        ---
+        
 
         Constructing json within your code leverages a handful of factories 
         within a document instance. This example creates a document from an 
         array of values:
-        ---
+        
         auto json = new Json!(char);
 
         // [true, false, null, "text"]
         with (json)
               value = array (true, false, null, "text");
-        ---
+        
 
         Setting the document to contain a simple object instead:
-        ---
+        
         // {"a" : 10}
         with (json)
               value = object (pair("a", value(10)));
-        ---
+        
 
         Objects may be constructed with multiple attribute pairs like so:
-        ---
+        
         // {"a" : 10, "b" : true}
         with (json)
               value = object (pair("a", value(10)), pair("b", value(true)));
-        ---
+        
 
         Substitute arrays, or other objects as values where appropriate:
-        ---
+        
         // {"a" : [10, true, {"b" : null}]}
         with (json)
               value = object (pair("a", array(10, true, object(pair("b")))));
-        ---
+        
 
         TODO: document how to extract content
 

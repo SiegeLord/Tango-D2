@@ -15,7 +15,7 @@
     This module is used to decode and encode base32 char[] arrays.
 
     Example:
-    ---
+    
     char[] blah = "Hello there, my name is Jeff.";
 
     scope encodebuf = new char[allocateEncodeSize(cast(ubyte[])blah)];
@@ -24,7 +24,7 @@
     scope decodebuf = new ubyte[encoded.length];
     if (cast(char[])decode(encoded, decodebuf) == "Hello there, my name is Jeff.")
         Stdout("yay").newline;
-    ---
+    
 
     Since v1.0
 
@@ -75,11 +75,11 @@ size_t allocateEncodeSize(size_t length)
     pad  = Whether to pad ascii output with '='-chars
 
     Example:
-    ---
+    
     char[512] encodebuf;
     char[] myEncodedString = encode(cast(ubyte[])"Hello, how are you today?", encodebuf);
     Stdout(myEncodedString).newline; // JBSWY3DPFQQGQ33XEBQXEZJAPFXXKIDUN5SGC6J7
-    ---
+    
 
 
 *******************************************************************************/
@@ -123,10 +123,10 @@ body
     pad = whether to pad output with '='-chars
 
     Example:
-    ---
+    
     char[] myEncodedString = encode(cast(ubyte[])"Hello, how are you today?");
     Stdout(myEncodedString).newline; // JBSWY3DPFQQGQ33XEBQXEZJAPFXXKIDUN5SGC6J7
-    ---
+    
 
 
 *******************************************************************************/
@@ -159,10 +159,10 @@ body
     data = what is to be decoded
 
     Example:
-    ---
+    
     char[] myDecodedString = cast(char[])decode("JBSWY3DPFQQGQ33XEBQXEZJAPFXXKIDUN5SGC6J7");
     Stdout(myDecodeString).newline; // Hello, how are you today?
-    ---
+    
 
 *******************************************************************************/
 
@@ -193,11 +193,11 @@ body
     buff = a big enough array to hold the decoded data
 
     Example:
-    ---
+    
     ubyte[512] decodebuf;
     char[] myDecodedString = cast(char[])decode("JBSWY3DPFQQGQ33XEBQXEZJAPFXXKIDUN5SGC6J7", decodebuf);
     Stdout(myDecodeString).newline; // Hello, how are you today?
-    ---
+    
 
 *******************************************************************************/
 ubyte[] decode(const(char[]) data, ubyte[] buff)

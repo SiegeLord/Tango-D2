@@ -24,13 +24,13 @@ private import  tango.net.http.HttpClient,
         Supports the basic needs of a client sending POST requests to a
         HTTP server. The following is a usage example:
 
-        ---
+        
         // open a web-page for posting (see HttpGet for simple reading)
         auto post = new HttpPost ("http://yourhost/yourpath");
 
         // send, retrieve and display response
         Cout (cast(char[]) post.write("posted data", "text/plain"));
-        ---
+        
 
 *******************************************************************************/
 

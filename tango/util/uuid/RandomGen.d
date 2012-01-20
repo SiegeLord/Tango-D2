@@ -7,11 +7,11 @@
   * import this module alone.
   *
   * To use this module, just:
-  * ---
+  * 
   * import tango.util.uuid.RandomGen;
   *
   * Uuid id = randUuid.next;
-  * ---
+  * 
   */
 module tango.util.uuid.RandomGen;
 
@@ -23,12 +23,12 @@ import tango.math.random.Twister;
   *
   * This uses a unique PRNG instance. If you want repeatable results, you
   * should inject your own UUID generator and reseed it as necessary:
-  * ---
+  * 
   * auto rand = getRand();
   * randUuid = new RandomGen!(typeof(rand))(rand);
   * doStuff();
   * rand.reseed();
-  * ---
+  * 
   *
   * The default PRNG is the Mersenne twister. If you need speed, KISS is about
   * 30 times faster. I chose the Mersenne twister because it's reasonably fast

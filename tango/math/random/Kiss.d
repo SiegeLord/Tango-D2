@@ -35,18 +35,18 @@ version (Posix)
         generators to get a composite that will be fast, easy to code
         have a very long period and pass all the tests put to it.
         The three components of KISS are
-        ---
+        
                 x(n)=a*x(n-1)+1 mod 2^32
                 y(n)=y(n-1)(I+L^13)(I+R^17)(I+L^5),
                 z(n)=2*z(n-1)+z(n-2) +carry mod 2^32
-        ---
+        
 
         The y's are a shift register sequence on 32bit binary vectors
         period 2^32-1; The z's are a simple multiply-with-carry sequence
         with period 2^63+2^32-1. The period of KISS is thus
-        ---
+        
                 2^32*(2^32-1)*(2^63+2^32-1) > 2^127
-        ---
+        
 
         Note that this should be passed by reference, unless you really
         intend to provide a local copy to a callee

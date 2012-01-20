@@ -77,7 +77,7 @@ inout(dchar[]) toString (inout(dchar[]) src, dchar[] dst, size_t* ate=null) {ret
         buffer should be specified as 'output' on subsequent calls.
         For example:
 
-        ---
+        
         char[] output;
 
         char[] result = toString (input, output);
@@ -85,7 +85,7 @@ inout(dchar[]) toString (inout(dchar[]) src, dchar[] dst, size_t* ate=null) {ret
         // reset output after a realloc
         if (result.length > output.length)
             output = result;
-        ---
+        
 
         Where 'ate' is provided, it will be set to the number of 
         elements consumed from the input, and the output buffer 

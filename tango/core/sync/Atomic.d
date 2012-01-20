@@ -346,7 +346,7 @@ version(LDC){
     }
 }
 
-//---------------------
+//
 // internal conversion template
 private T aCasT(T,V)(ref T val, T newval, T equalTo){
     union UVConv{V v; T t;}

@@ -36,7 +36,7 @@ private import tango.stdc.stdlib : alloca;
         which is useful for cases involving streams of data.
 
         For example:
-        ---
+        
         // create an MD5 hash algorithm
         Md5 hash = new Md5();
 
@@ -48,7 +48,7 @@ private import tango.stdc.stdlib : alloca;
 
         // conclude algorithm and produce digest
         ubyte[] digest = hash.binaryDigest();
-        ---
+        
 
 ******************************************************************************/
 

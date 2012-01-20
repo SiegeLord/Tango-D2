@@ -26,7 +26,7 @@ private import tango.util.container.model.IContainer;
 
         List of singly-linked values
 
-        ---
+        
 	Iterator iterator ()
         int opApply (scope int delegate(ref V value) dg)
 
@@ -68,7 +68,7 @@ private import tango.util.container.model.IContainer;
         V[] toArray (V[] dst)
         LinkedList sort (Compare!(V) cmp)
         LinkedList check ()
-        ---
+        
 
 *******************************************************************************/
 

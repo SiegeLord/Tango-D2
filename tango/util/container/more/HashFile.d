@@ -23,7 +23,7 @@ private import tango.io.device.FileMap : MappedFile;
         existing key will overwrite any previous content. What follows
         is a contrived example:
         
-        ---
+        
         alias HashFile!(char[], char[]) Bucket;
 
         auto bucket = new Bucket ("bucket.bin", HashFile.HalfK);
@@ -35,7 +35,7 @@ private import tango.io.device.FileMap : MappedFile;
 
         assert (b == text);
         bucket.close;
-        ---
+        
 
 ******************************************************************************/
 

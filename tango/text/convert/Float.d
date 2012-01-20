@@ -14,11 +14,11 @@
 
         Applying the D "import alias" mechanism to this module is highly
         recommended, in order to limit namespace pollution:
-        ---
+        
         import Float = tango.text.convert.Float;
 
         auto f = Float.parse ("3.14159");
-        ---
+        
         
 *******************************************************************************/
 

@@ -30,7 +30,7 @@ extern (C)
 
         Array manipulation typically involves appending, as in the
         following example:
-        ---
+        
         // create a small buffer
         auto buf = new Array (256);
 
@@ -38,13 +38,13 @@ extern (C)
 
         // append some text directly to it
         buf.append ("now is the time for all good men ").append(foo);
-        ---
+        
 
         Alternatively, one might use a formatter to append content:
-        ---
+        
         auto output = new TextOutput (new Array(256));
         output.format ("now is the time for {} good men {}", 3, foo);
-        ---
+        
 
         A slice() method returns all valid content within the array.
 
@@ -400,13 +400,13 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
                 retain it.
 
                 Examples:
-                ---
+                
                 // create a buffer with some content
                 auto buffer = new Buffer ("hello world");
 
                 // consume everything unread
                 auto slice = buffer.slice (buffer.readable);
-                ---
+                
 
         ***********************************************************************/
 

@@ -13,10 +13,10 @@
         if you don't need path editing features. For example, if all you
         want is to check some path exists, using this module would likely
         be more convenient than FilePath:
-        ---
+        
         if (exists ("some/file/path"))
             ...
-        ---
+        
 
         These functions may be less efficient than FilePath because they
         generally attach a null to the filename for each underlying O/S
@@ -25,23 +25,23 @@
         path-editing or mutation is desired.
 
         We encourage the use of "named import" with this module, such as:
-        ---
+        
         import Path = tango.io.Path;
 
         if (Path.exists ("some/file/path"))
             ...
-        ---
+        
 
         Also residing here is a lightweight path-parser, which splits a
         filepath into constituent components. FilePath is based upon the
         same PathParser:
-        ---
+        
         auto p = Path.parse ("some/file/path");
         auto path = p.path;
         auto name = p.name;
         auto suffix = p.suffix;
         ...
-        ---
+        
 
         Path normalization and pattern-matching is also hosted here via
         the normalize() and pattern() functions. See the doc towards the
@@ -1507,9 +1507,9 @@ bool remove (const(char)[] name)
         that failed to be removed (where .length is zero upon success).
 
         The collate() function can be used to provide the input paths:
-        ---
+        
         remove (collate (".", "*.d", true));
-        ---
+        
 
         Use with great caution.
 
@@ -1616,21 +1616,21 @@ void copy (const(char)[] src, const(char)[] dst)
 /*******************************************************************************
 
         Provides foreach support via a fruct, as in
-        ---
+        
         foreach (info; children("myfolder"))
             ...
-        ---
+        
 
         Each path and filename is passed to the foreach
         delegate, along with the path prefix and whether
         the entry is a folder or not. The info construct
         exposes the following attributes:
-        ---
+        
         char[]  path
         char[]  name
         ulong   bytes
         bool    folder
-        ---
+        
 
         Argument 'all' controls whether hidden and system
         files are included - these are ignored by default.
@@ -1868,7 +1868,7 @@ debug(UnitTest)
         Returns: true if pattern matches filename, false otherwise.
 
         Throws: Nothing.
-        -----
+        --
         version (Win32)
         {
           patternMatch("foo.bar", "*"); // => true
@@ -1883,7 +1883,7 @@ debug(UnitTest)
           patternMatch("/foo*home/bar", "?foo*bar"); // => true
           patternMatch("foobar", "foo?bar"); // => true
         }
-        -----
+        --
 
 ******************************************************************************/
 
@@ -2052,9 +2052,9 @@ debug (UnitTest)
         The input path is copied into either the provided buffer, or a heap
         allocated array if no buffer was provided. Normalization modifies
         this copy before returning the relevant slice.
-        -----
+        --
         normalize("/home/foo/./bar/../../john/doe"); // => "/home/john/doe"
-        -----
+        --
 
         Note: Allocates memory.
 

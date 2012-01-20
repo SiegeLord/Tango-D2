@@ -1599,7 +1599,7 @@ debug(UnitTest)
         separated by a colon (":"). Zero block can be replaced by "::".
 
         For example:
-        ---
+        
         0000:0000:0000:0000:0000:0000:0000:0001
         is equal
         ::0001
@@ -2024,7 +2024,7 @@ debug (UnitTest)
                 Stdout.formatln("aliases[%d] = {}\n", i, s);
         }
 
-        Stdout("---\n");
+        Stdout("\n");
 
         assert(ih.getHostByAddr(ih.addrList[0]));
         Stdout.formatln("name = {}\n", ih.name);

@@ -6,17 +6,17 @@
     ease of use:
     $(UL
       $(LI  shared generator for quick usage available through the "rand" object
-            ---
+            
             int i=rand.uniformR(10); // a random number from [0;10)
-            ---
+            
       )
       $(LI  simple Random (non threadsafe) and RandomSync (threadsafe) types to 
             create new generators (for heavy use a good idea is one Random object per thread)
       )
       $(LI  several distributions can be requested like this
-            ---
+            
             rand.distributionD!(type)(paramForDistribution)
-            ---
+            
             the type can often be avoided if the parameters make it clear.
             From it single numbers can be generated with .getRandom(), and variables
             initialized either with call style (var) or with .randomize(var).
@@ -25,7 +25,7 @@
             has made (for example) the gamma distribution very easy to implement.
       )
       $(LI  sample usage:
-            ---
+            
             auto r=new Random();
             int i; float f; real rv; real[100] ar0; real[] ar=ar0[];
             // initialize with uniform distribution
@@ -84,16 +84,16 @@
             int i2=r.uniform!(int)();
             int i2=r.randomize(i); // both i and i2 are initialized to the same value
             float f2=r.normalSigma(3.0f);
-            ---
+            
       )
     )
     flexibility:
     $(UL
       $(LI  easily swappable basic source
-            ---
+            
             // a random generator that uses the system provided random generator:
             auto r=RandomG!(Urandom)();
-            ---
+            
             One could also build an engine that can be changed at runtime (that calls
             a delegate for example), but this adds a little overhead, and changing
             engine is not something done often, so this is not part of the library.
@@ -153,9 +153,9 @@
       )
       $(LI You cannot initialize a static array directly, this because randomize is
           declared like this:
-            ---
+            
             U randomize(U)(ref U a) { }
-            ---
+            
             and a static array cannot be passed by reference. Removing the ref would
             make arrays initialized, and scalar not, which is much worse.
       )
@@ -178,7 +178,7 @@ import tango.math.random.ExpSource;
 import tango.math.Math;
 import tango.core.Traits;
 
-// ----- templateFu begin --------
+// -- templateFu begin --
 /// compile time integer power
 private T ctfe_powI(T)(T x,int p){
     T xx=cast(T)1;
@@ -190,7 +190,7 @@ private T ctfe_powI(T)(T x,int p){
         xx*=x;
     return xx;
 }
-// ----- templateFu end --------
+// -- templateFu end --
 
 version (Win32) {
          private extern(Windows) int QueryPerformanceCounter (ulong *);
@@ -280,7 +280,7 @@ final class RandomG(SourceT=DefaultEngine)
     static RandomG!(Sync!(DefaultEngine)) instance(){
         return rand;
     }
-    //-------- Utility functions to quickly get a uniformly distributed random number -----------
+    //-- Utility functions to quickly get a uniformly distributed random number --
 
     /// uniform distribution on the whole range of integer types, and on
     /// the (0;1) range for floating point types. Floating point guarantees the initialization
@@ -894,7 +894,7 @@ final class RandomG(SourceT=DefaultEngine)
         return res;
     }
     
-    // ------- structs for uniform distributions -----
+    // - structs for uniform distributions --
     /// uniform distribution on the whole range for integers, and on (0;1) for floats
     /// with boundCheck=true this is equivalent to r itself, here just for completness
     struct UniformDistribution(T,bool boundCheck){
@@ -1000,7 +1000,7 @@ final class RandomG(SourceT=DefaultEngine)
         }
     }
 
-    // ---------- gamma distribution, move to a separate module? --------
+    // - gamma distribution, move to a separate module? --
     /// gamma distribution f=x^(alpha-1)*exp(-x/theta)/(gamma(alpha)*theta^alpha)
     /// alpha has to be bigger than 1, for alpha<1 use gammaD(alpha)=gammaD(alpha+1)*pow(r.uniform!(T),1/alpha)
     /// from Marsaglia and Tsang, ACM Transaction on Mathematical Software, Vol. 26, N. 3
@@ -1068,7 +1068,7 @@ final class RandomG(SourceT=DefaultEngine)
         }
     }
     
-    //-------- various distributions available -----------
+    //-- various distributions available --
     
     /// generators of normal numbers (sigma=1,mu=0) of the given type
     /// f=exp(-x*x/(2*sigma^2))/(sqrt(2 pi)*sigma)
@@ -1149,7 +1149,7 @@ final class RandomG(SourceT=DefaultEngine)
         return UniformR2Distribution!(T,false).create(this,from,to);
     }
     
-    // -------- Utility functions for other distributions -------
+    // -- Utility functions for other distributions -
     // add also the corresponding randomize functions?
     
     /// returns a normal distribued number
@@ -1195,7 +1195,7 @@ final class RandomG(SourceT=DefaultEngine)
             if (log(u)< x*x/2+d*(1-v+log(v))) return sigma*d*v;
         }
     }
-    // ---------------
+    // 
     
     /// writes the current status in a string
     immutable(char)[] toString(){

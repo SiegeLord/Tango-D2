@@ -51,7 +51,7 @@ version (Posix) {
     symbol addresses (such as function pointers) from these libraries.
 
     Example:
-    ----
+    -
 
     void main() {
         if (auto lib = SharedLib.load(`c:\windows\system32\opengl32.dll`)) {
@@ -72,7 +72,7 @@ version (Posix) {
         assert (0 == SharedLib.numLoadedLibs);
     }
 
-    ----
+    -
 
     This implementation uses reference counting, thus a library is not loaded
     again if it has been loaded before and not unloaded by the user.

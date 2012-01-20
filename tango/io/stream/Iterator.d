@@ -169,24 +169,24 @@ class Iterator(T) : InputFilter
                 Locate the next token. Returns the token if found, null
                 otherwise. Null indicates an end of stream condition. To
                 sweep a conduit for lines using method next():
-                ---
+                
                 auto lines = new Lines!(char) (new File("myfile"));
                 while (lines.next)
                        Cout (lines.get).newline;
-                ---
+                
 
                 Alternatively, we can extract one line from a conduit:
-                ---
+                
                 auto line = (new Lines!(char) (new File("myfile"))).next;
-                ---
+                
 
                 The difference between next() and foreach() is that the
                 latter processes all tokens in one go, whereas the former
                 processes in a piecemeal fashion. To wit:
-                ---
+                
                 foreach (line; new Lines!(char) (new File("myfile")))
                          Cout(line).newline;
-                ---
+                
 
         ***********************************************************************/
 

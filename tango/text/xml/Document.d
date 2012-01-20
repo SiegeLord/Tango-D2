@@ -47,16 +47,16 @@ version=discrete;
         cost for all documents doesn't seem appropriate.
 
         Parse example
-        ---
+        
         auto doc = new Document!(char);
         doc.parse (content);
 
         auto print = new DocPrinter!(char);
         Stdout(print(doc)).newline;
-        ---
+        
 
         API example
-        ---
+        
         auto doc = new Document!(char);
 
         // attach an xml header
@@ -71,23 +71,23 @@ version=discrete;
 
         auto print = new DocPrinter!(char);
         Stdout(print(doc)).newline;
-        ---
+        
 
         Note that the document tree() includes all nodes in the tree,
         and not just elements. Use doc.elements to address the topmost
         element instead. For example, adding an interior sibling to
         the prior illustration
-        ---
+        
         doc.elements.element (null, "sibling");
-        ---
+        
 
         Printing the name of the topmost (root) element:
-        ---
+        
         Stdout.formatln ("first element is '{}'", doc.elements.name);
-        ---
+        
         
         XPath examples:
-        ---
+        
         auto doc = new Document!(char);
 
         // attach an element with some attributes, plus 
@@ -105,38 +105,38 @@ version=discrete;
 
         // select elements with one parent and a matching text value
         set = doc.query[].filter((doc.Node n) {return n.children.hasData("value");});
-        ---
+        
 
         Note that path queries are temporal - they do not retain content
         across mulitple queries. That is, the lifetime of a query result
         is limited unless you explicitly copy it. For example, this will 
         fail
-        ---
+        
         auto elements = doc.query["element"];
         auto children = elements["child"];
-        ---
+        
 
         The above will lose elements because the associated document reuses 
         node space for subsequent queries. In order to retain results, do this
-        ---
+        
         auto elements = doc.query["element"].dup;
         auto children = elements["child"];
-        ---
+        
 
         The above .dup is generally very small (a set of pointers only). On
         the other hand, recursive queries are fully supported
-        ---
+        
         set = doc.query[].filter((doc.Node n) {return n.query[].count > 1;});
-        ---
+        
 
         Typical usage tends to follow the following pattern, Where each query 
         result is processed before another is initiated
-        ---
+        
         foreach (node; doc.query.child("element"))
                 {
                 // do something with each node
                 }
-        ---
+        
 
         Note that the parser is templated for char, wchar or dchar.
             
@@ -1362,7 +1362,7 @@ else
         heap-activity and making good use of D array-slicing facilities.
 
         XPath examples
-        ---
+        
         auto doc = new Document!(char);
 
         // attach an element with some attributes, plus 
@@ -1380,41 +1380,41 @@ else
 
         // select elements with one parent and a matching text value
         set = doc.query[].filter((doc.Node n) {return n.children.hasData("value");});
-        ---
+        
 
         Note that path queries are temporal - they do not retain content
         across mulitple queries. That is, the lifetime of a query result
         is limited unless you explicitly copy it. For example, this will 
         fail to operate as one might expect
-        ---
+        
         auto elements = doc.query["element"];
         auto children = elements["child"];
-        ---
+        
 
         The above will lose elements, because the associated document reuses 
         node space for subsequent queries. In order to retain results, do this
-        ---
+        
         auto elements = doc.query["element"].dup;
         auto children = elements["child"];
-        ---
+        
 
         The above .dup is generally very small (a set of pointers only). On
         the other hand, recursive queries are fully supported
-        ---
+        
         set = doc.query[].filter((doc.Node n) {return n.query[].count > 1;});
-        ---
+        
   
         Typical usage tends to exhibit the following pattern, Where each query 
         result is processed before another is initiated
-        ---
+        
         foreach (node; doc.query.child("element"))
                 {
                 // do something with each node
                 }
-        ---
+        
 
         Supported axis include:
-        ---
+        
         .child                  immediate children
         .parent                 immediate parent 
         .next                   following siblings
@@ -1424,7 +1424,7 @@ else
         .data                   text children
         .cdata                  cdata children
         .attribute              attribute children
-        ---
+        
 
         Each of the above accept an optional string, which is used in an
         axis-specific way to filter nodes. For instance, a .child("food") 
@@ -1436,17 +1436,17 @@ else
         operation applied may be another axis traversal, or a filtering 
         step. All steps can be, and generally should be chained together. 
         Filters are implemented via a delegate mechanism
-        ---
+        
         .filter (bool delegate(Node))
-        ---
+        
 
         Where the delegate returns true if the node passes the filter. An
         example might be selecting all nodes with a specific attribute
-        ---
+        
         auto set = doc.query.descendant.filter (
                     (doc.Node n){return n.attributes.hasName (null, "test");}
                    );
-        ---
+        
 
         Obviously this is not as clean and tidy as true XPath notation, but 
         that can be wrapped atop this API instead. The benefit here is one 
@@ -1455,17 +1455,17 @@ else
         Note that every operation returns a discrete result. Methods first()
         and last() also return a set of one or zero elements. Some language
         specific extensions are provided for too
-        ---
+        
         * .child() can be substituted with [] notation instead
 
         * [] notation can be used to index a specific element, like .nth()
 
         * the .nodes attribute exposes an underlying Node[], which may be
           sliced or traversed in the usual D manner
-        ---
+        
 
        Other (query result) utility methods include
-       ---
+       
        .dup
        .first
        .last
@@ -1473,7 +1473,7 @@ else
        .nth
        .count
        .opApply
-       ---
+       
 
        XmlPath itself needs to be a class in order to avoid forward-ref issues.
 

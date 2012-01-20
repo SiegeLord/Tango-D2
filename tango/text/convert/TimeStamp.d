@@ -19,11 +19,11 @@
 
         Applying the D "import alias" mechanism to this module is highly
         recommended, in order to limit namespace pollution:
-        ---
+        
         import TimeStamp = tango.text.convert.TimeStamp;
 
         auto t = TimeStamp.parse ("Sun, 06 Nov 1994 08:49:37 GMT");
-        ---
+        
         
 *******************************************************************************/
 

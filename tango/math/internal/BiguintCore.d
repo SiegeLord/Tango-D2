@@ -1262,7 +1262,7 @@ int biguintFromDecimal(BigDigit [] data, const(char []) s) {
 
 
 private:
-// ------------------------
+// 
 // These in-place functions are only for internal use; they are incompatible
 // with COW.
 

@@ -17,7 +17,7 @@
     This module is used to decode and encode base64 char[] arrays. 
 
     Example:
-    ---
+    
     char[] blah = "Hello there, my name is Jeff.";
     scope encodebuf = new char[allocateEncodeSize(cast(ubyte[])blah)];
     char[] encoded = encode(cast(ubyte[])blah, encodebuf);
@@ -25,7 +25,7 @@
     scope decodebuf = new ubyte[encoded.length];
     if (cast(char[])decode(encoded, decodebuf) == "Hello there, my name is Jeff.")
         Stdout("yay").newline;
-    ---
+    
 
 *******************************************************************************/
 
@@ -112,11 +112,11 @@ size_t encodeChunk(const(ubyte[]) data, char[] buff, ref size_t bytesEncoded)
     buff = buffer large enough to hold encoded data
 
     Example:
-    ---
+    
     char[512] encodebuf;
     char[] myEncodedString = encode(cast(ubyte[])"Hello, how are you today?", encodebuf);
     Stdout(myEncodedString).newline; // SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==
-    ---
+    
 
 
 *******************************************************************************/
@@ -170,10 +170,10 @@ body
     data = what is to be encoded
 
     Example:
-    ---
+    
     char[] myEncodedString = encode(cast(ubyte[])"Hello, how are you today?");
     Stdout(myEncodedString).newline; // SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==
-    ---
+    
 
 
 *******************************************************************************/
@@ -206,10 +206,10 @@ body
     data = what is to be decoded
 
     Example:
-    ---
+    
     char[] myDecodedString = cast(char[])decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==");
     Stdout(myDecodedString).newline; // Hello, how are you today?
-    ---
+    
 
 *******************************************************************************/
 
@@ -240,11 +240,11 @@ body
     buff = a big enough array to hold the decoded data
 
     Example:
-    ---
+    
     ubyte[512] decodebuf;
     char[] myDecodedString = cast(char[])decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==", decodebuf);
     Stdout(myDecodedString).newline; // Hello, how are you today?
-    ---
+    
 
 *******************************************************************************/
        

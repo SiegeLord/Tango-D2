@@ -9,9 +9,9 @@
         author:         Kris
 
         Synchronized, formatted console output. Usage is:
-        ---
+        
         Trace.formatln ("hello {}", "world");
-        ---
+        
 
         Note that this has become merely a wrapper around Log.formatln(), so
         please use that API instead
@@ -62,12 +62,12 @@ debug (Trace)
                 Characters in range 0x20..0x7E are printed, all others are
                 shown as dots.
 
-                ----
+                -
 000000:  47 49 46 38  39 61 10 00  10 00 80 00  00 48 5D 8C  GIF89a.......H].
 000010:  FF FF FF 21  F9 04 01 00  00 01 00 2C  00 00 00 00  ...!.......,....
 000020:  10 00 10 00  00 02 11 8C  8F A9 CB ED  0F A3 84 C0  ................
 000030:  D4 70 A7 DE  BC FB 8F 14  00 3B                     .p.......;
-                ----
+                -
 
         **********************************************************************/
 

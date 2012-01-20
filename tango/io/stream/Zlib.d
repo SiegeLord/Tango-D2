@@ -101,10 +101,10 @@ class ZlibInput : InputFilter
         stream that the decompression filter will read from.  If you are using
         this filter with a conduit, the idiom to use is:
 
-        ---
+        
         auto input = new ZlibInput(myConduit.input));
         input.read(myContent);
-        ---
+        
 
         The optional windowBits parameter is the base two logarithm of the
         window size, and should be in the range 8-15, defaulting to 15 if not
@@ -443,10 +443,10 @@ class ZlibOutput : OutputFilter
         stream that the compression filter will write to.  If you are using
         this filter with a conduit, the idiom to use is:
 
-        ---
+        
         auto output = new ZlibOutput(myConduit.output);
         output.write(myContent);
-        ---
+        
 
         The optional windowBits parameter is the base two logarithm of the
         window size, and should be in the range 8-15, defaulting to 15 if not

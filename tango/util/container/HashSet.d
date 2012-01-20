@@ -26,7 +26,7 @@ private import tango.util.container.model.IContainer;
 
         Hash table implementation of a Set
 
-        ---
+        
         Iterator iterator ()
         int opApply (scope int delegate(ref V value) dg)
 
@@ -48,7 +48,7 @@ private import tango.util.container.model.IContainer;
         void buckets (size_t cap)
         float threshold ()
         void threshold (float desired)
-        ---
+        
 
 *******************************************************************************/
 

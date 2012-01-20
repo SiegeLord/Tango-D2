@@ -44,7 +44,7 @@ private import  Integer = tango.text.convert.Integer;
         Supports the basic needs of a client making requests of an HTTP
         server. The following is an example of how this might be used:
 
-        ---
+        
         // callback for client reader
         void sink (void[] content)
         {
@@ -73,7 +73,7 @@ private import  Integer = tango.text.convert.Integer;
            Stderr (client.getResponse);
 
         client.close;
-        ---
+        
 
         See modules HttpGet and HttpPost for simple wrappers instead.
 
