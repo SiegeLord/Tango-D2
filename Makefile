@@ -4,7 +4,7 @@ export AUTHOR           = SiegeLord
 export DESCRIPTION      =
 export VERSION          = 2
 export LICENSE          = ACL v3
-SOURCES                 = $(filter-out $(Filter), $(shell find tango -name "*.d"))
+SOURCES                 = $(filter-out $(Filter), $(getSource))
 
 DDOCFILES               =
 
