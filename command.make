@@ -133,7 +133,17 @@ ifeq ($(OS),"Linux")
 endif
 
 # If model are not gieven take the same as current system
-ARCH = $(shell arch || uname -m)
+ifndef ARCH
+    ifeq ($(OS),"Windows")
+        ifeq($(PROCESSOR_ARCHITECTURE), x86)
+            ARCH = x86
+        else
+            ARCH = x86_64
+        endif
+    else
+        ARCH = $(shell arch || uname -m)
+    endif
+endif
 ifndef MODEL
     ifeq ($(ARCH), x86_64)
         MODEL = 64
