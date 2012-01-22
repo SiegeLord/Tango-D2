@@ -252,7 +252,7 @@ private:
                 version (Queued) // #1896
                         {
                         job = q[0];
-                        memmove(q.ptr, q.ptr + 1, (q.length - 1) * typeof(*q).sizeof);
+                        memmove(q.ptr, q.ptr + 1, (q.length - 1) * typeof(*(q.ptr)).sizeof);
                         q.length = q.length - 1;
                         }
                      else
