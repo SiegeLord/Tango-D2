@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2007 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-      
+
         version:        Feb 2007: Initial release
-        
+
         author:         Kris
 
 *******************************************************************************/
@@ -20,7 +20,7 @@ private import tango.core.Exception;
 
 version (Win32)
 {
-        private extern (Windows) 
+        private extern (Windows)
         {
         int QueryPerformanceCounter   (ulong *count);
         int QueryPerformanceFrequency (ulong *frequency);
@@ -34,8 +34,9 @@ version (Posix)
 
 /*******************************************************************************
 
-        Timer for measuring small intervals, such as the duration of a 
+        Timer for measuring small intervals, such as the duration of a
         subroutine or other reasonably small period.
+        Examples:
         ---
         StopWatch elapsed;
 
@@ -48,16 +49,16 @@ version (Posix)
         ---
 
         The measured interval is in units of seconds, using floating-
-        point to represent fractions. This approach is more flexible 
+        point to represent fractions. This approach is more flexible
         than integer arithmetic since it migrates trivially to more
         capable timer hardware (there no implicit granularity to the
         measurable intervals, except the limits of fp representation)
 
         StopWatch is accurate to the extent of what the underlying OS
-        supports. On linux systems, this accuracy is typically 1 us at 
-        best. Win32 is generally more precise. 
+        supports. On linux systems, this accuracy is typically 1 us at
+        best. Win32 is generally more precise.
 
-        There is some minor overhead in using StopWatch, so take that into 
+        There is some minor overhead in using StopWatch, so take that into
         account
 
 *******************************************************************************/
@@ -71,33 +72,33 @@ public struct StopWatch
                  private static double microsecond;
 
         /***********************************************************************
-                
+
                 Start the timer
 
         ***********************************************************************/
-        
+
         void start ()
         {
                 started = timer;
         }
 
         /***********************************************************************
-                
+
                 Stop the timer and return elapsed duration since start()
 
         ***********************************************************************/
-        
+
         double stop ()
         {
                 return multiplier * (timer - started);
         }
 
         /***********************************************************************
-                
+
                 Return elapsed time since the last start() as microseconds
 
         ***********************************************************************/
-        
+
         ulong microsec ()
         {
                 version (Posix)
@@ -108,7 +109,7 @@ public struct StopWatch
         }
 
         /***********************************************************************
-                
+
                 Setup timing information for later use
 
         ***********************************************************************/
@@ -120,20 +121,20 @@ public struct StopWatch
                         ulong freq;
 
                         QueryPerformanceFrequency (&freq);
-                        microsecond = 1_000_000.0 / freq;       
-                        multiplier = 1.0 / freq;       
+                        microsecond = 1_000_000.0 / freq;
+                        multiplier = 1.0 / freq;
                 }
         }
 
         /***********************************************************************
-                
+
                 Return the current time as an Interval
 
         ***********************************************************************/
 
         private static ulong timer ()
         {
-                version (Posix)       
+                version (Posix)
                 {
                         timeval tv;
                         if (gettimeofday (&tv, null))
@@ -163,7 +164,7 @@ debug (StopWatch)
 {
         import tango.io.Stdout;
 
-        void main() 
+        void main()
         {
                 StopWatch t;
                 t.start;

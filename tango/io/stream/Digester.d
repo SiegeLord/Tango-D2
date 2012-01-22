@@ -90,7 +90,8 @@ class DigestInput : InputFilter, InputFilter.Mutator
 
         Inject a digest filter into an output stream, updating the digest
         as information flows through it. Here's an example where we calculate
-        an MD5 digest as a side-effect of copying a file:
+        an MD5 digest as a side-effect of copying a file.
+        Examples:
         ---
         auto output = new DigestOutput(new FileOutput("output"), new Md5);
         output.copy (new FileInput("input"));

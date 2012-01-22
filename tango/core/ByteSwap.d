@@ -21,6 +21,7 @@ import tango.core.BitManip;
         Reverse byte order for specific datum sizes. Note that the
         byte-swap approach avoids alignment issues, so is probably
         faster overall than a traditional 'shift' implementation.
+        Examples:
         ---
         ubyte[] x = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08];
 
@@ -43,7 +44,7 @@ struct ByteSwap
 {
         /***********************************************************************
 
-                Reverses two-byte sequences. Parameter dst imples the 
+                Reverses two-byte sequences. Parameter dst imples the
                 number of bytes, which should be a multiple of 2
 
         ***********************************************************************/
@@ -55,7 +56,7 @@ struct ByteSwap
 
         /***********************************************************************
 
-                Reverses four-byte sequences. Parameter dst implies the  
+                Reverses four-byte sequences. Parameter dst implies the
                 number of bytes, which should be a multiple of 4
 
         ***********************************************************************/
@@ -67,7 +68,7 @@ struct ByteSwap
 
         /***********************************************************************
 
-                Reverse eight-byte sequences. Parameter dst implies the 
+                Reverse eight-byte sequences. Parameter dst implies the
                 number of bytes, which should be a multiple of 8
 
         ***********************************************************************/
@@ -79,7 +80,7 @@ struct ByteSwap
 
         /***********************************************************************
 
-                Reverse ten-byte sequences. Parameter dst implies the 
+                Reverse ten-byte sequences. Parameter dst implies the
                 number of bytes, which should be a multiple of 10
 
         ***********************************************************************/
@@ -91,7 +92,7 @@ struct ByteSwap
 
         /***********************************************************************
 
-                Reverses two-byte sequences. Parameter bytes specifies the 
+                Reverses two-byte sequences. Parameter bytes specifies the
                 number of bytes, which should be a multiple of 2
 
         ***********************************************************************/
@@ -114,7 +115,7 @@ struct ByteSwap
 
         /***********************************************************************
 
-                Reverses four-byte sequences. Parameter bytes specifies the  
+                Reverses four-byte sequences. Parameter bytes specifies the
                 number of bytes, which should be a multiple of 4
 
         ***********************************************************************/
@@ -134,7 +135,7 @@ struct ByteSwap
 
         /***********************************************************************
 
-                Reverse eight-byte sequences. Parameter bytes specifies the 
+                Reverse eight-byte sequences. Parameter bytes specifies the
                 number of bytes, which should be a multiple of 8
 
         ***********************************************************************/
@@ -157,7 +158,7 @@ struct ByteSwap
 
         /***********************************************************************
 
-                Reverse ten-byte sequences. Parameter bytes specifies the 
+                Reverse ten-byte sequences. Parameter bytes specifies the
                 number of bytes, which should be a multiple of 10
 
         ***********************************************************************/
@@ -165,7 +166,7 @@ struct ByteSwap
         final static void swap80 (void *dst, size_t bytes)
         {
                 assert ((bytes % 10) is 0);
-               
+
                 auto p = cast(ubyte*) dst;
                 while (bytes)
                       {

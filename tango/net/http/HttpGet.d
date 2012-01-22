@@ -5,7 +5,7 @@
         license:        BSD style: $(LICENSE)
 
         version:        Initial release: January 2006
-        
+
         author:         Kris
 
 *******************************************************************************/
@@ -20,7 +20,8 @@ private import  tango.net.http.HttpClient,
 /*******************************************************************************
 
         Supports the basic needs of a client making requests of an HTTP
-        server. The following is a usage example:
+        server. The following is a usage example.
+        Examples:
         ---
         // open a web-page for reading (see HttpPost for writing)
         auto page = new HttpGet ("http://www.digitalmars.com/d/intro.html");
@@ -32,11 +33,11 @@ private import  tango.net.http.HttpClient,
 *******************************************************************************/
 
 class HttpGet : HttpClient
-{      
+{
         alias HttpClient.read read;
 
         /***********************************************************************
-        
+
                 Create a client for the given URL. The argument should be
                 fully qualified with an "http:" or "https:" scheme, or an
                 explicit port should be provided.
@@ -49,10 +50,10 @@ class HttpGet : HttpClient
         }
 
         /***********************************************************************
-        
-                Create a client with the provided Uri instance. The Uri should 
+
+                Create a client with the provided Uri instance. The Uri should
                 be fully qualified with an "http:" or "https:" scheme, or an
-                explicit port should be provided. 
+                explicit port should be provided.
 
         ***********************************************************************/
 
@@ -65,7 +66,7 @@ class HttpGet : HttpClient
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         void[] read ()
@@ -85,7 +86,7 @@ class HttpGet : HttpClient
 *******************************************************************************/
 
 debug (HttpGet)
-{       
+{
         import tango.io.Console;
 
         void main()

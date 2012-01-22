@@ -39,7 +39,8 @@ class Delimiters(T) : Iterator!(T)
 
         /***********************************************************************
 
-                Construct an uninitialized iterator. For example:
+                Construct an uninitialized iterator. For example.
+                Examples:
                 ---
                 auto lines = new Lines!(char);
 
@@ -50,7 +51,8 @@ class Delimiters(T) : Iterator!(T)
                 }
                 ---
 
-                Construct a streaming iterator upon a stream:
+                Construct a streaming iterator upon a stream.
+                Examples:
                 ---
                 void somefunc (InputStream stream)
                 {
@@ -59,7 +61,8 @@ class Delimiters(T) : Iterator!(T)
                 }
                 ---
 
-                Construct a streaming iterator upon a conduit:
+                Construct a streaming iterator upon a conduit.
+                Examples:
                 ---
                 foreach (line; new Lines!(char) (new File ("myfile")))
                          Cout (line).newline;
