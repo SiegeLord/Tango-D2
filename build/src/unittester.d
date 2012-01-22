@@ -154,7 +154,7 @@ void main(const(char)[][] args)
 		
 		thread_pool.wait;
 		
-		if(test_result.reason == Process.Result.Exit && test_result.reason == 0)
+		if(test_result.reason == Process.Result.Exit && test_result.status == 0)
 		{
 			Stdout("PASS").nl;
 			pass++;
