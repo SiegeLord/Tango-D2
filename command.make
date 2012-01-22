@@ -3,7 +3,6 @@ ifdef SystemRoot
     STATIC_LIB_EXT  = .lib
     DYNAMIC_LIB_EXT = .dll
     PATH_SEP        =\
-    FixPath         = $(subst /,\,$1)
     message         = @(echo $1)
     SHELL           = cmd.exe
     Filter          = tango/sys/linux/%.d tango/sys/darwin/%.d tango/sys/freebsd/%.d tango/sys/solaris/%.d
@@ -16,14 +15,12 @@ else
         OS              = "Linux"
         STATIC_LIB_EXT  = .a
         DYNAMIC_LIB_EXT = .so
-        FixPath         = $1
         message         = @(echo \033[31m $1 \033[0;0m1)
         Filter          = tango/sys/win32/%.d tango/sys/darwin/%.d tango/sys/freebsd/%.d tango/sys/solaris/%.d
     else ifeq ($(shell uname), Solaris)
         STATIC_LIB_EXT  = .a
         DYNAMIC_LIB_EXT = .so
         OS              = "Solaris"
-        FixPath         = $1
         message         = @(echo \033[31m $1 \033[0;0m1)
         Filter          = tango/sys/win32/%.d tango/sys/linux/%.d tango/sys/darwin/%.d tango/sys/freebsd/%.d
     else ifeq ($(shell uname),Freebsd)
@@ -37,7 +34,6 @@ else
         STATIC_LIB_EXT  = .a
         DYNAMIC_LIB_EXT = .so
         OS              = "Darwin"
-        FixPath         = $1
         message         = @(echo \033[31m $1 \033[0;0m1)
         Filter          = tango/sys/win32/%.d tango/sys/linux/%.d tango/sys/freebsd/%.d tango/sys/solaris/%.d
     endif
