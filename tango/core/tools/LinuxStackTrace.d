@@ -44,13 +44,58 @@ version(D_Version2)
         /// if this function is an internal functions (for example the backtracing function itself)
         /// if true by default the frame is not printed
         bool internalFunction;
-        alias void function(FrameInfo*,void delegate(char[])) FramePrintHandler;
+        alias void function(FrameInfo*,void delegate(in char[])) FramePrintHandler;
         /// the default printing function
         static FramePrintHandler defaultFramePrintingFunction;
         /// writes out the current frame info
-        void writeOut(void delegate(char[])sink);
+        void writeOut(void delegate(in char[])sink){
+
+            if (defaultFramePrintingFunction){
+                defaultFramePrintingFunction(&this,sink);
+            } else {
+                char[26] buf;
+                //auto len=snprintf(buf.ptr,26,"[%8zx]",address);
+                //sink(buf[0..len]);
+                //len=snprintf(buf.ptr,26,"%8zx",baseImg);
+                //sink(buf[0..len]);
+                //len=snprintf(buf.ptr,26,"%+td ",offsetImg);
+                //sink(buf[0..len]);
+                //while (++len<6) sink(" ");
+                if (func.length) {
+                    sink(func);
+                } else {
+                    sink("???");
+                }
+                for (size_t i=func.length;i<80;++i) sink(" ");
+                //len=snprintf(buf.ptr,26," @%zx",baseSymb);
+                //sink(buf[0..len]);
+                //len=snprintf(buf.ptr,26,"%+td ",offsetSymb);
+                //sink(buf[0..len]);
+                if (extra.length){
+                    sink(extra);
+                    sink(" ");
+                }
+                sink(file);
+                sink(":");
+                sink(ulongToUtf8(buf, line));
+            }
+        }
         /// clears the frame information stored
-        void clear();
+        void clear()
+        {
+            line=0;
+            iframe=-1;
+            offsetImg=0;
+            baseImg=0;
+            offsetSymb=0;
+            baseSymb=0;
+            address=0;
+            exactAddress=true;
+            internalFunction=false;
+            file=null;
+            func=null;
+            extra=null;
+        }
     }
 
         private const(char)[] ulongToUtf8 (char[] tmp, ulong val)

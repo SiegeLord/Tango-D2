@@ -390,7 +390,7 @@ version(Posix){
             fInfo.address=cast(size_t)code;
             rt_symbolizeFrameInfo(fInfo,null,buf1);
             fInfo.func = demangler.demangle(fInfo.func,buf2);
-            fInfo.writeOut((char[] s) { Runtime.console.stderr(s); });
+            fInfo.writeOut((in char[] s) { Runtime.console.stderr(s); });
         }
         Runtime.console.stderr("\n Stacktrace:\n");
         TraceContext tc;
