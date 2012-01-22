@@ -197,19 +197,15 @@ endif
 ifndef INCLUDE_DIR
     ifeq ($(OS), "Windows")
         INCLUDE_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\import
-    else ifeq ($(OS), "Linux")
-        INCLUDE_DIR = $(PREFIX)/include/d/$(PROJECT_NAME)
-    else ifeq ($(OS), "Darwin")
-        INCLUDE_DIR = $(PREFIX)/include/d/$(PROJECT_NAME)
+    else
+        INCLUDE_DIR = $(PREFIX)/include/d/
     endif
 endif
 
 ifndef DATA_DIR
     ifeq ($(OS), "Windows")
         DATA_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\data
-    else ifeq ($(OS), "Linux")
-        DATA_DIR = $(PREFIX)/share
-    else ifeq ($(OS), "Darwin")
+    else
         DATA_DIR = $(PREFIX)/share
     endif
 endif
@@ -217,9 +213,7 @@ endif
 ifndef PKGCONFIG_DIR
     ifeq ($(OS), "Windows")
         PKGCONFIG_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\data
-    else ifeq ($(OS), "Linux")
-        PKGCONFIG_DIR = $(DATA_DIR)/pkgconfig
-    else ifeq ($(OS), "Darwin")
+    else
         PKGCONFIG_DIR = $(DATA_DIR)/pkgconfig
     endif
 endif
@@ -228,24 +222,24 @@ ifndef CC
     CC = gcc
 endif
 
-DLIB_PATH          = ./lib
-IMPORT_PATH        = ./import
-DOC_PATH           = ./documentation
-DDOC_PATH          = ./ddoc
-BUILD_PATH         = ./build
+DLIB_PATH           = ./lib
+IMPORT_PATH         = ./import
+DOC_PATH            = ./documentation
+DDOC_PATH           = ./ddoc
+BUILD_PATH          = ./build
 
 DCFLAGS_IMPORT      =
 DCFLAGS_LINK        = $(LDCFLAGS)
 
-LIBNAME       = lib$(PROJECT_NAME)-$(COMPILER)$(STATIC_LIB_EXT)
-SONAME        = lib$(PROJECT_NAME)-$(COMPILER)$(DYNAMIC_LIB_EXT)
+LIBNAME             = lib$(PROJECT_NAME)-$(COMPILER)$(STATIC_LIB_EXT)
+SONAME              = lib$(PROJECT_NAME)-$(COMPILER)$(DYNAMIC_LIB_EXT)
 
-PKG_CONFIG_FILE    = $(PROJECT_NAME).pc
+PKG_CONFIG_FILE     = $(PROJECT_NAME).pc
 
-MAKE               = make
-AR                 = ar
-ARFLAGS            = rcs
-RANLIB             = ranlib
+MAKE                = make
+AR                  = ar
+ARFLAGS             = rcs
+RANLIB              = ranlib
 
 export AR
 export ARCH

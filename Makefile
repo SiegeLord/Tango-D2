@@ -60,13 +60,13 @@ pkgfile:
 	@echo prefix=$(PREFIX)                                              >> $(PKG_CONFIG_FILE)
 	@echo exec_prefix=$(PREFIX)                                         >> $(PKG_CONFIG_FILE)
 	@echo libdir=$(LIB_DIR)                                             >> $(PKG_CONFIG_FILE)
-	@echo includedir=$(INCLUDE_DIR)                                     >> $(PKG_CONFIG_FILE)
+	@echo includedir=$(INCLUDE_DIR)$(PATH_SEP)$(PROJECT_NAME)           >> $(PKG_CONFIG_FILE)
 	@echo                                                               >> $(PKG_CONFIG_FILE)
 	@echo Name: "$(PROJECT_NAME)"                                       >> $(PKG_CONFIG_FILE)
 	@echo Description: "$(DESCRIPTION)"                                 >> $(PKG_CONFIG_FILE)
 	@echo Version: "$(VERSION)"                                         >> $(PKG_CONFIG_FILE)
 	@echo Libs: -L$(LIB_DIR) $(LINKERFLAG)-l$(PROJECT_NAME)-$(COMPILER) >> $(PKG_CONFIG_FILE)
-	@echo Cflags: -I$(INCLUDE_DIR)                                      >> $(PKG_CONFIG_FILE)
+	@echo Cflags: -I$(INCLUDE_DIR)$(PATH_SEP)$(PROJECT_NAME)            >> $(PKG_CONFIG_FILE)
 	@echo                                                               >> $(PKG_CONFIG_FILE)
 
 
@@ -168,7 +168,7 @@ install-shared-lib:
 
 install-header:
 	$(MKDIR) $(INCLUDE_DIR)
-	$(CP) $(IMPORT_PATH)$(PATH_SEP)* $(DESTDIR)$(INCLUDE_DIR)
+	$(CP) $(IMPORT_PATH)$(PATH_SEP)$(PROJECT_NAME) $(DESTDIR)$(INCLUDE_DIR)
 	@echo ------------------ Installing header done
 
 install-doc:
