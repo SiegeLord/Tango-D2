@@ -283,9 +283,9 @@ debug(UnitTest)
 
     unittest
     {
-        auto source = new size_t[1000];
+        auto source = new uint[1000];
         foreach(i, ref x; source)
-            x = i;
+            x = cast(uint)i;
 
         ThreadPipe tp = new ThreadPipe(16);
         void threadA()
