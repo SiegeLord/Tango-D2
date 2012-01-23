@@ -913,19 +913,19 @@ public class Logger : ILogger
                 return this;
         }
 
-        private void formatWithDefaultBuffer(Level level, char[] fmt, TypeInfo[] types, ArgList args)
+        private void formatWithDefaultBuffer(Level level, const(char)[] fmt, TypeInfo[] types, ArgList args)
         {
             char[2048] tmp = void;
             formatWithBuffer(level, fmt, types, args, tmp);
         }
 
-        private void formatWithProvidedBuffer(Level level, char[] fmt, TypeInfo[] types, ArgList args)
+        private void formatWithProvidedBuffer(Level level, const(char)[] fmt, TypeInfo[] types, ArgList args)
         {
             formatWithBuffer(level, fmt, types, args, buffer_);
             buffer_.length = buffer_size_;
         }
 
-        private void formatWithBuffer(Level level, char[] fmt, TypeInfo[] types, ArgList args, char[] buf)
+        private void formatWithBuffer(Level level, const(char)[] fmt, TypeInfo[] types, ArgList args, char[] buf)
         {
             append (level, Format.vprint (buf, fmt, types, args));
         }

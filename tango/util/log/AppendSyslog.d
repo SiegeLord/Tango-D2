@@ -112,7 +112,7 @@ public class AppendSyslog: Filer
 
      ***********************************************************************/
 
-    final Mask mask ( )
+    final Mask mask ( ) const
     {
         return mask_;
     }
@@ -123,7 +123,7 @@ public class AppendSyslog: Filer
 
      ***********************************************************************/
 
-    final char[] name ( )
+    final const(char)[] name ( ) const
     {
         return this.classinfo.name;
     }
@@ -134,23 +134,26 @@ public class AppendSyslog: Filer
      
      ***********************************************************************/
 
-    final synchronized void append ( LogEvent event )
+    final void append ( LogEvent event )
     {
-        char[] msg;
-
-        // file already full?
-        if (file_size >= max_size) nextFile();
-
-        size_t write ( void[] content )
+        synchronized(this)
         {
-            file_size += content.length;
-            return buffer.write(content);
-        }
+            char[] msg;
 
-        // write log message and flush it
-        layout.format(event, &write);
-        write(FileConst.NewlineString);
-        buffer.flush;
+            // file already full?
+            if (file_size >= max_size) nextFile();
+
+            size_t write ( const(void)[] content )
+            {
+                file_size += content.length;
+                return buffer.write(content);
+            }
+
+            // write log message and flush it
+            layout.format(event, &write);
+            write(tango.io.FilePath.FileConst.NewlineString);
+            buffer.flush;
+        }
     }
 
     private void openConduit ()
@@ -173,7 +176,7 @@ public class AppendSyslog: Filer
     {
         size_t free, used;       
 
-        uint oldest = 1;
+        size_t oldest = 1;
         char[512] buf;
         
         buf[0 .. this.path.length] = this.path;
@@ -189,7 +192,7 @@ public class AppendSyslog: Filer
             if ( file.name.length > this.path.length + 1 - pathlen &&
                  file.name[0 .. this.path.length - pathlen] == this.path[pathlen .. $] )
             {
-                uint ate = 0;
+                size_t ate = 0;
                 auto num = Integer.parse(file.name[this.path.length - pathlen + 1 .. $], 0, &ate);
                 
                 if ( ate != 0 )
@@ -199,10 +202,10 @@ public class AppendSyslog: Filer
             }
         }
                 
-        for ( uint i = oldest; i > 0; --i )
+        for ( size_t i = oldest; i > 0; --i )
         {
-            char[] compress = i >= this.compress_index ? 
-                              this.compress_suffix : "";
+            const(char)[] compress = i >= this.compress_index ? 
+                                     this.compress_suffix : "";
             
             auto path = Format.sprint(buf, "{}.{}{}", this.path, i,
                                       compress);
