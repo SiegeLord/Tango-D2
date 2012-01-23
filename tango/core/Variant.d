@@ -420,6 +420,12 @@ struct Variant
         {
             return (this = value.dup);
         }
+        else static if( is(T == Variant) )
+        {
+            type = value.type;
+            this.value = value.value;
+            return this;
+        }
         else
         {
             type = typeid(T);
@@ -1058,9 +1064,9 @@ debug( UnitTest )
 
         // Test strings
         v = "Hello, World!"c;
-        assert( v.isA!(char[]), v.type.toString );
+        assert( v.isA!(immutable(char)[]), v.type.toString );
         assert( !v.isImplicitly!(wchar[]), v.type.toString );
-        assert( v.get!(char[]) == "Hello, World!" );
+        assert( v.get!(immutable(char)[]) == "Hello, World!" );
 
         // Test array storage
         v = [1,2,3,4,5];
