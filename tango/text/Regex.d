@@ -67,6 +67,8 @@
     $(TR $(TD \d) $(TD digits) )
     $(TR $(TD \D) $(TD non-digit) )
     </table>
+
+    Note that "alphanumeric" only applies to Latin-1.
 *******************************************************************************/
 module tango.text.Regex;
 
@@ -702,9 +704,7 @@ struct CharClass(char_t)
                 {l_:0x01, r_:0xff}
             ]},
             dot_oper = {parts: [
-                {l_:0x09, r_:0x13},   // basic control chars
-                {l_:0x20, r_:0x7e},   // basic latin
-                {l_:0xa0, r_:0xff}    // latin-1 supplement
+                {l_:0x01, r_:0xff}
             ]},
             alphanum_ = {parts: [
                 {l_:0x30, r_:0x39},
@@ -721,10 +721,7 @@ struct CharClass(char_t)
                 {l_:0x0001, r_:0xffff}
             ]},
             dot_oper = {parts: [
-                {l_:0x09,r_:0x13},{l_:0x20, r_:0x7e},{l_:0xa0, r_:0xff},
-                {l_:0x0100, r_:0x017f},   // latin extended a
-                {l_:0x0180, r_:0x024f},   // latin extended b
-                {l_:0x20a3, r_:0x20b5},   // currency symbols
+                {l_:0x0001, r_:0xffff}
             ]},
             alphanum_ = {parts: [
                 {l_:0x30, r_:0x39},
