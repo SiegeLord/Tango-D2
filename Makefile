@@ -18,7 +18,6 @@ DOCUMENTATIONS      = $(patsubst %.d,$(DOC_PATH)$(PATH_SEP)%.html,   $(SOURCES))
 DDOCUMENTATIONS     = $(patsubst %.d,$(DDOC_PATH)$(PATH_SEP)%.html,  $(SOURCES))
 DDOC_FLAGS          = $(foreach macro,$(DDOCFILES), $(DDOC_MACRO)$(macro))
 define make-lib
-	$(MKDIR) $(DLIB_PATH)
 	$(AR) rcs $(DLIB_PATH)$(PATH_SEP)$@ $^
 	$(RANLIB) $(DLIB_PATH)$(PATH_SEP)$@
 endef
@@ -37,6 +36,7 @@ static-lib: $(LIBNAME)
 shared-lib: $(SONAME)
 
 header: $(HEADERS)
+	@echo ------------------ Building headers done
 
 doc: $(DOCUMENTATIONS)
 	@echo ------------------ Building Doc done
@@ -69,6 +69,21 @@ pkgfile:
 	@echo Cflags: -I$(INCLUDE_DIR)$(PATH_SEP)$(PROJECT_NAME)            >> $(PKG_CONFIG_FILE)
 	@echo                                                               >> $(PKG_CONFIG_FILE)
 
+############# MKDIR #############
+$(BUILD_PATH):
+	test -d $(BUILD_PATH) || $(MKDIR) $(BUILD_PATH)
+$(IMPORT_PATH):
+	test -d $(IMPORT_PATH) || $(MKDIR) $(IMPORT_PATH)
+$(DLIB_PATH):
+	test -d $(DLIB_PATH) || $(MKDIR) $(DLIB_PATH)
+$(DOC_PATH):
+	test -d $(DOC_PATH) || $(MKDIR) $(DOC_PATH)
+#~ $(DDOC_PATH):
+	#~ test -d $(DDOC_PATH) || $(MKDIR) $(DDOC_PATH)
+
+
+############# BUILD #############
+
 
 # For build lib need create object files and after run make-lib
 $(LIBNAME): $(OBJECTS)
@@ -78,7 +93,6 @@ $(LIBNAME): $(OBJECTS)
 # For build shared lib need create shared object files
 $(SONAME): $(PICOBJECTS)
 	@echo ------------------ Building shared library
-	$(MKDIR) $(DLIB_PATH)
 	$(DC) -shared $(OUTPUT)$(DLIB_PATH)$(PATH_SEP)$@.$(VERSION) $^
 	#~ $(CC) -shared -Wl,-soname,$@.$(VERSION) -o $(DLIB_PATH)$(PATH_SEP)$@.$(VERSION) $^
 
