@@ -229,7 +229,7 @@ package struct FS
 
                 if (paths.length)
                 {
-                    result ~= paths[0];
+                    result ~= stripped(paths[0]);
 
                     foreach (path; paths[1 .. $-1])
                         result ~= paddedLeading (stripped(path));
