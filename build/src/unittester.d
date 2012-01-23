@@ -17,14 +17,37 @@ unittester - TangoD2's unittest utility
 Copyright (C) 2012 Pavel Sountsov.
 
 Usage: unittester [OPTION]... [FILES]...
-Example: unittester -c dmd -d .unittest -o "-unittest -debug=UnitTest" tango/text/Util.d
+Example: unittester -c dmd -d .unittest -a "-m32" tango/text/Util.d
+
+FILES is a list of files you want to run unittests in. This program essentially
+compiles each of the passed files individually along with a dummy main file.
+Then it runs the resultant executable to see if it's unittests run.
+Additionally, if the unittest runs longer than 5 seconds, it is aborted.
+
+Options:
+  -a,  --additional=OPTIONS   what additional options to pass the compiler. 
+                              These are appended after the options specified by
+                              the --options option.
+  -c,  --compiler=COMPILER    what compiler to use when compiling the unittests
+                              Default: dmd
+  -d,  --directory=DIRECTORY  what directory to use to write the test 
+                              executables to. Note that this directory is not
+                              removed after the program finishes.
+                              Default: .unittest
+  -h,  --help                 print this help text
+  -o,  --options=OPTIONS      what options to pass to the compiler.
+                              Default if compiler is dmd: 
+                                  -unittest -L-ltango -debug=UnitTest
+                              Default if compiler is ldc2: 
+                                  -unittest -L-ltango -d-debug=UnitTest
 `;
 
 void main(const(char)[][] args)
 {
 	const(char)[] compiler = "dmd";
-	const(char)[] compiler_options = "-unittest -L-ltango -debug=UnitTest";
+	const(char)[] compiler_options;
 	const(char)[] directory = ".unittest";
+	const(char)[] additional_options;
 	
 	auto arguments = new Arguments;
 	arguments("compiler").aliased('c').params(1).bind(
@@ -37,6 +60,12 @@ void main(const(char)[][] args)
 		(const(char)[] arg)
 		{
 			compiler_options = arg;
+			return null;
+		});
+	arguments("additional").aliased('a').params(1).bind(
+		(const(char)[] arg)
+		{
+			additional_options = arg;
 			return null;
 		});
 	arguments("directory").aliased('d').params(1).bind(
@@ -53,6 +82,20 @@ void main(const(char)[][] args)
 		Stdout(arguments.errors(&Stdout.layout.sprint));
 		Stdout.formatln("{}", Help);
 		return;
+	}
+	
+	if(compiler_options == "")
+	{
+		switch(compiler)
+		{
+			default: goto case;
+			case "dmd":
+				compiler_options = "-unittest -L-ltango -debug=UnitTest";
+				break;
+			case "ldc2":
+				compiler_options = "-unittest -L-ltango -d-debug=UnitTest";
+				break;
+		}
 	}
 	
 	/*
@@ -79,7 +122,9 @@ void main(const(char)[][] args)
 	 */
 	auto output_fp = new FilePath(directory.dup);
 	output_fp.append("out");
-	auto proc_raw_arguments = compiler ~ " " ~ compiler_options ~ " -of" ~ output_fp.cString[0..$-1] ~ " " ~ dummy_file_fp.cString[0..$-1];
+	auto proc_raw_arguments = compiler ~ " " ~ compiler_options ~ " " ~ 
+	                          additional_options ~ " -of" ~ output_fp.cString[0..$-1] ~ " " ~ 
+	                          dummy_file_fp.cString[0..$-1];
 	auto compiler_proc = new Process(true, proc_raw_arguments);
 	compiler_proc.setRedirect(Redirect.All | Redirect.ErrorToOutput);
 	auto proc_arguments = compiler_proc.args[1..$].dup;
@@ -95,6 +140,8 @@ void main(const(char)[][] args)
 	size_t skipped = 0;
 	size_t total = 0;
 	size_t pass = 0;
+	size_t fail = 0;
+	size_t timeout = 0;
 	size_t compile_error = 0;
 	
 	foreach(file; arguments(null).assigned)
@@ -163,14 +210,20 @@ void main(const(char)[][] args)
 		{
 			Stdout("TIMEDOUT").nl;
 			Stdout(result.toString).nl;
+			timeout++;
 		}
 		else
 		{
 			Stdout("FAIL").nl;
 			Stdout(result.toString).nl;
+			fail++;
 		}
 	}
 	
 	Stdout.nl;
-	Stdout.formatln("Testing complete. {} out of {} passed.\n{} failed to compile. {} skipped.", pass, total, compile_error, skipped);
+	Stdout.formatln("{} tested. {} skipped.", total, skipped);
+	Stdout.formatln("PASS: {}", pass);
+	Stdout.formatln("FAIL: {}", fail);
+	Stdout.formatln("TIMEDOUT: {}", timeout);
+	Stdout.formatln("COMPILEERROR: {}", compile_error);
 }
