@@ -654,43 +654,20 @@ struct Variant
      * expression.  One side of the operator must be a concrete type in order
      * for the Variant to know what code to generate.
      */
-    auto opAdd(T)(T rhs)     { return get!(T) + rhs; }
-    auto opAdd_r(T)(T lhs)   { return lhs + get!(T); } /// ditto
-    auto opSub(T)(T rhs)     { return get!(T) - rhs; } /// ditto
-    auto opSub_r(T)(T lhs)   { return lhs - get!(T); } /// ditto
-    auto opMul(T)(T rhs)     { return get!(T) * rhs; } /// ditto
-    auto opMul_r(T)(T lhs)   { return lhs * get!(T); } /// ditto
-    auto opDiv(T)(T rhs)     { return get!(T) / rhs; } /// ditto
-    auto opDiv_r(T)(T lhs)   { return lhs / get!(T); } /// ditto
-    auto opMod(T)(T rhs)     { return get!(T) % rhs; } /// ditto
-    auto opMod_r(T)(T lhs)   { return lhs % get!(T); } /// ditto
-    auto opAnd(T)(T rhs)     { return get!(T) & rhs; } /// ditto
-    auto opAnd_r(T)(T lhs)   { return lhs & get!(T); } /// ditto
-    auto opOr(T)(T rhs)      { return get!(T) | rhs; } /// ditto
-    auto opOr_r(T)(T lhs)    { return lhs | get!(T); } /// ditto
-    auto opXor(T)(T rhs)     { return get!(T) ^ rhs; } /// ditto
-    auto opXor_r(T)(T lhs)   { return lhs ^ get!(T); } /// ditto
-    auto opShl(T)(T rhs)    { return get!(T) << rhs; } /// ditto
-    auto opShl_r(T)(T lhs)  { return lhs << get!(T); } /// ditto
-    auto opShr(T)(T rhs)    { return get!(T) >> rhs; } /// ditto
-    auto opShr_r(T)(T lhs)  { return lhs >> get!(T); } /// ditto
-    auto opUShr(T)(T rhs)  { return get!(T) >>> rhs; } /// ditto
-    auto opUShr_r(T)(T lhs){ return lhs >>> get!(T); } /// ditto
-    auto opCat(T)(T rhs)     { return get!(T) ~ rhs; } /// ditto
-    auto opCat_r(T)(T lhs)   { return lhs ~ get!(T); } /// ditto
-
-    Variant opAddAssign(T)(T value) { return (this = get!(T) + value); } /// ditto
-    Variant opSubAssign(T)(T value) { return (this = get!(T) - value); } /// ditto
-    Variant opMulAssign(T)(T value) { return (this = get!(T) * value); } /// ditto
-    Variant opDivAssign(T)(T value) { return (this = get!(T) / value); } /// ditto
-    Variant opModAssign(T)(T value) { return (this = get!(T) % value); } /// ditto
-    Variant opAndAssign(T)(T value) { return (this = get!(T) & value); } /// ditto
-    Variant opOrAssign(T)(T value)  { return (this = get!(T) | value); } /// ditto
-    Variant opXorAssign(T)(T value) { return (this = get!(T) ^ value); } /// ditto
-    Variant opShlAssign(T)(T value) { return (this = get!(T) << value); } /// ditto
-    Variant opShrAssign(T)(T value) { return (this = get!(T) >> value); } /// ditto
-    Variant opUShrAssign(T)(T value){ return (this = get!(T) >>> value); } /// ditto
-    Variant opCatAssign(T)(T value) { return (this = get!(T) ~ value); } /// ditto
+    auto opBinary(immutable(char)[] op, T)(T rhs)
+    {
+        mixin("return get!(T) " ~ op ~ " rhs;");
+    }
+    
+    auto opBinaryRight(immutable(char)[] op, T)(T lhs)
+    {
+        mixin("return lhs " ~ op ~ " get!(T);");
+    }
+    
+    Variant opOpAssign(immutable(char)[] op, T)(T value)
+    {
+        mixin("return (this = get!(T) " ~ op ~ " value);"); 
+    }
 
     /**
      * The following operators can be used with Variants on both sides.  Note
