@@ -27,7 +27,7 @@ version (Windows)
         private extern (Windows) int WriteFile (int, in char*, int, int*, void*);
         private extern (Windows) bool GetConsoleMode (int, int*);
         private extern (Windows) bool WriteConsoleW (int, in wchar*, int, int*, void*);
-        private extern (Windows) int MultiByteToWideChar (int, int, char*, int, wchar*, int);
+        private extern (Windows) int MultiByteToWideChar (int, int, in char*, int, wchar*, int);
         } 
 else 
 version (Posix)

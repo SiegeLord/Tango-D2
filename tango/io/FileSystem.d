@@ -290,7 +290,7 @@ struct FileSystem
 
                 static long freeSpace(const(char)[] folder, bool superuser = false)
                 {
-                    scope fp = new FilePath(folder);
+                    scope fp = new FilePath(folder.dup);
 
                     const bool wantTrailingBackslash = true;
                     TCHAR[volumePathBufferLen] volPathBuf;
@@ -337,7 +337,7 @@ struct FileSystem
                         alias CreateFileW CreateFile;
                     }
 
-                    scope fp = new FilePath(folder);
+                    scope fp = new FilePath(folder.dup);
 
                     bool wantTrailingBackslash = (false == superuser);
                     TCHAR[volumePathBufferLen] volPathBuf;
@@ -364,7 +364,7 @@ struct FileSystem
                                 h, IOCTL_DISK_GET_LENGTH_INFO, null , 0,
                                 cast(void*)&lenInfo, lenInfo.sizeof, &numBytes, &overlap
                             )) {
-                            exception ("IOCTL_DISK_GET_LENGTH_INFO failed:" ~ SysError.lastMsg);
+                            exception ("IOCTL_DISK_GET_LENGTH_INFO failed:" ~ SysError.lastMsg.idup);
                         }
 
                         return cast(ulong)lenInfo.Length.QuadPart;

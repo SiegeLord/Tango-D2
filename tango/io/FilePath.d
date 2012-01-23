@@ -1234,10 +1234,10 @@ debug (UnitTest)
         {
                 version(Win32)
                 {
-                assert (FilePath("/foo").append("bar").pop == "/foo");
-                assert (FilePath("/foo/").append("bar").pop == "/foo");
+                assert (FilePath("/foo".dup).append("bar").pop == "/foo");
+                assert (FilePath("/foo/".dup).append("bar").pop == "/foo");
 
-                auto fp = new FilePath(r"C:/home/foo/bar");
+                auto fp = new FilePath(r"C:/home/foo/bar".dup);
                 fp ~= "john";
                 assert (fp == r"C:/home/foo/bar/john");
                 fp.set (r"C:/");
@@ -1250,7 +1250,7 @@ debug (UnitTest)
                 fp ~= "john";
                 assert (fp == r"john");
 
-                fp.set(r"C:/home/foo/bar/john/foo.d");
+                fp.set(r"C:/home/foo/bar/john/foo.d".dup);
                 assert (fp.pop == r"C:/home/foo/bar/john");
                 assert (fp.pop == r"C:/home/foo/bar");
                 assert (fp.pop == r"C:/home/foo");
@@ -1259,11 +1259,11 @@ debug (UnitTest)
                 assert (fp.pop == r"C:");
 
                 // special case for popping empty names
-                fp.set (r"C:/home/foo/bar/john/");
+                fp.set (r"C:/home/foo/bar/john/".dup);
                 assert (fp.parent == r"C:/home/foo/bar");
 
                 fp = new FilePath;
-                fp.set (r"C:/home/foo/bar/john/");
+                fp.set (r"C:/home/foo/bar/john/".dup);
                 assert (fp.isAbsolute);
                 assert (fp.name == "");
                 assert (fp.folder == r"/home/foo/bar/john/");
@@ -1275,7 +1275,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"C:/home/foo/bar/john");
+                fp = new FilePath(r"C:/home/foo/bar/john".dup);
                 assert (fp.isAbsolute);
                 assert (fp.name == "john");
                 assert (fp.folder == r"/home/foo/bar/");
@@ -1319,7 +1319,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"foo/bar/john.doe");
+                fp = new FilePath(r"foo/bar/john.doe".dup);
                 assert (!fp.isAbsolute);
                 assert (fp.name == "john");
                 assert (fp.folder == r"foo/bar/");
@@ -1329,7 +1329,7 @@ debug (UnitTest)
                 assert (fp.ext == "doe");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"c:doe");
+                fp = new FilePath(r"c:doe".dup);
                 assert (fp.isAbsolute);
                 assert (fp.suffix == r"");
                 assert (fp == r"c:doe");
@@ -1339,7 +1339,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (!fp.isChild);
 
-                fp = new FilePath(r"/doe");
+                fp = new FilePath(r"/doe".dup);
                 assert (fp.isAbsolute);
                 assert (fp.suffix == r"");
                 assert (fp == r"/doe");
@@ -1349,7 +1349,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"john.doe.foo");
+                fp = new FilePath(r"john.doe.foo".dup);
                 assert (!fp.isAbsolute);
                 assert (fp.name == "john.doe");
                 assert (fp.folder == r"");
@@ -1359,7 +1359,7 @@ debug (UnitTest)
                 assert (fp.ext == "foo");
                 assert (!fp.isChild);
 
-                fp = new FilePath(r".doe");
+                fp = new FilePath(r".doe".dup);
                 assert (!fp.isAbsolute);
                 assert (fp.suffix == r"");
                 assert (fp == r".doe");
@@ -1369,7 +1369,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (!fp.isChild);
 
-                fp = new FilePath(r"doe");
+                fp = new FilePath(r"doe".dup);
                 assert (!fp.isAbsolute);
                 assert (fp.suffix == r"");
                 assert (fp == r"doe");
@@ -1379,7 +1379,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (!fp.isChild);
 
-                fp = new FilePath(r".");
+                fp = new FilePath(r".".dup);
                 assert (!fp.isAbsolute);
                 assert (fp.suffix == r"");
                 assert (fp == r".");
@@ -1389,7 +1389,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (!fp.isChild);
 
-                fp = new FilePath(r"..");
+                fp = new FilePath(r"..".dup);
                 assert (!fp.isAbsolute);
                 assert (fp.suffix == r"");
                 assert (fp == r"..");
@@ -1399,7 +1399,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (!fp.isChild);
 
-                fp = new FilePath(r"c:/a/b/c/d/e/foo.bar");
+                fp = new FilePath(r"c:/a/b/c/d/e/foo.bar".dup);
                 assert (fp.isAbsolute);
                 fp.folder (r"/a/b/c/");
                 assert (fp.suffix == r".bar");
@@ -1410,7 +1410,7 @@ debug (UnitTest)
                 assert (fp.ext == "bar");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"c:/a/b/c/d/e/foo.bar");
+                fp = new FilePath(r"c:/a/b/c/d/e/foo.bar".dup);
                 assert (fp.isAbsolute);
                 fp.folder (r"/a/b/c/d/e/f/g/");
                 assert (fp.suffix == r".bar");
@@ -1421,12 +1421,12 @@ debug (UnitTest)
                 assert (fp.ext == "bar");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"C:/foo/bar/test.bar");
+                fp = new FilePath(r"C:/foo/bar/test.bar".dup);
                 assert (fp.path == "C:/foo/bar/");
-                fp = new FilePath(r"C:\foo\bar\test.bar");
+                fp = new FilePath(r"C:\foo\bar\test.bar".dup);
                 assert (fp.path == r"C:/foo/bar/");
 
-                fp = new FilePath("");
+                fp = new FilePath("".dup);
                 assert (fp.isEmpty);
                 assert (!fp.isChild);
                 assert (!fp.isAbsolute);

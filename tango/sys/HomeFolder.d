@@ -271,7 +271,7 @@ version (Windows)
 
     inout(char)[] expandTilde(inout(char)[] inputPath)
     {
-        inputPath = Path.standard(inputPath.dup);
+        inputPath = cast(inout(char)[])Path.standard(inputPath.dup);
 
         if (inputPath.length < 1 || inputPath[0] != '~') {
             return cast(inout)inputPath;
@@ -290,7 +290,7 @@ version (Windows)
         auto offset = TextUtil.locate(path, '/');
 
         if (offset == path.length) {
-            return userProfileDir;
+            return cast(inout(char)[])userProfileDir;
         }
 
         return cast(inout)Path.join(userProfileDir, path[offset+1..$]);

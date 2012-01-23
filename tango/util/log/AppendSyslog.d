@@ -176,7 +176,7 @@ public class AppendSyslog: Filer
     {
         size_t free, used;       
 
-        size_t oldest = 1;
+        long oldest = 1;
         char[512] buf;
         
         buf[0 .. this.path.length] = this.path;
@@ -202,7 +202,7 @@ public class AppendSyslog: Filer
             }
         }
                 
-        for ( size_t i = oldest; i > 0; --i )
+        for ( long i = oldest; i > 0; --i )
         {
             const(char)[] compress = i >= this.compress_index ? 
                                      this.compress_suffix : "";

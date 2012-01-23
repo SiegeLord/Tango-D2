@@ -86,15 +86,22 @@ void main(const(char)[][] args)
 	
 	if(compiler_options == "")
 	{
-		switch(compiler)
+		version(Windows)
 		{
-			default: goto case;
-			case "dmd":
-				compiler_options = "-unittest -L-ltango -debug=UnitTest";
-				break;
-			case "ldc2":
-				compiler_options = "-unittest -L-ltango -d-debug=UnitTest";
-				break;
+			compiler_options = "-unittest tango.lib -debug=UnitTest";
+		}
+		else
+		{
+			switch(compiler)
+			{
+				default: goto case;
+				case "dmd":
+					compiler_options = "-unittest -L-ltango -debug=UnitTest";
+					break;
+				case "ldc2":
+					compiler_options = "-unittest -L-ltango -d-debug=UnitTest";
+					break;
+			}
 		}
 	}
 	
@@ -110,9 +117,10 @@ void main(const(char)[][] args)
 		throw new Exception("'" ~ directory.idup ~ "' already exists and is a file!");
 	}
 	dummy_file_fp.append("dummy.d");
+	dummy_file_fp.native;
 	
 	{
-		auto dummy_file = new File(dummy_file_fp.cString, File.WriteCreate);
+		auto dummy_file = new File(dummy_file_fp.cString[0..$-1], File.WriteCreate);
 		scope(exit) dummy_file.close;
 		dummy_file.write(DummyFileContent);
 	}
@@ -122,6 +130,7 @@ void main(const(char)[][] args)
 	 */
 	auto output_fp = new FilePath(directory.dup);
 	output_fp.append("out");
+	output_fp.native;
 	auto proc_raw_arguments = compiler ~ " " ~ compiler_options ~ " " ~ 
 	                          additional_options ~ " -of" ~ output_fp.cString[0..$-1] ~ " " ~ 
 	                          dummy_file_fp.cString[0..$-1];
@@ -163,7 +172,9 @@ void main(const(char)[][] args)
 		
 		Stdout.formatln("Compiling '{}'", file);
 		
-		auto new_args = proc_arguments ~ file;
+		auto file_fp = new FilePath(file.dup);
+		file_fp.native;
+		auto new_args = proc_arguments ~ file_fp.cString[0..$-1];
 		compiler_proc.setArgs(compiler, new_args).execute;
 		Stdout.copy(compiler_proc.stdout).flush;
 		auto result = compiler_proc.wait;

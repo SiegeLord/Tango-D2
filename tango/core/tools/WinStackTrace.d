@@ -11,7 +11,7 @@ module tango.core.tools.WinStackTrace;
 
 version(Windows) {
 
-import tango.core.thread;
+import tango.core.Thread;
 
 
 version(D_Version2)
@@ -262,7 +262,7 @@ package struct FrameInfo{
 
 private extern(C) {
     void        _Dmain();
-    void        D5tango4core6Thread5Fiber3runMFZv();
+    void        D4core6thread5Fiber3runMFZv();
 }
 private {
     size_t  fiberRunFuncLength = 0;
@@ -406,8 +406,8 @@ void walkStack(LPCONTEXT ContextRecord, HANDLE hProcess, HANDLE hThread, void de
                     if  (
                             callAddr == cast(uint)&_Dmain
                             || true == (inFiber = (
-                                callAddr >= cast(uint)&D5tango4core6Thread5Fiber3runMFZv
-                                && callAddr < cast(uint)&D5tango4core6Thread5Fiber3runMFZv + fiberRunFuncLength
+                                callAddr >= cast(uint)&D4core6thread5Fiber3runMFZv
+                                && callAddr < cast(uint)&D4core6thread5Fiber3runMFZv + fiberRunFuncLength
                             ))
                         )
                     {
@@ -730,8 +730,8 @@ alias WCHAR* PWCHAR, LPWCH, PWCH, LPWSTR, PWSTR;
 alias CHAR* PCHAR, LPCH, PCH, LPSTR, PSTR;
 
 // const versions
-alias WCHAR* LPCWCH, PCWCH, LPCWSTR, PCWSTR;
-alias CHAR* LPCCH, PCSTR, LPCSTR;
+alias const(WCHAR)* LPCWCH, PCWCH, LPCWSTR, PCWSTR;
+alias const(CHAR)* LPCCH, PCSTR, LPCSTR;
 
 version(Unicode) {
     alias WCHAR TCHAR, _TCHAR;
@@ -852,8 +852,8 @@ extern (Windows) {
     alias DWORD64 function(
         HANDLE hProcess,
         HANDLE hFile,
-        LPSTR ImageName,
-        LPSTR ModuleName,
+        LPCSTR ImageName,
+        LPCSTR ModuleName,
         DWORD64 BaseOfDll,
         DWORD SizeOfDll
     ) fp_SymLoadModule64;
@@ -1957,8 +1957,8 @@ extern (C) {
         minfo.addDebugInfo(addr, file, func, line);
     }
     
-    char* ModuleDebugInfo_bufferString(ModuleDebugInfo minfo, const(char)[] str) {
-        const(char)[] res;
+    char* ModuleDebugInfo_bufferString(ModuleDebugInfo minfo, char[] str) {
+        char[] res;
         res.alloc(str.length+1, false);
         res[0..$-1] = str[];
         res[str.length] = 0;
@@ -1979,7 +1979,7 @@ static this() {
     loadWinAPIFunctions();
 
     for (fiberRunFuncLength = 0; fiberRunFuncLength < 0x100; ++fiberRunFuncLength) {
-        ubyte* ptr = cast(ubyte*)&D5tango4core6Thread5Fiber3runMFZv + fiberRunFuncLength;
+        ubyte* ptr = cast(ubyte*)&D4core6thread5Fiber3runMFZv + fiberRunFuncLength;
         enum {
             RetOpcode = 0xc3
         }
@@ -1989,11 +1989,11 @@ static this() {
     }
     
     version (StacktraceSpam) printf ("found Thread.Fiber.run at %p with length %x",
-            &D5tango4core6Thread5Fiber3runMFZv, fiberRunFuncLength);
+            &D4core6thread5Fiber3runMFZv, fiberRunFuncLength);
 
     char modNameBuf[512] = 0;
     int modNameLen = GetModuleFileNameExA(GetCurrentProcess(), null, modNameBuf.ptr, modNameBuf.length-1);
-    const(char)[] modName = modNameBuf[0..modNameLen];
+    char[] modName = modNameBuf[0..modNameLen];
     SymSetOptions(SYMOPT_DEFERRED_LOADS/+ | SYMOPT_UNDNAME+/);
     SymInitialize(GetCurrentProcess(), null, false);
     DWORD64 base;

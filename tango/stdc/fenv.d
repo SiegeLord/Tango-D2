@@ -118,7 +118,11 @@ enum
 version( Win32 )
 {
     private extern fenv_t _FE_DFL_ENV;
-    fenv_t* FE_DFL_ENV = &_FE_DFL_ENV;
+    fenv_t* FE_DFL_ENV;
+    static this()
+    {
+        FE_DFL_ENV = &_FE_DFL_ENV;
+    }
 }
 else version( linux )
 {
@@ -127,17 +131,29 @@ else version( linux )
 else version( darwin )
 {
     private extern fenv_t _FE_DFL_ENV;
-    fenv_t* FE_DFL_ENV = &_FE_DFL_ENV;
+    fenv_t* FE_DFL_ENV;
+    static this()
+    {
+        FE_DFL_ENV = &_FE_DFL_ENV;
+    }
 }
 else version( freebsd )
 {
     private extern fenv_t __fe_dfl_env;
-    fenv_t* FE_DFL_ENV = &__fe_dfl_env;
+    fenv_t* FE_DFL_ENV;
+    static this()
+    {
+        FE_DFL_ENV = &__fe_dfl_env;
+    }
 }
 else version( solaris )
 {
-	private extern fenv_t __fenv_dfl_env;
-	fenv_t* FE_DFL_ENV = &__fenv_dfl_env;
+    private extern fenv_t __fenv_dfl_env;
+    fenv_t* FE_DFL_ENV;
+    static this()
+    {
+        FE_DFL_ENV = &__fe_dfl_env;
+    }
 }
 else
 {
