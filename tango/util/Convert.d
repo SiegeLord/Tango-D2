@@ -141,25 +141,21 @@ version( TangoDoc )
 }
 else
 {
-    template to(D)
+    D to(D, S)(S value)
     {
-        D to(S, Def=Missing)(S value, Def def=Def.init)
+        return toImpl!(D,S)(value);
+    }
+    
+    D to(D, S, Def)(S value, Def def=Def.init)
+    {
+        try
         {
-            static if( is( Def == Missing ) )
-                return toImpl!(D,S)(value);
-
-            else
-            {
-                try
-                {
-                    return toImpl!(D,S)(value);
-                }
-                catch( ConversionException e )
-                    {}
-
-                return def;
-            }
+            return toImpl!(D,S)(value);
         }
+        catch( ConversionException e )
+            {}
+
+        return def;
     }
 }
 
@@ -178,8 +174,6 @@ class ConversionException : Exception
 }
 
 private:
-
-alias int Missing;
 
 /*
  * So, how is this module structured?
