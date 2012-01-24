@@ -349,7 +349,7 @@ class FileGroup : VfsFiles
                 foreach (file; group)
                         {
                         VfsFile x = host;
-                        host.path = Path.PathParser!(const(char))(file);
+                        host.path = Path.parse(file);
                         if ((result = dg(x)) != 0)
                              break;
                         }
