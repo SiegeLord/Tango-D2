@@ -150,45 +150,45 @@ BOOL ExitWindows(DWORD dwReserved, UINT uReserved)
 {
 	return ExitWindowsEx(EWX_LOGOFF, 0);
 }
-HWND CreateWindowA(PCHAR b, PCHAR c, DWORD d, int e,
+HWND CreateWindowA(LPCSTR b, LPCSTR c, DWORD d, int e,
 	int f, int g, int h, HWND i, HMENU j, HINST k, POINTER l)
 {
 	return CreateWindowExA(0, b, c, d, e, f, g, h, i, j, k, l);
 }
-HWND CreateWindowW(PWIDECHAR b, PWIDECHAR c, DWORD d, int e,
+HWND CreateWindowW(LPCWSTR b, LPCWSTR c, DWORD d, int e,
 	int f, int g, int h, HWND i, HMENU j, HINST k, POINTER l)
 {
 	return CreateWindowExW(0, b, c, d, e, f, g, h, i, j, k, l);
 }
-HWND CreateDialogA(HINST a, PANSICHAR b, HWND c, DLGPROC d)
+HWND CreateDialogA(HINST a, LPCSTR b, HWND c, DLGPROC d)
 {
 	return CreateDialogParamA(a, b, c, d, 0);
 }
-HWND CreateDialogW(HINST a, PWIDECHAR b, HWND c, DLGPROC d)
+HWND CreateDialogW(HINST a, LPCWSTR b, HWND c, DLGPROC d)
 {
 	return CreateDialogParamW(a, b, c, d, 0);
 }
-HWND CreateDialogIndirectA(HINST a, DLGTEMPLATE* b, HWND c, DLGPROC d)
+HWND CreateDialogIndirectA(HINST a, LPCDLGTEMPLATE b, HWND c, DLGPROC d)
 {
 	return CreateDialogIndirectParamA(a, b, c, d, 0);
 }
-HWND CreateDialogIndirectW(HINST a, DLGTEMPLATE* b, HWND c, DLGPROC d)
+HWND CreateDialogIndirectW(HINST a, LPCDLGTEMPLATE b, HWND c, DLGPROC d)
 {
 	return CreateDialogIndirectParamW(a, b, c, d, 0);
 }
-int DialogBoxA(HINST a, PANSICHAR b, HWND c, DLGPROC d)
+int DialogBoxA(HINST a, LPCSTR b, HWND c, DLGPROC d)
 {
 	return DialogBoxParamA(a, b, c, d, 0);
 }
-int DialogBoxW(HINST a, PWIDECHAR b, HWND c, DLGPROC d)
+int DialogBoxW(HINST a, LPCWSTR b, HWND c, DLGPROC d)
 {
 	return DialogBoxParamW(a, b, c, d, 0);
 }
-int DialogBoxIndirectA(HINST a, DLGTEMPLATE* b, HWND c, DLGPROC d)
+int DialogBoxIndirectA(HINST a, LPCDLGTEMPLATE b, HWND c, DLGPROC d)
 {
 	return DialogBoxIndirectParamA(a, b, c, d, 0);
 }
-int DialogBoxIndirectW(HINST a, DLGTEMPLATE* b, HWND c, DLGPROC d)
+int DialogBoxIndirectW(HINST a, LPCDLGTEMPLATE b, HWND c, DLGPROC d)
 {
 	return DialogBoxIndirectParamW(a, b, c, d, 0);
 }
@@ -200,11 +200,11 @@ void FillMemory(void* dest, uint len, ubyte c)
 {
 	memset(dest, c, len);
 }
-void MoveMemory(void* dest, void* src, uint len)
+void MoveMemory(void* dest, const(void)* src, uint len)
 {
 	memmove(dest, src, len);
 }
-void CopyMemory(void* dest, void* src, uint len)
+void CopyMemory(void* dest, const(void)* src, uint len)
 {
 	memcpy(dest, src, len);
 }
