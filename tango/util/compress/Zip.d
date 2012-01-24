@@ -29,7 +29,7 @@ TODO
 import tango.core.ByteSwap : ByteSwap;
 import tango.io.device.Array : Array;
 import tango.io.device.File : File;
-import tango.io.FilePath : FilePath, PathView;
+import Path = tango.io.Path;
 import tango.io.device.FileMap : FileMap;
 import tango.io.stream.Zlib : ZlibInput, ZlibOutput;
 import tango.util.digest.Crc32 : Crc32;
@@ -581,7 +581,7 @@ class ZipBlockReader : ZipReader
      * Creates a ZipBlockReader using the specified file on the local
      * filesystem.
      */
-    this(char[] path)
+    this(const(char)[] path)
     {
         file_source = new File(path);
         this(file_source);
@@ -1710,18 +1710,16 @@ private:
 //
 // Convenience methods
 
-void createArchive(char[] archive, Method method, char[][] files...)
+void createArchive(const(char)[] archive, Method method, const(char)[][] files...)
 {
     scope zw = new ZipBlockWriter(archive);
     zw.method = method;
 
     foreach( file ; files )
     {
-        scope fp = new FilePath(file);
-        
         ZipEntryInfo zi;
         zi.name = file;
-        zi.modified = fp.modified;
+        zi.modified = Path.modified(file);
 
         zw.putFile(zi, file);
     }
@@ -1729,7 +1727,7 @@ void createArchive(char[] archive, Method method, char[][] files...)
     zw.finish;
 }
 
-void extractArchive(char[] archive, char[] dest)
+void extractArchive(const(char)[] archive, const(char)[] dest)
 {
     scope zr = new ZipBlockReader(archive);
 
