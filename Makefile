@@ -185,6 +185,11 @@ install-header:
 	$(CP) $(IMPORT_PATH)$(PATH_SEP)$(PROJECT_NAME) $(DESTDIR)$(INCLUDE_DIR)
 	@echo ------------------ Installing header done
 
+install-modules:
+	$(MKDIR) $(INCLUDE_DIR)
+	$(CP) tango $(DESTDIR)$(INCLUDE_DIR)
+	@echo ------------------ Installing header done
+
 install-doc:
 	$(MKDIR) $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)normal_doc$(PATH_SEP)
 	$(CP) $(DOC_PATH)$(PATH_SEP)* $(DESTDIR)$(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)normal_doc$(PATH_SEP)
