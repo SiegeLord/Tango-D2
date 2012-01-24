@@ -23,7 +23,9 @@ define make-lib
 endef
 
 ############# BUILD #############
-all: static-lib header doc pkgfile
+all: static-lib header doc pkgfile-static
+	@echo ------------------ Building $^ done
+all-shared: static-shared header doc pkgfile-shared
 	@echo ------------------ Building $^ done
 
 .PHONY : pkgfile
@@ -50,7 +52,7 @@ geany-tag:
 	$(MKDIR) geany_config
 	geany -c geany_config -g $(PROJECT_NAME).d.tags $(SOURCES)
 
-pkgfile:
+pkgfile-shared:
 	@echo ------------------ Building pkg-config file
 	@echo "# Package Information for pkg-config"                        >  $(PKG_CONFIG_FILE)
 	@echo "# Author: $(AUTHOR)"                                         >> $(PKG_CONFIG_FILE)
@@ -60,14 +62,33 @@ pkgfile:
 	@echo prefix=$(PREFIX)                                              >> $(PKG_CONFIG_FILE)
 	@echo exec_prefix=$(PREFIX)                                         >> $(PKG_CONFIG_FILE)
 	@echo libdir=$(LIB_DIR)                                             >> $(PKG_CONFIG_FILE)
-	@echo includedir=$(INCLUDE_DIR)$(PATH_SEP)$(PROJECT_NAME)           >> $(PKG_CONFIG_FILE)
+	@echo includedir=$(INCLUDE_DIR)sqlite                               >> $(PKG_CONFIG_FILE)
 	@echo                                                               >> $(PKG_CONFIG_FILE)
 	@echo Name: "$(PROJECT_NAME)"                                       >> $(PKG_CONFIG_FILE)
 	@echo Description: "$(DESCRIPTION)"                                 >> $(PKG_CONFIG_FILE)
 	@echo Version: "$(VERSION)"                                         >> $(PKG_CONFIG_FILE)
-	@echo Libs: -L$(LIB_DIR) $(LINKERFLAG)-l$(PROJECT_NAME)-$(COMPILER) >> $(PKG_CONFIG_FILE)
-	@echo Cflags: -I$(INCLUDE_DIR)$(PATH_SEP)$(PROJECT_NAME)            >> $(PKG_CONFIG_FILE)
+	@echo Libs: $(LINKERFLAG)-l$(PROJECT_NAME)-$(COMPILER)              >> $(PKG_CONFIG_FILE)
+	@echo Cflags: -I$(INCLUDE_DIR)sqlite $(LDCFLAGS)                    >> $(PKG_CONFIG_FILE)
 	@echo                                                               >> $(PKG_CONFIG_FILE)
+
+pkgfile-static:
+	@echo ------------------ Building pkg-config file
+	@echo "# Package Information for pkg-config"                        >  $(PKG_CONFIG_FILE)
+	@echo "# Author: $(AUTHOR)"                                         >> $(PKG_CONFIG_FILE)
+	@echo "# Created: `date`"                                           >> $(PKG_CONFIG_FILE)
+	@echo "# Licence: $(LICENSE)"                                       >> $(PKG_CONFIG_FILE)
+	@echo                                                               >> $(PKG_CONFIG_FILE)
+	@echo prefix=$(PREFIX)                                              >> $(PKG_CONFIG_FILE)
+	@echo exec_prefix=$(PREFIX)                                         >> $(PKG_CONFIG_FILE)
+	@echo libdir=$(LIB_DIR)                                             >> $(PKG_CONFIG_FILE)
+	@echo includedir=$(INCLUDE_DIR)sqlite                               >> $(PKG_CONFIG_FILE)
+	@echo                                                               >> $(PKG_CONFIG_FILE)
+	@echo Name: "$(PROJECT_NAME)"                                       >> $(PKG_CONFIG_FILE)
+	@echo Description: "$(DESCRIPTION)"                                 >> $(PKG_CONFIG_FILE)
+	@echo Version: "$(VERSION)"                                         >> $(PKG_CONFIG_FILE)
+	@echo Libs: $(LIB_DIR)$(PATH_SEP)$(LIBNAME)                         >> $(PKG_CONFIG_FILE)
+	@echo Cflags: -I$(INCLUDE_DIR)sqlite $(LDCFLAGS)                    >> $(PKG_CONFIG_FILE)
+	@echo
 
 ############# MKDIR #############
 $(BUILD_PATH):
