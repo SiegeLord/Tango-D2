@@ -1,12 +1,11 @@
 import tango.core.Thread;
 
-extern (C) int printf(char * str, ...);
+extern (C) int printf(const(char)* str, ...);
 
 void main()
 {
 	printf("Compile with -unittest");
 }
-
 
 unittest
 {
@@ -804,6 +803,9 @@ unittest
     printf("Thread safety passed!\n");
 }
 
+version(TangoRuntime)
+{
+
 unittest{
     printf("Testing fiber reset!\n");
     int ncalls=1;
@@ -855,5 +857,7 @@ unittest{
     
     
     printf("Fiber reset passed!\n");
+}
+
 }
 

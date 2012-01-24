@@ -4,12 +4,12 @@ import tango.core.Thread;
 import tango.core.sync.Mutex;
 import tango.core.Memory:GC;
 import tango.stdc.stringz;
-//import tango.stdc.stdio;
-import tango.core.stacktrace.TraceExceptions;
+import tango.stdc.stdio;
+import tango.core.tools.TraceExceptions;
 
-Mutex tttt;
+__gshared Mutex tttt;
 
-void printESP(char[] name){
+void printESP(const(char)[] name){
 	size_t esp;
 	esp=cast(size_t)&esp;
     synchronized(tttt){ // here one can also use synchronized(tttt)
@@ -71,7 +71,7 @@ class Tr{
         }
 		printESP("workers "~Thread.getThis().name~"end");
     }
-    void workers2(char[] fName){
+    void workers2(const(char)[] fName){
 		printESP(fName~Thread.getThis().name);
         try{
             synchronized(m){
