@@ -44,7 +44,7 @@ void main(char[][] args)
            server.start;   
 
            // wait for server to start
-           Thread.sleep (0.1);
+           Thread.sleep (10_000_000);
 
            // make a connection request to the server
            auto send = new Socket;

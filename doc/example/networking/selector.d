@@ -34,12 +34,12 @@ private
 }
 
 
-const uint      HANDLE_COUNT    = 4;
-const uint      EVENT_COUNT     = 4;
-const uint      LOOP_COUNT      = 50000;
-const char[]    SERVER_ADDR     = "127.0.0.1";
-const ushort    SERVER_PORT     = 4000;
-const uint      MAX_LENGTH      = 16;
+enum uint                 HANDLE_COUNT    = 4;
+enum uint                 EVENT_COUNT     = 4;
+enum uint                 LOOP_COUNT      = 50000;
+enum immutable(char)[]    SERVER_ADDR     = "127.0.0.1";
+enum ushort               SERVER_PORT     = 4000;
+enum uint                 MAX_LENGTH      = 16;
 
 int main(char[][] args)
 {
@@ -113,7 +113,7 @@ void testSelector(ISelector selector)
         Socket       clientSocket;
         char[MAX_LENGTH]    buffer;
         int                 eventCount;
-        uint                count;
+        size_t              count;
         int                 i = 0;
 
         debug (selector)
@@ -224,7 +224,7 @@ void testSelector(ISelector selector)
 
                     if (selectionKey.isError || selectionKey.isHangup || selectionKey.isInvalidHandle)
                     {
-                        char[] status;
+                        const(char)[] status;
 
                         if (selectionKey.isHangup)
                         {
@@ -319,13 +319,13 @@ void clientThreadFunc()
     Logger log = Log.getLogger("selector.client");
     Socket socket  = new Socket;
 
-    Thread.sleep(0.010);      // 10 milliseconds
+    Thread.sleep(100_000);      // 10 milliseconds
 
     try
     {
         InternetAddress     addr = new InternetAddress(SERVER_ADDR, SERVER_PORT);
         char[MAX_LENGTH]    buffer;
-        uint count;
+        size_t count;
         int i;
 
         debug (selector)
