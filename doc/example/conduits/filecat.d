@@ -22,5 +22,5 @@ void main(char[][] args)
            dst.close;
            }
         else
-           Cout ("usage: filecat target source1 ... sourceN");
+           Cout ("usage: filecat target source1 ... sourceN").newline;
 }
