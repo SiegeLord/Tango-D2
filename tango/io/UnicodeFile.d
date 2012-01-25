@@ -101,7 +101,7 @@ public  import tango.text.convert.UnicodeBom;
 class UnicodeFile(T)
 {
         private UnicodeBom!(T)  bom_;
-        private char[]          path_;
+        private const(char)[]   path_;
 
         /***********************************************************************
 
@@ -111,7 +111,7 @@ class UnicodeFile(T)
 
         ***********************************************************************/
 
-        this (char[] path, Encoding encoding)
+        this (const(char)[] path, Encoding encoding)
         {
                 bom_ = new UnicodeBom!(T)(encoding);
                 path_ = path;
@@ -125,7 +125,7 @@ class UnicodeFile(T)
 
         ***********************************************************************/
 
-        static UnicodeFile opCall (char[] name, Encoding encoding)
+        static UnicodeFile opCall (const(char)[] name, Encoding encoding)
         {
                 return new UnicodeFile (name, encoding);
         }
@@ -136,9 +136,9 @@ class UnicodeFile(T)
 
         ***********************************************************************/
 
-        char[] toString ()
+        immutable(char)[] toString ()
         {
-                return path_;
+                return path_.idup;
         }
 
         /***********************************************************************
@@ -191,10 +191,10 @@ class UnicodeFile(T)
 
         ***********************************************************************/
 
-        final void write (T[] content, bool writeBom)
+        final void write (const(T)[] content, bool writeBom)
         {
                 // convert to external representation (may throw an exeption)
-                void[] converted = bom_.encode (content);
+                void[] converted = bom_.encode (content.dup);
 
                 // open file after conversion ~ in case of exceptions
                 scope conduit = new File (path_, File.ReadWriteCreate);
@@ -218,10 +218,10 @@ class UnicodeFile(T)
 
         ***********************************************************************/
 
-        final void append (T[] content)
+        final void append (const(T)[] content)
         {
                 // convert to external representation (may throw an exception)
-                File.append (path_, bom_.encode (content));
+                File.append (path_, bom_.encode (content.dup));
         }
 }
 
