@@ -105,7 +105,7 @@ char[] getSpecialPath( int csidl )
         scope(exit) delete spath;
 
         if( !SHGetSpecialFolderPathA( null, spath, csidl, true ) )
-            throw new Exception( "getSpecialPath :: " ~ SysError.lastMsg );
+            throw new Exception( "getSpecialPath :: " ~ SysError.lastMsg.idup );
         char[] dpath = new char[MAX_PATH];
         return CodePage.from(fromStringz(spath), dpath);
     }
@@ -115,7 +115,7 @@ char[] getSpecialPath( int csidl )
         scope(exit) delete spath;
 
         if( !SHGetSpecialFolderPathW( null, spath, csidl, true ) )
-            throw new Exception( "getSpecialPath :: " ~ SysError.lastMsg );
+            throw new Exception( "getSpecialPath :: " ~ SysError.lastMsg.idup );
         return toString(fromString16z(spath));
     }
 }
