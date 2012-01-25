@@ -5,7 +5,7 @@
 *******************************************************************************/
 
 import tango.util.log.Log,
-       tango.util.log.Config;
+       Config = tango.util.log.Config;
 
 /*******************************************************************************
 
@@ -82,7 +82,7 @@ void compute (Logger log, uint max)
 void main()
 {
         // get a logger to represent this module
-        auto log = Log.lookup ("example.logging");
+        auto log = Config.Log.lookup ("example.logging");
         try {
             compute (log, 1000);
             } catch (Exception x)
