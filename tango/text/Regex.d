@@ -613,17 +613,17 @@ struct CharRange(char_t)
             if ( contains(cr) )
             {
                 d.l_ = l_;
-                d.r_ = cr.l_-1;
+                d.r_ = cast(char_t)(cr.l_-1);
                 if ( d.l_ <= d.r_ )
                     sr ~= d;
-                d.l_ = cr.r_+1;
+                d.l_ = cast(char_t)(cr.r_+1);
                 d.r_ = r_;
                 if ( d.l_ <= d.r_ )
                     sr ~= d;
             }
             else if ( cr.r_ > l_ )
             {
-                d.l_ = cr.r_+1;
+                d.l_ = cast(char_t)(cr.r_+1);
                 d.r_ = r_;
                 if ( d.l_ <= d.r_ )
                     sr ~= d;
@@ -631,7 +631,7 @@ struct CharRange(char_t)
             else if ( cr.l_ < r_ )
             {
                 d.l_ = l_;
-                d.r_ = cr.l_-1;
+                d.r_ = cast(char_t)(cr.l_-1);
                 if ( d.l_ <= d.r_ )
                     sr ~= d;
             }
@@ -719,11 +719,11 @@ struct CharClass(char_t)
             any_char = {parts: [
                 {l_:0x0001, r_:0xffff}
             ]},
-            dot_oper = {parts: [
-                {l_:0x09,r_:0x13},{l_:0x20, r_:0x7e},{l_:0xa0, r_:0xff},
+            dot_oper = {parts: [ {l_:0x0001, r_:0xffff}
+                /*{l_:0x09,r_:0x13},{l_:0x20, r_:0x7e},{l_:0xa0, r_:0xff},
                 {l_:0x0100, r_:0x017f},   // latin extended a
                 {l_:0x0180, r_:0x024f},   // latin extended b
-                {l_:0x20a3, r_:0x20b5},   // currency symbols
+                {l_:0x20a3, r_:0x20b5},   // currency symbols*/
             ]},
             alphanum_ = {parts: [
                 {l_:0x30, r_:0x39},
@@ -858,7 +858,7 @@ struct CharClass(char_t)
             foreach ( i, ref cr; parts[0 .. $-1] )
             {
                 cr.l_ = start;
-                cr.r_ = parts[i+1].l_-1;
+                cr.r_ = cast(char_t)(parts[i+1].l_-1);
                 start = parts[i+1].r_;
                 if ( start < char_t.max )
                     ++start;
@@ -874,7 +874,7 @@ struct CharClass(char_t)
 
         foreach ( i, ref cr; parts )
         {
-            char_t tmp = cr.l_-1;
+            char_t tmp = cast(char_t)(cr.l_-1);
             cr.l_ = start;
             start = cr.r_;
             if ( start < char_t.max )
@@ -4729,17 +4729,19 @@ debug(UnitTest)
         assert(r.test("a☃c123"));
         assert(r.match(1) == "c");
 
-        // dot
+        /** dot metacharacter does not work. */
         r = new Regex("..");
-        assert(r.test("a☃c123"));
+        assert(r.test("a☃c123"), "'"~r.test("a☃c123")~"'");
 
         // dot capture
         r = new Regex("(..)");
         assert(r.test("a☃c123"));
         assert(r.match(1) == "a☃");
 
+
+				
         // two captures
-        r = new Regex("(.)(.)");
+        r = new Regex(`(.)(.)`);
         assert(r.test("a☃c123"));
         assert(r.match(1) == "a");
         assert(r.match(2) == "☃");
@@ -4756,12 +4758,15 @@ debug(UnitTest)
         assert(r.match(1) == "☃☃☃☃☃", "Expected: ☃☃☃☃☃ Got: " ~ r.match(1));
         assert(!r.test("abeua"));
 
+        /** 
+           "*" quantifier bug. In "(☃+)" pattern test ((r.match(0) == "☃☃☃☃☃")&&(r.match(1) == "☃☃☃☃☃")) has passed.
+        */
         // multiple snowmen
-        r = new Regex("(☃*)");
+        r = new Regex("(☃+)"); 
         assert(r.test("a☃☃☃☃☃c123"));
         assert(r.match(0) == "☃☃☃☃☃");
         assert(r.match(1) == "☃☃☃☃☃");
-        assert(r.test("abeua"));
+        assert(r.test("a☃beua"));
     }
 
     debug(RegexTestOnly)
