@@ -20,6 +20,13 @@ TypeInfo realType (TypeInfo type)
     {
         return def.base;
     }
+    else if ((type.classinfo.name.length is 14  && type.classinfo.name[9..$] == "Const") ||
+             (type.classinfo.name.length is 18  && type.classinfo.name[9..$] == "Invariant") ||
+             (type.classinfo.name.length is 15  && type.classinfo.name[9..$] == "Shared") ||
+             (type.classinfo.name.length is 14  && type.classinfo.name[9..$] == "Inout"))
+    {
+        return (cast(TypeInfo_Const)type).next;
+    }
     return type;
 }
 
@@ -203,7 +210,7 @@ struct applyInterfaces
     }
 
     ///
-    int opApply (int delegate (ref ClassInfo) dg)
+    int opApply (scope int delegate (ref ClassInfo) dg)
     {
         int result = 0;
         for (; type; type = type.base)
@@ -275,7 +282,8 @@ bool isDynamicArray (TypeInfo type)
     // type.
     // Also, TypeInfo_Array is an array type.
     type = realType (type);
-    return ((type.classinfo.name[9] == 'A') && (type.classinfo.name.length == 11)) || ((cast(TypeInfo_Array) type) !is null);
+    return ((type.classinfo.name[9] == 'A') && (type.classinfo.name.length == 11)) || ((type.classinfo.name.length == 12) && (type.classinfo.name[9..12] == "Aya")) || 
+        ((cast(TypeInfo_Array) type) !is null);
 }
 
 ///
@@ -543,18 +551,19 @@ debug (UnitTest)
         assert (!isCharacter (typeid(ubyte)));
         assert (isArray (typeid(typeof("hello"))));
         assert (isCharacter (typeid(typeof("hello"[0]))));
-        assert (valueType (typeid(typeof("hello"))) is typeid(typeof('h')));
+        assert (valueType (typeid(typeof("hello"))) is typeid(typeof(cast(immutable(char))'h')));
         assert (isString (typeid(typeof("hello"))), typeof("hello").stringof);
-        auto staticString = typeid(typeof("hello"d));
+        immutable(dchar)[5] staticString_s = "hello"d;
+        auto staticString = typeid(typeof(staticString_s));
         auto dynamicString = typeid(typeof("hello"d[0 .. $]));
         assert (isString (staticString));
         assert (isStaticArray (staticString));
         assert (isDynamicArray (dynamicString), dynamicString.toString () ~ dynamicString.classinfo.name);
         assert (isString (dynamicString));
 
-        auto type = typeid(int[char[]]);
+        auto type = typeid(int[immutable(char)[]]);
         assert (valueType (type) is typeid(int), valueType (type).toString ());
-        assert (keyType (type) is typeid(char[]), keyType (type).toString ());
+        assert (keyType (type) is typeid(immutable(char)[]), keyType (type).toString ());
         void delegate (int) dg = (int i)
         {
         };
@@ -564,7 +573,5 @@ debug (UnitTest)
         assert (!isDynamicArray (typeid(int[4])));
         assert (isStaticArray (typeid(int[4])));
     }
-
-
 
 }

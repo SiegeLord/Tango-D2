@@ -77,10 +77,10 @@ class UtfInput(T, S) : InputFilter, InputFilter.Mutator
                            return super.read (dst);
                 else
                    {
-                   uint   consumed,
-                          produced;
+                   size_t   consumed,
+                            produced;
 
-                   size_t reader (void[] src)
+                   size_t reader (const(void)[] src)
                    {
                         if (src.length < S.sizeof)
                             return Eof;
@@ -155,7 +155,7 @@ class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
 
         ***********************************************************************/
 
-        final size_t consume (S[] dst)
+        final size_t consume (const(S)[] dst)
         {
                 auto x = write (dst);
                 if (x != Eof)
@@ -175,7 +175,7 @@ class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
 
         ***********************************************************************/
 
-        final override size_t write (void[] src)
+        final override size_t write (const(void)[] src)
         {
                 static if (is (S == T))
                            return super.write (src);
@@ -231,7 +231,7 @@ debug (Utf)
 
         void main()
         {
-                auto inp = new UtfInput!(dchar, char)(new Array("hello world"));
+                auto inp = new UtfInput!(dchar, char)(new Array("hello world".dup));
                 auto oot = new UtfOutput!(dchar, char)(new Array(20));
                 oot.copy(inp);
                 assert (oot.buffer.slice == "hello world");

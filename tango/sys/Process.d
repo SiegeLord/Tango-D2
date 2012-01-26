@@ -246,6 +246,7 @@ class Process
      *            argument, spaces that are not intended to separate
      *            parameters should be embedded in quotes.  The arguments can
      *            also be empty.
+     *            Note: The class will use only slices, .dup when necessary. 
      *
      * Examples:
      * ---
@@ -272,6 +273,7 @@ class Process
      *            argument, spaces that are not intended to separate
      *            parameters should be embedded in quotes.  The arguments can
      *            also be empty.
+     *            Note: The class will use only slices, .dup when necessary. 
      *
      * Examples:
      * ---
@@ -291,6 +293,7 @@ class Process
      * Params:
      * command  = string with the process' command line; arguments that have
      *            embedded whitespace must be enclosed in inside double-quotes (").
+     *            Note: The class will use only slices, .dup when necessary. 
      * env      = associative array of strings with the process' environment
      *            variables; the variable name must be the key of each entry.
      *
@@ -324,6 +327,7 @@ class Process
      * args     = array of strings with the process' arguments; the first
      *            argument must be the process' name; the arguments can be
      *            empty.
+     *            Note: The class will use only slices, .dup when necessary. 
      * env      = associative array of strings with the process' environment
      *            variables; the variable name must be the key of each entry.
      *

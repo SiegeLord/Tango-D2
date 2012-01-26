@@ -47,7 +47,7 @@
  */
 
 module tango.math.internal.BignumX86;
-/+
+
 /*  
   Naked asm is used throughout, because:
   (a) it frees up the EBP register
@@ -1351,4 +1351,4 @@ static this()
 }
 
 } // version(D_InlineAsm_X86)
-+/
+

@@ -12,8 +12,6 @@
 
 module tango.io.vfs.VirtualFolder;
 
-
-
 private import tango.core.Exception;
 
 private import tango.io.model.IFile;
@@ -25,9 +23,9 @@ private import tango.io.Path : patternMatch;
 private import tango.text.Util : head, locatePrior;
 
 /*******************************************************************************
-        
+
         Virtual folders play host to other folder types, including both
-        concrete folder instances and subordinate virtual folders. You 
+        concrete folder instances and subordinate virtual folders. You
         can build a (singly rooted) tree from a set of virtual and non-
         virtual folders, and treat them as though they were a combined
         or single entity. For example, listing the contents of such a
@@ -46,7 +44,7 @@ class VirtualFolder : VfsHost
 
         /***********************************************************************
 
-                All folder must have a name. No '.' or '/' chars are 
+                All folder must have a name. No '.' or '/' chars are
                 permitted
 
         ***********************************************************************/
@@ -69,7 +67,7 @@ class VirtualFolder : VfsHost
 
         /***********************************************************************
 
-                Return the (long) name of this folder. Virtual folders 
+                Return the (long) name of this folder. Virtual folders
                 do not have long names, since they don't relate directly
                 to a concrete folder instance
 
@@ -87,14 +85,13 @@ class VirtualFolder : VfsHost
                 tree of virtual folders are detected and trapped.
 
                 The second argument represents an optional name that the
-                mount should be known as, instead of the name exposed by 
+                mount should be known as, instead of the name exposed by
                 the provided folder (it is not an alias).
 
         ***********************************************************************/
 
-        VfsHost mount (VfsFolder folder, in char[] _name = null)
+        VfsHost mount (VfsFolder folder, const(char)[] name = null)
         {
-					const(char)[] name = _name;
                 assert (folder);
                 if (name.length is 0)
                     name = folder.name;
@@ -103,7 +100,7 @@ class VirtualFolder : VfsHost
                 auto child = cast(VirtualFolder) folder;
                 if (child)
                     if (child.parent)
-                        error ("folder '"~name.idup~"' belongs to another host"); 
+                        error ("folder '"~name.idup~"' belongs to another host");
                     else
                        child.parent = this;
 
@@ -123,8 +120,8 @@ class VirtualFolder : VfsHost
 
         /***********************************************************************
 
-                Add a set of child folders. The children cannot 'overlap' 
-                with others in the tree of the same type. Circular references 
+                Add a set of child folders. The children cannot 'overlap'
+                with others in the tree of the same type. Circular references
                 are detected and trapped.
 
         ***********************************************************************/
@@ -138,7 +135,7 @@ class VirtualFolder : VfsHost
 
         /***********************************************************************
 
-                Unhook a child folder 
+                Unhook a child folder
 
         ***********************************************************************/
 
@@ -149,7 +146,7 @@ class VirtualFolder : VfsHost
                 // check this is a child, and locate the mapped name
                 foreach (key, value; mounts)
                          if (folder is value)
-                             name = key; 
+                             name = key;
                 assert (name.ptr);
 
                 // reach up to the root, and initiate tree sweep
@@ -157,7 +154,7 @@ class VirtualFolder : VfsHost
                 while (root.parent)
                        root = root.parent;
                 root.verify (folder, false);
-        
+
                 // all clear, so remove it
                 mounts.remove (name);
                 return this;
@@ -170,8 +167,8 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final VfsHost map (VfsFile file, in char[] name)
-        {       
+        final VfsHost map (VfsFile file, const(char)[] name)
+        {
                 assert (name);
                 files[name] = file;
                 return this;
@@ -184,8 +181,8 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final VfsHost map (VfsFolderEntry folder, in char[] name)
-        {       
+        final VfsHost map (VfsFolderEntry folder, const(char)[] name)
+        {
                 assert (name);
                 folders[name] = folder;
                 return this;
@@ -193,18 +190,18 @@ class VirtualFolder : VfsHost
 
         /***********************************************************************
 
-                Iterate over the set of immediate child folders. This is 
+                Iterate over the set of immediate child folders. This is
                 useful for reflecting the hierarchy
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFolder) dg)
+        final int opApply( scope int delegate(ref VfsFolder) dg)
         {
                 int result;
 
-                foreach (folder; mounts)  
+                foreach (folder; mounts)
                         {
-                        VfsFolder x = folder;  
+                        VfsFolder x = folder;
                         if ((result = dg(x)) != 0)
                              break;
                         }
@@ -219,7 +216,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final VfsFolderEntry folder (in char[] path)
+        final VfsFolderEntry folder (const(char)[] path)
         {
                 const(char)[] tail;
                 auto text = head (path, cast(const(char)[])FileConst.PathSeparatorString, tail);
@@ -237,12 +234,12 @@ class VirtualFolder : VfsHost
         /***********************************************************************
 
                 Return a file representation of the given path. If the
-                path-head does not refer to an immediate child folder, 
+                path-head does not refer to an immediate child folder,
                 and does not match a symbolic link, it is considered unknown.
 
         ***********************************************************************/
 
-        VfsFile file (in char[] path)
+        VfsFile file (const(char)[] path)
         {
                 auto tail = locatePrior (path, cast(const(char))FileConst.PathSeparatorChar);
                 if (tail < path.length)
@@ -283,8 +280,8 @@ class VirtualFolder : VfsHost
 
         /***********************************************************************
 
-                Returns a folder set containing only this one. Statistics 
-                are inclusive of entries within this folder only, which 
+                Returns a folder set containing only this one. Statistics
+                are inclusive of entries within this folder only, which
                 should be zero since symbolic links are not included
 
         ***********************************************************************/
@@ -296,7 +293,7 @@ class VirtualFolder : VfsHost
 
         /***********************************************************************
 
-                Returns a subtree of folders. Statistics are inclusive of 
+                Returns a subtree of folders. Statistics are inclusive of
                 all files and folders throughout the sub-tree
 
         ***********************************************************************/
@@ -325,7 +322,7 @@ class VirtualFolder : VfsHost
 
                 Close and/or synchronize changes made to this folder. Each
                 driver should take advantage of this as appropriate, perhaps
-                combining multiple files together, or possibly copying to a 
+                combining multiple files together, or possibly copying to a
                 remote location
 
         ***********************************************************************/
@@ -355,10 +352,10 @@ class VirtualFolder : VfsHost
         ***********************************************************************/
 
         private final void validate (const(char)[] name)
-        {       
+        {
                 assert (name);
-                if (locatePrior(name, cast(const(char))'.') != name.length ||
-                    locatePrior(name, cast(const)FileConst.PathSeparatorChar) != name.length)
+                if (locatePrior(name, '.') != name.length ||
+                    locatePrior(name, FileConst.PathSeparatorChar) != name.length)
                     error ("'"~name.idup~"' contains invalid characters");
         }
 }
@@ -366,7 +363,7 @@ class VirtualFolder : VfsHost
 
 /*******************************************************************************
 
-        A set of virtual folders. For a sub-tree, we compose the results 
+        A set of virtual folders. For a sub-tree, we compose the results
         of all our subordinates and delegate subsequent request to that
         group.
 
@@ -404,13 +401,13 @@ private class VirtualFolders : VfsFolders
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFolder) dg)
+        final int opApply( scope int delegate(ref VfsFolder) dg)
         {
                 int ret;
 
-                foreach (group; members)  
+                foreach (group; members)
                          foreach (folder; group)
-                                 { 
+                                 {
                                  auto x = cast(VfsFolder) folder;
                                  if ((ret = dg(x)) != 0)
                                       break;
@@ -480,12 +477,12 @@ private class VirtualFolders : VfsFolders
 
         ***********************************************************************/
 
-        final VfsFolders subset (in char[] pattern)
-        {  
+        final VfsFolders subset (const(char)[] pattern)
+        {
                 auto set = new VirtualFolders;
 
-                foreach (group; members)    
-                         set.members ~= group.subset (pattern); 
+                foreach (group; members)
+                         set.members ~= group.subset (pattern);
                 return set;
         }
 
@@ -495,7 +492,7 @@ private class VirtualFolders : VfsFolders
 
         ***********************************************************************/
 
-        final VfsFiles catalog (in char[] pattern)
+        final VfsFiles catalog (const(char)[] pattern)
         {
                 return catalog ((VfsInfo info){return patternMatch (info.name, pattern);});
         }
@@ -507,7 +504,7 @@ private class VirtualFolders : VfsFolders
         ***********************************************************************/
 
         final VfsFiles catalog (VfsFilter filter = null)
-        {       
+        {
                 return new VirtualFiles (this, filter);
         }
 }
@@ -531,8 +528,8 @@ private class VirtualFiles : VfsFiles
 
         private this (VirtualFolders host, VfsFilter filter)
         {
-                foreach (group; host.members)    
-                         members ~= group.catalog (filter); 
+                foreach (group; host.members)
+                         members ~= group.catalog (filter);
         }
 
         /***********************************************************************
@@ -541,12 +538,12 @@ private class VirtualFiles : VfsFiles
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref VfsFile) dg)
+        final int opApply( scope int delegate(ref VfsFile) dg)
         {
                 int ret;
 
-                foreach (group; members)    
-                         foreach (file; group)    
+                foreach (group; members)
+                         foreach (file; group)
                                   if ((ret = dg(file)) != 0)
                                        break;
                 return ret;
@@ -554,28 +551,28 @@ private class VirtualFiles : VfsFiles
 
         /***********************************************************************
 
-                Return the total number of entries 
+                Return the total number of entries
 
         ***********************************************************************/
 
         final uint files ()
         {
                 uint count;
-                foreach (group; members)    
+                foreach (group; members)
                          count += group.files;
                 return count;
         }
 
         /***********************************************************************
 
-                Return the total size of all files 
+                Return the total size of all files
 
         ***********************************************************************/
 
         final ulong bytes ()
         {
                 ulong count;
-                foreach (group; members)    
+                foreach (group; members)
                          count += group.bytes;
                 return count;
         }

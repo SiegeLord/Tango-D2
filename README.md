@@ -9,7 +9,7 @@ I see this as a rough first pass at porting this library... making it more D2-li
 What works so far
 --------
 
-Modules that have not been yet ported are located in the `unported` folder. All those located in the tango folder are ported, in the sense that they pass the import+unittest test (sometimes imperfectly on 64 bits due to DMD bugs). See also the `ported_modules` list which enumerates the ported modules.
+Modules that have not been yet ported are located in the `unported` folder. All those located in the tango folder are ported, in the sense that they pass the import+unittest test (sometimes imperfectly on 64 bits due to DMD bugs).
 
 I do the porting on Linux, so that is the most tested platform. It generally should also compile on Windows, but might not pass all the unit-tests, since DMD does weird things with unittests on Windows. All other platforms probably don't compile at all.
 

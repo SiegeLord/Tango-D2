@@ -21,8 +21,8 @@ private {
 }
 
 private const(char)[] fixName(const(char)[] toFix) {
-    if (containsPattern(toFix, cast(const(char)[])"/"))
-        toFix = toFix[(locatePrior(toFix, cast(const(char))'/') + 1) .. $];
+    if (containsPattern(toFix, "/"))
+        toFix = toFix[(locatePrior(toFix, '/') + 1) .. $];
     return toFix;
 }
 
@@ -228,7 +228,7 @@ class FtpFolder: VfsFolder {
      Return a contained file representation
      ***********************************************************************/
 
-    final VfsFile file(in char[] path) {
+    final VfsFile file(const(char)[] path) {
         return new FtpFile(toString_, checkLast(checkCat(name_, path)), username_, password_,
             port_);
     }
@@ -237,7 +237,7 @@ class FtpFolder: VfsFolder {
      Return a contained folder representation
      ***********************************************************************/
 
-    final VfsFolderEntry folder(in char[] path) {
+    final VfsFolderEntry folder(const(char)[] path) {
         return new FtpFolderEntry(toString_, checkLast(checkCat(name_, path)), username_,
             password_, port_);
     }
@@ -249,8 +249,6 @@ class FtpFolder: VfsFolder {
 
     final VfsFolders self() {
         FTPConnection conn;
-
-    
 
         scope(exit) {
             if(conn !is null)
@@ -307,7 +305,7 @@ class FtpFolder: VfsFolder {
      useful for reflecting the hierarchy
      ***********************************************************************/
 
-    final int opApply(int delegate(ref VfsFolder) dg) {
+    final int opApply(scope int delegate(ref VfsFolder) dg) {
         FTPConnection conn;
 
     
@@ -371,7 +369,7 @@ class FtpFolder: VfsFolder {
 
         FtpFileInfo[] reverse(FtpFileInfo[] infos) {
             FtpFileInfo[] reversed;
-            for(int i = infos.length - 1; i >= 0; i--) {
+            for(sizediff_t i = infos.length - 1; i >= 0; i--) {
                 reversed ~= infos[i];
             }
             return reversed;
@@ -492,8 +490,6 @@ class FtpFolders: VfsFolders {
 
         FTPConnection conn;
 
-    
-
         scope(exit) {
             if(conn !is null)
                 conn.close();
@@ -520,10 +516,8 @@ class FtpFolders: VfsFolders {
      Iterate over the set of contained VfsFolder instances
      ***********************************************************************/
 
-    final int opApply(int delegate(ref VfsFolder) dg) {
+    final int opApply(scope int delegate(ref VfsFolder) dg) {
         FTPConnection conn;
-
-    
 
         scope(exit) {
             if(conn !is null)
@@ -563,10 +557,8 @@ class FtpFolders: VfsFolders {
      Return the number of files
      ***********************************************************************/
 
-    final uint files() {
+    final size_t files() {
         FTPConnection conn;
-
-    
 
         scope(exit) {
             if(conn !is null)
@@ -591,10 +583,8 @@ class FtpFolders: VfsFolders {
      Return the number of folders
      ***********************************************************************/
 
-    final uint folders() {
+    final size_t folders() {
         FTPConnection conn;
-
-    
 
         scope(exit) {
             if(conn !is null)
@@ -619,10 +609,8 @@ class FtpFolders: VfsFolders {
      Return the total number of entries (files + folders)
      ***********************************************************************/
 
-    final uint entries() {
+    final size_t entries() {
         FTPConnection conn;
-
-    
 
         scope(exit) {
             if(conn !is null)
@@ -649,8 +637,6 @@ class FtpFolders: VfsFolders {
 
     final ulong bytes() {
         FTPConnection conn;
-
-    
 
         scope(exit) {
             if(conn !is null)
@@ -681,10 +667,8 @@ class FtpFolders: VfsFolders {
      Return a subset of folders matching the given pattern
      ***********************************************************************/
 
-    final VfsFolders subset(in char[]  pattern) {
+    final VfsFolders subset(const(char)[]  pattern) {
         FTPConnection conn;
-
-    
 
         scope(exit) {
             if(conn !is null)
@@ -720,10 +704,8 @@ class FtpFolders: VfsFolders {
      Return a set of files matching the given pattern
      ***********************************************************************/
 
-    final VfsFiles catalog(in char[]  pattern) {
+    final VfsFiles catalog(const(char)[]  pattern) {
         FTPConnection conn;
-
-    
 
         scope(exit) {
             if(conn !is null)
@@ -763,8 +745,6 @@ class FtpFolders: VfsFolders {
 
     final VfsFiles catalog(VfsFilter filter = null) {
         FTPConnection conn;
-
-    
 
         scope(exit) {
             if(conn !is null)
@@ -1213,7 +1193,7 @@ class FtpFiles: VfsFiles {
      Iterate over the set of contained VfsFile instances
      ***********************************************************************/
 
-    final int opApply(int delegate(ref VfsFile) dg) {
+    final int opApply(scope int delegate(ref VfsFile) dg) {
         int result = 0;
 
         foreach(FtpFileInfo inf; infos_) {
@@ -1230,7 +1210,7 @@ class FtpFiles: VfsFiles {
      Return the total number of entries
      ***********************************************************************/
 
-    final uint files() {
+    final size_t files() {
         return infos_.length;
     }
 

@@ -24,7 +24,7 @@ private import tango.core.BitManip;
 struct BitArray
 {
     size_t  len;
-    uint*   ptr;
+    size_t* ptr;
 
 
     /**
@@ -46,13 +46,18 @@ struct BitArray
             temp[pos] = val;
         return temp;
     }*/
-		
-		this(bool[] bits)
-		{
-			this.length = bits.length;
-			foreach( pos, val; bits )
+    this(size_t _len, size_t* _ptr)
+    {
+        len = _len;
+        ptr = _ptr;
+    }
+
+    this(bool[] bits)
+    {
+        this.length = bits.length;
+        foreach( pos, val; bits )
             this[pos] = val;
-		}
+    }
 
     /**
      * Get the number of bits in this array.
@@ -83,7 +88,7 @@ struct BitArray
             if( newdim != olddim )
             {
                 // Create a fake array so we can use D's realloc machinery
-                uint[] buf = ptr[0 .. olddim];
+                size_t[] buf = ptr[0 .. olddim];
 
                 buf.length = newdim; // realloc
                 ptr = buf.ptr;
@@ -120,7 +125,7 @@ struct BitArray
     {
         BitArray ba;
 
-        uint[] buf = ptr[0 .. dim].dup;
+        size_t[] buf = ptr[0 .. dim].dup;
         ba.len = len;
         ba.ptr = buf.ptr;
         return ba;
@@ -155,11 +160,11 @@ struct BitArray
      * Params:
      *  bits = The initialization value.
      */
-		 
+
     this(this)
     {
-		ptr = ptr;
-		len = len;
+        ptr = ptr;
+        len = len;
     }
     void opAssign( bool[] bits )
     {
@@ -223,7 +228,7 @@ struct BitArray
     }
     body
     {
-        ptr = cast(uint*)target.ptr;
+        ptr = cast(size_t*)target.ptr;
         len = numbits;
     }
 
@@ -366,8 +371,8 @@ struct BitArray
     {
       unittest
       {
-        static uint x = 0b1100011000;
-        static BitArray ba = { 10, &x };
+        size_t x = 0b1100011000;
+        auto ba = BitArray(10, &x);
 
         ba.sort;
         for( size_t i = 0; i < 6; ++i )
@@ -384,7 +389,7 @@ struct BitArray
      * Params:
      *  dg = The supplied code as a delegate.
      */
-    int opApply( int delegate(ref bool) dg )
+    int opApply(scope int delegate(ref bool) dg )
     {
         int result;
 
@@ -401,7 +406,7 @@ struct BitArray
 
 
     /** ditto */
-    int opApply( int delegate(ref size_t, ref bool) dg )
+    int opApply(scope int delegate(ref size_t, ref bool) dg )
     {
         int result;
 
@@ -464,8 +469,8 @@ struct BitArray
     {
         if( this.length() != rhs.length() )
             return 0; // not equal
-        const uint* p1 = this.ptr;
-        const uint* p2 = rhs.ptr;
+        const size_t* p1 = this.ptr;
+        const size_t* p2 = rhs.ptr;
         size_t n = this.length / 32;
         size_t i;
         for( i = 0; i < n; ++i )
@@ -513,8 +518,8 @@ struct BitArray
         auto len = this.length;
         if( rhs.length < len )
             len = rhs.length;
-        uint* p1 = this.ptr;
-        uint* p2 = rhs.ptr;
+        size_t* p1 = this.ptr;
+        size_t* p2 = rhs.ptr;
         size_t n = len / 32;
         size_t i;
         for( i = 0; i < n; ++i )
@@ -577,7 +582,7 @@ struct BitArray
         BitArray a = [1,0,1,0,1];
         void[] v = cast(void[])a;
 
-        assert( v.length == a.dim * uint.sizeof );
+        assert( v.length == a.dim * size_t.sizeof );
       }
     }
 

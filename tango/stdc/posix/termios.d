@@ -10,7 +10,7 @@ module tango.stdc.posix.termios;
 
 private import tango.stdc.posix.config;
 public import tango.stdc.posix.sys.types; // for pid_t
-private import std.conv;
+private import tango.core.Octal;
 extern (C):
 
 //

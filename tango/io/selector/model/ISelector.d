@@ -45,8 +45,8 @@ enum Event: uint
  * member. This member is very convenient to keep application-specific data
  * that will be needed when the tracked events are triggered.
  *
- * See $(LINK $(CODEURL)tango.io.selector.ISelector),
- * $(LINK $(CODEURL)tango.io.selector.ISelectionSet)
+ * See_also: $(SYMLINK ISelector, ISelector),
+ *           $(SYMLINK ISelectionSet, ISelectionSet)
  */
 struct SelectionKey
 {
@@ -127,13 +127,13 @@ interface ISelectionSet
     /**
      * Returns the number of SelectionKey's in the set.
      */
-    public abstract uint length();
+    public abstract size_t length();
 
     /**
      * Operator to iterate over a set via a foreach block.  Note that any
      * modifications to the SelectionKey will be ignored.
      */
-    public abstract int opApply(int delegate(ref SelectionKey) dg);
+    public abstract int opApply(scope int delegate(ref SelectionKey) dg);
 }
 
 
@@ -383,5 +383,5 @@ interface ISelector
      * should not erase or add any items from the selector while iterating,
      * although you can register existing conduits again.
      */
-    public abstract int opApply(int delegate(ref SelectionKey sk) dg);
+    public abstract int opApply(scope int delegate(ref SelectionKey sk) dg);
 }

@@ -62,7 +62,7 @@ class MapInput(T) : Lines!(T)
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref T[] name, ref T[] value) dg)
+        final int opApply (scope int delegate(ref const(T)[] name, ref const(T)[] value) dg)
         {
                 int ret;
 
@@ -79,8 +79,8 @@ class MapInput(T) : Lines!(T)
                            // ignore if not found ...
                            if (i < text.length)
                               {
-                              auto name = Text.trim (text[0 .. i]).dup;
-                              auto value = Text.trim (text[i+1 .. $]).dup;
+                              auto name = Text.trim (text[0 .. i]);
+                              auto value = Text.trim (text[i+1 .. $]);
                               if ((ret = dg (name, value)) != 0)
                                    break;
                               }
@@ -95,10 +95,10 @@ class MapInput(T) : Lines!(T)
 
         ***********************************************************************/
 
-        final MapInput load (ref T[][T[]] properties)
+        final MapInput load (ref const(T)[][T[]] properties)
         {
                 foreach (name, value; this)
-                         properties[name.idup] = value.dup;
+                         properties[name] = value;
                 return this;
         }
 }
@@ -114,14 +114,14 @@ class MapInput(T) : Lines!(T)
 
 class MapOutput(T) : OutputFilter
 {
-        private T[] eol;
+        private const(T)[] eol;
 
-        private const T[] prefix = "# ";
-        private const T[] equals = " = ";
+        private enum const(T)[] prefix = "# ";
+        private enum const(T)[] equals = " = ";
         version (Win32)
-                 private const T[] NL = "\r\n";
+                 private enum const(T)[] NL = "\r\n";
         version (Posix)
-                 private const T[] NL = "\n";
+                 private enum const(T)[] NL = "\n";
 
         /***********************************************************************
 
@@ -129,7 +129,7 @@ class MapOutput(T) : OutputFilter
 
         ***********************************************************************/
 
-        this (OutputStream stream, T[] newline = NL)
+        this (OutputStream stream, const(T)[] newline = NL)
         {
                 super (BufferedOutput.create (stream));
                 eol = newline;
@@ -153,7 +153,7 @@ class MapOutput(T) : OutputFilter
 
         ***********************************************************************/
 
-        final MapOutput comment (T[] text)
+        final MapOutput comment (const(T)[] text)
         {
                 sink.write (prefix);
                 sink.write (text);
@@ -167,7 +167,7 @@ class MapOutput(T) : OutputFilter
 
         ***********************************************************************/
 
-        final MapOutput append (T[] name, T[] value)
+        final MapOutput append (const(T)[] name, const(T)[] value)
         {
                 sink.write (name);
                 sink.write (equals);
@@ -182,7 +182,7 @@ class MapOutput(T) : OutputFilter
 
         ***********************************************************************/
 
-        final MapOutput append (T[][T[]] properties)
+        final MapOutput append (const(T)[][T[]] properties)
         {
                 foreach (key, value; properties)
                          append (key, value);
@@ -207,7 +207,7 @@ debug (UnitTest)
                 auto input = new MapInput!(char)(buf);
                 auto output = new MapOutput!(char)(buf);
 
-                char[][char[]] map;
+                const(char)[][char[]] map;
                 map["foo"] = "bar";
                 map["foo2"] = "bar2";
                 output.append(map).flush;

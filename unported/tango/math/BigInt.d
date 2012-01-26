@@ -7,9 +7,6 @@
 
 module tango.math.BigInt;
 
-public import std.bigint;
-
-/+
 private import tango.math.internal.BiguintCore;
 
 /** A struct representing an arbitrary precision integer
@@ -412,4 +409,3 @@ unittest {
 
 }
 }
-+/

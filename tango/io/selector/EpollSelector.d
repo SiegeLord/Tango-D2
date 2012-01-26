@@ -197,14 +197,14 @@ version (linux)
             _events = null;
             _eventCount = 0;
         }
-		/**
-		 * Return the number of keys resulting from the registration of a conduit 
-		 * to the selector. 
-		 */ 
-		public size_t count()
-		{
-			return _keys.length;
-		}
+        /**
+         * Return the number of keys resulting from the registration of a conduit 
+         * to the selector. 
+         */
+        public size_t count()
+        {
+            return _keys.length;
+        }
 
 
         /**
@@ -309,6 +309,19 @@ version (linux)
                 }
                 else
                 {
+                    int errorCode = errno;
+
+                    switch ( errorCode )
+                    {
+                        case EBADF: goto case;
+                        case EPERM: goto case;
+                        case ENOENT:
+                            _keys.remove(conduit.fileHandle());
+                            break;
+
+                        default:
+                            break;
+                    }
                     checkErrno(__FILE__, __LINE__);
                 }
             }
@@ -343,7 +356,7 @@ version (linux)
             while (true)
             {
                 // FIXME: add support for the wakeup() call.
-                _eventCount = epoll_wait(_epfd, _events.ptr, _events.length, to);
+                _eventCount = epoll_wait(_epfd, _events.ptr, cast(int)_events.length, to);
                 if (_eventCount >= 0)
                 {
                     break;
@@ -367,7 +380,7 @@ version (linux)
         */
         protected class EpollSelectionSet: ISelectionSet
         {
-            public uint length()
+            public size_t length()
             {
                 return _events.length;
             }
@@ -375,7 +388,7 @@ version (linux)
             /**
             * Iterate over all the Conduits that have received events.
             */
-            public int opApply(int delegate(ref SelectionKey) dg)
+            public int opApply(scope int delegate(ref SelectionKey) dg)
             {
                 int rc = 0;
                 SelectionKey key;
@@ -445,7 +458,7 @@ version (linux)
          * you should not erase or add any items from the selector while
          * iterating, although you can register existing conduits again.
          */
-        int opApply(int delegate(ref SelectionKey) dg)
+        int opApply(scope int delegate(ref SelectionKey) dg)
         {
             int result = 0;
             foreach(v; _keys)

@@ -678,9 +678,9 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        static T[] convert(T)(void[] x)
+        static inout(T)[] convert(T)(inout(void)[] x)
         {
-                return (cast(T*) x.ptr) [0 .. (x.length / T.sizeof)];
+                return (cast(inout(T)*) x.ptr) [0 .. (x.length / T.sizeof)];
         }
 
         /***********************************************************************

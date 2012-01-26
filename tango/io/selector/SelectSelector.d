@@ -495,7 +495,7 @@ public class SelectSelector: AbstractSelector
         }
         return SelectionKey.init;
     }
-    
+
     /**
      * Return the number of keys resulting from the registration of a conduit
      * to the selector.
@@ -504,13 +504,13 @@ public class SelectSelector: AbstractSelector
     {
         return _keys.length;
     }
-        
+
     /**
      * Iterate through the currently registered selection keys.  Note that
      * you should not erase or add any items from the selector while
      * iterating, although you can register existing conduits again.
      */
-    int opApply(int delegate(ref SelectionKey) dg)
+    int opApply(scope int delegate(ref SelectionKey) dg)
     {
         int result = 0;
         foreach(v; _keys)
@@ -548,7 +548,7 @@ private class SelectSelectionSet: ISelectionSet
         return _eventCount;
     }
 
-    int opApply(int delegate(ref SelectionKey) dg)
+    int opApply(scope int delegate(ref SelectionKey) dg)
     {
         int rc = 0;
         ISelectable.Handle handle;

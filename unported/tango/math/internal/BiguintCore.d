@@ -23,7 +23,7 @@
     and micro-operation breakdowns for Intel and AMD CPU's.", www.agner.org/optimize (2008).
 */ 
 module tango.math.internal.BiguintCore;
-/+
+
 //version=TangoBignumNoAsm;       /// temporal: see ticket #1878
 
 version(GNU){
@@ -1787,4 +1787,4 @@ unittest{
   assert(q[]==q1[]);
 }
 }
-+/
+

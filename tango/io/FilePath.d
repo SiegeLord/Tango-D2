@@ -59,13 +59,13 @@ private import tango.stdc.string : memmove;
 
 class FilePath : PathView
 {
-        private PathParser      p;              // the parsed path
-        private bool            dir_;           // this represents a dir?
+        private PathParser!(char) p;              // the parsed path
+        private bool              dir_;           // this represents a dir?
 
-		final FilePath opOpAssign(immutable(char)[] s : "~")(const(char)[] path)
-		{
-			return append(path);
-		}
+        final FilePath opOpAssign(immutable(char)[] s : "~")(const(char)[] path)
+        {
+            return append(path);
+        }
 
         /***********************************************************************
 
@@ -83,7 +83,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        static FilePath opCall (const(char)[] filepath = null)
+        static FilePath opCall (char[] filepath = null)
         {
                 return new FilePath (filepath);
         }
@@ -111,7 +111,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        this (const(char)[] filepath = null)
+        this (char[] filepath = null)
         {
                 set (filepath, true);
         }
@@ -124,7 +124,7 @@ class FilePath : PathView
 
         final const immutable(char)[] toString ()
         {
-                return  p.toString.idup;
+                return  (cast(const(char)[])p.toString).idup;
         }
 
         /***********************************************************************
@@ -135,7 +135,7 @@ class FilePath : PathView
 
         final const FilePath dup ()
         {
-                return FilePath (toString);
+                return FilePath (p.toString.dup);
         }
 
         /***********************************************************************
@@ -151,7 +151,7 @@ class FilePath : PathView
         ***********************************************************************/
 
         
-        final const const(char)[] cString ()
+        final inout(char)[] cString () inout
         {
                 return p.fp [0 .. p.end_+1];
         }
@@ -163,7 +163,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const const(char)[] root ()
+        final inout(char)[] root () inout
         {
                 return p.root;
         }
@@ -180,7 +180,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const const(char)[] folder ()
+        final inout(char)[] folder () inout
         {
                 return p.folder;
         }
@@ -203,7 +203,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const(char)[] parent ()
+        final inout(char)[] parent () inout
         {
                 return p.parent;
         }
@@ -214,7 +214,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const const(char)[] name ()
+        final inout(char)[] name () inout
         {
                 return p.name;
         }
@@ -228,7 +228,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const(char)[] ext ()
+        final char[] ext ()
         {
                 return p.ext;
         }
@@ -240,7 +240,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const const(char)[] suffix ()
+        final inout(char)[] suffix () inout
         {
                 return p.suffix;
         }
@@ -251,7 +251,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const const(char)[] path ()
+        final inout(char)[] path () inout
         {
                 return p.path;
         }
@@ -262,7 +262,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const const(char)[] file ()
+        final inout(char)[] file () inout
         {
                 return p.file;
         }
@@ -362,9 +362,7 @@ class FilePath : PathView
 
         final FilePath replace (char from, char to)
         {
-								auto p = path.dup;
-                .replace (p, from, to);
-								path = p;
+                .replace (path, from, to);
                 return this;
         }
 
@@ -383,9 +381,7 @@ class FilePath : PathView
 
         final FilePath standard ()
         {
-								auto p = path.dup;
-                .standard (p);
-								path = p;
+                .standard (path);
                 return this;
         }
 
@@ -401,9 +397,7 @@ class FilePath : PathView
 
         final FilePath native ()
         {
-								auto p = path.dup;
-                .native (p);
-								path = p;
+                .native (path);
                 return this;
         }
 
@@ -416,16 +410,14 @@ class FilePath : PathView
 
         final FilePath cat (const(char)[][] others...)
         {
-                auto fp = p.fp.dup;
                 foreach (other; others)
                         {
                         auto len = p.end_ + other.length;
                         expand (len);
-                        fp [p.end_ .. len] = other;
-                        fp [len] = 0;
+                        p.fp [p.end_ .. len] = other;
+                        p.fp [len] = 0;
                         p.end_ = cast(int)len;
                         }
-												p.fp = fp;
                 return parse;
         }
 
@@ -479,17 +471,15 @@ class FilePath : PathView
         final FilePath set (const(char)[] path, bool convert = false)
         {
                 p.end_ = cast(int)path.length;
-								auto fp = p.fp.dup;
                 expand (p.end_);
                 if (p.end_)
                    {
-                   fp[0 .. p.end_] = path;
+                   p.fp[0 .. p.end_] = path;
                    if (convert)
-                       .standard (fp [0 .. p.end_]);
+                       .standard (p.fp [0 .. p.end_]);
                    }
 
-                fp[p.end_] = '\0';
-								p.fp = fp;
+                p.fp[p.end_] = '\0';
                 return parse;
         }
 
@@ -601,13 +591,11 @@ class FilePath : PathView
 
         final FilePath pop ()
         {
-
-					
                 version (SpecialPop)
-                         p.end_ = p.parent.length;
-                   else
-                      p.end_ = cast(int)p.pop.length;
-                p.fp = p.fp[0 .. p.end_] ~ '\0';
+                    p.end_ = p.parent.length;
+                else
+                    p.end_ = cast(int)p.pop.length;
+                p.fp [p.end_] = '\0';
                 return parse;
         }
 
@@ -712,11 +700,10 @@ class FilePath : PathView
 
         private final int adjust (int head, int tail, int len, const(char)[] sub)
         {
-								auto fp = p.fp.dup;
                 len = cast(int)(sub.length - len);
 
                 // don't destroy self-references!
-                if (len && sub.ptr >= fp.ptr+head+len && sub.ptr < fp.ptr+fp.length)
+                if (len && sub.ptr >= p.fp.ptr+head+len && sub.ptr < p.fp.ptr+p.fp.length)
                    {
                    char[512] tmp = void;
                    assert (sub.length < tmp.length);
@@ -727,14 +714,13 @@ class FilePath : PathView
                 expand (len + p.end_);
 
                 // slide tail around to insert or remove space
-                memmove (fp.ptr+tail+len, fp.ptr+tail, p.end_ +1 - tail);
+                memmove (p.fp.ptr+tail+len, p.fp.ptr+tail, p.end_ +1 - tail);
 
                 // copy replacement
-                memmove (fp.ptr + head, sub.ptr, sub.length);
+                memmove (p.fp.ptr + head, sub.ptr, sub.length);
 
                 // adjust length
                 p.end_ += len;
-								p.fp = fp;
                 return len;
         }
 
@@ -895,13 +881,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const const(FilePath) copy (const(char)[] source)
-        {
-                FS.copy (source~'\0', cString);
-                return this;
-        }
-        
-        final FilePath copy (const(char)[] source)
+        final inout(FilePath) copy (const(char)[] source) inout
         {
                 FS.copy (source~'\0', cString);
                 return this;
@@ -980,13 +960,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const const(FilePath) copy (FilePath src)
-        {
-                FS.copy (src.cString, cString);
-                return this;
-        }
-        
-        final FilePath copy (FilePath src)
+        final inout(FilePath) copy (const(FilePath) src) inout
         {
                 FS.copy (src.cString, cString);
                 return this;
@@ -998,13 +972,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const const(FilePath) remove ()
-        {
-                FS.remove (cString);
-                return this;
-        }
-        
-        final FilePath remove ()
+        final inout(FilePath) remove () inout
         {
                 FS.remove (cString);
                 return this;
@@ -1029,13 +997,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const const(FilePath) createFile ()
-        {
-                FS.createFile (cString);
-                return this;
-        }
-        
-        final FilePath createFile ()
+        final inout(FilePath) createFile () inout
         {
                 FS.createFile (cString);
                 return this;
@@ -1047,13 +1009,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const const(FilePath) createFolder ()
-        {
-                FS.createFolder (cString);
-                return this;
-        }
-        
-        final FilePath createFolder ()
+        final inout(FilePath) createFolder () inout
         {
                 FS.createFolder (cString);
                 return this;
@@ -1103,7 +1059,7 @@ interface PathView
         ***********************************************************************/
 
        
-        const const(char)[] cString ();
+        inout(char)[] cString () inout;
 
         /***********************************************************************
 
@@ -1112,7 +1068,7 @@ interface PathView
 
         ***********************************************************************/
 
-        const const(char)[] root ();
+        inout(char)[] root ()  inout;
 
         /***********************************************************************
 
@@ -1124,7 +1080,7 @@ interface PathView
 
         ***********************************************************************/
 
-        const const(char)[] folder ();
+        inout(char)[] folder () inout;
 
         /***********************************************************************
 
@@ -1133,7 +1089,7 @@ interface PathView
 
         ***********************************************************************/
 
-        const const(char)[] name ();
+        inout(char)[] name () inout;
 
         /***********************************************************************
 
@@ -1144,7 +1100,7 @@ interface PathView
 
         ***********************************************************************/
 
-        const(char)[] ext ();
+        char[] ext ();
 
         /***********************************************************************
 
@@ -1153,7 +1109,7 @@ interface PathView
 
         ***********************************************************************/
 
-        const const(char)[] suffix ();
+        inout(char)[] suffix () inout;
 
         /***********************************************************************
 
@@ -1161,7 +1117,7 @@ interface PathView
 
         ***********************************************************************/
 
-        const const(char)[] path ();
+        inout(char)[] path () inout;
 
         /***********************************************************************
 
@@ -1169,7 +1125,7 @@ interface PathView
 
         ***********************************************************************/
 
-        const const(char)[] file ();
+        inout(char)[] file () inout;
 
         /***********************************************************************
 
@@ -1278,10 +1234,10 @@ debug (UnitTest)
         {
                 version(Win32)
                 {
-                assert (FilePath("/foo").append("bar").pop == "/foo");
-                assert (FilePath("/foo/").append("bar").pop == "/foo");
+                assert (FilePath("/foo".dup).append("bar").pop == "/foo");
+                assert (FilePath("/foo/".dup).append("bar").pop == "/foo");
 
-                auto fp = new FilePath(r"C:/home/foo/bar");
+                auto fp = new FilePath(r"C:/home/foo/bar".dup);
                 fp ~= "john";
                 assert (fp == r"C:/home/foo/bar/john");
                 fp.set (r"C:/");
@@ -1294,7 +1250,7 @@ debug (UnitTest)
                 fp ~= "john";
                 assert (fp == r"john");
 
-                fp.set(r"C:/home/foo/bar/john/foo.d");
+                fp.set(r"C:/home/foo/bar/john/foo.d".dup);
                 assert (fp.pop == r"C:/home/foo/bar/john");
                 assert (fp.pop == r"C:/home/foo/bar");
                 assert (fp.pop == r"C:/home/foo");
@@ -1303,11 +1259,11 @@ debug (UnitTest)
                 assert (fp.pop == r"C:");
 
                 // special case for popping empty names
-                fp.set (r"C:/home/foo/bar/john/");
+                fp.set (r"C:/home/foo/bar/john/".dup);
                 assert (fp.parent == r"C:/home/foo/bar");
 
                 fp = new FilePath;
-                fp.set (r"C:/home/foo/bar/john/");
+                fp.set (r"C:/home/foo/bar/john/".dup);
                 assert (fp.isAbsolute);
                 assert (fp.name == "");
                 assert (fp.folder == r"/home/foo/bar/john/");
@@ -1319,7 +1275,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"C:/home/foo/bar/john");
+                fp = new FilePath(r"C:/home/foo/bar/john".dup);
                 assert (fp.isAbsolute);
                 assert (fp.name == "john");
                 assert (fp.folder == r"/home/foo/bar/");
@@ -1363,7 +1319,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"foo/bar/john.doe");
+                fp = new FilePath(r"foo/bar/john.doe".dup);
                 assert (!fp.isAbsolute);
                 assert (fp.name == "john");
                 assert (fp.folder == r"foo/bar/");
@@ -1373,7 +1329,7 @@ debug (UnitTest)
                 assert (fp.ext == "doe");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"c:doe");
+                fp = new FilePath(r"c:doe".dup);
                 assert (fp.isAbsolute);
                 assert (fp.suffix == r"");
                 assert (fp == r"c:doe");
@@ -1383,7 +1339,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (!fp.isChild);
 
-                fp = new FilePath(r"/doe");
+                fp = new FilePath(r"/doe".dup);
                 assert (fp.isAbsolute);
                 assert (fp.suffix == r"");
                 assert (fp == r"/doe");
@@ -1393,7 +1349,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"john.doe.foo");
+                fp = new FilePath(r"john.doe.foo".dup);
                 assert (!fp.isAbsolute);
                 assert (fp.name == "john.doe");
                 assert (fp.folder == r"");
@@ -1403,7 +1359,7 @@ debug (UnitTest)
                 assert (fp.ext == "foo");
                 assert (!fp.isChild);
 
-                fp = new FilePath(r".doe");
+                fp = new FilePath(r".doe".dup);
                 assert (!fp.isAbsolute);
                 assert (fp.suffix == r"");
                 assert (fp == r".doe");
@@ -1413,7 +1369,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (!fp.isChild);
 
-                fp = new FilePath(r"doe");
+                fp = new FilePath(r"doe".dup);
                 assert (!fp.isAbsolute);
                 assert (fp.suffix == r"");
                 assert (fp == r"doe");
@@ -1423,7 +1379,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (!fp.isChild);
 
-                fp = new FilePath(r".");
+                fp = new FilePath(r".".dup);
                 assert (!fp.isAbsolute);
                 assert (fp.suffix == r"");
                 assert (fp == r".");
@@ -1433,7 +1389,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (!fp.isChild);
 
-                fp = new FilePath(r"..");
+                fp = new FilePath(r"..".dup);
                 assert (!fp.isAbsolute);
                 assert (fp.suffix == r"");
                 assert (fp == r"..");
@@ -1443,7 +1399,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (!fp.isChild);
 
-                fp = new FilePath(r"c:/a/b/c/d/e/foo.bar");
+                fp = new FilePath(r"c:/a/b/c/d/e/foo.bar".dup);
                 assert (fp.isAbsolute);
                 fp.folder (r"/a/b/c/");
                 assert (fp.suffix == r".bar");
@@ -1454,7 +1410,7 @@ debug (UnitTest)
                 assert (fp.ext == "bar");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"c:/a/b/c/d/e/foo.bar");
+                fp = new FilePath(r"c:/a/b/c/d/e/foo.bar".dup);
                 assert (fp.isAbsolute);
                 fp.folder (r"/a/b/c/d/e/f/g/");
                 assert (fp.suffix == r".bar");
@@ -1465,12 +1421,12 @@ debug (UnitTest)
                 assert (fp.ext == "bar");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"C:/foo/bar/test.bar");
+                fp = new FilePath(r"C:/foo/bar/test.bar".dup);
                 assert (fp.path == "C:/foo/bar/");
-                fp = new FilePath(r"C:\foo\bar\test.bar");
+                fp = new FilePath(r"C:\foo\bar\test.bar".dup);
                 assert (fp.path == r"C:/foo/bar/");
 
-                fp = new FilePath("");
+                fp = new FilePath("".dup);
                 assert (fp.isEmpty);
                 assert (!fp.isChild);
                 assert (!fp.isAbsolute);

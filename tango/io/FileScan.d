@@ -50,7 +50,7 @@ deprecated:
 
         This is unlikely the most efficient method to scan a vast number of
         files, but operates in a convenient manner.
-        
+
 *******************************************************************************/
 
 class FileScan
@@ -63,15 +63,15 @@ class FileScan
         
         /***********************************************************************
 
-            Alias for Filter delegate. Accepts a FilePath & a bool as 
+            Alias for Filter delegate. Accepts a FilePath & a bool as
             arguments and returns a bool.
 
-            The FilePath argument represents a file found by the scan, 
+            The FilePath argument represents a file found by the scan,
             and the bool whether the FilePath represents a folder.
 
             The filter should return true, if matched by the filter. Note
-            that returning false where the path is a folder will result 
-            in all files contained being ignored. To always recurse folders, 
+            that returning false where the path is a folder will result
+            in all files contained being ignored. To always recurse folders,
             do something like this:
             ---
             return (isDir || match (fp.name));
@@ -149,7 +149,8 @@ class FileScan
         FileScan sweep (const(char)[] path, Filter filter, bool recurse=true)
         {
                 errorSet = null, fileSet = folderSet = null;
-                return scan (new FilePath(path), filter, recurse);
+                /* Bad dup */
+                return scan (new FilePath(path.dup), filter, recurse);
         }
 
         /***********************************************************************
@@ -163,7 +164,7 @@ class FileScan
         {
                 try {
                     auto paths = folder.toList (filter);
-                
+
                     auto count = fileSet.length;
                     foreach (path; paths)
                              if (! path.isFolder)
@@ -171,7 +172,7 @@ class FileScan
                              else
                                 if (recurse)
                                     scan (path, filter, recurse);
-                
+
                     // add packages only if there's something in them
                     if (fileSet.length > count)
                         folderSet ~= folder;

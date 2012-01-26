@@ -114,7 +114,7 @@ private
             struct Array
             {
                 size_t length;
-                void* ptr;
+                const(void)* ptr;
             }
             Array array;
 
@@ -133,7 +133,7 @@ private
          * Of course, the compiler could always re-order the length and ptr
          * assignment.  Oh well.
          */
-        void setArray(void* ptr, size_t length)
+        void setArray(const(void)* ptr, size_t length)
         {
             array.length = 0;
             array.ptr = ptr;
@@ -418,7 +418,13 @@ struct Variant
     {
         static if( isStaticArrayType!(T) )
         {
-            return (*this = value.dup);
+            return (this = value.dup);
+        }
+        else static if( is(T == Variant) )
+        {
+            type = value.type;
+            this.value = value.value;
+            return this;
         }
         else
         {
@@ -453,7 +459,7 @@ struct Variant
                     this.value.heap = cast(void[])buffer;
                 }
             }
-            return *this;
+            return this;
         }
     }
 
@@ -654,43 +660,20 @@ struct Variant
      * expression.  One side of the operator must be a concrete type in order
      * for the Variant to know what code to generate.
      */
-    typeof(T+T) opAdd(T)(T rhs)     { return get!(T) + rhs; }
-    typeof(T+T) opAdd_r(T)(T lhs)   { return lhs + get!(T); } /// ditto
-    typeof(T-T) opSub(T)(T rhs)     { return get!(T) - rhs; } /// ditto
-    typeof(T-T) opSub_r(T)(T lhs)   { return lhs - get!(T); } /// ditto
-    typeof(T*T) opMul(T)(T rhs)     { return get!(T) * rhs; } /// ditto
-    typeof(T*T) opMul_r(T)(T lhs)   { return lhs * get!(T); } /// ditto
-    typeof(T/T) opDiv(T)(T rhs)     { return get!(T) / rhs; } /// ditto
-    typeof(T/T) opDiv_r(T)(T lhs)   { return lhs / get!(T); } /// ditto
-    typeof(T%T) opMod(T)(T rhs)     { return get!(T) % rhs; } /// ditto
-    typeof(T%T) opMod_r(T)(T lhs)   { return lhs % get!(T); } /// ditto
-    typeof(T&T) opAnd(T)(T rhs)     { return get!(T) & rhs; } /// ditto
-    typeof(T&T) opAnd_r(T)(T lhs)   { return lhs & get!(T); } /// ditto
-    typeof(T|T) opOr(T)(T rhs)      { return get!(T) | rhs; } /// ditto
-    typeof(T|T) opOr_r(T)(T lhs)    { return lhs | get!(T); } /// ditto
-    typeof(T^T) opXor(T)(T rhs)     { return get!(T) ^ rhs; } /// ditto
-    typeof(T^T) opXor_r(T)(T lhs)   { return lhs ^ get!(T); } /// ditto
-    typeof(T<<T) opShl(T)(T rhs)    { return get!(T) << rhs; } /// ditto
-    typeof(T<<T) opShl_r(T)(T lhs)  { return lhs << get!(T); } /// ditto
-    typeof(T>>T) opShr(T)(T rhs)    { return get!(T) >> rhs; } /// ditto
-    typeof(T>>T) opShr_r(T)(T lhs)  { return lhs >> get!(T); } /// ditto
-    typeof(T>>>T) opUShr(T)(T rhs)  { return get!(T) >>> rhs; } /// ditto
-    typeof(T>>>T) opUShr_r(T)(T lhs){ return lhs >>> get!(T); } /// ditto
-    typeof(T~T) opCat(T)(T rhs)     { return get!(T) ~ rhs; } /// ditto
-    typeof(T~T) opCat_r(T)(T lhs)   { return lhs ~ get!(T); } /// ditto
-
-    Variant opAddAssign(T)(T value) { return (*this = get!(T) + value); } /// ditto
-    Variant opSubAssign(T)(T value) { return (*this = get!(T) - value); } /// ditto
-    Variant opMulAssign(T)(T value) { return (*this = get!(T) * value); } /// ditto
-    Variant opDivAssign(T)(T value) { return (*this = get!(T) / value); } /// ditto
-    Variant opModAssign(T)(T value) { return (*this = get!(T) % value); } /// ditto
-    Variant opAndAssign(T)(T value) { return (*this = get!(T) & value); } /// ditto
-    Variant opOrAssign(T)(T value)  { return (*this = get!(T) | value); } /// ditto
-    Variant opXorAssign(T)(T value) { return (*this = get!(T) ^ value); } /// ditto
-    Variant opShlAssign(T)(T value) { return (*this = get!(T) << value); } /// ditto
-    Variant opShrAssign(T)(T value) { return (*this = get!(T) >> value); } /// ditto
-    Variant opUShrAssign(T)(T value){ return (*this = get!(T) >>> value); } /// ditto
-    Variant opCatAssign(T)(T value) { return (*this = get!(T) ~ value); } /// ditto
+    auto opBinary(immutable(char)[] op, T)(T rhs)
+    {
+        mixin("return get!(T) " ~ op ~ " rhs;");
+    }
+    
+    auto opBinaryRight(immutable(char)[] op, T)(T lhs)
+    {
+        mixin("return lhs " ~ op ~ " get!(T);");
+    }
+    
+    Variant opOpAssign(immutable(char)[] op, T)(T value)
+    {
+        mixin("return (this = get!(T) " ~ op ~ " value);"); 
+    }
 
     /**
      * The following operators can be used with Variants on both sides.  Note
@@ -772,7 +755,7 @@ struct Variant
                 version(DigitalMars) version(X86_64)
                 {
                     scope void[] buffer;
-                    uint len = 0;
+                    size_t len = 0;
 
                     foreach(argType; types)
                         len =  max(len,(argType.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1));
@@ -1046,7 +1029,7 @@ debug( UnitTest )
 
         {
             struct A { size_t l; void* p; }
-            char[] b = "123";
+            const(char)[] b = "123";
             A a = *cast(A*)(&b);
 
             assert( a.l == b.length );
@@ -1081,9 +1064,9 @@ debug( UnitTest )
 
         // Test strings
         v = "Hello, World!"c;
-        assert( v.isA!(char[]), v.type.toString );
+        assert( v.isA!(immutable(char)[]), v.type.toString );
         assert( !v.isImplicitly!(wchar[]), v.type.toString );
-        assert( v.get!(char[]) == "Hello, World!" );
+        assert( v.get!(immutable(char)[]) == "Hello, World!" );
 
         // Test array storage
         v = [1,2,3,4,5];
@@ -1264,20 +1247,20 @@ debug( UnitTest )
         {
             class A
             {
-                char[] msg() { return "A"; }
+                const(char)[] msg() { return "A"; }
             }
             class B : A
             {
-                override char[] msg() { return "B"; }
+                override const(char)[] msg() { return "B"; }
             }
             interface C
             {
-                char[] name();
+                const(char)[] name();
             }
             class D : B, C
             {
-                override char[] msg() { return "D"; }
-                override char[] name() { return "phil"; }
+                override const(char)[] msg() { return "D"; }
+                override const(char)[] name() { return "phil"; }
             }
 
             struct S { int a, b, c, d; }

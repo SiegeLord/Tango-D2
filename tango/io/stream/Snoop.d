@@ -23,7 +23,7 @@ version(DigitalMars)
 }else version (GNU)
     private import tango.core.Vararg;
 
-private alias void delegate(in char[]) Snoop;
+private alias void delegate(const(char)[]) Snoop;
 
 /*******************************************************************************
 
@@ -152,7 +152,7 @@ class SnoopInput : InputStream
 
         ***********************************************************************/
 
-        private void snooper (in char[] x)
+        private void snooper (const(char)[] x)
         {
                 Cerr(x).newline;
         }
@@ -163,7 +163,7 @@ class SnoopInput : InputStream
 
         ***********************************************************************/
 
-        private void trace (in char[] format, ...)
+        private void trace (const(char)[] format, ...)
         {
                 char[256] tmp = void;
                 snoop (Format.vprint (tmp, format, _arguments, _argptr));
@@ -294,7 +294,7 @@ class SnoopOutput : OutputStream
 
         ***********************************************************************/
 
-        private void snooper (in char[] x)
+        private void snooper (const(char)[] x)
         {
                 Cerr(x).newline;
         }
@@ -305,7 +305,7 @@ class SnoopOutput : OutputStream
 
         ***********************************************************************/
 
-        private void trace (in char[] format, ...)
+        private void trace (const(char)[] format, ...)
         {
                 char[256] tmp = void;
                 snoop (Format.vprint (tmp, format, _arguments, _argptr));

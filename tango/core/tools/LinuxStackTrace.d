@@ -15,7 +15,7 @@ module tango.core.tools.LinuxStackTrace;
 
 version(D_Version2)
 {
-		package struct FrameInfo{
+        package struct FrameInfo{
         /// line number in the source of the most likely start adress (0 if not available)
         long line;
         /// number of the stack frame (starting at 0 for the top frame)
@@ -34,41 +34,86 @@ version(D_Version2)
         /// this is the raw adress returned by the backtracing function
         size_t address;
         /// file (image) of the current adress
-        char[] file;
+        const(char)[] file;
         /// name of the function, if possible demangled
         char[] func;
         /// extra information (for example calling arguments)
-        char[] extra;
+        const(char)[] extra;
         /// if the address is exact or it is the return address
         bool exactAddress;
         /// if this function is an internal functions (for example the backtracing function itself)
         /// if true by default the frame is not printed
         bool internalFunction;
-        alias void function(FrameInfo*,void delegate(char[])) FramePrintHandler;
+        alias void function(FrameInfo*,void delegate(in char[])) FramePrintHandler;
         /// the default printing function
         static FramePrintHandler defaultFramePrintingFunction;
         /// writes out the current frame info
-        void writeOut(void delegate(char[])sink);
+        void writeOut(void delegate(in char[])sink){
+
+            if (defaultFramePrintingFunction){
+                defaultFramePrintingFunction(&this,sink);
+            } else {
+                char[26] buf;
+                //auto len=snprintf(buf.ptr,26,"[%8zx]",address);
+                //sink(buf[0..len]);
+                //len=snprintf(buf.ptr,26,"%8zx",baseImg);
+                //sink(buf[0..len]);
+                //len=snprintf(buf.ptr,26,"%+td ",offsetImg);
+                //sink(buf[0..len]);
+                //while (++len<6) sink(" ");
+                if (func.length) {
+                    sink(func);
+                } else {
+                    sink("???");
+                }
+                for (size_t i=func.length;i<80;++i) sink(" ");
+                //len=snprintf(buf.ptr,26," @%zx",baseSymb);
+                //sink(buf[0..len]);
+                //len=snprintf(buf.ptr,26,"%+td ",offsetSymb);
+                //sink(buf[0..len]);
+                if (extra.length){
+                    sink(extra);
+                    sink(" ");
+                }
+                sink(file);
+                sink(":");
+                sink(ulongToUtf8(buf, line));
+            }
+        }
         /// clears the frame information stored
-        void clear();
+        void clear()
+        {
+            line=0;
+            iframe=-1;
+            offsetImg=0;
+            baseImg=0;
+            offsetSymb=0;
+            baseSymb=0;
+            address=0;
+            exactAddress=true;
+            internalFunction=false;
+            file=null;
+            func=null;
+            extra=null;
+        }
     }
-		
-		private const(char)[] ulongToUtf8 (char[] tmp, ulong val)
-		in {
-			 assert (tmp.length > 19, "atoi buffer should be more than 19 chars wide");
-			 }
-		body
-		{
-				char* p = tmp.ptr + tmp.length;
 
-				do {
-					 *--p = cast(char)((val % 10) + '0');
-					 } while (val /= 10);
+        private const(char)[] ulongToUtf8 (char[] tmp, ulong val)
+        in {
+             assert (tmp.length > 19, "atoi buffer should be more than 19 chars wide");
+             }
+        body
+        {
+                char* p = tmp.ptr + tmp.length;
 
-				return tmp [cast(size_t)(p - tmp.ptr) .. $];
-		}
-		
-		private void ThWriteOut(Throwable th, void delegate(in char[])sink){
+                do {
+                     *--p = cast(char)((val % 10) + '0');
+                     } while (val /= 10);
+
+                return tmp [cast(size_t)(p - tmp.ptr) .. $];
+        }
+
+        private void ThWriteOut(Throwable th, void delegate(in char[])sink){
         if (th.file.length>0 || th.line!=0)
         {
             char[25]buf;
@@ -114,8 +159,8 @@ version(linux){
     import tango.core.Runtime;
 
     class SymbolException:Exception {
-        this(const(char)[] msg,const(char)[] file,long lineNr,Exception next=null){
-            super(msg.idup,file.idup,cast(uint)lineNr,next);
+        this(immutable(char)[] msg, immutable(char)[] file,long lineNr,Exception next=null){
+            super(msg,file,cast(uint)lineNr,next);
         }
     }
     bool may_read(size_t addr){
@@ -271,7 +316,7 @@ version(linux){
             SHT_STRTAB  = 3,
             STB_LOCAL   = 0,
         }
-        
+
     }
 
     ubyte ELF32_ST_BIND(ulong info){
@@ -319,15 +364,15 @@ version(linux){
             newV.mmapLen=mmapLen;
             return newV;
         }
-        
+
         // stores the global sections
         const MAX_SECTS=5;
         static StaticSectionInfo[MAX_SECTS] _gSections;
         static size_t _nGSections,_nFileBuf;
         static char[MAX_SECTS*256] _fileNameBuf;
-        
+
         /// loops on the global sections
-        static int opApply(int delegate(ref StaticSectionInfo) loop){
+        static int opApply(scope int delegate(ref StaticSectionInfo) loop){
             for (size_t i=0;i<_nGSections;++i){
                 auto res=loop(_gSections[i]);
                 if (res) return res;
@@ -335,7 +380,7 @@ version(linux){
             return 0;
         }
         /// loops on the static symbols
-        static int opApply(int delegate(ref const(char)[] sNameP,ref size_t startAddr,
+        static int opApply(scope int delegate(ref const(char)[] sNameP,ref size_t startAddr,
             ref size_t endAddr, ref bool pub) loop){
             for (size_t isect=0;isect<_nGSections;++isect){
                 StaticSectionInfo *sec=&(_gSections[isect]);
@@ -416,7 +461,7 @@ version(linux){
         void read(void* ptr, size_t size){
             auto readB=fread(ptr, 1, size,fd);
             if(readB != size){
-                throw new SymbolException("read failure in file "~file[0..strlen(file)],__FILE__,__LINE__);
+                throw new SymbolException("read failure in file "~file[0..strlen(file)].idup,__FILE__,__LINE__);
             }
         }
 
@@ -455,13 +500,13 @@ version(linux){
                     sectionStrs.length = section.sh_size;
                     read(sectionStrs.ptr, sectionStrs.length);
                     char* p=&(sectionStrs[section.sh_name]);
-                    if (strcmp(p,cast(char*)".shstrtab")==0) break;
+                    if (strcmp(p,".shstrtab".ptr)==0) break;
                 }
             }
         }
         if (sectionStrs) {
             char* p=&(sectionStrs[section.sh_name]);
-            if (strcmp(p,cast(char*)".shstrtab")!=0) {
+            if (strcmp(p,".shstrtab".ptr)!=0) {
                 sectionStrs="\0".dup;
             } else {
                 debug(elf) printf("found .shstrtab\n");
@@ -470,7 +515,7 @@ version(linux){
             sectionStrs="\0".dup;
         }
 
-  
+
         /* find sections */
         char[] string_table;
         Elf_Sym[] symbs;
@@ -632,7 +677,7 @@ Lsplit:
             }
             const(char)[] addr = tok[0] ~ "\u0000";
             const(char)[] source = tok[$-1] ~ "\u0000";
-            const const(char)[] marker = "\x7FELF"c;
+            enum immutable(char)[] marker = "\x7FELF"c;
 
             void* start, end;
             if(2 != sscanf(addr.ptr, "%zX-%zX", &start, &end)){

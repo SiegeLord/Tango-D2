@@ -30,7 +30,7 @@ class TextFileInput : TextInput
 
         ***********************************************************************/
 
-        this (char[] path, File.Style style = File.ReadExisting)
+        this (const(char)[] path, File.Style style = File.ReadExisting)
         {
                 this (new File (path, style));
         }
@@ -62,7 +62,7 @@ class TextFileOutput : TextOutput
 
         ***********************************************************************/
 
-        this (char[] path, File.Style style = File.WriteCreate)
+        this (const(char)[] path, File.Style style = File.WriteCreate)
         {
                 this (new File (path, style));
         }

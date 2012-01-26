@@ -12,7 +12,6 @@
 
 module tango.io.vfs.LinkedFolder;
 
-
 private import tango.io.vfs.model.Vfs;
 
 private import tango.core.Exception;
@@ -120,7 +119,7 @@ class LinkedFolder : VirtualFolder
 
         ***********************************************************************/
 
-        final override VfsFile file (in char[] path)
+        final override VfsFile file (const(char)[] path)
         {
                 auto link = head;
                 while (link)
@@ -154,7 +153,7 @@ void main()
         auto sub  = new VirtualFolder ("sub");
         sub.mount (new FileFolder (r"d:/d/import/temp"));
         sub.map (sub.file(r"temp/subtree/test.txt"), "wumpus");
-        
+
         root.mount (new FileFolder (r"d:/d/import/tango"))
             .mount (new FileFolder (r"c:/"), "windows");
         root.mount (sub);

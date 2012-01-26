@@ -40,7 +40,7 @@ version = Bug_HeapCorruption;
 private
 {
     enum EntryType { Dir, File }
-   
+
     /*
      * Entries are what make up the internal tree that describes the
      * filesystem of the archive.  Each Entry is either a directory or a file.
@@ -175,7 +175,7 @@ private
                     {
                         auto zi = file.zipEntry.open;
                         scope(exit) zi.close;
-    
+
                         file.tempFile = new TempFile;
                         file.tempFile.copy(zi).close;
 
@@ -208,7 +208,7 @@ private
         void dispose()
         {
             fullname = name = null;
-            
+
             with( vfsFilterInfo )
             {
                 name = path = null;
@@ -304,7 +304,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final VfsFile file(in char[] path)
+    final VfsFile file(const(char)[] path)
     in
     {
         assert( valid );
@@ -319,7 +319,7 @@ class ZipSubFolder : VfsFolder, VfsSync
         if (dir.length > 0 && '/' == dir[$-1]) {
             dir = dir[0..$-1];
         }
-		
+
         // If the file is in another directory, then we need to look up that
         // up first.
         if( dir.nz() )
@@ -346,7 +346,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final VfsFolderEntry folder(in char[] path)
+    final VfsFolderEntry folder(const(char)[] path)
     in
     {
         assert( valid );
@@ -406,7 +406,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final int opApply(int delegate(ref VfsFolder) dg)
+    final int opApply(scope int delegate(ref VfsFolder) dg)
     in { assert( valid ); }
     body
     {
@@ -456,7 +456,7 @@ else
     }
 
     // workaround for a bug in gdb. See ticket #190
-    version (GNU) 
+    version (GNU)
     {
         override VfsFolder close(bool commit = true)
         in { assert( valid ); }
@@ -466,8 +466,8 @@ else
         }
 
         override VfsFolder sync()
-        { 
-            assert( valid ); 
+        {
+            assert( valid );
             return syncImpl();
         }
     }
@@ -478,7 +478,7 @@ else
         body
         {
             return closeImpl(commit);
-        }   
+        }
 
 
         override VfsFolder sync()
@@ -718,7 +718,7 @@ version( ZipFolder_NonMutating )
 else
 {
         enforce_mutable;
-        
+
         // First, we need to determine if we have any zip entries.  If we
         // don't, then we can write directly to the path.  If there *are*
         // zip entries, then we'll need to write to a temporary path instead.
@@ -800,7 +800,7 @@ else
         debug( ZipFolder )
             Stderr(" sync: reset archive").newline;
         this.resetArchive(path, readonly);
-        
+
         debug( ZipFolder )
             Stderr(" sync: reset folder").newline;
         this.reset(this, root);
@@ -860,7 +860,7 @@ private:
                     null));
     }
 
-    void mutate_write(uint bytes, in void[] src)
+    void mutate_write(size_t bytes, const(void)[] src)
     {
         if( !(bytes == 0 || bytes == IConduit.Eof) )
             this.modified = true;
@@ -902,7 +902,7 @@ private:
         foreach( zipEntry ; zr )
         {
             // Normalise name
-            auto name = FilePath(zipEntry.info.name).standard.toString;
+            auto name = FilePath(zipEntry.info.name.dup).standard.toString;
 
             // If the last character is '/', treat as a directory and skip
             // TODO: is there a better way of detecting this?
@@ -920,7 +920,7 @@ private:
                     assert( curent.isDir );
                     if( auto nextent = (h in curent.dir.children) )
                         curent = *nextent;
-                    
+
                     else
                     {
                         // Create new directory entry
@@ -1196,7 +1196,7 @@ else
 {
         // MUTATE
         enforce_mutable;
-        
+
         // Don't call mutate; defer that until the user actually writes to or
         // modifies the underlying stream.
         return archive.mutateStream(entry.openOutput);
@@ -1219,7 +1219,7 @@ else
     {
         return entry.file.zipEntry.info.modified;
     }
-    
+
     private:
     ZipFolder archive;
     Entry* entry;
@@ -1379,7 +1379,7 @@ else
         if( this.exists )
             error("ZipSubFolderEntry.create: cannot create folder that already "
                     "exists, and believe me, I *tried*");
-        
+
         // Ok, I suppose I can do this for ya...
         auto entry = new Entry;
         entry.type = EntryType.Dir;
@@ -1428,7 +1428,7 @@ private:
     {
         return (archive !is null) && !archive.closed;
     }
-    
+
     final void enforce_mutable()
     in { assert( valid ); }
     body
@@ -1452,7 +1452,7 @@ private:
 
 class ZipSubFolderGroup : VfsFolders
 {
-    final int opApply(int delegate(ref VfsFolder) dg)
+    final int opApply(scope int delegate(ref VfsFolder) dg)
     in { assert( valid ); }
     body
     {
@@ -1468,7 +1468,7 @@ class ZipSubFolderGroup : VfsFolders
         return result;
     }
 
-    final uint files()
+    final size_t files()
     in { assert( valid ); }
     body
     {
@@ -1480,14 +1480,14 @@ class ZipSubFolderGroup : VfsFolders
         return files;
     }
 
-    final uint folders()
+    final size_t folders()
     in { assert( valid ); }
     body
     {
         return members.length;
     }
 
-    final uint entries()
+    final size_t entries()
     in { assert( valid ); }
     body
     {
@@ -1506,7 +1506,7 @@ class ZipSubFolderGroup : VfsFolders
         return bytes;
     }
 
-    final VfsFolders subset(in char[] pattern)
+    final VfsFolders subset(const(char)[] pattern)
     in { assert( valid ); }
     body
     {
@@ -1519,7 +1519,7 @@ class ZipSubFolderGroup : VfsFolders
         return new ZipSubFolderGroup(archive, set);
     }
 
-    final VfsFiles catalog(in char[] pattern)
+    final VfsFiles catalog(const(char)[] pattern)
     in { assert( valid ); }
     body
     {
@@ -1582,7 +1582,7 @@ private:
 
 class ZipFileGroup : VfsFiles
 {
-    final int opApply(int delegate(ref VfsFile) dg)
+    final int opApply(scope int delegate(ref VfsFile) dg)
     in { assert( valid ); }
     body
     {
@@ -1600,7 +1600,7 @@ class ZipFileGroup : VfsFiles
         return result;
     }
 
-    final uint files()
+    final size_t files()
     in { assert( valid ); }
     body
     {
@@ -1674,23 +1674,24 @@ bool single_path_part(const(char)[] s)
     return true;
 }
 
-const(char)[] dir_app(const(char)[] dir, const(char)[] name)
+char[] dir_app(const(char)[] dir, const(char)[] name)
 {
     return dir ~ (dir[$-1]!='/' ? "/" : "") ~ name;
 }
 
-void headTail(const(char)[] path, out const(char)[] head, out const(char)[] tail)
+inout(char)[] headTail(inout(char)[] path, out inout(char)[] head, out inout(char)[] tail)
 {
     foreach( i,dchar c ; path[1..$] )
         if( c == '/' )
         {
             head = path[0..i+1];
             tail = path[i+2..$];
-            return;
+            return head;;
         }
 
     head = path;
     tail = null;
+    return head;
 }
 
 debug (UnitTest)
@@ -1816,7 +1817,7 @@ class EventSeekInputStream : InputStream //, IConduit.Seek
     {
         void delegate()                     close; ///
         void delegate()                     clear; ///
-        void delegate(uint, void[])         read; ///
+        void delegate(size_t, void[])       read; ///
         void delegate(long, long, Anchor)   seek; ///
     }
 
@@ -1897,10 +1898,10 @@ class EventSeekOutputStream : OutputStream //, IConduit.Seek
     ///
     struct Callbacks
     {
-        void delegate()                     close; ///
-        void delegate()                     flush; ///
-        void delegate(uint, in void[])         write; ///
-        void delegate(long, long, Anchor)   seek; ///
+        void delegate()                      close; ///
+        void delegate()                      flush; ///
+        void delegate(size_t, const(void)[]) write; ///
+        void delegate(long, long, Anchor)    seek; ///
     }
 
     //alias IConduit.Seek.Anchor Anchor;
@@ -1985,7 +1986,7 @@ private:
 
     author:     Daniel Keep
 *******************************************************************************/
- 
+
 
 //module tangox.io.stream.WrapStream;
 
