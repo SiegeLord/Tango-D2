@@ -98,7 +98,7 @@ public struct StopWatch
 
         ***********************************************************************/
         
-        ulong microsec ()
+        @property ulong microsec ()
         {
                 version (Posix)
                          return (timer - started);
@@ -131,7 +131,7 @@ public struct StopWatch
 
         ***********************************************************************/
 
-        private static ulong timer ()
+        @property private static ulong timer ()
         {
                 version (Posix)       
                 {

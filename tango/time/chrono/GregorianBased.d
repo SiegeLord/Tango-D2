@@ -78,7 +78,7 @@ class GregorianBased : Gregorian {
     throw new IllegalArgumentException("Era value was not valid.");
   }
 
-  protected const uint currentEra() {
+  @property protected const uint currentEra() {
     return currentEra_;
   }
 }

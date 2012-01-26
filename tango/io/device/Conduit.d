@@ -170,7 +170,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final IConduit conduit ()
+        @property final IConduit conduit ()
         {
                 return this;
         }
@@ -216,7 +216,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final InputStream input ()
+        @property final InputStream input ()
         {
                 return this;
         }
@@ -227,7 +227,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final OutputStream output ()
+        @property final OutputStream output ()
         {
                 return this;
         }
@@ -468,7 +468,7 @@ class InputFilter : InputStream
 
         ***********************************************************************/
 
-        IConduit conduit ()
+        @property IConduit conduit ()
         {
                 return source.conduit;
         }
@@ -535,7 +535,7 @@ class InputFilter : InputStream
 
         ***********************************************************************/
 
-        InputStream input ()
+        @property InputStream input ()
         {
                 return source;
         }
@@ -582,7 +582,7 @@ class OutputFilter : OutputStream
 
         ***********************************************************************/
 
-        IConduit conduit ()
+        @property IConduit conduit ()
         {
                 return sink.conduit;
         }
@@ -646,7 +646,7 @@ class OutputFilter : OutputStream
 
         ***********************************************************************/
 
-        OutputStream output ()
+        @property OutputStream output ()
         {
                 return sink;
         }

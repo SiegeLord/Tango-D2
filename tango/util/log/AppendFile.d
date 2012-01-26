@@ -58,7 +58,7 @@ class AppendFile : Filer
 
         ***********************************************************************/
 
-        final const Mask mask ()
+        @property final const Mask mask ()
         {
                 return mask_;
         }
@@ -69,7 +69,7 @@ class AppendFile : Filer
 
         ***********************************************************************/
 
-        final const const(char)[] name ()
+        @property final const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -86,7 +86,7 @@ class AppendFile : Filer
                 {
                     layout.format (event, &buffer.write);
                     buffer.append (FileConst.NewlineString)
-                          .flush;
+                          .flush();
                 }
         }
 }
@@ -109,7 +109,7 @@ class Filer : Appender
 
         ***********************************************************************/
 
-        final IConduit conduit ()
+        @property final IConduit conduit ()
         {
                 return conduit_;
         }
@@ -126,7 +126,7 @@ class Filer : Appender
                 {
                     if (conduit_)
                        {
-                       conduit_.detach;
+                       conduit_.detach();
                        conduit_ = null;
                        }
                 }

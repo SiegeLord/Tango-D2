@@ -147,10 +147,10 @@ struct Uuid
                 Uuid u;
                 with (u)
                 {
-                        _data.ui[0] = generator.natural;
-                        _data.ui[1] = generator.natural;
-                        _data.ui[2] = generator.natural;
-                        _data.ui[3] = generator.natural;
+                        _data.ui[0] = generator.natural();
+                        _data.ui[1] = generator.natural();
+                        _data.ui[2] = generator.natural();
+                        _data.ui[3] = generator.natural();
 
                         // v4: 7th bytes' first half is 0b0100: 4 in hex
                         _data.ub[6] &= 0b01001111;
@@ -183,10 +183,10 @@ struct Uuid
                           6 to the appropriate 4-bit version number from Section 4.1.3.
                    o  Set the two most significant bits (bits 6 and 7) of octet 8 to 
                           zero and one, respectively.  */
-                auto nameBytes = namespace.toBytes;
+                auto nameBytes = namespace.toBytes();
                 nameBytes ~= cast(ubyte[])name;
                 digest.update(nameBytes);
-                nameBytes = digest.binaryDigest;
+                nameBytes = digest.binaryDigest();
                 nameBytes[6] = cast(ubyte)((uuidVersion << 4) | (nameBytes[6] & 0b1111));
                 nameBytes[8] |= 0b1000_0000;
                 nameBytes[8] &= 0b1011_1111;

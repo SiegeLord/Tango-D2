@@ -256,7 +256,7 @@ public struct Log
 
         ***********************************************************************/
 
-        static Time time ()
+        @property static Time time ()
         {
                 version (Posix)
                 {
@@ -281,7 +281,7 @@ public struct Log
 
         ***********************************************************************/
 
-        static Logger root ()
+        @property static Logger root ()
         {
                 return base.root;
         }
@@ -459,7 +459,7 @@ public class Logger : ILogger
         interface Context
         {
                 /// return a label for this context
-                const const(char)[] label ();
+                @property const const(char)[] label ();
 
                 /// first arg is the setting of the logger itself, and
                 /// the second arg is what kind of message we're being
@@ -680,7 +680,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final const(char)[] name ()
+        @property final const(char)[] name ()
         {
                 size_t i = name_.length;
                 if (i > 0)
@@ -734,7 +734,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final const bool additive ()
+        @property final const bool additive ()
         {
                 return additive_;
         }
@@ -745,7 +745,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final Logger additive (bool enabled)
+        @property final Logger additive (bool enabled)
         {
                 additive_ = enabled;
                 return this;
@@ -785,7 +785,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final char[] buffer ()
+        @property final char[] buffer ()
         {
                 return buffer_;
         }
@@ -798,7 +798,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final Logger buffer (char[] buf)
+        @property final Logger buffer (char[] buf)
         {
                 buffer_ = buf;
                 buffer_size_ = buf.length;
@@ -811,7 +811,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final const TimeSpan runtime ()
+        @property final const TimeSpan runtime ()
         {
                 return Clock.now - Log.beginTime;
         }
@@ -1033,7 +1033,7 @@ private class Hierarchy : Logger.Context
 
         **********************************************************************/
 
-        final const const(char)[] name ()
+        @property final const const(char)[] name ()
         {
                 return name_;
         }
@@ -1044,7 +1044,7 @@ private class Hierarchy : Logger.Context
 
         **********************************************************************/
 
-        final void name (const(char[]) name)
+        @property final void name (const(char[]) name)
         {
                 name_ = name;
         }
@@ -1056,7 +1056,7 @@ private class Hierarchy : Logger.Context
 
         **********************************************************************/
 
-        final const const(char)[] address ()
+        @property final const const(char)[] address ()
         {
                 return address_;
         }
@@ -1068,7 +1068,7 @@ private class Hierarchy : Logger.Context
 
         **********************************************************************/
 
-        final void address (const(char[]) address)
+        @property final void address (const(char[]) address)
         {
                 address_ = address;
         }
@@ -1080,7 +1080,7 @@ private class Hierarchy : Logger.Context
 
         **********************************************************************/
 
-        final Logger.Context context ()
+        @property final Logger.Context context ()
         {
         	return context_;
         }
@@ -1093,7 +1093,7 @@ private class Hierarchy : Logger.Context
 
         **********************************************************************/
 
-        final void context (Logger.Context context)
+        @property final void context (Logger.Context context)
         {
         	context_ = context;
         }
@@ -1104,7 +1104,7 @@ private class Hierarchy : Logger.Context
 
         ***********************************************************************/
 
-        final Logger root ()
+        @property final Logger root ()
         {
                 return root_;
         }
@@ -1267,7 +1267,7 @@ private class Hierarchy : Logger.Context
                    // if we don't have an explicit level set, inherit it
                    // Be careful to avoid recursion, or other overhead
                    if (force)
-                       logger.level_ = changed.level;
+                       logger.level_ = changed.level();
                    }
         }
 }
@@ -1326,7 +1326,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        const const(char)[] name ()
+        @property const const(char)[] name ()
         {
                 return name_;
         }
@@ -1337,7 +1337,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        const Level level ()
+        @property const Level level ()
         {
                 return level_;
         }
@@ -1348,7 +1348,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        Hierarchy host ()
+        @property Hierarchy host ()
         {
                 return host_;
         }
@@ -1360,7 +1360,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        const TimeSpan span ()
+        @property const TimeSpan span ()
         {
                 return time_ - Log.beginTime;
         }
@@ -1371,7 +1371,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        const const(Time) time ()
+        @property const const(Time) time ()
         {
                 return time_;
         }
@@ -1382,7 +1382,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        const(Time) started ()
+        @property const(Time) started ()
         {
                 return Log.beginTime;
         }
@@ -1393,7 +1393,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        const(char)[] levelName ()
+        @property const(char)[] levelName ()
         {
                 return Log.LevelNames[level_];
         }
@@ -1459,7 +1459,7 @@ public class Appender
 
         ***********************************************************************/
 
-        abstract const Mask mask ();
+        @property abstract const Mask mask ();
 
         /***********************************************************************
 
@@ -1467,7 +1467,7 @@ public class Appender
 
         ***********************************************************************/
 
-        abstract const const(char)[] name ();
+        @property abstract const const(char)[] name ();
 
         /***********************************************************************
 
@@ -1505,7 +1505,7 @@ public class Appender
 
         ***********************************************************************/
 
-        final Level level ()
+        @property final Level level ()
         {
                 return level_;
         }
@@ -1516,7 +1516,7 @@ public class Appender
 
         ***********************************************************************/
 
-        final Appender level (Level l)
+        @property final Appender level (Level l)
         {
                 level_ = l;
                 return this;
@@ -1559,7 +1559,7 @@ public class Appender
 
         ***********************************************************************/
 
-        void layout (Layout how)
+        @property void layout (Layout how)
         {
                 layout_ = how ? how : generic;
         }
@@ -1570,7 +1570,7 @@ public class Appender
 
         ***********************************************************************/
 
-        Layout layout ()
+        @property Layout layout ()
         {
                 return layout_;
         }
@@ -1581,7 +1581,7 @@ public class Appender
 
         ***********************************************************************/
 
-        void next (Appender appender)
+        @property void next (Appender appender)
         {
                 next_ = appender;
         }
@@ -1592,7 +1592,7 @@ public class Appender
 
         ***********************************************************************/
 
-        Appender next ()
+        @property Appender next ()
         {
                 return next_;
         }
@@ -1639,7 +1639,7 @@ public class AppendNull : Appender
 
         ***********************************************************************/
 
-        final const Mask mask ()
+        @property final const Mask mask ()
         {
                 return mask_;
         }
@@ -1650,7 +1650,7 @@ public class AppendNull : Appender
 
         ***********************************************************************/
 
-        final const const(char)[] name ()
+        @property final const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -1702,7 +1702,7 @@ public class AppendStream : Appender
 
         ***********************************************************************/
 
-        final const Mask mask ()
+        @property final const Mask mask ()
         {
                 return mask_;
         }
@@ -1713,7 +1713,7 @@ public class AppendStream : Appender
 
         ***********************************************************************/
 
-        const const(char)[] name ()
+        @property const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -1736,7 +1736,7 @@ public class AppendStream : Appender
                              layout.format (event, (const(void)[] content){return stream_.write(content);});
                              stream_.write (Eol);
                              if (flush_)
-                                 stream_.flush;
+                                 stream_.flush();
                              }
         }
 }
@@ -1768,7 +1768,7 @@ public class LayoutTimer : Appender.Layout
                 dg ("] ");
                 dg (event.host.context.label);
                 dg ("- ");
-                dg (event.toString);
+                dg (event.toString());
         }
 }
 

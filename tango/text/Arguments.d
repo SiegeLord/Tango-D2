@@ -235,7 +235,7 @@ class Arguments
                 this.sp = sp;
                 this.lp = lp;
                 this.eq = eq;
-                get(null).params;       // set null argument to consume params
+                get(null).params();       // set null argument to consume params
         }
 
         /***********************************************************************
@@ -288,7 +288,7 @@ class Arguments
                         debug(Arguments) stdout.formatln ("'{}'", s);
                         if (done is false)
                             if (s == "--")
-                               {done=true; version(dashdash){stack.clear.push(get(null));} continue;}
+                               {done=true; version(dashdash){stack.clear().push(get(null));} continue;}
                             else
                                if (argument (s, lp, sloppy, false) ||
                                    argument (s, sp, sloppy, true))
@@ -296,7 +296,7 @@ class Arguments
                         stack.top.append (s);
                         }  
                 foreach (arg; args)
-                         error |= arg.valid;
+                         error |= arg.valid();
                 return error is 0;
         }
 
@@ -309,7 +309,7 @@ class Arguments
         
         final Arguments clear ()
         {
-                stack.clear;
+                stack.clear();
                 foreach (arg; args)
                         {
                         arg.set = false;
@@ -489,8 +489,8 @@ class Arguments
                 auto a = elem in args;
                 if (a is null)
                     if ((a = elem in aliases) is null)
-                         return get(elem).params.enable(!sloppy);
-                return a.enable;
+                         return get(elem).params().enable(!sloppy);
+                return a.enable();
         }
 
         /***********************************************************************
@@ -598,7 +598,7 @@ class Arguments
 
                 ***************************************************************/
         
-                final Argument required ()
+                @property final Argument required ()
                 {
                         this.req = true;
                         return this;
@@ -767,7 +767,7 @@ class Arguments
 
                 ***************************************************************/
         
-                final Argument explicit ()
+                @property final Argument explicit ()
                 {
                         exp = true;
                         return this;
@@ -856,7 +856,7 @@ class Arguments
                         // pop to an argument that can accept implicit parameters?
                         if (explicit is false)
                             for (auto s=&this.outer.stack; exp && s.size>1; this=s.top)
-                                 s.pop;
+                                 s.pop();
 
                         this.set = true;        // needed for default assignments 
                         values ~= value;        // append new value
@@ -877,7 +877,7 @@ class Arguments
                            }
                         // pop to an argument that can accept parameters
                         for (auto s=&this.outer.stack; values.length >= max && s.size>1; this=s.top)
-                             s.pop;
+                             s.pop();
                 }
 
                 /***************************************************************

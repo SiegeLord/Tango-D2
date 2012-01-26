@@ -99,7 +99,7 @@ struct SysError
 
         ***********************************************************************/
 
-        static uint lastCode ()
+        @property static uint lastCode ()
         {
                 version (Win32)
                          return GetLastError;
@@ -111,7 +111,7 @@ struct SysError
 
         ***********************************************************************/
 
-        static char[] lastMsg ()
+        @property static char[] lastMsg ()
         {
                 return lookup (lastCode);
         }
@@ -120,7 +120,7 @@ struct SysError
 
         ***********************************************************************/
 
-        static char[] lookup (uint errcode)
+        @property static char[] lookup (uint errcode)
         {
                 char[] text;
 

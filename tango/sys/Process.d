@@ -376,7 +376,7 @@ class Process
      * Returns: an int with the process ID if the process is running;
      *          -1 if not.
      */
-    public const int pid()
+    @property public const int pid()
     {
         version (Windows)
         {
@@ -1839,7 +1839,7 @@ class Process
      */
     public void close()
     {
-        this.cleanPipes;
+        this.cleanPipes();
     }
 
     version (Windows)

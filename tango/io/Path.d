@@ -1067,7 +1067,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        PathParser dup () const
+        @property PathParser dup () const
         {
                 PathParser ret;
                 ret.fp = fp.dup;
@@ -1098,7 +1098,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        inout(char_t)[] root () inout
+        @property inout(char_t)[] root () inout
         {
                 return fp [0 .. folder_];
         }
@@ -1115,7 +1115,7 @@ struct PathParser(char_t = char)
 
 
         
-        inout(char_t)[] folder () inout
+        @property inout(char_t)[] folder () inout
         {
                 return fp [folder_ .. name_];
         }
@@ -1137,7 +1137,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        inout(char_t)[] parent () inout
+        @property inout(char_t)[] parent () inout
         {
                 auto p = path;
                 if (name.length is 0)
@@ -1177,7 +1177,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        inout(char_t)[] name () inout
+        @property inout(char_t)[] name () inout
         {
                 return fp [name_ .. suffix_];
         }
@@ -1191,7 +1191,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        char_t[] ext ()
+        @property char_t[] ext ()
         {
                 auto x = suffix;
                 if (x.length)
@@ -1214,7 +1214,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        inout(char_t)[] suffix () inout
+        @property inout(char_t)[] suffix () inout
         {
                 return fp [suffix_ .. end_];
         }
@@ -1225,7 +1225,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        inout(char_t)[] path () inout
+        @property inout(char_t)[] path () inout
         {
                 return fp [0 .. name_];
         }
@@ -1236,7 +1236,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        inout(char_t)[] file () inout
+        @property inout(char_t)[] file () inout
         {
                 return fp [name_ .. end_];
         }
@@ -1248,7 +1248,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        const bool isAbsolute ()
+        @property const bool isAbsolute ()
         {
                 return (folder_ > 0) ||
                        (folder_ < end_ && fp[folder_] is FileConst.PathSeparatorChar);
@@ -1260,7 +1260,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        const bool isEmpty ()
+        @property const bool isEmpty ()
         {
                 return end_ is 0;
         }
@@ -1274,7 +1274,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        const bool isChild ()
+        @property const bool isChild ()
         {
                 return folder().length > 0;
         }
@@ -1292,7 +1292,7 @@ struct PathParser(char_t = char)
         }*/
         const bool equals (const(char)[] s)
         {
-                return FS.stripped(s) == FS.stripped(toString);
+                return FS.stripped(s) == FS.stripped(toString());
         }
 
         /***********************************************************************

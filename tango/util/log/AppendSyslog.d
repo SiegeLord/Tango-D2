@@ -112,7 +112,7 @@ public class AppendSyslog: Filer
 
      ***********************************************************************/
 
-    final Mask mask ( ) const
+    @property final Mask mask ( ) const
     {
         return mask_;
     }
@@ -123,7 +123,7 @@ public class AppendSyslog: Filer
 
      ***********************************************************************/
 
-    final const(char)[] name ( ) const
+    @property final const(char)[] name ( ) const
     {
         return this.classinfo.name;
     }
@@ -152,7 +152,7 @@ public class AppendSyslog: Filer
             // write log message and flush it
             layout.format(event, &write);
             write(tango.io.FilePath.FileConst.NewlineString);
-            buffer.flush;
+            buffer.flush();
         }
     }
 
@@ -223,7 +223,7 @@ public class AppendSyslog: Filer
                     
                     if ( i + 1 == this.compress_index ) with (this.compress_cmd) 
                     {
-                        if ( isRunning )
+                        if ( isRunning() )
                         {
                             wait();
                             close();

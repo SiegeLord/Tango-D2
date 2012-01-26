@@ -74,7 +74,7 @@ struct Stack (V, int Size = 0)
 
         ***********************************************************************/
 
-        size_t size ()
+        @property size_t size ()
         {
                 return depth;
         }
@@ -112,7 +112,7 @@ struct Stack (V, int Size = 0)
 
         ***********************************************************************/
 
-        V dup ()
+        @property V dup ()
         {
                 auto v = top;
                 push (v);       
@@ -184,7 +184,7 @@ struct Stack (V, int Size = 0)
 
         **********************************************************************/
 
-        V top ()
+        @property V top ()
         {
                 if (depth)
                     return stack[depth-1];

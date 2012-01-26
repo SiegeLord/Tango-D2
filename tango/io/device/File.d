@@ -573,7 +573,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                long length ()
+                @property long length ()
                 {
                         long len;
 
@@ -748,7 +748,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                long length ()
+                @property long length ()
                 {
                         stat_t stats = void;
                         if (posix.fstat (handle, &stats))

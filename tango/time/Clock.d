@@ -55,7 +55,7 @@ struct Clock
 
                 ***************************************************************/
 
-                static Time now ()
+                @property static Time now ()
                 {
                         FILETIME fTime = void;
                         GetSystemTimeAsFileTime (&fTime);
@@ -179,7 +179,7 @@ struct Clock
 
                 ***************************************************************/
 
-                static Time now ()
+                @property static Time now ()
                 {
                         timeval tv = void;
                         if (gettimeofday (&tv, null))

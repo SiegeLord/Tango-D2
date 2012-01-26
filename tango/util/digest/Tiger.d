@@ -312,10 +312,10 @@ final class Tiger : MerkleDamgard
 
         ***********************************************************************/
 
-        private static ulong[] t1() { return table[0..256]; }
-        private static ulong[] t2() { return table[256..512]; }
-        private static ulong[] t3() { return table[512..768]; }
-        private static ulong[] t4() { return table[768..1024]; }
+        @property private static ulong[] t1() { return table[0..256]; }
+        @property private static ulong[] t2() { return table[256..512]; }
+        @property private static ulong[] t3() { return table[512..768]; }
+        @property private static ulong[] t4() { return table[768..1024]; }
 }
 
 
