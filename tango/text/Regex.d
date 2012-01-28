@@ -3500,6 +3500,11 @@ private:
                 // are somewhat weak (empirical testing), but sofar no new
                 // regressions have been discovered. larsivi 20090827
                 TNFATransition!(char_t) highestPriTrans;
+                if (!(sorted_elms[$-1] && sorted_elms[$-1].nfa_state &&
+                            sorted_elms[$-1].nfa_state))
+                    throw new Exception ("Something is NULL that is expected to
+                            be non-null", __FILE__, __LINE__);
+														
                 foreach ( trans; sorted_elms[$-1].nfa_state.transitions ) {
                     if (trans.canFinish()) {
                         r.dfa_state.reluctant = true;
