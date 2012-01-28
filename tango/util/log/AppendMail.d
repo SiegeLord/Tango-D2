@@ -65,7 +65,7 @@ public class AppendMail : Appender
 					{
                 auto conduit = new Socket;
                 scope (exit)
-                       conduit.close;
+                       conduit.close();
 
                 conduit.connect (server);
                 auto emit = new Bout (conduit);
@@ -80,7 +80,7 @@ public class AppendMail : Appender
                 
                 layout.format (event, &emit.write);
                 emit.append ("\r\n.\r\nQUIT\r\n");
-                emit.flush;
+                emit.flush();
 					}
         }
 
@@ -90,7 +90,7 @@ public class AppendMail : Appender
 
         ***********************************************************************/
 
-        final const Mask mask ()
+        @property final const Mask mask ()
         {
                 return mask_;
         }
@@ -101,7 +101,7 @@ public class AppendMail : Appender
 
         ***********************************************************************/
 
-        final const const(char)[] name ()
+        @property final const const(char)[] name ()
         {
                 return this.classinfo.name;
         }

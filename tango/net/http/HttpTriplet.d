@@ -56,7 +56,7 @@ class HttpTriplet
                                 break;
 
                 tokens[2] = line [mark .. line.length];
-                return test;
+                return test();
         }
 
         /**********************************************************************

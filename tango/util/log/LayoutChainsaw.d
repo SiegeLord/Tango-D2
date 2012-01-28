@@ -36,7 +36,7 @@ public class LayoutChainsaw : Appender.Layout
                 char[20] tmp;
                 const(char)[]   threadName;
                 
-                threadName = Thread.getThis.name;
+                threadName = Thread.getThis().name;
                 if (threadName.length is 0)
                     threadName = "{unknown}";
 
@@ -50,7 +50,7 @@ public class LayoutChainsaw : Appender.Layout
                 dg (threadName);
                 dg ("\">\r\n<log4j:message><![CDATA[");
 
-                dg (event.toString);
+                dg (event.toString());
 
                 dg ("]]></log4j:message>\r\n<log4j:properties><log4j:data name=\"application\" value=\"");
                 dg (event.host.name);

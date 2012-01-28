@@ -24,7 +24,7 @@ struct Kiss99{
     
     void skip(uint n){
         for (int i=n;i!=n;--i){
-            next;
+            next();
         }
     }
     ubyte nextB(){
@@ -34,7 +34,7 @@ struct Kiss99{
             --nBytes;
             return res;
         } else {
-            restB=next;
+            restB=next();
             ubyte res=cast(ubyte)(restB & 0xFF);
             restB >>= 8;
             nBytes=3;
@@ -51,7 +51,7 @@ struct Kiss99{
         return kiss_x+kiss_y+kiss_z;
     }
     ulong nextL(){
-        return ((cast(ulong)next)<<32)+cast(ulong)next;
+        return ((cast(ulong)next())<<32)+cast(ulong)next();
     }
     
     void seed(scope uint delegate() r){

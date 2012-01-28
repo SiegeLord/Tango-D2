@@ -367,7 +367,7 @@ debug(UnitTest)
         foreach (int i, immutable(char)[] s; strings) 
                 {
                 h.update(s);
-                char[] d = h.hexDigest;
+                char[] d = h.hexDigest();
                 assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
                 }
         }

@@ -353,13 +353,13 @@ public abstract class Calendar
         * $(I Property.) When overridden, retrieves the list of eras in the current calendar.
         * Returns: An integer array representing the eras in the current calendar.
         */
-        abstract const uint[] eras();
+        @property abstract const uint[] eras();
 
         /**
         * $(I Property.) Retrieves the identifier associated with the current calendar.
         * Returns: An integer representing the identifier of the current calendar.
         */
-        const uint id() 
+        @property const uint id() 
         {
                 return -1;
         }

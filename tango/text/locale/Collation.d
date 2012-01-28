@@ -30,8 +30,8 @@ public class StringComparer {
   private bool ignoreCase_;
 
   static this() {
-    invariant_ = new StringComparer(Culture.invariantCulture, false);
-    invariantIgnoreCase_ = new StringComparer(Culture.invariantCulture, true);
+    invariant_ = new StringComparer(Culture.invariantCulture(), false);
+    invariantIgnoreCase_ = new StringComparer(Culture.invariantCulture(), true);
   }
 
   /**
@@ -125,8 +125,8 @@ public class StringSorter {
   private StringComparison comparison_;
 
   static this() {
-    invariant_ = new StringSorter(StringComparer.invariantCulture);
-    invariantIgnoreCase_ = new StringSorter(StringComparer.invariantCultureIgnoreCase);
+    invariant_ = new StringSorter(StringComparer.invariantCulture());
+    invariantIgnoreCase_ = new StringSorter(StringComparer.invariantCultureIgnoreCase());
   }
 
   /**
@@ -136,7 +136,7 @@ public class StringSorter {
   */
   public this(StringComparer comparer = null) {
     if (comparer is null)
-      comparer = StringComparer.currentCulture;
+      comparer = StringComparer.currentCulture();
     comparison_ = &comparer.compare;
   }
 
@@ -212,16 +212,16 @@ public class StringSorter {
     $(I Property.) Retrieves an instance that performs a case-sensitive sort using the rules of the current culture.
     Returns: A StringSorter instance.
   */
-  public static StringSorter currentCulture() {
-    return new StringSorter(StringComparer.currentCulture);
+  @property public static StringSorter currentCulture() {
+    return new StringSorter(StringComparer.currentCulture());
   }
 
   /**
     $(I Property.) Retrieves an instance that performs a case-insensitive sort using the rules of the current culture.
     Returns: A StringSorter instance.
   */
-  public static StringSorter currentCultureIgnoreCase() {
-    return new StringSorter(StringComparer.currentCultureIgnoreCase);
+  @property public static StringSorter currentCultureIgnoreCase() {
+    return new StringSorter(StringComparer.currentCultureIgnoreCase());
   }
 
   /**

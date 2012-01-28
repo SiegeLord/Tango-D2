@@ -224,7 +224,7 @@ class Gregorian : Calendar
         * $(I Property.) Retrieves the GregorianTypes value indicating the language version of the Gregorian.
         * Returns: The Gregorian.Type value indicating the language version of the Gregorian.
         */
-        const Type calendarType() 
+        @property const Type calendarType() 
         {
                 return type_;
         }
@@ -233,7 +233,7 @@ class Gregorian : Calendar
         * $(I Property.) Overridden. Retrieves the list of eras in the current calendar.
         * Returns: An integer array representing the eras in the current calendar.
         */
-        override const uint[] eras() 
+        @property override const uint[] eras() 
         {       
                 uint[] tmp = [AD_ERA, BC_ERA];
                 return tmp.dup;
@@ -243,7 +243,7 @@ class Gregorian : Calendar
         * $(I Property.) Overridden. Retrieves the identifier associated with the current calendar.
         * Returns: An integer representing the identifier of the current calendar.
         */
-        override const uint id() 
+        @property override const uint id() 
         {
                 return cast(int) type_;
         }
@@ -385,7 +385,7 @@ class Gregorian : Calendar
                         else
                         {
                                 numDays -= 366;
-                                calculateYear;
+                                calculateYear();
                         }
                         //
                         // numDays is the number of days back from the end of
@@ -397,7 +397,7 @@ class Gregorian : Calendar
                 {
                         era = AD_ERA;
                         numDays = cast(int)(ticks / TimeSpan.TicksPerDay);
-                        calculateYear;
+                        calculateYear();
                 }
                 dayOfYear = numDays + 1;
 

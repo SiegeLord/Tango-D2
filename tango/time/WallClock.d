@@ -45,7 +45,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time now ()
+                @property static Time now ()
                 {
                         return Clock.now - localBias;
                 }
@@ -57,7 +57,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static TimeSpan zone ()
+                @property static TimeSpan zone ()
                 {
                         TIME_ZONE_INFORMATION tz = void;
 
@@ -141,7 +141,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time now ()
+                @property static Time now ()
                 {
                         tm t = void;
                         timeval tv = void;
@@ -158,7 +158,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static TimeSpan zone ()
+                @property static TimeSpan zone ()
                 {
                         version (darwin)
                                 {

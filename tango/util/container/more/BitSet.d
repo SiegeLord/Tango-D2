@@ -146,7 +146,7 @@ struct BitSet (int Count=0)
 
         **********************************************************************/
 
-        const BitSet dup ()
+        @property const BitSet dup ()
         {
                 BitSet x;
                 static if (Count == 0)
@@ -161,7 +161,7 @@ struct BitSet (int Count=0)
 
         **********************************************************************/
 
-        const size_t size ()
+        @property const size_t size ()
         {
                 return width * bits.length;
         }

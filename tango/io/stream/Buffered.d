@@ -472,7 +472,7 @@ class BufferedInput : InputFilter, InputBuffer
                    // seek using the adjusted position.
                    }
 
-                clear;
+                clear();
                 return source.seek (offset, start);
         }
 
@@ -559,7 +559,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final BufferedInput compress ()
+        @property final BufferedInput compress ()
         {
                 auto r = readable;
 
@@ -610,7 +610,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final const size_t limit ()
+        @property final const size_t limit ()
         {
                 return extent;
         }
@@ -650,7 +650,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final const size_t position ()
+        @property final const size_t position ()
         {
                 return index;
         }
@@ -665,7 +665,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final const size_t readable ()
+        @property final const size_t readable ()
         {
                 return extent - index;
         }
@@ -699,7 +699,7 @@ class BufferedInput : InputFilter, InputBuffer
 
                 // clear the filter chain also
                 if (source)
-                    super.flush;
+                    super.flush();
                 return this;
         }
 
@@ -709,7 +709,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final void input (InputStream source)
+        @property final void input (InputStream source)
         {
                 this.source = source;
         }
@@ -730,7 +730,7 @@ class BufferedInput : InputFilter, InputBuffer
         final override void[] load (size_t max = size_t.max)
         {
                 load (super.input, super.conduit.bufferSize, max);
-                return slice;
+                return slice();
         }
 
         /***********************************************************************
@@ -813,7 +813,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        private final const size_t writable ()
+        @property private final const size_t writable ()
         {
                 return dimension - extent;
         }
@@ -1013,7 +1013,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
         {
                 if (length > writable)
                    {
-                   flush;
+                   flush();
 
                    // check for pathological case
                    if (length > dimension)
@@ -1046,7 +1046,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final const size_t writable ()
+        @property final const size_t writable ()
         {
                 return dimension - extent;
         }
@@ -1066,7 +1066,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final const size_t limit ()
+        @property final const size_t limit ()
         {
                 return extent;
         }
@@ -1147,8 +1147,8 @@ class BufferedOutput : OutputFilter, OutputBuffer
                       }
 
                 // flush the filter chain also
-                clear;
-                super.flush;
+                clear();
+                super.flush();
                 return this;
         }
 
@@ -1229,7 +1229,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final void output (OutputStream sink)
+        @property final void output (OutputStream sink)
         {
                 this.sink = sink;
         }
@@ -1244,7 +1244,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         final override long seek (long offset, Anchor start = Anchor.Begin)
         {
-                clear;
+                clear();
                 return super.seek (offset, start);
         }
 
@@ -1323,7 +1323,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        private final const size_t readable ()
+        @property private final const size_t readable ()
         {
                 return extent - index;
         }
@@ -1378,7 +1378,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        private final BufferedOutput compress ()
+        @property private final BufferedOutput compress ()
         {
                 size_t r = readable;
 

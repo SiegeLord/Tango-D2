@@ -51,7 +51,7 @@ public struct ExtendedDate {
     * Do not use val.year directly unless you are absolutely sure that it is in
     * the range a Time can hold (-10000 to 9999).
     */
-   const int year()
+   @property const int year()
    out(val) {
       assert (  (val >= -1_000_000_000 && val <=          -1)
              || (val >=              1 && val <= 999_999_999));
@@ -67,7 +67,7 @@ public struct ExtendedDate {
    }
 
    // y may be zero: if so, it refers to the year 1 BCE
-   private void year(int y) {
+   @property private void year(int y) {
       if (DTyear(y)) {
          year_ = 0;
          // getYear returns uint: be careful with promotion to unsigned
@@ -82,7 +82,7 @@ public struct ExtendedDate {
    /** Returns the seconds part of the date: may be 60 if a leap second
     * occurred. In such a case, val's seconds part is 59.
     */
-   const uint seconds() { return val.time.seconds + ((mask >>> 0) & 1); }
+   @property const uint seconds() { return val.time.seconds + ((mask >>> 0) & 1); }
    alias seconds secs, second, sec;
 
    /** Whether the ISO 8601 representation of this hour is 24 or 00: whether
@@ -91,7 +91,7 @@ public struct ExtendedDate {
     *
     * If the time of val is not exactly 00:00:00.000, this value is undefined.
     */
-   const bool endOfDay() { return 1 ==              ((mask >>> 1) & 1); }
+   @property const bool endOfDay() { return 1 ==              ((mask >>> 1) & 1); }
 
    private void setLeap    () { mask |= 1 << 0; }
    private void setEndOfDay() { mask |= 1 << 1; }

@@ -119,7 +119,7 @@ class LinkedFolder : VirtualFolder
 
         ***********************************************************************/
 
-        final override VfsFile file (const(char)[] path)
+        @property final override VfsFile file (const(char)[] path)
         {
                 auto link = head;
                 while (link)

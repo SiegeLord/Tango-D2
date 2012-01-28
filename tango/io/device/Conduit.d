@@ -59,7 +59,7 @@ class Conduit : IConduit
 
         this ()
         {
-                auto f = Fiber.getThis;
+                auto f = Fiber.getThis();
                 version(TangoRuntime)
                 {
                     if (f)
@@ -75,7 +75,7 @@ class Conduit : IConduit
 
         ~this ()
         {
-                detach;
+                detach();
         }
 
         /***********************************************************************
@@ -137,7 +137,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final void timeout (uint millisec)
+        @property final void timeout (uint millisec)
         {
                 duration = millisec;
         }
@@ -148,7 +148,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final const uint timeout ()
+        @property final const uint timeout ()
         {
                 return duration;
         }
@@ -159,7 +159,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        const bool isAlive ()
+        @property const bool isAlive ()
         {
                 return true;
         }
@@ -170,7 +170,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final IConduit conduit ()
+        @property final IConduit conduit ()
         {
                 return this;
         }
@@ -196,7 +196,7 @@ class Conduit : IConduit
 
         void close ()
         {
-                this.detach;
+                this.detach();
         }
 
         /***********************************************************************
@@ -216,7 +216,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final InputStream input ()
+        @property final InputStream input ()
         {
                 return this;
         }
@@ -227,7 +227,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final OutputStream output ()
+        @property final OutputStream output ()
         {
                 return this;
         }
@@ -292,7 +292,7 @@ class Conduit : IConduit
 
         long seek (long offset, Anchor anchor = Anchor.Begin)
         {
-                error (this.toString ~ " does not support seek requests");
+                error (this.toString() ~ " does not support seek requests");
                 return 0;
         }
 
@@ -468,7 +468,7 @@ class InputFilter : InputStream
 
         ***********************************************************************/
 
-        IConduit conduit ()
+        @property IConduit conduit ()
         {
                 return source.conduit;
         }
@@ -513,7 +513,7 @@ class InputFilter : InputStream
 
         IOStream flush ()
         {
-                source.flush;
+                source.flush();
                 return this;
         }
 
@@ -535,7 +535,7 @@ class InputFilter : InputStream
 
         ***********************************************************************/
 
-        InputStream input ()
+        @property InputStream input ()
         {
                 return source;
         }
@@ -548,7 +548,7 @@ class InputFilter : InputStream
 
         void close ()
         {
-                source.close;
+                source.close();
         }
 }
 
@@ -582,7 +582,7 @@ class OutputFilter : OutputStream
 
         ***********************************************************************/
 
-        IConduit conduit ()
+        @property IConduit conduit ()
         {
                 return sink.conduit;
         }
@@ -624,7 +624,7 @@ class OutputFilter : OutputStream
 
         IOStream flush ()
         {
-                sink.flush;
+                sink.flush();
                 return this;
         }
 
@@ -646,7 +646,7 @@ class OutputFilter : OutputStream
 
         ***********************************************************************/
 
-        OutputStream output ()
+        @property OutputStream output ()
         {
                 return sink;
         }
@@ -659,6 +659,6 @@ class OutputFilter : OutputStream
 
         void close ()
         {
-                sink.close;
+                sink.close();
         }
 }

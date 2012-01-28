@@ -744,11 +744,11 @@ Lsplit:
         size_t read_pos;
         bool is_dwarf_64;
 
-        size_t left() {
+        @property size_t left() {
             return data.length - read_pos;
         }
 
-        ubyte next() {
+        @property ubyte next() {
             ubyte r = data[read_pos];
             read_pos++;
             return r;

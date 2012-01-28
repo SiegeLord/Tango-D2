@@ -134,7 +134,7 @@ class HashSet (V, alias Hash = Container.hash,
                 
         ***********************************************************************/
 
-        final const size_t size ()
+        @property final const size_t size ()
         {
                 return count;
         }
@@ -197,7 +197,7 @@ class HashSet (V, alias Hash = Container.hash,
                 
         ***********************************************************************/
 
-        final HashSet dup ()
+        @property final HashSet dup ()
         {
                 auto clone = new HashSet!(V, Hash, Reap, Heap) (loadFactor);
                 

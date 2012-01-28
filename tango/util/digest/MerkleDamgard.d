@@ -105,7 +105,7 @@ package class MerkleDamgard : Digest
 
         ***********************************************************************/
 
-        protected abstract uint addSize();
+        @property protected abstract uint addSize();
 
         /***********************************************************************
 

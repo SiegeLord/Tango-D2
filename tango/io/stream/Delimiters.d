@@ -92,7 +92,7 @@ class Delimiters(T) : Iterator!(T)
                             if (has (delim, c))
                                 return found (set (content.ptr, 0, i, i));
 
-                return notFound;
+                return notFound();
         }
 }
 

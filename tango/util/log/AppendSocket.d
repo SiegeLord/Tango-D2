@@ -53,7 +53,7 @@ public class AppendSocket : Appender
                 this.buffer  = new Bout (conduit);
 
                 // Get a unique fingerprint for this class
-                mask_ = register (address.toString);
+                mask_ = register (address.toString());
         }
 
         /***********************************************************************
@@ -62,7 +62,7 @@ public class AppendSocket : Appender
 
         ***********************************************************************/
 
-        const Mask mask ()
+        @property const Mask mask ()
         {
                 return mask_;
         }
@@ -73,7 +73,7 @@ public class AppendSocket : Appender
 
         ***********************************************************************/
 
-        const const(char)[] name ()
+        @property const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -104,16 +104,16 @@ public class AppendSocket : Appender
                        layout.format (event, &buffer.write);
                        if (eol.length)
                            buffer.write (eol);
-                       buffer.flush;
+                       buffer.flush();
                        return;
                        } catch (Exception e)
                                {
                                connected = false;
-                               Cerr ("SocketAppender.append :: "~e.toString).newline;
+                               Cerr ("SocketAppender.append :: "~e.toString()).newline;
                                }
                    }
 
-                Cerr (event.toString).newline;
+                Cerr (event.toString()).newline;
         }
 
         /***********************************************************************
@@ -125,7 +125,7 @@ public class AppendSocket : Appender
         void close ()
         {
                 if (conduit)
-                    conduit.detach;
+                    conduit.detach();
                 conduit = null;
         }
 }

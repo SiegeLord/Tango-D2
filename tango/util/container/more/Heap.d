@@ -133,7 +133,7 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         }
 
         /** Returns the number of elements in this heap. */
-        const size_t size ()
+        @property const size_t size ()
         {
                 return next;
         }
@@ -148,7 +148,7 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         void clear (T[] host)
         {
                 this.heap = host;
-                clear;
+                clear();
         }
 
         /** Get the reserved capacity of this heap. */
@@ -287,11 +287,11 @@ unittest
         h ~= 4;
         assert (h.size is 4);
 
-        assert (h.peek is 1);
-        assert (h.peek is 1);
+        assert (h.peek() is 1);
+        assert (h.peek() is 1);
         assert (h.size is 4);
-        h.pop;
-        assert (h.peek is 2);
+        h.pop();
+        assert (h.peek() is 2);
         assert (h.size is 3);
 }
 
@@ -305,13 +305,13 @@ unittest
         h ~= 4;
         assert (h.size is 4);
 
-        assert (h.pop is 1);
+        assert (h.pop() is 1);
         assert (h.size is 3);
-        assert (h.pop is 2);
+        assert (h.pop() is 2);
         assert (h.size is 2);
-        assert (h.pop is 3);
+        assert (h.pop() is 3);
         assert (h.size is 1);
-        assert (h.pop is 4);
+        assert (h.pop() is 4);
         assert (h.size is 0);
 }
 
@@ -323,10 +323,10 @@ unittest
         h ~= 2;
         h ~= 4;
 
-        assert (h.pop is 4);
-        assert (h.pop is 3);
-        assert (h.pop is 2);
-        assert (h.pop is 1);
+        assert (h.pop() is 4);
+        assert (h.pop() is 3);
+        assert (h.pop() is 2);
+        assert (h.pop() is 1);
 }
 
 unittest
@@ -337,9 +337,9 @@ unittest
         h ~= 2;
         h ~= 4;
         h.remove(3);
-        assert (h.pop is 4);
-        assert (h.pop is 2);
-        assert (h.pop is 1);
+        assert (h.pop() is 4);
+        assert (h.pop() is 2);
+        assert (h.pop() is 1);
         assert (h.size == 0);
 }
 
@@ -368,11 +368,11 @@ unittest
         // percolate down. So you have to swap once when
         // popping at a minimum, and that's if you have only two
         // items in the heap.
-        assert (h.pop is 1);
+        assert (h.pop() is 1);
         assert (swapped.length == 1, "" ~ cast(char)('a' + swapped.length));
         assert (swapped[0] == 3);
         assert (indices[0] == 0);
-        assert (h.pop is 3);
+        assert (h.pop() is 3);
         assert (swapped.length == 1, "" ~ cast(char)('a' + swapped.length));
 }
 unittest
@@ -410,16 +410,16 @@ unittest
         h ~= 3;
         h ~= 2;
         h ~= 4;
-        auto other = h.clone;
+        auto other = h.clone();
 
-        assert (other.pop is 4);
-        assert (other.pop is 3);
-        assert (other.pop is 2);
-        assert (other.pop is 1);
+        assert (other.pop() is 4);
+        assert (other.pop() is 3);
+        assert (other.pop() is 2);
+        assert (other.pop() is 1);
         assert (h.size is 4, "cloned heap shares data with original heap");
-        assert (h.pop is 4, "cloned heap shares data with original heap");
-        assert (h.pop is 3, "cloned heap shares data with original heap");
-        assert (h.pop is 2, "cloned heap shares data with original heap");
-        assert (h.pop is 1, "cloned heap shares data with original heap");
+        assert (h.pop() is 4, "cloned heap shares data with original heap");
+        assert (h.pop() is 3, "cloned heap shares data with original heap");
+        assert (h.pop() is 2, "cloned heap shares data with original heap");
+        assert (h.pop() is 1, "cloned heap shares data with original heap");
 }
 }

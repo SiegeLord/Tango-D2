@@ -104,7 +104,7 @@ class Lines(T) : Iterator!(T)
                             return found (i);
                             }
 
-                return notFound;
+                return notFound();
         }
 }
 

@@ -543,7 +543,7 @@ private class SelectSelectionSet: ISelectionSet
         _exceptionSet = exceptionSet;
     }
 
-    uint length()
+    @property uint length()
     {
         return _eventCount;
     }
@@ -628,7 +628,7 @@ version (Windows)
         /**
          *  return true if this handle set has been initialized.
          */
-        bool initialized()
+        @property bool initialized()
         {
             return _buffer.length > 0;
         }
@@ -636,7 +636,7 @@ version (Windows)
         /**
          * Return the number of handles present in the HandleSet.
          */
-        uint length()
+        @property uint length()
         {
             return _buffer[0];
         }
@@ -799,7 +799,7 @@ else version (Posix)
         /**
          * Return true if the handleset has been initialized
          */
-        bool initialized()
+        @property bool initialized()
         {
             return _buffer.length > 0;
         }

@@ -40,7 +40,7 @@ UuidGen randUuid;
 static this ()
 {
         Twister rand;
-        rand.seed;
+        rand.seed();
         randUuid = new RandomGen!(Twister)(rand);
 }
 

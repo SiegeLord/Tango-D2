@@ -196,7 +196,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                static char[][] roots ()
+                @property static char[][] roots ()
                 {
                         int             len;
                         char[]          str;
@@ -428,7 +428,7 @@ struct FileSystem
 
                  ***************************************************************/
 
-                static char[][] roots ()
+                @property static char[][] roots ()
                 {
                         version(darwin)
                         {
@@ -442,7 +442,7 @@ struct FileSystem
 
                             auto fc = new File("/etc/mtab");
                             scope (exit)
-                                   fc.close;
+                                   fc.close();
 
                             auto content = new char[cast(size_t)fc.length];
                             fc.input.read (content);
@@ -501,7 +501,7 @@ struct FileSystem
                 {
                     scope fp = new FilePath(folder.dup);
                     statvfs_t info;
-                    int res = statvfs(fp.native.cString.ptr, &info);
+                    int res = statvfs(fp.native.cString().ptr, &info);
                     if (res == -1)
                         exception ("freeSpace->statvfs failed:"
                                    ~ SysError.lastMsg.idup);
@@ -536,7 +536,7 @@ struct FileSystem
                 {
                     scope fp = new FilePath(folder.dup);
                     statvfs_t info;
-                    int res = statvfs(fp.native.cString.ptr, &info);
+                    int res = statvfs(fp.native.cString().ptr, &info);
                     if (res == -1)
                         exception ("totalSpace->statvfs failed:"
                                    ~ SysError.lastMsg.idup);
