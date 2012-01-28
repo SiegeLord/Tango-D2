@@ -316,8 +316,8 @@ class VariantTypeMismatchException : Exception
 {
     this(TypeInfo expected, TypeInfo got)
     {
-        super("cannot convert "~expected.toString
-                    ~" value to a "~got.toString);
+        super("cannot convert "~expected.toString()
+                    ~" value to a "~got.toString());
     }
 }
 
@@ -478,7 +478,7 @@ struct Variant
      *  assert( ! v.isA!(short) ); // note no implicit conversion
      * -----
      */
-    bool isA(T)()
+    @property bool isA(T)()
     {
         return cast(bool)(typeid(T) is type);
     }
@@ -500,7 +500,7 @@ struct Variant
      *  assert( v.isA!(short) ); // note implicit conversion
      * -----
      */
-    bool isImplicitly(T)()
+    @property bool isImplicitly(T)()
     {
         static if( is( T == class ) || is( T == interface ) )
         {
@@ -529,7 +529,7 @@ struct Variant
      * Returns:
      *  true if the Variant does not contain a value, false otherwise.
      */
-    bool isEmpty()
+    @property bool isEmpty()
     {
         return isA!(void);
     }
@@ -561,14 +561,14 @@ struct Variant
          * Returns:
          *  The value stored within the Variant.
          */
-        T get(T)()
+        @property T get(T)()
         {
             // For actual implementation, see below.
         }
     }
     else
     {
-        returnT!(S) get(S)()
+        @property returnT!(S) get(S)()
         {
             alias returnT!(S) T;
 
@@ -716,14 +716,14 @@ struct Variant
      */
     string toString()
     {
-        return type.toString;
+        return type.toString();
     }
 
     /**
      * This can be used to retrieve the TypeInfo for the currently stored
      * value.
      */
-    TypeInfo type()
+    @property TypeInfo type()
     {
         return _type;
     }
@@ -732,7 +732,7 @@ struct Variant
      * This can be used to retrieve a pointer to the value stored in the
      * variant.
      */
-    void* ptr()
+    @property void* ptr()
     {
         if( type.tsize <= value.sizeof )
             return &value;
@@ -834,7 +834,7 @@ private:
     TypeInfo _type = typeid(void);
     VariantStorage value;
 
-    TypeInfo type(TypeInfo v)
+    @property TypeInfo type(TypeInfo v)
     {
         return (_type = v);
     }
@@ -1044,33 +1044,33 @@ debug( UnitTest )
     unittest
     {
         Variant v;
-        assert( v.isA!(void), v.type.toString );
-        assert( v.isEmpty, v.type.toString );
+        assert( v.isA!(void), v.type.toString() );
+        assert( v.isEmpty, v.type.toString() );
 
         // Test basic integer storage and implicit casting support
         v = 42;
-        assert( v.isA!(int), v.type.toString );
-        assert( v.isImplicitly!(long), v.type.toString );
-        assert( v.isImplicitly!(ulong), v.type.toString );
-        assert( !v.isImplicitly!(uint), v.type.toString );
+        assert( v.isA!(int), v.type.toString() );
+        assert( v.isImplicitly!(long), v.type.toString() );
+        assert( v.isImplicitly!(ulong), v.type.toString() );
+        assert( !v.isImplicitly!(uint), v.type.toString() );
         assert( v.get!(int) == 42 );
         assert( v.get!(long) == 42L );
         assert( v.get!(ulong) == 42uL );
 
         // Test clearing
-        v.clear;
-        assert( v.isA!(void), v.type.toString );
-        assert( v.isEmpty, v.type.toString );
+        v.clear();
+        assert( v.isA!(void), v.type.toString() );
+        assert( v.isEmpty, v.type.toString() );
 
         // Test strings
         v = "Hello, World!"c;
-        assert( v.isA!(immutable(char)[]), v.type.toString );
-        assert( !v.isImplicitly!(wchar[]), v.type.toString );
+        assert( v.isA!(immutable(char)[]), v.type.toString() );
+        assert( !v.isImplicitly!(wchar[]), v.type.toString() );
         assert( v.get!(immutable(char)[]) == "Hello, World!" );
 
         // Test array storage
         v = [1,2,3,4,5];
-        assert( v.isA!(int[]), v.type.toString );
+        assert( v.isA!(int[]), v.type.toString() );
         assert( v.get!(int[]) == [1,2,3,4,5] );
 
         // Make sure arrays are correctly stored so that .ptr works.
@@ -1085,16 +1085,16 @@ debug( UnitTest )
 
         // Test pointer storage
         v = &v;
-        assert( v.isA!(Variant*), v.type.toString );
-        assert( !v.isImplicitly!(int*), v.type.toString );
-        assert( v.isImplicitly!(void*), v.type.toString );
+        assert( v.isA!(Variant*), v.type.toString() );
+        assert( !v.isImplicitly!(int*), v.type.toString() );
+        assert( v.isImplicitly!(void*), v.type.toString() );
         assert( v.get!(Variant*) == &v );
 
         // Test object storage
         {
             scope o = new Object;
             v = o;
-            assert( v.isA!(Object), v.type.toString );
+            assert( v.isA!(Object), v.type.toString() );
             assert( v.get!(Object) is o );
         }
 
@@ -1126,35 +1126,35 @@ debug( UnitTest )
             K e;
 
             Variant v2 = a;
-            assert( v2.isImplicitly!(Object), v2.type.toString );
-            assert( v2.isImplicitly!(G), v2.type.toString );
-            assert(!v2.isImplicitly!(I), v2.type.toString );
+            assert( v2.isImplicitly!(Object), v2.type.toString() );
+            assert( v2.isImplicitly!(G), v2.type.toString() );
+            assert(!v2.isImplicitly!(I), v2.type.toString() );
 
             v2 = c;
-            assert( v2.isImplicitly!(Object), v2.type.toString );
-            assert( v2.isImplicitly!(G), v2.type.toString );
-            assert( v2.isImplicitly!(I), v2.type.toString );
+            assert( v2.isImplicitly!(Object), v2.type.toString() );
+            assert( v2.isImplicitly!(G), v2.type.toString() );
+            assert( v2.isImplicitly!(I), v2.type.toString() );
 
             v2 = d;
-            assert( v2.isImplicitly!(Object), v2.type.toString );
-            assert(!v2.isImplicitly!(G), v2.type.toString );
-            assert( v2.isImplicitly!(H), v2.type.toString );
-            assert( v2.isImplicitly!(J), v2.type.toString );
+            assert( v2.isImplicitly!(Object), v2.type.toString() );
+            assert(!v2.isImplicitly!(G), v2.type.toString() );
+            assert( v2.isImplicitly!(H), v2.type.toString() );
+            assert( v2.isImplicitly!(J), v2.type.toString() );
 
             v2 = e;
-            assert(!v2.isImplicitly!(Object), v2.type.toString );
+            assert(!v2.isImplicitly!(Object), v2.type.toString() );
         }
 
         // Test doubles and implicit casting
         v = 3.1413;
-        assert( v.isA!(double), v.type.toString );
-        assert( v.isImplicitly!(real), v.type.toString );
-        assert( !v.isImplicitly!(float), v.type.toString );
+        assert( v.isA!(double), v.type.toString() );
+        assert( v.isImplicitly!(real), v.type.toString() );
+        assert( !v.isImplicitly!(float), v.type.toString() );
         assert( v.get!(double) == 3.1413 );
 
         // Test storage transitivity
         auto u = Variant(v);
-        assert( u.isA!(double), u.type.toString );
+        assert( u.isA!(double), u.type.toString() );
         assert( u.get!(double) == 3.1413 );
 
         // Test operators
@@ -1247,20 +1247,20 @@ debug( UnitTest )
         {
             class A
             {
-                const(char)[] msg() { return "A"; }
+                @property const(char)[] msg() { return "A"; }
             }
             class B : A
             {
-                override const(char)[] msg() { return "B"; }
+                @property override const(char)[] msg() { return "B"; }
             }
             interface C
             {
-                const(char)[] name();
+                @property const(char)[] name();
             }
             class D : B, C
             {
-                override const(char)[] msg() { return "D"; }
-                override const(char)[] name() { return "phil"; }
+                @property override const(char)[] msg() { return "D"; }
+                @property override const(char)[] name() { return "phil"; }
             }
 
             struct S { int a, b, c, d; }

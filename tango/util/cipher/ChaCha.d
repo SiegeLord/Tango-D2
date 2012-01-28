@@ -12,7 +12,7 @@ private import tango.util.cipher.Salsa20;
 /** Implementation of ChaCha designed by Daniel J. Bernstein. */
 class ChaCha : Salsa20
 {
-    const(char)[] name()
+    @property override const(char)[] name()
     {
         return "ChaCha";
     }

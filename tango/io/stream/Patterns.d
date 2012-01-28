@@ -92,7 +92,7 @@ class Patterns : Iterator!(char)
                    return found (finish-1);
                    }
 
-                return notFound;
+                return notFound();
         }
 }
 

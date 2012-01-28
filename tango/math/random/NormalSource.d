@@ -26,8 +26,8 @@ class NormalSource(RandG,T){
         T x, y; 
         do 
         {
-            x = -log(r.uniform!(T)) / dMin;
-            y = -log(r.uniform!(T)); 
+            x = -log(r.uniform!(T)()) / dMin;
+            y = -log(r.uniform!(T)()); 
         } while (y+y < x * x); 
         return (iNegative ?(-x - dMin):(dMin + x)); 
     }

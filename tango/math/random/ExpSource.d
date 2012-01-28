@@ -22,7 +22,7 @@ final class ExpSource(RandG,T){
     /// tail for exponential distribution
     static T tailGenerator(RandG r, T dMin) 
     { 
-        return dMin-log(r.uniform!(T));
+        return dMin-log(r.uniform!(T)());
     }
     alias Ziggurat!(RandG,T,probDensityF,tailGenerator,false) SourceT;
     /// internal source of exp distribued numbers

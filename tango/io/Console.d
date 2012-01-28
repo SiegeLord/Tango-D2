@@ -127,7 +127,7 @@ struct Console
                             return true;
 
                         // assign trailing content and return false
-                        content = cast(char[]) buffer.slice (buffer.readable);
+                        content = cast(char[]) buffer.slice (buffer.readable());
                         return false;
                 }
 
@@ -267,7 +267,7 @@ struct Console
 
                 final Output append (Object other)        
                 {           
-                        return append (other.toString);
+                        return append (other.toString());
                 }
 
                 /**************************************************************
@@ -292,7 +292,7 @@ struct Console
                 {
                         buffer.append (Eol);
                         if (redirect is false)
-                            buffer.flush;
+                            buffer.flush();
 
                         return this;
                 }
@@ -312,7 +312,7 @@ struct Console
 
                 final Output flush ()
                 {
-                        buffer.flush;
+                        buffer.flush();
                         return this;
                 }
 
@@ -649,10 +649,10 @@ static this ()
 static ~this()
 {
    synchronized (Cout.stream)
-        Cout.flush;
+        Cout.flush();
 
    synchronized (Cerr.stream)
-        Cerr.flush;
+        Cerr.flush();
 }
 
 

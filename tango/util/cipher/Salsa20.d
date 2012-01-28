@@ -73,7 +73,7 @@ class Salsa20 : StreamCipher
         _encrypt = _initialized = true;
     }
     
-    const(char[]) name()
+    @property override const(char[]) name()
     {
         return "Salsa20";
     }

@@ -227,7 +227,7 @@ struct RedBlack (V, A = AttributeDummy)
         /**
          * Return the number of nodes in the subtree
         **/
-        int size ()
+        @property size_t size ()
         {
                 auto c = 1;
                 if (left)

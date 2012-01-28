@@ -143,7 +143,7 @@ class SSLCtx
                 
     *******************************************************************************/
 
-    SSL_CTX* native()
+    @property SSL_CTX* native()
     {   
         return _ctx;
     }
@@ -190,7 +190,7 @@ class SSLCtx
                 
     *******************************************************************************/
 
-    SSLCtx checkKey()
+    @property SSLCtx checkKey()
     {
         if (!SSL_CTX_check_private_key(_ctx))
             throwOpenSSLError();
@@ -714,7 +714,7 @@ class PrivateKey
         if (RSA_sign(NID_md5, digest.ptr, cast(uint) digest.length, sigbuf.ptr, &len, cast(RSA *)_evpKey.pkey))
             return sigbuf[0..len];
         else
-            throwOpenSSLError;
+            throwOpenSSLError();
         return null;
     }
 

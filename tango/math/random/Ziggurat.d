@@ -108,21 +108,21 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
                 T x = posBlock[i]*u;
                 if (x<posBlock[i+1]) return ((i0 & 0x100u)?x:-x);
                 if (i == 0) return tailGenerator(r,posBlock[1],x<0);
-                if ((cast(T)probDensityF(x))>fVal[i+1]+(fVal[i]-fVal[i+1])*((cast(T)r.uniform!(uint)+cast(T)0.5)*scaleF)) {
+                if ((cast(T)probDensityF(x))>fVal[i+1]+(fVal[i]-fVal[i+1])*((cast(T)r.uniform!(uint)()+cast(T)0.5)*scaleF)) {
                     return ((i0 & 0x100u)?x:-x);
                 }
             }
         } else {
             for (int iter=1000;iter!=0;--iter) 
             { 
-                uint i0=r.uniform!(uint);
+                uint i0=r.uniform!(uint)();
                 uint i= i0 & 0xFFU;
                 enum T scaleF=(cast(T)1)/(cast(T)uint.max+1);
                 T u= (cast(T)i0+cast(T)0.5)*scaleF;
                 T x = posBlock[i]*u;
                 if (x<posBlock[i+1]) return x;
                 if (i == 0) return tailGenerator(r,posBlock[1]);
-                if ((cast(T)probDensityF(x))>fVal[i+1]+(fVal[i]-fVal[i+1])*r.uniform!(T)) {
+                if ((cast(T)probDensityF(x))>fVal[i+1]+(fVal[i]-fVal[i+1])*r.uniform!(T)()) {
                     return x;
                 }
             }
@@ -135,25 +135,25 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
         static if (hasNegative){
             for (int iter=1000;iter!=0;--iter) 
             { 
-                uint i0 = r.uniform!(uint);
+                uint i0 = r.uniform!(uint)();
                 uint i= i0 & 0xFF;
                 T u = r.uniform!(T)();
                 T x = posBlock[i]*u;
                 if (x<posBlock[i+1]) return ((i0 & 0x100u)?x:-x);
                 if (i == 0) return tailGenerator(r,posBlock[1],x<0);
-                if ((cast(T)probDensityF(x))>fVal[i+1]+(fVal[i]-fVal[i+1])*r.uniform!(T)) {
+                if ((cast(T)probDensityF(x))>fVal[i+1]+(fVal[i]-fVal[i+1])*r.uniform!(T)()) {
                     return ((i0 & 0x100u)?x:-x);
                 }
             }
         } else {
             for (int iter=1000;iter!=0;--iter) 
             { 
-                uint i=r.uniform!(ubyte);
+                uint i=r.uniform!(ubyte)();
                 T u = r.uniform!(T)();
                 T x = posBlock[i]*u;
                 if (x<posBlock[i+1]) return x;
                 if (i == 0) return tailGenerator(r,posBlock[1]);
-                if ((cast(T)probDensityF(x))>fVal[i+1]+(fVal[i]-fVal[i+1])*r.uniform!(T)) {
+                if ((cast(T)probDensityF(x))>fVal[i+1]+(fVal[i]-fVal[i+1])*r.uniform!(T)()) {
                     return x;
                 }
             }

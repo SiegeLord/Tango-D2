@@ -81,8 +81,8 @@ class HttpParams : HttpTokens, HttpParamsView
                 setParsed (true);
                 amp.set (input);
 
-                while (amp.next || amp.get.length)
-                       stack.push (amp.get);
+                while (amp.next || amp.get().length)
+                       stack.push (amp.get());
         }
 
         /**********************************************************************

@@ -657,9 +657,9 @@ class ZlibOutput : OutputFilter
     override void close()
     {
         // Only commit if the stream is still open.
-        if( zs_valid ) commit;
+        if( zs_valid ) commit();
 
-        super.close;
+        super.close();
     }
 
     /***************************************************************************
@@ -899,9 +899,9 @@ unittest
         scope cond_z = new Array(2048);
         scope comp = new ZlibOutput(cond_z);
         comp.write (message);
-        comp.close;
+        comp.close();
 
-        assert( comp.written == message_z.length );
+        assert( comp.written() == message_z.length );
 
         /+
         Stdout("message_z:").newline;
@@ -912,7 +912,7 @@ unittest
 
         //assert( message_z == cast(ubyte[])(cond_z.slice) );
         check_array!(__FILE__,__LINE__)
-            ( message_z, cast(ubyte[]) cond_z.slice, "message_z " );
+            ( message_z, cast(ubyte[]) cond_z.slice(), "message_z " );
 
         scope decomp = new ZlibInput(cond_z);
         auto buffer = new ubyte[256];

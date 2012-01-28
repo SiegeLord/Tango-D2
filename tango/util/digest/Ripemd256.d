@@ -399,7 +399,7 @@ debug(UnitTest)
     foreach (int i, immutable(char)[] s; strings)
             {
             h.update(cast(ubyte[]) s);
-            char[] d = h.hexDigest;
+            char[] d = h.hexDigest();
 
             assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
             }
@@ -408,7 +408,7 @@ debug(UnitTest)
     for (auto i = 0; i < s.length; i++) s[i] = 'a';
     immutable(char)[] result = "ac953744e10e31514c150d4d8d7b677342e33399788296e43ae4850ce4f97978";
     h.update(cast(ubyte[]) s);
-    char[] d = h.hexDigest;
+    char[] d = h.hexDigest();
 
     assert(d == result,":(1 million times \"a\")("~d~")!=("~result~")");
     }

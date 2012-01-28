@@ -10,6 +10,8 @@
 
     This is a regular expression compiler and interpreter based on the Tagged NFA/DFA method.
 
+		The Regex class is not thread safe
+		
     See <a href="http://en.wikipedia.org/wiki/Regular_expression">Wikpedia's article on regular expressions</a>
     for details on regular expressions in general.
 
@@ -65,6 +67,8 @@
     $(TR $(TD \d) $(TD digits) )
     $(TR $(TD \D) $(TD non-digit) )
     </table>
+		
+		Note that "alphanumeric" only applies to Latin-1.
 *******************************************************************************/
 module tango.text.Regex;
 
@@ -701,9 +705,7 @@ struct CharClass(char_t)
                 {l_:0x01, r_:0xff}
             ]},
             dot_oper = {parts: [
-                {l_:0x09, r_:0x13},   // basic control chars
-                {l_:0x20, r_:0x7e},   // basic latin
-                {l_:0xa0, r_:0xff}    // latin-1 supplement
+                {l_:0x01, r_:0xff}
             ]},
             alphanum_ = {parts: [
                 {l_:0x30, r_:0x39},
@@ -719,11 +721,8 @@ struct CharClass(char_t)
             any_char = {parts: [
                 {l_:0x0001, r_:0xffff}
             ]},
-            dot_oper = {parts: [ {l_:0x0001, r_:0xffff}
-                /*{l_:0x09,r_:0x13},{l_:0x20, r_:0x7e},{l_:0xa0, r_:0xff},
-                {l_:0x0100, r_:0x017f},   // latin extended a
-                {l_:0x0180, r_:0x024f},   // latin extended b
-                {l_:0x20a3, r_:0x20b5},   // currency symbols*/
+            dot_oper = {parts: [
+                {l_:0x0001, r_:0xffff}
             ]},
             alphanum_ = {parts: [
                 {l_:0x30, r_:0x39},
@@ -742,7 +741,7 @@ struct CharClass(char_t)
 //            assert(p.l_<=p.r_, Int.toString(i)~": "~Int.toString(p.l_)~" > "~Int.toString(p.r_));
     }
 
-    static CharClass opCall(in CharClass cc)
+    static CharClass opCall(const(CharClass) cc)
     {
         CharClass ncc;
         ncc.parts = cc.parts.dup;
@@ -926,48 +925,48 @@ debug(UnitTest)
 unittest
 {
     static CharClass!(char) cc = { parts: [{l_:0,r_:10},{l_:0,r_:6},{l_:5,r_:12},{l_:12,r_:17},{l_:20,r_:100}] };
-    assert(cc.toString, "[(0)-(a)(0)-(6)(5)-(c)(c)-(11)(14)-'d']");
+    assert(cc.toString(), "[(0)-(a)(0)-(6)(5)-(c)(c)-(11)(14)-'d']");
     cc.optimize();
-    assert(cc.toString,  "[(0)-(11)(14)-'d']");
+    assert(cc.toString(),  "[(0)-(11)(14)-'d']");
     cc.negate();
-    assert(cc.toString,  " [(12)-(13)'e'-(ff)]");
+    assert(cc.toString(),  " [(12)-(13)'e'-(ff)]");
     cc.optimize();
-    assert(cc.toString,  "[(0)-(11)(14)-'d']");
+    assert(cc.toString(),  "[(0)-(11)(14)-'d']");
     cc.negate();
-    assert(cc.toString,  "[(12)-(13)'e'-(ff)]");
+    assert(cc.toString(),  "[(12)-(13)'e'-(ff)]");
     
     static CharClass!(char) cc2 = { parts: [] };
-    assert(cc.toString,  "[]");
+    assert(cc.toString(),  "[]");
     cc2.optimize();
-    assert(cc.toString,  "[]");
+    assert(cc.toString(),  "[]");
     cc2.negate();
-    assert(cc.toString,  "[(0)-(ff)]");
+    assert(cc.toString(),  "[(0)-(ff)]");
     cc2.optimize();
-    assert(cc.toString,  "[(0)-(ff)]");
+    assert(cc.toString(),  "[(0)-(ff)]");
     cc2.negate();
-    assert(cc.toString,  "[]");
+    assert(cc.toString(),  "[]");
     
     static CharClass!(char) cc3 = { parts: [{l_:0,r_:100},{l_:200,r_:0xff},] };
-    assert(cc3.toString, "[(0)-'d'(c8)-(ff)]");
+    assert(cc3.toString(), "[(0)-'d'(c8)-(ff)]");
     cc3.negate();
-    assert(cc.toString,  "['e'-(c7)]");
+    assert(cc.toString(),  "['e'-(c7)]");
     cc3.negate();
-    assert(cc.toString,  "[(0)-'d'(c8)-(ff)]");
+    assert(cc.toString(),  "[(0)-'d'(c8)-(ff)]");
     
     static CharClass!(char) cc4 = { parts: [{l_:0,r_:200},{l_:100,r_:0xff},] };
-    assert(cc.toString,  "[(0)-(c8)'d'-(ff)]");
+    assert(cc.toString(),  "[(0)-(c8)'d'-(ff)]");
     cc4.optimize();
-    assert(cc.toString,  "[(9)-(13)(20)-'~'(a0)-(ff)(100)-(17f)(180)-(24f)(20a3)-(20b5)]");
+    assert(cc.toString(),  "[(9)-(13)(20)-'~'(a0)-(ff)(100)-(17f)(180)-(24f)(20a3)-(20b5)]");
     
     static CharClass!(dchar) cc5 = { parts: [{l_:0x9,r_:0x13},{0x20,r_:'~'},{l_:0xa0,r_:0xff},{l_:0x100,r_:0x17f},{l_:0x180,r_:0x24f},{l_:0x20a3,r_:0x20b5}] };
     cc5.optimize();
-    assert(cc.toString,  "[(9)-(13)(20)-'~'(a0)-(24f)(20a3)-(20b5)]");
+    assert(cc.toString(),  "[(9)-(13)(20)-'~'(a0)-(24f)(20a3)-(20b5)]");
     cc5.negate();
-    assert(cc.toString,  "[(0)-(8)(14)-(1f)(7f)-(9f)(250)-(20a2)(20b6)-(10ffff)]");
+    assert(cc.toString(),  "[(0)-(8)(14)-(1f)(7f)-(9f)(250)-(20a2)(20b6)-(10ffff)]");
     cc5.optimize();
-    assert(cc.toString,  "[(0)-(8)(14)-(1f)(7f)-(9f)(250)-(20a2)(20b6)-(10ffff)]");
+    assert(cc.toString(),  "[(0)-(8)(14)-(1f)(7f)-(9f)(250)-(20a2)(20b6)-(10ffff)]");
     cc5.negate();
-    assert(cc.toString,  "[(9)-(13)(20)-'~'(a0)-(24f)(20a3)-(20b5)]");
+    assert(cc.toString(),  "[(9)-(13)(20)-'~'(a0)-(24f)(20a3)-(20b5)]");
 }
 }
 
@@ -976,7 +975,7 @@ unittest
 **************************************************************************************************/
 private struct Predicate(char_t)
 {
-    alias char_t[]              string_t;
+    alias const(char_t)[]       string_t;
     alias CharClass!(char_t)    cc_t;
     alias CharRange!(char_t)    cr_t;
 
@@ -1138,7 +1137,7 @@ private struct Predicate(char_t)
         input.optimize();
     }
 
-    int opCmp(in Predicate p)
+    int opCmp(const(Predicate) p)
     {
         return input.opCmp(p.input);
     }
@@ -1157,7 +1156,7 @@ private struct Predicate(char_t)
         return input;
     }
 
-    void setInput(in cc_t cc)
+    void setInput(const(cc_t) cc)
     {
         input = cast(cc_t)cc;
     }
@@ -1213,7 +1212,7 @@ private class TNFAState(char_t)
 {
     bool    accept = false,
             visited = false;
-    uint    index;
+    size_t  index;
     List!(TNFATransition!(char_t))  transitions;
 
     this()
@@ -1340,12 +1339,12 @@ private final class TNFA(char_t)
     /* ********************************************************************************************
         Creates the TNFA from the given regex pattern
     **********************************************************************************************/
-    this(in string_t regex)
+    this(string_t regex)
     {
         next_tag        = 1;
         transitions     = new List!(trans_t);
 
-        pattern = regex.dup;
+        pattern = regex;
     }
 
     /* ********************************************************************************************
@@ -1950,7 +1949,7 @@ private:
         return frag;
     }
 
-    frag_t constructChars(in string_t chars, in predicate_t.Type type)
+    frag_t constructChars(string_t chars, in predicate_t.Type type)
     {
         cc_t cc;
         for ( int i = 0; i < chars.length; ++i )
@@ -1959,7 +1958,7 @@ private:
         return constructChars(cc, type);
     }
 
-    frag_t constructChars(in cc_t charclass, in predicate_t.Type type)
+    frag_t constructChars(const(cc_t) charclass, in predicate_t.Type type)
     {
         debug(tnfa) Stdout.format("constructChars type={}", type);
 
@@ -1977,7 +1976,7 @@ private:
         return frag;
     }
 
-    frag_t constructCharClass(in predicate_t.Type type)
+    frag_t constructCharClass(predicate_t.Type type)
     {
         debug(tnfa) Stdout.format("constructCharClass type={}", type);
         auto oldCursor = cursor;
@@ -2376,7 +2375,7 @@ private class TDFA(char_t)
 
         bool            accept = false;
         bool            reluctant = false;
-        uint            index;
+        size_t          index;
         Transition[]    transitions,
                         generic_transitions;
         Command[]       finishers;
@@ -3192,7 +3191,7 @@ private:
     SubsetState lookbehindClosure(SubsetState from, predicate_t pred)
     {
         List!(StateElement) stack = new List!(StateElement);
-        StateElement[uint]  closure;
+        StateElement[size_t]  closure;
 
         foreach ( e; from.elms )
         {
@@ -3271,7 +3270,7 @@ private:
         ++firstFreeIndex;
 
         List!(StateElement) stack = new List!(StateElement);
-        StateElement[uint]  closure;
+        StateElement[size_t]  closure;
 
         foreach ( e; from.elms )
         {
@@ -3678,15 +3677,15 @@ class RegExpT(char_t)
             auto s = new Regex(r"p[1-5]\s*");
             ---
     **********************************************************************************************/
-    this(in char_t[] pattern, in char_t[] attributes=null)
+    this(const(char_t)[] pattern, const(char_t)[] attributes=null)
     {
         this(pattern, false, true);
     }
 
     /** ditto */
-    this(in char_t[] pattern, bool swapMBS, bool unanchored, bool printNFA=false)
+    this(const(char_t)[] pattern, bool swapMBS, bool unanchored, bool printNFA=false)
     {
-        pattern_ = pattern.dup;
+        pattern_ = pattern;
 
         debug(TangoRegex) {}
         else { scope tnfa_t tnfa_; }
@@ -3718,7 +3717,7 @@ class RegExpT(char_t)
             auto s = Regex(r"p[1-5]\s*");
             ---
     **********************************************************************************************/
-    static RegExpT!(char_t) opCall(in char_t[] pattern, in char_t[] attributes = null)
+    static RegExpT!(char_t) opCall(const(char_t)[] pattern, const(char_t)[] attributes = null)
     {
         return new RegExpT!(char_t)(pattern, attributes);
     }
@@ -3743,9 +3742,9 @@ class RegExpT(char_t)
             // qwerabcabcab[ab]qwer
             ---
     **********************************************************************************************/
-    public RegExpT!(char_t) search(in char_t[] input)
+    public RegExpT!(char_t) search(const(char_t)[] input)
     {
-        input_ = input.dup;
+        input_ = input;
         next_start_ = 0;
         last_start_ = 0;
         return this;
@@ -3764,9 +3763,9 @@ class RegExpT(char_t)
         Search input for match.
         Returns: false for no match, true for match
     **********************************************************************************************/
-    bool test(in char_t[] input)
+    bool test(const(char_t)[] input)
     {
-        this.input_ = input.dup;
+        this.input_ = input;
         next_start_ = 0;
         last_start_ = 0;
         return test();
@@ -3928,7 +3927,7 @@ class RegExpT(char_t)
                 foreach ( cmd; t.commands )
                 {
                     if ( cmd.src == tdfa_.CURRENT_POSITION_REGISTER )
-                        registers_[cmd.dst] = p;
+                        registers_[cmd.dst] = cast(int)p;
                     else
                         registers_[cmd.dst] = registers_[cmd.src];
                 }
@@ -3937,7 +3936,7 @@ class RegExpT(char_t)
                     // Don't continue matching, the current find should be correct
                     goto Laccept;
 
-                // if all input was consumed and we do not already accept, try to 
+                // if all input was consumed and we do not already accept, try to
                 // add an explicit string/line end
                 if ( p >= inp.length )
                 {
@@ -3976,19 +3975,19 @@ class RegExpT(char_t)
         Returns:
             Slice of input for the requested submatch, or null if no such submatch exists.
     **********************************************************************************************/
-    char_t[] match(uint index)
+    const(char_t)[] match(uint index)
     {
         if ( index > tdfa_.num_tags )
             return null;
-        int start   = last_start_+registers_[index*2],
-            end     = last_start_+registers_[index*2+1];
+        int start   = cast(int)last_start_+registers_[index*2],
+            end     = cast(int)last_start_+registers_[index*2+1];
         if ( start >= 0 && start < end && end <= input_.length )
             return input_[start .. end];
         return null;
     }
 
     /** ditto */
-    char_t[] opIndex(uint index)
+    const(char_t)[] opIndex(uint index)
     {
         return match(index);
     }
@@ -3997,7 +3996,7 @@ class RegExpT(char_t)
         Return the slice of the input that precedes the matched substring.
         If no match was found, null is returned.
     **********************************************************************************************/
-    char_t[] pre()
+    const(char_t)[] pre()
     {
         auto start = registers_[0];
         if ( start < 0 )
@@ -4009,7 +4008,7 @@ class RegExpT(char_t)
         Return the slice of the input that follows the matched substring.
         If no match was found, the whole slice of the input that was processed in the last test.
     **********************************************************************************************/
-    char_t[] post()
+    const(char_t)[] post()
     {
         if ( registers_[1] >= 0 )
             return input_[next_start_ .. $];
@@ -4035,22 +4034,22 @@ class RegExpT(char_t)
             // qwer
             ---
     **********************************************************************************************/
-    char_t[][] split(in char_t[] input)
+    inout(char_t)[][] split(inout(char_t)[] input)
     {
-        auto res = new char_t[][PREALLOC];
+        auto res = new inout(char_t)[][PREALLOC];
         uint index;
-        const(char_t)[] tmp = input;
+        inout(char_t)[] tmp = input;
 
         foreach ( r; search(input) )
         {
-            tmp = pre();
-            res[index++] = tmp[last_start_ .. $].dup;
+            tmp = cast(inout(char_t)[])pre();
+            res[index++] = tmp[last_start_ .. $];
             if ( index >= res.length )
                 res.length = res.length*2;
-            tmp = post();
+            tmp = cast(inout(char_t)[])post();
         }
 
-        res[index++] = tmp.dup;
+        res[index++] = tmp;
         res.length = index;
         return res;
     }
@@ -4058,7 +4057,7 @@ class RegExpT(char_t)
     /**********************************************************************************************
         Returns a copy of the input with all matches replaced by replacement.
     **********************************************************************************************/
-    char_t[] replaceAll(in char_t[] input, in char_t[] replacement, char_t[] output_buffer=null)
+    char_t[] replaceAll(const(char_t)[] input, const(char_t)[] replacement, char_t[] output_buffer=null)
     {
         const(char_t)[] tmp = input;
         if ( output_buffer.length <= 0 )
@@ -4080,9 +4079,9 @@ class RegExpT(char_t)
     /**********************************************************************************************
         Returns a copy of the input with the last match replaced by replacement.
     **********************************************************************************************/
-    char_t[] replaceLast(in char_t[] input, in char_t[] replacement, char_t[] output_buffer=null)
+    char_t[] replaceLast(const(char_t)[] input, const(char_t)[] replacement, char_t[] output_buffer=null)
     {
-        char_t[] tmp_pre, tmp_post;
+        const(char_t)[] tmp_pre, tmp_post;
         if ( output_buffer.length <= 0 )
             output_buffer = new char_t[input.length+replacement.length];
         output_buffer.length = 0;
@@ -4106,7 +4105,7 @@ class RegExpT(char_t)
     /**********************************************************************************************
         Returns a copy of the input with the first match replaced by replacement.
     **********************************************************************************************/
-    char_t[] replaceFirst(in char_t[] input, in char_t[] replacement, char_t[] output_buffer=null)
+    char_t[] replaceFirst(const(char_t)[] input, const(char_t)[] replacement, char_t[] output_buffer=null)
     {
         const(char_t)[] tmp = input;
         if ( output_buffer.length <= 0 )
@@ -4128,10 +4127,9 @@ class RegExpT(char_t)
     /**********************************************************************************************
         Calls dg for each match and replaces it with dg's return value.
     **********************************************************************************************/
-    char_t[] replaceAll(in char_t[] input, char_t[] delegate(RegExpT!(char_t)) dg, char_t[] output_buffer=null)
+    char_t[] replaceAll(const(char_t)[] input, char_t[] delegate(RegExpT!(char_t)) dg, char_t[] output_buffer=null)
     {
         const(char_t)[]    tmp = input;
-        uint        offset;
         if ( output_buffer.length <= 0 )
             output_buffer = new char_t[input.length];
         output_buffer.length = 0;
@@ -4165,7 +4163,7 @@ class RegExpT(char_t)
         static if ( is(char_t == wchar) )
             str_type = "const(wchar)[]";
         static if ( is(char_t == dchar) )
-            str_type = "dchar[]";
+            str_type = "const(dchar)[]";
 
         if ( lexer )
             code = Format.convert("// {}\nbool {}({} input, out uint token, out {} match", pattern_, func_name, str_type, str_type);
@@ -4215,7 +4213,7 @@ class RegExpT(char_t)
         code ~= "\n        dchar c = cast(dchar)input[p];\n        if ( c & 0x80 )\n            decode(input, next_p);";
         code ~= "\n        else\n            next_p = p+1;\n        switch ( s )\n        {";
 
-        uint[] finish_states;
+        size_t[] finish_states;
         foreach ( s; tdfa_.states )
         {
             code ~= Format.convert("\n            case {}:", s.index);
@@ -4295,7 +4293,7 @@ class RegExpT(char_t)
         }
 
         // create finisher groups
-        uint[][uint] finisherGroup;
+        size_t[][size_t] finisherGroup;
         foreach ( fs; finish_states )
         {
             // check if finisher group with same commands exists
@@ -4363,15 +4361,15 @@ class RegExpT(char_t)
     }
 
     /*********************************************************************************************
-        Get the pattern with which this regex was constructed. 
+        Get the pattern with which this regex was constructed.
     **********************************************************************************************/
-    public char_t[] pattern() 
+    public const(char_t)[] pattern() 
     { 
         return pattern_; 
     }
 
     /*********************************************************************************************
-        Get the tag count of this regex, representing the number of sub-matches. 
+        Get the tag count of this regex, representing the number of sub-matches.
 
         This value is the max valid value for match/opIndex.
     **********************************************************************************************/
@@ -4388,10 +4386,10 @@ class RegExpT(char_t)
     tdfa_t      tdfa_;
 private:
     const int   PREALLOC = 16;
-    char_t[]    input_,
-                pattern_;
+    const(char_t)[]    input_,
+                       pattern_;
 
-    string compileCommand(tdfa_t.Command cmd, in char_t[] indent)
+    const(char)[] compileCommand(tdfa_t.Command cmd, const(char)[] indent)
     {
         const(char)[]  code,
                 dst;
@@ -4400,7 +4398,7 @@ private:
             code ~= "p;";
         else
             code ~= Format.convert("r{};", cmd.src);
-        return code.idup;
+        return code;
     }
 }
 
@@ -4435,10 +4433,10 @@ class UtfException : Exception
 {
     size_t idx; /// index in string of where error occurred
 
-    this(const(char)[] s, size_t i)
+    this(immutable(char)[] s, size_t i)
     {
         idx = i;
-        super(s.idup);
+        super(s);
     }
 }
 
@@ -4460,7 +4458,7 @@ bool isValidDchar(dchar c)
  * thrown and idx remains unchanged.
  */
 
-dchar decode(in const(char)[] s, ref size_t idx)
+dchar decode(const(char)[] s, ref size_t idx)
     {
         size_t len = s.length;
         dchar V;
@@ -4534,7 +4532,7 @@ dchar decode(in const(char)[] s, ref size_t idx)
         return V;
 
       Lerr:
-        throw new Exception("4invalid UTF-8 sequence");
+        throw new Exception("invalid UTF-8 sequence");
     }
 
 /*  ditto */
@@ -4591,7 +4589,7 @@ dchar decode(const(wchar)[] s, ref size_t idx)
         return cast(dchar)u;
 
       Lerr:
-        throw new UtfException(msg, i);
+        throw new UtfException(msg.idup, i);
     }
 
 /*  ditto */
@@ -4729,9 +4727,9 @@ debug(UnitTest)
         assert(r.test("a☃c123"));
         assert(r.match(1) == "c");
 
-        /** dot metacharacter does not work. */
+        // dot
         r = new Regex("..");
-        assert(r.test("a☃c123"), "'"~r.test("a☃c123")~"'");
+        assert(r.test("a☃c123"));
 
         // dot capture
         r = new Regex("(..)");
@@ -4741,7 +4739,7 @@ debug(UnitTest)
 
 				
         // two captures
-        r = new Regex(`(.)(.)`);
+        r = new Regex("(.)(.)");
         assert(r.test("a☃c123"));
         assert(r.match(1) == "a");
         assert(r.match(2) == "☃");

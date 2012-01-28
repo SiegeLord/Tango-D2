@@ -62,7 +62,7 @@ class HttpPost : HttpClient
                 super (HttpClient.Post, uri);
 
                 // enable header duplication
-                getResponseHeaders.retain (true);
+                getResponseHeaders().retain (true);
         }
 
         /***********************************************************************
@@ -89,14 +89,14 @@ class HttpPost : HttpClient
                 auto buffer = super.open (pump);
                 try {
                     // check return status for validity
-                    auto status = super.getStatus;
+                    auto status = super.getStatus();
                     if (status is HttpResponseCode.OK || 
                         status is HttpResponseCode.Created || 
                         status is HttpResponseCode.Accepted)
-                        buffer.load (getResponseHeaders.getInt (HttpHeader.ContentLength));
-                    } finally {close;}
+                        buffer.load (getResponseHeaders().getInt (HttpHeader.ContentLength));
+                    } finally {close();}
 
-                return buffer.slice;
+                return buffer.slice();
         }
 
         /***********************************************************************
@@ -109,7 +109,7 @@ class HttpPost : HttpClient
 
         void[] write (const(void)[] content, const(char)[] type)
         {
-                auto headers = super.getRequestHeaders;
+                auto headers = super.getRequestHeaders();
 
                 headers.add    (HttpHeader.ContentType, type);
                 headers.addInt (HttpHeader.ContentLength, content.length);

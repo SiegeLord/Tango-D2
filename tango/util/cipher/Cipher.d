@@ -30,7 +30,7 @@ abstract class Cipher
     abstract uint update(const(void[]) input_, void[] output_);
     
     /** Returns: The name of the algorithm of this cipher. */
-    abstract const(char)[] name();
+    @property abstract const(char)[] name();
     
     /** Reset cipher to its state immediately subsequent the last init. */
     abstract void reset();
@@ -59,7 +59,7 @@ abstract class Cipher
 abstract class BlockCipher : Cipher
 {
     /** Returns: The block size in bytes that this cipher will operate on. */
-    abstract const uint blockSize();
+    @property abstract const uint blockSize();
 }
 
 
@@ -82,7 +82,7 @@ abstract class StreamCipher : Cipher
  abstract class BlockCipherPadding
  {
     /** Returns: The name of the padding scheme implemented. */
-    abstract const(char)[] name();
+    @property abstract const(char)[] name();
 
     /**
     * Generate padding to a specific length.

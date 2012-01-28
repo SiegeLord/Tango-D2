@@ -596,9 +596,9 @@ template fromUDT(immutable(char)[] fallthrough="")
 
             else static if( is( typeof(value.toString()) : const(char[]) ) )
                 static if( isMutableString!(D) )
-                    return toString_!(D)(value.toString);
+                    return toString_!(D)(value.toString());
                 else
-                    return toString_!(D)(value.toString).idup;
+                    return toString_!(D)(value.toString()).idup;
 
             else static if( is( typeof(value.toString16()) : const(wchar[]) ) )
                 static if( isMutableString!(D) )
@@ -615,11 +615,11 @@ template fromUDT(immutable(char)[] fallthrough="")
             else static if( is( typeof(value.toString()) : const(char[]) ) )
             {
                 static if( is( D : const(char[]) ) )
-                    return value.toString;
+                    return value.toString();
 
                 else
                 {
-                    return toString_!(D)(value.toString);
+                    return toString_!(D)(value.toString());
                 }
             }
 
@@ -698,7 +698,7 @@ D toBool(D,S)(S value)
 
             default:
                 mixin convError;
-                throwConvError;
+                throwConvError();
                 assert(0);
         }
     }
@@ -721,7 +721,7 @@ D toBool(D,S)(S value)
             }
         }
         mixin convError;
-        throwConvError;
+        throwConvError();
         assert(0);
     }
     /+
@@ -745,7 +745,7 @@ D toBool(D,S)(S value)
     else static if( isPOD!(S) || isObject!(S) )
     {
         mixin fromUDT;
-        return toDfromS;
+        return toDfromS();
     }
     else
     {
@@ -762,7 +762,7 @@ D toIntegerFromInteger(D,S)(S value)
 
         if( intCmp(value,D.min)<0 || intCmp(value,D.max)>0 )
         {
-            throwConvError;
+            throwConvError();
         }
     }
     return cast(D) value;
@@ -778,7 +778,7 @@ D toIntegerFromReal(D,S)(S value)
     else
     {
         mixin convError; // TODO: Overflow error
-        throwConvError;
+        throwConvError();
         assert(0);
     }
 }
@@ -795,10 +795,10 @@ D toIntegerFromString(D,S)(S value)
             S s = value;
 
             if( s.length == 0 )
-                throwConvError;
+                throwConvError();
 
             else if( s[0] == '-' )
-                throwConvError;
+                throwConvError();
 
             else if( s[0] == '+' )
                 s = s[1..$];
@@ -807,7 +807,7 @@ D toIntegerFromString(D,S)(S value)
             auto result = tango.text.convert.Integer.convert(s, 10, &len);
 
             if( len < s.length || len == 0 )
-                throwConvError;
+                throwConvError();
 
             return result;
         }
@@ -817,7 +817,7 @@ D toIntegerFromString(D,S)(S value)
             auto result = tango.text.convert.Integer.parse(value, 10, &len);
 
             if( len < value.length || len == 0 )
-                throwConvError;
+                throwConvError();
 
             return toIntegerFromInteger!(D,long)(result);
         }
@@ -842,7 +842,7 @@ D toInteger(D,S)(S value)
         else
         {
             mixin convError;
-            throwConvError;
+            throwConvError();
             assert(0);
         }
     }
@@ -857,7 +857,7 @@ D toInteger(D,S)(S value)
     else static if( isPOD!(S) || isObject!(S) )
     {
         mixin fromUDT;
-        return toDfromS;
+        return toDfromS();
     }
     else
         mixin unsupported;
@@ -884,7 +884,7 @@ D toReal(D,S)(S value)
         catch( IllegalArgumentException e )
         {
             mixin convError;
-            throwConvError;
+            throwConvError();
         }
         +/
 
@@ -893,7 +893,7 @@ D toReal(D,S)(S value)
         size_t len;
         auto r = tango.text.convert.Float.parse(value, &len);
         if( len < value.length || len == 0 )
-            throwConvError;
+            throwConvError();
 
         return r;
     }
@@ -901,7 +901,7 @@ D toReal(D,S)(S value)
     else static if( isPOD!(S) || isObject!(S) )
     {
         mixin fromUDT;
-        return toDfromS;
+        return toDfromS();
     }
     else
         mixin unsupported;
@@ -920,14 +920,14 @@ D toImaginary(D,S)(S value)
         else
         {
             mixin convError;
-            throwConvError;
+            throwConvError();
             assert(0);
         }
     }
     else static if( isPOD!(S) || isObject!(S) )
     {
         mixin fromUDT;
-        return toDfromS;
+        return toDfromS();
     }
     else
         mixin unsupported;
@@ -945,7 +945,7 @@ D toComplex(D,S)(S value)
     else static if( isPOD!(S) || isObject!(S) )
     {
         mixin fromUDT;
-        return toDfromS;
+        return toDfromS();
     }
     else
         mixin unsupported;
@@ -964,7 +964,7 @@ D toChar(D,S)(S value)
         else
         {
             mixin convError; // TODO: Overflow error
-            throwConvError;
+            throwConvError();
             assert(0);
         }
     }
@@ -973,7 +973,7 @@ D toChar(D,S)(S value)
         void fail()
         {
             mixin convError;
-            throwConvError;
+            throwConvError();
         }
 
         if( value.length == 0 )
@@ -1005,7 +1005,7 @@ D toChar(D,S)(S value)
     else static if( isPOD!(S) || isObject!(S) )
     {
         mixin fromUDT;
-        return toDfromS;
+        return toDfromS();
     }
     else
         mixin unsupported;
@@ -1103,7 +1103,7 @@ D toString(D,S)(S value)
     else static if( isPOD!(S) || isObject!(S) )
     {
         mixin fromUDT;
-        return toDfromS;
+        return toDfromS();
     }
     else
         mixin unsupported;
@@ -1120,7 +1120,7 @@ D fromString(D,S)(D value)
     else static if( isPOD!(S) || isObject!(S) )
     {
         mixin toUDT;
-        return toDfromS;
+        return toDfromS();
     }
     else
         mixin unsupported_backwards;

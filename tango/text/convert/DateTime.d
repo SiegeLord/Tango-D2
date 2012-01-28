@@ -62,7 +62,7 @@ public __gshared DateTimeLocale DateTimeDefault;
 
 static this()
 {
-        DateTimeDefault = DateTimeLocale.create;
+        DateTimeDefault = DateTimeLocale.create();
 version (WithExtensions)
         {
         Extensions8.add  (typeid(Time), &DateTimeDefault.bridge!(char));
@@ -213,7 +213,7 @@ struct DateTimeLocale
 
         **********************************************************************/
 
-        static DateTimeLocale* generic ()
+        @property static DateTimeLocale* generic ()
         {
                 return &EngUS;
         }
@@ -225,7 +225,7 @@ struct DateTimeLocale
 
         **********************************************************************/
 
-        Calendar calendar ()
+        @property Calendar calendar ()
         {
                 if (assignedCalendar is null)
                     assignedCalendar = Gregorian.generic;
@@ -1026,7 +1026,7 @@ private struct Result
 
         **********************************************************************/
 
-        private char[] get ()
+        @property private char[] get ()
         {
                 return target_[0 .. index];
         }

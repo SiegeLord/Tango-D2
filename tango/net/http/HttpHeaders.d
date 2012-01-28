@@ -119,8 +119,8 @@ class HttpHeadersView : HttpTokens
                 setParsed (true);
                 line.set (input);
 
-                while (line.next && line.get.length)
-                       stack.push (preserve ? line.get.dup : line.get);
+                while (line.next && line.get().length)
+                       stack.push (preserve ? line.get().dup : line.get());
         }
 
         /**********************************************************************

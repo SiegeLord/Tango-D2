@@ -2054,7 +2054,7 @@ version(D_InlineAsm_X86) { // Won't work for anything else yet
 
 unittest {
 
-    int r = getIeeeRounding;
+    int r = getIeeeRounding();
     assert(r==RoundingMode.ROUNDTONEAREST);
     real b = 5.5;
     int cnear = tango.math.Math.rndint(b);
@@ -2062,7 +2062,7 @@ unittest {
     auto oldrounding = setIeeeRounding(RoundingMode.ROUNDDOWN);
     scope (exit) setIeeeRounding(oldrounding);
 
-    assert(getIeeeRounding==RoundingMode.ROUNDDOWN);
+    assert(getIeeeRounding()==RoundingMode.ROUNDDOWN);
 
     int cdown = tango.math.Math.rndint(b);
     assert(cdown==5);
@@ -2070,7 +2070,7 @@ unittest {
 
 unittest {
     // Check that the previous test correctly restored the rounding mode
-    assert(getIeeeRounding==RoundingMode.ROUNDTONEAREST);
+    assert(getIeeeRounding()==RoundingMode.ROUNDTONEAREST);
 }
 }
 }
