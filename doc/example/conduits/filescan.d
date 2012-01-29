@@ -18,15 +18,15 @@ void main(char[][] args)
 
         auto scan = (new FileScan)(root, ".d");
 
-        Stdout.format ("\n{} Folders\n", scan.folders.length);
-        foreach (folder; scan.folders)
+        Stdout.format ("\n{} Folders\n", scan.folders().length);
+        foreach (folder; scan.folders())
                  Stdout.format ("{}\n", folder);
 
-        Stdout.format ("\n{0} Files\n", scan.files.length);
-        foreach (file; scan.files)
+        Stdout.format ("\n{0} Files\n", scan.files().length);
+        foreach (file; scan.files())
                  Stdout.format ("{}\n", file);
 
-        Stdout.formatln ("\n{} Errors", scan.errors.length);
-        foreach (error; scan.errors)
+        Stdout.formatln ("\n{} Errors", scan.errors().length);
+        foreach (error; scan.errors())
                  Stdout (error).newline;
 }

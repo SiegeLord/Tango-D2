@@ -88,6 +88,6 @@ void main()
             } catch (Exception x)
                     {
                     // log the exception as a fatal error
-                    log.fatal ("Exception: " ~ x.toString);
+                    log.fatal ("Exception: " ~ x.toString());
                     }
 }

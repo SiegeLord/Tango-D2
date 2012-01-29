@@ -23,17 +23,17 @@ void main()
         // write some data and flush output since IO is buffered
         write.int32(x);
         write.int32(y);
-        write.flush;
+        write.flush();
 
         // rewind to file start
         file.seek (0);
 
         // read data back again, but swap destinations
-        y = read.int32;
-        x = read.int32;
+        y = read.int32();
+        x = read.int32();
 
         assert (y is 10);
         assert (x is 20);
 
-        file.close;
+        file.close();
 }

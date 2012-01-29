@@ -199,7 +199,7 @@ class UnicodeFile(T)
                 // open file after conversion ~ in case of exceptions
                 scope conduit = new File (path_, File.ReadWriteCreate);
                 scope (exit)
-                       conduit.close;
+                       conduit.close();
 
                 if (writeBom)
                     conduit.write (bom_.signature);

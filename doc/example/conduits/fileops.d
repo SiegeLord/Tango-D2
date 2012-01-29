@@ -20,7 +20,7 @@ void main (char[][] args)
     assert (dst.exists);
 
     Stdout.formatln ("removing file {}",  dst);
-    dst.remove;
+    dst.remove();
 
     assert (dst.exists is false);
 }

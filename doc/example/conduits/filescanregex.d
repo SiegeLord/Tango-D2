@@ -23,17 +23,17 @@ void main(char[][] args) {
 
     scan(args[1], delegate bool (FilePath fp, bool isDir) {
          ++total;
-         return isDir || regex.test(fp.toString);
+         return isDir || regex.test(fp.toString());
     });
 
 
-    foreach (file; scan.files)
+    foreach (file; scan.files())
              Stdout(file).newline;
 
-    Stdout.formatln("Found {} matches in {} entries", scan.files.length, total);
+    Stdout.formatln("Found {} matches in {} entries", scan.files().length, total);
 
-    Stdout.formatln ("\n{} Errors", scan.errors.length);
-    foreach (error; scan.errors)
+    Stdout.formatln ("\n{} Errors", scan.errors().length);
+    foreach (error; scan.errors())
              Stdout (error).newline;
 }
 

@@ -29,14 +29,14 @@ void main()
                 auto server = new ServerSocket (port);
                 
                 // wait for requests
-                auto request = server.accept;
+                auto request = server.accept();
 
                 // write a response 
                 request.output.write ("server replies 'hello'");
         }
 
         // start server in a separate thread, and wait for it to start
-        (new Thread (&run)).start;
+        (new Thread (&run)).start();
         Thread.sleep (2_500_000);
 
         // make a connection request to the server
@@ -48,5 +48,5 @@ void main()
         auto len = request.input.read (response);
         Cout (response[0..len]).newline;
 
-        request.close;
+        request.close();
 }

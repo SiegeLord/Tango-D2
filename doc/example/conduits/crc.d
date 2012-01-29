@@ -7,8 +7,8 @@ import tango.io.stream.Digester;
 char[] digestOfFile (Digest digest, const(char)[] path)
 {
         auto input = new DigestInput(new File(path), digest);
-        input.slurp.close;
-	return digest.hexDigest;
+        input.slurp().close();
+	return digest.hexDigest();
 }
 
 
