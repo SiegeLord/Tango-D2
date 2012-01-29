@@ -210,7 +210,7 @@ debug (UnitTest)
                 const(char)[][char[]] map;
                 map["foo"] = "bar";
                 map["foo2"] = "bar2";
-                output.append(map).flush;
+                output.append(map).flush();
 
                 map = map.init;
                 input.load (map);

@@ -214,8 +214,8 @@ class BzipOutput : OutputFilter
 
     void close()
     {
-        if( bzs_valid ) commit;
-        super.close;
+        if( bzs_valid ) commit();
+        super.close();
     }
 
     /***************************************************************************
@@ -601,11 +601,11 @@ unittest
     scope cond = new Array(1024, 1024);
     scope comp = new BzipOutput(cond);
     comp.write(message);
-    comp.close;
+    comp.close();
 
-    assert( comp.written == message_z.length );
+    assert( comp.written() == message_z.length );
 
-    assert( message_z == cast(ubyte[])(cond.slice) );
+    assert( message_z == cast(ubyte[])(cond.slice()) );
 
     scope decomp = new BzipInput(cond);
     auto buffer = new ubyte[256];

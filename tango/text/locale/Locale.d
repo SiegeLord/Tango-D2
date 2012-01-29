@@ -80,13 +80,13 @@ public class Locale : Layout!(char)
                             if (type is typeid(Time))
                                 return formatDateTime (output, *cast(Time*) p, format, dateFormat);
                        /* Bad dup */
-                       return type.toString.dup;
+                       return type.toString().dup;
 
                        default:
                             break;
                        }
 
-                return "{unhandled argument type: ".dup ~ type.toString ~ '}';
+                return "{unhandled argument type: ".dup ~ type.toString() ~ '}';
         }
 
         /**********************************************************************

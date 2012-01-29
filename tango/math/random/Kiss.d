@@ -81,7 +81,7 @@ struct Kiss
 
         static this ()
         {
-                instance.seed;
+                instance.seed();
         }
 
         /**********************************************************************
@@ -93,7 +93,7 @@ struct Kiss
         static Kiss opCall ()
         {
                 Kiss rand;
-                rand.seed;
+                rand.seed();
                 return rand;
         }
 
@@ -166,7 +166,7 @@ struct Kiss
 
         uint natural (uint max)
         {
-                return natural % max;
+                return natural() % max;
         }
 
         /**********************************************************************
@@ -180,7 +180,7 @@ struct Kiss
 
         uint natural (uint min, uint max)
         {
-                return (natural % (max-min)) + min;
+                return (natural() % (max-min)) + min;
         }
         
         /**********************************************************************
@@ -192,7 +192,7 @@ struct Kiss
 
         double fraction ()
         {
-                return ((cast(int) natural) * M_RAN_INVM32 + (0.5 + M_RAN_INVM32 / 2));
+                return ((cast(int) natural()) * M_RAN_INVM32 + (0.5 + M_RAN_INVM32 / 2));
         }
 
         /**********************************************************************
@@ -204,8 +204,8 @@ struct Kiss
 
         double fractionEx ()
         {
-                return ((cast(int) natural) * M_RAN_INVM32 + (0.5 + M_RAN_INVM52 / 2) + 
-                       ((cast(int) natural) & 0x000FFFFF) * M_RAN_INVM52);
+                return ((cast(int) natural()) * M_RAN_INVM32 + (0.5 + M_RAN_INVM52 / 2) + 
+                       ((cast(int) natural()) & 0x000FFFFF) * M_RAN_INVM52);
         }
 }
 

@@ -246,11 +246,11 @@ public class Demangler
         char[4096] buf=void;
         auto res=DemangleInstance(this,input,buf);
         if (res.mangledName() && res.input.length==0){
-            return cast(inout(char)[])res.slice.dup;
+            return cast(inout(char)[])res.slice().dup;
         } else {
-            if (res.slice.length) res.output.append(" ");
+            if (res.slice().length) res.output.append(" ");
             if (res.type() && res.input.length==0){
-                return cast(inout(char)[])res.slice.dup;
+                return cast(inout(char)[])res.slice().dup;
             } else {
                 return input;
             }
@@ -262,11 +262,11 @@ public class Demangler
     {
         auto res=DemangleInstance(this,input,output);
         if (res.mangledName () && res.input.length==0) {
-            return cast(inout(char)[])res.slice;
+            return cast(inout(char)[])res.slice();
         } else {
-            if (res.slice.length) res.output.append(" ");
+            if (res.slice().length) res.output.append(" ");
             if (res.type() && res.input.length==0) {
-                return cast(inout(char)[])res.slice;
+                return cast(inout(char)[])res.slice();
             } else {
                 return input;
             }
@@ -368,7 +368,7 @@ public class Demangler
         }
 
         const(char)[] slice(){
-            return output.slice;
+            return output.slice();
         }
 
         private const(char)[] consume (uint amt)
@@ -523,7 +523,7 @@ public class Demangler
         body
         {
             debug(traceDemangler) trace ("lName");
-            auto pos=checkpoint;
+            auto pos=checkpoint();
             uint chars;
             if (! number (chars))
                 return false;
@@ -1009,7 +1009,7 @@ public class Demangler
             auto pos=checkpoint();
             output.append (", ");
             if (!arguments ()){
-                pos.reset;
+                pos.reset();
             }
 
             return true;
@@ -1125,7 +1125,7 @@ public class Demangler
             consume (3);
 
             if (! lName ())
-                return checkpoint.reset();
+                return checkpoint().reset();
 
             output.append ("!(");
 
@@ -1387,10 +1387,10 @@ private struct Buffer
 
     void append (Buffer b)
     {
-        append (b.slice);
+        append (b.slice());
     }
 
-    const(char)[] slice ()
+    const(char)[] slice() ()
     {
         return data[0 .. this.length];
     }

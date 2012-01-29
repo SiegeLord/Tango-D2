@@ -31,12 +31,12 @@ class XTEA : BlockCipher
 
     final override void reset(){}
     
-    final override const(char)[] name()
+    @property final override const(char)[] name()
     {
         return "XTEA";
     }
     
-    final override const uint blockSize()
+    @property final override const uint blockSize()
     {
         return BLOCK_SIZE;
     }

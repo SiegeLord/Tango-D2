@@ -38,7 +38,7 @@ version (Posix)
 
 ******************************************************************************/
 
-char[] homeFolder()
+@property char[] homeFolder()
 {
     version (Windows)
         return Path.standard(Environment.get("USERPROFILE"));

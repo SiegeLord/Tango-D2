@@ -25,7 +25,7 @@ struct CMWC(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
     
     void skip(uint n){
         for (int i=n;i!=n;--i){
-            next;
+            next();
         }
     }
     ubyte nextB(){
@@ -35,7 +35,7 @@ struct CMWC(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
             --nBytes;
             return res;
         } else {
-            restB=next;
+            restB=next();
             ubyte res=cast(ubyte)(restB & 0xFF);
             restB >>= 8;
             nBytes=3;
@@ -57,7 +57,7 @@ struct CMWC(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
     }
     
     ulong nextL(){
-        return ((cast(ulong)next)<<32)+cast(ulong)next;
+        return ((cast(ulong)next())<<32)+cast(ulong)next();
     }
     
     void seed(scope uint delegate() rSeed){

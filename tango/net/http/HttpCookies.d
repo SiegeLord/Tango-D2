@@ -368,7 +368,7 @@ class HttpCookiesView //: IWritable
 
         void produce (scope size_t delegate(const(void)[]) consume, const(char)[] eol = HttpConst.Eol)
         {
-                foreach (cookie; parse)
+                foreach (cookie; parse())
                          cookie.produce (consume), consume (eol);
         }
 
@@ -380,7 +380,7 @@ class HttpCookiesView //: IWritable
 
         void reset ()
         {
-                stack.reset;
+                stack.reset();
                 parsed = false;
         }
 
@@ -533,7 +533,7 @@ class CookieParser : Iterator!(char)
 
                         if (name[0] != '$')
                            {
-                           cookie = stack.push;
+                           cookie = stack.push();
                            cookie.setName (name);
                            cookie.setValue (token);
                            cookie.setVersion (vrsn);

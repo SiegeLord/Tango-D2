@@ -29,9 +29,9 @@ struct ArraySource{
         return el;
     }
     ubyte nextB(){
-        return cast(ubyte)(0xFF&next);
+        return cast(ubyte)(0xFF&next());
     }
     ulong nextL(){
-        return ((cast(ulong)next)<<32)+cast(ulong)next;
+        return ((cast(ulong)next())<<32)+cast(ulong)next();
     }
 }

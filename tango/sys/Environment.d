@@ -107,8 +107,8 @@ struct Environment
             if (fp.isAbsolute)
                 return path;
 
-            fp.absolute(cwd);
-            return fp.cString[0..$-1];
+            fp.absolute(cwd());
+            return fp.cString()[0..$-1];
         }
 
         /***********************************************************************
@@ -131,7 +131,7 @@ struct Environment
 
                 // is this a directory? Potentially make it absolute
                 if (bin.isChild && !bin.isAbsolute)
-                    return bin.absolute (cwd);
+                    return bin.absolute (cwd());
 
                 // is it in cwd?
                 version (Windows)
@@ -146,7 +146,7 @@ struct Environment
                                   else
                                      {
                                      stat_t stats;
-                                     stat(bin.cString.ptr, &stats);
+                                     stat(bin.cString().ptr, &stats);
                                      if (stats.st_mode & octal!(100))
                                          return bin;
                                      }

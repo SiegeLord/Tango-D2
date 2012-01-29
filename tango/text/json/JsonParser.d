@@ -63,7 +63,7 @@ class JsonParser(T)
         
         ***********************************************************************/
         
-        final bool next ()
+        @property final bool next ()
         {
                 if (str.ptr is null || str.end is null)
                     return false;
@@ -79,25 +79,25 @@ class JsonParser(T)
                      return false;
 
                 if (curState is State.Array) 
-                    return parseArrayValue;
+                    return parseArrayValue();
 
                 switch (curType)
                        {
                        case Token.Name:
-                            return parseMemberValue;
+                            return parseMemberValue();
 
                        default:                
                             break;
                        }
 
-                return parseMemberName;
+                return parseMemberName();
         }
         
         /***********************************************************************
         
         ***********************************************************************/
         
-        final Token type ()
+        @property final Token type ()
         {
                 return curType;
         }
@@ -106,7 +106,7 @@ class JsonParser(T)
         
         ***********************************************************************/
         
-        final const(T)[] value ()
+        @property final const(T)[] value ()
         {
                 return curLoc [0 .. curLen];
         }
@@ -117,7 +117,7 @@ class JsonParser(T)
         
         bool reset (const(T)[] json = null)
         {
-                state.clear;
+                state.clear();
                 str.reset (json);
                 curType = Token.Empty;
                 curState = State.Object;
@@ -259,7 +259,7 @@ class JsonParser(T)
                             return push (Token.BeginArray, State.Array);
         
                        case '"':
-                            return doString;
+                            return doString();
         
                        case 'n':
                             if (match ("null", Token.Null))
@@ -280,7 +280,7 @@ class JsonParser(T)
                             break;
                        }
 
-                return parseNumber;
+                return parseNumber();
         }
         
         /***********************************************************************
@@ -381,7 +381,7 @@ class JsonParser(T)
                 curLen = 0;
                 curType = token;
                 curLoc = str.ptr++;
-                curState = state.pop;
+                curState = state.pop();
                 return true;
         }
 

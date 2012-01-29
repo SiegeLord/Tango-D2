@@ -125,7 +125,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ~this ()
         {
-                reset;
+                reset();
         }
 
         /***********************************************************************
@@ -134,7 +134,7 @@ class CircularList (V, alias Reap = Container.reap,
                 
         ***********************************************************************/
 
-        final Iterator iterator ()
+        @property final Iterator iterator ()
         {
                 // used to be Iterator i = void, but that doesn't initialize
                 // fields that are not initialized here.
@@ -179,7 +179,7 @@ class CircularList (V, alias Reap = Container.reap,
                 
         ***********************************************************************/
 
-        final const size_t size ()
+        @property final const size_t size ()
         {
                 return count;
         }
@@ -191,7 +191,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final CircularList dup ()
+        @property final CircularList dup ()
         {
                 return new CircularList!(V, Reap, Heap) (list ? list.copyList(&heap.allocate) : null, count);
         }
@@ -217,7 +217,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         final V head ()
         {
-                return firstCell.value;
+                return firstCell().value;
         }
 
         /***********************************************************************
@@ -228,7 +228,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         final V tail ()
         {
-                return lastCell.value;
+                return lastCell().value;
         }
 
         /***********************************************************************
@@ -320,7 +320,7 @@ class CircularList (V, alias Reap = Container.reap,
                    {
                    checkIndex (from);
                    auto p = cellAt (from);
-                   auto current = newlist = heap.allocate.set (p.value);
+                   auto current = newlist = heap.allocate().set (p.value);
 
                    for (size_t i = 1; i < length; ++i)
                        {
@@ -375,7 +375,7 @@ class CircularList (V, alias Reap = Container.reap,
         {
                 if (count)
                    {
-                   v = tail;
+                   v = tail();
                    removeTail ();
                    return true;
                    }
@@ -391,10 +391,10 @@ class CircularList (V, alias Reap = Container.reap,
         final CircularList prepend (V element)
         {
                 if (list is null)
-                    list = heap.allocate.set (element);
+                    list = heap.allocate().set (element);
                 else
                    list = list.addPrev (element, &heap.allocate);
-                increment;
+                increment();
                 return this;
         }
 
@@ -406,10 +406,10 @@ class CircularList (V, alias Reap = Container.reap,
 
         final V head (V element)
         {
-                auto p = firstCell;
+                auto p = firstCell();
                 auto v = p.value;
                 p.value = element;
-                mutate;
+                mutate();
                 return v;
         }
 
@@ -421,13 +421,13 @@ class CircularList (V, alias Reap = Container.reap,
 
         final V removeHead ()
         {
-                auto p = firstCell;
+                auto p = firstCell();
                 if (p.singleton)
                    list = null;
                 else
                    {
                    auto n = p.next;
-                   p.unlink;
+                   p.unlink();
                    list = n;
                    }
 
@@ -460,7 +460,7 @@ class CircularList (V, alias Reap = Container.reap,
                 else
                    {
                    list.prev.addNext (element, &heap.allocate);
-                   increment;
+                   increment();
                    }
                 return this;
         }
@@ -473,10 +473,10 @@ class CircularList (V, alias Reap = Container.reap,
 
         final V tail (V element)
         {
-                auto p = lastCell;
+                auto p = lastCell();
                 auto v = p.value;
                 p.value = element;
-                mutate;
+                mutate();
                 return v;
         }
 
@@ -488,11 +488,11 @@ class CircularList (V, alias Reap = Container.reap,
 
         final V removeTail ()
         {
-                auto p = lastCell;
+                auto p = lastCell();
                 if (p is list)
                     list = null;
                 else
-                   p.unlink;
+                   p.unlink();
 
                 auto v = p.value;
                 decrement (p);
@@ -512,7 +512,7 @@ class CircularList (V, alias Reap = Container.reap,
                 else
                    {
                    cellAt(index - 1).addNext(element, &heap.allocate);
-                   increment;
+                   increment();
                    }
                 return this;
         }
@@ -526,7 +526,7 @@ class CircularList (V, alias Reap = Container.reap,
         final CircularList replaceAt (size_t index, V element)
         {
                 cellAt(index).value = element;
-                mutate;
+                mutate();
                 return this;
         }
 
@@ -539,11 +539,11 @@ class CircularList (V, alias Reap = Container.reap,
         final CircularList removeAt (size_t index)
         {
                 if (index is 0)
-                    removeHead;
+                    removeHead();
                 else
                    {
                    auto p = cellAt(index);
-                   p.unlink;
+                   p.unlink();
                    decrement (p);
                    }
                 return this;
@@ -566,7 +566,7 @@ class CircularList (V, alias Reap = Container.reap,
                        auto n = p.next;
                        if (element == p.value)
                           {
-                          p.unlink;
+                          p.unlink();
                           decrement (p);
                           if (p is list)
                              {
@@ -610,7 +610,7 @@ class CircularList (V, alias Reap = Container.reap,
                       if (oldElement == p.value)
                          {
                          ++c;
-                         mutate;
+                         mutate();
                          p.value = newElement;
                          if (! all)
                                break;
@@ -635,11 +635,11 @@ class CircularList (V, alias Reap = Container.reap,
 
                 foreach (element; e)
                         {
-                        increment;
+                        increment();
 
                         if (hd is null)
                            {
-                           hd = heap.allocate.set(element);
+                           hd = heap.allocate().set(element);
                            current = hd;
                            }
                         else
@@ -680,7 +680,7 @@ class CircularList (V, alias Reap = Container.reap,
                    auto current = list.prev;
                    foreach (element; e)
                            {
-                           increment;
+                           increment();
                            current.addNext (element, &heap.allocate);
                            current = current.next;
                            }
@@ -704,7 +704,7 @@ class CircularList (V, alias Reap = Container.reap,
                    auto current = cellAt (index - 1);
                    foreach (element; e)
                            {
-                           increment;
+                           increment();
                            current.addNext (element, &heap.allocate);
                            current = current.next;
                            }
@@ -726,7 +726,7 @@ class CircularList (V, alias Reap = Container.reap,
                 for (size_t i = fromIndex; i <= toIndex; ++i)
                     {
                     auto n = p.next;
-                    p.unlink;
+                    p.unlink();
                     decrement (p);
                     if (p is list)
                        {
@@ -874,7 +874,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         private CircularList clear (bool all)
         {
-                mutate;
+                mutate();
 
                 // collect each node if we can't collect all at once
                 if (heap.collect(all) is false && count)
@@ -964,7 +964,7 @@ class CircularList (V, alias Reap = Container.reap,
 
                 ***************************************************************/
 
-                bool next (ref V v)
+                @property bool next (ref V v)
                 {
                         auto n = next;
                         return (n) ? v = *n, true : false;
@@ -977,7 +977,7 @@ class CircularList (V, alias Reap = Container.reap,
 
                 ***************************************************************/
 
-                V* next ()
+                @property V* next ()
                 {
                         V* r;
 
@@ -1035,7 +1035,7 @@ class CircularList (V, alias Reap = Container.reap,
                                  head = owner.list = next;
                               }
 
-                           prior.unlink;
+                           prior.unlink();
                            owner.decrement (prior);
                            prior = null;
 
@@ -1064,7 +1064,7 @@ class CircularList (V, alias Reap = Container.reap,
                         prior.addNext (value, &owner.heap.allocate);
                     else
                        cell.addPrev (value, &owner.heap.allocate);
-                    owner.increment;
+                    owner.increment();
 
                     ++count;
                     // ignore this change

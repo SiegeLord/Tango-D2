@@ -390,7 +390,7 @@ class BomSniffer
 
         ***********************************************************************/
 
-        final Encoding encoding ()
+        @property final Encoding encoding ()
         {
                 return encoder;
         }
@@ -401,7 +401,7 @@ class BomSniffer
 
         ***********************************************************************/
 
-        final bool encoded ()
+        @property final bool encoded ()
         {
                 return found;
         }
@@ -412,7 +412,7 @@ class BomSniffer
 
         ***********************************************************************/
 
-        final const(void)[] signature ()
+        @property final const(void)[] signature ()
         {
                 return settings.bom;
         }

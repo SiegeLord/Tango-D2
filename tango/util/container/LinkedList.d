@@ -178,7 +178,7 @@ class LinkedList (V, alias Reap = Container.reap,
                 
         ***********************************************************************/
 
-        final const size_t size ()
+        @property final const size_t size ()
         {
                 return count;
         }
@@ -190,7 +190,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final LinkedList dup ()
+        @property final LinkedList dup ()
         {
                 return new LinkedList!(V, Reap, Heap) (list ? list.copy(&heap.allocate) : null, count);
         }

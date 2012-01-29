@@ -38,12 +38,12 @@ struct Vector (V, int Size = 0)
 
         static if (Size == 0)
                   {
-                  private uint depth;
+                  private size_t depth;
                   private V[]  vector;
                   }
                else
                   {
-                  private uint     depth;
+                  private size_t     depth;
                   private V[Size]  vector;
                   }
 
@@ -65,7 +65,7 @@ struct Vector (V, int Size = 0)
 
         ***********************************************************************/
 
-        const uint size ()
+        @property const size_t size ()
         {
                 return depth;
         }
@@ -76,7 +76,7 @@ struct Vector (V, int Size = 0)
 
         ***********************************************************************/
 
-        const uint unused ()
+        const size_t unused ()
         {
                 return vector.length - depth;
         }

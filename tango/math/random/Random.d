@@ -243,7 +243,7 @@ final class RandomG(SourceT=DefaultEngine)
     this (bool randomInit=true)
     {
         if (randomInit)
-            this.seed;
+            this.seed();
     }
     
     /// if source.canSeed seeds the generator using the shared rand generator
@@ -290,17 +290,17 @@ final class RandomG(SourceT=DefaultEngine)
     /// lower propability than other numbers)
     T uniform(T,bool boundCheck=true)(){
         static if(is(T==uint)) {
-            return source.next;
+            return source.next();
         } else static if (is(T==int) || is(T==short) || is(T==ushort)|| is(T==char) || is(T==byte) || is(T==ubyte)){
             union Uint2A{
                 T t;
                 uint u;
             }
             Uint2A a;
-            a.u=source.next;
+            a.u=source.next();
             return a.t;
         } else static if (is(T==long) || is (T==ulong)){
-            return cast(T)source.nextL;
+            return cast(T)source.nextL();
         } else static if (is(T==bool)){
             return cast(bool)(source.next & 1u); // check lowest bit
         } else static if (is(T==float)||is(T==double)||is(T==real)){
@@ -308,7 +308,7 @@ final class RandomG(SourceT=DefaultEngine)
                 enum T halfT=(cast(T)1)/(cast(T)2);
                 enum T fact32=ctfe_powI(halfT,32);
                 enum uint minV=1u<<(T.mant_dig-1);
-                uint nV=source.next;
+                uint nV=source.next();
                 if (nV>=minV) {
                     T res=nV*fact32;
                     static if (boundCheck){
@@ -321,10 +321,10 @@ final class RandomG(SourceT=DefaultEngine)
                 } else { // probability 0.00390625 for 24 bit mantissa
                     T scale=fact32;
                     while (nV==0){ // probability 2.3283064365386963e-10
-                        nV=source.next;
+                        nV=source.next();
                         scale*=fact32;
                     }
-                    T res=nV*scale+source.next*scale*fact32;
+                    T res=nV*scale+source.next()*scale*fact32;
                     static if (boundCheck){
                         if (res!=cast(T)0) return res;
                         return uniform!(T,boundCheck)(); // 0 due to underflow (<1.e-38), 1 impossible
@@ -336,7 +336,7 @@ final class RandomG(SourceT=DefaultEngine)
                 enum T halfT=(cast(T)1)/(cast(T)2);
                 enum T fact64=ctfe_powI(halfT,64);
                 enum ulong minV=1UL<<(T.mant_dig-1);
-                ulong nV=source.nextL;
+                ulong nV=source.nextL();
                 if (nV>=minV) {
                     T res=nV*fact64;
                     static if (boundCheck){
@@ -350,14 +350,14 @@ final class RandomG(SourceT=DefaultEngine)
                     enum T fact32=ctfe_powI(halfT,32);
                     enum ulong minV2=1UL<<(T.mant_dig-33);
                     if (nV>=minV2){
-                        return ((cast(T)nV)+(cast(T)source.next)*fact32)*fact64;
+                        return ((cast(T)nV)+(cast(T)source.next())*fact32)*fact64;
                     } else { // probability 1.1368683772161603e-13 for 53 bit mantissa
                         T scale=fact64;
                         while (nV==0){
-                            nV=source.nextL;
+                            nV=source.nextL();
                             scale*=fact64;
                         }
-                        T res=scale*((cast(T)nV)+(cast(T)source.nextL)*fact64);
+                        T res=scale*((cast(T)nV)+(cast(T)source.nextL())*fact64);
                         static if (boundCheck){
                             if (res!=cast(T)0) return res;
                             // 0 due to underflow (<1.e-307)
@@ -371,9 +371,9 @@ final class RandomG(SourceT=DefaultEngine)
                 enum T halfT=(cast(T)1)/(cast(T)2);
                 enum T fact8=ctfe_powI(halfT,8);
                 enum T fact72=ctfe_powI(halfT,72);
-                ubyte nB=source.nextB;
+                ubyte nB=source.nextB();
                 if (nB!=0){
-                    T res=nB*fact8+source.nextL*fact72;
+                    T res=nB*fact8+source.nextL()*fact72;
                     static if (boundCheck){
                         if (res!=cast(T)1) return res;
                         // 1 due to rounding (<1.e-16), 0 impossible
@@ -385,10 +385,10 @@ final class RandomG(SourceT=DefaultEngine)
                     enum T fact64=ctfe_powI(halfT,64);
                     T scale=fact8;
                     while (nB==0){
-                        nB=source.nextB;
+                        nB=source.nextB();
                         scale*=fact8;
                     }
-                    T res=((cast(T)nB)+(cast(T)source.nextL)*fact64)*scale;
+                    T res=((cast(T)nB)+(cast(T)source.nextL())*fact64)*scale;
                     static if (boundCheck){
                         if (res!=cast(T)0) return res;
                         // 0 due to underflow (<1.e-4932), 1 impossible
@@ -401,11 +401,11 @@ final class RandomG(SourceT=DefaultEngine)
                 // (T.mant_dig > 64 bits), not so optimized, but works for any size
                 enum T halfT=(cast(T)1)/(cast(T)2);
                 enum T fact32=ctfe_powI(halfT,32);
-                uint nL=source.next;
+                uint nL=source.next();
                 T fact=fact32;
                 while (nL==0){
                     fact*=fact32;
-                    nL=source.next;
+                    nL=source.next();
                 }
                 T res=nL*fact;
                 for (int rBits=T.mant_dig-1;rBits>0;rBits-=32) {
@@ -435,10 +435,10 @@ final class RandomG(SourceT=DefaultEngine)
             || is(T==char) || is(T==byte) || is(T==ubyte))
         {
             uint d=uint.max/cast(uint)to,dTo=to*d;
-            uint nV=source.next;
+            uint nV=source.next();
             if (nV>=dTo){
                 for (int i=0;i<1000;++i) {
-                    nV=source.next;
+                    nV=source.next();
                     if (nV<dTo) break;
                 }
                 assert(nV<dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
@@ -446,17 +446,17 @@ final class RandomG(SourceT=DefaultEngine)
             return cast(T)(nV%to);
         } else static if (is(T==ulong) || is(T==long)){
             ulong d=ulong.max/cast(ulong)to,dTo=to*d;
-            ulong nV=source.nextL;
+            ulong nV=source.nextL();
             if (nV>=dTo){
                 for (int i=0;i<1000;++i) {
-                    nV=source.nextL;
+                    nV=source.nextL();
                     if (nV<dTo) break;
                 }
                 assert(nV<dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
             }
             return cast(T)(nV%to);
         } else static if (is(T==float)|| is(T==double)||is(T==real)){
-            T res=uniform!(T,false)*to;
+            T res=uniform!(T,false)()*to;
             static if (boundCheck){
                 if (res!=cast(T)0 && res!=to) return res;
                 return uniformR(to);
@@ -481,7 +481,7 @@ final class RandomG(SourceT=DefaultEngine)
     body {
         static if (is(T==int)|| is(T==short) || is(T==byte)){
             int d=int.max/to,dTo=to*d;
-            int nV=cast(int)source.next;
+            int nV=cast(int)source.next();
             static if (excludeZero){
                 int isIn=nV<dTo&&nV>-dTo&&nV!=0;
             } else {
@@ -491,7 +491,7 @@ final class RandomG(SourceT=DefaultEngine)
                 return cast(T)(nV%to);
             } else {
                 for (int i=0;i<1000;++i) {
-                    nV=cast(int)source.next;
+                    nV=cast(int)source.next();
                     if (nV<dTo && nV>-dTo) break;
                 }
                 assert(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
@@ -499,7 +499,7 @@ final class RandomG(SourceT=DefaultEngine)
             }
         } else static if (is(T==long)){
             long d=long.max/to,dTo=to*d;
-            long nV=cast(long)source.nextL;
+            long nV=cast(long)source.nextL();
             static if (excludeZero){
                 int isIn=nV<dTo&&nV>-dTo&&nV!=0;
             } else {
@@ -509,7 +509,7 @@ final class RandomG(SourceT=DefaultEngine)
                 return nV%to;
             } else {
                 for (int i=0;i<1000;++i) {
-                    nV=source.nextL;
+                    nV=source.nextL();
                     if (nV<dTo && nV>-dTo) break;
                 }
                 assert(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
@@ -520,7 +520,7 @@ final class RandomG(SourceT=DefaultEngine)
                 enum T halfT=(cast(T)1)/(cast(T)2);
                 enum T fact32=ctfe_powI(halfT,32);
                 enum uint minV=1u<<T.mant_dig;
-                uint nV=source.next;
+                uint nV=source.next();
                 if (nV>=minV) {
                     T res=nV*fact32*to;
                     static if (boundCheck){
@@ -534,10 +534,10 @@ final class RandomG(SourceT=DefaultEngine)
                 } else { // probability 0.008 for 24 bit mantissa
                     T scale=fact32;
                     while (nV==0){ // probability 2.3283064365386963e-10
-                        nV=source.next;
+                        nV=source.next();
                         scale*=fact32;
                     }
-                    uint nV2=source.next;
+                    uint nV2=source.next();
                     T res=(cast(T)nV+cast(T)nV2*fact32)*scale*to;
                     static if (excludeZero){
                         if (res!=cast(T)0) return (1-2*cast(int)(nV&1u))*res;
@@ -551,7 +551,7 @@ final class RandomG(SourceT=DefaultEngine)
                 enum T halfT=(cast(T)1)/(cast(T)2);
                 enum T fact64=ctfe_powI(halfT,64);
                 enum ulong minV=1UL<<(T.mant_dig);
-                ulong nV=source.nextL;
+                ulong nV=source.nextL();
                 if (nV>=minV) {
                     T res=nV*fact64*to;
                     static if (boundCheck){
@@ -566,16 +566,16 @@ final class RandomG(SourceT=DefaultEngine)
                     enum T fact32=ctfe_powI(halfT,32);
                     enum ulong minV2=1UL<<(T.mant_dig-32);
                     if (nV>=minV2){
-                        uint nV2=source.next;
+                        uint nV2=source.next();
                         T res=((cast(T)nV)+(cast(T)nV2)*fact32)*fact64*to;
                         return (1-2*cast(int)(nV2&1UL))*res; // cannot be 0 or to with normal to values
                     } else { // probability 1.1368683772161603e-13 for 53 bit mantissa
                         T scale=fact64;
                         while (nV==0){
-                            nV=source.nextL;
+                            nV=source.nextL();
                             scale*=fact64;
                         }
-                        ulong nV2=source.nextL;
+                        ulong nV2=source.nextL();
                         T res=to*scale*((cast(T)nV)+(cast(T)nV2)*fact64);
                         static if (excludeZero){
                             if (res!=cast(T)0) return (1-2*cast(int)(nV2&1UL))*res;
@@ -591,9 +591,9 @@ final class RandomG(SourceT=DefaultEngine)
                 enum T halfT=(cast(T)1)/(cast(T)2);
                 enum T fact8=ctfe_powI(halfT,8);
                 enum T fact72=ctfe_powI(halfT,72);
-                ubyte nB=source.nextB;
+                ubyte nB=source.nextB();
                 if (nB!=0){
-                    ulong nL=source.nextL;
+                    ulong nL=source.nextL();
                     T res=to*(nB*fact8+nL*fact72);
                     static if (boundCheck){
                         if (res!=to) return (1-2*cast(int)(nL&1UL))*res;
@@ -607,10 +607,10 @@ final class RandomG(SourceT=DefaultEngine)
                     enum T fact64=ctfe_powI(halfT,64);
                     T scale=fact8;
                     while (nB==0){
-                        nB=source.nextB;
+                        nB=source.nextB();
                         scale*=fact8;
                     }
-                    ulong nL=source.nextL;
+                    ulong nL=source.nextL();
                     T res=((cast(T)nB)+(cast(T)nL)*fact64)*scale*to;
                     static if (excludeZero){
                         if (res!=cast(T)0) return ((nL&1UL)?res:-res);
@@ -625,11 +625,11 @@ final class RandomG(SourceT=DefaultEngine)
                 // (T.mant_dig > 64 bits), not so optimized, but works for any size
                 enum T halfT=(cast(T)1)/(cast(T)2);
                 enum T fact32=ctfe_powI(halfT,32);
-                uint nL=source.next;
+                uint nL=source.next();
                 T fact=fact32;
                 while (nL==0){
                     fact*=fact32;
-                    nL=source.next;
+                    nL=source.next();
                 }
                 T res=nL*fact;
                 for (int rBits=T.mant_dig;rBits>0;rBits-=32) {
@@ -688,7 +688,7 @@ final class RandomG(SourceT=DefaultEngine)
         static if (is(U S:S[])){
             alias BaseTypeOfArrays!(U) T;
             static if (is(T==byte)||is(T==ubyte)||is(T==char)){
-                uint val=source.next; /// begin without value?
+                uint val=source.next(); /// begin without value?
                 int rest=4;
                 for (size_t i=0;i<a.length;++i) {
                     if (rest!=0){
@@ -696,7 +696,7 @@ final class RandomG(SourceT=DefaultEngine)
                         val>>=8;
                         --rest;
                     } else {
-                        val=source.next;
+                        val=source.next();
                         a[i]=cast(T)(0xFFu&val);
                         val>>=8;
                         rest=3;
@@ -705,11 +705,11 @@ final class RandomG(SourceT=DefaultEngine)
             } else static if (is(T==uint)||is(T==int)){
                 T* aEnd=a.ptr+a.length;
                 for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr)
-                    *aPtr=cast(T)(source.next);
+                    *aPtr=cast(T)(source.next());
             } else static if (is(T==ulong)||is(T==long)){
                 T* aEnd=a.ptr+a.length;
                 for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr)
-                    *aPtr=cast(T)(source.nextL);
+                    *aPtr=cast(T)(source.nextL());
             } else static if (is(T==float)|| is(T==double)|| is(T==real)) {
                 // optimize more? not so easy with guaranteed full mantissa initialization
                 T* aEnd=a.ptr+a.length;
@@ -735,12 +735,12 @@ final class RandomG(SourceT=DefaultEngine)
                 uint d=uint.max/cast(uint)to,dTo=(cast(uint)to)*d;
                 T* aEnd=a.ptr+a.length;
                 for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr){
-                    uint nV=source.next;
+                    uint nV=source.next();
                     if (nV<dTo){
                         *aPtr=cast(T)(nV % cast(uint)to);
                     } else {
                         for (int i=0;i<1000;++i) {
-                            nV=source.next;
+                            nV=source.next();
                             if (nV<dTo) break;
                         }
                         assert(nV<dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
@@ -751,12 +751,12 @@ final class RandomG(SourceT=DefaultEngine)
                 ulong d=ulong.max/cast(ulong)to,dTo=(cast(ulong)to)*d;
                 T* aEnd=a.ptr+a.length;
                 for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr){
-                    ulong nV=source.nextL;
+                    ulong nV=source.nextL();
                     if (nV<dTo){
                         el=cast(T)(nV % cast(ulong)to);
                     } else {
                         for (int i=0;i<1000;++i) {
-                            nV=source.nextL;
+                            nV=source.nextL();
                             if (nV<dTo) break;
                         }
                         assert(nV<dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
@@ -835,7 +835,7 @@ final class RandomG(SourceT=DefaultEngine)
                 int d=int.max/cast(int)to,dTo=(cast(int)to)*d;
                 T* aEnd=a.ptr+a.length;
                 for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr){
-                    int nV=cast(int)source.next;
+                    int nV=cast(int)source.next();
                     static if (excludeZero){
                         int isIn=nV<dTo&&nV>-dTo&&nV!=0;
                     } else {
@@ -845,7 +845,7 @@ final class RandomG(SourceT=DefaultEngine)
                         *aPtr=cast(T)(nV% cast(int)to);
                     } else {
                         for (int i=0;i<1000;++i) {
-                            nV=cast(int)source.next;
+                            nV=cast(int)source.next();
                             if (nV<dTo&&nV>-dTo) break;
                         }
                         assert(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
@@ -854,7 +854,7 @@ final class RandomG(SourceT=DefaultEngine)
                 }
             } else static if (is(T==long)){
                 long d=long.max/cast(T)to,dTo=(cast(T)to)*d;
-                long nV=cast(long)source.nextL;
+                long nV=cast(long)source.nextL();
                 T* aEnd=a.ptr+a.length;
                 for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr){
                     static if (excludeZero){
@@ -866,7 +866,7 @@ final class RandomG(SourceT=DefaultEngine)
                         *aPtr=nV% cast(T)to;
                     } else {
                         for (int i=0;i<1000;++i) {
-                            nV=source.nextL;
+                            nV=source.nextL();
                             if (nV<dTo && nV>-dTo) break;
                         }
                         assert(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
@@ -1103,12 +1103,12 @@ final class RandomG(SourceT=DefaultEngine)
     /// generators of normal numbers with a different default sigma/mu
     /// f=exp(-x*x/(2*sigma^2))/(sqrt(2 pi)*sigma)
     NormalSource!(RandomG,T).NormalDistribution normalD(T)(T sigma=cast(T)1,T mu=cast(T)0){
-        return normalSource!(T).normalD(sigma,mu);
+        return normalSource!(T)().normalD(sigma,mu);
     }
     /// exponential distribued numbers with a different default beta
     /// f=1/beta*exp(-x/beta)
     ExpSource!(RandomG,T).ExpDistribution expD(T)(T beta){
-        return expSource!(T).expD(beta);
+        return expSource!(T)().expD(beta);
     }
     /// gamma distribued numbers with the given default alpha
     GammaDistribution!(T) gammaD(T)(T alpha=cast(T)1,T theta=cast(T)1){
@@ -1322,23 +1322,23 @@ debug(UnitTest){
         const(char[]) initialState=r.toString(); // so that you can reproduce things...
         bool allStats=false; // set this to true to show all statistics (helpful to track an error)
         try{
-            r.uniform!(uint);
-            r.uniform!(ubyte);
-            r.uniform!(ulong);
+            r.uniform!(uint)();
+            r.uniform!(ubyte)();
+            r.uniform!(ulong)();
             int count=10_000;
             for (int i=count;i!=0;--i){
-                float f=r.uniform!(float);
+                float f=r.uniform!(float)();
                 assert(0<f && f<1,"float out of bounds");
-                double d=r.uniform!(double);
+                double d=r.uniform!(double)();
                 assert(0<d && d<1,"double out of bounds");
-                real rr=r.uniform!(real);
+                real rr=r.uniform!(real)();
                 assert(0<rr && rr<1,"double out of bounds");
             }
             // checkpoint status (str)
             const(char[]) status=r.toString();
-            uint tVal=r.uniform!(uint);
-            ubyte t2Val=r.uniform!(ubyte);
-            ulong t3Val=r.uniform!(ulong);
+            uint tVal=r.uniform!(uint)();
+            ubyte t2Val=r.uniform!(ubyte)();
+            ulong t3Val=r.uniform!(ulong)();
 
             byte[1000]  barr;
             ubyte[1000] ubarr;
@@ -1455,9 +1455,9 @@ debug(UnitTest){
             if (fail) Stdout("... with Exp distribution");
         
             r.fromString(status);
-            assert(r.uniform!(uint)==tVal,"restoring of status from str failed");
-            assert(r.uniform!(ubyte)==t2Val,"restoring of status from str failed");
-            assert(r.uniform!(ulong)==t3Val,"restoring of status from str failed");
+            assert(r.uniform!(uint)()==tVal,"restoring of status from str failed");
+            assert(r.uniform!(ubyte)()==t2Val,"restoring of status from str failed");
+            assert(r.uniform!(ulong)()==t3Val,"restoring of status from str failed");
             assert(!gFail,"Random.d failure");
         } catch(Exception e) {
             Stdout(initialState).newline;

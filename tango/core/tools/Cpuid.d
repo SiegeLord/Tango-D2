@@ -96,41 +96,41 @@ public:
     /// the remaining levels are set to uint.max (== entire memory space)
     CacheInfo[5] datacache;
     /// Does it have an x87 FPU on-chip?
-    bool x87onChip()    {return (features&FPU_BIT)!=0;}
+    @property bool x87onChip()    {return (features&FPU_BIT)!=0;}
     /// Is MMX supported?
-    bool mmx()          {return (features&MMX_BIT)!=0;}
+    @property bool mmx()          {return (features&MMX_BIT)!=0;}
     /// Is SSE supported?
-    bool sse()          {return (features&SSE_BIT)!=0;}
+    @property bool sse()          {return (features&SSE_BIT)!=0;}
     /// Is SSE2 supported?
-    bool sse2()         {return (features&SSE2_BIT)!=0;}
+    @property bool sse2()         {return (features&SSE2_BIT)!=0;}
     /// Is SSE3 supported?
-    bool sse3()         {return (miscfeatures&SSE3_BIT)!=0;}
+    @property bool sse3()         {return (miscfeatures&SSE3_BIT)!=0;}
     /// Is SSSE3 supported?
-    bool ssse3()        {return (miscfeatures&SSSE3_BIT)!=0;}
+    @property bool ssse3()        {return (miscfeatures&SSSE3_BIT)!=0;}
     /// Is SSE4.1 supported?
-    bool sse41()        {return (miscfeatures&SSE41_BIT)!=0;}
+    @property bool sse41()        {return (miscfeatures&SSE41_BIT)!=0;}
     /// Is SSE4.2 supported?
-    bool sse42()        {return (miscfeatures&SSE42_BIT)!=0;}
+    @property bool sse42()        {return (miscfeatures&SSE42_BIT)!=0;}
     /// Is SSE4a supported?
-    bool sse4a()        {return (amdmiscfeatures&SSE4A_BIT)!=0;}
+    @property bool sse4a()        {return (amdmiscfeatures&SSE4A_BIT)!=0;}
     /// Is AMD 3DNOW supported?
-    bool amd3dnow()     {return (amdfeatures&AMD_3DNOW_BIT)!=0;}
+    @property bool amd3dnow()     {return (amdfeatures&AMD_3DNOW_BIT)!=0;}
     /// Is AMD 3DNOW Ext supported?
-    bool amd3dnowExt()  {return (amdfeatures&AMD_3DNOW_EXT_BIT)!=0;}
+    @property bool amd3dnowExt()  {return (amdfeatures&AMD_3DNOW_EXT_BIT)!=0;}
     /// Are AMD extensions to MMX supported?
-    bool amdMmx()       {return (amdfeatures&AMD_MMX_BIT)!=0;}
+    @property bool amdMmx()       {return (amdfeatures&AMD_MMX_BIT)!=0;}
     /// Is fxsave/fxrstor supported?
-    bool hasFxsr()          {return (features&FXSR_BIT)!=0;}
+    @property bool hasFxsr()          {return (features&FXSR_BIT)!=0;}
     /// Is cmov supported?
-    bool hasCmov()          {return (features&CMOV_BIT)!=0;}
+    @property bool hasCmov()          {return (features&CMOV_BIT)!=0;}
     /// Is rdtsc supported?
-    bool hasRdtsc()         {return (features&TIMESTAMP_BIT)!=0;}
+    @property bool hasRdtsc()         {return (features&TIMESTAMP_BIT)!=0;}
     /// Is cmpxchg8b supported?
-    bool hasCmpxchg8b()     {return (features&CMPXCHG8B_BIT)!=0;}
+    @property bool hasCmpxchg8b()     {return (features&CMPXCHG8B_BIT)!=0;}
     /// Is cmpxchg8b supported?
-    bool hasCmpxchg16b()    {return (miscfeatures&CMPXCHG16B_BIT)!=0;}
+    @property bool hasCmpxchg16b()    {return (miscfeatures&CMPXCHG16B_BIT)!=0;}
     /// Is SYSENTER/SYSEXIT supported?
-    bool hasSysEnterSysExit()     {
+    @property bool hasSysEnterSysExit()     {
         // The SYSENTER/SYSEXIT features were buggy on Pentium Pro and early PentiumII.
         // (REF: www.geoffchappell.com).
         if (probablyIntel && (family < 6 || (family==6 && (model< 3 || (model==3 && stepping<3)))))
@@ -139,26 +139,26 @@ public:
     }
     
     /// Is 3DNow prefetch supported?
-    bool has3dnowPrefetch()
+    @property bool has3dnowPrefetch()
         {return (amdmiscfeatures&AMD_3DNOW_PREFETCH_BIT)!=0;}
     /// Are LAHF and SAHF supported in 64-bit mode?
-    bool hasLahfSahf()          {return (amdmiscfeatures&LAHFSAHF_BIT)!=0;}
+    @property bool hasLahfSahf()          {return (amdmiscfeatures&LAHFSAHF_BIT)!=0;}
     /// Is POPCNT supported?
-    bool hasPopcnt()        {return (miscfeatures&POPCNT_BIT)!=0;}    
+    @property bool hasPopcnt()        {return (miscfeatures&POPCNT_BIT)!=0;}    
     /// Is LZCNT supported?
-    bool hasLzcnt()         {return (amdmiscfeatures&LZCNT_BIT)!=0;}
+    @property bool hasLzcnt()         {return (amdmiscfeatures&LZCNT_BIT)!=0;}
     /// Is this an Intel64 or AMD 64?
-    bool isX86_64()         {return (amdfeatures&AMD64_BIT)!=0;}
+    @property bool isX86_64()         {return (amdfeatures&AMD64_BIT)!=0;}
             
     /// Is this an IA64 (Itanium) processor?
-    bool isItanium()        { return (features&IA64_BIT)!=0; }
+    @property bool isItanium()        { return (features&IA64_BIT)!=0; }
 
     /// Is hyperthreading supported?
-    bool hyperThreading()   { return maxThreads>maxCores; }
+    @property bool hyperThreading()   { return maxThreads>maxCores; }
     /// Returns number of threads per CPU
-    uint threadsPerCPU()    {return maxThreads;}
+    @property uint threadsPerCPU()    {return maxThreads;}
     /// Returns number of cores in CPU
-    uint coresPerCPU()      {return maxCores;}
+    @property uint coresPerCPU()      {return maxCores;}
     
     /// Optimisation hints for assembly code.
     /// For forward compatibility, the CPU is compared against different
@@ -181,11 +181,11 @@ public:
     /// instruction set improvements occur within each dynasty.
     
     /// Does this CPU perform better on AMD K7 code than PentiumPro..Core2 code?
-    bool preferAthlon() { return probablyAMD && family >=6; }
+    @property bool preferAthlon() { return probablyAMD && family >=6; }
     /// Does this CPU perform better on Pentium4 code than PentiumPro..Core2 code?
-    bool preferPentium4() { return probablyIntel && family == 0xF; }
+    @property bool preferPentium4() { return probablyIntel && family == 0xF; }
     /// Does this CPU perform better on Pentium I code than Pentium Pro code?
-    bool preferPentium1() { return family < 6 || (family==6 && model < 0xF && !probablyIntel); }
+    @property bool preferPentium1() { return family < 6 || (family==6 && model < 0xF && !probablyIntel); }
 
 public:
     /// Processor type (vendor-dependent).
@@ -571,7 +571,7 @@ void cpuidX86()
         uint apicsize = (c>>12) & 0xF;
         if (apicsize == 0) {
             // use legacy method
-            if (hyperThreadingBit)  maxCores = c & 0xFF;
+            if (hyperThreadingBit())  maxCores = c & 0xFF;
             else maxCores = 1;
         } else {
             // maxcores = 2^ apicsize
@@ -673,7 +673,7 @@ void cpuidX86()
         // cores and hyperthreads.
         getCpuInfo0B();    
     } else {
-        if (hyperThreadingBit) maxThreads = (apic>>>16) & 0xFF;
+        if (hyperThreadingBit()) maxThreads = (apic>>>16) & 0xFF;
         else maxThreads = maxCores;
     }
 }

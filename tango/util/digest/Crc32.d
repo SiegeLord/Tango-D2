@@ -136,7 +136,7 @@ debug(UnitTest)
         c.update(data);
         assert(c.binaryDigest() == cast(ubyte[]) x"7b572025".dup);
         c.update(data);
-        assert(c.crc32Digest == 0x2520577b);
+        assert(c.crc32Digest() == 0x2520577b);
         c.update(data);
         assert(c.hexDigest() == "7b572025".dup);
         }

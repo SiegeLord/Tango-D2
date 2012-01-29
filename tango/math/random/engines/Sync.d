@@ -21,7 +21,7 @@ struct Sync(E){
     
     void skip(uint n){
         for (int i=n;i!=n;--i){
-            engine.next;
+            engine.next();
         }
     }
     ubyte nextB(){

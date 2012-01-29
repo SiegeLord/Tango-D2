@@ -146,7 +146,7 @@ class FtpFolderEntry: VfsFolderEntry {
      Test to see if a folder exists
      ***********************************************************************/
 
-    final bool exists() {
+    @property final bool exists() {
         FTPConnection conn;
 
     
@@ -212,7 +212,7 @@ class FtpFolder: VfsFolder {
      Return a short name
      ***********************************************************************/
 
-    final const(char)[] name() {
+    @property final const(char)[] name() {
         return fixName(name_);
     }
 
@@ -228,7 +228,7 @@ class FtpFolder: VfsFolder {
      Return a contained file representation
      ***********************************************************************/
 
-    final VfsFile file(const(char)[] path) {
+    @property final VfsFile file(const(char)[] path) {
         return new FtpFile(toString_, checkLast(checkCat(name_, path)), username_, password_,
             port_);
     }
@@ -237,7 +237,7 @@ class FtpFolder: VfsFolder {
      Return a contained folder representation
      ***********************************************************************/
 
-    final VfsFolderEntry folder(const(char)[] path) {
+    @property final VfsFolderEntry folder(const(char)[] path) {
         return new FtpFolderEntry(toString_, checkLast(checkCat(name_, path)), username_,
             password_, port_);
     }
@@ -247,7 +247,7 @@ class FtpFolder: VfsFolder {
      are inclusive of entries within this folder only
      ***********************************************************************/
 
-    final VfsFolders self() {
+    @property final VfsFolders self() {
         FTPConnection conn;
 
         scope(exit) {
@@ -275,7 +275,7 @@ class FtpFolder: VfsFolder {
      files within this folder and all others within the tree
      ***********************************************************************/
 
-    final VfsFolders tree() {
+    @property final VfsFolders tree() {
         FTPConnection conn;
 
     
@@ -391,7 +391,7 @@ class FtpFolder: VfsFolder {
      Is folder writable?
      ***********************************************************************/
 
-    final bool writable() {
+    @property final bool writable() {
         try {
             FTPConnection conn;
 
@@ -557,7 +557,7 @@ class FtpFolders: VfsFolders {
      Return the number of files
      ***********************************************************************/
 
-    final size_t files() {
+    @property final size_t files() {
         FTPConnection conn;
 
         scope(exit) {
@@ -583,7 +583,7 @@ class FtpFolders: VfsFolders {
      Return the number of folders
      ***********************************************************************/
 
-    final size_t folders() {
+    @property final size_t folders() {
         FTPConnection conn;
 
         scope(exit) {
@@ -609,7 +609,7 @@ class FtpFolders: VfsFolders {
      Return the total number of entries (files + folders)
      ***********************************************************************/
 
-    final size_t entries() {
+    @property final size_t entries() {
         FTPConnection conn;
 
         scope(exit) {
@@ -635,7 +635,7 @@ class FtpFolders: VfsFolders {
      Return the total size of contained files
      ***********************************************************************/
 
-    final ulong bytes() {
+    @property final ulong bytes() {
         FTPConnection conn;
 
         scope(exit) {
@@ -704,7 +704,7 @@ class FtpFolders: VfsFolders {
      Return a set of files matching the given pattern
      ***********************************************************************/
 
-    final VfsFiles catalog(const(char)[]  pattern) {
+    @property final VfsFiles catalog(const(char)[]  pattern) {
         FTPConnection conn;
 
         scope(exit) {
@@ -743,7 +743,7 @@ class FtpFolders: VfsFolders {
      Return a set of files matching the given filter
      ***********************************************************************/
 
-    final VfsFiles catalog(VfsFilter filter = null) {
+    @property final VfsFiles catalog(VfsFilter filter = null) {
         FTPConnection conn;
 
         scope(exit) {
@@ -810,7 +810,7 @@ class FtpFile: VfsFile {
      Return a short name
      ***********************************************************************/
 
-    final const(char)[] name() {
+    @property final const(char)[] name() {
         return fixName(name_);
     }
 
@@ -826,7 +826,7 @@ class FtpFile: VfsFile {
      Does this file exist?
      ***********************************************************************/
 
-    final bool exists() {
+    @property final bool exists() {
         scope(failure) {
             if(!conOpen)
                 if(conn !is null)
@@ -864,7 +864,7 @@ class FtpFile: VfsFile {
      Return the file size
      ***********************************************************************/
 
-    final ulong size() {
+    @property final ulong size() {
         scope(failure) {
             if(!conOpen)
                 if(conn !is null)
@@ -905,7 +905,7 @@ class FtpFile: VfsFile {
 
     final VfsFile move(VfsFile source) {
         copy(source);
-        source.remove;
+        source.remove();
         return this;
     }
 
@@ -969,7 +969,7 @@ class FtpFile: VfsFile {
      Return the input stream. Don't forget to close it
      ***********************************************************************/
 
-    final InputStream input() {
+    @property final InputStream input() {
 
         scope(failure) {
             if(!conOpen)
@@ -996,7 +996,7 @@ class FtpFile: VfsFile {
      Return the output stream. Don't forget to close it
      ***********************************************************************/
 
-    final OutputStream output() {
+    @property final OutputStream output() {
 
         scope(failure) {
             if(!conOpen)
@@ -1023,7 +1023,7 @@ class FtpFile: VfsFile {
      Duplicate this entry
      ***********************************************************************/
 
-    final VfsFile dup() {
+    @property final VfsFile dup() {
         return new FtpFile(toString_, name_, username_, password_, port_);
     }
 
@@ -1031,7 +1031,7 @@ class FtpFile: VfsFile {
      Time modified
      ***********************************************************************/
 
-    final Time.Time mtime() {
+    @property final Time.Time mtime() {
         conn.close();
 
         conOpen = false;
@@ -1065,7 +1065,7 @@ class FtpFile: VfsFile {
      Time created
      ***********************************************************************/
 
-    final Time.Time ctime() {
+    @property final Time.Time ctime() {
         conn.close();
 
         conOpen = false;
@@ -1095,7 +1095,7 @@ class FtpFile: VfsFile {
         return conn.getFileInfo(name_).create;
     }
 
-    final Time.Time atime() {
+    @property final Time.Time atime() {
         conn.close();
 
         conOpen = false;
@@ -1131,10 +1131,10 @@ class FtpFile: VfsFile {
 
         ***********************************************************************/
 
-        final Time.Time modified ()
-        {
-                return mtime ();
-        }
+    @property final Time.Time modified ()
+    {
+        return mtime ();
+    }
 }
 
 /******************************************************************************
@@ -1210,7 +1210,7 @@ class FtpFiles: VfsFiles {
      Return the total number of entries
      ***********************************************************************/
 
-    final size_t files() {
+    @property final size_t files() {
         return infos_.length;
     }
 
@@ -1218,7 +1218,7 @@ class FtpFiles: VfsFiles {
      Return the total size of all files
      ***********************************************************************/
 
-    final ulong bytes() {
+    @property final ulong bytes() {
         ulong return_;
 
         foreach(FtpFileInfo inf; infos_) {

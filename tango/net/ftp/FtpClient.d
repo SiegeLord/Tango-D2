@@ -337,14 +337,14 @@ class FTPConnection: Telnet
     /***********************************************************************
      Added Since: 0.99.8
      ***********************************************************************/
-    public TimeSpan timeout() {
+    @property public TimeSpan timeout() {
         return timeout_;
     }
 
     /***********************************************************************
      Added Since: 0.99.8
      ***********************************************************************/
-    public void timeout(TimeSpan t) {
+    @property public void timeout(TimeSpan t) {
         timeout_ = t;
     }
 
@@ -1016,7 +1016,7 @@ class FTPConnection: Telnet
                throw new FtpException("CLIENT: No connection from server", "420");
 
             // We don't need the listener anymore.
-            data.shutdown.detach;
+            data.shutdown().detach();
 
             // This is the actual socket.
             data.socket.sock = new_data.sock;

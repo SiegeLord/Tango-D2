@@ -44,7 +44,7 @@ class TypedInput(T) : InputFilter
 
         final override TypedInput flush ()
         {
-                super.flush;
+                super.flush();
                 return this;
         }
 
@@ -129,7 +129,7 @@ debug (UnitTest)
 
                 foreach (x; inp)
                          oot.write (x);
-                assert (output.slice == "hello world");
+                assert (output.slice() == "hello world");
 
                 auto xx = new TypedInput!(char)(new UtfInput!(char, dchar)(new Array("hello world"d.dup)));
                 char[] yy;

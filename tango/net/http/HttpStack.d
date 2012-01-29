@@ -178,7 +178,7 @@ class HttpStack
 
         **********************************************************************/
 
-        final int size ()
+        @property final int size ()
         {       
                 return depth;
         }

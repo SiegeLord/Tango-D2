@@ -204,7 +204,7 @@ class FormatOutput(T) : OutputFilter
                 assert (_arguments.length <= slice.length/4, "FormatOutput :: too many arguments");
 
                 if (_arguments.length == 0)
-                    sink.flush;
+                    sink.flush();
                 else
                 {
 
@@ -230,11 +230,11 @@ class FormatOutput(T) : OutputFilter
 
         ***********************************************************************/
 
-        final FormatOutput newline ()
+        @property final FormatOutput newline ()
         {
                 sink.write (eol);
                 if (flushLines)
-                    sink.flush;
+                    sink.flush();
                 return this;
         }
 
@@ -257,7 +257,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final OutputStream stream ()
+        @property final OutputStream stream ()
         {
                 return sink;
         }
@@ -268,7 +268,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final FormatOutput stream (OutputStream output)
+        @property final FormatOutput stream (OutputStream output)
         {
                 sink = output;
                 return this;
@@ -280,7 +280,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final Layout!(T) layout ()
+        @property final Layout!(T) layout ()
         {
                 return convert;
         }
@@ -291,7 +291,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final FormatOutput layout (Layout!(T) layout)
+        @property final FormatOutput layout (Layout!(T) layout)
         {
                 convert = layout;
                 return this;
