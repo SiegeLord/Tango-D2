@@ -9,7 +9,7 @@ I see this as a rough first pass at porting this library... making it more D2-li
 What works so far
 --------
 
-Modules that have not been yet ported are located in the `unported` folder. All those located in the tango folder are ported, in the sense that they pass the import+unittest test (sometimes imperfectly on 64 bits due to DMD bugs). Right now this means that essentially all the user modules (with the exception for tango.math.BigNum) and a large majority of tango.core modules are ported. Examples in the doc/examples folder should also work.
+Modules that have not been yet ported are located in the `unported` folder. All those located in the tango folder are ported, in the sense that they pass the import+unittest test (sometimes imperfectly on 64 bits due to DMD bugs). Right now this means that essentially all the user modules (with the exception for tango.math.BigNum, which is aliased to std.bigint until further notice) and a large majority of tango.core modules are ported. Examples in the doc/examples folder should also work.
 
 I do the porting on Linux, so that is the most tested platform. It generally should also compile on Windows, but might not pass all the unit-tests, since DMD does weird things with unittests on Windows. All other platforms probably don't compile at all.
 
