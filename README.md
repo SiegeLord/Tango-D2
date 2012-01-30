@@ -30,6 +30,11 @@ Windows
 
 DMD is the primary testing compiler, but LDC2 seems to compile the library as well.
 
+License
+-------
+
+See LICENSE.txt
+
 Contact
 --------
 
