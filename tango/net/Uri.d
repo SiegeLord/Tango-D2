@@ -20,8 +20,13 @@ private import  tango.core.Exception;
 
 private import  Integer = tango.text.convert.Integer;
 
-private import  tango.stdc.string : memchr;
+/*******************************************************************************
 
+        external links
+
+*******************************************************************************/
+
+extern(C) void* memchr(in void* s, int c, size_t n);
 
 /*******************************************************************************
 
