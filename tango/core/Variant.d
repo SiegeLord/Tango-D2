@@ -261,18 +261,18 @@ private
         /*
          * Any pointer can be cast to void*.
          */
-        static if( is( dsttypeT == void* ) )
+        else static if( is( dsttypeT == void* ) )
             return (cast(TypeInfo_Pointer) srctype) !is null;
 
         /*
          * Any array can be cast to void[], however remember that it has to
          * be manually adjusted to preserve the correct length.
          */
-        static if( is( dsttypeT == void[] ) )
+        else static if( is( dsttypeT == void[] ) )
             return ((cast(TypeInfo_Array) srctype) !is null)
                 || ((cast(TypeInfo_StaticArray) srctype) !is null);
 
-        return false;
+        else return false;
     }
 
     /*
@@ -746,28 +746,22 @@ struct Variant
         /**
          * Converts a vararg function argument list into an array of Variants.
          */
-        static Variant[] fromVararg(TypeInfo[] types, va_list args)
+        static Variant[] fromVararg(TypeInfo[] types, void* args)
         {
             auto vs = new Variant[](types.length);
 
             foreach( i, ref v ; vs )
             {
-                version(DigitalMars) version(X86_64)
+                version(DigitalMarsX64)
                 {
-                    scope void[] buffer;
-                    size_t len = 0;
-
-                    foreach(argType; types)
-                        len =  max(len,(argType.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1));
-
-                    buffer.length = len;
-
-                    va_arg(args, types[i], buffer.ptr);
-
+                    scope void[] buffer = new void[types[i].tsize];
+                    va_arg(cast(va_list)args, types[i], buffer.ptr);
                     Variant.fromPtr(types[i], buffer.ptr, v);
                 }
                 else
+                {
                     args = Variant.fromPtr(types[i], args, v);
+                }
             }
 
             return vs;
@@ -789,6 +783,7 @@ struct Variant
                 return Variant.fromVararg(_arguments, _argptr);
         }
 
+        /+
         /**
          * Converts an array of Variants into a vararg function argument list.
          *
@@ -828,6 +823,7 @@ struct Variant
                 arg_temp = v.toPtr(arg_temp);
             }
         }
+        +/
     } // version( EnableVararg )
 
 private:
@@ -905,7 +901,7 @@ private:
         return ptr + ( (type.tsize + size_t.sizeof-1) & ~(size_t.sizeof-1) );
     }
 
-    version( EnableVararg )
+    /+version( EnableVararg )
     {
         /*
          * Takes the current Variant, and dumps its contents into memory pointed
@@ -989,6 +985,7 @@ private:
             return ptr + ( (type.tsize + size_t.sizeof-1) & ~(size_t.sizeof-1) );
         }
     } // version( EnableVararg )
+    +/
 
     /*
      * Performs a type-dependant comparison.  Note that this obviously doesn't
@@ -1319,6 +1316,7 @@ debug( UnitTest )
             assert( vs[0xb].get!(typeof(va_b)).name == "phil" );
             assert( vs[0xc].get!(typeof(va_c)).name == "phil" );
 
+            /+
             version (none) version(X86) // TODO toVararg won't work in x86_64 as it is now
             {
                 TypeInfo[] types;
@@ -1377,6 +1375,7 @@ debug( UnitTest )
                 assert( vb_b.name == "phil" );
                 assert( vb_c.name == "phil" );
             }
+            +/
         }
     }
 }
