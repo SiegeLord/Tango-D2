@@ -146,13 +146,11 @@ class Linux : FileFilter
 
         int dmd ()
         {
-                const(char)[] gcc = gcc00;
                 const(char)[] march;
 
                 if (args.march.length)
                 {
                     march = (args.march == "64") ? " -m64" : " -m32";
-                    gcc = (args.march == "64") ? gcc64 : gcc32;
                 }
 
                 auto dmd = "dmd -c -I"~args.root~march~" "~args.flags~" -of";
@@ -167,13 +165,11 @@ class Linux : FileFilter
 
         int ldc2 ()
         {
-                const(char)[] gcc = gcc00;
                 const(char)[] march;
 
                 if (args.march.length)
                 {
                     march = (args.march == "64") ? " -m64" : " -m32";
-                    gcc = (args.march == "64") ? gcc64 : gcc32;
                 }
 
                 auto ldc2 = "ldc2 -c " ~ march ~ " -I"~args.root~" "~args.flags~" -of";
@@ -188,13 +184,11 @@ class Linux : FileFilter
 
         int gdc ()
         {
-                const(char)[] gcc = gcc00;
                 const(char)[] march;
 
                 if (args.march.length)
                 {
                     march = (args.march == "64") ? " -m64" : " -m32";
-                    gcc = (args.march == "64") ? gcc64 : gcc32;
                 }
 
                 auto gdc = "gdc -c -I"~args.root ~ march ~ " "~args.flags~" -o";
@@ -232,9 +226,6 @@ class MacOSX : FileFilter
                     exec (split(cmd~temp~" "~file.toString(), " "), Environment.get(), null);
                 return temp;
         }
-
-        private auto gcc = "gcc -c -o";
-        private auto gcc32 = "gcc -c -m32 -o";
 
         int dmd ()
         {
