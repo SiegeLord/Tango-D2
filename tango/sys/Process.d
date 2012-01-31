@@ -1934,7 +1934,7 @@ class Process
             if (!contains(filename, FileConst.PathSeparatorChar) &&
                 (str = getenv("PATH")) !is null)
             {
-                const(char)[][] pathList = delimit(str[0 .. strlen(str)], ":");
+                auto pathList = delimit(str[0 .. strlen(str)], ":");
 
                 char[] path_buf;
 
