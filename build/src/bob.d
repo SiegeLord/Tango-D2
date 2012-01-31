@@ -446,10 +446,10 @@ class FileFilter
                 libs = new Array (0, 1024 * 16);
 
                 exclude ("tango/sys/win32");
-                //exclude ("tango/sys/darwin");
-                //exclude ("tango/sys/freebsd");
+                exclude ("tango/sys/darwin");
+                exclude ("tango/sys/freebsd");
                 exclude ("tango/sys/linux");
-                //exclude ("tango/sys/solaris");
+                exclude ("tango/sys/solaris");
         }
 
         /***********************************************************************
