@@ -20,13 +20,7 @@ private import  tango.core.Exception;
 
 private import  Integer = tango.text.convert.Integer;
 
-/*******************************************************************************
-
-        external links
-        
-*******************************************************************************/
-
-extern (C) char* memchr (const(char) *, int, size_t);
+private import  tango.stdc.string : memchr;
 
 
 /*******************************************************************************
@@ -289,7 +283,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final const int defaultPort (const(char)[] scheme)
+        override final const int defaultPort (const(char)[] scheme)
         {
                 short* port = scheme in genericSchemes; 
                 if (port is null)
@@ -304,7 +298,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        @property final const const(char)[] scheme()
+        @property override final const const(char)[] scheme()
         {
                 return scheme_;
         }
@@ -316,7 +310,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        @property final const const(char)[] host()
+        @property override final const const(char)[] host()
         {
                 return host_;
         }
@@ -328,7 +322,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        @property final const int port()
+        @property override final const int port()
         {
                 return port_;
         }
@@ -340,7 +334,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final const int validPort()
+        override final const int validPort()
         {
                 if (port_ is InvalidPort)
                     return defaultPort (scheme_);
@@ -354,7 +348,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        @property final const const(char)[] userinfo()
+        @property override final const const(char)[] userinfo()
         {
                 return userinfo_;
         }
@@ -366,7 +360,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        @property final const const(char)[] path()
+        @property override final const const(char)[] path()
         {
                 return path_;
         }
@@ -378,7 +372,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        @property final const const(char)[] query()
+        @property override final const const(char)[] query()
         {
                 return query_;
         }
@@ -390,7 +384,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        @property final const const(char)[] fragment()
+        @property override final const const(char)[] fragment()
         {
                 return fragment_;
         }
@@ -401,7 +395,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        @property final const bool isGeneric ()
+        @property override final const bool isGeneric ()
         {
                 return (scheme_ in genericSchemes) !is null;
         }
@@ -463,7 +457,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final immutable(char)[] toString ()
+        override final string toString ()
         {
                 immutable(void)[] s;
 
@@ -768,10 +762,12 @@ class Uri : UriView
         final const(char)[] extendQuery (const(char)[] tail)
         {
                 if (tail.length)
+								{
                     if (query_.length)
                         query_ = query_ ~ "&" ~ tail;
                     else
                        query_ = tail;
+								}
                 return query_;
         }
 

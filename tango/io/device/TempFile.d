@@ -80,7 +80,7 @@ version( Win32 )
         OSVERSIONINFO versionInfo = void;
         versionInfo.dwOSVersionInfoSize = versionInfo.sizeof;
 
-        void e(){throw new Exception("could not determine Windows version");};
+        void e(){throw new Exception("could not determine Windows version");}
 
         version( Win32SansUnicode )
         {

@@ -220,7 +220,7 @@ class FtpFolder: VfsFolder {
      Return a long name
      ***********************************************************************/
 
-    final string toString() {
+    override final string toString() {
         return checkCat(toString_, name_).idup;
     }
 
@@ -818,7 +818,7 @@ class FtpFile: VfsFile {
      Return a long name
      ***********************************************************************/
 
-    final string toString() {
+    override final string toString() {
         return checkCat(toString_, name_).idup;
     }
 

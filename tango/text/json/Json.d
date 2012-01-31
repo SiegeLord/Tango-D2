@@ -120,6 +120,7 @@ class Json(T) : JsonParser!(T)
 
                 root = createValue();
                 if (super.reset (json))
+								{
                     if (curType is Token.BeginObject)
                         root.set (parseObject());
                     else
@@ -127,7 +128,7 @@ class Json(T) : JsonParser!(T)
                            root.set (parseArray());
                        else
                           exception ("invalid json document");
-
+								}
                 return root;
         }
 

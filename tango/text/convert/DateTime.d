@@ -579,7 +579,7 @@ else
                                 //truncated to an integer) as a decimal number [00-99]
                            case 'j': //day of the year as a decimal number [001,366]
                                 assert(0);
-                                break;
+                                //break;
 
                            case 'y': //year without century as a decimal number [00,99]
                                 put("yy"); // The year without the century. If the year without

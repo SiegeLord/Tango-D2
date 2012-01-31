@@ -162,7 +162,7 @@ version (linux)
          * SelectorException if there are not enough resources to open the
          * selector (e.g. not enough file handles or memory available).
          */
-        public void open(uint size = DefaultSize, uint maxEvents = DefaultMaxEvents)
+        override public void open(uint size = DefaultSize, uint maxEvents = DefaultMaxEvents)
         in
         {
             assert(size > 0);
@@ -187,7 +187,7 @@ version (linux)
          * Remarks:
          * It can be called multiple times without harmful side-effects.
          */
-        public void close()
+        override public void close()
         {
             if (_epfd >= 0)
             {
@@ -201,7 +201,7 @@ version (linux)
          * Return the number of keys resulting from the registration of a conduit 
          * to the selector. 
          */
-        public size_t count()
+        override public size_t count()
         {
             return _keys.length;
         }
@@ -231,7 +231,7 @@ version (linux)
          * selector.register(conduit, Event.Read | Event.Write, object);
          * ---
          */
-        public void register(ISelectable conduit, Event events, Object attachment = null)
+        override public void register(ISelectable conduit, Event events, Object attachment = null)
         in
         {
             assert(conduit !is null && conduit.fileHandle() >= 0);
@@ -299,7 +299,7 @@ version (linux)
          * registered to the selector; SelectorException if there are not
          * enough resources to remove the conduit registration.
          */
-        public void unregister(ISelectable conduit)
+        override public void unregister(ISelectable conduit)
         {
             if (conduit !is null)
             {
@@ -349,7 +349,7 @@ version (linux)
          * property was set to false; SelectorException if there were no
          * resources available to wait for events from the conduits.
          */
-        public int select(TimeSpan timeout)
+        override public int select(TimeSpan timeout)
         {
             int to = (timeout != TimeSpan.max ? cast(int) timeout.millis : -1);
 
@@ -427,7 +427,7 @@ version (linux)
          * If the call to select() was unsuccessful or it did not return any
          * events, the returned value will be null.
          */
-        public ISelectionSet selectedSet()
+        override public ISelectionSet selectedSet()
         {
             return (_eventCount > 0 ? _selectionSetIface : null);
         }
@@ -441,7 +441,7 @@ version (linux)
          * value will SelectionKey.init. No exception will be thrown by this
          * method.
          */
-        public SelectionKey key(ISelectable conduit)
+        override public SelectionKey key(ISelectable conduit)
         {
             if(conduit !is null)
             {

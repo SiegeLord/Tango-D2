@@ -131,7 +131,7 @@ final class Ripemd160 : MerkleDamgard
 
          ***********************************************************************/
 
-        protected uint addSize()   { return 8;  }
+        protected override uint addSize()   { return 8;  }
 
         /***********************************************************************
 

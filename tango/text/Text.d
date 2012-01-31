@@ -1093,7 +1093,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const TypeInfo encoding()
+        final override const TypeInfo encoding()
         {
                 return typeid(T);
         }
@@ -1105,7 +1105,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Comparator comparator (Comparator other)
+        final override Comparator comparator (Comparator other)
         {
                 auto tmp = comparator_;
                 if (other)
@@ -1141,7 +1141,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const bool equals (const(TextViewT) other)
+        final override const bool equals (const(TextViewT) other)
         {
                 if (other is this)
                     return true;
@@ -1154,7 +1154,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const bool equals (const(T)[] other)
+        final override const bool equals (const(T)[] other)
         {
                 if (other.length == contentLength)
                     return Util.matching (other.ptr, content.ptr, contentLength);
@@ -1167,7 +1167,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const bool ends (const(TextViewT) other)
+        final override const bool ends (const(TextViewT) other)
         {
                 return ends (other.slice());
         }
@@ -1178,7 +1178,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const bool ends (const(T)[] chars)
+        final override const bool ends (const(T)[] chars)
         {
                 if (chars.length <= contentLength)
                     return Util.matching (content.ptr+(contentLength-chars.length), chars.ptr, chars.length);
@@ -1191,7 +1191,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const bool starts (const(TextViewT) other)
+        final override const bool starts (const(TextViewT) other)
         {
                 return starts (other.slice());
         }
@@ -1202,7 +1202,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const bool starts (const(T)[] chars)
+        final override const bool starts (const(T)[] chars)
         {
                 if (chars.length <= contentLength)
                     return Util.matching (content.ptr, chars.ptr, chars.length);
@@ -1218,7 +1218,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const int compare (const(TextViewT) other)
+        final override const int compare (const(TextViewT) other)
         {
                 if (other is this)
                     return 0;
@@ -1235,7 +1235,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const int compare (const(T)[] chars)
+        final override const int compare (const(T)[] chars)
         {
                 return comparator_ (slice(), chars);
         }
@@ -1251,7 +1251,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const T[] copy (T[] dst)
+        final override const T[] copy (T[] dst)
         {
                 size_t i = contentLength;
                 if (i > dst.length)
@@ -1269,12 +1269,12 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const const(T)[] slice ()
+        final override const const(T)[] slice ()
         {
                 return content [0 .. contentLength];
         }
         
-        T[] mslice ()
+        override T[] mslice ()
         {
                 return content [0 .. contentLength];
         }
@@ -1299,12 +1299,12 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
         
-        const immutable(char)[] toString()
+        override const string toString()
         {
                 return toString(null).idup;
         }
         
-        final const char[] toString (char[] dst)
+        final override const char[] toString (char[] dst)
         {
                 static if (is (T == char)) {
                            if(dst.length < length)
@@ -1321,7 +1321,7 @@ class Text(T) : TextView!(T)
         }
 
         /// ditto
-        final const wchar[] toString16 (wchar[] dst = null)
+        final override const wchar[] toString16 (wchar[] dst = null)
         {
                 static if (is (T == char))
                            return Utf.toString16 (slice(), dst);
@@ -1338,7 +1338,7 @@ class Text(T) : TextView!(T)
         }
 
         /// ditto
-        final const dchar[] toString32 (dchar[] dst = null)
+        final override const dchar[] toString32 (dchar[] dst = null)
         {
                 static if (is (T == char))
                            return Utf.toString32 (slice(), dst);
@@ -1390,7 +1390,7 @@ class Text(T) : TextView!(T)
         }
 
         /// ditto
-        final bool opEquals (const(T)[] s)
+        final override bool opEquals (const(T)[] s)
         {
                 return slice() == s;
         }
@@ -1619,7 +1619,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract const int opCmp (Object o);
+        abstract override const int opCmp (Object o);
 
         /***********************************************************************
 
@@ -1627,7 +1627,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract bool opEquals (Object other);
+        abstract override bool opEquals (Object other);
 
         /***********************************************************************
 
@@ -1643,7 +1643,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract const TypeInfo encoding();
+        abstract override const TypeInfo encoding();
 
         /***********************************************************************
 
@@ -1659,7 +1659,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract hash_t toHash ();
+        abstract override hash_t toHash ();
 
         /***********************************************************************
 

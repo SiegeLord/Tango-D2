@@ -122,7 +122,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final const immutable(char)[] toString ()
+        override final const string toString ()
         {
                 return  (cast(const(char)[])p.toString()).idup;
         }

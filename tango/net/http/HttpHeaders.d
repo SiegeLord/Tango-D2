@@ -282,7 +282,7 @@ class HttpHeaders : HttpHeadersView
 
         **********************************************************************/
 
-        HttpHeaders clone ()
+        override HttpHeaders clone ()
         {
                 return new HttpHeaders (this);
         }

@@ -115,7 +115,7 @@ final class Whirlpool : MerkleDamgard
 
          ***********************************************************************/
 
-        protected uint addSize()   { return 32;  }
+        protected override uint addSize()   { return 32;  }
 
         /***********************************************************************
 
