@@ -206,11 +206,12 @@ class JsonParser(T)
                        ++p;
 
                 if (*p != '"')
+								{
                     if (*p == '}')
                         expected ("an attribute-name after (a potentially trailing) ','", p);
                     else
                        expected ("'\"' before attribute-name", p);
-
+								}
                 curLoc = p+1;
                 curType = Token.Name;
 
@@ -265,17 +266,17 @@ class JsonParser(T)
                             if (match ("null", Token.Null))
                                 return true;
                             expected ("'null'", str.ptr);
-
+                            break;
                        case 't':
                             if (match ("true", Token.True))
                                 return true;
                             expected ("'true'", str.ptr);
-
+                            break;
                        case 'f':
                             if (match ("false", Token.False))
                                 return true;
                             expected ("'false'", str.ptr);
-
+                            break;
                        default:
                             break;
                        }

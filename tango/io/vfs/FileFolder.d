@@ -90,7 +90,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final string toString ()
+        override final string toString ()
         {
                 return path.idup;
         }
@@ -638,7 +638,7 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        final string toString ()
+        override final string toString ()
         {
                 return path.toString().idup;
         }

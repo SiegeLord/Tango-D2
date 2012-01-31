@@ -93,7 +93,7 @@ version (Posix)
          *                returned in the selection set per call to select();
          *                this value is currently not used by this selector.
          */
-        public void open(uint size = DefaultSize, uint maxEvents = DefaultSize)
+        override public void open(uint size = DefaultSize, uint maxEvents = DefaultSize)
         in
         {
             assert(size > 0);
@@ -109,7 +109,7 @@ version (Posix)
          * Remarks:
          * It can be called multiple times without harmful side-effects.
          */
-        public void close()
+        override public void close()
         {
             _keys = null;
             //_selectedKeys = null;
@@ -141,7 +141,7 @@ version (Posix)
          * selector.register(conduit, Event.Read | Event.Write, object);
          * ---
          */
-        public void register(ISelectable conduit, Event events, Object attachment = null)
+        override public void register(ISelectable conduit, Event events, Object attachment = null)
         in
         {
             assert(conduit !is null && conduit.fileHandle() >= 0);
@@ -194,7 +194,7 @@ version (Posix)
          * UnregisteredConduitException if the conduit had not been previously
          * registered to the selector.
          */
-        public void unregister(ISelectable conduit)
+        override public void unregister(ISelectable conduit)
         {
             if (conduit !is null)
             {
@@ -263,7 +263,7 @@ version (Posix)
          * property was set to false; SelectorException if there were no
          * resources available to wait for events from the conduits.
          */
-        public int select(TimeSpan timeout)
+        override public int select(TimeSpan timeout)
         {
             int to = (timeout != TimeSpan.max ? cast(int) timeout.millis : -1);
 
@@ -303,7 +303,7 @@ version (Posix)
          * If the call to select() was unsuccessful or it did not return any
          * events, the returned value will be null.
          */
-        public ISelectionSet selectedSet()
+        override public ISelectionSet selectedSet()
         {
             return (_eventCount > 0 ? new PollSelectionSet(_pfds, _eventCount, _keys) : null);
         }
@@ -317,7 +317,7 @@ version (Posix)
          * value will SelectionKey.init. No exception will be thrown by this
          * method.
          */
-        public SelectionKey key(ISelectable conduit)
+        override public SelectionKey key(ISelectable conduit)
         {
             if(conduit !is null)
             {
@@ -333,7 +333,7 @@ version (Posix)
          * Return the number of keys resulting from the registration of a conduit
          * to the selector.
          */
-        public size_t count()
+        override public size_t count()
         {
             return _keys.length;
         }

@@ -196,38 +196,41 @@ private size_t doIso8601Date(T)(
 
       int i = parseInt(p, min(cast(size_t)3, remaining()));
 
-      if (i) if (p - p2 == 2) {
+      if (i) 
+			{
+				if (p - p2 == 2) {
 
-         // (year)-Www
-         if (done("-")) {
-            if (getMonthAndDayFromWeek(fd, i))
-               return eaten();
+					 // (year)-Www
+					 if (done("-")) {
+							if (getMonthAndDayFromWeek(fd, i))
+								 return eaten();
 
-         // (year)-Www-D
-         } else if (demand(p, '-')) {
-            if (remaining() == 0)
-               return eaten() - 1;
+					 // (year)-Www-D
+					 } else if (demand(p, '-')) {
+							if (remaining() == 0)
+								 return eaten() - 1;
 
-            if (separators == NO) {
-               // (year)Www after all
-               if (getMonthAndDayFromWeek(fd, i))
-                  return eaten() - 1;
+							if (separators == NO) {
+								 // (year)Www after all
+								 if (getMonthAndDayFromWeek(fd, i))
+										return eaten() - 1;
 
-            } else if (getMonthAndDayFromWeek(fd, i, *p++ - '0'))
-               return eaten();
-         }
+							} else if (getMonthAndDayFromWeek(fd, i, *p++ - '0'))
+								 return eaten();
+					 }
 
-      } else if (p - p2 == 3) {
-         // (year)WwwD, i == wwD
+				} else if (p - p2 == 3) {
+					 // (year)WwwD, i == wwD
 
-         if (separators == YES) {
-            // (year)-Www after all
-            if (getMonthAndDayFromWeek(fd, i / 10))
-               return eaten() - 1;
+					 if (separators == YES) {
+							// (year)-Www after all
+							if (getMonthAndDayFromWeek(fd, i / 10))
+								 return eaten() - 1;
 
-         } else if (getMonthAndDayFromWeek(fd, i / 10, i % 10))
-            return eaten();
-      }
+					 } else if (getMonthAndDayFromWeek(fd, i / 10, i % 10))
+							return eaten();
+				}
+			}
       return onlyYear;
    }
 
@@ -297,7 +300,7 @@ private size_t doIso8601Date(T)(
             return onlyYear;
 
          addDays(fd, i);
-
+         break;
       default: break;
    }
    return eaten();

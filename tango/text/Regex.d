@@ -2030,6 +2030,7 @@ private:
                         default:
                             break;
                     }
+										goto default;
                 default:
                     if ( have_range_start )
                         trans.predicate.appendInput(range_t(last));
@@ -2471,7 +2472,7 @@ private class TDFA(char_t)
         /* ****************************************************************************************
             Order transitions by the order of their predicates.
         ******************************************************************************************/
-        final int opCmp(Object o)
+        override final int opCmp(Object o)
         {
             Transition t = cast(Transition)o;
             assert(t !is null);
@@ -2802,7 +2803,7 @@ private:
             return false;
         }
 
-        int opCmp(Object o)
+        override int opCmp(Object o)
         {
             StateElement se = cast(StateElement)o;
             assert(se !is null);
@@ -2817,7 +2818,7 @@ private:
             return -1;
         }
 
-        string toString()
+        override string toString()
         {
             const(char)[] str;
             str = Format.convert("{} p{}.{} {{", nfa_state.index, maxPriority, lastPriority);
@@ -2861,7 +2862,7 @@ private:
             return res;
         }
 
-        string toString()
+        override string toString()
         {
             string str = "[ ";
             bool first = true;

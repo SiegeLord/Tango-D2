@@ -567,7 +567,7 @@ class Process
     /**
      * Return an UTF-8 string with the process' command line.
      */
-    public immutable(char)[] toString()
+    public override string toString()
     {
         immutable(char)[] command;
 

@@ -138,7 +138,7 @@ package struct FS
                         // sanity check on Win32 ...
                         version (Win32)
                                 {
-                                bool kosher(){foreach (c; path) if (c is '\\') return false; return true;};
+                                bool kosher(){foreach (c; path) if (c is '\\') return false; return true;}
                                 assert (kosher, "attempting to use non-standard '\\' in a path for a folder listing");
                                 }
 
@@ -993,14 +993,16 @@ package struct FS
                                  info.folder = info.system = false;
 
                                  if (! stat (sfnbuf.ptr, &sbuf))
-                                    {
+                                 {
                                     info.folder = (sbuf.st_mode & S_IFDIR) != 0;
                                     if (info.folder is false)
+																		{
                                         if ((sbuf.st_mode & S_IFREG) is 0)
                                              info.system = true;
                                         else
                                            info.bytes = cast(ulong) sbuf.st_size;
-                                    }
+																		}	
+                                 }
                                  if (all || (info.hidden | info.system) is false)
                                      if ((ret = dg(info)) != 0)
                                           break;
@@ -1198,10 +1200,12 @@ struct PathParser(char_t = char)
                    {
                    if (ext_ is 0)
                        foreach (c; x)
+											 {
                                 if (c is '.')
                                     ++ext_;
                                 else
                                    break;
+											 }
                    x = x [ext_ .. $];
                    }
                 return x;
@@ -1330,7 +1334,7 @@ struct PathParser(char_t = char)
                             // standard() or equivalent to convert first
                             case '\\':
                                  FS.exception ("unexpected '\\' character in path: ", path[0..end]);
-
+                                 break;
                             version (Win32)
                             {
                             case ':':
@@ -1573,11 +1577,13 @@ void createPath (const(char)[] path)
         void test (const(char)[] segment)
         {
                 if (segment.length)
+								{
                     if (! exists (segment))
                           createFolder (segment);
                     else
                        if (! isFolder (segment))
                              throw new IllegalArgumentException (("Path.createPath :: file/folder conflict: " ~ segment).idup);
+								}
         }
 
         foreach (i, char c; path)

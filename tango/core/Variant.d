@@ -8,7 +8,7 @@
 module tango.core.Variant;
 
 private import tango.core.Memory : GC;
-private import tango.core.Vararg;
+private import core.stdc.stdarg;
 private import tango.core.Traits;
 private import tango.core.Tuple;
 
@@ -261,18 +261,18 @@ private
         /*
          * Any pointer can be cast to void*.
          */
-        static if( is( dsttypeT == void* ) )
+        else static if( is( dsttypeT == void* ) )
             return (cast(TypeInfo_Pointer) srctype) !is null;
 
         /*
          * Any array can be cast to void[], however remember that it has to
          * be manually adjusted to preserve the correct length.
          */
-        static if( is( dsttypeT == void[] ) )
+        else static if( is( dsttypeT == void[] ) )
             return ((cast(TypeInfo_Array) srctype) !is null)
                 || ((cast(TypeInfo_StaticArray) srctype) !is null);
 
-        return false;
+        else return false;
     }
 
     /*
@@ -746,28 +746,16 @@ struct Variant
         /**
          * Converts a vararg function argument list into an array of Variants.
          */
+				private import core.stdc.stdarg;
         static Variant[] fromVararg(TypeInfo[] types, va_list args)
         {
             auto vs = new Variant[](types.length);
 
             foreach( i, ref v ; vs )
             {
-                version(DigitalMars) version(X86_64)
-                {
-                    scope void[] buffer;
-                    size_t len = 0;
-
-                    foreach(argType; types)
-                        len =  max(len,(argType.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1));
-
-                    buffer.length = len;
-
-                    va_arg(args, types[i], buffer.ptr);
-
-                    Variant.fromPtr(types[i], buffer.ptr, v);
-                }
-                else
-                    args = Variant.fromPtr(types[i], args, v);
+								scope void[] buffer = new void[types[i].tsize];
+								va_arg(args, types[i], buffer.ptr);
+								Variant.fromPtr(types[i], buffer.ptr, v);
             }
 
             return vs;
@@ -1241,7 +1229,7 @@ debug( UnitTest )
 
     version( EnableVararg )
     {
-        private import tango.core.Vararg;
+        //private import tango.core.Vararg;
 
         unittest
         {

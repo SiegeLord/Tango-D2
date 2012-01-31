@@ -258,12 +258,12 @@ debug( UnitTest )
         {
             void* a;
             uint  b;
-        };
+        }
 
         static assert( !isPointerType!(Eggs) );
         static assert( isPointerType!(Eggs*) );
 
-        struct Bacon {};
+        struct Bacon {}
 
         static assert( !isPointerType!(Bacon) );
 

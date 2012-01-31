@@ -81,7 +81,7 @@ class LinkedFolder : VirtualFolder
 
         ***********************************************************************/
 
-        final VfsHost mount (VfsFolder folder, const(char)[] name=null)
+        override final VfsHost mount (VfsFolder folder, const(char)[] name=null)
         {
                 // traverse to the end of the list
                 auto link = &head;
@@ -101,7 +101,7 @@ class LinkedFolder : VirtualFolder
 
         ***********************************************************************/
 
-        final VfsHost dismount (VfsFolder folder)
+        override final VfsHost dismount (VfsFolder folder)
         {
                 assert (0, "LinkedFolder.dismount not implemented");
         }

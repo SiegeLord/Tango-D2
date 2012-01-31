@@ -1686,7 +1686,7 @@ inout(char)[] headTail(inout(char)[] path, out inout(char)[] head, out inout(cha
         {
             head = path[0..i+1];
             tail = path[i+2..$];
-            return head;;
+            return head;
         }
 
     head = path;

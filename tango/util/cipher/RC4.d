@@ -44,7 +44,7 @@ class RC4 : StreamCipher
         return "RC4";
     }
     
-    ubyte returnByte(ubyte input)
+    override ubyte returnByte(ubyte input)
     {
         if (!_initialized)
             invalid(name()~": Cipher not initialized");

@@ -1609,7 +1609,7 @@ unittest
    assert(feqrel(1.5-real.epsilon,1.5L)==real.mant_dig-1);
    assert(feqrel(1.5-real.epsilon,1.5+real.epsilon)==real.mant_dig-2);
    
-   assert(feqrel(real.min/8,real.min/17)==3);;
+   assert(feqrel(real.min/8,real.min/17)==3);
    
    // Numbers that are close
    assert(feqrel(0x1.Bp+84, 0x1.B8p+84)==5);
