@@ -58,7 +58,7 @@ class AppendFile : Filer
 
         ***********************************************************************/
 
-        @property final const Mask mask ()
+        @property override final const Mask mask ()
         {
                 return mask_;
         }
@@ -69,7 +69,7 @@ class AppendFile : Filer
 
         ***********************************************************************/
 
-        @property final const const(char)[] name ()
+        @property override final const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -80,7 +80,7 @@ class AppendFile : Filer
                  
         ***********************************************************************/
 
-        final void append (LogEvent event)
+        override final void append (LogEvent event)
         {
                 synchronized(this)
                 {
@@ -120,7 +120,7 @@ class Filer : Appender
 
         ***********************************************************************/
 
-        final void close ()
+        override final void close ()
         {
                 synchronized(this)
                 {

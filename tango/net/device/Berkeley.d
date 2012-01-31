@@ -724,7 +724,7 @@ version (Windows)
                 {
                 uint  imr_multiaddr;  /* IP multicast address of group */
                 uint  imr_interface;  /* local IP address of interface */
-                };
+                }
 
                 ip_mreq mrq;
 
@@ -1312,7 +1312,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        immutable(char)[] toString()
+        override string toString()
         {
                 return toAddrString.idup ~ ":" ~ toPortString.idup;
         }
@@ -1340,7 +1340,7 @@ public class UnknownAddress : Address
 
         ***********************************************************************/
 
-        @property sockaddr* name()
+        @property override sockaddr* name()
         {
                 return &sa;
         }
@@ -1349,7 +1349,7 @@ public class UnknownAddress : Address
 
         ***********************************************************************/
 
-        @property const int nameLen()
+        @property override const int nameLen()
         {
                 return sa.sizeof;
         }
@@ -1358,7 +1358,7 @@ public class UnknownAddress : Address
 
         ***********************************************************************/
 
-        @property AddressFamily addressFamily()
+        @property override AddressFamily addressFamily()
         {
                 return cast(AddressFamily) sa.sa_family;
         }
@@ -1367,7 +1367,7 @@ public class UnknownAddress : Address
 
         ***********************************************************************/
 
-        immutable(char)[] toString()
+        override string toString()
         {
                 return "Unknown";
         }
@@ -1481,7 +1481,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        @property sockaddr* name()
+        @property override sockaddr* name()
         {
                 return cast(sockaddr*)&sin;
         }
@@ -1490,7 +1490,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        @property const int nameLen()
+        @property override const int nameLen()
         {
                 return cast(int)sin.sizeof;
         }
@@ -1499,7 +1499,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        @property AddressFamily addressFamily()
+        @property override AddressFamily addressFamily()
         {
                 return AddressFamily.INET;
         }
@@ -1526,7 +1526,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        @property const char[] toAddrString()
+        @property override const char[] toAddrString()
         {
                 char[16] buff = 0;
                 version (Windows)
@@ -1539,7 +1539,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        @property const char[] toPortString()
+        @property override const char[] toPortString()
         {
                 char[8] _port;
                 return fromInt (_port, port()).dup;
@@ -1549,7 +1549,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        immutable(char)[] toString()
+        override string toString()
         {
                 return toAddrString().idup ~ ":" ~ toPortString().idup;
         }
@@ -1702,7 +1702,7 @@ protected:
 
         ***********************************************************************/
 
-        @property sockaddr* name()
+        @property override sockaddr* name()
         {
                 return cast(sockaddr*)&sin;
         }
@@ -1711,7 +1711,7 @@ protected:
 
         ***********************************************************************/
 
-        @property const int nameLen()
+        @property override const int nameLen()
         {
                 return cast(int)sin.sizeof;
         }
@@ -1722,7 +1722,7 @@ protected:
 
         ***********************************************************************/
 
-       @property  AddressFamily addressFamily()
+       @property override AddressFamily addressFamily()
         {
                 return AddressFamily.INET6;
         }
@@ -1812,7 +1812,7 @@ protected:
         ***********************************************************************/
 
         version (Posix)
-        @property const char[] toAddrString()
+        @property override const char[] toAddrString()
         {
 
                 char[100] buff = 0;
@@ -1823,7 +1823,7 @@ protected:
 
         ***********************************************************************/
 
-        @property const char[] toPortString()
+        @property override const char[] toPortString()
         {
                 char[8] _port;
                 return fromInt (_port, port()).dup;
@@ -1833,7 +1833,7 @@ protected:
 
         ***********************************************************************/
 
-        immutable(char)[] toString()
+        override string toString()
         {
                 return "[" ~ toAddrString.idup ~ "]:" ~ toPortString.idup;
         }

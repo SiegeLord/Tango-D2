@@ -98,7 +98,7 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        immutable(char)[] toString()
+        override string toString()
         {
                 return "<socket>";
         }
@@ -258,7 +258,7 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        size_t write (const(void)[] src)
+        override size_t write (const(void)[] src)
         {
                 version (TangoRuntime)
                     if (scheduler)
@@ -588,7 +588,7 @@ class ServerSocket : Socket
 
         ***********************************************************************/
 
-        immutable(char)[] toString()
+        override string toString()
         {
                 return "<accept>";
         }

@@ -84,7 +84,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        abstract immutable(char)[] toString (); 
+        abstract override string toString (); 
 
         /***********************************************************************
 

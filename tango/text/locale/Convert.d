@@ -663,7 +663,7 @@ char[] formatInteger (char[] output, long value, const(char)[] format, NumberFor
                     if (length > 0)
                         break;
                     // Fall through.
-
+                    goto case;
                case 'd':
                case 'D':
                     return longToString (output, value, length, nf.negativeSign);
@@ -733,7 +733,7 @@ char[] formatDouble (char[] output, double value, const(char)[] format, NumberFo
                     if (length > 15)
                         precision = 17;
                     // Fall through.
-
+                    goto default;
                default:
                     break;
         }

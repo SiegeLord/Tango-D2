@@ -350,17 +350,17 @@ class MemCache : Thread
 	        c += x.length;
 	        switch (len)
 	               {
-	               case 11: c += (cast(uint)k[10]<<24);
-	               case 10: c += (cast(uint)k[9]<<16);
-	               case 9 : c += (cast(uint)k[8]<<8);
-	               case 8 : b += (cast(uint)k[7]<<24);
-	               case 7 : b += (cast(uint)k[6]<<16);
-	               case 6 : b += (cast(uint)k[5]<<8);
-	               case 5 : b += k[4];
-	               case 4 : a += (cast(uint)k[3]<<24);
-	               case 3 : a += (cast(uint)k[2]<<16);
-	               case 2 : a += (cast(uint)k[1]<<8);
-	               case 1 : a += k[0];
+	               case 11: c += (cast(uint)k[10]<<24); goto case;
+	               case 10: c += (cast(uint)k[9]<<16); goto case;
+	               case 9 : c += (cast(uint)k[8]<<8); goto case;
+	               case 8 : b += (cast(uint)k[7]<<24); goto case;
+	               case 7 : b += (cast(uint)k[6]<<16); goto case;
+	               case 6 : b += (cast(uint)k[5]<<8); goto case;
+	               case 5 : b += k[4]; goto case;
+	               case 4 : a += (cast(uint)k[3]<<24); goto case;
+	               case 3 : a += (cast(uint)k[2]<<16); goto case;
+	               case 2 : a += (cast(uint)k[1]<<8); goto case;
+	               case 1 : a += k[0]; break;
 	               default:
 	               }
 

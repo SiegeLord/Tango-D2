@@ -62,7 +62,7 @@ public class AppendSocket : Appender
 
         ***********************************************************************/
 
-        @property const Mask mask ()
+        @property override const Mask mask ()
         {
                 return mask_;
         }
@@ -73,7 +73,7 @@ public class AppendSocket : Appender
 
         ***********************************************************************/
 
-        @property const const(char)[] name ()
+        @property override  const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -88,7 +88,7 @@ public class AppendSocket : Appender
                  
         ***********************************************************************/
 
-        void append (LogEvent event)
+        override void append (LogEvent event)
         {
                 auto layout = layout();
 
@@ -122,7 +122,7 @@ public class AppendSocket : Appender
                     
         ***********************************************************************/
 
-        void close ()
+        override void close ()
         {
                 if (conduit)
                     conduit.detach();

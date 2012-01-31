@@ -151,7 +151,7 @@ class BzipOutput : OutputFilter
 
     ***************************************************************************/
 
-    size_t write(const(void)[] src)
+    override size_t write(const(void)[] src)
     {
         check_valid();
         scope(failure) kill_bzs();
@@ -212,7 +212,7 @@ class BzipOutput : OutputFilter
 
     ***************************************************************************/
 
-    void close()
+    override void close()
     {
         if( bzs_valid ) commit();
         super.close();
@@ -396,7 +396,7 @@ class BzipInput : InputFilter
 
     ***************************************************************************/ 
 
-    size_t read(void[] dst)
+    override size_t read(void[] dst)
     {
         if( !bzs_valid )
             return IConduit.Eof;

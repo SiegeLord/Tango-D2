@@ -59,7 +59,7 @@ public class AppendMail : Appender
                  
         ***********************************************************************/
 
-        final void append (LogEvent event)
+        override final void append (LogEvent event)
         {
 					synchronized
 					{
@@ -90,7 +90,7 @@ public class AppendMail : Appender
 
         ***********************************************************************/
 
-        @property final const Mask mask ()
+        @property override final const Mask mask ()
         {
                 return mask_;
         }
@@ -101,7 +101,7 @@ public class AppendMail : Appender
 
         ***********************************************************************/
 
-        @property final const const(char)[] name ()
+        @property override final const const(char)[] name ()
         {
                 return this.classinfo.name;
         }

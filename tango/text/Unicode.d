@@ -806,7 +806,7 @@ unittest {
     const(char)[] testString1utf8 = "?!Mädchen \u0390\u0390,;";
     const(char)[] testString2utf8 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
     assert(toFold(testString1utf8) == toFold(testString2utf8));
-    const(wchar)[] testString1utf16 = "?!Mädchen \u0390\u0390,;";;
+    const(wchar)[] testString1utf16 = "?!Mädchen \u0390\u0390,;";
     const(wchar)[] testString2utf16 = "?!MÄDCHEN \u03B9\u0308\u0301\u03B9\u0308\u0301,;";
     assert(toFold(testString1utf16) == toFold(testString2utf16));
     const(wchar)[] testString1utf32 = "?!Mädchen \u0390\u0390,;";

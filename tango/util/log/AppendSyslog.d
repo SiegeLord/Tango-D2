@@ -112,7 +112,7 @@ public class AppendSyslog: Filer
 
      ***********************************************************************/
 
-    @property final Mask mask ( ) const
+    @property override final Mask mask ( ) const
     {
         return mask_;
     }
@@ -123,7 +123,7 @@ public class AppendSyslog: Filer
 
      ***********************************************************************/
 
-    @property final const(char)[] name ( ) const
+    @property override final const(char)[] name ( ) const
     {
         return this.classinfo.name;
     }
@@ -134,7 +134,7 @@ public class AppendSyslog: Filer
      
      ***********************************************************************/
 
-    final void append ( LogEvent event )
+    override final void append ( LogEvent event )
     {
         synchronized(this)
         {

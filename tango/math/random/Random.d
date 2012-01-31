@@ -1198,7 +1198,7 @@ final class RandomG(SourceT=DefaultEngine)
     // ---------------
     
     /// writes the current status in a string
-    immutable(char)[] toString(){
+    override string toString(){
         return source.toString().idup;
     }
     /// reads the current status from a string (that should have been trimmed)
