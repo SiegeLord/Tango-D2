@@ -219,7 +219,7 @@ class MacOSX : FileFilter
         this (ref Args args)
         {
                 super (args);
-                //include ("tango/sys/darwin");
+                include ("tango/sys/darwin");
                 register ("osx", "dmd", &dmd);
                 register ("osx", "ldc2", &ldc2);
                 register ("osx", "gdc", &gdc);
@@ -282,7 +282,7 @@ class FreeBSD : FileFilter
         this (ref Args args)
         {
                 super (args);
-                //include ("tango/sys/freebsd");
+                include ("tango/sys/freebsd");
                 register ("freebsd", "dmd", &dmd);
                 register ("freebsd", "ldc2", &ldc2);
                 register ("freebsd", "gdc", &gdc);
@@ -343,7 +343,7 @@ class Solaris : FileFilter
         this (ref Args args)
         {
                 super (args);
-                // include ("tango/sys/solaris");
+                include ("tango/sys/solaris");
                 register ("solaris", "dmd", &dmd);
                 register ("solaris", "ldc2", &ldc2);
                 register ("solaris", "gdc", &gdc);
