@@ -774,7 +774,7 @@ Lsplit:
                     dwarf_error("64 bit DWARF in a 32 bit excecutable?");
                     return 0;
                 }
-                return cast(size_t)read!(ulong)();
+                else return cast(size_t)read!(ulong)();
             } else {
                 if (initlen >= 0xff_ff_ff_00) {
                     //see dwarf spec 7.5.1
