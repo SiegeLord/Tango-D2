@@ -497,7 +497,7 @@ class FileFilter
 
         final void exclude (const(char)[] path)
         {
-                assert(Path.exists(path), "FileFilter.exclude: Path does not exist: " ~ path);
+                assert(Path.exists(Path.join(args.root, path)), "FileFilter.exclude: Path does not exist: " ~ path);
                 assert(path[$-1] != '/', "FileFilter.exclude: Inconsistent path syntax, no trailing '/' allowed: " ~ path);
                 excluded[path] = true;
         }
