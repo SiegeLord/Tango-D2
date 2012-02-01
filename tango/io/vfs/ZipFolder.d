@@ -897,6 +897,8 @@ private:
         // Update readonly to reflect the write-protected status of the
         // archive.
         this.readonly = this.readonly || !Path.isWritable(path);
+        
+        zr = new ZipBlockReader(path);
 
         // Parse the contents of the archive
         foreach( zipEntry ; zr )
