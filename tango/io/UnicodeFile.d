@@ -136,7 +136,7 @@ class UnicodeFile(T)
 
         ***********************************************************************/
 
-        immutable(char)[] toString ()
+        override immutable(char)[] toString ()
         {
                 return path_.idup;
         }
