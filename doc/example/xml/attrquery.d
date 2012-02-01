@@ -21,8 +21,8 @@ void main () {
     // get the root element
     auto root = doc.elements;
 
-    // query the doc for all country elements
-    auto result = root.query.descendant("country");
+    // query the doc for all country elements with an id attribute (all of them)
+    auto result = root.query().descendant("country").attribute("id");
 
     foreach (e; result) {
         Stdout(e.value).newline;
