@@ -1515,5 +1515,38 @@ unittest
         assert(ex( to!(real)("0x") ));
         assert(ex( to!(real)("-") ));
     }
+/+
+    /*
+     * Const and immutable
+     */
+    {
+            assert( to!(immutable(char)[])("Í love to æt "w.dup) == "Í love to æt "c );
+            assert( to!(immutable(char)[])("them smûrƒies™,"d.dup) == "them smûrƒies™,"c );
+            assert( to!(immutable(wchar)[])("Smûrﬁes™ I love"c.dup) == "Smûrﬁes™ I love"w );
+            assert( to!(immutable(wchar)[])("２ 食い散らす"d.dup) == "２ 食い散らす"w );
+            assert( to!(immutable(dchar)[])("bite đey µgly"c.dup) == "bite đey µgly"d );
+            assert( to!(immutable(dchar)[])("headž ㍳ff"w.dup) == "headž ㍳ff"d );
+            // ... nibble on they bluish feet.
+            
+            assert( to!(immutable(char)[])("食い散らす"c.dup) == "食い散らす"c );
+            assert( to!(immutable(wchar)[])("食い散らす"w.dup) == "食い散らす"w );
+            assert( to!(immutable(dchar)[])("食い散らす"d.dup) == "食い散らす"d );
+            
+            assert( to!(immutable(char)[])(true) == "true" );
+            assert( to!(immutable(char)[])(false) == "false" );
+
+            assert( to!(immutable(char)[])(12345678) == "12345678" );
+            assert( to!(immutable(char)[])(1234.567800) == "1234.57");
+
+            assert( to!(immutable( char)[])(cast(char) 'a') == "a"c );
+            assert( to!(immutable(wchar)[])(cast(char) 'b') == "b"w );
+            assert( to!(immutable(dchar)[])(cast(char) 'c') == "c"d );
+            assert( to!(immutable( char)[])(cast(wchar)'d') == "d"c );
+            assert( to!(immutable(wchar)[])(cast(wchar)'e') == "e"w );
+            assert( to!(immutable(dchar)[])(cast(wchar)'f') == "f"d );
+            assert( to!(immutable( char)[])(cast(dchar)'g') == "g"c );
+            assert( to!(immutable(wchar)[])(cast(dchar)'h') == "h"w );
+            assert( to!(immutable(dchar)[])(cast(dchar)'i') == "i"d );
+    }+/
 }
 
