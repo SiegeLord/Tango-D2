@@ -16,7 +16,7 @@ import tango.io.Stdout;
 
 void main(char[][] args)
 {
-    char[] zipname;
+    const(char)[] zipname;
     if (args.length == 2)
         zipname = args[1];
     else
