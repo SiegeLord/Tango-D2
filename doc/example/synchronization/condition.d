@@ -13,8 +13,8 @@ private import tango.io.Stdout;
 debug (condition)
 {
     private import tango.util.log.Log;
-    private import tango.util.log.ConsoleAppender;
-    private import tango.util.log.DateLayout;
+    private import tango.util.log.AppendConsole;
+    private import tango.util.log.LayoutDate;
 }
 
 
@@ -24,7 +24,7 @@ void main(char[][] args)
     {
         Logger log = Log.getLogger("condition");
 
-        log.addAppender(new ConsoleAppender(new DateLayout()));
+        log.add(new AppendConsole(new LayoutDate()));
 
         log.info("Condition test");
     }
@@ -84,7 +84,7 @@ void testNotifyOne()
                     log.trace("Condition variable was signaled");
             }
         }
-        catch (SyncException e)
+        catch (tango.core.Exception.SyncException e)
         {
             Stderr.formatln("Sync exception caught in Condition test thread {0}:\n{1}",
                             Thread.getThis().name(), e.toString());
@@ -158,7 +158,7 @@ void testNotifyOne()
             }
         }
     }
-    catch (SyncException e)
+    catch (tango.core.Exception.SyncException e)
     {
         Stderr.formatln("Sync exception caught in main thread:\n{0}", e.toString());
     }
@@ -216,7 +216,7 @@ void testNotifyAll()
                     log.trace("Releasing mutex");
             }
         }
-        catch (SyncException e)
+        catch (tango.core.Exception.SyncException e)
         {
             Stderr.formatln("Sync exception caught in Condition test thread {0}:\n{1}",
                             Thread.getThis().name(), e.toString());
@@ -237,7 +237,7 @@ void testNotifyAll()
     for (uint i = 0; i < MaxThreadCount; ++i)
     {
         thread = new Thread(&notifyAllTestThread);
-        thread.name = "thread-" ~ format(tmp, i);
+        thread.name = "thread-" ~ format(tmp, i).idup;
 
         group.add(thread);
         debug (condition)
@@ -300,7 +300,7 @@ void testNotifyAll()
             }
         }
     }
-    catch (SyncException e)
+    catch (tango.core.Exception.SyncException e)
     {
         Stderr.formatln("Sync exception caught in main thread:\n{0}", e.toString());
     }
