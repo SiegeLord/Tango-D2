@@ -16,6 +16,8 @@ import tango.core.Traits: ctfe_i2a;
 import tango.stdc.string;
 import tango.stdc.stringz : fromStringz;
 import tango.stdc.stdlib: abort;
+import tango.core.tools.FrameInfo;
+
 version(Windows){
     import tango.core.tools.WinStackTrace;
 } else {
