@@ -273,8 +273,8 @@ class FilePath : PathView
                 combinations of operations may not produce an identical
                 set of fields. For example:
                 ---
-                FilePath("/foo").append("bar").pop == "/foo";
-                FilePath("/foo/").append("bar").pop != "/foo/";
+                FilePath("/foo").append("bar").pop() == "/foo";
+                FilePath("/foo/").append("bar").pop() != "/foo/";
                 ---
 
                 The latter is different due to variance in how append
@@ -298,8 +298,8 @@ class FilePath : PathView
                 combinations of operations may not produce an identical
                 set of fields. For example:
                 ---
-                FilePath("/foo").append("bar").pop == "/foo";
-                FilePath("/foo/").append("bar").pop != "/foo/";
+                FilePath("/foo").append("bar").pop() == "/foo";
+                FilePath("/foo/").append("bar").pop() != "/foo/";
                 ---
 
                 The latter Is Different due to variance in how append
@@ -1235,8 +1235,8 @@ debug (UnitTest)
         {
                 version(Win32)
                 {
-                assert (FilePath("/foo".dup).append("bar").pop == "/foo");
-                assert (FilePath("/foo/".dup).append("bar").pop == "/foo");
+                assert (FilePath("/foo".dup).append("bar").pop() == "/foo");
+                assert (FilePath("/foo/".dup).append("bar").pop() == "/foo");
 
                 auto fp = new FilePath(r"C:/home/foo/bar".dup);
                 fp ~= "john";
@@ -1252,12 +1252,12 @@ debug (UnitTest)
                 assert (fp == r"john");
 
                 fp.set(r"C:/home/foo/bar/john/foo.d".dup);
-                assert (fp.pop == r"C:/home/foo/bar/john");
-                assert (fp.pop == r"C:/home/foo/bar");
-                assert (fp.pop == r"C:/home/foo");
-                assert (fp.pop == r"C:/home");
-                assert (fp.pop == r"C:");
-                assert (fp.pop == r"C:");
+                assert (fp.pop() == r"C:/home/foo/bar/john");
+                assert (fp.pop() == r"C:/home/foo/bar");
+                assert (fp.pop() == r"C:/home/foo");
+                assert (fp.pop() == r"C:/home");
+                assert (fp.pop() == r"C:");
+                assert (fp.pop() == r"C:");
 
                 // special case for popping empty names
                 fp.set (r"C:/home/foo/bar/john/".dup);
@@ -1287,7 +1287,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (fp.isChild);
 
-                fp.pop;
+                fp.pop();
                 assert (fp.isAbsolute);
                 assert (fp.name == "bar");
                 assert (fp.folder == r"/home/foo/");
@@ -1298,7 +1298,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (fp.isChild);
 
-                fp.pop;
+                fp.pop();
                 assert (fp.isAbsolute);
                 assert (fp.name == "foo");
                 assert (fp.folder == r"/home/");
@@ -1309,7 +1309,7 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (fp.isChild);
 
-                fp.pop;
+                fp.pop();
                 assert (fp.isAbsolute);
                 assert (fp.name == "home");
                 assert (fp.folder == r"/");

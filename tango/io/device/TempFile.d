@@ -75,7 +75,7 @@ version( Win32 )
 
     // Determines if reparse points (aka: symlinks) are supported.  Support
     // was introduced in Windows Vista.
-    bool reparseSupported()
+    @property bool reparseSupported()
     {
         OSVERSIONINFO versionInfo = void;
         versionInfo.dwOSVersionInfoSize = versionInfo.sizeof;
@@ -303,7 +303,7 @@ class TempFile : File
          **********************************************************************/
         public static char[] tempPath()
         {
-            return GetTempPath;
+            return GetTempPath();
         }
 
         /*

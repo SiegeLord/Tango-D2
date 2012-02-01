@@ -1158,7 +1158,7 @@ class GlobalDebugInfo {
         if (info.next) {
             info.next.prev = info.prev;
         }
-        info.freeArrays;
+        info.freeArrays();
         info.prev = info.next = null;
         
         delete info;

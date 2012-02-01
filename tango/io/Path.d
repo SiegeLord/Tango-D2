@@ -139,7 +139,7 @@ package struct FS
                         version (Win32)
                                 {
                                 bool kosher(){foreach (c; path) if (c is '\\') return false; return true;}
-                                assert (kosher, "attempting to use non-standard '\\' in a path for a folder listing");
+                                assert (kosher(), "attempting to use non-standard '\\' in a path for a folder listing");
                                 }
 
                         return list (path, dg, allFiles);
@@ -649,7 +649,7 @@ package struct FS
                                   if ((ret = dg(info)) != 0)
                                        break;
                               }
-                           } while (next);
+                           } while (next());
 
                         return ret;
                 }
@@ -996,12 +996,12 @@ package struct FS
                                  {
                                     info.folder = (sbuf.st_mode & S_IFDIR) != 0;
                                     if (info.folder is false)
-																		{
+                                    {
                                         if ((sbuf.st_mode & S_IFREG) is 0)
                                              info.system = true;
                                         else
                                            info.bytes = cast(ulong) sbuf.st_size;
-																		}	
+                                    }
                                  }
                                  if (all || (info.hidden | info.system) is false)
                                      if ((ret = dg(info)) != 0)
@@ -1200,12 +1200,12 @@ struct PathParser(char_t = char)
                    {
                    if (ext_ is 0)
                        foreach (c; x)
-											 {
+                       {
                                 if (c is '.')
                                     ++ext_;
                                 else
                                    break;
-											 }
+                       }
                    x = x [ext_ .. $];
                    }
                 return x;
@@ -1577,13 +1577,13 @@ void createPath (const(char)[] path)
         void test (const(char)[] segment)
         {
                 if (segment.length)
-								{
+                {
                     if (! exists (segment))
                           createFolder (segment);
                     else
                        if (! isFolder (segment))
                              throw new IllegalArgumentException (("Path.createPath :: file/folder conflict: " ~ segment).idup);
-								}
+                }
         }
 
         foreach (i, char c; path)
@@ -2068,7 +2068,7 @@ debug (UnitTest)
 
 char[] normalize (const(char)[] in_path, char[] buf = null)
 {
-	    char[] path;            // Mutable path
+        char[] path;            // Mutable path
         size_t  idx;            // Current position
         size_t  moveTo;         // Position to move
         bool    isAbsolute;     // Whether the path is absolute

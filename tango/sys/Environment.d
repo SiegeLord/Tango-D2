@@ -135,13 +135,13 @@ struct Environment
 
                 // is it in cwd?
                 version (Windows)
-                         if (bin.path(cwd).exists)
+                         if (bin.path(cwd()).exists)
                              return bin;
 
                 // rifle through the path (after converting to standard format)
                 foreach (pe; Text.patterns (standard(get("PATH")), tango.io.model.IFile.FileConst.SystemPathString))
                          if (bin.path(pe).exists)
-												 {
+                         {
                              version (Windows)
                                       return bin;
                                   else
@@ -151,7 +151,7 @@ struct Environment
                                      if (stats.st_mode & octal!(100))
                                          return bin;
                                      }
-													}
+                         }
                 return null;
         }
 

@@ -47,7 +47,7 @@ struct WallClock
 
                 @property static Time now ()
                 {
-                        return Clock.now - localBias;
+                        return Clock.now - localBias();
                 }
 
                 /***************************************************************
@@ -88,7 +88,7 @@ struct WallClock
 
                 static DateTime toDate (const(Time) utc)
                 {
-                        return Clock.toDate (utc - localBias);
+                        return Clock.toDate (utc - localBias());
                 }
 
                 /***************************************************************
@@ -99,7 +99,7 @@ struct WallClock
 
                 static Time fromDate (ref const(DateTime) date)
                 {
-                        return (Clock.fromDate(date) + localBias);
+                        return (Clock.fromDate(date) + localBias());
                 }
 
                 /***************************************************************

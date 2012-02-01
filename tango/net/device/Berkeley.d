@@ -308,7 +308,7 @@ version (Win32)
                    lib = LoadLibraryA ("Wship6.dll");
                    }
                 getnameinfo = cast(typeof(getnameinfo)) GetProcAddress(lib, "getnameinfo");
-	        getaddrinfo = cast(typeof(getaddrinfo)) GetProcAddress(lib, "getaddrinfo");
+                getaddrinfo = cast(typeof(getaddrinfo)) GetProcAddress(lib, "getaddrinfo");
                 freeaddrinfo = cast(typeof(freeaddrinfo)) GetProcAddress(lib, "freeaddrinfo");
                 if (!getnameinfo)
                    {
@@ -356,13 +356,13 @@ else
         //private alias int socket_t = -1;
         private struct socket_t
         {
-			this(int _payload)
-			{
-				payload = _payload;
-			}
-			int payload = -1;
-			alias payload this;
-		}
+           this(int _payload)
+           {
+              payload = _payload;
+           }
+           int payload = -1;
+           alias payload this;
+        }
 
         package extern (C)
         {
@@ -745,8 +745,8 @@ version (Windows)
                 if (family is AddressFamily.INET)
                    return new IPv4Address;
                 if (family is AddressFamily.INET6)
-		    return new IPv6Address;
-		return new UnknownAddress;
+                   return new IPv6Address;
+                return new UnknownAddress;
         }
 
         /***********************************************************************
@@ -2307,7 +2307,7 @@ public class SocketSet
                 return isSet(s.handle);
         }
 
-        const size_t max()
+        @property const size_t max()
         {
                 return nbytes / socket_t.sizeof;
         }
