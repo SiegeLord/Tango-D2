@@ -7,5 +7,6 @@ void foo()
 
 void main()
 {
-        foo;
+        /* Doesn't work? */
+        foo();
 }

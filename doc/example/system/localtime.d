@@ -20,17 +20,17 @@ private import  tango.time.WallClock;
 void main ()
 {
         /// list of day names
-        static char[][] days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        static const(char)[][] days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
         /// list of month names
-        static char[][] months =
+        static const(char)[][] months =
         [
             "Jan", "Feb", "Mar", "Apr", "May", "Jun",
             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
         ];
 
         // retreive local time
-        auto dt = WallClock.toDate;
+        auto dt = WallClock.toDate();
 
         // get GMT difference in minutes
         auto tz = cast(int) WallClock.zone.minutes;
