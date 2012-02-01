@@ -46,7 +46,7 @@ class HttpTriplet
                 this.line = line;
                 foreach (int index, char c; line)
                          if (c is ' ')
-												 {
+                         {
                              if (i < 2)
                                 {
                                 tokens[i] = line[mark .. index];
@@ -55,7 +55,7 @@ class HttpTriplet
                                 }
                              else
                                 break;
-													}
+                         }
 
                 tokens[2] = line [mark .. line.length];
                 return test();

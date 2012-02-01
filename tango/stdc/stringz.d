@@ -24,11 +24,11 @@ const(char)* toStringz (const(char)[] s, char[] tmp=null)
 
         auto len = s.length;
         if (s.ptr)
-				{
+        {
             if (len is 0)
-						{
+            {
                 s = empty;
-						}
+            }
             else if (s[len-1] != 0)
             {
                   if (tmp.length <= len)
@@ -36,8 +36,8 @@ const(char)* toStringz (const(char)[] s, char[] tmp=null)
                   tmp [0..len] = s;
                   tmp [len] = 0;
                   s = tmp;
-						}	
-				}
+            }
+        }
         return s.ptr;
 }
 

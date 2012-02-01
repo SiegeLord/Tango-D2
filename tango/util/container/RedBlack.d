@@ -584,12 +584,12 @@ struct RedBlack (V, A = AttributeDummy)
                    {
                    y.parent = px;
                    if (px !is null)
-									 {
+                      {
                        if (xpl)
                            px.left = y;
                        else
                           px.right = y;
-									 }
+                      }
                    x.parent = y;
                    if (ypl)
                       {
@@ -615,17 +615,17 @@ struct RedBlack (V, A = AttributeDummy)
                        ry.parent = x;
                    }
                 else
-								{
+                {
                    if (y is px)
                       {
                       x.parent = py;
                       if (py !is null)
-											{
+                         {
                           if (ypl)
                               py.left = x;
                           else
                              py.right = x;
-											}
+                         }
                       y.parent = x;
                       if (xpl)
                          {
@@ -654,12 +654,12 @@ struct RedBlack (V, A = AttributeDummy)
                       {
                       x.parent = py;
                       if (py !is null)
-											{
+                         {
                           if (ypl)
                               py.left = x;
                           else
                              py.right = x;
-											}
+                         }
                       x.left = ly;
                       if (ly !is null)
                           ly.parent = x;
@@ -670,12 +670,12 @@ struct RedBlack (V, A = AttributeDummy)
         
                       y.parent = px;
                       if (px !is null)
-											{
+                         {
                           if (xpl)
                               px.left = y;
                           else
                              px.right = y;
-											}
+                         }
                       y.left = lx;
                       if (lx !is null)
                           lx.parent = y;

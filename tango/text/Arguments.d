@@ -287,14 +287,14 @@ class Arguments
                         {
                         debug(Arguments) stdout.formatln ("'{}'", s);
                         if (done is false)
-												{
+                        {
                             if (s == "--")
                                {done=true; version(dashdash){stack.clear().push(get(null));} continue;}
                             else
                                if (argument (s, lp, sloppy, false) ||
                                    argument (s, sp, sloppy, true))
                                    continue;
-												}
+                        }
                         stack.top.append (s);
                         }  
                 foreach (arg; args)
@@ -385,13 +385,13 @@ class Arguments
                 char[256] tmp;
                 char[] result;
                 foreach (arg; args)
-								{
+                {
                          if (arg.error)
                              result ~= dg (tmp, msgs[arg.error-1], arg.name, 
                                            arg.values.length, arg.min, arg.max, 
                                            arg.bogus, arg.options);
-								}
-                return result;                             
+                }
+                return result;
         }
 
         /***********************************************************************
@@ -481,13 +481,13 @@ class Arguments
 
                    // drop further processing of this flag where in error
                    if (arg.error is arg.None)
-									 {
+                   {
                        // smush remaining text or treat as additional args
                        if (arg.cat)
                            arg.append (elem, true);
                        else
                           arg = enable (elem, sloppy, true);
-									 }
+                   }
                    return arg;
                    }
 
@@ -895,8 +895,8 @@ class Arguments
                 private int valid ()
                 {
                         if (error is None)
-												{
-                            if (req && !set)      
+                        {
+                            if (req && !set)
                                 error = Required;
                             else if (set)
                             {
@@ -920,7 +920,7 @@ class Arguments
                                                      error = Conflict, bogus=arg.name;
                                         }
                             }
-												}
+                        }
                         debug(Arguments) stdout.formatln ("{}: error={}, set={}, min={}, max={}, "
                                                "req={}, values={}, defaults={}, requires={}", 
                                                name, error, set, min, max, req, values, 

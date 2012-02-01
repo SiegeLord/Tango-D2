@@ -195,14 +195,14 @@ wchar[] toString16 (const(char[]) input, wchar[] output=null, size_t* ate=null)
                 wchar b = cast(wchar) *pIn;
 
                 if (b & 0x80)
-								{
+                {
                     if (b < 0xe0)
                        {
                        b &= 0x1f;
                        b = cast(wchar)((b << 6) | (*++pIn & 0x3f));
                        }
                     else
-										{
+                       {
                        if (b < 0xf0)
                           {
                           b &= 0x0f;
@@ -213,14 +213,14 @@ wchar[] toString16 (const(char[]) input, wchar[] output=null, size_t* ate=null)
                        else
                           // deal with surrogate-pairs
                           return toString16 (toString32(input, null, ate), output);
-										}
-								}
+                       }
+                }
                 d = b;
                 ++produced;
 
                 // did we read past the end of the input?
                 if (++pIn >= pMax)
-								{
+                {
                     if (pIn > pMax)
                        {
                        // yep ~ return tail or throw error?
@@ -234,7 +234,7 @@ wchar[] toString16 (const(char[]) input, wchar[] output=null, size_t* ate=null)
                        }
                     else
                        break;
-								}
+                }
         }
 
         // do we still have some input left?
@@ -381,14 +381,14 @@ dchar[] toString32 (const(char[]) input, dchar[] output=null, size_t* ate=null)
                 dchar b = cast(dchar) *pIn;
 
                 if (b & 0x80)
-								{
+                {
                     if (b < 0xe0)
                        {
                        b &= 0x1f;
                        b = (b << 6) | (*++pIn & 0x3f);
                        }
                     else
-										{
+                       {
                        if (b < 0xf0)
                           {
                           b &= 0x0f;
@@ -407,14 +407,14 @@ dchar[] toString32 (const(char[]) input, dchar[] output=null, size_t* ate=null)
                               onUnicodeError ("Unicode.toString32 : invalid utf8 input", pIn - input.ptr);
                           pIn += 3;
                           }
-										}
-								}
+                       }
+                }
                 d = b;
                 ++produced;
 
                 // did we read past the end of the input?
                 if (++pIn >= pMax)
-								{
+                {
                     if (pIn > pMax)
                        {
                        // yep ~ return tail or throw error?
@@ -428,7 +428,7 @@ dchar[] toString32 (const(char[]) input, dchar[] output=null, size_t* ate=null)
                        }
                     else
                        break;
-								}
+                }
         }
 
         // do we still have some input left?
@@ -564,7 +564,7 @@ dchar[] toString32 (const(wchar[]) input, dchar[] output=null, size_t* ate=null)
                 ++produced;
 
                 if (++pIn >= pMax)
-								{
+                {
                     if (pIn > pMax)
                        {
                        // yep ~ return tail or throw error?
@@ -578,7 +578,7 @@ dchar[] toString32 (const(wchar[]) input, dchar[] output=null, size_t* ate=null)
                        }
                     else
                        break;
-								}
+                }
         }
 
         // do we still have some input left?
@@ -767,7 +767,7 @@ T[] cropRight(T) (T[] s)
            size_t i = s.length - 1;
            static if (is (T == char))
                       while (i && (s[i] & 0x80))
-											{
+                      {
                              if ((s[i] & 0xc0) is 0xc0)
                                 {
                                 // located the first byte of a sequence
@@ -789,7 +789,7 @@ T[] cropRight(T) (T[] s)
                                 }
                              else 
                                 --i;
-											}
+                      }
 
            static if (is (T == wchar))
                       // skip if last char is a leading surrogate

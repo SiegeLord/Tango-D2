@@ -271,7 +271,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
                             if (o > cast(long) limit)
                                 o = limit;
                             index = cast(size_t) o;
-														break;
+                            break;
                        default:
                             break;
                        }

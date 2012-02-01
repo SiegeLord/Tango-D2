@@ -242,12 +242,12 @@ class BufferedInput : InputFilter, InputBuffer
                    // in the buffer as possible, such that entire records may
                    // be aliased directly from within.
                    if (size > (dimension - index))
-									 {
+                   {
                        if (size <= dimension)
                            compress;
                        else
                           conduit.error (underflow);
-										}
+                   }
                    // populate tail of buffer with new content
                    do {
                       if (writer (&source.read) is Eof)

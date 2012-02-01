@@ -99,12 +99,12 @@ class VirtualFolder : VfsHost
                 // link virtual children to us
                 auto child = cast(VirtualFolder) folder;
                 if (child)
-								{
+                {
                     if (child.parent)
                         error ("folder '"~name.idup~"' belongs to another host");
                     else
                        child.parent = this;
-								}
+                }
                 // reach up to the root, and initiate tree sweep
                 auto root = this;
                 while (root.parent)

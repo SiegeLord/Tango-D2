@@ -767,12 +767,12 @@ class Uri : UriView
         final const(char)[] extendQuery (const(char)[] tail)
         {
                 if (tail.length)
-								{
+                {
                     if (query_.length)
                         query_ = query_ ~ "&" ~ tail;
                     else
                        query_ = tail;
-								}
+                }
                 return query_;
         }
 
