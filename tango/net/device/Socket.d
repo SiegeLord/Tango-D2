@@ -98,7 +98,7 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        immutable(char)[] toString()
+        override string toString()
         {
                 return "<socket>";
         }
@@ -112,7 +112,7 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        Handle fileHandle ()
+        @property Handle fileHandle ()
         {
                 return cast(Handle) berkeley.sock;
         }
@@ -123,7 +123,7 @@ class Socket : Conduit, ISelectable
                 
         ***********************************************************************/
 
-        Berkeley* native ()
+        @property Berkeley* native ()
         {
                 return &berkeley;
         }
@@ -134,7 +134,7 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override const size_t bufferSize ()
+        @property override const size_t bufferSize ()
         {
                 return 1024 * 8;
         }
@@ -224,7 +224,7 @@ class Socket : Conduit, ISelectable
 
         override void detach ()
         {
-                berkeley.detach;
+                berkeley.detach();
         }
         
        /***********************************************************************
@@ -258,7 +258,7 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        size_t write (const(void)[] src)
+        override size_t write (const(void)[] src)
         {
                 version (TangoRuntime)
                     if (scheduler)
@@ -315,7 +315,7 @@ class Socket : Conduit, ISelectable
                    // yes, ensure we have a SocketSet
                    if (pending is null)
                        pending = new SocketSet (1);
-                   pending.reset.add (native.sock);
+                   pending.reset().add (native.sock);
 
                    // wait until IO is available, or a timeout occurs
                    if (reading)
@@ -341,7 +341,7 @@ class Socket : Conduit, ISelectable
 
         final void error ()
         {
-                super.error (this.toString ~ " :: " ~ SysError.lastMsg);
+                super.error (this.toString() ~ " :: " ~ SysError.lastMsg);
         }
 
         /***********************************************************************
@@ -588,7 +588,7 @@ class ServerSocket : Socket
 
         ***********************************************************************/
 
-        immutable(char)[] toString()
+        override string toString()
         {
                 return "<accept>";
         }

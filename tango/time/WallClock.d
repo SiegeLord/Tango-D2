@@ -45,9 +45,9 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time now ()
+                @property static Time now ()
                 {
-                        return Clock.now - localBias;
+                        return Clock.now - localBias();
                 }
 
                 /***************************************************************
@@ -57,7 +57,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static TimeSpan zone ()
+                @property static TimeSpan zone ()
                 {
                         TIME_ZONE_INFORMATION tz = void;
 
@@ -88,7 +88,7 @@ struct WallClock
 
                 static DateTime toDate (const(Time) utc)
                 {
-                        return Clock.toDate (utc - localBias);
+                        return Clock.toDate (utc - localBias());
                 }
 
                 /***************************************************************
@@ -99,7 +99,7 @@ struct WallClock
 
                 static Time fromDate (ref const(DateTime) date)
                 {
-                        return (Clock.fromDate(date) + localBias);
+                        return (Clock.fromDate(date) + localBias());
                 }
 
                 /***************************************************************
@@ -141,7 +141,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time now ()
+                @property static Time now ()
                 {
                         tm t = void;
                         timeval tv = void;
@@ -158,7 +158,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static TimeSpan zone ()
+                @property static TimeSpan zone ()
                 {
                         version (darwin)
                                 {

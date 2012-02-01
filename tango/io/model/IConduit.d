@@ -36,7 +36,7 @@ interface IConduit : InputStream, OutputStream
 
         ***********************************************************************/
 
-        abstract size_t bufferSize ();
+        @property abstract size_t bufferSize ();
 
         /***********************************************************************
 
@@ -52,7 +52,7 @@ interface IConduit : InputStream, OutputStream
 
         ***********************************************************************/
 
-        abstract const bool isAlive ();
+        @property abstract const bool isAlive ();
 
         /***********************************************************************
 
@@ -114,7 +114,7 @@ interface ISelectable
 
         ***********************************************************************/
 
-        Handle fileHandle ();
+        @property Handle fileHandle ();
 }
 
 
@@ -158,7 +158,7 @@ interface IOStream
 
         ***********************************************************************/
 
-        IConduit conduit ();
+        @property IConduit conduit ();
 
         /***********************************************************************
 
@@ -249,7 +249,7 @@ interface InputStream : IOStream
 
         ***********************************************************************/
 
-        InputStream input ();
+        @property InputStream input ();
 }
 
 
@@ -290,7 +290,7 @@ interface OutputStream : IOStream
 
         ***********************************************************************/
 
-        OutputStream output ();
+        @property OutputStream output ();
 }
 
 

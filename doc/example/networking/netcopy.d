@@ -30,18 +30,18 @@ void main(char[][] args)
                 auto server = new ServerSocket (8080);
 
                 // wait for requests
-                auto stream = server.accept;
+                auto stream = server.accept();
 
                 // copy incoming stream to a local file
                 auto file = new File ("dumpster.log", File.WriteCreate);
-                file.copy(stream).flush.close;
+                file.copy(stream).flush().close();
         }
 
         if (args.length is 2)
            { 
            // start server in a separate thread and wait for it to start
            auto server = new Thread (&run);
-           server.start;   
+           server.start();
 
            // wait for server to start
            Thread.sleep (10_000_000);
@@ -51,7 +51,7 @@ void main(char[][] args)
            send.connect ("localhost", 8080);
 
            // send the specified file
-           send.copy (new File(args[1])).flush.close;
+           send.copy (new File(args[1])).flush().close();
            } 
         else
            Cout ("usage is netcopy filename").newline;

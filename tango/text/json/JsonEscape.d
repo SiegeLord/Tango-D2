@@ -88,7 +88,7 @@ void unescape(T) (const(T)[] src, scope void delegate(const(T)[]) emit)
         size_t delta;
         auto s = src.ptr;
         auto len = src.length;
-        enum:T {slash = '\\'};
+        enum:T {slash = '\\'}
 
         // take a peek first to see if there's anything
         if ((delta = Util.indexOf (s, slash, len)) < len)

@@ -11,19 +11,20 @@ void benchmark (int iterations)
         auto parser = new PullParser!(char) (content);
 
         uint j;
-        elapsed.start;
+        elapsed.start();
         for (auto i=0; ++i < iterations;)
             {
             while (parser.next) {++j;}
-            parser.reset;
+            parser.reset();
             }
-        Stdout.formatln ("{} MB/s, {} tokens", (content.length * iterations) / (elapsed.stop * (1024 * 1024)), j);
+        Stdout.formatln ("{} MB/s, {} tokens", (content.length * iterations) / (elapsed.stop() * (1024 * 1024)), j);
 }
 
 
 void main() 
 {      
         // uncomment me, and try again ... 
+        // I tried it, made the code go 2x faster -SiegeLord Jan, 2012
         //char[] s = null;
         for (int i = 10; --i;)
              benchmark (2000);       

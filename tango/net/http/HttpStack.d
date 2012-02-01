@@ -50,7 +50,7 @@ class Token
                 return this;
         }
 
-        immutable(char)[] toString ()
+        override string toString ()
         {
                 return value.idup;
         }
@@ -178,7 +178,7 @@ class HttpStack
 
         **********************************************************************/
 
-        final int size ()
+        @property final int size ()
         {       
                 return depth;
         }

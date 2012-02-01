@@ -10,7 +10,7 @@
 
     This is a regular expression compiler and interpreter based on the Tagged NFA/DFA method.
 
-    The Regex class is not thread safe.
+    The Regex class is not thread safe
 
     See <a href="http://en.wikipedia.org/wiki/Regular_expression">Wikpedia's article on regular expressions</a>
     for details on regular expressions in general.
@@ -157,7 +157,7 @@ private class List(T)
 
     List opCatAssign(List l)
     {
-        if ( l.empty )
+        if ( l.empty() )
             return this;
         if ( tail is null ) {
             head = l.head;
@@ -211,7 +211,7 @@ private class List(T)
 
     List pushFront(List l)
     {
-        if ( l.empty )
+        if ( l.empty() )
             return this;
         if ( head is null ) {
             head = l.head;
@@ -818,9 +818,9 @@ struct CharClass(char_t)
 
     void subtract(CharClass cc)
     {
-        negate;
+        negate();
         add(cc);
-        negate;
+        negate();
     }
 
     void add(CharClass cc)
@@ -843,7 +843,7 @@ struct CharClass(char_t)
     **********************************************************************************************/
     void negate()
     {
-        optimize;
+        optimize();
         char_t  start = char_t.min;
 
         // first part touches left boundary of value range
@@ -887,7 +887,7 @@ struct CharClass(char_t)
 
     void optimize()
     {
-        if ( empty )
+        if ( empty() )
             return;
 
         parts.sort;
@@ -913,7 +913,7 @@ struct CharClass(char_t)
         string str;
         str ~= "[";
         foreach ( p; parts )
-            str ~= p.toString;
+            str ~= p.toString();
         str ~= "]";
         return str;
     }
@@ -924,48 +924,48 @@ debug(UnitTest)
 unittest
 {
     static CharClass!(char) cc = { parts: [{l_:0,r_:10},{l_:0,r_:6},{l_:5,r_:12},{l_:12,r_:17},{l_:20,r_:100}] };
-    assert(cc.toString, "[(0)-(a)(0)-(6)(5)-(c)(c)-(11)(14)-'d']");
-    cc.optimize;
-    assert(cc.toString,  "[(0)-(11)(14)-'d']");
-    cc.negate;
-    assert(cc.toString,  " [(12)-(13)'e'-(ff)]");
-    cc.optimize;
-    assert(cc.toString,  "[(0)-(11)(14)-'d']");
-    cc.negate;
-    assert(cc.toString,  "[(12)-(13)'e'-(ff)]");
+    assert(cc.toString(), "[(0)-(a)(0)-(6)(5)-(c)(c)-(11)(14)-'d']");
+    cc.optimize();
+    assert(cc.toString(),  "[(0)-(11)(14)-'d']");
+    cc.negate();
+    assert(cc.toString(),  " [(12)-(13)'e'-(ff)]");
+    cc.optimize();
+    assert(cc.toString(),  "[(0)-(11)(14)-'d']");
+    cc.negate();
+    assert(cc.toString(),  "[(12)-(13)'e'-(ff)]");
 
     static CharClass!(char) cc2 = { parts: [] };
-    assert(cc.toString,  "[]");
-    cc2.optimize;
-    assert(cc.toString,  "[]");
-    cc2.negate;
-    assert(cc.toString,  "[(0)-(ff)]");
-    cc2.optimize;
-    assert(cc.toString,  "[(0)-(ff)]");
-    cc2.negate;
-    assert(cc.toString,  "[]");
+    assert(cc.toString(),  "[]");
+    cc2.optimize();
+    assert(cc.toString(),  "[]");
+    cc2.negate();
+    assert(cc.toString(),  "[(0)-(ff)]");
+    cc2.optimize();
+    assert(cc.toString(),  "[(0)-(ff)]");
+    cc2.negate();
+    assert(cc.toString(),  "[]");
 
     static CharClass!(char) cc3 = { parts: [{l_:0,r_:100},{l_:200,r_:0xff},] };
-    assert(cc3.toString, "[(0)-'d'(c8)-(ff)]");
-    cc3.negate;
-    assert(cc.toString,  "['e'-(c7)]");
-    cc3.negate;
-    assert(cc.toString,  "[(0)-'d'(c8)-(ff)]");
+    assert(cc3.toString(), "[(0)-'d'(c8)-(ff)]");
+    cc3.negate();
+    assert(cc.toString(),  "['e'-(c7)]");
+    cc3.negate();
+    assert(cc.toString(),  "[(0)-'d'(c8)-(ff)]");
 
     static CharClass!(char) cc4 = { parts: [{l_:0,r_:200},{l_:100,r_:0xff},] };
-    assert(cc.toString,  "[(0)-(c8)'d'-(ff)]");
-    cc4.optimize;
-    assert(cc.toString,  "[(9)-(13)(20)-'~'(a0)-(ff)(100)-(17f)(180)-(24f)(20a3)-(20b5)]");
+    assert(cc.toString(),  "[(0)-(c8)'d'-(ff)]");
+    cc4.optimize();
+    assert(cc.toString(),  "[(9)-(13)(20)-'~'(a0)-(ff)(100)-(17f)(180)-(24f)(20a3)-(20b5)]");
 
     static CharClass!(dchar) cc5 = { parts: [{l_:0x9,r_:0x13},{0x20,r_:'~'},{l_:0xa0,r_:0xff},{l_:0x100,r_:0x17f},{l_:0x180,r_:0x24f},{l_:0x20a3,r_:0x20b5}] };
-    cc5.optimize;
-    assert(cc.toString,  "[(9)-(13)(20)-'~'(a0)-(24f)(20a3)-(20b5)]");
-    cc5.negate;
-    assert(cc.toString,  "[(0)-(8)(14)-(1f)(7f)-(9f)(250)-(20a2)(20b6)-(10ffff)]");
-    cc5.optimize;
-    assert(cc.toString,  "[(0)-(8)(14)-(1f)(7f)-(9f)(250)-(20a2)(20b6)-(10ffff)]");
-    cc5.negate;
-    assert(cc.toString,  "[(9)-(13)(20)-'~'(a0)-(24f)(20a3)-(20b5)]");
+    cc5.optimize();
+    assert(cc.toString(),  "[(9)-(13)(20)-'~'(a0)-(24f)(20a3)-(20b5)]");
+    cc5.negate();
+    assert(cc.toString(),  "[(0)-(8)(14)-(1f)(7f)-(9f)(250)-(20a2)(20b6)-(10ffff)]");
+    cc5.optimize();
+    assert(cc.toString(),  "[(0)-(8)(14)-(1f)(7f)-(9f)(250)-(20a2)(20b6)-(10ffff)]");
+    cc5.negate();
+    assert(cc.toString(),  "[(9)-(13)(20)-'~'(a0)-(24f)(20a3)-(20b5)]");
 }
 }
 
@@ -1113,9 +1113,9 @@ private struct Predicate(char_t)
         return false;
     }
 
-    bool empty()
+    @property bool empty()
     {
-        return type != Type.epsilon && input.empty;
+        return type != Type.epsilon && input.empty();
     }
 
     void subtract(Predicate p)
@@ -1127,13 +1127,13 @@ private struct Predicate(char_t)
     void negate()
     {
         assert(type != Type.epsilon);
-        input.negate;
+        input.negate();
     }
 
     void optimize()
     {
         assert(type != Type.epsilon);
-        input.optimize;
+        input.optimize();
     }
 
     int opCmp(const(Predicate) p)
@@ -1157,7 +1157,7 @@ private struct Predicate(char_t)
 
     void setInput(const(cc_t) cc)
     {
-        input = cc_t(cc);
+        input = cast(cc_t)cc;
     }
 
     void appendInput(cr_t cr)
@@ -1180,10 +1180,10 @@ private struct Predicate(char_t)
         string str;
         switch ( type )
         {
-            case Type.consume:      str = input.toString;       break;
+            case Type.consume:      str = input.toString();       break;
             case Type.epsilon:      str = "eps";                break;
-            case Type.lookahead:    str = "la:"~input.toString; break;
-            case Type.lookbehind:   str = "lb:"~input.toString; break;
+            case Type.lookahead:    str = "la:"~input.toString(); break;
+            case Type.lookbehind:   str = "lb:"~input.toString(); break;
             default:
                 assert(0);
         }
@@ -1393,7 +1393,7 @@ private final class TNFA(char_t)
         bool perform(Operator next_op, bool explicit_operator=true)
         {
             // calculate index in action matrix
-            int index = cast(int)opStack.top*(Operator.max+1);
+            int index = cast(int)opStack.top()*(Operator.max+1);
             index += cast(int)next_op;
 
             debug(tnfa) Stdout.formatln("\t{}:{} -> {}  {} frag(s)",
@@ -1409,7 +1409,7 @@ private final class TNFA(char_t)
                     }
                     break;
                 case Act.poc:
-                    switch ( opStack.top )
+                    switch ( opStack.top() )
                     {
                         case Operator.concat:       constructConcat(frags);                             break;
                         case Operator.altern:       constructAltern(frags);                             break;
@@ -1423,36 +1423,36 @@ private final class TNFA(char_t)
                         case Operator.one_more_ng:  constructOneMore(frags, PriorityClass.reluctant);   break;
                         case Operator.one_more_xr:  constructOneMore(frags, PriorityClass.extraReluctant);  break;
                         case Operator.occur_g:
-                            Pair!(uint) occur = occurStack.pop;
+                            Pair!(uint) occur = occurStack.pop();
                             constructOccur(frags, occur.a, occur.b, PriorityClass.greedy);
                             break;
                         case Operator.occur_ng:
-                            Pair!(uint) occur = occurStack.pop;
+                            Pair!(uint) occur = occurStack.pop();
                             constructOccur(frags, occur.a, occur.b, PriorityClass.reluctant);
                             break;
                         default:
                             throw new RegExpException("cannot process operand at \""~Utf.toString(pattern[cursor..$]).idup~"\"");
                     }
-                    opStack.pop;
+                    opStack.pop();
 
                     perform(next_op, false);
                     break;
                 case Act.poa:
-                    opStack.pop;
+                    opStack.pop();
                     break;
                 case Act.pca:
-                    if ( opStack.top == Operator.open_par )
+                    if ( opStack.top() == Operator.open_par )
                     {
-                        if ( tagStack.empty )
+                        if ( tagStack.empty() )
                             throw new RegExpException(Format.convert("Missing opening parentheses for closing parentheses at char {} \"{}\"", cursor, Utf.toString(pattern[cursor..$])).idup);
-                        constructBracket(frags, tagStack.top);
-                        tagStack.pop;
+                        constructBracket(frags, tagStack.top());
+                        tagStack.pop();
                     }
                     else {
-                        assert(opStack.top == Operator.open_par_nm);
+                        assert(opStack.top() == Operator.open_par_nm);
                         constructBracket(frags);
                     }
-                    opStack.pop;
+                    opStack.pop();
                     break;
                 case Act.don:
                     return true;
@@ -1477,11 +1477,11 @@ private final class TNFA(char_t)
         bool implicit_concat;
         predicate_t.Type pred_type;
 
-        while ( !endOfPattern )
+        while ( !endOfPattern() )
         {
             pred_type = predicate_t.Type.consume;
 
-            dchar c = readPattern;
+            dchar c = readPattern();
             switch ( c )
             {
                 case '|':
@@ -1492,8 +1492,8 @@ private final class TNFA(char_t)
                     if ( implicit_concat )
                         perform(Operator.concat, false);
                     implicit_concat = false;
-                    if ( peekPattern == '?' ) {
-                        readPattern;
+                    if ( peekPattern() == '?' ) {
+                        readPattern();
                         perform(swapMatchingBracketSyntax?Operator.open_par:Operator.open_par_nm);
                     }
                     else
@@ -1503,24 +1503,24 @@ private final class TNFA(char_t)
                     perform(Operator.close_par);
                     break;
                 case '?':
-                    if ( peekPattern == '?' ) {
-                        readPattern;
+                    if ( peekPattern() == '?' ) {
+                        readPattern();
                         perform(Operator.zero_one_ng);
                     }
                     else
                         perform(Operator.zero_one_g);
                     break;
                 case '*':
-                    if ( peekPattern == '?' ) {
-                        readPattern;
+                    if ( peekPattern() == '?' ) {
+                        readPattern();
                         perform(Operator.zero_more_ng);
                     }
                     else
                         perform(Operator.zero_more_g);
                     break;
                 case '+':
-                    if ( peekPattern == '?' ) {
-                        readPattern;
+                    if ( peekPattern() == '?' ) {
+                        readPattern();
                         perform(Operator.one_more_ng);
                     }
                     else
@@ -1530,8 +1530,8 @@ private final class TNFA(char_t)
                     Pair!(uint) occur;
                     parseOccurCount(occur.a, occur.b);
                     occurStack ~= occur;
-                    if ( peekPattern == '?' ) {
-                        readPattern;
+                    if ( peekPattern() == '?' ) {
+                        readPattern();
                         perform(Operator.occur_ng);
                     }
                     else
@@ -1564,7 +1564,7 @@ private final class TNFA(char_t)
                     frags ~= constructChars(cc_t.line_startend, predicate_t.Type.lookbehind);
                     break;
                 case '>':
-                    c = readPattern;
+                    c = readPattern();
                     pred_type = predicate_t.Type.lookahead;
                     if ( c == '[' )
                         goto case '[';
@@ -1575,7 +1575,7 @@ private final class TNFA(char_t)
                     else
                         goto default;
                 case '<':
-                    c = readPattern;
+                    c = readPattern();
                     pred_type = predicate_t.Type.lookbehind;
                     if ( c == '[' )
                         goto case '[';
@@ -1586,7 +1586,7 @@ private final class TNFA(char_t)
                     else
                         goto default;
                 case '\\':
-                    c = readPattern;
+                    c = readPattern();
 
                     if ( implicit_concat )
                         perform(Operator.concat, false);
@@ -1608,7 +1608,7 @@ private final class TNFA(char_t)
                             break;
                         case 'W':   // non-(alphanum and _)
                             auto cc = cc_t(cc_t.alphanum_);
-                            cc.negate;
+                            cc.negate();
                             frags ~= constructChars(cc, pred_type);
                             break;
                         case 's':   // whitespace
@@ -1616,7 +1616,7 @@ private final class TNFA(char_t)
                             break;
                         case 'S':   // non-whitespace
                             auto cc = cc_t(cc_t.whitespace);
-                            cc.negate;
+                            cc.negate();
                             frags ~= constructChars(cc, pred_type);
                             break;
                         case 'd':   // digit
@@ -1624,7 +1624,7 @@ private final class TNFA(char_t)
                             break;
                         case 'D':   // non-digit
                             auto cc = cc_t(cc_t.digit);
-                            cc.negate;
+                            cc.negate();
                             frags ~= constructChars(cc, pred_type);
                             break;
                         case 'b':   // either end of word
@@ -1633,7 +1633,7 @@ private final class TNFA(char_t)
 
                             // create (?<\S>\s|<\s>\S)
                             auto cc = cc_t(cc_t.whitespace);
-                            cc.negate;
+                            cc.negate();
 
                             perform(Operator.open_par_nm);
 
@@ -1653,7 +1653,7 @@ private final class TNFA(char_t)
 
                             // create (?<\S>\S|<\s>\s)
                             auto cc = cc_t(cc_t.whitespace);
-                            cc.negate;
+                            cc.negate();
 
                             perform(Operator.open_par_nm);
 
@@ -1712,8 +1712,8 @@ private final class TNFA(char_t)
         while ( !perform(Operator.eos) ) {}
 
         // set start and finish states
-        start = addState;
-        state_t finish = addState;
+        start = addState();
+        state_t finish = addState();
         finish.accept = true;
 
         foreach ( f; frags ) {
@@ -1729,7 +1729,7 @@ private final class TNFA(char_t)
         Stack!(trans_t) todo;
         state_t state = start;
 
-        while ( !todo.empty || !state.visited )
+        while ( !todo.empty() || !state.visited )
         {
             if ( !state.visited )
             {
@@ -1738,10 +1738,10 @@ private final class TNFA(char_t)
                     todo ~= t;
             }
 
-            if ( todo.empty )
+            if ( todo.empty() )
                 break;
-            trans_t t = todo.top;
-            todo.pop;
+            trans_t t = todo.top();
+            todo.pop();
             assert(t.priorityClass<=PriorityClass.max);
             trans[t.priorityClass] ~= t;
             state = t.target;
@@ -1842,13 +1842,13 @@ private:
     uint parseNumber()
     {
         uint res;
-        while ( !endOfPattern )
+        while ( !endOfPattern() )
         {
-            auto c = peekPattern;
+            auto c = peekPattern();
             if ( c < '0' || c > '9' )
                 break;
             res = res*10+(c-'0');
-            readPattern;
+            readPattern();
         }
         return res;
     }
@@ -1857,19 +1857,19 @@ private:
     {
         assert(pattern[cursor] == '{');
 
-        minOccur = parseNumber;
-        if ( peekPattern == '}' ) {
-            readPattern;
+        minOccur = parseNumber();
+        if ( peekPattern() == '}' ) {
+            readPattern();
             maxOccur = minOccur;
             return;
         }
-        if ( peekPattern != ',' )
+        if ( peekPattern() != ',' )
             throw new RegExpException("Invalid occurence range at \""~Utf.toString(pattern[cursor..$]).idup~"\"");
-        readPattern;
-        maxOccur = parseNumber;
-        if ( peekPattern != '}' )
+        readPattern();
+        maxOccur = parseNumber();
+        if ( peekPattern() != '}' )
             throw new RegExpException("Invalid occurence range at \""~Utf.toString(pattern[cursor..$]).idup~"\"");
-        readPattern;
+        readPattern();
         if ( maxOccur > 0 && maxOccur < minOccur )
             throw new RegExpException("Invalid occurence range (max < min) at \""~Utf.toString(pattern[cursor..$]).idup~"\"");
     }
@@ -1937,7 +1937,7 @@ private:
     {
         debug(tnfa) Stdout.formatln("constructCharFrag {}", c);
 
-        trans_t trans = addTransition;
+        trans_t trans = addTransition();
         trans.predicate.appendInput(CharRange!(char_t)(c));
 
         trans.predicate.type = type;
@@ -1961,12 +1961,12 @@ private:
     {
         debug(tnfa) Stdout.format("constructChars type={}", type);
 
-        trans_t trans = addTransition;
+        trans_t trans = addTransition();
         trans.predicate.type = type;
 
         trans.predicate.setInput(cc_t(charclass));
 
-        trans.predicate.optimize;
+        trans.predicate.optimize();
         debug(tnfa) Stdout.formatln("-> {}", trans.predicate.toString);
 
         frag_t frag = new frag_t;
@@ -1980,20 +1980,20 @@ private:
         debug(tnfa) Stdout.format("constructCharClass type={}", type);
         auto oldCursor = cursor;
 
-        trans_t trans = addTransition;
+        trans_t trans = addTransition();
 
         bool negated=false;
-        if ( peekPattern == '^' ) {
-            readPattern;
+        if ( peekPattern() == '^' ) {
+            readPattern();
             negated = true;
         }
 
         char_t  last;
         bool    have_range_start,
                 first_char = true;
-        for ( ; !endOfPattern && peekPattern != ']'; )
+        for ( ; !endOfPattern() && peekPattern() != ']'; )
         {
-            dchar c = readPattern;
+            dchar c = readPattern();
             switch ( c )
             {
                 case '-':
@@ -2003,18 +2003,18 @@ private:
                     }
                     if ( !have_range_start )
                         throw new RegExpException("Missing range start for '-' operator after \""~Utf.toString(pattern).idup~"\"");
-                    else if ( endOfPattern || peekPattern == ']' )
+                    else if ( endOfPattern() || peekPattern() == ']' )
                         throw new RegExpException("Missing range end for '-' operator after \""~Utf.toString(pattern).idup~"\"");
                     else {
-                        c = readPattern;
+                        c = readPattern();
                         trans.predicate.appendInput(range_t(last, c));
                         have_range_start = false;
                     }
                     break;
                 case '\\':
-                    if ( endOfPattern )
+                    if ( endOfPattern() )
                         throw new RegExpException("unexpected end of string after \""~Utf.toString(pattern).idup~"\"");
-                    c = readPattern;
+                    c = readPattern();
                     switch ( c )
                     {
                         case 't':
@@ -2029,6 +2029,7 @@ private:
                         default:
                             break;
                     }
+										goto default;
                 default:
                     if ( have_range_start )
                         trans.predicate.appendInput(range_t(last));
@@ -2037,8 +2038,8 @@ private:
             }
             first_char = false;
         }
-        if ( !endOfPattern )
-            readPattern;
+        if ( !endOfPattern() )
+            readPattern();
         if ( last != char_t.init )
             trans.predicate.appendInput(range_t(last));
         debug(tnfa) Stdout.formatln(" {}", pattern[oldCursor..cursor]);
@@ -2049,7 +2050,7 @@ private:
             trans.predicate.input = tmp;
         }
         else
-            trans.predicate.optimize;
+            trans.predicate.optimize();
         debug(tnfa) Stdout.formatln("-> {}", trans.predicate.toString);
 
         trans.predicate.type = type;
@@ -2064,13 +2065,13 @@ private:
     {
         debug(tnfa) Stdout.formatln("constructBracket");
 
-        state_t entry = addState,
-                exit = addState;
+        state_t entry = addState(),
+                exit = addState();
         frags.tail.value.setEntry(entry);
         frags.tail.value.setExit(exit);
 
-        trans_t tag1 = addTransition,
-                tag2 = addTransition;
+        trans_t tag1 = addTransition(),
+                tag2 = addTransition();
         tag1.predicate.type = predicate_t.Type.epsilon;
         tag2.predicate.type = predicate_t.Type.epsilon;
         if ( tag > 0 )
@@ -2086,7 +2087,7 @@ private:
         frag_t frag = new frag_t;
         frag.entries ~= tag1;
         frag.exit_state ~= tag2;
-        frags.pop;
+        frags.pop();
         frags ~= frag;
     }
 
@@ -2094,15 +2095,15 @@ private:
     {
         debug(tnfa) Stdout.formatln("constructOneMore");
 
-        if ( frags.empty )
+        if ( frags.empty() )
             throw new RegExpException("too few arguments for + at \""~Utf.toString(pattern[cursor..$]).idup~"\"");
 
         trans_t repeat = addTransition(prioClass),
-                cont = addTransition;
+                cont = addTransition();
         repeat.predicate.type = predicate_t.Type.epsilon;
         cont.predicate.type = predicate_t.Type.epsilon;
 
-        state_t s = addState;
+        state_t s = addState();
         frags.tail.value.setExit(s);
         s.transitions ~= repeat;
         s.transitions ~= cont;
@@ -2112,7 +2113,7 @@ private:
         frag.entry_state ~= frags.tail.value.entry_state;
         frag.entry_state ~= repeat;
         frag.exit_state ~= cont;
-        frags.pop;
+        frags.pop();
         frags ~= frag;
     }
 
@@ -2120,18 +2121,18 @@ private:
     {
         debug(tnfa) Stdout.formatln("constructZeroMore");
 
-        if ( frags.empty )
+        if ( frags.empty() )
             throw new RegExpException("too few arguments for * at \""~Utf.toString(pattern[cursor..$]).idup~"\"");
 
         trans_t enter = addTransition(prioClass),
                 repeat = addTransition(prioClass),
-                skip = addTransition;
+                skip = addTransition();
         skip.predicate.type = predicate_t.Type.epsilon;
         repeat.predicate.type = predicate_t.Type.epsilon;
         enter.predicate.type = predicate_t.Type.epsilon;
 
-        state_t entry = addState,
-                exit = addState;
+        state_t entry = addState(),
+                exit = addState();
         frags.tail.value.setEntry(entry);
         frags.tail.value.setExit(exit);
         exit.transitions ~= repeat;
@@ -2142,7 +2143,7 @@ private:
         frag.entries ~= enter;
         frag.exit_state ~= skip;
         frag.entry_state ~= repeat;
-        frags.pop;
+        frags.pop();
         frags ~= frag;
     }
 
@@ -2150,15 +2151,15 @@ private:
     {
         debug(tnfa) Stdout.formatln("constructZeroOne");
 
-        if ( frags.empty )
+        if ( frags.empty() )
             throw new RegExpException("too few arguments for ? at \""~Utf.toString(pattern[cursor..$]).idup~"\"");
 
         trans_t use = addTransition(prioClass),
-                skip = addTransition;
+                skip = addTransition();
         use.predicate.type = predicate_t.Type.epsilon;
         skip.predicate.type = predicate_t.Type.epsilon;
 
-        state_t s = addState;
+        state_t s = addState();
         frags.tail.value.setEntry(s);
         use.target = s;
 
@@ -2168,7 +2169,7 @@ private:
         frag.exits ~= frags.tail.value.exits;
         frag.exit_state ~= frags.tail.value.exit_state;
         frag.exit_state ~= skip;
-        frags.pop;
+        frags.pop();
         frags ~= frag;
     }
 
@@ -2176,7 +2177,7 @@ private:
     {
         debug(tnfa) Stdout.formatln("constructOccur {},{}", minOccur, maxOccur);
 
-        if ( frags.empty )
+        if ( frags.empty() )
             throw new RegExpException("too few arguments for {x,y} at \""~Utf.toString(pattern[cursor..$]).idup~"\"");
 
         state_t s;
@@ -2187,7 +2188,7 @@ private:
         {
             frag_t f = clone(frags.tail.value);
             if ( prev !is null ) {
-                s = addState;
+                s = addState();
                 prev.setExit(s);
                 f.setEntry(s);
             }
@@ -2201,17 +2202,17 @@ private:
         if ( maxOccur == 0 )
         {
             frag_t f = frags.tail.value;
-            trans_t t = addTransition;
+            trans_t t = addTransition();
             t.predicate.type = predicate_t.Type.epsilon;
             f.entries ~= t;
             f.exit_state ~= t;
 
-            t = addTransition;
+            t = addTransition();
             t.predicate.type = predicate_t.Type.epsilon;
             f.exits ~= t;
             f.entry_state ~= t;
 
-            s = addState;
+            s = addState();
             f.setEntry(s);
 
             if ( prev !is null )
@@ -2231,13 +2232,13 @@ private:
                 f = clone(frags.tail.value);
             else
                 f = frags.tail.value;
-            trans_t t = addTransition;
+            trans_t t = addTransition();
             t.predicate.type = predicate_t.Type.epsilon;
             f.entries ~= t;
             f.exit_state ~= t;
 
             if ( prev !is null ) {
-                s = addState;
+                s = addState();
                 prev.setExit(s);
                 f.setEntry(s);
             }
@@ -2251,7 +2252,7 @@ private:
         total.exits = prev.exits;
         total.exit_state = prev.exit_state;
 
-        frags.pop;
+        frags.pop();
         frags ~= total;
     }
 
@@ -2259,7 +2260,7 @@ private:
     {
         debug(tnfa) Stdout.formatln("constructAltern");
 
-        if ( frags.empty || frags.head is frags.tail )
+        if ( frags.empty() || frags.head is frags.tail )
             throw new RegExpException("too few arguments for | at \""~Utf.toString(pattern[cursor..$]).idup~"\"");
 
         frag_t  frag = new frag_t,
@@ -2274,8 +2275,8 @@ private:
         frag.exits ~= f2.exits;
         frag.exits ~= f1.exits;
 
-        frags.pop;
-        frags.pop;
+        frags.pop();
+        frags.pop();
         frags ~= frag;
     }
 
@@ -2283,13 +2284,13 @@ private:
     {
         debug(tnfa) Stdout.formatln("constructConcat");
 
-        if ( frags.empty || frags.head is frags.tail )
+        if ( frags.empty() || frags.head is frags.tail )
             throw new RegExpException("too few operands for concatenation at \""~Utf.toString(pattern[cursor..$]).idup~"\"");
 
         frag_t  f1 = frags.tail.value,
                 f2 = frags.tail.prev.value;
 
-        state_t state = addState;
+        state_t state = addState();
         f2.setExit(state);
         f1.setEntry(state);
 
@@ -2298,8 +2299,8 @@ private:
         frag.exits ~= f1.exits;
         frag.entry_state ~= f2.entry_state;
         frag.exit_state ~= f1.exit_state;
-        frags.pop;
-        frags.pop;
+        frags.pop();
+        frags.pop();
         frags ~= frag;
     }
 }
@@ -2415,7 +2416,7 @@ private class TDFA(char_t)
                 transitions = tmp;
 
                 foreach ( t; transitions )
-                    t.predicate.optimize;
+                    t.predicate.optimize();
             }
         }
 
@@ -2470,7 +2471,7 @@ private class TDFA(char_t)
         /* ****************************************************************************************
             Order transitions by the order of their predicates.
         ******************************************************************************************/
-        final int opCmp(Object o)
+        override final int opCmp(Object o)
         {
             Transition t = cast(Transition)o;
             assert(t !is null);
@@ -2525,7 +2526,7 @@ private class TDFA(char_t)
     **********************************************************************************************/
     this(TNFA!(char_t) tnfa)
     {
-        num_tags        = tnfa.tagCount;
+        num_tags        = tnfa.tagCount();
 
         next_register   = num_tags;
         for ( int i = 1; i <= num_tags; ++i ) {
@@ -2545,7 +2546,7 @@ private class TDFA(char_t)
         tmp_pred.setInput(CharClass!(char_t).line_startend);
         subset_start = epsilonClosure(lookbehindClosure(epsilonClosure(subset_start, subset_start), tmp_pred), subset_start);
 
-        start = addState;
+        start = addState();
         subset_start.dfa_state = start;
 
         // generate initializer and finisher commands for TDFA start state
@@ -2559,10 +2560,10 @@ private class TDFA(char_t)
         unmarked        ~= subset_start;
         debug(tdfa) Stdout.formatln("\n{} = {}\n", subset_start.dfa_state.index, subset_start.toString);
 
-        while ( !unmarked.empty )
+        while ( !unmarked.empty() )
         {
             SubsetState state = unmarked.tail.value;
-            unmarked.pop;
+            unmarked.pop();
 
             // create transitions for each class, creating new states when necessary
             foreach ( pred; disjointPredicates(state) )
@@ -2626,7 +2627,7 @@ private class TDFA(char_t)
                 // else create new target state
                 if ( !exists )
                 {
-                    State ts = addState;
+                    State ts = addState();
                     target.dfa_state = ts;
                     subset_states   ~= target;
                     unmarked        ~= target;
@@ -2665,7 +2666,7 @@ private class TDFA(char_t)
                 }
             }
 
-            state.dfa_state.optimize;
+            state.dfa_state.optimize();
         }
 
         // renumber registers continuously
@@ -2698,7 +2699,7 @@ private class TDFA(char_t)
                 foreach ( ref cmd; trans.commands )
                     renumberCommand(cmd);
                 trans.commands.sort;
-                trans.predicate.compile;
+                trans.predicate.compile();
             }
         }
 
@@ -2711,10 +2712,10 @@ private class TDFA(char_t)
             }
         }
 
-        minimizeDFA;
+        minimizeDFA();
 
         foreach ( state; states )
-            state.createLookup;
+            state.createLookup();
 
         // TODO: optimize memory layout of TDFA
 
@@ -2801,7 +2802,7 @@ private:
             return false;
         }
 
-        int opCmp(Object o)
+        override int opCmp(Object o)
         {
             StateElement se = cast(StateElement)o;
             assert(se !is null);
@@ -2816,7 +2817,7 @@ private:
             return -1;
         }
 
-        string toString()
+        override string toString()
         {
             const(char)[] str;
             str = Format.convert("{} p{}.{} {{", nfa_state.index, maxPriority, lastPriority);
@@ -2860,14 +2861,14 @@ private:
             return res;
         }
 
-        string toString()
+        override string toString()
         {
             string str = "[ ";
             bool first = true;
             foreach ( s; elms ) {
                 if ( !first )
                     str ~= ", ";
-                str ~= s.toString;
+                str ~= s.toString();
                 first = false;
             }
             return str~" ]";
@@ -2952,11 +2953,11 @@ private:
             if ( t.predicate.type != predicate_t.Type.epsilon )
             {
                 debug(tdfa) Stdout.formatln("{}", t.predicate.toString);
-                if ( marks_.length < num_marks+2*t.predicate.getInput.parts.length )
-                    marks_.length = num_marks+2*t.predicate.getInput.parts.length;
-                foreach ( p; t.predicate.getInput.parts ) {
-                    marks_[num_marks++] = Mark(p.l, false);
-                    marks_[num_marks++] = Mark(p.r, true);
+                if ( marks_.length < num_marks+2*t.predicate.getInput().parts.length )
+                    marks_.length = num_marks+2*t.predicate.getInput().parts.length;
+                foreach ( p; t.predicate.getInput().parts ) {
+                    marks_[num_marks++] = Mark(p.l(), false);
+                    marks_[num_marks++] = Mark(p.r(), true);
                 }
             }
         }
@@ -3046,7 +3047,7 @@ private:
         preds.length = 1;
         Lmerge: foreach ( r; disjoint )
         {
-            if ( preds[$-1].empty )
+            if ( preds[$-1].empty() )
                 preds[$-1].appendInput(r);
             else
             {
@@ -3057,8 +3058,8 @@ private:
                     if ( t.predicate.type == predicate_t.Type.epsilon )
                         continue;
 
-                    if ( t.predicate.getInput.contains(r)
-                        != t.predicate.getInput.contains(preds[$-1].getInput) )
+                    if ( t.predicate.getInput().contains(r)
+                        != t.predicate.getInput().contains(preds[$-1].getInput()) )
                     {
                         preds.length = preds.length+1;
                         break;
@@ -3117,7 +3118,7 @@ private:
             if ( t.predicate.type != predicate_t.Type.consume && t.predicate.type != predicate_t.Type.lookahead )
                 continue;
             auto intpred = t.predicate.intersect(pred);
-            if ( !intpred.empty )
+            if ( !intpred.empty() )
             {
                 if ( t.predicate.type == predicate_t.Type.consume )
                     have_consume = true;
@@ -3148,7 +3149,7 @@ private:
                 if ( t.predicate.type != processed_type )
                     continue;
                 auto intpred = t.predicate.intersect(pred);
-                if ( !intpred.empty ) {
+                if ( !intpred.empty() ) {
                     StateElement se = new StateElement;
                     se.maxPriority = max(t.priority, s.maxPriority);
                     se.lastPriority = t.priority;
@@ -3170,7 +3171,7 @@ private:
                     if ( t.predicate.type != predicate_t.Type.consume )
                         continue;
                     auto intpred = t.predicate.intersect(pred);
-                    if ( !intpred.empty ) {
+                    if ( !intpred.empty() ) {
                         r.elms ~= s;
                         break;
                     }
@@ -3198,15 +3199,15 @@ private:
             closure[e.nfa_state.index] = e;
         }
 
-        while ( !stack.empty )
+        while ( !stack.empty() )
         {
             StateElement se = stack.tail.value;
-            stack.pop;
+            stack.pop();
             foreach ( t; se.nfa_state.transitions )
             {
                 if ( t.predicate.type != predicate_t.Type.lookbehind )
                     continue;
-                if ( t.predicate.intersect(pred).empty )
+                if ( t.predicate.intersect(pred).empty() )
                     continue;
                 uint new_maxPri = max(t.priority, se.maxPriority);
 
@@ -3277,10 +3278,10 @@ private:
             closure[e.nfa_state.index] = e;
         }
 
-        while ( !stack.empty )
+        while ( !stack.empty() )
         {
             StateElement se = stack.tail.value;
-            stack.pop;
+            stack.pop();
             foreach ( t; se.nfa_state.transitions )
             {
                 if ( t.predicate.type != predicate_t.Type.epsilon )
@@ -3706,7 +3707,7 @@ class RegExpT(char_t)
             debug(TangoRegex) tnfa_.print;
         }
         tdfa_ = new tdfa_t(tnfa_);
-        registers_.length = tdfa_.num_regs;
+        registers_.length = tdfa_.num_regs();
     }
 
     /**********************************************************************************************
@@ -3782,7 +3783,7 @@ class RegExpT(char_t)
     bool test()
     {
         // initialize registers
-        assert(registers_.length == tdfa_.num_regs);
+        assert(registers_.length == tdfa_.num_regs());
         registers_[0..$] = -1;
         foreach ( cmd; tdfa_.initializer ) {
             assert(cmd.src == tdfa_.CURRENT_POSITION_REGISTER);
@@ -3983,8 +3984,8 @@ class RegExpT(char_t)
     {
         if ( index > tdfa_.num_tags )
             return null;
-        int start   = cast(int)(last_start_+registers_[index*2]),
-            end     = cast(int)(last_start_+registers_[index*2+1]);
+        int start   = cast(int)last_start_+registers_[index*2],
+            end     = cast(int)last_start_+registers_[index*2+1];
         if ( start >= 0 && start < end && end <= input_.length )
             return input_[start .. end];
         return null;
@@ -4046,11 +4047,11 @@ class RegExpT(char_t)
 
         foreach ( r; search(input) )
         {
-            tmp = cast(inout(char_t)[])pre;
+            tmp = cast(inout(char_t)[])pre();
             res[index++] = tmp[last_start_ .. $];
             if ( index >= res.length )
                 res.length = res.length*2;
-            tmp = cast(inout(char_t)[])post;
+            tmp = cast(inout(char_t)[])post();
         }
 
         res[index++] = tmp;
@@ -4070,11 +4071,11 @@ class RegExpT(char_t)
 
         foreach ( r; search(input) )
         {
-            tmp = pre;
+            tmp = pre();
             if ( tmp.length > last_start_ )
                 output_buffer ~= tmp[last_start_ .. $];
             output_buffer ~= replacement;
-            tmp = post;
+            tmp = post();
         }
         output_buffer ~= tmp;
         return output_buffer;
@@ -4091,8 +4092,8 @@ class RegExpT(char_t)
         output_buffer.length = 0;
 
         foreach ( r; search(input) ) {
-            tmp_pre = pre;
-            tmp_post = post;
+            tmp_pre = pre();
+            tmp_post = post();
         }
 
         if ( tmp_pre !is null || tmp_post !is null ) {
@@ -4118,11 +4119,11 @@ class RegExpT(char_t)
 
         if ( test(input) )
         {
-            tmp = pre;
+            tmp = pre();
             if ( tmp.length > last_start_ )
                 output_buffer ~= tmp[last_start_ .. $];
             output_buffer ~= replacement;
-            tmp = post;
+            tmp = post();
         }
         output_buffer ~= tmp;
         return output_buffer;
@@ -4134,18 +4135,17 @@ class RegExpT(char_t)
     char_t[] replaceAll(const(char_t)[] input, char_t[] delegate(RegExpT!(char_t)) dg, char_t[] output_buffer=null)
     {
         const(char_t)[]    tmp = input;
-        uint        offset;
         if ( output_buffer.length <= 0 )
             output_buffer = new char_t[input.length];
         output_buffer.length = 0;
 
         foreach ( r; search(input) )
         {
-            tmp = pre;
+            tmp = pre();
             if ( tmp.length > last_start_ )
                 output_buffer ~= tmp[last_start_ .. $];
             output_buffer ~= dg(this);
-            tmp = post;
+            tmp = post();
         }
         output_buffer ~= tmp;
         return output_buffer;
@@ -4178,7 +4178,7 @@ class RegExpT(char_t)
         }
         code ~= Format.convert(")\n{{\n    uint s = {};", tdfa_.start.index);
 
-        uint num_vars = tdfa_.num_regs;
+        uint num_vars = tdfa_.num_regs();
         if ( num_vars > 0 )
         {
             if ( lexer )
@@ -4247,10 +4247,10 @@ class RegExpT(char_t)
 
             foreach ( t; s.transitions.sort )
             {
-                ccTest.add(t.predicate.getInput);
-                ccTest.optimize;
-                if ( t.predicate.getInput < ccTest )
-                    cc = t.predicate.getInput;
+                ccTest.add(t.predicate.getInput());
+                ccTest.optimize();
+                if ( t.predicate.getInput() < ccTest )
+                    cc = t.predicate.getInput();
                 else
                     cc = ccTest;
 
@@ -4267,10 +4267,10 @@ class RegExpT(char_t)
                         first_cond = false;
                     else
                         code ~= " || ";
-                    if ( cr.l == cr.r )
-                        code ~= Format.convert("c == 0x{:x}", cast(int)cr.l);
+                    if ( cr.l() == cr.r() )
+                        code ~= Format.convert("c == 0x{:x}", cast(int)cr.l());
                     else
-                        code ~= Format.convert("c >= 0x{:x} && c <= 0x{:x}", cast(int)cr.l, cast(int)cr.r);
+                        code ~= Format.convert("c >= 0x{:x} && c <= 0x{:x}", cast(int)cr.l(), cast(int)cr.r());
                 }
                 code ~= Format.convert(" ) {{\n                    s = {};", t.target.index);
 
@@ -4390,11 +4390,11 @@ class RegExpT(char_t)
     debug(TangoRegex) tnfa_t tnfa_;
     tdfa_t      tdfa_;
 private:
-    const int        PREALLOC = 16;
-    const(char_t)[]  input_,
-                     pattern_;
+    const int   PREALLOC = 16;
+    const(char_t)[]    input_,
+                       pattern_;
 
-    const(char)[] compileCommand(tdfa_t.Command cmd, const(char_t)[] indent)
+    const(char)[] compileCommand(tdfa_t.Command cmd, const(char)[] indent)
     {
         const(char)[]  code,
                 dst;
@@ -4403,7 +4403,7 @@ private:
             code ~= "p;";
         else
             code ~= Format.convert("r{};", cmd.src);
-        return code.idup;
+        return code;
     }
 }
 
@@ -4537,7 +4537,7 @@ dchar decode(const(char)[] s, ref size_t idx)
         return V;
 
       Lerr:
-        throw new Exception("4invalid UTF-8 sequence");
+        throw new Exception("invalid UTF-8 sequence");
     }
 
 /*  ditto */
@@ -4741,6 +4741,8 @@ debug(UnitTest)
         assert(r.test("a☃c123"));
         assert(r.match(1) == "a☃");
 
+
+
         // two captures
         r = new Regex("(.)(.)");
         assert(r.test("a☃c123"));
@@ -4759,12 +4761,15 @@ debug(UnitTest)
         assert(r.match(1) == "☃☃☃☃☃", "Expected: ☃☃☃☃☃ Got: " ~ r.match(1));
         assert(!r.test("abeua"));
 
+        /**
+           "*" quantifier bug. In "(☃+)" pattern test ((r.match(0) == "☃☃☃☃☃")&&(r.match(1) == "☃☃☃☃☃")) has passed.
+        */
         // multiple snowmen
-        r = new Regex("(☃*)");
+        r = new Regex("(☃+)");
         assert(r.test("a☃☃☃☃☃c123"));
         assert(r.match(0) == "☃☃☃☃☃");
         assert(r.match(1) == "☃☃☃☃☃");
-        assert(r.test("abeua"));
+        assert(r.test("a☃beua"));
     }
 
     debug(RegexTestOnly)

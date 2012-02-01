@@ -39,12 +39,12 @@ class RC4 : StreamCipher
         _encrypt = _initialized = true;
     }
     
-    final override const(char)[] name()
+    @property final override const(char)[] name()
     {
         return "RC4";
     }
     
-    ubyte returnByte(ubyte input)
+    override ubyte returnByte(ubyte input)
     {
         if (!_initialized)
             invalid(name()~": Cipher not initialized");

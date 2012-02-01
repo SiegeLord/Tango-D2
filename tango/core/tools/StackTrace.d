@@ -355,7 +355,7 @@ Exception.TraceInfo basicTracer( void* ptr = null ){
     } catch (Throwable e){
         Runtime.console.stderr("tracer got exception:\n");
         Runtime.console.stderr(e.msg);
-        Runtime.console.stderr(e.toString);
+        Runtime.console.stderr(e.toString());
         Runtime.console.stderr("\n");
     }
     return res;

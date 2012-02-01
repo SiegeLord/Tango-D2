@@ -18,7 +18,7 @@ void main (char[][] args)
            auto file = new UnicodeFile!(char) (args[1], Encoding.Unknown);
 
            // display on console
-           Cout (file.read).newline;
+           Cout (file.read()).newline;
            }
         else
            Cout ("usage is: unifile filename").newline;

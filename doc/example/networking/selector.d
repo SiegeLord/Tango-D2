@@ -141,14 +141,14 @@ void testSelector(ISelector selector)
                                    i, cast(int) selectionKey.conduit.fileHandle,
                                    cast(uint) selectionKey.events);
 
-                    if (selectionKey.isReadable)
+                    if (selectionKey.isReadable())
                     {
                         if (selectionKey.conduit is serverSocket)
                         {
                             debug (selector)
                                 log.trace("[{0}] New connection from client", i);
 
-                            clientSocket = serverSocket.accept;
+                            clientSocket = serverSocket.accept();
                             if (clientSocket !is null)
                             {
                                 selector.register(clientSocket, Event.Read);
@@ -194,7 +194,7 @@ void testSelector(ISelector selector)
                         }
                     }
 
-                    if (selectionKey.isWritable)
+                    if (selectionKey.isWritable())
                     {
                         debug (selector)
                             log.trace("[{0}] Sending PONG to client", i);
@@ -222,11 +222,11 @@ void testSelector(ISelector selector)
                         }
                     }
 
-                    if (selectionKey.isError || selectionKey.isHangup || selectionKey.isInvalidHandle)
+                    if (selectionKey.isError() || selectionKey.isHangup() || selectionKey.isInvalidHandle())
                     {
                         const(char)[] status;
 
-                        if (selectionKey.isHangup)
+                        if (selectionKey.isHangup())
                         {
                             closeCount++;
                             status = "Hangup";
@@ -234,7 +234,7 @@ void testSelector(ISelector selector)
                         else
                         {
                             errorCount++;
-                            if (selectionKey.isInvalidHandle)
+                            if (selectionKey.isInvalidHandle())
                                 status = "Invalid request";
                             else
                                 status = "Error";
@@ -266,7 +266,7 @@ void testSelector(ISelector selector)
                 foreach(c; removeThese)
                 {
                     selector.unregister(c);
-                    (cast(Conduit) c).close;
+                    (cast(Conduit) c).close();
                 }
             }
             else
@@ -287,15 +287,15 @@ void testSelector(ISelector selector)
             */
         }
 
-        serverSocket.detach;
+        serverSocket.detach();
     }
     catch (SelectorException e)
     {
-        log.error("Selector exception caught:\n{0}", e.toString);
+        log.error("Selector exception caught:\n{0}", e.toString());
     }
     catch (Exception e)
     {
-        log.error("Exception caught:\n{0}", e.toString);
+        log.error("Exception caught:\n{0}", e.toString());
     }
 
     log.info("Success: connect={0}; recv={1}; send={2}; close={3}", 
@@ -305,9 +305,9 @@ void testSelector(ISelector selector)
 
     log.info("Total time: {0} ms", cast(uint) (Clock.now - start).millis);
 
-    clientThread.join;
+    clientThread.join();
 
-    selector.close;
+    selector.close();
 }
 
 
@@ -394,12 +394,12 @@ void clientThreadFunc()
                 break;
             }
         }
-        socket.shutdown;
-        socket.close;
+        socket.shutdown();
+        socket.close();
     }
     catch (Exception e)
     {
-        log.error("Exception caught:\n{0}", e.toString);
+        log.error("Exception caught:\n{0}", e.toString());
     }
     debug (selector)
         log.trace("Leaving thread");

@@ -58,7 +58,7 @@ struct Runtime
     }
         
 
-    static Console console()
+    @property static Console console()
     {
         Console c;
         return c;
@@ -110,7 +110,7 @@ struct Runtime
      * Returns:
      *  true if the runtime is halting.
      */
-    static bool isHalting()
+    @property static bool isHalting()
     {
         return rt_isHalting();
     }
@@ -127,7 +127,7 @@ struct Runtime
      * Params:
      *  h = The new trace handler.  Set to null to use the default handler.
      */
-    static void traceHandler( TraceHandler h )
+    @property static void traceHandler( TraceHandler h )
     {
         rt_setTraceHandler( h );
     }
@@ -144,7 +144,7 @@ struct Runtime
      * Params:
      *  h = The new collect handler.  Set to null to use the default handler.
      */
-    static void collectHandler( CollectHandler h )
+    @property static void collectHandler( CollectHandler h )
     {
         rt_setCollectHandler( h );
     }
@@ -159,7 +159,7 @@ struct Runtime
      * Params:
      *  h = The new unit tester.  Set to null to use the default unit tester.
      */
-    static void moduleUnitTester( ModuleUnitTester h )
+    @property static void moduleUnitTester( ModuleUnitTester h )
     {
         sm_moduleUnitTester = h;
     }

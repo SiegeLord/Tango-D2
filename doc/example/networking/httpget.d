@@ -22,6 +22,6 @@ void main (char[][] args)
         auto page = new HttpGet (url);
 
         // retrieve and flush display content
-        Cout (cast(char[]) page.read) ();
+        Cout (cast(char[]) page.read()) ();
 }
 

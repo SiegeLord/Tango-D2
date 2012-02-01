@@ -97,7 +97,7 @@ class CacheMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final const uint size ()
+        @property final const uint size ()
         {
                 return hash.size;
         }

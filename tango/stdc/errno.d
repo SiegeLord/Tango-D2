@@ -15,6 +15,6 @@ private
     extern (C) int setErrno(int);
 }
 
-int errno()          { return getErrno();      }
-int errno( int val ) { return setErrno( val ); }
+@property int errno()          { return getErrno();      }
+@property int errno( int val ) { return setErrno( val ); }
 

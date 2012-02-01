@@ -72,7 +72,7 @@ private import  Integer = tango.text.convert.Integer;
         else
            Stderr (client.getResponse);
 
-        client.close;
+        client.close();
         ---
 
         See modules HttpGet and HttpPost for simple wrappers instead.
@@ -177,7 +177,7 @@ class HttpClient
                 // decode the host name (may take a second or two)
                 auto host = uri.getHost;
                 if (host)
-                    address = new InternetAddress (host, uri.getValidPort);
+                    address = new InternetAddress (host, uri.getValidPort());
                 else
                    error ("invalid url provided to HttpClient ctor");
 
@@ -256,7 +256,7 @@ class HttpClient
 
         int getStatus()
         {
-                return responseLine.getStatus;
+                return responseLine.getStatus();
         }
 
         /***********************************************************************
@@ -267,7 +267,7 @@ class HttpClient
 
         bool isResponseOK()
         {
-                return getStatus is HttpResponseCode.OK;
+                return getStatus() is HttpResponseCode.OK;
         }
 
         /***********************************************************************
@@ -293,8 +293,8 @@ class HttpClient
         {
                 if (socket)
                    {
-                   socket.shutdown;
-                   socket.detach;
+                   socket.shutdown();
+                   socket.detach();
                    socket = null;
                    }
         }
@@ -307,9 +307,9 @@ class HttpClient
 
         HttpClient reset ()
         {
-                headersIn.reset;
-                headersOut.reset;
-                paramsOut.reset;
+                headersIn.reset();
+                headersOut.reset();
+                paramsOut.reset();
                 redirections = 0;
                 return this;
         }
@@ -449,13 +449,13 @@ class HttpClient
 
                 // new socket for each request?
                 if (keepalive is false)
-                    close;
+                    close();
 
                 // create socket and connect it. Retain prior socket if
                 // not closed between calls
                 if (socket is null)
                    {
-                   socket = createSocket;
+                   socket = createSocket();
                    socket.timeout = cast(int)(timeout * 1000);
                    socket.connect (address);
                    }
@@ -463,7 +463,7 @@ class HttpClient
                 // setup buffers for input and output
                 output.output (socket);
                 input.input (socket);
-                input.clear;
+                input.clear();
 
                 // setup a Host header
                 if (headersOut.get (HttpHeader.Host, null) is null)
@@ -489,10 +489,10 @@ class HttpClient
                    output.append (path);
 
                 // attach/extend query parameters if user has added some
-                tokens.clear;
+                tokens.clear();
                 paramsOut.produce ((const(void)[] p){if (tokens.readable) tokens.write("&"); 
                                     return uri.encode(&tokens.write, cast(char[]) p, uri.IncQuery);});
-                auto query = cast(char[]) tokens.slice;
+                auto query = cast(char[]) tokens.slice();
 
                 // emit query?
                 if (query.length)
@@ -525,7 +525,7 @@ class HttpClient
                     pump (output);
 
                 // send entire request
-                output.flush;
+                output.flush();
 
                 // Token for initial parsing of input header lines
                 if (line is null)
@@ -534,30 +534,30 @@ class HttpClient
                    line.set(input);
 
                 // skip any blank lines
-                while (line.next && line.get.length is 0) 
+                while (line.next && line.get().length is 0) 
                       {}
 
                 // is this a bogus request?
-                if (line.get.length is 0)
+                if (line.get().length is 0)
                     error ("truncated response");
 
                 // read response line
-                if (! responseLine.parse (line.get))
-                      error (responseLine.error);
+                if (! responseLine.parse (line.get()))
+                      error (responseLine.error());
 
                 // parse incoming headers
-                headersIn.reset.parse (this.input);
+                headersIn.reset().parse (this.input);
 
                 // check for redirection
                 if (doRedirect)
-                    switch (responseLine.getStatus)
+                    switch (responseLine.getStatus())
                            {
                            case HttpResponseCode.Found:
                            case HttpResponseCode.SeeOther:
                            case HttpResponseCode.MovedPermanently:
                            case HttpResponseCode.TemporaryRedirect:
                                 // drop this connection
-                                close;
+                                close();
 
                                 // remove any existing Host header
                                 headersOut.remove (HttpHeader.Host);
@@ -567,9 +567,9 @@ class HttpClient
                                 uri.relParse (redirect.dup);
 
                                 // decode the host name (may take a second or two)
-                                auto host = uri.getHost;
+                                auto host = uri.getHost();
                                 if (host)
-                                    address = new InternetAddress (uri.getHost, uri.getValidPort);
+                                    address = new InternetAddress (uri.getHost(), uri.getValidPort());
                                 else
                                     error ("redirect has invalid url: "~redirect);
 
@@ -578,9 +578,10 @@ class HttpClient
                                     return open (method, pump);
                                 else
                                    if (method is Post)
-                                       return redirectPost (pump, responseLine.getStatus);
+                                       return redirectPost (pump, responseLine.getStatus());
                                    else
                                       error ("unexpected redirect for method "~method.name);
+																goto default;
                            default:
                                 break;
                            }
@@ -605,7 +606,7 @@ class HttpClient
         {
                 while (true)
                       {
-                      auto content = input.slice;
+                      auto content = input.slice();
                       if (content.length > len)
                          {
                          sink (content [0 .. len]);
@@ -616,8 +617,8 @@ class HttpClient
                          {
                          len -= content.length;
                          sink (content);
-                         input.clear;
-                         if (input.populate is input.Eof)
+                         input.clear();
+                         if (input.populate() is input.Eof)
                              break;
                          }
                       }
@@ -643,7 +644,7 @@ class HttpClient
                             // remove POST headers first!
                             headersOut.remove (HttpHeader.ContentLength);
                             headersOut.remove (HttpHeader.ContentType);
-                            paramsOut.reset;
+                            paramsOut.reset();
                             return open (Get, null);
 
                             // try entire Post again, if user say OK
@@ -652,7 +653,7 @@ class HttpClient
                             if (canRepost (status))
                                 return open (this.method, pump);
                             // fall through!
-
+                            goto default;
                        default:
                             error ("Illegal redirection of Post");
                        }
@@ -693,7 +694,7 @@ class HttpClient
 
         private void error (const(char)[] msg)
         {
-                close;
+                close();
                 throw new IOException (msg.idup);
         }
 }
@@ -807,6 +808,6 @@ debug (HttpClient)
         else
            Stderr (client.getResponse);
 
-        client.close;
+        client.close();
         }
 }

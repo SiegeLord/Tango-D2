@@ -142,7 +142,7 @@ version=discrete;
             
 *******************************************************************************/
 
-class Document(T) : package PullParser!(T)
+class Document(T) : PullParser!(T)
 {
         public alias NodeImpl*  Node;
 
@@ -168,8 +168,8 @@ class Document(T) : package PullParser!(T)
                 xpath = new XmlPath!(T);
 
                 chunks = nodes;
-                newlist;
-                root = allocate;
+                newlist();
+                root = allocate();
                 root.id = XmlNodeType.Document;
         }
 
@@ -196,7 +196,7 @@ class Document(T) : package PullParser!(T)
 
         ***********************************************************************/
         
-        final Node tree ()
+        @property final Node tree ()
         {
                 return root;
         }
@@ -210,7 +210,7 @@ class Document(T) : package PullParser!(T)
 
         ***********************************************************************/
         
-        final Node elements ()
+        @property final Node elements ()
         {
                 if (root)
                    {
@@ -246,7 +246,7 @@ else
 {
                 freelists = 0;
 }
-                newlist;
+                newlist();
                 index = 1;
 version(d)
 {
@@ -283,7 +283,7 @@ version(d)
         final void parse(const(T[]) xml)
         {       
                 assert (xml);
-                reset;
+                reset();
                 super.reset (xml);
                 auto cur = root;
                 size_t defNamespace;
@@ -303,7 +303,7 @@ version(d)
                              case XmlTokenType.Data:
 version (discrete)
 {
-                                  auto node = allocate;
+                                  auto node = allocate();
                                   node.rawValue = super.rawValue;
                                   node.id = XmlNodeType.Data;
                                   cur.append (node);
@@ -319,7 +319,7 @@ else
                                   break;
         
                              case XmlTokenType.StartElement:
-                                  auto node = allocate;
+                                  auto node = allocate();
                                   node.host = cur;
                                   node.prefixed = super.prefix;
                                   node.id = XmlNodeType.Element;
@@ -342,7 +342,7 @@ else
                                   break;
         
                              case XmlTokenType.Attribute:
-                                  auto attr = allocate;
+                                  auto attr = allocate();
                                   attr.prefixed = super.prefix;
                                   attr.rawValue = super.rawValue;
                                   attr.localName = super.localName;
@@ -384,7 +384,7 @@ else
         private final Node allocate ()
         {
                 if (index >= list.length)
-                    newlist;
+                    newlist();
 
                 auto p = &list[index++];
                 p.doc = this;
@@ -599,7 +599,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                Document document () 
+                @property Document document () 
                 {
                         return doc;
                 }
@@ -610,7 +610,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                XmlNodeType type () 
+                @property XmlNodeType type () 
                 {
                         return id;
                 }
@@ -621,7 +621,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                Node parent () 
+                @property Node parent () 
                 {
                         return host;
                 }
@@ -632,7 +632,7 @@ version (Filter)
 
                 ***************************************************************/
                 
-                Node child () 
+                @property Node child () 
                 {
                         return firstChild;
                 }
@@ -658,7 +658,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                Node prev () 
+                @property Node prev () 
                 {
                         return prevSibling;
                 }
@@ -669,7 +669,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                Node next () 
+                @property Node next () 
                 {
                         return nextSibling;
                 }
@@ -680,7 +680,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                const(T[]) prefix ()
+                @property const(T[]) prefix ()
                 {
                         return prefixed;
                 }
@@ -691,7 +691,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                Node prefix (const(T[]) replace)
+                @property Node prefix (const(T[]) replace)
                 {
                         prefixed = replace;
                         return &this;
@@ -703,7 +703,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                const(T[]) name ()
+                @property const(T[]) name ()
                 {
                         return localName;
                 }
@@ -714,7 +714,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                Node name (const(T[]) replace)
+                @property Node name (const(T[]) replace)
                 {
                         localName = replace;
                         return &this;
@@ -726,7 +726,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                const(T[]) value ()
+                @property const(T[]) value ()
                 {
 version(discrete)
 {
@@ -745,7 +745,7 @@ version(discrete)
 
                 ***************************************************************/
         
-                void value (const(T[]) val)
+                @property void value (const(T[]) val)
                 {
 version(discrete)
 {
@@ -755,7 +755,7 @@ version(discrete)
                                          return child.value (val);
 }
                         rawValue = val; 
-                        mutate;
+                        mutate();
                 }
                 
                 /***************************************************************
@@ -798,7 +798,7 @@ version(discrete)
 
                 ***************************************************************/
        
-                size_t position ()
+                @property size_t position ()
                 {
                         auto count = 0;
                         auto prior = prevSibling;
@@ -815,7 +815,7 @@ version(discrete)
         
                 Node detach ()
                 {
-                        return remove;
+                        return remove();
                 }
 
                 /***************************************************************
@@ -837,7 +837,7 @@ version(discrete)
 
                 ***************************************************************/
         
-                Visitor children () 
+                @property Visitor children () 
                 {
                         Visitor v = {firstChild};
                         return v;
@@ -849,7 +849,7 @@ version(discrete)
 
                 ***************************************************************/
         
-                Visitor attributes () 
+                @property Visitor attributes () 
                 {
                         Visitor v = {firstAttr};
                         return v;
@@ -894,7 +894,7 @@ version(discrete)
                 Node copy (Node tree)
                 {
                         assert (tree);
-                        tree = tree.clone;
+                        tree = tree.clone();
                         tree.migrate (document);
 
                         if (tree.id is XmlNodeType.Attribute)
@@ -915,7 +915,7 @@ version(discrete)
         
                 Node move (Node tree)
                 {
-                        tree.detach;
+                        tree.detach();
                         if (tree.doc is doc)
                            {
                            if (tree.id is XmlNodeType.Attribute)
@@ -937,7 +937,7 @@ version(discrete)
         
                 Node element (const(T[]) prefix, const(T[]) local, const(T[]) value = null)
                 {
-                        return element_ (prefix, local, value).mutate;
+                        return element_ (prefix, local, value).mutate();
                 }
         
                 /***************************************************************
@@ -948,7 +948,7 @@ version(discrete)
         
                 Node attribute (const(T[]) prefix, const(T[]) local, const(T[]) value = null)
                 { 
-                        return attribute_ (prefix, local, value).mutate;
+                        return attribute_ (prefix, local, value).mutate();
                 }
         
                 /***************************************************************
@@ -959,7 +959,7 @@ version(discrete)
         
                 Node data (const(T[]) data)
                 {
-                        return data_ (data).mutate;
+                        return data_ (data).mutate();
                 }
         
                 /***************************************************************
@@ -970,7 +970,7 @@ version(discrete)
         
                 Node cdata (const(T[]) cdata)
                 {
-                        return cdata_ (cdata).mutate;
+                        return cdata_ (cdata).mutate();
                 }
         
                 /***************************************************************
@@ -981,7 +981,7 @@ version(discrete)
         
                 Node comment (const(T[]) comment)
                 {
-                        return comment_ (comment).mutate;
+                        return comment_ (comment).mutate();
                 }
         
                 /***************************************************************
@@ -992,7 +992,7 @@ version(discrete)
         
                 Node doctype (const(T[]) doctype)
                 {
-                        return doctype_ (doctype).mutate;
+                        return doctype_ (doctype).mutate();
                 }
         
                 /***************************************************************
@@ -1003,7 +1003,7 @@ version(discrete)
         
                 Node pi (const(T[]) pi)
                 {
-                        return pi_ (pi, null).mutate;
+                        return pi_ (pi, null).mutate();
                 }
 
                 /***************************************************************
@@ -1186,7 +1186,7 @@ else
         
                 private Node create (XmlNodeType type, const(T[]) value)
                 {
-                        auto node = document.allocate;
+                        auto node = document.allocate();
                         node.rawValue = value;
                         node.id = type;
                         return node;
@@ -1203,7 +1203,7 @@ else
                         if (! host) 
                               return &this;
                         
-                        mutate;
+                        mutate();
                         if (prevSibling && nextSibling) 
                            {
                            prevSibling.nextSibling = nextSibling;
@@ -1305,7 +1305,7 @@ else
 
                 ***************************************************************/
         
-                private Node dup ()
+                @property private Node dup ()
                 {
                         return create(type, rawValue.dup).set(prefixed.dup, localName.dup);
                 }
@@ -1323,7 +1323,7 @@ else
                         foreach (attr; attributes)
                                  p.attrib (attr.dup);
                         foreach (child; children)
-                                 p.append (child.clone);
+                                 p.append (child.clone());
                         return p;
                 }
 
@@ -1538,7 +1538,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet dup ()
+                @property NodeSet dup ()
                 {
                         NodeSet copy = {host};
                         copy.nodes = nodes.dup;
@@ -1551,7 +1551,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                size_t count ()
+                @property size_t count ()
                 {
                         return nodes.length;
                 }
@@ -1605,7 +1605,7 @@ private class XmlPath(T)
                 NodeSet nth (size_t index)
                 {
                         NodeSet set = {host};
-                        auto mark = host.mark;
+                        auto mark = host.mark();
                         if (index < nodes.length)
                             host.allocate (nodes [index]);
                         return set.assign (mark);
@@ -1779,7 +1779,7 @@ private class XmlPath(T)
                 NodeSet filter (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
-                        auto mark = host.mark;
+                        auto mark = host.mark();
 
                         foreach (node; nodes)
                                  test (filter, node);
@@ -1798,7 +1798,7 @@ private class XmlPath(T)
                                XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
-                        auto mark = host.mark;
+                        auto mark = host.mark();
 
                         foreach (parent; nodes)
                                  foreach (child; parent.children)
@@ -1818,7 +1818,7 @@ private class XmlPath(T)
                 NodeSet attribute (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
-                        auto mark = host.mark;
+                        auto mark = host.mark();
 
                         foreach (node; nodes)
                                  foreach (attr; node.attributes)
@@ -1849,7 +1849,7 @@ private class XmlPath(T)
                         }
 
                         NodeSet set = {host};
-                        auto mark = host.mark;
+                        auto mark = host.mark();
 
                         foreach (node; nodes)
                                  traverse (node);
@@ -1867,7 +1867,7 @@ private class XmlPath(T)
                 NodeSet parent (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
-                        auto mark = host.mark;
+                        auto mark = host.mark();
 
                         foreach (node; nodes)
                                 {
@@ -1897,7 +1897,7 @@ private class XmlPath(T)
                 NodeSet ancestor (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
-                        auto mark = host.mark;
+                        auto mark = host.mark();
 
                         void traverse (Node child)
                         {
@@ -1932,7 +1932,7 @@ private class XmlPath(T)
                               XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
-                        auto mark = host.mark;
+                        auto mark = host.mark();
 
                         foreach (node; nodes)
                                 {
@@ -1959,7 +1959,7 @@ private class XmlPath(T)
                               XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
-                        auto mark = host.mark;
+                        auto mark = host.mark();
 
                         foreach (node; nodes)
                                 {
@@ -2023,7 +2023,7 @@ private class XmlPath(T)
         
                 private void test (scope bool delegate(Node) filter, Node node)
                 {
-                        auto pop = host.push;
+                        auto pop = host.push();
                         auto add = filter (node);
                         host.pop (pop);
                         if (add)
@@ -2193,6 +2193,6 @@ debug (Document)
                 // emit the result
                 auto printer = new DocPrinter!(char);
                 printer.print (doc, stdout);
-                doc.reset;
+                doc.reset();
         }
 }

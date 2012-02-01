@@ -120,7 +120,7 @@ class ChunkInput : Lines!(char)
         override ChunkInput set (InputStream stream)
         {
                 super.set (stream);
-                available = nextChunk;
+                available = nextChunk();
                 return this;
         }
 

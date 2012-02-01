@@ -30,7 +30,7 @@ private import  Integer = tango.text.convert.Integer;
 
 ******************************************************************************/
 
-class MemCache : private Thread
+class MemCache : Thread
 {
         private shared(Connection)[] hosts;
         private bool            active;
@@ -50,7 +50,7 @@ class MemCache : private Thread
 
                 // start the watchdog
                 active = true;
-                super.start;
+                super.start();
         }
 
         /**********************************************************************
@@ -62,7 +62,7 @@ class MemCache : private Thread
                 if (hosts)
                    {
                    foreach (shared Connection server; hosts)
-                            server.close;
+                            server.close();
                    hosts = null;
                    }
         }
@@ -350,17 +350,17 @@ class MemCache : private Thread
 	        c += x.length;
 	        switch (len)
 	               {
-	               case 11: c += (cast(uint)k[10]<<24);
-	               case 10: c += (cast(uint)k[9]<<16);
-	               case 9 : c += (cast(uint)k[8]<<8);
-	               case 8 : b += (cast(uint)k[7]<<24);
-	               case 7 : b += (cast(uint)k[6]<<16);
-	               case 6 : b += (cast(uint)k[5]<<8);
-	               case 5 : b += k[4];
-	               case 4 : a += (cast(uint)k[3]<<24);
-	               case 3 : a += (cast(uint)k[2]<<16);
-	               case 2 : a += (cast(uint)k[1]<<8);
-	               case 1 : a += k[0];
+	               case 11: c += (cast(uint)k[10]<<24); goto case;
+	               case 10: c += (cast(uint)k[9]<<16); goto case;
+	               case 9 : c += (cast(uint)k[8]<<8); goto case;
+	               case 8 : b += (cast(uint)k[7]<<24); goto case;
+	               case 7 : b += (cast(uint)k[6]<<16); goto case;
+	               case 6 : b += (cast(uint)k[5]<<8); goto case;
+	               case 5 : b += k[4]; goto case;
+	               case 4 : a += (cast(uint)k[3]<<24); goto case;
+	               case 3 : a += (cast(uint)k[2]<<16); goto case;
+	               case 2 : a += (cast(uint)k[1]<<8); goto case;
+	               case 1 : a += k[0]; break;
 	               default:
 	               }
 
@@ -444,10 +444,10 @@ private class Connection
         private synchronized void error ()
         {
                 // close this dead socket
-                close;
+                close();
 
                 // open another one for next attempt to connect
-                conduit.socket.reopen;
+                conduit.socket.reopen();
         }
 
         /**********************************************************************
@@ -466,12 +466,12 @@ private class Connection
                               .append (" ")
                               .append (Integer.format (tmp, timeout))
                               .append ("\r\n")
-                              .flush;
+                              .flush();
 
                         if (line.next)
-                            return line.get == "DELETED";
+                            return line.get() == "DELETED";
                         } catch (IOException e)
-                                 error;
+                                 error();
                 return false;
         }
 
@@ -486,15 +486,15 @@ private class Connection
         {
                 if (connected)
                     try {
-                        output.clear;
+                        output.clear();
                         output.append ("get ")
                               .append (key)
                               .append ("\r\n")
-                              .flush;
+                              .flush();
 
                         if (line.next)
                            {
-                           const(char)[] content = line.get;
+                           const(char)[] content = line.get();
                            if (content.length > 4 && content[0..5] == "VALUE")
                               {
                               size_t i = 0;
@@ -515,11 +515,11 @@ private class Connection
                               // eat the CR and test terminator
                               line.next;
                               line.next;
-                              return line.get == "END";
+                              return line.get() == "END";
                               }
                            }
                         } catch (IOException e)
-                                 error;
+                                 error();
                 return false;
         }
 
@@ -537,18 +537,18 @@ private class Connection
                     try {
                         char[16] tmp;
 
-                        output.clear;
+                        output.clear();
                         output.append ("delete ")
                               .append (key)
                               .append (" ")
                               .append (Integer.format (tmp, timeout))
                               .append ("\r\n")
-                              .flush;
+                              .flush();
 
                         if (line.next)
-                            return line.get == "DELETED";
+                            return line.get() == "DELETED";
                         } catch (IOException e)
-                                 error;
+                                 error();
                 return false;
         }
 
@@ -563,23 +563,23 @@ private class Connection
                     try {
                         char[16] tmp;
 
-                        output.clear;
+                        output.clear();
                         output.append (cmd)
                               .append (" ")
                               .append (key)
                               .append (" ")
                               .append (Integer.format (tmp, value))
                               .append ("\r\n")
-                              .flush;
+                              .flush();
 
                         if (line.next)
-                            if (line.get != "NOT_FOUND")
+                            if (line.get() != "NOT_FOUND")
                                {
-                               result = cast(uint)Integer.parse (line.get);
+                               result = cast(uint)Integer.parse (line.get());
                                return true;
                                }
                         } catch (IOException e)
-                                 error;
+                                 error();
                 return false;
         }
 
@@ -593,20 +593,20 @@ private class Connection
                     try {
                         const(char)[][] list;
 
-                        output.clear;
+                        output.clear();
                         output.write ("stats\r\n");
 
                         while (line.next)
-                               if (line.get == "END")
+                               if (line.get() == "END")
                                   {
                                   dg (cast(char[])host, list);
                                       break;
                                   }
                                else
-                                  list ~= line.get;
+                                  list ~= line.get();
 
                         } catch (IOException e)
-                                 error;
+                                 error();
         }
 
 }

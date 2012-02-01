@@ -115,7 +115,7 @@ class SnoopInput : InputStream
 
         final InputStream flush ()
         {
-                host.flush;
+                host.flush();
                 trace ("{}: flushed/cleared", host.conduit);
                 return this;
         }
@@ -128,7 +128,7 @@ class SnoopInput : InputStream
 
         final void close ()
         {
-                host.close;
+                host.close();
                 trace ("{}: closed", host.conduit);
         }
 
@@ -243,7 +243,7 @@ class SnoopOutput : OutputStream
 
         final OutputStream flush ()
         {
-                host.flush;
+                host.flush();
                 trace ("{}: flushed", host.conduit);
                 return this;
         }
@@ -256,7 +256,7 @@ class SnoopOutput : OutputStream
 
         final void close ()
         {
-                host.close;
+                host.close();
                 trace ("{}: closed", host.conduit);
         }
 

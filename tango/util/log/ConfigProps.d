@@ -61,7 +61,7 @@ struct ConfigProps
         {
                 auto input = new MapInput!(char)(new File(path));
                 scope (exit)
-                       input.close;
+                       input.close();
 
                 // read and parse properties from file
                 foreach (name, value; input)

@@ -62,7 +62,7 @@ public __gshared DateTimeLocale DateTimeDefault;
 
 static this()
 {
-        DateTimeDefault = DateTimeLocale.create;
+        DateTimeDefault = DateTimeLocale.create();
 version (WithExtensions)
         {
         Extensions8.add  (typeid(Time), &DateTimeDefault.bridge!(char));
@@ -213,7 +213,7 @@ struct DateTimeLocale
 
         **********************************************************************/
 
-        static DateTimeLocale* generic ()
+        @property static DateTimeLocale* generic ()
         {
                 return &EngUS;
         }
@@ -225,7 +225,7 @@ struct DateTimeLocale
 
         **********************************************************************/
 
-        Calendar calendar ()
+        @property Calendar calendar ()
         {
                 if (assignedCalendar is null)
                     assignedCalendar = Gregorian.generic;
@@ -579,7 +579,7 @@ else
                                 //truncated to an integer) as a decimal number [00-99]
                            case 'j': //day of the year as a decimal number [001,366]
                                 assert(0);
-                                break;
+                                //break;
 
                            case 'y': //year without century as a decimal number [00,99]
                                 put("yy"); // The year without the century. If the year without
@@ -1026,7 +1026,7 @@ private struct Result
 
         **********************************************************************/
 
-        private char[] get ()
+        @property private char[] get ()
         {
                 return target_[0 .. index];
         }

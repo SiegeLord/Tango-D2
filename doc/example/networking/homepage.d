@@ -15,12 +15,12 @@ void main()
         auto client = new HttpClient (HttpClient.Get, "http://www.digitalmars.com/d/intro.html");
 
         // open the client and get the input stream
-        auto input = client.open;
+        auto input = client.open();
         scope (exit)
-               client.close;
+               client.close();
         
         // display returned content on console
-        if (client.isResponseOK)
+        if (client.isResponseOK())
             Cout.stream.copy (input);
         else
            Cout ("failed to return the D home page");  

@@ -24,6 +24,6 @@ void main(char[][] args)
             Cout ("usage is filebubbler subdir").newline;
         else
            foreach (file; (new FileFolder(args[1])).tree.catalog("*.html"))
-                    Path.rename (file.toString, Path.replace (file.toString.dup, FileConst.PathSeparatorChar, '.'));
+                    Path.rename (file.toString(), Path.replace (file.toString().dup, FileConst.PathSeparatorChar, '.'));
 }
 

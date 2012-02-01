@@ -107,7 +107,7 @@ class StackMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final const size_t size ()
+        @property final const size_t size ()
         {
                 return hash.size;
         }

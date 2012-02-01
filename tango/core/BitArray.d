@@ -109,7 +109,7 @@ struct BitArray
      * Returns:
      *  The size a uint array would have to be to store this array.
      */
-    size_t dim()
+    @property size_t dim()
     {
         return (len + 31) / 32;
     }
@@ -121,7 +121,7 @@ struct BitArray
      * Returns:
      *  A duplicate of this array.
      */
-    BitArray dup()
+    @property BitArray dup()
     {
         BitArray ba;
 
@@ -193,6 +193,7 @@ struct BitArray
      *  ba2[] = ba; // perform the copy
      *  ba[0] = true;
      *  assert(ba2[0] == false);
+     *  --------------------
      */
      BitArray opSliceAssign(BitArray rhs)
      in
@@ -273,7 +274,7 @@ struct BitArray
      * Returns:
      *  A shallow copy of this array.
      */
-    BitArray reverse()
+    @property BitArray reverse()
     out( result )
     {
         assert( result == this );
@@ -321,7 +322,7 @@ struct BitArray
      * Returns:
      *  A shallow copy of this array.
      */
-    BitArray sort()
+    @property BitArray sort()
     out( result )
     {
         assert( result == this );

@@ -72,7 +72,7 @@ public class LayoutDate : Appender.Layout
                             level,
                             event.name
                             ));
-                dg (event.toString);
+                dg (event.toString());
         }
 
         /**********************************************************************

@@ -24,13 +24,13 @@ void benchmark (int iterations, SaxParser!(char) parser)
         auto content = cast(char[]) File.get ("hamlet.xml");
         parser.setContent(content);
 
-        elapsed.start;
+        elapsed.start();
         for (auto i=0; ++i < iterations;)
             {
-            parser.parse;
-            parser.reset;
+            parser.parse();
+            parser.reset();
             }
-        Stdout.formatln ("{} MB/s", (content.length * iterations) / (elapsed.stop * (1024 * 1024)));
+        Stdout.formatln ("{} MB/s", (content.length * iterations) / (elapsed.stop() * (1024 * 1024)));
 }
 
 
@@ -53,38 +53,38 @@ private class EventsHandler(Ch = char) : SaxHandler!(Ch) {
                 events++;
         }
 
-        public void startPrefixMapping(Ch[] prefix, Ch[] uri) {
+        public override void startPrefixMapping(const(Ch)[] prefix, const(Ch)[] uri) {
                 events++;
         }
 
-        public void endPrefixMapping(Ch[] prefix) {
+        public override void endPrefixMapping(const(Ch)[] prefix) {
                 events++;
         }                                               
 
-        public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute!(Ch)[] atts) {
+        public override void startElement(const(Ch)[] uri, const(Ch)[] localName, const(Ch)[] qName, Attribute!(Ch)[] atts) {
                 events++;
                 foreach (ref attr; atts) {
                         events++;
                 }
         }
 
-        public void endElement(Ch[] uri, Ch[] localName, Ch[] qName) {
+        public override void endElement(const(Ch)[] uri, const(Ch)[] localName, const(Ch)[] qName) {
                 events++;
         }
 
-        public void characters(Ch[] ch) {
+        public override void characters(const(Ch)[] ch) {
                 events++;
         }
 
-        public void ignorableWhitespace(Ch[] ch) {
+        public override void ignorableWhitespace(Ch[] ch) {
                 events++;
         }
 
-        public void processingInstruction(Ch[] target, Ch[] data) {
+        public override void processingInstruction(const(Ch)[] target, const(Ch)[] data) {
                 events++;
         }
 
-        public void skippedEntity(Ch[] name) {
+        public override void skippedEntity(const(Ch)[] name) {
                 events++;
         }       
 }
@@ -98,27 +98,27 @@ private class LengthHandler(Ch = char) : SaxHandler!(Ch) {
         public uint attlen;
         public uint txtlen;
 
-        public void setDocumentLocator(Locator!(Ch) locator) {
+        public override void setDocumentLocator(Locator!(Ch) locator) {
 
         }
 
-        public void startDocument() {
+        public override void startDocument() {
                 
         }
 
-        public void endDocument() {
+        public override void endDocument() {
                 
         }
 
-        public void startPrefixMapping(Ch[] prefix, Ch[] uri) {
+        public override void startPrefixMapping(const(Ch)[] prefix, const(Ch)[] uri) {
 
         }
 
-        public void endPrefixMapping(Ch[] prefix) {
+        public override void endPrefixMapping(const(Ch)[] prefix) {
 
         }                                               
 
-        public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute!(Ch)[] atts) {
+        public override void startElement(const(Ch)[] uri, const(Ch)[] localName, const(Ch)[] qName, Attribute!(Ch)[] atts) {
                 elm++;
                 elmlen += localName.length;
                 foreach (ref attr; atts) {
@@ -127,24 +127,24 @@ private class LengthHandler(Ch = char) : SaxHandler!(Ch) {
                 }
         }
 
-        public void endElement(Ch[] uri, Ch[] localName, Ch[] qName) {
+        public override void endElement(const(Ch)[] uri, const(Ch)[] localName, const(Ch)[] qName) {
                 
         }
 
-        public void characters(Ch[] ch) {
+        public override void characters(const(Ch)[] ch) {
                 txt++;
                 txtlen += ch.length;
         }
 
-        public void ignorableWhitespace(Ch[] ch) {
+        public override void ignorableWhitespace(Ch[] ch) {
 
         }
 
-        public void processingInstruction(Ch[] target, Ch[] data) {
+        public override void processingInstruction(const(Ch)[] target, const(Ch)[] data) {
 
         }
 
-        public void skippedEntity(Ch[] name) {
+        public override void skippedEntity(const(Ch)[] name) {
 
         }       
 }

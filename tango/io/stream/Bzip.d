@@ -151,7 +151,7 @@ class BzipOutput : OutputFilter
 
     ***************************************************************************/
 
-    size_t write(const(void)[] src)
+    override size_t write(const(void)[] src)
     {
         check_valid();
         scope(failure) kill_bzs();
@@ -212,10 +212,10 @@ class BzipOutput : OutputFilter
 
     ***************************************************************************/
 
-    void close()
+    override void close()
     {
-        if( bzs_valid ) commit;
-        super.close;
+        if( bzs_valid ) commit();
+        super.close();
     }
 
     /***************************************************************************
@@ -396,7 +396,7 @@ class BzipInput : InputFilter
 
     ***************************************************************************/ 
 
-    size_t read(void[] dst)
+    override size_t read(void[] dst)
     {
         if( !bzs_valid )
             return IConduit.Eof;
@@ -601,11 +601,11 @@ unittest
     scope cond = new Array(1024, 1024);
     scope comp = new BzipOutput(cond);
     comp.write(message);
-    comp.close;
+    comp.close();
 
-    assert( comp.written == message_z.length );
+    assert( comp.written() == message_z.length );
 
-    assert( message_z == cast(ubyte[])(cond.slice) );
+    assert( message_z == cast(ubyte[])(cond.slice()) );
 
     scope decomp = new BzipInput(cond);
     auto buffer = new ubyte[256];

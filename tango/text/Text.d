@@ -49,7 +49,7 @@
         ---
         auto source = new Text!(char)("one\ntwo\nthree");
 
-        foreach (line; Util.lines(source.slice))
+        foreach (line; Util.lines(source.slice()))
                  // do something with line
         ---
 
@@ -280,9 +280,9 @@ class Text(T) : TextView!(T)
 
                 ***************************************************************/
 
-                bool prev ()
+                @property bool prev ()
                 {
-                        return locate (&engine.reverse, text.slice, text.point - 1);
+                        return locate (&engine.reverse, text.slice(), text.point - 1);
                 }
 
                 /***************************************************************
@@ -292,9 +292,9 @@ class Text(T) : TextView!(T)
 
                 ***************************************************************/
 
-                bool next ()
+                @property bool next ()
                 {
-                        return locate (&engine.forward, text.slice,
+                        return locate (&engine.forward, text.slice(),
                                         text.selectPoint + text.selectLength);
                 }
 
@@ -305,9 +305,9 @@ class Text(T) : TextView!(T)
 
                 ***************************************************************/
 
-                bool within ()
+                @property bool within ()
                 {
-                        return engine.within (text.slice);
+                        return engine.within (text.slice());
                 }
 
                 /***************************************************************
@@ -317,9 +317,9 @@ class Text(T) : TextView!(T)
 
                 ***************************************************************/
 
-                size_t count ()
+                @property size_t count ()
                 {
-                        return engine.count (text.slice);
+                        return engine.count (text.slice());
                 }
 
                 /***************************************************************
@@ -344,7 +344,7 @@ class Text(T) : TextView!(T)
                         auto dst = new T[text.length];
                         dst.length = 0;
 
-                        foreach (token; engine.tokens (text.slice, sub))
+                        foreach (token; engine.tokens (text.slice(), sub))
                                  dst ~= token;
                         text.set (dst, false);
                 }
@@ -360,7 +360,7 @@ class Text(T) : TextView!(T)
                         auto index = call (content, from);
                         if (index < content.length)
                            {
-                           text.select (index, engine.match.length);
+                           text.select (index, engine.match().length);
                            return true;
                            }
                         return false;
@@ -435,12 +435,12 @@ class Text(T) : TextView!(T)
 
         this (TextViewT other, bool copy = true)
         {
-                this (other.mslice, copy);
+                this (other.mslice(), copy);
         }
         
         this (const(TextViewT) other, bool copy = true)
         {
-                this (other.slice);
+                this (other.slice());
         }
 
         /***********************************************************************
@@ -491,7 +491,7 @@ class Text(T) : TextView!(T)
 
         final Text set (TextViewT other, bool copy = true)
         {
-                return set (other.mslice, copy);
+                return set (other.mslice(), copy);
         }
 
         /***********************************************************************
@@ -517,7 +517,7 @@ class Text(T) : TextView!(T)
 
         final const const(T)[] selection ()
         {
-                return slice [selectPoint .. selectPoint+selectLength];
+                return slice() [selectPoint .. selectPoint+selectLength];
         }
 
         /***********************************************************************
@@ -542,7 +542,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final size_t point ()
+        @property final size_t point ()
         {
                 return selectPoint;
         }
@@ -553,7 +553,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text point (size_t index)
+        @property final Text point (size_t index)
         {
                 return select (index, 0);
         }
@@ -567,7 +567,7 @@ class Text(T) : TextView!(T)
                 auto s = t.search ("world");
 
                 assert (s.next);
-                assert (t.selection == "world");
+                assert (t.selection() == "world");
                 ---
 
                 Replacing patterns operates in a similar fashion:
@@ -624,7 +624,7 @@ class Text(T) : TextView!(T)
 
         deprecated final bool select (const(TextViewT) other)
         {
-                return select (other.slice);
+                return select (other.slice());
         }
 
         /***********************************************************************
@@ -680,7 +680,7 @@ class Text(T) : TextView!(T)
 
         deprecated final bool selectPrior (const(TextViewT) other)
         {
-                return selectPrior (other.slice);
+                return selectPrior (other.slice());
         }
 
         /***********************************************************************
@@ -742,7 +742,7 @@ class Text(T) : TextView!(T)
 
         final Text append (const(TextViewT) other)
         {
-                return append (other.slice);
+                return append (other.slice());
         }
 
         /***********************************************************************
@@ -867,7 +867,7 @@ class Text(T) : TextView!(T)
 
         final Text prepend (const(TextViewT) other)
         {
-                return prepend (other.slice);
+                return prepend (other.slice());
         }
 
         /***********************************************************************
@@ -924,7 +924,7 @@ class Text(T) : TextView!(T)
         /// ditto
         final Text encode (Object o)
         {
-                return encode (o.toString);
+                return encode (o.toString());
         }
 
         /***********************************************************************
@@ -966,7 +966,7 @@ class Text(T) : TextView!(T)
 
         final Text replace (const(TextViewT) other)
         {
-                return replace (other.slice);
+                return replace (other.slice());
         }
 
         /***********************************************************************
@@ -1040,7 +1040,7 @@ class Text(T) : TextView!(T)
 
         final Text trim ()
         {
-                content = Util.trim (mslice);
+                content = Util.trim (mslice());
                 select (0, contentLength = content.length);
                 return this;
         }
@@ -1054,7 +1054,7 @@ class Text(T) : TextView!(T)
 
         final Text strip (T matches)
         {
-                content = Util.strip (mslice, matches);
+                content = Util.strip (mslice(), matches);
                 select (0, contentLength = content.length);
                 return this;
         }
@@ -1079,7 +1079,7 @@ class Text(T) : TextView!(T)
 
         Text write (OutputStream sink)
         {
-                sink.write (slice);
+                sink.write (slice());
                 return this;
         }
 
@@ -1093,7 +1093,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const TypeInfo encoding()
+        final override const TypeInfo encoding()
         {
                 return typeid(T);
         }
@@ -1105,7 +1105,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Comparator comparator (Comparator other)
+        final override Comparator comparator (Comparator other)
         {
                 auto tmp = comparator_;
                 if (other)
@@ -1130,7 +1130,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const size_t length ()
+        @property override final const size_t length ()
         {
                 return contentLength;
         }
@@ -1141,11 +1141,11 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const bool equals (const(TextViewT) other)
+        final override const bool equals (const(TextViewT) other)
         {
                 if (other is this)
                     return true;
-                return equals (other.slice);
+                return equals (other.slice());
         }
 
         /***********************************************************************
@@ -1154,7 +1154,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const bool equals (const(T)[] other)
+        final override const bool equals (const(T)[] other)
         {
                 if (other.length == contentLength)
                     return Util.matching (other.ptr, content.ptr, contentLength);
@@ -1167,9 +1167,9 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const bool ends (const(TextViewT) other)
+        final override const bool ends (const(TextViewT) other)
         {
-                return ends (other.slice);
+                return ends (other.slice());
         }
 
         /***********************************************************************
@@ -1178,7 +1178,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const bool ends (const(T)[] chars)
+        final override const bool ends (const(T)[] chars)
         {
                 if (chars.length <= contentLength)
                     return Util.matching (content.ptr+(contentLength-chars.length), chars.ptr, chars.length);
@@ -1191,9 +1191,9 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const bool starts (const(TextViewT) other)
+        final override const bool starts (const(TextViewT) other)
         {
-                return starts (other.slice);
+                return starts (other.slice());
         }
 
         /***********************************************************************
@@ -1202,7 +1202,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const bool starts (const(T)[] chars)
+        final override const bool starts (const(T)[] chars)
         {
                 if (chars.length <= contentLength)
                     return Util.matching (content.ptr, chars.ptr, chars.length);
@@ -1218,12 +1218,12 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const int compare (const(TextViewT) other)
+        final override const int compare (const(TextViewT) other)
         {
                 if (other is this)
                     return 0;
 
-                return compare (other.slice);
+                return compare (other.slice());
         }
 
         /***********************************************************************
@@ -1235,9 +1235,9 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const int compare (const(T)[] chars)
+        final override const int compare (const(T)[] chars)
         {
-                return comparator_ (slice, chars);
+                return comparator_ (slice(), chars);
         }
 
         /***********************************************************************
@@ -1251,7 +1251,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const T[] copy (T[] dst)
+        final override const T[] copy (T[] dst)
         {
                 size_t i = contentLength;
                 if (i > dst.length)
@@ -1269,12 +1269,12 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final const const(T)[] slice ()
+        final override const const(T)[] slice ()
         {
                 return content [0 .. contentLength];
         }
         
-        T[] mslice ()
+        override T[] mslice ()
         {
                 return content [0 .. contentLength];
         }
@@ -1299,12 +1299,12 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
         
-        const immutable(char)[] toString()
+        override const string toString()
         {
                 return toString(null).idup;
         }
         
-        final const char[] toString (char[] dst)
+        final override const char[] toString (char[] dst)
         {
                 static if (is (T == char)) {
                            if(dst.length < length)
@@ -1314,17 +1314,17 @@ class Text(T) : TextView!(T)
                 }
 
                 static if (is (T == wchar))
-                           return Utf.toString (slice, dst);
+                           return Utf.toString (slice(), dst);
 
                 static if (is (T == dchar))
-                           return Utf.toString (slice, dst);
+                           return Utf.toString (slice(), dst);
         }
 
         /// ditto
-        final const wchar[] toString16 (wchar[] dst = null)
+        final override const wchar[] toString16 (wchar[] dst = null)
         {
                 static if (is (T == char))
-                           return Utf.toString16 (slice, dst);
+                           return Utf.toString16 (slice(), dst);
 
                 static if (is (T == wchar)) {
                            if(dst.length < length)
@@ -1334,17 +1334,17 @@ class Text(T) : TextView!(T)
                 }
 
                 static if (is (T == dchar))
-                           return Utf.toString16 (slice, dst);
+                           return Utf.toString16 (slice(), dst);
         }
 
         /// ditto
-        final const dchar[] toString32 (dchar[] dst = null)
+        final override const dchar[] toString32 (dchar[] dst = null)
         {
                 static if (is (T == char))
-                           return Utf.toString32 (slice, dst);
+                           return Utf.toString32 (slice(), dst);
 
                 static if (is (T == wchar))
-                           return Utf.toString32 (slice, dst);
+                           return Utf.toString32 (slice(), dst);
 
                 static if (is (T == dchar)) {
                            if(dst.length < length)
@@ -1386,13 +1386,13 @@ class Text(T) : TextView!(T)
 
                 // this can become expensive ...
                 char[1024] tmp = void;
-                return this.toString(tmp) == o.toString;
+                return this.toString(tmp) == o.toString();
         }
 
         /// ditto
-        final bool opEquals (const(T)[] s)
+        final override bool opEquals (const(T)[] s)
         {
-                return slice == s;
+                return slice() == s;
         }
 
         /***********************************************************************
@@ -1529,7 +1529,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract const size_t length ();
+        @property abstract const size_t length ();
 
         /***********************************************************************
 
@@ -1619,7 +1619,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract const int opCmp (Object o);
+        abstract override const int opCmp (Object o);
 
         /***********************************************************************
 
@@ -1627,7 +1627,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract bool opEquals (Object other);
+        abstract override bool opEquals (Object other);
 
         /***********************************************************************
 
@@ -1643,7 +1643,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract const TypeInfo encoding();
+        abstract override const TypeInfo encoding();
 
         /***********************************************************************
 
@@ -1659,7 +1659,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract hash_t toHash ();
+        abstract override hash_t toHash ();
 
         /***********************************************************************
 
@@ -1710,45 +1710,45 @@ debug (UnitTest)
 
         auto array = new Array(1024);
         s.write (array);
-        assert (array.slice == "hello");
+        assert (array.slice() == "hello");
         s.select (1, 0);
         assert (s.append(array) == "hhelloello");
 
         s = "hello";
         s.search("hello").next;
-        assert (s.selection == "hello");
+        assert (s.selection() == "hello");
         s.replace ("1");
-        assert (s.selection == "1");
+        assert (s.selection() == "1");
         assert (s == "1");
 
-        assert (s.clear == "");
+        assert (s.clear() == "");
 
         assert (s.format("{}", 12345) == "12345");
-        assert (s.selection == "12345");
+        assert (s.selection() == "12345");
 
         s ~= "fubar";
-        assert (s.selection == "12345fubar");
+        assert (s.selection() == "12345fubar");
         assert (s.search("5").next);
-        assert (s.selection == "5");
-        assert (s.remove == "1234fubar");
+        assert (s.selection() == "5");
+        assert (s.remove() == "1234fubar");
         assert (s.search("fubar").next);
-        assert (s.selection == "fubar");
+        assert (s.selection() == "fubar");
         assert (s.search("wumpus").next is false);
-        assert (s.selection == "");
+        assert (s.selection() == "");
 
-        assert (s.clear.format("{:f4}", 1.2345) == "1.2345");
+        assert (s.clear().format("{:f4}", 1.2345) == "1.2345");
 
-        assert (s.clear.format("{:b}", 0xf0) == "11110000");
+        assert (s.clear().format("{:b}", 0xf0) == "11110000");
 
-        assert (s.clear.encode("one"d).toString == "one");
+        assert (s.clear().encode("one"d).toString() == "one");
 
-        assert (Util.splitLines(s.clear.append("a\nb").slice).length is 2);
+        assert (Util.splitLines(s.clear().append("a\nb").slice()).length is 2);
 
-        assert (s.select.replace("almost ") == "almost ");
+        assert (s.select().replace("almost ") == "almost ");
         foreach (element; Util.patterns ("all cows eat grass", "eat", "chew"))
                  s.append (element);
-        assert (s.selection == "almost all cows chew grass");
-        assert (s.clear.format("{}:{}", 1, 2) == "1:2");
+        assert (s.selection() == "almost all cows chew grass");
+        assert (s.clear().format("{}:{}", 1, 2) == "1:2");
         }
 }
 
@@ -1761,35 +1761,35 @@ debug (Text)
                 t = "hello world";
                 auto s = t.search ("o");
                 assert (s.next);
-                assert (t.selection == "o");
+                assert (t.selection() == "o");
                 assert (t.point is 4);
                 assert (s.next);
-                assert (t.selection == "o");
+                assert (t.selection() == "o");
                 assert (t.point is 7);
                 assert (!s.next);
 
                 t.point = 9;
                 assert (s.prev);
-                assert (t.selection == "o");
+                assert (t.selection() == "o");
                 assert (t.point is 7);
                 assert (s.prev);
-                assert (t.selection == "o");
+                assert (t.selection() == "o");
                 assert (t.point is 4);
                 assert (s.next);
                 assert (t.point is 7);
                 assert (s.prev);
-                assert (t.selection == "o");
+                assert (t.selection() == "o");
                 assert (t.point is 4);
                 assert (!s.prev);
                 assert (s.count is 2);
                 s.replace ('O');
-                assert (t.slice == "hellO wOrld");
+                assert (t.slice() == "hellO wOrld");
                 assert (s.count is 0);
 
                 t.point = 0;
                 assert (t.search("hellO").next);
-                assert (t.selection == "hellO");
+                assert (t.selection() == "hellO");
                 assert (t.search("hellO").next);
-                assert (t.selection == "hellO");
+                assert (t.selection() == "hellO");
         }
 }

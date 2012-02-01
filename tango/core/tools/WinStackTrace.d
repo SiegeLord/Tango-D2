@@ -402,8 +402,10 @@ public {
     init = whether to init the allocated items to their default values or not
     
     Examples:
+    ---
     int[] foo;
     foo.alloc(20);
+    ---
     
     Remarks:
     The array must be null and empty for this function to succeed. The rationale behind this is that the coder should state his decision clearly. This will help and has
@@ -448,9 +450,11 @@ T clone(T)(T array) {
     init = whether to init the newly allocated items to their default values or not
     
     Examples:
+    ---
     int[] foo;
     foo.alloc(20);
     foo.realloc(10);        // <--
+    ---
 */
 void realloc(T, intT)(ref T array, intT numItems, bool init = true)
 in {
@@ -1052,7 +1056,7 @@ class GlobalDebugInfo {
         if (info.next) {
             info.next.prev = info.prev;
         }
-        info.freeArrays;
+        info.freeArrays();
         info.prev = info.next = null;
         
         delete info;

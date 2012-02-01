@@ -333,7 +333,7 @@ extern (C)
 
     uint sslThreadId()
     {
-        return cast(uint)cast(void*)Thread.getThis;
+        return cast(uint)cast(void*)Thread.getThis();
     }
     void sslStaticLock(int mode, int index, const(char) *sourceFile, int lineNo)
     {
@@ -724,7 +724,7 @@ SharedLib loadLib(const(char)[][] loadPath)
         {
             scope fp = new FilePath(path.dup);
             try
-                rtn = SharedLib.load(fp.absolute(Environment.cwd()).toString);
+                rtn = SharedLib.load(fp.absolute(Environment.cwd()).toString());
             catch (SharedLibException ex)
             {}
         }

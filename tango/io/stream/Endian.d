@@ -150,6 +150,6 @@ debug (UnitTest)
                 auto inp = new EndianInput!(dchar)(new Array("hello world"d.dup));
                 auto oot = new EndianOutput!(dchar)(new Array(64));
                 oot.copy (inp);
-                assert (oot.output.slice == "hello world"d);
+                assert (oot.output.slice() == "hello world"d);
         }
 }

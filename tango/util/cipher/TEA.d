@@ -30,12 +30,12 @@ class TEA : BlockCipher
 
     final override void reset(){}
     
-    final override const(char)[] name()
+    @property final override const(char)[] name()
     {
         return "TEA";
     }
     
-    final override const uint blockSize()
+    @property final override const uint blockSize()
     {
         return BLOCK_SIZE;
     }
