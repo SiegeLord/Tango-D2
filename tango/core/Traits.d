@@ -27,6 +27,10 @@ template BaseTypeOf( T )
         alias T BaseTypeOf;
 }
 
+/**
+ * Computes the effective type that inout would have if you have it two parameters of difference constness
+ */
+
 template InoutTypeOf(T, M)
 {
     static assert(is(BaseTypeOf!(T) == BaseTypeOf!(M)));
@@ -53,9 +57,9 @@ template isStringType( T )
  */
 template isCharType( T )
 {
-    const bool isCharType = is( T == char )  ||
-                            is( T == wchar ) ||
-                            is( T == dchar );
+    const bool isCharType = is( BaseTypeOf!(T) == char )  ||
+                            is( BaseTypeOf!(T) == wchar ) ||
+                            is( BaseTypeOf!(T) == dchar );
 }
 
 
@@ -64,10 +68,10 @@ template isCharType( T )
  */
 template isSignedIntegerType( T )
 {
-    const bool isSignedIntegerType = is( T == byte )  ||
-                                     is( T == short ) ||
-                                     is( T == int )   ||
-                                     is( T == long )/+||
+    const bool isSignedIntegerType = is( BaseTypeOf!(T) == byte )  ||
+                                     is( BaseTypeOf!(T) == short ) ||
+                                     is( BaseTypeOf!(T) == int )   ||
+                                     is( BaseTypeOf!(T) == long )/+||
                                      is( T == cent  )+/;
 }
 
@@ -77,10 +81,10 @@ template isSignedIntegerType( T )
  */
 template isUnsignedIntegerType( T )
 {
-    const bool isUnsignedIntegerType = is( T == ubyte )  ||
-                                       is( T == ushort ) ||
-                                       is( T == uint )   ||
-                                       is( T == ulong )/+||
+    const bool isUnsignedIntegerType = is( BaseTypeOf!(T) == ubyte )  ||
+                                       is( BaseTypeOf!(T) == ushort ) ||
+                                       is( BaseTypeOf!(T) == uint )   ||
+                                       is( BaseTypeOf!(T) == ulong )/+||
                                        is( T == ucent  )+/;
 }
 
@@ -100,9 +104,9 @@ template isIntegerType( T )
  */
 template isRealType( T )
 {
-    const bool isRealType = is( T == float )  ||
-                            is( T == double ) ||
-                            is( T == real );
+    const bool isRealType = is( BaseTypeOf!(T) == float )  ||
+                            is( BaseTypeOf!(T) == double ) ||
+                            is( BaseTypeOf!(T) == real );
 }
 
 
@@ -111,9 +115,9 @@ template isRealType( T )
  */
 template isComplexType( T )
 {
-    const bool isComplexType = is( T == cfloat )  ||
-                               is( T == cdouble ) ||
-                               is( T == creal );
+    const bool isComplexType = is( BaseTypeOf!(T) == cfloat )  ||
+                               is( BaseTypeOf!(T) == cdouble ) ||
+                               is( BaseTypeOf!(T) == creal );
 }
 
 

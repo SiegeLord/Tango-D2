@@ -314,6 +314,16 @@ template isMutableString(T)
         enum isMutableString = false;
 }
 
+template isImmutableString(T)
+{
+    static if( is( typeof(T[]) == immutable(char)[] )
+            || is( typeof(T[]) == immutable(wchar)[] )
+            || is( typeof(T[]) == immutable(dchar)[] ) )
+        enum isImmutableString = true;
+    else
+        enum isImmutableString = false;
+}
+
 template isArrayType(T)
 {
     enum isArrayType = isDynamicArrayType!(T) || isStaticArrayType!(T);
@@ -477,17 +487,36 @@ template TN(T)
         enum TN = ctfe_trim(T.stringof);
 }
 
+// Takes care of converting between mutable and immutable strings
+D convertString_(D, C)(C[] ret)
+{
+    static if(isImmutableString!(C))
+    {
+        static if(isMutableString!(D))
+            return cast(D) ret.dup;
+        else
+            return cast(D) ret;
+    }
+    else
+    {
+        static if(isImmutableString!(D))
+            return cast(D) ret.idup;
+        else
+            return cast(D) ret;
+    }
+}
+
 // Picks an appropriate toString* method from t.text.convert.Utf.
-template toString_(T)
+T toString_(T, C)(C[] str)
 {
     static if( is( T : const(char[]) ) )
-        alias tango.text.convert.Utf.toString toString_;
+        return convertString_!(T)(tango.text.convert.Utf.toString(str));
 
     else static if( is( T : const(wchar[]) ) )
-        alias tango.text.convert.Utf.toString16 toString_;
+        return convertString_!(T)(tango.text.convert.Utf.toString16(str));
 
     else
-        alias tango.text.convert.Utf.toString32 toString_;
+        return convertString_!(T)(tango.text.convert.Utf.toString32(str));
 }
 
 template UtfNum(T)
@@ -582,35 +611,18 @@ template fromUDT(immutable(char)[] fallthrough="")
     {
         static if( isString!(D) )
         {
-            static if( is( typeof(mixin("value.toString"
-                                ~StringNum!(D)~"()")) : D ) )
-                return mixin("value.toString"~StringNum!(D)~"()");
-
-            else static if( is( typeof(mixin("value.toString"
-                                ~StringNum!(D)~"().dup")) : D ) )
-                return mixin("value.toString"~StringNum!(D)~"().dup");
-
-            else static if( is( typeof(mixin("value.toString"
-                                ~StringNum!(D)~"().idup")) : D ) )
-                return mixin("value.toString"~StringNum!(D)~"().idup");
+            static if( is( typeof(convertString_!(D)(mixin("value.toString"
+                                ~StringNum!(D)~"()"))) : D ) )
+                return convertString_!(D)(mixin("value.toString"~StringNum!(D)~"()"));
 
             else static if( is( typeof(value.toString()) : const(char[]) ) )
-                static if( isMutableString!(D) )
-                    return toString_!(D)(value.toString());
-                else
-                    return toString_!(D)(value.toString()).idup;
+                return toString_!(D)(value.toString());
 
             else static if( is( typeof(value.toString16()) : const(wchar[]) ) )
-                static if( isMutableString!(D) )
-                    return toString_!(D)(value.toString16);
-                else
-                    return toString_!(D)(value.toString16).idup;
+                return toString_!(D)(value.toString16);
 
             else static if( is( typeof(value.toString32()) : const(dchar[]) ) )
-                static if( isMutableString!(D) )
-                    return toString_!(D)(value.toString32);
-                else
-                    return toString_!(D)(value.toString32).idup;
+                return toString_!(D)(value.toString32);
 
             else static if( is( typeof(value.toString()) : const(char[]) ) )
             {
@@ -1013,34 +1025,7 @@ D toChar(D,S)(S value)
 
 D toStringFromString(D,S)(S value)
 {
-    static if( isMutableString!(D) )
-    {
-        static if( is( typeof(D[0]) == char ) )
-            return tango.text.convert.Utf.toString(value);
-
-        else static if( is( typeof(D[0]) == wchar ) )
-            return tango.text.convert.Utf.toString16(value);
-
-        else
-        {
-            static assert( is( typeof(D[0]) == dchar ) );
-            return tango.text.convert.Utf.toString32(value);
-        }
-    }
-    else
-    {
-        static if( is( typeof(D[0]) : char ) )
-            return tango.text.convert.Utf.toString(value).idup;
-
-        else static if( is( typeof(D[0]) : wchar ) )
-            return tango.text.convert.Utf.toString16(value).idup;
-
-        else
-        {
-            static assert( is( typeof(D[0]) : dchar ) );
-            return tango.text.convert.Utf.toString32(value).idup;
-        }
-    }
+    return toString_!(D)(value);
 }
 
 enum immutable(char)[] CHARS =
@@ -1059,15 +1044,12 @@ D toStringFromChar(D,S)(S value)
         {
             if( 0x20 <= value && value <= 0x7e )
             {
-                static if( isMutableString!(D) )
-                    return (&CHARS[value-0x20])[0..1].dup;
-                else
-                    return (&CHARS[value-0x20])[0..1];
+                return convertString_!(D)((&CHARS[value-0x20])[0..1]);
             }
         }
         auto r = new S[1];
         r[0] = value;
-        return r;
+        return convertString_!(D)(r);
     }
     else
     {
@@ -1081,20 +1063,19 @@ D toString(D,S)(S value)
 {
     static if( is( S == bool ) )
     {
-        static if(isMutableString!(D))
-            return cast(D) (value ? "true".dup : "false".dup);
-        else
-            return cast(D) (value ? "true" : "false");
+        return convertString_!(D)(value ? "true" : "false");
     }
     else static if( isCharType!(S) )
         return toStringFromChar!(D,S)(value);
 
     else static if( isIntegerType!(S) )
+    {
         // TODO: Make sure this works with ulongs.
-        return mixin("tango.text.convert.Integer.toString"~StringNum!(D)~"(value)");
+        return convertString_!(D)(mixin("tango.text.convert.Integer.toString"~StringNum!(D)~"(value)"));
+    }
 
     else static if( isRealType!(S) )
-        return mixin("tango.text.convert.Float.toString"~StringNum!(D)~"(value)");
+        return convertString_!(D)(mixin("tango.text.convert.Float.toString"~StringNum!(D)~"(value)"));
 
     else static if( isDynamicArrayType!(S) || isStaticArrayType!(S) )
         mixin unsupported!("array type");
@@ -1130,15 +1111,16 @@ D fromString(D,S)(D value)
 
 D toArrayFromArray(D,S)(S value)
 {
-    alias typeof(D[0]) De;
+    alias BaseTypeOf!(typeof(D[0])) De;
 
-    D result; result.length = value.length;
+    De[] result; result.length = value.length;
     scope(failure) delete result;
 
     foreach( i,e ; value )
         result[i] = to!(De)(e);
 
-    return result;
+    /* Safe because it is newly allocated */
+    return cast(D)result;
 }
 
 D toMapFromMap(D,S)(S value)
@@ -1187,9 +1169,6 @@ D toImpl(D,S)(S value)
 {
     static if( is( D == S ) )
         return value;
-
-    /*else static if( is( S BaseType == typedef ) )
-        return toImpl!(D,BaseType)(value);*/
 
     else static if( is( S BaseType == enum ) )
         return toImpl!(D,BaseType)(value);
@@ -1515,7 +1494,7 @@ unittest
         assert(ex( to!(real)("0x") ));
         assert(ex( to!(real)("-") ));
     }
-/+
+
     /*
      * Const and immutable
      */
@@ -1527,7 +1506,7 @@ unittest
             assert( to!(immutable(dchar)[])("bite đey µgly"c.dup) == "bite đey µgly"d );
             assert( to!(immutable(dchar)[])("headž ㍳ff"w.dup) == "headž ㍳ff"d );
             // ... nibble on they bluish feet.
-            
+
             assert( to!(immutable(char)[])("食い散らす"c.dup) == "食い散らす"c );
             assert( to!(immutable(wchar)[])("食い散らす"w.dup) == "食い散らす"w );
             assert( to!(immutable(dchar)[])("食い散らす"d.dup) == "食い散らす"d );
@@ -1547,6 +1526,27 @@ unittest
             assert( to!(immutable( char)[])(cast(dchar)'g') == "g"c );
             assert( to!(immutable(wchar)[])(cast(dchar)'h') == "h"w );
             assert( to!(immutable(dchar)[])(cast(dchar)'i') == "i"d );
-    }+/
+
+            assert( to!(immutable(ubyte)[])([1,2,3]) == [cast(ubyte)1, 2, 3] );
+            
+            assert( to!(const(char)[])("Í love to æt "w) == "Í love to æt "c );
+
+            Foo foo;
+
+            assert( to!(immutable(char)[])(foo) == "string foo" );
+            assert( to!(immutable(wchar)[])(foo) == "string foo"w );
+            assert( to!(immutable(dchar)[])(foo) == "string foo"d );
+            /* assert( to!(immutable(int)[])(foo) == [1,2,3] ); */
+    }
+    
+    /*
+     * Pass through
+     */
+    {
+        assert( to!(int)(cast(int)1) == 1 );
+        assert( to!(char[])("abc".dup) == "abc" );
+        assert( to!(immutable(char)[])("abc") == "abc" );
+        assert( to!(immutable(dchar)[])("abc"d) == "abc"d );
+    }
 }
 

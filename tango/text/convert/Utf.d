@@ -59,9 +59,9 @@ public extern (C) void onUnicodeError (const(char[]) msg, size_t idx = 0);
 
 *******************************************************************************/
 
-inout(char[])  toString (inout(char[]) src, char[] dst, size_t* ate=null) {return src;}
-inout(wchar[]) toString (inout(wchar[]) src, wchar[] dst, size_t* ate=null) {return src;}
-inout(dchar[]) toString (inout(dchar[]) src, dchar[] dst, size_t* ate=null) {return src;}
+inout(char[])  toString (inout(char[]) src, char[] dst = null, size_t* ate=null) {return src;}
+inout(wchar[]) toString16 (inout(wchar[]) src, wchar[] dst = null, size_t* ate=null) {return src;}
+inout(dchar[]) toString32 (inout(dchar[]) src, dchar[] dst = null, size_t* ate=null) {return src;}
 
 /*******************************************************************************
 
