@@ -151,7 +151,7 @@ public class AppendSyslog: Filer
 
             // write log message and flush it
             layout.format(event, &write);
-            write(tango.io.FilePath.FileConst.NewlineString);
+            write(tango.io.model.IFile.FileConst.NewlineString);
             buffer.flush();
         }
     }
