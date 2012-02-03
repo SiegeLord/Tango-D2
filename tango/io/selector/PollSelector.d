@@ -377,7 +377,7 @@ version (Posix)
             this.keys = keys;
         }
 
-        uint length()
+        size_t length()
         {
             return numSelected;
         }
