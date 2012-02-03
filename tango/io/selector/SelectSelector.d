@@ -543,7 +543,7 @@ private class SelectSelectionSet: ISelectionSet
         _exceptionSet = exceptionSet;
     }
 
-    @property uint length()
+    @property size_t length()
     {
         return _eventCount;
     }
