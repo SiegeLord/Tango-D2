@@ -104,7 +104,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        static Layout instance ()
+        @property static Layout instance ()
         {
                 static __gshared Layout common;
 
@@ -785,7 +785,7 @@ version (WithVariant)
                        case TypeCode.CLASS:
                             auto c = *cast(Object*) p;
                             if (c)
-                                return cast(T[])Utf.fromString8 (c.toString, result);
+                                return cast(T[])Utf.fromString8 (c.toString(), result);
                             break;
 
                        case TypeCode.STRUCT:
@@ -805,7 +805,7 @@ version (WithVariant)
                                {
                                auto pi = **cast(Interface ***) x;
                                auto o = cast(Object)(*cast(void**)p - pi.offset);
-                               return cast(T[])Utf.fromString8 (o.toString, result);
+                               return cast(T[])Utf.fromString8 (o.toString(), result);
                                }
                             break;
 
@@ -852,7 +852,7 @@ version (WithVariant)
                              }
                    }
                 }
-                return cast(T[])"{unhandled argument type: " ~ cast(T[])Utf.fromString8 (type.toString, result) ~ cast(T[])"}";
+                return cast(T[])"{unhandled argument type: " ~ cast(T[])Utf.fromString8 (type.toString(), result) ~ cast(T[])"}";
         }
 
         /**********************************************************************

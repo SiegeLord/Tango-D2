@@ -24,11 +24,11 @@ void bench (int iterations)
         auto doc = new Document!(char);
         auto content = cast (char[]) File.get ("hamlet.xml");
 
-        elapsed.start;
+        elapsed.start();
         for (auto i=0; ++i < iterations;)
              doc.parse (content);
 
-        Stdout.formatln ("{} MB/s", (content.length * iterations) / (elapsed.stop * (1024 * 1024)));
+        Stdout.formatln ("{} MB/s", (content.length * iterations) / (elapsed.stop() * (1024 * 1024)));
 }
         
 /*******************************************************************************

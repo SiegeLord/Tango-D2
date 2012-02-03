@@ -63,7 +63,7 @@ class JsonParser(T)
         
         ***********************************************************************/
         
-        final bool next ()
+        @property final bool next ()
         {
                 if (str.ptr is null || str.end is null)
                     return false;
@@ -79,25 +79,25 @@ class JsonParser(T)
                      return false;
 
                 if (curState is State.Array) 
-                    return parseArrayValue;
+                    return parseArrayValue();
 
                 switch (curType)
                        {
                        case Token.Name:
-                            return parseMemberValue;
+                            return parseMemberValue();
 
                        default:                
                             break;
                        }
 
-                return parseMemberName;
+                return parseMemberName();
         }
         
         /***********************************************************************
         
         ***********************************************************************/
         
-        final Token type ()
+        @property final Token type ()
         {
                 return curType;
         }
@@ -106,7 +106,7 @@ class JsonParser(T)
         
         ***********************************************************************/
         
-        final const(T)[] value ()
+        @property final const(T)[] value ()
         {
                 return curLoc [0 .. curLen];
         }
@@ -117,7 +117,7 @@ class JsonParser(T)
         
         bool reset (const(T)[] json = null)
         {
-                state.clear;
+                state.clear();
                 str.reset (json);
                 curType = Token.Empty;
                 curState = State.Object;
@@ -206,11 +206,12 @@ class JsonParser(T)
                        ++p;
 
                 if (*p != '"')
+                {
                     if (*p == '}')
                         expected ("an attribute-name after (a potentially trailing) ','", p);
                     else
                        expected ("'\"' before attribute-name", p);
-
+                }
                 curLoc = p+1;
                 curType = Token.Name;
 
@@ -259,28 +260,28 @@ class JsonParser(T)
                             return push (Token.BeginArray, State.Array);
         
                        case '"':
-                            return doString;
+                            return doString();
         
                        case 'n':
                             if (match ("null", Token.Null))
                                 return true;
                             expected ("'null'", str.ptr);
-
+                            break;
                        case 't':
                             if (match ("true", Token.True))
                                 return true;
                             expected ("'true'", str.ptr);
-
+                            break;
                        case 'f':
                             if (match ("false", Token.False))
                                 return true;
                             expected ("'false'", str.ptr);
-
+                            break;
                        default:
                             break;
                        }
 
-                return parseNumber;
+                return parseNumber();
         }
         
         /***********************************************************************
@@ -381,7 +382,7 @@ class JsonParser(T)
                 curLen = 0;
                 curType = token;
                 curLoc = str.ptr++;
-                curState = state.pop;
+                curState = state.pop();
                 return true;
         }
 
@@ -425,30 +426,30 @@ debug(UnitTest)
 {       
                 immutable(char)[] json = 
                 "{"
-                        "\"glossary\": {"
-                        "\"title\": \"example glossary\","
-                                "\"GlossDiv\": {"
-                                " 	\"title\": \"S\","
-                                "	\"GlossList\": {"
-                                "       \"GlossEntry\": {"
-                                "           \"ID\": \"SGML\","
-                                "			\"SortAs\": \"SGML\","
-                                "			\"GlossTerm\": \"Standard Generalized Markup Language\","
-                                "			\"Acronym\": \"SGML\","
-                                "			\"Abbrev\": \"ISO 8879:1986\","
-                                "			\"GlossDef\": {"
-                        "                \"para\": \"A meta-markup language, used to create markup languages such as DocBook.\","
-                                "				\"GlossSeeAlso\": [\"GML\", \"XML\"]"
-                        "            },"
-                                "			\"GlossSee\": \"markup\","
-                                "			\"ANumber\": 12345.6e7"
-                                "			\"True\": true"
-                                "			\"False\": false"
-                                "			\"Null\": null"
-                        "        }"
-                                "    }"
-                        "}"
-                    "}"
+                "\"glossary\": {"
+                "\"title\": \"example glossary\","
+                "\"GlossDiv\": {"
+                "   \"title\": \"S\","
+                "   \"GlossList\": {"
+                "       \"GlossEntry\": {"
+                "           \"ID\": \"SGML\","
+                "           \"SortAs\": \"SGML\","
+                "           \"GlossTerm\": \"Standard Generalized Markup Language\","
+                "           \"Acronym\": \"SGML\","
+                "           \"Abbrev\": \"ISO 8879:1986\","
+                "           \"GlossDef\": {"
+                "                \"para\": \"A meta-markup language, used to create markup languages such as DocBook.\","
+                "            \"GlossSeeAlso\": [\"GML\", \"XML\"]"
+                "           },"
+                "          \"GlossSee\": \"markup\","
+                "          \"ANumber\": 12345.6e7"
+                "          \"True\": true"
+                "          \"False\": false"
+                "          \"Null\": null"
+                "        }"
+                "    }"
+                "}"
+                "}"
                 "}";
        
 unittest

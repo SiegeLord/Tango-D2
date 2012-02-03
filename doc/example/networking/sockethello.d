@@ -22,7 +22,7 @@ void main()
         auto size = request.input.read (response);
 
         // close socket
-        request.close;
+        request.close();
 
         // display server response
         Cout (response[0..size]).newline;

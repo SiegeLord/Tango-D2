@@ -40,12 +40,12 @@ class RC6 : BlockCipher
         init(encrypt, key);
     }
 
-    final override const(char)[] name()
+    @property final override const(char)[] name()
     {
         return "RC6";
     }
     
-    final override const uint blockSize()
+    @property final override const uint blockSize()
     {
         return BLOCK_SIZE;
     }

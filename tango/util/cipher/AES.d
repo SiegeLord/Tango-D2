@@ -647,7 +647,7 @@ class AES : BlockCipher
         init(encrypt, key);
     }
 
-    final override const(char[]) name()
+    @property final override const(char[]) name()
     {
         return "AES";
     }
@@ -659,7 +659,7 @@ class AES : BlockCipher
         return ROUNDS;
     }
     
-    final override const uint blockSize()
+    @property final override const uint blockSize()
     {
         return BLOCK_SIZE;
     }

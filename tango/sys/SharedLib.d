@@ -256,7 +256,7 @@ final class SharedLib {
     /**
         Returns the path to the OS-specific shared library associated with this object.
       */
-    char[] path() {
+    @property const(char)[] path() {
         return this.path_;
     }
 
@@ -389,17 +389,17 @@ final class SharedLib {
         }
 
 
-        char[] path_;
+        const(char)[] path_;
         int refCnt = 0;
 
 
-        bool loaded() {
+        @property bool loaded() {
             return handle !is null;
         }
 
 
         this(const(char)[] path) {
-            this.path_ = path.dup;
+            this.path_ = path;
         }
     }
 

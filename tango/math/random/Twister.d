@@ -79,7 +79,7 @@ struct Twister
 
         static this ()
         {
-                instance.seed;
+                instance.seed();
         }
 
         /**********************************************************************
@@ -91,7 +91,7 @@ struct Twister
         static Twister opCall ()
         {
                 Twister rand;
-                rand.seed;
+                rand.seed();
                 return rand;
         }
 
@@ -103,7 +103,7 @@ struct Twister
 
         uint natural (uint max)
         {
-                return natural % max;
+                return natural() % max;
         }
         
         /**********************************************************************
@@ -114,7 +114,7 @@ struct Twister
 
         uint natural (uint min, uint max)
         {
-                return (natural % (max-min)) + min;
+                return (natural() % (max-min)) + min;
         }
 
         /**********************************************************************
@@ -170,7 +170,7 @@ struct Twister
 
         double inclusive ()
         {
-                return natural*(1.0/cast(double)uint.max);
+                return natural()*(1.0/cast(double)uint.max);
         }
 
         /**********************************************************************
@@ -181,7 +181,7 @@ struct Twister
 
         double exclusive ()
         {
-                return ((cast(double)natural) + 0.5)*(1.0/(cast(double)uint.max+1.0));
+                return ((cast(double)natural()) + 0.5)*(1.0/(cast(double)uint.max+1.0));
         }
 
         /**********************************************************************
@@ -192,7 +192,7 @@ struct Twister
 
         double fraction ()
         {
-                return natural*(1.0/(cast(double)uint.max+1.0));
+                return natural()*(1.0/(cast(double)uint.max+1.0));
         }
 
         /**********************************************************************
@@ -203,7 +203,7 @@ struct Twister
 
         double fractionEx ()
         {
-                uint a = natural >> 5, b = natural >> 6;
+                uint a = natural() >> 5, b = natural() >> 6;
                 return(a * 67108864.0 + b) * (1.0 / 9007199254740992.0);
         }
         

@@ -147,10 +147,10 @@ struct Uuid
                 Uuid u;
                 with (u)
                 {
-                        _data.ui[0] = generator.natural;
-                        _data.ui[1] = generator.natural;
-                        _data.ui[2] = generator.natural;
-                        _data.ui[3] = generator.natural;
+                        _data.ui[0] = generator.natural();
+                        _data.ui[1] = generator.natural();
+                        _data.ui[2] = generator.natural();
+                        _data.ui[3] = generator.natural();
 
                         // v4: 7th bytes' first half is 0b0100: 4 in hex
                         _data.ub[6] &= 0b01001111;
@@ -183,10 +183,10 @@ struct Uuid
                           6 to the appropriate 4-bit version number from Section 4.1.3.
                    o  Set the two most significant bits (bits 6 and 7) of octet 8 to 
                           zero and one, respectively.  */
-                auto nameBytes = namespace.toBytes;
+                auto nameBytes = namespace.toBytes();
                 nameBytes ~= cast(ubyte[])name;
                 digest.update(nameBytes);
-                nameBytes = digest.binaryDigest;
+                nameBytes = digest.binaryDigest();
                 nameBytes[6] = cast(ubyte)((uuidVersion << 4) | (nameBytes[6] & 0b1111));
                 nameBytes[8] |= 0b1000_0000;
                 nameBytes[8] &= 0b1011_1111;
@@ -196,7 +196,7 @@ struct Uuid
         /** Return an empty UUID (with all bits set to 0). This doesn't conform
           * to any particular version of the specification. It's equivalent to
           * using an uninitialized UUID. This method is provided for clarity. */
-        public static Uuid empty()
+        @property public static Uuid empty()
         {
                 Uuid uuid;
                 uuid._data.ui[] = 0;
@@ -304,7 +304,7 @@ debug (UnitTest)
                 // Generate them in the correct format
                 for (int i = 0; i < 20; i++)
                 {
-                        auto uu = Uuid.random(&Kiss.instance).toString;
+                        auto uu = Uuid.random(&Kiss.instance).toString();
                         auto c = uu[19];
                         assert (c == '9' || c == '8' || c == 'a' || c == 'b', uu);
                         auto d = uu[14];
@@ -312,7 +312,7 @@ debug (UnitTest)
                 }
 
                 // empty
-                assert (Uuid.empty.toString == "00000000-0000-0000-0000-000000000000", Uuid.empty.toString);
+                assert (Uuid.empty.toString() == "00000000-0000-0000-0000-000000000000", Uuid.empty.toString());
 
                 ubyte[] bytes = [0x6b, 0xa7, 0xb8, 0x10, 0x9d, 0xad, 0x11, 0xd1, 
                                           0x80, 0xb4, 0x00, 0xc0, 0x4f, 0xd4, 0x30, 0xc8];
@@ -324,7 +324,7 @@ debug (UnitTest)
                 assert (Uuid(bytes) == u);
                 assert (u2 != u);
 
-                assert (u2.format == 4);
+                assert (u2.format() == 4);
 
                 // tryParse
                 Uuid u3;
@@ -395,7 +395,7 @@ debug (UnitTest)
                 // of bytes at that point, so converting to NBO is a noop...
                 auto expected = Uuid.parse("2b1c6704-a43f-5d43-9abb-b13310b4458a");
                 auto generated = Uuid.byName(namespace, name, new Sha1, cast(ubyte)5);
-                assert (generated == expected, "\nexpected: " ~ expected.toString ~ "\nbut was:  " ~ generated.toString);
+                assert (generated == expected, "\nexpected: " ~ expected.toString() ~ "\nbut was:  " ~ generated.toString());
         }
         
         import tango.util.digest.Md5;
@@ -405,7 +405,7 @@ debug (UnitTest)
                 auto name = "hello";
                 auto expected = Uuid.parse("31a2b702-85a8-349a-9b0e-213b1bd753b8");
                 auto generated = Uuid.byName(namespace, name, new Md5, cast(ubyte)3);
-                assert (generated == expected, "\nexpected: " ~ expected.toString ~ "\nbut was:  " ~ generated.toString);
+                assert (generated == expected, "\nexpected: " ~ expected.toString() ~ "\nbut was:  " ~ generated.toString());
         }
         //void main(){}
 }

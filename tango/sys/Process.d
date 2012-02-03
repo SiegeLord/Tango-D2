@@ -246,6 +246,7 @@ class Process
      *            argument, spaces that are not intended to separate
      *            parameters should be embedded in quotes.  The arguments can
      *            also be empty.
+     *            Note: The class will use only slices, .dup when necessary. 
      *
      * Examples:
      * ---
@@ -272,6 +273,7 @@ class Process
      *            argument, spaces that are not intended to separate
      *            parameters should be embedded in quotes.  The arguments can
      *            also be empty.
+     *            Note: The class will use only slices, .dup when necessary. 
      *
      * Examples:
      * ---
@@ -291,6 +293,7 @@ class Process
      * Params:
      * command  = string with the process' command line; arguments that have
      *            embedded whitespace must be enclosed in inside double-quotes (").
+     *            Note: The class will use only slices, .dup when necessary. 
      * env      = associative array of strings with the process' environment
      *            variables; the variable name must be the key of each entry.
      *
@@ -324,6 +327,7 @@ class Process
      * args     = array of strings with the process' arguments; the first
      *            argument must be the process' name; the arguments can be
      *            empty.
+     *            Note: The class will use only slices, .dup when necessary. 
      * env      = associative array of strings with the process' environment
      *            variables; the variable name must be the key of each entry.
      *
@@ -372,7 +376,7 @@ class Process
      * Returns: an int with the process ID if the process is running;
      *          -1 if not.
      */
-    public const int pid()
+    @property public const int pid()
     {
         version (Windows)
         {
@@ -387,7 +391,7 @@ class Process
     /**
      * Return the process' executable filename.
      */
-    public const const(char)[] programName()
+    @property public const const(char)[] programName()
     {
         return (_args !is null ? _args[0] : null);
     }
@@ -395,7 +399,7 @@ class Process
     /**
      * Set the process' executable filename.
      */
-    public const(char)[] programName(const(char)[] name)
+    @property public const(char)[] programName(const(char)[] name)
     {
         if (_args.length == 0)
         {
@@ -498,7 +502,7 @@ class Process
      *
      * Note that if copyEnv is set to true, this value is ignored.
      */
-    public const const(char[])[const(char)[]] env()
+    @property public const const(char[])[const(char)[]] env()
     {
         return _env;
     }
@@ -525,7 +529,7 @@ class Process
      * p.env = env;
      * ---
      */
-    public const(char)[][char[]] env(const(char)[][char[]] env)
+    @property public const(char)[][char[]] env(const(char)[][char[]] env)
     {
         _copyEnv = false;
         return _env = env;
@@ -563,7 +567,7 @@ class Process
     /**
      * Return an UTF-8 string with the process' command line.
      */
-    public immutable(char)[] toString()
+    public override string toString()
     {
         immutable(char)[] command;
 
@@ -593,7 +597,7 @@ class Process
      * Returns: a string with the working directory; null if the working
      *          directory is the current directory.
      */
-    public const const(char)[] workDir()
+    @property public const const(char)[] workDir()
     {
         return _workDir;
     }
@@ -607,7 +611,7 @@ class Process
      *
      * Returns: the directory set.
      */
-    public const(char)[] workDir(const(char)[] dir)
+    @property public const(char)[] workDir(const(char)[] dir)
     {
         return _workDir = dir;
     }
@@ -650,7 +654,7 @@ class Process
      * stderr to stdout, and you redirect stdout to a pipe, only stdout will
      * be non-null.
      */
-    public const Redirect redirect()
+    @property public const Redirect redirect()
     {
         return _redirect;
     }
@@ -658,7 +662,7 @@ class Process
     /**
      * Set the redirect flags for the process.
      */
-    public Redirect redirect(Redirect flags)
+    @property public Redirect redirect(Redirect flags)
     {
         return _redirect = flags;
     }
@@ -683,7 +687,7 @@ class Process
      * Without this flag, a console window will be allocated if it doesn't
      * already exist.
      */
-    public const bool gui()
+    @property public const bool gui()
     {
         version(Windows)
             return _gui;
@@ -701,7 +705,7 @@ class Process
      * Without this flag, a console window will be allocated if it doesn't
      * already exist.
      */
-    public bool gui(bool value)
+    @property public bool gui(bool value)
     {
         version(Windows)
             return _gui = value;
@@ -738,7 +742,7 @@ class Process
      * The stream will be null if no child process has been executed, or the
      * standard input stream was not redirected.
      */
-    public PipeConduit stdin()
+    @property public PipeConduit stdin()
     {
         return _stdin;
     }
@@ -753,7 +757,7 @@ class Process
      * The stream will be null if no child process has been executed, or the
      * standard output stream was not redirected.
      */
-    public PipeConduit stdout()
+    @property public PipeConduit stdout()
     {
         return _stdout;
     }
@@ -768,7 +772,7 @@ class Process
      * The stream will be null if no child process has been executed, or the
      * standard error stream was not redirected.
      */
-    public PipeConduit stderr()
+    @property public PipeConduit stderr()
     {
         return _stderr;
     }
@@ -1835,7 +1839,7 @@ class Process
      */
     public void close()
     {
-        this.cleanPipes;
+        this.cleanPipes();
     }
 
     version (Windows)
@@ -1930,7 +1934,7 @@ class Process
             if (!contains(filename, FileConst.PathSeparatorChar) &&
                 (str = getenv("PATH")) !is null)
             {
-                const(char)[][] pathList = delimit(str[0 .. strlen(str)], ":");
+                auto pathList = delimit(str[0 .. strlen(str)], ":");
 
                 char[] path_buf;
 
@@ -2058,7 +2062,7 @@ debug (UnitTest)
         try
         {
             auto p = new Process(command, null);
-            Stdout.flush;
+            Stdout.flush();
             p.execute();
             char[255] buffer;
 

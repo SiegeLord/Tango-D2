@@ -251,7 +251,7 @@ extern (C)
     alias int function(BIO *b, void *data, int len) tBIO_write;
     alias int function(BIO *b, void *data, int len) tBIO_read;
     alias int function(SSL_CTX *ctx) tSSL_CTX_check_private_key;
-    alias EVP_PKEY* function(BIO *bp, EVP_PKEY **x, pem_password_cb *cb, void *u) tPEM_read_bio_PrivateKey;
+    alias EVP_PKEY* function(BIO *bp, EVP_PKEY **x, pem_password_cb *cb, in void *u) tPEM_read_bio_PrivateKey;
     alias BIO* function(const(char) *filename, const(char) *mode) tBIO_new_file;
     alias int function() tERR_peek_error;
     alias int function(BIO *b, int flags) tBIO_test_flags;
@@ -275,7 +275,7 @@ extern (C)
     alias void function(RSA *r) tRSA_free;
     alias BIO* function(BIO_METHOD *type) tBIO_new;
     alias BIO_METHOD* function() tBIO_s_mem;
-    alias int function(BIO *bp, EVP_PKEY *x, const(EVP_CIPHER) *cipher, char *kstr, int klen, pem_password_cb, void *) tPEM_write_bio_PKCS8PrivateKey;
+    alias int function(BIO *bp, EVP_PKEY *x, const(EVP_CIPHER) *cipher, char *kstr, int klen, pem_password_cb, in void *) tPEM_write_bio_PKCS8PrivateKey;
     alias EVP_CIPHER* function() tEVP_aes_256_cbc;
     alias void* function(d2i_of_void d2i, const(char) *name, BIO *bp, void **x, pem_password_cb cb, void *u) tPEM_ASN1_read_bio;
     alias X509* function() tX509_new;
@@ -296,7 +296,7 @@ extern (C)
     alias int function(X509_STORE_CTX *ctx) tX509_verify_cert;
     alias void function(X509_STORE_CTX *ctx) tX509_STORE_CTX_free;
     alias int function(i2d_of_void i2d, const(char) *name, BIO *bp, char *x, const(EVP_CIPHER) *enc, char *kstr, int klen, pem_password_cb cb, void *u) tPEM_ASN1_write_bio;
-    alias int function(X509_NAME *name, char* field, int type, const(char) *bytes, int len, int loc, int set) tX509_NAME_add_entry_by_txt;
+    alias int function(X509_NAME *name, in char* field, int type, const(char) *bytes, int len, int loc, int set) tX509_NAME_add_entry_by_txt;
     alias int function(SSL_CTX *ctx, ubyte *id, uint len) tSSL_CTX_set_session_id_context;
     alias int function(EVP_PKEY *a, EVP_PKEY *b) tEVP_PKEY_cmp_parameters;
     alias int function(X509 *a, X509 *b) tX509_cmp;
@@ -312,7 +312,7 @@ extern (C)
     alias int function(int type, ubyte *m, uint m_length, ubyte *sigret, uint *siglen, RSA *rsa) tRSA_sign;
     alias int function(int type, ubyte *m, uint m_length, ubyte *sigbuf, uint siglen, RSA *rsa) tRSA_verify;
     alias void function(MD5_CTX *c) tMD5_Init;
-    alias void function(MD5_CTX *c, void *data, size_t len) tMD5_Update;
+    alias void function(MD5_CTX *c, in void *data, size_t len) tMD5_Update;
     alias void function(ubyte *md, MD5_CTX *c) tMD5_Final;
     alias int function(EVP_CIPHER_CTX *ctx, EVP_CIPHER *type, void *impl, ubyte *key, ubyte *iv) tEVP_EncryptInit_ex;
     alias int function(EVP_CIPHER_CTX *ctx, EVP_CIPHER *type, void *impl, ubyte *key, ubyte*iv) tEVP_DecryptInit_ex;
@@ -333,7 +333,7 @@ extern (C)
 
     uint sslThreadId()
     {
-        return cast(uint)cast(void*)Thread.getThis;
+        return cast(uint)cast(void*)Thread.getThis();
     }
     void sslStaticLock(int mode, int index, const(char) *sourceFile, int lineNo)
     {
@@ -722,9 +722,9 @@ SharedLib loadLib(const(char)[][] loadPath)
             rtn = SharedLib.load(path);
         catch (SharedLibException ex)
         {
-            scope fp = new FilePath(path);
+            scope fp = new FilePath(path.dup);
             try
-                rtn = SharedLib.load(fp.absolute(Environment.cwd()).toString);
+                rtn = SharedLib.load(fp.absolute(Environment.cwd()).toString());
             catch (SharedLibException ex)
             {}
         }

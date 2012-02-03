@@ -19,8 +19,8 @@ void main(char[][] args)
                     dst.copy (new File(arg));
 
            // flush output and close
-           dst.close;
+           dst.close();
            }
         else
-           Cout ("usage: filecat target source1 ... sourceN");
+           Cout ("usage: filecat target source1 ... sourceN").newline;
 }

@@ -199,7 +199,7 @@ class Pipe
     /**
      * Return the PipeConduit that you can write to.
      */
-    public PipeConduit sink()
+    @property public PipeConduit sink()
     {
         return _sink;
     }
@@ -207,7 +207,7 @@ class Pipe
     /**
      * Return the PipeConduit that you can read from.
      */
-    public PipeConduit source()
+    @property public PipeConduit source()
     {
         return _source;
     }

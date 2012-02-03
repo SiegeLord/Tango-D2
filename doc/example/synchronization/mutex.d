@@ -13,8 +13,8 @@ private import tango.text.convert.Integer;
 debug (mutex)
 {
     private import tango.util.log.Log;
-    private import tango.util.log.ConsoleAppender;
-    private import tango.util.log.DateLayout;
+    private import tango.util.log.AppendConsole;
+    private import tango.util.log.LayoutDate;
 }
 
 
@@ -27,87 +27,13 @@ void main(char[][] args)
     {
         Logger log = Log.getLogger("mutex");
 
-        log.addAppender(new ConsoleAppender(new DateLayout()));
+        log.add(new AppendConsole(new LayoutDate()));
 
         log.info("Mutex test");
     }
 
-    testNonRecursive();
     testLocking();
     testRecursive();
-}
-
-/**
- * Test that non-recursive mutexes actually do what they're supposed to do.
- *
- * Remarks:
- * Windows only supports recursive mutexes.
- */
-void testNonRecursive()
-{
-    version (Posix)
-    {
-        debug (mutex)
-        {
-            Logger log = Log.getLogger("mutex.non-recursive");
-        }
-
-        Mutex   mutex = new Mutex(Mutex.Type.NonRecursive);
-        bool    couldLock;
-
-        try
-        {
-            mutex.lock();
-            debug (mutex)
-                log.trace("Acquired mutex");
-            couldLock = mutex.tryLock();
-            if (couldLock)
-            {
-                debug (mutex)
-                {
-                    log.trace("Re-acquired mutex");
-                    log.trace("Releasing mutex");
-                }
-                mutex.unlock();
-            }
-            else
-            {
-                debug (mutex)
-                    log.trace("Re-acquiring the mutex failed");
-            }
-            debug (mutex)
-                log.trace("Releasing mutex");
-            mutex.unlock();
-        }
-        catch (SyncException e)
-        {
-            Stderr.formatln("Sync exception caught when testing non-recursive mutexes:\n{0}\n", e.toString());
-        }
-        catch (Exception e)
-        {
-            Stderr.formatln("Unexpected exception caught when testing non-recursive mutexes:\n{0}\n", e.toString());
-        }
-
-        if (!couldLock)
-        {
-            debug (mutex)
-                log.info("The non-recursive Mutex test was successful");
-        }
-        else
-        {
-            debug (mutex)
-            {
-                log.error("Non-recursive mutexes are not working: "
-                          "Mutex.tryAcquire() did not fail on an already acquired mutex");
-                assert(false);
-            }
-            else
-            {
-                assert(false, "Non-recursive mutexes are not working: "
-                              "Mutex.tryAcquire() did not fail on an already acquired mutex");
-            }
-        }
-    }
 }
 
 /**
@@ -138,7 +64,7 @@ void testLocking()
                 }
             }
         }
-        catch (SyncException e)
+        catch (tango.core.Exception.SyncException e)
         {
             Stderr.formatln("Sync exception caught inside mutex testing thread:\n{0}\n", e.toString());
         }
@@ -155,7 +81,7 @@ void testLocking()
     for (uint i = 0; i < MaxThreadCount; i++)
     {
         thread = new Thread(&mutexLockingThread);
-        thread.name = "thread-" ~ format(tmp, i);
+        thread.name = "thread-" ~ format(tmp, i).idup;
 
         debug (mutex)
             log.trace("Created thread " ~ thread.name);
@@ -212,7 +138,7 @@ void testRecursive()
             lockCount++;
         }
     }
-    catch (SyncException e)
+    catch (tango.core.Exception.SyncException e)
     {
         Stderr.formatln("Sync exception caught in recursive mutex test:\n{0}\n", e.toString());
     }

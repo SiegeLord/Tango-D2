@@ -102,7 +102,7 @@ class HttpTokens
 
         this (HttpTokens source)
         {
-                stack = source.stack.clone;
+                stack = source.stack.clone();
                 input = null;
                 output = source.output;
                 parsed = true;
@@ -140,11 +140,11 @@ class HttpTokens
 
         HttpTokens reset ()
         {
-                stack.reset;
+                stack.reset();
                 parsed = false;
 
                 // reset output buffer
-                output.clear;
+                output.clear();
                 return this;
         }
 
@@ -256,7 +256,7 @@ class HttpTokens
         {
                 foreach (Token token; stack)
                         {
-                        auto content = token.toString;
+                        auto content = token.toString();
                         if (content.length)
                            {
                            consume (content);
@@ -437,7 +437,7 @@ class HttpTokens
                            dst.write (content);
                            }
                         }    
-                return cast(char[]) dst.slice;
+                return cast(char[]) dst.slice();
         }
 
         /**********************************************************************
@@ -453,7 +453,7 @@ class HttpTokens
         {
                 // save the buffer write-position
                 //int prior = output.limit;
-                auto prior = output.slice.length;
+                auto prior = output.slice().length;
 
                 // add the name
                 output.append (name);
@@ -466,7 +466,7 @@ class HttpTokens
                 value (output);
 
                 // map new token onto buffer slice
-                stack.push (cast(char[]) output.slice [prior .. $]);
+                stack.push (cast(char[]) output.slice() [prior .. $]);
         }
 
         /**********************************************************************

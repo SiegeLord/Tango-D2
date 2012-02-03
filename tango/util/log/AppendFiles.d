@@ -73,7 +73,7 @@ public class AppendFiles : Filer
                     x[0] = cast(char)('0' + i/100);
                     x[1] = cast(char)('0' + i/10%10);
                     x[2] = cast(char)('0' + i%10);
-                    auto p = c.toString[0..$-c.suffix.length] ~ x ~ c.suffix;
+                    auto p = c.toString()[0..$-c.suffix.length] ~ x ~ c.suffix;
                     paths ~= p;
 
                     // use the most recent file in the set
@@ -105,7 +105,7 @@ public class AppendFiles : Filer
 
         ***********************************************************************/
 
-        final const Mask mask ()
+        @property override final const Mask mask ()
         {
                 return mask_;
         }
@@ -116,7 +116,7 @@ public class AppendFiles : Filer
 
         ***********************************************************************/
 
-        final const const(char)[] name ()
+        @property override final const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -127,7 +127,7 @@ public class AppendFiles : Filer
                  
         ***********************************************************************/
 
-        final void append (LogEvent event)
+        override final void append (LogEvent event)
         {
                 synchronized(this)
                 {
@@ -146,7 +146,7 @@ public class AppendFiles : Filer
                     // write log message and flush it
                     layout.format (event, &write);
                     write (FileConst.NewlineString);
-                    buffer.flush; 
+                    buffer.flush(); 
                 }
         }
 
@@ -163,7 +163,7 @@ public class AppendFiles : Filer
                     index = 0;
                 
                 // close any existing conduit
-                close;
+                close();
 
                 // make it shareable for read
                 auto style = File.WriteAppending;

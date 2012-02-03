@@ -26,7 +26,6 @@ version (Posix) {
     Stdout(normalize ( "foo/bar/./doe/../../john")).newline;
     Stdout(normalize ( "../../foo/bar/./doe/../../john")).newline;
     Stdout(normalize ( "../../../foo/bar")).newline;
-    Stdout("** Should now throw exception as the following path is invalid for normalization.").newline;
     Stdout(normalize ( "/../../../foo/bar")).newline;
 }
 version (Windows) {
@@ -42,7 +41,6 @@ version (Windows) {
     Stdout(normalize ( "foo\\bar\\.\\doe\\..\\..\\john")).newline;
     Stdout(normalize ( "..\\..\\foo\\bar\\.\\doe\\..\\..\\john")).newline;
     Stdout(normalize ( "..\\..\\..\\foo\\bar")).newline;
-    Stdout("** Should now throw exception as the following path is invalid for normalization.").newline;
     Stdout(normalize ( "C:\\..\\..\\..\\foo\\bar")).newline;
 }
 

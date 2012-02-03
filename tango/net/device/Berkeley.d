@@ -308,7 +308,7 @@ version (Win32)
                    lib = LoadLibraryA ("Wship6.dll");
                    }
                 getnameinfo = cast(typeof(getnameinfo)) GetProcAddress(lib, "getnameinfo");
-	        getaddrinfo = cast(typeof(getaddrinfo)) GetProcAddress(lib, "getaddrinfo");
+                getaddrinfo = cast(typeof(getaddrinfo)) GetProcAddress(lib, "getaddrinfo");
                 freeaddrinfo = cast(typeof(freeaddrinfo)) GetProcAddress(lib, "freeaddrinfo");
                 if (!getnameinfo)
                    {
@@ -356,13 +356,13 @@ else
         //private alias int socket_t = -1;
         private struct socket_t
         {
-			this(int _payload)
-			{
-				payload = _payload;
-			}
-			int payload = -1;
-			alias payload this;
-		}
+           this(int _payload)
+           {
+              payload = _payload;
+           }
+           int payload = -1;
+           alias payload this;
+        }
 
         package extern (C)
         {
@@ -466,7 +466,7 @@ version (Windows)
                 this.family = family;
                 this.protocol = protocol;
                 if (create)
-                    reopen;
+                    reopen();
         }
 
         /***********************************************************************
@@ -478,7 +478,7 @@ version (Windows)
         void reopen (socket_t sock = sock.init)
         {
                 if (this.sock != sock.init)
-                    this.detach;
+                    this.detach();
 
                 if (sock is sock.init)
                    {
@@ -510,7 +510,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        const socket_t handle ()
+        @property const socket_t handle ()
         {
                 return sock;
         }
@@ -521,7 +521,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        const int error ()
+        @property const int error ()
         {
                 int errcode;
                 getOption (SocketOptionLevel.SOCKET, SocketOption.ERROR, (&errcode)[0..1]);
@@ -534,7 +534,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        static int lastError ()
+        @property static int lastError ()
         {
                 version (Win32)
                          return WSAGetLastError();
@@ -549,7 +549,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        const bool isAlive ()
+        @property const bool isAlive ()
         {
                 int type, typesize = type.sizeof;
                 return getsockopt (sock, SocketOptionLevel.SOCKET,
@@ -561,7 +561,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        AddressFamily addressFamily ()
+        @property AddressFamily addressFamily ()
         {
                 return family;
         }
@@ -662,7 +662,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Berkeley* linger (int period)
+        @property Berkeley* linger (int period)
         {
                 version (Win32)
                          alias ushort attr;
@@ -691,7 +691,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Berkeley* addressReuse (bool enabled)
+        @property Berkeley* addressReuse (bool enabled)
         {
                 int[1] x = enabled;
                 return setOption (SocketOptionLevel.SOCKET, SocketOption.REUSEADDR, x);
@@ -703,7 +703,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Berkeley* noDelay (bool enabled)
+        @property Berkeley* noDelay (bool enabled)
         {
                 int[1] x = enabled;
                 return setOption (SocketOptionLevel.TCP, SocketOption.TCP_NODELAY, x);
@@ -724,7 +724,7 @@ version (Windows)
                 {
                 uint  imr_multiaddr;  /* IP multicast address of group */
                 uint  imr_interface;  /* local IP address of interface */
-                };
+                }
 
                 ip_mreq mrq;
 
@@ -745,8 +745,8 @@ version (Windows)
                 if (family is AddressFamily.INET)
                    return new IPv4Address;
                 if (family is AddressFamily.INET6)
-		    return new IPv6Address;
-		return new UnknownAddress;
+                   return new IPv6Address;
+                return new UnknownAddress;
         }
 
         /***********************************************************************
@@ -755,7 +755,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        static char[] hostName ()
+        @property static char[] hostName ()
         {
                 char[64] name;
 
@@ -770,7 +770,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        static uint hostAddress ()
+        @property static uint hostAddress ()
         {
                 auto ih = new NetHost;
                 ih.getHostByName (hostName);
@@ -784,9 +784,9 @@ version (Windows)
 
         ***********************************************************************/
 
-        const Address remoteAddress ()
+        @property const Address remoteAddress ()
         {
-                auto addr = newFamilyObject;
+                auto addr = newFamilyObject();
                 auto nameLen = addr.nameLen;
                 if(Error == .getpeername (sock, addr.name, &nameLen))
                    exception ("Unable to obtain remote socket address: ");
@@ -800,9 +800,9 @@ version (Windows)
 
         ***********************************************************************/
 
-        const Address localAddress ()
+        @property const Address localAddress ()
         {
-                auto addr = newFamilyObject;
+                auto addr = newFamilyObject();
                 auto nameLen = addr.nameLen;
                 if(Error == .getsockname (sock, addr.name, &nameLen))
                    exception ("Unable to obtain local socket address: ");
@@ -997,7 +997,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        const bool blocking()
+        @property const bool blocking()
         {
                 version (Windows)
                          return synchronous;
@@ -1011,7 +1011,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        void blocking(bool yes)
+        @property void blocking(bool yes)
         {
                 version (Windows)
                         {
@@ -1087,8 +1087,8 @@ public abstract class Address
                 addrinfo* ai_next;
         }
 
-        abstract sockaddr* name();
-        abstract const int nameLen();
+        @property abstract sockaddr* name();
+        @property abstract const int nameLen();
 
         /***********************************************************************
 
@@ -1283,7 +1283,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        char[] toAddrString()
+        @property char[] toAddrString()
         {
                 char[1025] host = void;
                 // Getting name info. Don't look up hostname, returns
@@ -1296,7 +1296,7 @@ public abstract class Address
 
          ***********************************************************************/
 
-        char[] toPortString()
+        @property char[] toPortString()
         {
                 char[32] service = void;
                 // Getting name info. Returns port number, not
@@ -1312,7 +1312,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        immutable(char)[] toString()
+        override string toString()
         {
                 return toAddrString.idup ~ ":" ~ toPortString.idup;
         }
@@ -1321,7 +1321,7 @@ public abstract class Address
 
          ***********************************************************************/
 
-        AddressFamily addressFamily()
+        @property AddressFamily addressFamily()
         {
                 return cast(AddressFamily)name.sa_family;
         }
@@ -1340,7 +1340,7 @@ public class UnknownAddress : Address
 
         ***********************************************************************/
 
-        sockaddr* name()
+        @property override sockaddr* name()
         {
                 return &sa;
         }
@@ -1349,7 +1349,7 @@ public class UnknownAddress : Address
 
         ***********************************************************************/
 
-        const int nameLen()
+        @property override const int nameLen()
         {
                 return sa.sizeof;
         }
@@ -1358,7 +1358,7 @@ public class UnknownAddress : Address
 
         ***********************************************************************/
 
-        AddressFamily addressFamily()
+        @property override AddressFamily addressFamily()
         {
                 return cast(AddressFamily) sa.sa_family;
         }
@@ -1367,7 +1367,7 @@ public class UnknownAddress : Address
 
         ***********************************************************************/
 
-        immutable(char)[] toString()
+        override string toString()
         {
                 return "Unknown";
         }
@@ -1481,7 +1481,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        sockaddr* name()
+        @property override sockaddr* name()
         {
                 return cast(sockaddr*)&sin;
         }
@@ -1490,7 +1490,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        const int nameLen()
+        @property override const int nameLen()
         {
                 return cast(int)sin.sizeof;
         }
@@ -1499,7 +1499,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        AddressFamily addressFamily()
+        @property override AddressFamily addressFamily()
         {
                 return AddressFamily.INET;
         }
@@ -1508,7 +1508,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        const ushort port()
+        @property const ushort port()
         {
                 return ntohs(sin.sin_port);
         }
@@ -1517,7 +1517,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        const uint addr()
+        @property const uint addr()
         {
                 return ntohl(sin.sin_addr);
         }
@@ -1526,7 +1526,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        const char[] toAddrString()
+        @property override const char[] toAddrString()
         {
                 char[16] buff = 0;
                 version (Windows)
@@ -1539,7 +1539,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        const char[] toPortString()
+        @property override const char[] toPortString()
         {
                 char[8] _port;
                 return fromInt (_port, port()).dup;
@@ -1549,7 +1549,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        immutable(char)[] toString()
+        override string toString()
         {
                 return toAddrString().idup ~ ":" ~ toPortString().idup;
         }
@@ -1658,6 +1658,7 @@ debug(UnitTest)
         scope addr_4 = new IPv6Address("::", "8080");
         address: "::"
         port: 8080
+        ---
 
 *******************************************************************************/
 
@@ -1701,7 +1702,7 @@ protected:
 
         ***********************************************************************/
 
-        sockaddr* name()
+        @property override sockaddr* name()
         {
                 return cast(sockaddr*)&sin;
         }
@@ -1710,7 +1711,7 @@ protected:
 
         ***********************************************************************/
 
-        const int nameLen()
+        @property override const int nameLen()
         {
                 return cast(int)sin.sizeof;
         }
@@ -1721,7 +1722,7 @@ protected:
 
         ***********************************************************************/
 
-        AddressFamily addressFamily()
+       @property override AddressFamily addressFamily()
         {
                 return AddressFamily.INET6;
         }
@@ -1733,7 +1734,7 @@ protected:
 
          ***********************************************************************/
 
-        const ushort port()
+        @property const ushort port()
         {
                 return ntohs(sin.sin_port);
         }
@@ -1801,7 +1802,7 @@ protected:
 
         ***********************************************************************/
 
-        ubyte[] addr()
+        @property ubyte[] addr()
         {
                 return sin.sin6_addr;
         }
@@ -1811,7 +1812,7 @@ protected:
         ***********************************************************************/
 
         version (Posix)
-        const char[] toAddrString()
+        @property override const char[] toAddrString()
         {
 
                 char[100] buff = 0;
@@ -1822,7 +1823,7 @@ protected:
 
         ***********************************************************************/
 
-        const char[] toPortString()
+        @property override const char[] toPortString()
         {
                 char[8] _port;
                 return fromInt (_port, port()).dup;
@@ -1832,7 +1833,7 @@ protected:
 
         ***********************************************************************/
 
-        immutable(char)[] toString()
+        override string toString()
         {
                 return "[" ~ toAddrString.idup ~ "]:" ~ toPortString.idup;
         }
@@ -2058,18 +2059,18 @@ public class SocketSet
 
         version(Windows)
         {
-                uint count()
+                @property uint count()
                 {
                         return *(cast(uint*)buf);
                 }
 
-                void count(int setter)
+                @property void count(int setter)
                 {
                         *(cast(uint*)buf) = setter;
                 }
 
 
-                socket_t* first()
+                @property socket_t* first()
                 {
                         return cast(socket_t*)(buf + uint.sizeof);
                 }
@@ -2093,12 +2094,12 @@ public class SocketSet
                 }
 
 
-                uint* first()
+                @property uint* first()
                 {
                         return cast(uint*)buf;
                 }
 
-                public socket_t maxfd()
+                @property public socket_t maxfd()
                 {
                         return _maxfd;
                 }
@@ -2306,7 +2307,7 @@ public class SocketSet
                 return isSet(s.handle);
         }
 
-        const size_t max()
+        @property const size_t max()
         {
                 return nbytes / socket_t.sizeof;
         }

@@ -919,7 +919,7 @@ version( TangoDoc )
      * Returns:
      *  The index of the first match or buf.length if no match was found.
      */
-    size_t findAdj( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
+    size_t findAdj( Elem[] buf, Pred2E pred = Pred2E.init );
 
 }
 else
@@ -3528,7 +3528,7 @@ else
 	{
 		unittest
 		{
-			auto arr = map((int i) { return i * 2L; }, [1, 17, 8, 12]);
+			auto arr = map([1, 17, 8, 12], (int i) { return i * 2L; });
 			assert(arr == [2L, 34L, 16L, 24L]);
 		}
 	}
@@ -3581,7 +3581,7 @@ else
 	{
 		unittest
 		{
-			auto result = reduce((int i, int j) { return i * j; }, [1, 17, 8, 12]);
+			auto result = reduce([1, 17, 8, 12], (int i, int j) { return i * j; });
 			assert(result == 1632);
 		}
 	}
@@ -3656,14 +3656,14 @@ else
 						assert( r[rpos] == cur ); 
 						rpos++; 
 					} 
-					assert( rpos == num ); 
 				} 
+				assert( rpos == num );
 			} 
 
-			test( "abcdefghij".dup, ( char c ) { return c == 'x'; }, 10 ); 
-			test( "xabcdefghi".dup, ( char c ) { return c == 'x'; },  9 ); 
-			test( "abcdefghix".dup, ( char c ) { return c == 'x'; },  9 ); 
-			test( "abxxcdefgh".dup, ( char c ) { return c == 'x'; },  8 ); 
+			test( "abcdefghij".dup, ( char c ) { return c == 'x'; },  0 ); 
+			test( "xabcdefghi".dup, ( char c ) { return c == 'x'; },  1 ); 
+			test( "abcdefghix".dup, ( char c ) { return c == 'x'; },  1 ); 
+			test( "abxxcdefgh".dup, ( char c ) { return c == 'x'; },  2 ); 
 			test( "xaxbcdxxex".dup, ( char c ) { return c == 'x'; },  5 ); 
 		} 
 	} 

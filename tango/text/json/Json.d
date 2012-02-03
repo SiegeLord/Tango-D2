@@ -78,7 +78,7 @@ private import Float = tango.text.convert.Float;
 
 *******************************************************************************/
 
-class Json(T) : private JsonParser!(T)
+class Json(T) : JsonParser!(T)
 {
                      /// use these types for external references
         public alias JsonValue*  Value;
@@ -112,22 +112,23 @@ class Json(T) : private JsonParser!(T)
         final Value parse (const(T)[] json)
         {
                 nesting = 0;
-                attrib.reset;
-                values.reset;
-                objects.reset;
+                attrib.reset();
+                values.reset();
+                objects.reset();
                 foreach (ref p; arrays)
                          p.index = 0;
 
-                root = createValue;
+                root = createValue();
                 if (super.reset (json))
+                {
                     if (curType is Token.BeginObject)
-                        root.set (parseObject);
+                        root.set (parseObject());
                     else
                        if (curType is Token.BeginArray)
-                           root.set (parseArray);
+                           root.set (parseArray());
                        else
                           exception ("invalid json document");
-
+                }
                 return root;
         }
 
@@ -172,7 +173,7 @@ class Json(T) : private JsonParser!(T)
         
         final Value value (const(T)[] v)
         {
-                return createValue.set (v);
+                return createValue().set (v);
         }
 
         /***********************************************************************
@@ -183,7 +184,7 @@ class Json(T) : private JsonParser!(T)
         
         final Value value (bool v)
         {
-                return createValue.set (v);
+                return createValue().set (v);
         }
 
         /***********************************************************************
@@ -194,7 +195,7 @@ class Json(T) : private JsonParser!(T)
         
         final Value value (double v)
         {
-                return createValue.set (v);
+                return createValue().set (v);
         }
 
          /***********************************************************************
@@ -205,7 +206,7 @@ class Json(T) : private JsonParser!(T)
 
          final Value value (Value[] vals)
          {
-                 return createValue.set (vals);
+                 return createValue().set (vals);
          }
 
         /***********************************************************************
@@ -216,7 +217,7 @@ class Json(T) : private JsonParser!(T)
 
         final Value array (...)
         {
-                return createValue.set (this, _arguments, _argptr);
+                return createValue().set (this, _arguments, _argptr);
         }
 
         /***********************************************************************
@@ -229,8 +230,8 @@ class Json(T) : private JsonParser!(T)
         Attribute pair (const(T)[] name, Value value = null)
         {
                 if (value is null)
-                    value = createValue;
-                return createAttribute.set (name, value);
+                    value = createValue();
+                return createAttribute().set (name, value);
         }
 
         /***********************************************************************
@@ -242,7 +243,7 @@ class Json(T) : private JsonParser!(T)
         
         final Value object (Attribute set[]...)
         {
-                return createValue.set (createObject.add (set));
+                return createValue().set (createObject().add (set));
         }
 
         /***********************************************************************
@@ -253,7 +254,7 @@ class Json(T) : private JsonParser!(T)
         
         private Value createValue ()
         {
-                return values.allocate.reset;
+                return values.allocate().reset();
         }
 
         /***********************************************************************
@@ -264,7 +265,7 @@ class Json(T) : private JsonParser!(T)
         
         private Composite createObject ()
         {
-                return objects.allocate.reset;
+                return objects.allocate().reset();
         }
 
         /***********************************************************************
@@ -275,7 +276,7 @@ class Json(T) : private JsonParser!(T)
        
         private Attribute createAttribute ()
         {
-                return attrib.allocate;
+                return attrib.allocate();
         }
 
         /***********************************************************************
@@ -297,7 +298,7 @@ class Json(T) : private JsonParser!(T)
         
         private Value parseValue ()
         {
-                auto v = values.allocate;
+                auto v = values.allocate();
 
                 switch (super.curType)
                        {
@@ -314,11 +315,11 @@ class Json(T) : private JsonParser!(T)
                             break;
 
                        case Token.BeginObject:
-                            v.set (parseObject);
+                            v.set (parseObject());
                             break;
 
                        case Token.BeginArray:
-                            v.set (parseArray);
+                            v.set (parseArray());
                             break;
 
                        case Token.String:
@@ -345,7 +346,7 @@ class Json(T) : private JsonParser!(T)
         
         private Composite parseObject ()
         {
-                auto o = objects.allocate.reset;
+                auto o = objects.allocate().reset();
 
                 while (super.next) 
                       {
@@ -360,7 +361,7 @@ class Json(T) : private JsonParser!(T)
                       if (! super.next)
                             super.expected ("an attribute-value", super.str.ptr);
                         
-                      o.append (attrib.allocate.set (name, parseValue));
+                      o.append (attrib.allocate().set (name, parseValue()));
                       }
 
                 return o;
@@ -385,7 +386,7 @@ class Json(T) : private JsonParser!(T)
                       if (array.index >= array.content.length)
                           array.content.length = array.content.length + 300;
 
-                      array.content [array.index++] = parseValue;
+                      array.content [array.index++] = parseValue();
                       }
 
                 if (super.curType != Token.EndArray)
@@ -522,7 +523,7 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
         
-                Iterator attributes ()
+                @property Iterator attributes ()
                 {
                         Iterator i = {head};
                         return i;
@@ -795,7 +796,7 @@ class Json(T) : private JsonParser!(T)
                 {
                         auto indent = 0;
         
-                        void newline ()
+                        @property void newline ()
                         {
                                 if (space.length)
                                    {
@@ -865,17 +866,17 @@ class Json(T) : private JsonParser!(T)
                                             break;
         
                                        case Type.Number:
-                                            append (Float.format (tmp, val.toNumber, decimals));
+                                            append (Float.format (tmp, val.toNumber(), decimals));
                                             break;
         
                                        case Type.Object:
-                                            auto obj = val.toObject;
+                                            auto obj = val.toObject();
                                             debug assert(obj !is null);
-                                            printObject (val.toObject);
+                                            printObject (val.toObject());
                                             break;
         
                                        case Type.Array:
-                                            printArray (val.toArray);
+                                            printArray (val.toArray());
                                             break;
         
                                        case Type.True:
@@ -926,7 +927,7 @@ class Json(T) : private JsonParser!(T)
                                     v = va_arg!(Value)(args);
                                 else
                                    {
-                                   v = host.createValue;
+                                   v = host.createValue();
                                    if (type is typeid(double))
                                        v.set (va_arg!(double)(args));
                                    else
@@ -948,7 +949,7 @@ class Json(T) : private JsonParser!(T)
                                    if (type is typeid(void*))
                                        va_arg!(void*)(args);
                                    else
-                                      host.exception ("JsonValue.set :: unexpected type: "~type.toString);
+                                      host.exception ("JsonValue.set :: unexpected type: "~type.toString());
                                    }
                                 list ~= v;
                                 }
@@ -992,7 +993,7 @@ class Json(T) : private JsonParser!(T)
                         return p;
                 }
         
-                private void newlist ()
+                @property private void newlist ()
                 {
                         index = 0;
                         if (++block >= lists.length)
@@ -1156,12 +1157,12 @@ debug (Json)
                 
                 auto p = new Json!(char);
                 auto v = p.parse (`{"t": true, "f":false, "n":null, "hi":["world", "big", 123, [4, 5, ["foo"]]]}`);       
-                Stdout.formatln ("{}", p.toString);
+                Stdout.formatln ("{}", p.toString());
         
                 with (p)
                       value = object(pair("a", array(null, true, false, 30, object(pair("foo")))), pair("b", value(10)));
         
-                Stdout.formatln ("{}", p.toString);
+                Stdout.formatln ("{}", p.toString());
 
                 p.parse ("[-1]");
                 Stdout.formatln ("{}", p.toString(null));
@@ -1170,10 +1171,10 @@ debug (Json)
                 Stdout.formatln ("{}", p.toString(null, 4));
 
                 p.parse(`["foo"]`);
-                Stdout.formatln ("{}", p.toString);
+                Stdout.formatln ("{}", p.toString());
 
                 p.parse(`{"foo": {"ff" : "ffff"}`);
-                Stdout.formatln ("{}", p.toString);
+                Stdout.formatln ("{}", p.toString());
 
                 with (new Json!(char))
                      {

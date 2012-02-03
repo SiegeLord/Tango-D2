@@ -466,7 +466,7 @@ else
                              }
                       index += len;
                       }
-                return result.get;
+                return result.get();
         }
 
 
@@ -663,7 +663,7 @@ char[] formatInteger (char[] output, long value, const(char)[] format, NumberFor
                     if (length > 0)
                         break;
                     // Fall through.
-
+                    goto case;
                case 'd':
                case 'D':
                     return longToString (output, value, length, nf.negativeSign);
@@ -733,7 +733,7 @@ char[] formatDouble (char[] output, double value, const(char)[] format, NumberFo
                     if (length > 15)
                         precision = 17;
                     // Fall through.
-
+                    goto default;
                default:
                     break;
         }
@@ -895,7 +895,7 @@ void formatFixed (ref Number number, ref Result target, int length,
 
               // questionable: use the back end of the output buffer to
               // format the separators, and then copy back to start
-              char[] temp = target.scratch;
+              char[] temp = target.scratch();
               auto ii = temp.length;
 
               for (int c, i = pos - 1; i >= 0; i--)
@@ -1008,7 +1008,7 @@ char[] toString (ref Number number, ref Result result, char format, int length, 
                default:
                      return "{invalid FP format specifier '".dup ~ format ~ "'}".dup;
                }
-        return result.get;
+        return result.get();
 }
 
 
@@ -1522,7 +1522,7 @@ private struct Number
                                   break;
                              }
                       }
-                return result.get;
+                return result.get();
         }
 
         /**********************************************************************

@@ -9,7 +9,7 @@ module tango.core.BitManip;
 
 public import core.bitop;
 
-version (none):
+/+
 
 version( TangoDoc )
 {
@@ -293,3 +293,5 @@ debug( UnitTest )
         assert( bitswap( 0x8000_0100 ) == 0x0080_0001 );
     }
 }
+
++/

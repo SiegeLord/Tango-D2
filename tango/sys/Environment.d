@@ -101,14 +101,14 @@ struct Environment
 
         ***********************************************************************/
 
-        static const(char)[] toAbsolute(const(char)[] path)
+        static char[] toAbsolute(char[] path)
         {
             scope fp = new FilePath(path);
             if (fp.isAbsolute)
                 return path;
 
-            fp.absolute(cwd);
-            return fp.toString;
+            fp.absolute(cwd());
+            return fp.cString()[0..$-1];
         }
 
         /***********************************************************************
@@ -120,7 +120,7 @@ struct Environment
 
         ***********************************************************************/
 
-        static FilePath exePath (const(char)[] file)
+        static FilePath exePath (char[] file)
         {
                 auto bin = new FilePath (file);
 
@@ -131,25 +131,27 @@ struct Environment
 
                 // is this a directory? Potentially make it absolute
                 if (bin.isChild && !bin.isAbsolute)
-                    return bin.absolute (cwd);
+                    return bin.absolute (cwd());
 
                 // is it in cwd?
                 version (Windows)
-                         if (bin.path(cwd).exists)
+                         if (bin.path(cwd()).exists)
                              return bin;
 
                 // rifle through the path (after converting to standard format)
                 foreach (pe; Text.patterns (standard(get("PATH")), tango.io.model.IFile.FileConst.SystemPathString))
                          if (bin.path(pe).exists)
+                         {
                              version (Windows)
                                       return bin;
                                   else
                                      {
                                      stat_t stats;
-                                     stat(bin.cString.ptr, &stats);
+                                     stat(bin.cString().ptr, &stats);
                                      if (stats.st_mode & octal!(100))
                                          return bin;
                                      }
+                         }
                 return null;
         }
 

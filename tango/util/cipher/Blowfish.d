@@ -215,12 +215,12 @@ class Blowfish : BlockCipher
         init(encrypt, key);
     }
 
-    final override const(char[]) name()
+    @property final override const(char[]) name()
     {
         return "Blowfish";
     }
     
-    final override const uint blockSize()
+    @property final override const uint blockSize()
     {
         return BLOCK_SIZE;
     }

@@ -66,6 +66,7 @@ private extern (C)
            alias ecvtl fconvert;
            }
 
+ 
         char* ecvt (double d, int digits, int* decpt, int* sign);
         char* fcvt (double d, int digits, int* decpt, int* sign);
         char* ecvtl (real d, int digits, int* decpt, int* sign);

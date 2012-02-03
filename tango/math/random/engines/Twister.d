@@ -99,7 +99,7 @@ struct Twister
     }
     /// returns a random long
     ulong nextL(){
-        return ((cast(ulong)next)<<32)+cast(ulong)next;
+        return ((cast(ulong)next())<<32)+cast(ulong)next();
     }
     
     /// initializes the generator with a uint as seed

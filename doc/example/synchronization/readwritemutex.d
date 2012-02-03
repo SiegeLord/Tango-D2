@@ -12,8 +12,8 @@ private import tango.text.convert.Integer;
 debug (readwritemutex)
 {
     private import tango.util.log.Log;
-    private import tango.util.log.ConsoleAppender;
-    private import tango.util.log.DateLayout;
+    private import tango.util.log.AppendConsole;
+    private import tango.util.log.LayoutDate;
 }
 
 
@@ -32,7 +32,7 @@ void main(char[][] args)
     {
         Logger log = Log.getLogger("readwritemutex");
 
-        log.addAppender(new ConsoleAppender(new DateLayout()));
+        log.add(new AppendConsole(new LayoutDate()));
 
         log.info("ReadWriteMutex test");
     }
@@ -100,7 +100,7 @@ void main(char[][] args)
     for (uint i = 0; i < ReaderThreads; ++i)
     {
         thread = new Thread(&mutexReaderThread);
-        thread.name = "reader-" ~ format(tmp, i);
+        thread.name = "reader-" ~ format(tmp, i).idup;
 
         debug (readwritemutex)
             log.trace("Created reader thread " ~ thread.name);
@@ -112,7 +112,7 @@ void main(char[][] args)
     for (uint i = 0; i < WriterThreads; ++i)
     {
         thread = new Thread(&mutexWriterThread);
-        thread.name = "writer-" ~ format(tmp, i);
+        thread.name = "writer-" ~ format(tmp, i).idup;
 
         debug (readwritemutex)
             log.trace("Created writer thread " ~ thread.name);

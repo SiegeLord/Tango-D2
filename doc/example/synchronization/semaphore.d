@@ -20,8 +20,8 @@ private import tango.sys.Process;
 debug (semaphore)
 {
     private import tango.util.log.Log;
-    private import tango.util.log.ConsoleAppender;
-    private import tango.util.log.DateLayout;
+    private import tango.util.log.AppendConsole;
+    private import tango.util.log.LayoutDate;
 }
 
 const char[] SemaphoreName = "TestProcessSemaphore";
@@ -38,7 +38,7 @@ int main(char[][] args)
         {
             Logger log = Log.getLogger("semaphore");
 
-            log.addAppender(new ConsoleAppender(new DateLayout()));
+            log.add(new AppendConsole(new LayoutDate()));
 
             log.info("Semaphore test");
         }
@@ -136,7 +136,7 @@ void testSemaphore()
                 }
             }
         }
-        catch (SyncException e)
+        catch (tango.core.Exception.SyncException e)
         {
             Cerr("Sync exception caught in Semaphore test thread " ~ Thread.getThis().name ~
                  ":\n" ~ e.toString()).newline;
@@ -160,7 +160,7 @@ void testSemaphore()
     for (uint i = 0; i < MaxThreadCount; ++i)
     {
         thread = new Thread(&semaphoreTestThread);
-        thread.name = "thread-" ~ tango.text.convert.Integer.format(tmp, i);
+        thread.name = "thread-" ~ tango.text.convert.Integer.format(tmp, i).idup;
 
         group.add(thread);
         debug (semaphore)
@@ -250,7 +250,7 @@ void testProcessSemaphore(char[] programName)
             log.trace("Releasing semaphore in main process");
         sem.notify();
     }
-    catch (SyncException e)
+    catch (tango.core.Exception.SyncException e)
     {
         Cerr("Sync exception caught in ProcessSemaphore main test process:\n" ~ e.toString()).newline;
     }
@@ -319,7 +319,7 @@ int testSecondProcessSemaphore()
             rc = 1;
         }
     }
-    catch (SyncException e)
+    catch (tango.core.Exception.SyncException e)
     {
         Cerr("Sync exception caught in ProcessSemaphore child test process:\n" ~ e.toString()).newline;
     }

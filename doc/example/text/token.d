@@ -18,7 +18,7 @@ void main()
 
         // create quote-aware iterator for handling space-delimited
         // tokens from the console input
-        foreach (element; Text.quotes (Text.trim(Cin.get), " \t"))
+        foreach (element; Text.quotes (Text.trim(Cin.get()), " \t"))
                  Cout ("<") (element) ("> ");
         
         Cout.newline;

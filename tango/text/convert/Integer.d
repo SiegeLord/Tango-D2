@@ -204,9 +204,9 @@ T[] formatter(T, U=long, X=char, Y=char) (T[] dst, U i, X type, Y pre, int width
 
 private struct _FormatterInfo(T)
 {
-		uint    radix;
-		immutable(T)[]     prefix;
-		immutable(T)[]     numbers;
+    uint    radix;
+    immutable(T)[]     prefix;
+    immutable(T)[]     numbers;
 }
 
 T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
@@ -250,6 +250,7 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
                           else
                              if (pre is '+')
                                  index = 3;
+                       goto case 'U';
                   case 'u':
                   case 'U':
                        pre = '#';
@@ -479,10 +480,12 @@ size_t trim(T) (const(T[]) digits, ref bool sign, ref uint radix)
            else
               // explicit radix must match (optional) prefix
               if (radix != r)
+              {
                   if (radix)
                       p -= 2;
                   else
                      radix = r;
+              }
            }
 
         // return number of characters eaten

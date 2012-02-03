@@ -297,7 +297,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style style ()
+        @property const Style style ()
         {
                 return style_;
         }
@@ -327,7 +327,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        static void[] get (char[] path, void[] dst = null)
+        static void[] get (const(char)[] path, void[] dst = null)
         {
                 scope file = new File (path);
 
@@ -497,7 +497,7 @@ class File : Device, Device.Seek, Device.Truncate
                 void open (const(char[]) path, Style style = ReadExisting)
                 {
                     if (! open (path, style, 0))
-                          error;
+                          error();
                 }
 
                 /***************************************************************
@@ -527,7 +527,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                         // must have Generic_Write access
                         if (! SetEndOfFile (io.handle))
-                              error;
+                              error();
                 }
 
                 /***************************************************************
@@ -551,7 +551,7 @@ class File : Device, Device.Seek, Device.Truncate
                         if (! SetFilePointerEx (io.handle, *cast(LARGE_INTEGER*)
                                                 &offset, cast(PLARGE_INTEGER)
                                                 &newOffset, anchor))
-                              error;
+                              error();
 
                         return (*cast(long*) &io.asynch.Offset) = newOffset;
                 }
@@ -562,7 +562,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                long position ()
+                @property long position ()
                 {
                         return *cast(long*) &io.asynch.Offset;
                 }
@@ -573,12 +573,12 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                long length ()
+                @property long length ()
                 {
                         long len;
 
                         if (! GetFileSizeEx (io.handle, cast(PLARGE_INTEGER) &len))
-                              error;
+                              error();
                         return len;
                 }
 
@@ -598,7 +598,7 @@ class File : Device, Device.Seek, Device.Truncate
           void sync ()
           {
                          if (! FlushFileBuffers (io.handle))
-                               error;
+                               error();
                 }
         }
 
@@ -686,7 +686,7 @@ class File : Device, Device.Seek, Device.Truncate
                 void open (const(char[]) path, Style style = ReadExisting)
                 {
                     if (! open (path, style, 0))
-                          error;
+                          error();
                 }
 
                 /***************************************************************
@@ -713,7 +713,7 @@ class File : Device, Device.Seek, Device.Truncate
                 {
                         // set filesize to be current seek-position
                         if (posix.ftruncate (handle, cast(off_t) size) is -1)
-                            error;
+                            error();
                 }
 
                 /***************************************************************
@@ -727,7 +727,7 @@ class File : Device, Device.Seek, Device.Truncate
                 {
                         long result = posix.lseek (handle, cast(off_t) offset, anchor);
                         if (result is -1)
-                            error;
+                            error();
                         return result;
                 }
 
@@ -737,7 +737,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                long position ()
+                @property long position ()
                 {
                         return seek (0, Anchor.Current);
                 }
@@ -748,11 +748,11 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                long length ()
+                @property long length ()
                 {
                         stat_t stats = void;
                         if (posix.fstat (handle, &stats))
-                            error;
+                            error();
                         return cast(long) stats.st_size;
                 }
 
@@ -772,7 +772,7 @@ class File : Device, Device.Seek, Device.Truncate
           void sync ()
           {
                          if (fsync (handle))
-                             error;
+                             error();
                 }
         }
 }

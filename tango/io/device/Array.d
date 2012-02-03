@@ -271,6 +271,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
                             if (o > cast(long) limit)
                                 o = limit;
                             index = cast(size_t) o;
+                            break;
                        default:
                             break;
                        }
@@ -481,7 +482,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final const size_t readable ()
+        @property final const size_t readable ()
         {
                 return extent - index;
         }
@@ -496,7 +497,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final const size_t writable ()
+        @property final const size_t writable ()
         {
                 return dimension - extent;
         }
@@ -516,7 +517,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final const size_t limit ()
+        @property final const size_t limit ()
         {
                 return extent;
         }

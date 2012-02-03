@@ -23,11 +23,10 @@ private import  Integer = tango.text.convert.Integer;
 /*******************************************************************************
 
         external links
-        
+
 *******************************************************************************/
 
-extern (C) char* memchr (const(char) *, int, size_t);
-
+extern(C) void* memchr(in void* s, int c, size_t n);
 
 /*******************************************************************************
 
@@ -274,10 +273,10 @@ class Uri : UriView
         {
                 with (other)
                      {
-                     this (getScheme, getHost, getPath, getQuery);
-                     this.userinfo_ = getUserInfo;
-                     this.fragment_ = getFragment;
-                     this.port_ = getPort;
+                     this (getScheme(), getHost(), getPath(), getQuery());
+                     this.userinfo_ = getUserInfo();
+                     this.fragment_ = getFragment();
+                     this.port_ = getPort();
                      }
         }
 
@@ -289,7 +288,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final const int defaultPort (const(char)[] scheme)
+        override final const int defaultPort (const(char)[] scheme)
         {
                 short* port = scheme in genericSchemes; 
                 if (port is null)
@@ -304,7 +303,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final const const(char)[] scheme()
+        @property override final const const(char)[] scheme()
         {
                 return scheme_;
         }
@@ -316,7 +315,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final const const(char)[] host()
+        @property override final const const(char)[] host()
         {
                 return host_;
         }
@@ -328,7 +327,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final const int port()
+        @property override final const int port()
         {
                 return port_;
         }
@@ -340,7 +339,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final const int validPort()
+        override final const int validPort()
         {
                 if (port_ is InvalidPort)
                     return defaultPort (scheme_);
@@ -354,7 +353,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final const const(char)[] userinfo()
+        @property override final const const(char)[] userinfo()
         {
                 return userinfo_;
         }
@@ -366,7 +365,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final const const(char)[] path()
+        @property override final const const(char)[] path()
         {
                 return path_;
         }
@@ -378,7 +377,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final const const(char)[] query()
+        @property override final const const(char)[] query()
         {
                 return query_;
         }
@@ -390,7 +389,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final const const(char)[] fragment()
+        @property override final const const(char)[] fragment()
         {
                 return fragment_;
         }
@@ -401,7 +400,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final const bool isGeneric ()
+        @property override final const bool isGeneric ()
         {
                 return (scheme_ in genericSchemes) !is null;
         }
@@ -463,7 +462,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final immutable(char)[] toString ()
+        override final string toString ()
         {
                 immutable(void)[] s;
 
@@ -625,7 +624,7 @@ class Uri : UriView
                 auto    len = uri.length;
 
                 if (! relative)
-                      reset;
+                      reset();
 
                 // isolate scheme (note that it's OK to not specify a scheme)
                 for (i=0; i < len && !(map[c = uri[i]] & ExcScheme); ++i) {}
@@ -683,7 +682,7 @@ class Uri : UriView
 
         final void reset()
         {
-                decoded.reset;
+                decoded.reset();
                 port_ = InvalidPort;
                 host_ = path_ = query_ = scheme_ = userinfo_ = fragment_ = null;
         }
@@ -705,7 +704,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri scheme (const(char)[] scheme)
+        @property final Uri scheme (const(char)[] scheme)
         {
                 this.scheme_ = scheme;
                 return this;
@@ -717,7 +716,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri host (const(char)[] host)
+        @property final Uri host (const(char)[] host)
         {
                 this.host_ = host;
                 return this;
@@ -729,7 +728,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri port (int port)
+        @property final Uri port (int port)
         {
                 this.port_ = port;
                 return this;
@@ -741,7 +740,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri userinfo (const(char)[] userinfo)
+        @property final Uri userinfo (const(char)[] userinfo)
         {
                 this.userinfo_ = userinfo;
                 return this;
@@ -753,7 +752,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri query (const(char)[] query)
+        @property final Uri query (const(char)[] query)
         {
                 this.query_ = query;
                 return this;
@@ -768,10 +767,12 @@ class Uri : UriView
         final const(char)[] extendQuery (const(char)[] tail)
         {
                 if (tail.length)
+                {
                     if (query_.length)
                         query_ = query_ ~ "&" ~ tail;
                     else
                        query_ = tail;
+                }
                 return query_;
         }
 
@@ -781,7 +782,7 @@ class Uri : UriView
 
         ***********************************************************************/
         
-        final Uri path (const(char)[] path)
+        @property final Uri path (const(char)[] path)
         {
                 this.path_ = path;
                 return this;
@@ -793,7 +794,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri fragment (const(char)[] fragment)
+        @property final Uri fragment (const(char)[] fragment)
         {
                 this.fragment_ = fragment;
                 return this;
