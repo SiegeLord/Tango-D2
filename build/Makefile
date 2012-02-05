@@ -1,6 +1,6 @@
 
 export PROJECT_NAME     = tango
-export AUTHOR           = SiegeLord
+export AUTHOR           = Tango contributors
 export DESCRIPTION      =
 export VERSION          = 2
 export LICENSE          = ACL v3
