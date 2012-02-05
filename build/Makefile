@@ -9,7 +9,7 @@ SOURCES                 = $(filter-out $(Filter), $(getSource))
 DDOCFILES               =
 
 # include some command
-include command.make
+include build/command.make
 
 OBJECTS             = $(patsubst %.d,$(BUILD_PATH)$(PATH_SEP)%.o,    $(SOURCES))
 PICOBJECTS          = $(patsubst %.d,$(BUILD_PATH)$(PATH_SEP)%.pic.o,$(SOURCES))
