@@ -286,9 +286,14 @@ version(DladdrSymbolification){
     }
 }
 
-
 version(ElfSymbolification){
-
+version(TangoDoc)
+{
+    bool elfSymbolizeFrameInfo(ref FrameInfo fInfo,
+        TraceContext* context, char[] buf);
+}
+else
+{
     bool elfSymbolizeFrameInfo(ref FrameInfo fInfo,
         TraceContext* context, char[] buf)
     {
@@ -321,6 +326,8 @@ version(ElfSymbolification){
         StaticSectionInfo.resolveLineNumber(fInfo);
         return true;
     }
+
+}
 }
 
 /// loads symbols for the given frame info with the methods defined in tango itself

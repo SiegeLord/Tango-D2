@@ -15,6 +15,13 @@ module tango.core.tools.LinuxStackTrace;
 
 import tango.core.tools.FrameInfo;
 
+version(TangoDoc)
+{
+
+}
+else
+{
+
 version(D_Version2)
 {
         private void ThWriteOut(Throwable th, void delegate(in char[])sink){
@@ -987,3 +994,4 @@ Lsplit:
 
 }
 
+}

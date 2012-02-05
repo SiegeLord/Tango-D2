@@ -884,6 +884,12 @@ class FTPConnection: Telnet
      Returns:             a connected socket
      Changed Since: 0.99.8
      *******************************************************************************/
+version(TangoDoc)
+{
+    public Socket connectPassive();
+}
+else
+{
     public Socket connectPassive() {
         Address connect_to = null;
 
@@ -946,6 +952,7 @@ class FTPConnection: Telnet
         sock.connect(connect_to);
         return sock;
     }
+}
 
     /*
      Socket sock = new Socket();
