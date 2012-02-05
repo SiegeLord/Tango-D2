@@ -42,8 +42,7 @@ class Patterns : Iterator!(char)
 
         /***********************************************************************
 
-                Construct an uninitialized iterator. For example.
-                Examples:
+                Construct an uninitialized iterator. For example:
                 ---
                 auto lines = new Lines!(char);
 
@@ -54,8 +53,7 @@ class Patterns : Iterator!(char)
                 }
                 ---
 
-                Construct a streaming iterator upon a stream.
-                Examples:
+                Construct a streaming iterator upon a stream:
                 ---
                 void somefunc (InputStream stream)
                 {
@@ -64,8 +62,7 @@ class Patterns : Iterator!(char)
                 }
                 ---
 
-                Construct a streaming iterator upon a conduit.
-                Examples:
+                Construct a streaming iterator upon a conduit:
                 ---
                 foreach (line; new Lines!(char) (new File ("myfile")))
                          Cout (line).newline;

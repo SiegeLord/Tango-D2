@@ -10,8 +10,7 @@
         author:         Kris
 
 
-        Simplified, pedestrian usage.
-        Examples:
+        Simplified, pedestrian usage:
         ---
         import tango.util.log.Config;
 
@@ -24,8 +23,7 @@
         Loggers are named entities, sometimes shared, sometimes specific to
         a particular portion of code. The names are generally hierarchical in
         nature, using dot notation (with '.') to separate each named section.
-        For example, a typical name might be something like "mail.send.writer".
-        Examples:
+        For example, a typical name might be something like "mail.send.writer"
         ---
         import tango.util.log.Log;
 
@@ -40,8 +38,7 @@
         It is considered good form to pass a logger instance as a function or
         class-ctor argument, or to assign a new logger instance during static
         class construction. For example: if it were considered appropriate to
-        have one logger instance per class, each might be constructed like so.
-        Examples:
+        have one logger instance per class, each might be constructed like so:
         ---
         private Logger log;
 
@@ -59,8 +56,7 @@
 
         Note that an internal workspace is used to format the message, which
         is limited to 2000 bytes. Use "{.256}" truncation notation to limit
-        the size of individual message components, or use explicit formatting.
-        Examples:
+        the size of individual message components, or use explicit formatting:
         ---
         char[4096] buf = void;
 
@@ -68,8 +64,7 @@
         ---
 
         To avoid overhead when constructing arguments passed to formatted
-        messages, you should check to see whether a logger is active or not.
-        Examples:
+        messages, you should check to see whether a logger is active or not:
         ---
         if (log.warn)
             log.warn ("temperature is {} degrees!", complexFunction());
@@ -351,7 +346,7 @@ public struct Log
 
                 root.format (Level.Info, fmt, _arguments, ap);
             }
-            else
+            else            
                 root.format (Level.Info, fmt, _arguments, _argptr);
         }
 
@@ -376,8 +371,7 @@ public struct Log
         Loggers are named entities, sometimes shared, sometimes specific to
         a particular portion of code. The names are generally hierarchical in
         nature, using dot notation (with '.') to separate each named section.
-        For example, a typical name might be something like "mail.send.writer".
-        Examples:
+        For example, a typical name might be something like "mail.send.writer"
         ---
         import tango.util.log.Log;format
 
@@ -392,8 +386,7 @@ public struct Log
         It is considered good form to pass a logger instance as a function or
         class-ctor argument, or to assign a new logger instance during static
         class construction. For example: if it were considered appropriate to
-        have one logger instance per class, each might be constructed like so.
-        Examples:
+        have one logger instance per class, each might be constructed like so:
         ---
         private Logger log;
 
@@ -404,16 +397,14 @@ public struct Log
         ---
 
         Messages passed to a Logger are assumed to be either self-contained
-        or configured with "{}" notation a la Layout & Stdout.
-        Examples:
+        or configured with "{}" notation a la Layout & Stdout:
         ---
         log.warn ("temperature is {} degrees!", 101);
         ---
 
         Note that an internal workspace is used to format the message, which
         is limited to 2000 bytes. Use "{.256}" truncation notation to limit
-        the size of individual message components, or use explicit formatting.
-        Examples:
+        the size of individual message components, or use explicit formatting:
         ---
         char[4096] buf = void;
 
@@ -421,8 +412,7 @@ public struct Log
         ---
 
         To avoid overhead when constructing argument passed to formatted
-        messages, you should check to see whether a logger is active or not.
-        Examples:
+        messages, you should check to see whether a logger is active or not:
         ---
         if (log.enabled (log.Warn))
             log.warn ("temperature is {} degrees!", complexFunction());
@@ -538,7 +528,7 @@ public class Logger : ILogger
 
                 format (Level.Trace, fmt, _arguments, ap);
             }
-            else
+            else            
                 format (Level.Trace, fmt, _arguments, _argptr);
         }
 
@@ -571,7 +561,7 @@ public class Logger : ILogger
 
                 format (Level.Info, fmt, _arguments, ap);
             }
-            else
+            else            
                 format (Level.Info, fmt, _arguments, _argptr);
         }
 
@@ -604,7 +594,7 @@ public class Logger : ILogger
 
                 format (Level.Warn, fmt, _arguments, ap);
             }
-            else
+            else            
                 format (Level.Warn, fmt, _arguments, _argptr);
         }
 
@@ -637,7 +627,7 @@ public class Logger : ILogger
 
                 format (Level.Error, fmt, _arguments, ap);
             }
-            else
+            else            
                 format (Level.Error, fmt, _arguments, _argptr);
         }
 
@@ -670,7 +660,7 @@ public class Logger : ILogger
 
                 format (Level.Fatal, fmt, _arguments, ap);
             }
-            else
+            else            
                 format (Level.Fatal, fmt, _arguments, _argptr);
         }
 
@@ -1036,7 +1026,7 @@ private class Hierarchy : Logger.Context
 
         final Logger.Context context ()
         {
-            return context_;
+        	return context_;
         }
 
         /**********************************************************************
@@ -1049,7 +1039,7 @@ private class Hierarchy : Logger.Context
 
         final void context (Logger.Context context)
         {
-            context_ = context;
+        	context_ = context;
         }
 
         /***********************************************************************
@@ -1118,7 +1108,7 @@ private class Hierarchy : Logger.Context
                     buffer[0 .. label.length] = label[];
                     buffer[label.length] = '.';
 
-                    auto name = buffer[0 .. label.length + 1];
+                    auto name = buffer[0 .. label.length + 1]; 
                     auto l = name in loggers;
 
                     if (l is null)
@@ -1133,7 +1123,7 @@ private class Hierarchy : Logger.Context
                        // insert into linked list
                        insert (li);
 
-                       // look for and adjust children. Don't force
+                       // look for and adjust children. Don't force 
                        // property inheritance on existing loggers
                        update (li);
 

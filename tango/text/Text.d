@@ -45,8 +45,7 @@
 
         Note that several common text operations can be constructed through
         combining tango.text.Text with tango.text.Util e.g. lines of text
-        can be processed thusly.
-        Examples:
+        can be processed thusly:
         ---
         auto source = new Text!(char)("one\ntwo\nthree");
 
@@ -54,8 +53,7 @@
                  // do something with line
         ---
 
-        Speaking a bit like Yoda might be accomplished as follows.
-        Examples:
+        Speaking a bit like Yoda might be accomplished as follows:
         ---
         auto dst = new Text!(char);
 
@@ -63,8 +61,7 @@
                  dst.prepend (element);
         ---
 
-        Below is an overview of the API and class hierarchy.
-        Examples:
+        Below is an overview of the API and class hierarchy:
         ---
         class Text(T) : TextView!(T)
         {
@@ -418,7 +415,7 @@ class Text(T) : TextView!(T)
                 set (content, copy);
                 this.comparator_ = &simpleComparator;
         }
-
+        
         this (const(T)[] content)
         {
                 set (content);
@@ -440,7 +437,7 @@ class Text(T) : TextView!(T)
         {
                 this (other.mslice, copy);
         }
-
+        
         this (const(TextViewT) other, bool copy = true)
         {
                 this (other.slice);
@@ -469,7 +466,7 @@ class Text(T) : TextView!(T)
                 // no selection
                 return select (0, 0);
         }
-
+        
         final Text set (const(T)[] chars)
         {
                 contentLength = chars.length;
@@ -564,8 +561,7 @@ class Text(T) : TextView!(T)
         /***********************************************************************
 
                 Return a search iterator for a given pattern. The iterator
-                sets the current text selection as appropriate. For example.
-                Examples:
+                sets the current text selection as appropriate. For example:
                 ---
                 auto t = new Text ("hello world");
                 auto s = t.search ("world");
@@ -574,8 +570,7 @@ class Text(T) : TextView!(T)
                 assert (t.selection == "world");
                 ---
 
-                Replacing patterns operates in a similar fashion.
-                Examples:
+                Replacing patterns operates in a similar fashion:
                 ---
                 auto t = new Text ("hello world");
                 auto s = t.search ("world");
@@ -1278,7 +1273,7 @@ class Text(T) : TextView!(T)
         {
                 return content [0 .. contentLength];
         }
-
+        
         T[] mslice ()
         {
                 return content [0 .. contentLength];
@@ -1289,8 +1284,7 @@ class Text(T) : TextView!(T)
                 Convert to the UniText types. The optional argument
                 dst will be resized as required to house the conversion.
                 To minimize heap allocation during subsequent conversions,
-                apply the following pattern.
-                Examples:
+                apply the following pattern:
                 ---
                 Text  string;
 
@@ -1304,12 +1298,12 @@ class Text(T) : TextView!(T)
                 will be moved to the heap if said buffer is not large enough
 
         ***********************************************************************/
-
+        
         const immutable(char)[] toString()
         {
                 return toString(null).idup;
         }
-
+        
         final const char[] toString (char[] dst)
         {
                 static if (is (T == char)) {

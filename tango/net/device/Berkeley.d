@@ -151,15 +151,15 @@ enum AIFlags: int
 
 enum AIError
 {
-        BADFLAGS = consts.EAI_BADFLAGS,         /// Invalid value for `ai_flags' field.
-        NONAME = consts.EAI_NONAME,         /// NAME or SERVICE is unknown.
-        AGAIN = consts.EAI_AGAIN,           /// Temporary failure in name resolution.
-        FAIL = consts.EAI_FAIL,                 /// Non-recoverable failure in name res.
-        NODATA = consts.EAI_NODATA,         /// No address associated with NAME.
-        FAMILY = consts.EAI_FAMILY,         /// `ai_family' not supported.
-        SOCKTYPE = consts.EAI_SOCKTYPE,         /// `ai_socktype' not supported.
-        SERVICE = consts.EAI_SERVICE,           /// SERVICE not supported for `ai_socktype'.
-        MEMORY = consts.EAI_MEMORY,         /// Memory allocation failure.
+        BADFLAGS = consts.EAI_BADFLAGS,	        /// Invalid value for `ai_flags' field.
+        NONAME = consts.EAI_NONAME,	        /// NAME or SERVICE is unknown.
+        AGAIN = consts.EAI_AGAIN,	        /// Temporary failure in name resolution.
+        FAIL = consts.EAI_FAIL,	                /// Non-recoverable failure in name res.
+        NODATA = consts.EAI_NODATA,	        /// No address associated with NAME.
+        FAMILY = consts.EAI_FAMILY,	        /// `ai_family' not supported.
+        SOCKTYPE = consts.EAI_SOCKTYPE,	        /// `ai_socktype' not supported.
+        SERVICE = consts.EAI_SERVICE,	        /// SERVICE not supported for `ai_socktype'.
+        MEMORY = consts.EAI_MEMORY,	        /// Memory allocation failure.
 }
 
 
@@ -216,7 +216,7 @@ else
 version (Win32)
 {
         pragma (lib, "ws2_32.lib");
-
+    
         private import tango.sys.win32.WsaSock;
 
         //private alias int socket_t = ~0;
@@ -308,7 +308,7 @@ version (Win32)
                    lib = LoadLibraryA ("Wship6.dll");
                    }
                 getnameinfo = cast(typeof(getnameinfo)) GetProcAddress(lib, "getnameinfo");
-            getaddrinfo = cast(typeof(getaddrinfo)) GetProcAddress(lib, "getaddrinfo");
+	        getaddrinfo = cast(typeof(getaddrinfo)) GetProcAddress(lib, "getaddrinfo");
                 freeaddrinfo = cast(typeof(freeaddrinfo)) GetProcAddress(lib, "freeaddrinfo");
                 if (!getnameinfo)
                    {
@@ -356,13 +356,13 @@ else
         //private alias int socket_t = -1;
         private struct socket_t
         {
-            this(int _payload)
-            {
-                payload = _payload;
-            }
-            int payload = -1;
-            alias payload this;
-        }
+			this(int _payload)
+			{
+				payload = _payload;
+			}
+			int payload = -1;
+			alias payload this;
+		}
 
         package extern (C)
         {
@@ -745,8 +745,8 @@ version (Windows)
                 if (family is AddressFamily.INET)
                    return new IPv4Address;
                 if (family is AddressFamily.INET6)
-            return new IPv6Address;
-        return new UnknownAddress;
+		    return new IPv6Address;
+		return new UnknownAddress;
         }
 
         /***********************************************************************
@@ -1599,6 +1599,7 @@ debug(UnitTest)
         separated by a colon (":"). Zero block can be replaced by "::".
 
         For example:
+        ---
         0000:0000:0000:0000:0000:0000:0000:0001
         is equal
         ::0001
@@ -2208,7 +2209,7 @@ public class SocketSet
                 {
                         if (s > _maxfd)
                                 _maxfd = s;
-
+                        
                         bts(cast(size_t*)&first[fdelt(s)], cast(size_t)s % nfdbits);
                 }
                 else

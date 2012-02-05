@@ -185,7 +185,7 @@ struct BitArray
      *
      * Returns:
      *  A shallow copy of this array.
-     *  Examples:
+     *
      *  --------------------
      *  BitArray ba = [0,1,0,1,0];
      *  BitArray ba2;
@@ -193,7 +193,6 @@ struct BitArray
      *  ba2[] = ba; // perform the copy
      *  ba[0] = true;
      *  assert(ba2[0] == false);
-     *  --------------------
      */
      BitArray opSliceAssign(BitArray rhs)
      in

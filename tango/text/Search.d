@@ -18,7 +18,7 @@ private import Util = tango.text.Util;
 
 /******************************************************************************
 
-        Returns a lightweight pattern matcher, good for short patterns
+        Returns a lightweight pattern matcher, good for short patterns 
         and/or short to medium length content. Brute-force approach with
         fast multi-byte comparisons
 
@@ -31,7 +31,7 @@ FindFruct!(T) find(T) (const(T)[] what)
 
 /******************************************************************************
 
-        Returns a welterweight pattern matcher, good for long patterns
+        Returns a welterweight pattern matcher, good for long patterns 
         and/or extensive content. Based on the QS algorithm which is a
         Boyer-Moore variant. Does not allocate memory for the alphabet.
 
@@ -47,9 +47,8 @@ SearchFruct!(T) search(T) (const(T)[] what)
 /******************************************************************************
 
         Convenient bundle of lightweight find utilities, without the
-        hassle of IFTI problems. Create one of these using the find()
-        function.
-        Examples:
+        hassle of IFTI problems. Create one of these using the find() 
+        function:
         ---
         auto match = find ("foo");
         auto content = "wumpus foo bar"
@@ -64,7 +63,7 @@ SearchFruct!(T) search(T) (const(T)[] what)
 
         Searching operates both forward and backward, with an optional
         start offset (can be more convenient than slicing the content).
-        There are methods to replace matches within given content, and
+        There are methods to replace matches within given content, and 
         others which return foreach() iterators for traversing content.
 
         SearchFruct is a more sophisticated variant, which operates more
@@ -73,12 +72,12 @@ SearchFruct!(T) search(T) (const(T)[] what)
 ******************************************************************************/
 
 private struct FindFruct(T)
-{
+{       
         private const(T)[] what;
 
         /***********************************************************************
 
-                Search forward in the given content, starting at the
+                Search forward in the given content, starting at the 
                 optional index.
 
                 Returns the index of a match, or content.length where
@@ -93,7 +92,7 @@ private struct FindFruct(T)
 
         /***********************************************************************
 
-                Search backward in the given content, starting at the
+                Search backward in the given content, starting at the 
                 optional index.
 
                 Returns the index of a match, or content.length where
@@ -102,7 +101,7 @@ private struct FindFruct(T)
         ***********************************************************************/
 
         size_t reverse (const(T)[] content, size_t ofs = size_t.max)
-        {
+        {       
                 return Util.rindex (content, what, ofs);
         }
 
@@ -135,18 +134,18 @@ private struct FindFruct(T)
         ***********************************************************************/
 
         bool within (const(T)[] content)
-        {
+        {       
                 return forward(content) != content.length;
         }
 
         /***********************************************************************
-
+                
                 Returns number of matches within the given content
 
         ***********************************************************************/
 
         size_t count (const(T)[] content)
-        {
+        {       
                 size_t mark, count;
 
                 while ((mark = Util.index (content, what, mark)) != content.length)
@@ -164,13 +163,13 @@ private struct FindFruct(T)
         ***********************************************************************/
 
         T[] replace (const(T)[] content, T chr)
-        {
-                return replace (content, (&chr)[0..1]);
+        {     
+                return replace (content, (&chr)[0..1]);  
         }
 
         /***********************************************************************
 
-                Replace all matches with the given substitution. Use
+                Replace all matches with the given substitution. Use 
                 method tokens() instead to avoid heap activity.
 
                 Returns a copy of the content with replacements made
@@ -178,7 +177,7 @@ private struct FindFruct(T)
         ***********************************************************************/
 
         T[] replace (const(T)[] content, const(T)[] sub = null)
-        {
+        {  
                 T[] output;
 
                 foreach (s; tokens (content, sub))
@@ -191,8 +190,7 @@ private struct FindFruct(T)
                 Returns a foreach() iterator which exposes text segments
                 between all matches within the given content. Substitution
                 text is also injected in place of each match, and null can
-                be used to indicate removal instead.
-                Examples:
+                be used to indicate removal instead:
                 ---
                 char[] result;
 
@@ -201,8 +199,8 @@ private struct FindFruct(T)
                          result ~= token;
                 assert (result == "$bar&&bar*");
                 ---
-
-                This mechanism avoids internal heap activity.
+                
+                This mechanism avoids internal heap activity.                
 
         ***********************************************************************/
 
@@ -210,12 +208,11 @@ private struct FindFruct(T)
         {
                 return Util.patterns (content, what, sub);
         }
-
+        
         /***********************************************************************
 
                 Returns a foreach() iterator which exposes the indices of
-                all matches within the given content.
-                Examples:
+                all matches within the given content:
                 ---
                 int count;
 
@@ -231,7 +228,7 @@ private struct FindFruct(T)
         {
                 return Indices (what, content);
         }
-
+ 
         /***********************************************************************
 
                 Simple foreach() iterator
@@ -248,23 +245,22 @@ private struct FindFruct(T)
                         int    ret;
                         size_t mark;
 
-                        while ((mark = Util.index(content, what, mark)) != content.length)
-                                if ((ret = dg(mark)) is 0)
-                                     ++mark;
+                        while ((mark = Util.index(content, what, mark)) != content.length)                        
+                                if ((ret = dg(mark)) is 0)                                
+                                     ++mark;       
                                 else
-                                   break;
-                        return ret;
-                }
-        }
+                                   break;                        
+                        return ret;   
+                }     
+        } 
 }
 
 
 /******************************************************************************
 
         Convenient bundle of welterweight search utilities, without the
-        hassle of IFTI problems. Create one of these using the search()
-        function.
-        Examples:
+        hassle of IFTI problems. Create one of these using the search() 
+        function:
         ---
         auto match = search ("foo");
         auto content = "wumpus foo bar"
@@ -279,10 +275,10 @@ private struct FindFruct(T)
 
         Searching operates both forward and backward, with an optional
         start offset (can be more convenient than slicing the content).
-        There are methods to replace matches within given content, and
+        There are methods to replace matches within given content, and 
         others which return foreach() iterators for traversing content.
 
-        FindFruct is a simpler variant, which can operate efficiently on
+        FindFruct is a simpler variant, which can operate efficiently on 
         short matches and/or short content (employs brute-force strategy)
 
 ******************************************************************************/
@@ -299,13 +295,13 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        static SearchFruct opCall (const(T)[] what)
+        static SearchFruct opCall (const(T)[] what) 
         {
                 SearchFruct find = void;
                 find.match = what;
                 return find;
         }
-
+        
         /***********************************************************************
 
                 Return the match text
@@ -333,7 +329,7 @@ private struct SearchFruct(T)
 
         /***********************************************************************
 
-                Search forward in the given content, starting at the
+                Search forward in the given content, starting at the 
                 optional index.
 
                 Returns the index of a match, or content.length where
@@ -341,7 +337,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        size_t forward (const(T)[] content, size_t ofs = 0)
+        size_t forward (const(T)[] content, size_t ofs = 0) 
         {
                 if (! fore)
                       flip;
@@ -349,14 +345,14 @@ private struct SearchFruct(T)
                 if (ofs > content.length)
                     ofs = content.length;
 
-                return find (cast(char*) what.ptr, what.length * T.sizeof,
-                             cast(char*) content.ptr, content.length * T.sizeof,
+                return find (cast(char*) what.ptr, what.length * T.sizeof, 
+                             cast(char*) content.ptr, content.length * T.sizeof, 
                              ofs * T.sizeof) / T.sizeof;
         }
 
         /***********************************************************************
 
-                Search backward in the given content, starting at the
+                Search backward in the given content, starting at the 
                 optional index.
 
                 Returns the index of a match, or content.length where
@@ -364,7 +360,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        size_t reverse (const(T)[] content, size_t ofs = size_t.max)
+        size_t reverse (const(T)[] content, size_t ofs = size_t.max) 
         {
                 if (fore)
                     flip;
@@ -372,8 +368,8 @@ private struct SearchFruct(T)
                 if (ofs > content.length)
                     ofs = content.length;
 
-                return rfind (cast(char*) what.ptr, what.length * T.sizeof,
-                              cast(char*) content.ptr, content.length * T.sizeof,
+                return rfind (cast(char*) what.ptr, what.length * T.sizeof, 
+                              cast(char*) content.ptr, content.length * T.sizeof, 
                               ofs * T.sizeof) / T.sizeof;
         }
 
@@ -384,18 +380,18 @@ private struct SearchFruct(T)
         ***********************************************************************/
 
         bool within (const(T)[] content)
-        {
+        {       
                 return forward(content) != content.length;
         }
 
         /***********************************************************************
-
+                
                 Returns number of matches within the given content
 
         ***********************************************************************/
 
         size_t count (const(T)[] content)
-        {
+        {       
                 size_t mark, count;
 
                 while ((mark = forward (content, mark)) != content.length)
@@ -413,13 +409,13 @@ private struct SearchFruct(T)
         ***********************************************************************/
 
         T[] replace (const(T)[] content, T chr)
-        {
-                return replace (content, (&chr)[0..1]);
+        {     
+                return replace (content, (&chr)[0..1]);  
         }
 
         /***********************************************************************
 
-                Replace all matches with the given substitution. Use
+                Replace all matches with the given substitution. Use 
                 method tokens() instead to avoid heap activity.
 
                 Returns a copy of the content with replacements made
@@ -427,7 +423,7 @@ private struct SearchFruct(T)
         ***********************************************************************/
 
         T[] replace (const(T)[] content, const(T)[] sub = null)
-        {
+        {  
                 T[] output;
 
                 foreach (s; tokens (content, sub))
@@ -440,8 +436,7 @@ private struct SearchFruct(T)
                 Returns a foreach() iterator which exposes text segments
                 between all matches within the given content. Substitution
                 text is also injected in place of each match, and null can
-                be used to indicate removal instead.
-                Examples:
+                be used to indicate removal instead:
                 ---
                 char[] result;
 
@@ -450,8 +445,8 @@ private struct SearchFruct(T)
                          result ~= token;
                 assert (result == "$bar&&bar*");
                 ---
-
-                This mechanism avoids internal heap activity
+                
+                This mechanism avoids internal heap activity             
 
         ***********************************************************************/
 
@@ -459,12 +454,11 @@ private struct SearchFruct(T)
         {
                 return Substitute (sub, what, content, &forward);
         }
-
+        
         /***********************************************************************
 
                 Returns a foreach() iterator which exposes the indices of
-                all matches within the given content.
-                Examples:
+                all matches within the given content:
                 ---
                 int count;
 
@@ -480,12 +474,12 @@ private struct SearchFruct(T)
         {
                 return Indices (content, &forward);
         }
-
+        
         /***********************************************************************
 
         ***********************************************************************/
 
-        private size_t find (char* what, size_t wlen, char* content, size_t len, size_t ofs)
+        private size_t find (char* what, size_t wlen, char* content, size_t len, size_t ofs) 
         {
                 auto s = content;
                 content += ofs;
@@ -502,7 +496,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        private size_t rfind (char* what, size_t wlen, char* content, size_t len, size_t ofs)
+        private size_t rfind (char* what, size_t wlen, char* content, size_t len, size_t ofs) 
         {
                 auto s = content;
                 auto e = s + ofs - wlen;
@@ -527,7 +521,7 @@ private struct SearchFruct(T)
                           return false;
 
                 while (length--)
-                       if (*a++ != *b++)
+                       if (*a++ != *b++) 
                            return false;
                 return true;
         }
@@ -543,7 +537,7 @@ private struct SearchFruct(T)
         private void reset ()
         {
                 auto what = cast(char[]) this.what;
-                if (fore)
+                if (fore)   
                     for (int i=0; i < cast(int)what.length; ++i)
                          offsets[what[i]] = cast(int)what.length - i;
                 else
@@ -584,9 +578,9 @@ private struct SearchFruct(T)
                                      ++mark;
                                 else
                                    break;
-                        return ret;
-                }
-        }
+                        return ret;   
+                }     
+        } 
 
         /***********************************************************************
 
@@ -596,7 +590,7 @@ private struct SearchFruct(T)
 
         private struct Substitute
         {
-                private const(T)[] sub,
+                private const(T)[] sub, 
                                    what,
                                    content;
                 size_t             delegate(const(T)[], size_t) call;
@@ -639,11 +633,11 @@ debug (Search)
         import tango.time.StopWatch;
 
         auto x = import("Search.d");
-
+        
         void main()
         {
                 StopWatch elapsed;
-
+        
                 auto match = search("foo");
                 auto index = match.reverse ("foo foo");
                 assert (index is 4);

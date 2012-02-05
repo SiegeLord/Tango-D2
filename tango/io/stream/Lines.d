@@ -37,8 +37,7 @@ class Lines(T) : Iterator!(T)
 {
         /***********************************************************************
 
-                Construct an uninitialized iterator. For example.
-                Examples:
+                Construct an uninitialized iterator. For example:
                 ---
                 auto lines = new Lines!(char);
 
@@ -49,8 +48,7 @@ class Lines(T) : Iterator!(T)
                 }
                 ---
 
-                Construct a streaming iterator upon a stream.
-                Examples:
+                Construct a streaming iterator upon a stream:
                 ---
                 void somefunc (InputStream stream)
                 {
@@ -59,8 +57,7 @@ class Lines(T) : Iterator!(T)
                 }
                 ---
 
-                Construct a streaming iterator upon a conduit.
-                Examples:
+                Construct a streaming iterator upon a conduit:
                 ---
                 foreach (line; new Lines!(char) (new File ("myfile")))
                          Cout (line).newline;

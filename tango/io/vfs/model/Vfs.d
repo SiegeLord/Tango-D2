@@ -105,8 +105,7 @@ interface VfsHost : VfsFolder
 /*******************************************************************************
 
         Supports a model a bit like CSS selectors, where a selection
-        of operands is made before applying some operation. For example.
-        Examples:
+        of operands is made before applying some operation. For example:
         ---
         // count of files in this folder
         auto count = folder.self.files;
@@ -119,8 +118,7 @@ interface VfsHost : VfsFolder
         ---
 
         The same approach is used to select the subtree descending from
-        a folder.
-        Examples:
+        a folder:
         ---
         // count of files in this tree
         auto count = folder.tree.files;
@@ -134,8 +132,7 @@ interface VfsHost : VfsFolder
 
         Filtering can be applied to the tree resulting in a sub-group.
         Group operations remain applicable. Note that various wildcard
-        characters may be used in the filtering.
-        Examples:
+        characters may be used in the filtering:
         ---
         // select a subset of the resultant tree
         auto folders = folder.tree.subset("install");
@@ -144,8 +141,7 @@ interface VfsHost : VfsFolder
         auto bytes = folder.tree.subset("foo*").bytes;
         ---
 
-        Files are selected from a set of folders in a similar manner.
-        Examples:
+        Files are selected from a set of folders in a similar manner:
         ---
         // files called "readme.txt" in this folder
         auto count = folder.self.catalog("readme.txt").files;
@@ -160,8 +156,7 @@ interface VfsHost : VfsFolder
         auto count = folder.tree.catalog(&filter).files;
         ---
 
-        Sets of folders and files support iteration via foreach.
-        Examples:
+        Sets of folders and files support iteration via foreach:
         ---
         foreach (folder; root.tree)
                  Stdout.formatln ("folder name:{}", folder.name);
@@ -176,16 +171,14 @@ interface VfsHost : VfsFolder
         Creating and opening a sub-folder is supported in a similar
         manner, where the single instance is 'selected' before the
         operation is applied. Open differs from create in that the
-        folder must exist for the former.
-        Examples:
+        folder must exist for the former:
         ---
         root.folder("myNewFolder").create;
 
         root.folder("myExistingFolder").open;
         ---
 
-        File manipulation is handled in much the same way.
-        Examples:
+        File manipulation is handled in much the same way:
         ---
         root.file("myNewFile").create;
 
@@ -431,7 +424,7 @@ interface VfsFile
         const(char)[] name ();
 
         /**********************************************************************
-
+ 
                 Return a long name
 
         ***********************************************************************/
