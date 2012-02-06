@@ -14,8 +14,8 @@ include build/command.make
 OBJECTS             = $(patsubst %.d,$(BUILD_PATH)$(PATH_SEP)%.o,    $(SOURCES))
 PICOBJECTS          = $(patsubst %.d,$(BUILD_PATH)$(PATH_SEP)%.pic.o,$(SOURCES))
 HEADERS             = $(patsubst %.d,$(IMPORT_PATH)$(PATH_SEP)%.di,  $(SOURCES))
-DOCUMENTATIONS      = $(patsubst %.d,$(DOC_PATH)$(PATH_SEP)%.html,   $(SOURCES))
-DDOCUMENTATIONS     = $(patsubst %.d,$(DDOC_PATH)$(PATH_SEP)%.html,  $(SOURCES))
+PLAIN_DOC_FILES          = $(patsubst %.d,$(PLAIN_DOC_PATH)$(PATH_SEP)%.html,   $(SOURCES))
+DOC_FILES     = $(patsubst %.d,$(DOC_PATH)$(PATH_SEP)%.html,  $(SOURCES))
 DDOC_FLAGS          = $(foreach macro,$(DDOCFILES), $(DDOC_MACRO)$(macro))
 define make-lib
 	$(MKDIR) $(DLIB_PATH)
@@ -24,14 +24,14 @@ define make-lib
 endef
 
 ############# BUILD #############
-all: static-lib header doc pkgfile-static
+all: static-lib header plain-doc pkgfile-static
 	@echo ------------------ Building $^ done
-all-shared: static-shared header doc pkgfile-shared
+all-shared: static-shared header plain-doc pkgfile-shared
 	@echo ------------------ Building $^ done
 
 .PHONY : pkgfile
+.PHONY : plain-doc
 .PHONY : doc
-.PHONY : ddoc
 .PHONY : clean
 
 static-lib: $(LIBNAME)
@@ -41,12 +41,12 @@ shared-lib: $(SONAME)
 header: $(HEADERS)
 	@echo ------------------ Building headers done
 
-doc: $(DOCUMENTATIONS)
-	@echo ------------------ Building Doc done
+plain-doc: $(PLAIN_DOC_FILES)
+	@echo ------------------ Building plain documentation done
 
-ddoc: $(DDOCUMENTATIONS)
-	$(DC) $(DDOC_FLAGS) $(DVERSION)=TangoDoc index.d $(DF)$(DDOC_PATH)$(PATH_SEP)index.html
-	@echo ------------------ Building DDoc done
+doc: $(DOC_FILES)
+	$(DC) $(DDOC_FLAGS) $(DVERSION)=TangoDoc index.d $(DF)$(DOC_PATH)$(PATH_SEP)index.html
+	@echo ------------------ Building documentation done
 
 geany-tag:
 	@echo ------------------ Building geany tag
@@ -98,10 +98,10 @@ $(IMPORT_PATH):
 	test -d $(IMPORT_PATH) || $(MKDIR) $(IMPORT_PATH)
 $(DLIB_PATH):
 	test -d $(DLIB_PATH) || $(MKDIR) $(DLIB_PATH)
-$(DOC_PATH):
-	test -d $(DOC_PATH) || $(MKDIR) $(DOC_PATH)
-#~ $(DDOC_PATH):
-	#~ test -d $(DDOC_PATH) || $(MKDIR) $(DDOC_PATH)
+$(PLAIN_DOC_PATH):
+	test -d $(PLAIN_DOC_PATH) || $(MKDIR) $(PLAIN_DOC_PATH)
+#~ $(DOC_PATH):
+	#~ test -d $(DOC_PATH) || $(MKDIR) $(DOC_PATH)
 
 
 ############# BUILD #############
@@ -131,15 +131,15 @@ $(IMPORT_PATH)$(PATH_SEP)%.di : %.d
 	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(DCFLAGS_IMPORT) -c $(NO_OBJ) $< $(HF)$@
 
 # Generate Documentation
-$(DOC_PATH)$(PATH_SEP)%.html : %.d
+$(PLAIN_DOC_PATH)$(PATH_SEP)%.html : %.d
 	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(DCFLAGS_IMPORT) $(DVERSION)=TangoDoc -c $(NO_OBJ)  $< $(DF)$@
 
-# Generate ddoc Documentation
-$(DDOC_PATH)$(PATH_SEP)%.html : %.d
+# Generate doc Documentation
+$(DOC_PATH)$(PATH_SEP)%.html : %.d
 	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(DCFLAGS_IMPORT) $(DVERSION)=TangoDoc -c $(NO_OBJ) $(DDOC_FLAGS) $< $(DF)$@
 
 ############# CLEAN #############
-clean: clean-objects clean-static-lib clean-doc clean-header clean-pkgfile
+clean: clean-objects clean-static-lib clean-plain-doc clean-header clean-pkgfile
 	@echo ------------------ Cleaning $^ done
 
 clean-shared: clean-shared-objects clean-shared-lib
@@ -165,15 +165,15 @@ clean-header:
 	$(RM) $(HEADERS)
 	@echo ------------------ Cleaning header done
 
+clean-plain-doc:
+	$(RM) $(PLAIN_DOC_FILES)
+	$(RM) $(PLAIN_DOC_PATH)
+	@echo ------------------ Cleaning plain-doc done
+
 clean-doc:
-	$(RM) $(DOCUMENTATIONS)
+	$(RM) $(DOC_PATH)$(PATH_SEP)index.html
 	$(RM) $(DOC_PATH)
 	@echo ------------------ Cleaning doc done
-
-clean-ddoc:
-	$(RM) $(DDOC_PATH)$(PATH_SEP)index.html
-	$(RM) $(DDOC_PATH)
-	@echo ------------------ Cleaning ddoc done
 
 clean-geany-tag:
 	$(RM) geany_config $(PROJECT_NAME).d.tags
@@ -185,10 +185,10 @@ clean-pkgfile:
 
 ############# INSTALL #############
 
-install: install-static-lib install-doc install-header install-pkgfile
+install: install-static-lib install-plain-doc install-header install-pkgfile
 	@echo ------------------ Installing $^ done
 
-install-shared: install-shared-lib install-doc install-header install-pkgfile
+install-shared: install-shared-lib install-plain-doc install-header install-pkgfile
 	@echo ------------------ Installing $^ done
 
 install-static-lib:
@@ -212,15 +212,15 @@ install-modules:
 	$(CP) tango $(DESTDIR)$(INCLUDE_DIR)
 	@echo ------------------ Installing header done
 
-install-doc:
-	$(MKDIR) $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)normal_doc$(PATH_SEP)
-	$(CP) $(DOC_PATH)$(PATH_SEP)* $(DESTDIR)$(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)normal_doc$(PATH_SEP)
+install-plain-doc:
+	$(MKDIR) $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)plain_doc$(PATH_SEP)
+	$(CP) $(PLAIN_DOC_PATH)$(PATH_SEP)* $(DESTDIR)$(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)plain_doc$(PATH_SEP)
 	@echo ------------------ Installing doc done
 
-install-ddoc:
-	$(MKDIR) $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)cute_doc$(PATH_SEP)
-	$(CP) $(DDOC_PATH)$(PATH_SEP)* $(DESTDIR)$(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)cute_doc$(PATH_SEP)
-	@echo ------------------ Installing ddoc done
+install-doc:
+	$(MKDIR) $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)doc$(PATH_SEP)
+	$(CP) $(DOC_PATH)$(PATH_SEP)* $(DESTDIR)$(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)doc$(PATH_SEP)
+	@echo ------------------ Installing doc done
 
 install-geany-tag:
 	$(MKDIR) $(DATA_DIR)$(PATH_SEP)geany$(PATH_SEP)tags$(PATH_SEP)

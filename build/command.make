@@ -229,8 +229,8 @@ endif
 
 DLIB_PATH           = .
 IMPORT_PATH         = ./import
-DOC_PATH            = ./documentation
-DDOC_PATH           = ./ddoc
+PLAIN_DOC_PATH      = ./plain_documentation
+DOC_PATH           = ./documentation
 BUILD_PATH          = ./objs
 
 DCFLAGS_IMPORT      =
@@ -262,8 +262,8 @@ export DCFLAGS_IMPORT
 export DCFLAGS_LINK
 export DESTDIR
 export DLIB_PATH
+export PLAIN_DOC_PATH
 export DOC_PATH
-export DDOC_PATH
 export DYNAMIC_LIB_EXT
 export FixPath
 export HF
