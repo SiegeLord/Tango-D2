@@ -18,9 +18,8 @@ PLAIN_DOC_FILES     = $(patsubst %.d,$(PLAIN_DOC_PATH)$(PATH_SEP)%.html,   $(SOU
 DOC_FILES           = $(patsubst %.d,$(DOC_PATH)$(PATH_SEP)%.html,  $(SOURCES))
 DDOC_FLAGS          = $(foreach macro,$(DDOCFILES), $(DDOC_MACRO)$(macro))
 define make-lib
-	$(MKDIR) $(DLIB_PATH)
-	$(AR) rcs $(DLIB_PATH)$(PATH_SEP)$@ $^
-	$(RANLIB) $(DLIB_PATH)$(PATH_SEP)$@
+	$(AR) rcs $@ $^
+	$(RANLIB) $@
 endef
 
 ############# BUILD #############
@@ -115,8 +114,8 @@ $(LIBNAME): $(OBJECTS)
 # For build shared lib need create shared object files
 $(SONAME): $(PICOBJECTS)
 	@echo ------------------ Building shared library
-	$(DC) -shared $(OUTPUT)$(DLIB_PATH)$(PATH_SEP)$@.$(VERSION) $^
-	#~ $(CC) -shared -Wl,-soname,$@.$(VERSION) -o $(DLIB_PATH)$(PATH_SEP)$@.$(VERSION) $^
+	$(DC) -shared $(OUTPUT)$@.$(VERSION) $^
+	#~ $(CC) -shared -Wl,-soname,$@.$(VERSION) -o $@.$(VERSION) $^
 
 # create object files
 $(BUILD_PATH)$(PATH_SEP)%.o : %.d
@@ -154,11 +153,11 @@ clean-shared-objects:
 	@echo ------------------ Cleaning shared-object done
 
 clean-static-lib:
-	$(RM) $(DLIB_PATH)$(PATH_SEP)$(LIBNAME)
+	$(RM) $(LIBNAME)
 	@echo ------------------ Cleaning static-lib done
 
 clean-shared-lib:
-	$(RM)  $(DLIB_PATH)$(PATH_SEP)$(SONAME).$(VERSION)
+	$(RM)  $(SONAME).$(VERSION)
 	@echo ------------------ Cleaning shared-lib done
 
 clean-header:
@@ -191,12 +190,12 @@ install-shared: install-shared-lib install-plain-doc install-header install-pkgf
 
 install-static-lib:
 	$(MKDIR) $(LIB_DIR)
-	$(CP) $(DLIB_PATH)$(PATH_SEP)$(LIBNAME) $(DESTDIR)$(LIB_DIR)
+	$(CP) $(LIBNAME) $(DESTDIR)$(LIB_DIR)
 	@echo ------------------ Installing static-lib done
 
 install-shared-lib:
 	$(MKDIR) $(LIB_DIR)
-	$(CP) $(DLIB_PATH)$(PATH_SEP)$(SONAME) $(DESTDIR)$(LIB_DIR)
+	$(CP) $(SONAME) $(DESTDIR)$(LIB_DIR)
 	ln -s $(DESTDIR)$(LIB_DIR)$(SONAME).$(SO_VERSION)   $(DESTDIR)$(LIB_DIR)$(PATH_SEP)$(SONAME)
 	@echo ------------------ Installing shared-lib done
 
