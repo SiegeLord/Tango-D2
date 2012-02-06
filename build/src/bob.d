@@ -683,7 +683,6 @@ struct Args
                 auto p = args('p').smush().params(1);
                 auto o = args('o').smush().params(1).defaults("-release");
                 auto c = args('c').smush().params(1).defaults("dmd").restrict("dmd", "gdc", "ldc2");
-                auto g = args('g').smush().params(1).defaults("basic").restrict("basic", "cdgc", "stub");
                 auto n = args(null).params(1).required.title("tango-path");
                 auto h = args("help").aliased('h').aliased('?').halt();
                 auto d = args('d');
