@@ -80,25 +80,6 @@ ifndef DC
     endif
 endif
 
-# Define flag for gdc other
-ifeq ($(DC),gdc)
-    DCFLAGS    = -O2
-    LINKERFLAG= -Xlinker
-    OUTPUT    = -o
-    HF        = -fintfc-file=
-    DF        = -fdoc-file=
-    NO_OBJ    = -fsyntax-only
-    DDOC_MACRO= -fdoc-inc=
-else
-    DCFLAGS    = -O
-    LINKERFLAG= -L
-    OUTPUT    = -of
-    HF        = -Hf
-    DF        = -Df
-    NO_OBJ    = -o-
-    DDOC_MACRO=
-endif
-
 #define a suufix lib who inform is build with which compiler
 ifeq ($(DC),gdc)
     COMPILER=gdc
@@ -116,8 +97,36 @@ else ifeq ($(DC),dmd2)
     COMPILER=dmd
 endif
 
+# Define flag for gdc other
+ifeq ($(COMPILER),gdc)
+    DCFLAGS    = -O2
+    LINKERFLAG= -Xlinker
+    OUTPUT    = -o
+    HF        = -fintfc-file=
+    DF        = -fdoc-file=
+    NO_OBJ    = -fsyntax-only
+    DDOC_MACRO= -fdoc-inc=
+else
+    DCFLAGS    = -O
+    LINKERFLAG= -L
+    OUTPUT    = -of
+    HF        = -Hf
+    DF        = -Df
+    NO_OBJ    = -o-
+    DDOC_MACRO=
+endif
+
+# Version statement differences
+ifeq ($(COMPILER),ldc)
+    DVERSION = -d-version
+else ifeq ($(COMPILER),gdc)
+    DVERSION = -fversion
+else
+    DVERSION = -version
+endif
+
 # Define relocation model for ldc or other
-ifneq (,$(findstring ldc,$(DC)))
+ifeq ($(COMPILER),ldc)
     FPIC = -relocation-model=pic
 else
     FPIC = -fPIC
