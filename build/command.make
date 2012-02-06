@@ -227,7 +227,7 @@ ifndef CC
     CC = gcc
 endif
 
-DLIB_PATH           = ./lib
+DLIB_PATH           = .
 IMPORT_PATH         = ./import
 DOC_PATH            = ./documentation
 DDOC_PATH           = ./ddoc
