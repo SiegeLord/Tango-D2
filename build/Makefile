@@ -146,10 +146,12 @@ clean-shared: clean-shared-objects clean-shared-lib
 
 clean-objects:
 	$(RM) $(OBJECTS)
+	$(RMDIR) $(BUILD_PATH)
 	@echo ------------------ Cleaning objects done
 
 clean-shared-objects:
 	$(RM) $(PICOBJECTS)
+	$(RMDIR) $(BUILD_PATH)
 	@echo ------------------ Cleaning shared-object done
 
 clean-static-lib:
@@ -162,14 +164,17 @@ clean-shared-lib:
 
 clean-header:
 	$(RM) $(HEADERS)
+	$(RMDIR) $(IMPORT_PATH)
 	@echo ------------------ Cleaning header done
 
 clean-plain-doc:
 	$(RM) $(PLAIN_DOC_FILES)
+	$(RMDIR) $(PLAIN_DOC_PATH)
 	@echo ------------------ Cleaning plain-doc done
 
 clean-doc:
 	$(RM) $(DOC_PATH)$(PATH_SEP)index.html
+	$(RMDIR) $(DOC_PATH)
 	@echo ------------------ Cleaning doc done
 
 clean-geany-tag:
