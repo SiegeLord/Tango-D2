@@ -439,10 +439,7 @@ public struct Berkeley
 version (Windows)
          bool           synchronous;
 
-        enum : socket_t
-        {
-                INVALID_SOCKET = socket_t.init
-        }
+        enum INVALID_SOCKET = socket_t.init;
 
         enum
         {
