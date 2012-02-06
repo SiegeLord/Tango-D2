@@ -1905,12 +1905,19 @@ static this() {
         }
     }
 
-    
+    size_t slash_idx;
+    for(slash_idx = modName.length - 1; slash_idx >= 0; slash_idx--)
+    {
+        if(modName[slash_idx] == '\\')
+            break;
+    }
+    auto sym_name = modName[slash_idx + 1..$-4] ~ "!__initLGPLHostExecutableDebugInfo\0";
+
     SYMBOL_INFO sym;
     sym.SizeOfStruct = SYMBOL_INFO.sizeof; 
 
     extern(C) void function(const(char)[]) initTrace;
-    if (SymFromName(GetCurrentProcess(), "__initLGPLHostExecutableDebugInfo".ptr, &sym)) {
+    if (SymFromName(GetCurrentProcess(), sym_name.ptr, &sym)) {
         initTrace = cast(typeof(initTrace))sym.Address;
         assert (initTrace !is null); 
         initTrace(modName);
