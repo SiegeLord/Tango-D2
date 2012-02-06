@@ -229,7 +229,6 @@ ifndef CC
     CC = gcc
 endif
 
-DLIB_PATH           = .
 IMPORT_PATH         = ./import
 PLAIN_DOC_PATH      = ./plain_documentation
 DOC_PATH            = ./documentation
@@ -238,8 +237,12 @@ BUILD_PATH          = ./objs
 DCFLAGS_IMPORT      =
 DCFLAGS_LINK        = $(LDCFLAGS)
 
-LIBNAME             = lib$(PROJECT_NAME)-$(COMPILER)$(STATIC_LIB_EXT)
-SONAME              = lib$(PROJECT_NAME)-$(COMPILER)$(DYNAMIC_LIB_EXT)
+ifndef LIBNAME
+    LIBNAME         = lib$(PROJECT_NAME)-$(COMPILER)
+endif
+
+STATIC_LIBNAME      = $(LIBNAME)$(STATIC_LIB_EXT)
+SHARED_LIBNAME      = $(LIBNAME)$(DYNAMIC_LIB_EXT)
 
 PKG_CONFIG_FILE     = $(PROJECT_NAME).pc
 

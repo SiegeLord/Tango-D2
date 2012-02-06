@@ -11,11 +11,11 @@ DDOCFILES               =
 # include some command
 include build/command.make
 
-OBJECTS             = $(patsubst %.d,$(BUILD_PATH)$(PATH_SEP)%.o,    $(SOURCES))
-PICOBJECTS          = $(patsubst %.d,$(BUILD_PATH)$(PATH_SEP)%.pic.o,$(SOURCES))
-HEADERS             = $(patsubst %.d,$(IMPORT_PATH)$(PATH_SEP)%.di,  $(SOURCES))
-PLAIN_DOC_FILES     = $(patsubst %.d,$(PLAIN_DOC_PATH)$(PATH_SEP)%.html,   $(SOURCES))
-DOC_FILES           = $(patsubst %.d,$(DOC_PATH)$(PATH_SEP)%.html,  $(SOURCES))
+OBJECTS             = $(patsubst %.d,$(BUILD_PATH)$(PATH_SEP)%.o,        $(SOURCES))
+PICOBJECTS          = $(patsubst %.d,$(BUILD_PATH)$(PATH_SEP)%.pic.o,    $(SOURCES))
+HEADERS             = $(patsubst %.d,$(IMPORT_PATH)$(PATH_SEP)%.di,      $(SOURCES))
+PLAIN_DOC_FILES     = $(patsubst %.d,$(PLAIN_DOC_PATH)$(PATH_SEP)%.html, $(SOURCES))
+DOC_FILES           = $(patsubst %.d,$(DOC_PATH)$(PATH_SEP)%.html,       $(SOURCES))
 DDOC_FLAGS          = $(foreach macro,$(DDOCFILES), $(DDOC_MACRO)$(macro))
 define make-lib
 	$(AR) rcs $@ $^
@@ -33,9 +33,9 @@ all-shared: static-shared header plain-doc pkgfile-shared
 .PHONY : doc
 .PHONY : clean
 
-static-lib: $(LIBNAME)
+static-lib: $(STATIC_LIBNAME)
 
-shared-lib: $(SONAME)
+shared-lib: $(SHARED_LIBNAME)
 
 header: $(HEADERS)
 	@echo ------------------ Building headers done
@@ -67,7 +67,7 @@ pkgfile-shared:
 	@echo Name: "$(PROJECT_NAME)"                                       >> $(PKG_CONFIG_FILE)
 	@echo Description: "$(DESCRIPTION)"                                 >> $(PKG_CONFIG_FILE)
 	@echo Version: "$(VERSION)"                                         >> $(PKG_CONFIG_FILE)
-	@echo Libs: $(LINKERFLAG)-l$(PROJECT_NAME)-$(COMPILER)              >> $(PKG_CONFIG_FILE)
+	@echo Libs: $(LINKERFLAG)-l$(LIB_NAME)                              >> $(PKG_CONFIG_FILE)
 	@echo Cflags: -I$(INCLUDE_DIR)sqlite $(LDCFLAGS)                    >> $(PKG_CONFIG_FILE)
 	@echo                                                               >> $(PKG_CONFIG_FILE)
 
@@ -86,7 +86,7 @@ pkgfile-static:
 	@echo Name: "$(PROJECT_NAME)"                                       >> $(PKG_CONFIG_FILE)
 	@echo Description: "$(DESCRIPTION)"                                 >> $(PKG_CONFIG_FILE)
 	@echo Version: "$(VERSION)"                                         >> $(PKG_CONFIG_FILE)
-	@echo Libs: $(LIB_DIR)$(PATH_SEP)$(LIBNAME)                         >> $(PKG_CONFIG_FILE)
+	@echo Libs: $(LIB_DIR)$(PATH_SEP)$(STATIC_LIBNAME)                  >> $(PKG_CONFIG_FILE)
 	@echo Cflags: -I$(INCLUDE_DIR)$(PATH_SEP)$(PROJECT_NAME) $(LDCFLAGS)>> $(PKG_CONFIG_FILE)
 	@echo
 
@@ -107,12 +107,12 @@ $(PLAIN_DOC_PATH):
 
 
 # For build lib need create object files and after run make-lib
-$(LIBNAME): $(OBJECTS)
+$(STATIC_LIBNAME): $(OBJECTS)
 	@echo ------------------ Building static library
 	$(make-lib)
 
 # For build shared lib need create shared object files
-$(SONAME): $(PICOBJECTS)
+$(SHARED_LIBNAME): $(PICOBJECTS)
 	@echo ------------------ Building shared library
 	$(DC) -shared $(OUTPUT)$@.$(VERSION) $^
 	#~ $(CC) -shared -Wl,-soname,$@.$(VERSION) -o $@.$(VERSION) $^
@@ -153,11 +153,11 @@ clean-shared-objects:
 	@echo ------------------ Cleaning shared-object done
 
 clean-static-lib:
-	$(RM) $(LIBNAME)
+	$(RM) $(STATIC_LIBNAME)
 	@echo ------------------ Cleaning static-lib done
 
 clean-shared-lib:
-	$(RM)  $(SONAME).$(VERSION)
+	$(RM)  $(SHARED_LIBNAME).$(VERSION)
 	@echo ------------------ Cleaning shared-lib done
 
 clean-header:
@@ -190,13 +190,13 @@ install-shared: install-shared-lib install-plain-doc install-header install-pkgf
 
 install-static-lib:
 	$(MKDIR) $(LIB_DIR)
-	$(CP) $(LIBNAME) $(DESTDIR)$(LIB_DIR)
+	$(CP) $(STATIC_LIBNAME) $(DESTDIR)$(LIB_DIR)
 	@echo ------------------ Installing static-lib done
 
 install-shared-lib:
 	$(MKDIR) $(LIB_DIR)
-	$(CP) $(SONAME) $(DESTDIR)$(LIB_DIR)
-	ln -s $(DESTDIR)$(LIB_DIR)$(SONAME).$(SO_VERSION)   $(DESTDIR)$(LIB_DIR)$(PATH_SEP)$(SONAME)
+	$(CP) $(SHARED_LIBNAME) $(DESTDIR)$(LIB_DIR)
+	ln -s $(DESTDIR)$(LIB_DIR)$(SHARED_LIBNAME).$(SO_VERSION)   $(DESTDIR)$(LIB_DIR)$(PATH_SEP)$(SHARED_LIBNAME)
 	@echo ------------------ Installing shared-lib done
 
 install-header:
