@@ -648,7 +648,6 @@ struct Args
                 dynamic;
 
         const(char)[]  os,
-                       gc,
                        lib,
                        root,
                        flags,
@@ -704,17 +703,6 @@ struct Args
                          p.defaults("solaris");
                 else
                    p.required;
-                
-                version (Windows)
-                        {
-                        l.defaults("tango");
-                        auto libext = ".lib";
-                        }
-                     else
-                        {
-                        l.defaults("libtango");
-                        auto libext = ".a";
-                        }
 
                 if (args.parse (arg))
                    {
@@ -727,9 +715,30 @@ struct Args
                    root = n.assigned()[0];
                    flags = o.assigned()[0];
                    compiler = c.assigned()[0];
-                   gc = g.assigned()[0];
-                   lib = l.assigned()[0];
                    march = m.assigned().length > 0 ? m.assigned()[0] : "";
+                   
+                   if(l.assigned().length == 0)
+                   {
+                        lib = "libtango-";
+                        switch(c.assigned()[0])
+                        {
+                            case "dmd":
+                                lib ~= "dmd";
+                                break;
+                            case "gdc":
+                                lib ~= "gdc";
+                                break;
+                            case "ldc2":
+                                lib ~= "ldc";
+                                break;
+                            default:
+                                assert(0);
+                        }
+                   }
+                   else
+                   {
+                       lib = l.assigned()[0];
+                   }
                        
                     if(compiler == "gdc" && flags == "-release")
                         flags = "-frelease";
@@ -745,7 +754,6 @@ struct Args
                    {
                        version (Windows)
                            lib ~= ".lib";
-                           
                        else
                            lib ~= ".a";
                    }
