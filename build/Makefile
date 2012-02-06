@@ -45,7 +45,7 @@ doc: $(DOCUMENTATIONS)
 	@echo ------------------ Building Doc done
 
 ddoc: $(DDOCUMENTATIONS)
-	$(DC) $(DDOC_FLAGS) index.d $(DF)$(DDOC_PATH)$(PATH_SEP)index.html
+	$(DC) $(DDOC_FLAGS) $(DVERSION)=TangoDoc index.d $(DF)$(DDOC_PATH)$(PATH_SEP)index.html
 	@echo ------------------ Building DDoc done
 
 geany-tag:
@@ -132,11 +132,11 @@ $(IMPORT_PATH)$(PATH_SEP)%.di : %.d
 
 # Generate Documentation
 $(DOC_PATH)$(PATH_SEP)%.html : %.d
-	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(DCFLAGS_IMPORT) -c $(NO_OBJ)  $< $(DF)$@
+	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(DCFLAGS_IMPORT) $(DVERSION)=TangoDoc -c $(NO_OBJ)  $< $(DF)$@
 
 # Generate ddoc Documentation
 $(DDOC_PATH)$(PATH_SEP)%.html : %.d
-	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(DCFLAGS_IMPORT) -c $(NO_OBJ) $(DDOC_FLAGS) $< $(DF)$@
+	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(DCFLAGS_IMPORT) $(DVERSION)=TangoDoc -c $(NO_OBJ) $(DDOC_FLAGS) $< $(DF)$@
 
 ############# CLEAN #############
 clean: clean-objects clean-static-lib clean-doc clean-header clean-pkgfile
