@@ -42,27 +42,29 @@ endif
 # Define command for copy, remove and create file/dir
 ifeq ($(OS),"Windows")
     RM    = del /Q
+    RMDIR = rmdir
     CP    = copy /Y
     MKDIR = mkdir
     MV    = move
 else ifeq ($(OS),"Linux")
-    RM    = rm -fr
+    RM    = rm -f
+    RMDIR = rmdir
     CP    = cp -fr
     MKDIR = mkdir -p
     MV    = mv
 else ifeq ($(OS),"Freebsd")
-    RM    = rm -fr
-    CP    = cp -fr
+    RM    = rm -f
+    RMDIR = rmdir
     MKDIR = mkdir -p
     MV    = mv
 else ifeq ($(OS),"Solaris")
-    RM    = rm -fr
-    CP    = cp -fr
+    RM    = rm -f
+    RMDIR = rmdir
     MKDIR = mkdir -p
     MV    = mv
 else ifeq ($(OS),"Darwin")
-    RM    = rm -fr
-    CP    = cp -fr
+    RM    = rm -f
+    RMDIR = rmdir
     MKDIR = mkdir -p
     MV    = mv
 endif
@@ -230,7 +232,7 @@ endif
 DLIB_PATH           = .
 IMPORT_PATH         = ./import
 PLAIN_DOC_PATH      = ./plain_documentation
-DOC_PATH           = ./documentation
+DOC_PATH            = ./documentation
 BUILD_PATH          = ./objs
 
 DCFLAGS_IMPORT      =

@@ -167,12 +167,10 @@ clean-header:
 
 clean-plain-doc:
 	$(RM) $(PLAIN_DOC_FILES)
-	$(RM) $(PLAIN_DOC_PATH)
 	@echo ------------------ Cleaning plain-doc done
 
 clean-doc:
 	$(RM) $(DOC_PATH)$(PATH_SEP)index.html
-	$(RM) $(DOC_PATH)
 	@echo ------------------ Cleaning doc done
 
 clean-geany-tag:
