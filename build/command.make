@@ -266,7 +266,6 @@ export DCFLAGS
 export DCFLAGS_IMPORT
 export DCFLAGS_LINK
 export DESTDIR
-export DLIB_PATH
 export PLAIN_DOC_PATH
 export DOC_PATH
 export SHARED_LIB_EXT
@@ -292,4 +291,5 @@ export PREFIX
 export RANLIB
 export RM
 export STATIC_LIB_EXT
-export SONAME
+export STATIC_LIBNAME
+export SHARED_LIBNAME
