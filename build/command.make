@@ -1,7 +1,7 @@
 ifdef SystemRoot
     OS              = "Windows"
     STATIC_LIB_EXT  = .lib
-    DYNAMIC_LIB_EXT = .dll
+    SHARED_LIB_EXT = .dll
     PATH_SEP        =\
     message         = @(echo $1)
     SHELL           = cmd.exe
@@ -14,25 +14,25 @@ else
     ifeq ($(shell uname), Linux)
         OS              = "Linux"
         STATIC_LIB_EXT  = .a
-        DYNAMIC_LIB_EXT = .so
+        SHARED_LIB_EXT = .so
         message         = @(echo \033[31m $1 \033[0;0m1)
         Filter          = tango/sys/win32/%.d tango/sys/darwin/%.d tango/sys/freebsd/%.d tango/sys/solaris/%.d
     else ifeq ($(shell uname), Solaris)
         STATIC_LIB_EXT  = .a
-        DYNAMIC_LIB_EXT = .so
+        SHARED_LIB_EXT = .so
         OS              = "Solaris"
         message         = @(echo \033[31m $1 \033[0;0m1)
         Filter          = tango/sys/win32/%.d tango/sys/linux/%.d tango/sys/darwin/%.d tango/sys/freebsd/%.d
     else ifeq ($(shell uname),Freebsd)
         STATIC_LIB_EXT  = .a
-        DYNAMIC_LIB_EXT = .so
+        SHARED_LIB_EXT = .so
         OS              = "Freebsd"
         FixPath         = $1
         message         = @(echo \033[31m $1 \033[0;0m1)
         Filter          = tango/sys/win32/%.d tango/sys/linux/%.d tango/sys/darwin/%.d tango/sys/solaris/%.d
     else ifeq ($(shell uname),Darwin)
         STATIC_LIB_EXT  = .a
-        DYNAMIC_LIB_EXT = .so
+        SHARED_LIB_EXT = .so
         OS              = "Darwin"
         message         = @(echo \033[31m $1 \033[0;0m1)
         Filter          = tango/sys/win32/%.d tango/sys/linux/%.d tango/sys/freebsd/%.d tango/sys/solaris/%.d
@@ -242,7 +242,7 @@ ifndef LIBNAME
 endif
 
 STATIC_LIBNAME      = $(LIBNAME)$(STATIC_LIB_EXT)
-SHARED_LIBNAME      = $(LIBNAME)$(DYNAMIC_LIB_EXT)
+SHARED_LIBNAME      = $(LIBNAME)$(SHARED_LIB_EXT)
 
 PKG_CONFIG_FILE     = $(PROJECT_NAME).pc
 
@@ -269,7 +269,7 @@ export DESTDIR
 export DLIB_PATH
 export PLAIN_DOC_PATH
 export DOC_PATH
-export DYNAMIC_LIB_EXT
+export SHARED_LIB_EXT
 export FixPath
 export HF
 export INCLUDE_DIR
