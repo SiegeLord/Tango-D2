@@ -68,7 +68,7 @@ pkgfile-shared:
 	@echo Description: "$(DESCRIPTION)"                                 >> $(PKG_CONFIG_FILE)
 	@echo Version: "$(VERSION)"                                         >> $(PKG_CONFIG_FILE)
 	@echo Libs: $(LINKERFLAG)-l$(LIB_NAME)                              >> $(PKG_CONFIG_FILE)
-	@echo Cflags: -I$(INCLUDE_DIR)sqlite $(LDCFLAGS)                    >> $(PKG_CONFIG_FILE)
+	@echo Cflags: -I$(INCLUDE_DIR)$(PATH_SEP)$(PROJECT_NAME) $(LDCFLAGS)>> $(PKG_CONFIG_FILE)
 	@echo                                                               >> $(PKG_CONFIG_FILE)
 
 pkgfile-static:
