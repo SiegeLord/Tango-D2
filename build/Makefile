@@ -26,7 +26,7 @@ endef
 ############# BUILD #############
 all: static-lib header doc pkgfile-static
 	@echo ------------------ Building $^ done
-all-shared: static-shared header doc pkgfile-shared
+all-shared: shared-lib header doc pkgfile-shared
 	@echo ------------------ Building $^ done
 
 .PHONY : pkgfile
