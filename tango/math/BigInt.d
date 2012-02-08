@@ -1,7 +1,14 @@
 module tango.math.BigInt;
 
-pragma(msg, "tango.math.BigInt is deprecated. Please use std.bigint instead.");
+version(NoPhobos)
+{
+	
+}
+else
+{
+	pragma(msg, "tango.math.BigInt is deprecated. Please use std.bigint instead.");
 
-deprecated:
+	deprecated:
 
-public import std.bigint; 
+	public import std.bigint; 
+}
