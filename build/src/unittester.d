@@ -88,19 +88,20 @@ void main(const(char)[][] args)
 	{
 		version(Windows)
 		{
-			compiler_options = "-unittest tango.lib -debug=UnitTest";
+			compiler_options = "-unittest libtango-dmd.lib -debug=UnitTest";
 		}
 		else
 		{
 			switch(compiler)
 			{
-				default: goto case;
 				case "dmd":
-					compiler_options = "-unittest -L-ltango -debug=UnitTest";
+					compiler_options = "-unittest -L-ltango-dmd -debug=UnitTest";
 					break;
 				case "ldc2":
-					compiler_options = "-unittest -L-ltango -d-debug=UnitTest";
+					compiler_options = "-unittest -L-ltango-ldc -d-debug=UnitTest";
 					break;
+				default:
+					assert(0, "Unsupported compiler.");
 			}
 		}
 	}
