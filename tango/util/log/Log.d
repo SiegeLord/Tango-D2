@@ -211,7 +211,7 @@ public struct Log
 
         ***********************************************************************/
 
-        static this ()
+        shared static this ()
         {
                 base = new Hierarchy ("tango");
 
@@ -1494,7 +1494,7 @@ public class Appender
 
         ***********************************************************************/
 
-        static this ()
+        shared static this ()
         {
                 generic = new LayoutTimer;
         }

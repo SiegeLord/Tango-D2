@@ -629,15 +629,15 @@ body
         throw new Exception("Could not load symbol: " ~ funcName.idup);
 }
 
-static SharedLib ssllib = null;
+static __gshared SharedLib ssllib = null;
 version(Win32)
 {
-    static SharedLib eaylib = null;
+    static __gshared SharedLib eaylib = null;
 }
 version(darwin){
-    static SharedLib cryptolib = null;
+    static __gshared SharedLib cryptolib = null;
 }
-static ReadWriteMutex[] _locks = null;
+static __gshared ReadWriteMutex[] _locks = null;
 
 
 void throwOpenSSLError()
@@ -700,7 +700,7 @@ void _initOpenSSL()
     } 
 }
 
-static this()
+shared static this()
 {
     version(Win32)
         loadEAY32();

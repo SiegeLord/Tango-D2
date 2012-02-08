@@ -37,7 +37,7 @@ import tango.math.random.Twister;
   */
 UuidGen randUuid;
 
-static this ()
+shared static this ()
 {
         Twister rand;
         rand.seed();

@@ -232,12 +232,12 @@ class TempFile : File
      * TempStyle for creating a transient temporary file that only the current
      * user can access.
      */
-    static const TempStyle Transient = {Transience.Transient};
+    static __gshared const TempStyle Transient = {Transience.Transient};
     /**
      * TempStyle for creating a permanent temporary file that only the current
      * user can access.
      */
-    static const TempStyle Permanent = {Transience.Permanent};
+    static __gshared const TempStyle Permanent = {Transience.Permanent};
 
     // Path to the temporary file
     private char[] _path;
@@ -288,11 +288,11 @@ class TempFile : File
 
     version( Win32 )
     {
-        private static const DEFAULT_LENGTH = 6;
-        private static const DEFAULT_PREFIX = "~t";
-        private static const DEFAULT_SUFFIX = ".tmp";
+        private static enum DEFAULT_LENGTH = 6;
+        private static enum DEFAULT_PREFIX = "~t";
+        private static enum DEFAULT_SUFFIX = ".tmp";
 
-        private static const JUNK_CHARS =
+        private static enum JUNK_CHARS =
             "abcdefghijklmnopqrstuvwxyz0123456789";
 
        /**********************************************************************
@@ -335,13 +335,13 @@ class TempFile : File
     }
     else version( Posix )
     {
-        private static const DEFAULT_LENGTH = 6;
-        private static const DEFAULT_PREFIX = ".tmp";
+        private static enum DEFAULT_LENGTH = 6;
+        private static enum DEFAULT_PREFIX = ".tmp";
 
         // Use "~" to work around a bug in DMD where it elides empty constants
-        private static const DEFAULT_SUFFIX = "~";
+        private static enum DEFAULT_SUFFIX = "~";
 
-        private static const JUNK_CHARS =
+        private static enum JUNK_CHARS =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             "abcdefghijklmnopqrstuvwxyz0123456789";
 

@@ -2065,9 +2065,9 @@ debug( UnitTest )
     }
 }
 
-const char[dchar] utf8_to_cp437_map;
+__gshared const char[dchar] utf8_to_cp437_map;
 
-static this()
+shared static this()
 {
     utf8_to_cp437_map = [
         '\u0000': '\x00', '\u263a': '\x01', '\u263b': '\x02', '\u2665': '\x03',

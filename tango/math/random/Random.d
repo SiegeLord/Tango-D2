@@ -1234,7 +1234,7 @@ alias RandomG!(Sync!(DefaultEngine)) RandomSync;
 /// shared locked (threadsafe) random number generator
 /// initialized with urandom if available, with time otherwise
 static __gshared RandomSync rand;
-static this ()
+shared static this ()
 {
     rand = new RandomSync(false);
     version(has_urandom){

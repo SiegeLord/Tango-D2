@@ -56,7 +56,7 @@ else
         extern (C) char*** _NSGetEnviron();
         private __gshared char** environ;
         
-        static this ()
+        shared static this ()
         {
             environ = *_NSGetEnviron();
         }

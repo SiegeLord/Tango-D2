@@ -717,18 +717,18 @@ void loadWinAPIFunctions() {
 
 
 extern (Windows) {
-    fp_SymFromAddr      SymFromAddr;
-    fp_SymFromName      SymFromName;
-    fp_SymLoadModule64  SymLoadModule64;
-    fp_SymInitialize            SymInitialize;
-    fp_SymCleanup           SymCleanup;
-    fp_SymSetOptions        SymSetOptions;
-    fp_SymGetLineFromAddr64 SymGetLineFromAddr64;
-    fp_SymEnumSymbols           SymEnumSymbols;
-    fp_SymGetModuleBase64   SymGetModuleBase64;
-    fp_GetModuleFileNameExA     GetModuleFileNameExA;
-    fp_StackWalk64                      StackWalk64;
-    fp_SymFunctionTableAccess64 SymFunctionTableAccess64;
+    __gshared fp_SymFromAddr      SymFromAddr;
+    __gshared fp_SymFromName      SymFromName;
+    __gshared fp_SymLoadModule64  SymLoadModule64;
+    __gshared fp_SymInitialize            SymInitialize;
+    __gshared fp_SymCleanup           SymCleanup;
+    __gshared fp_SymSetOptions        SymSetOptions;
+    __gshared fp_SymGetLineFromAddr64 SymGetLineFromAddr64;
+    __gshared fp_SymEnumSymbols           SymEnumSymbols;
+    __gshared fp_SymGetModuleBase64   SymGetModuleBase64;
+    __gshared fp_GetModuleFileNameExA     GetModuleFileNameExA;
+    __gshared fp_StackWalk64                      StackWalk64;
+    __gshared fp_SymFunctionTableAccess64 SymFunctionTableAccess64;
 
 
     alias DWORD function(
@@ -1065,7 +1065,7 @@ class GlobalDebugInfo {
 }
 
 private __gshared GlobalDebugInfo globalDebugInfo;
-static this() {
+shared static this() {
     globalDebugInfo = new GlobalDebugInfo;
 }
 
@@ -1877,7 +1877,7 @@ extern (C) {
     }
 }
 //#line 2 "parts/Init.di"
-static this() {
+shared static this() {
     loadWinAPIFunctions();
 
     for (fiberRunFuncLength = 0; fiberRunFuncLength < 0x100; ++fiberRunFuncLength) {

@@ -637,7 +637,7 @@ Lsplit:
         }
     }
 
-    static this() {
+    shared static this() {
         find_symbols();
     }
 

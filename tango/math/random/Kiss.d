@@ -77,9 +77,9 @@ struct Kiss
 
         **********************************************************************/
 
-        public static Kiss instance; 
+        public static __gshared Kiss instance; 
 
-        static this ()
+        shared static this ()
         {
                 instance.seed();
         }

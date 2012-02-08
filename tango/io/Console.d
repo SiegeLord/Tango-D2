@@ -626,7 +626,7 @@ static __gshared Console.Output   Cerr; /// The standard error stream.
 
 ******************************************************************************/
 
-static this ()
+shared static this ()
 {
         auto conduit = new Console.Conduit (0);
         Cin  = new Console.Input (conduit, conduit.redirected);

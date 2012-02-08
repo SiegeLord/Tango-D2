@@ -296,9 +296,9 @@ version (Win32)
                 //char* inet_ntop(int af, void *src, char *dst, int len);
         }
 
-        private HMODULE lib;
+        private __gshared HMODULE lib;
 
-        static this()
+        shared static this()
         {
                 lib = LoadLibraryA ("Ws2_32.dll");
                 getnameinfo = cast(typeof(getnameinfo)) GetProcAddress(lib, "getnameinfo");

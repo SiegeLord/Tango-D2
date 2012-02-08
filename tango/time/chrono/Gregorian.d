@@ -60,7 +60,7 @@ class Gregorian : Calendar
         /**
         * create a generic instance of this calendar
         */
-        static this()
+        shared static this()
         {       
                 generic = new Gregorian;
         }

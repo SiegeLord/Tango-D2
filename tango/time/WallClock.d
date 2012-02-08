@@ -265,7 +265,7 @@ version (Posix)
     version (darwin) {}
     else
     {
-        static this()
+        shared static this()
         {
             tzset();
         }

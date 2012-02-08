@@ -80,9 +80,9 @@ class Uri : UriView
                                 fragment_;
         private HeapSlice       decoded;
 
-        private static ubyte    map[];
+        private static __gshared ubyte    map[];
 
-        private static short[immutable(char)[]] genericSchemes;
+        private static __gshared short[immutable(char)[]] genericSchemes;
 
         private enum immutable(char)[] hexDigits = "0123456789abcdef";
 
@@ -143,7 +143,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        static this ()
+        shared static this ()
         {
                 // Map known generic schemes to their default port. Specify
                 // InvalidPort for those schemes that don't use ports. Note
