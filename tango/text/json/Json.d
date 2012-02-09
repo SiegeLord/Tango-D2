@@ -612,7 +612,7 @@ class Json(T) : JsonParser!(T)
 
                 ***************************************************************/
 
-                T[] toString (T[] dst)
+                T[] toString (T[] dst = null)
                 {
                         if (type is Type.RawString)
                             /* Bad dup */
