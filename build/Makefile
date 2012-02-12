@@ -32,6 +32,7 @@ all-shared: static-shared header plain-doc pkgfile-shared
 .PHONY : plain-doc
 .PHONY : doc
 .PHONY : clean
+.PHONY : .FORCE
 
 static-lib: $(STATIC_LIBNAME)
 
@@ -118,11 +119,11 @@ $(SHARED_LIBNAME): $(PICOBJECTS)
 	#~ $(CC) -shared -Wl,-soname,$@.$(VERSION) -o $@.$(VERSION) $^
 
 # create object files
-$(BUILD_PATH)$(PATH_SEP)%.o : %.d
+$(BUILD_PATH)$(PATH_SEP)%.o : %.d .FORCE
 	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(DCFLAGS_IMPORT) -c $< $(OUTPUT)$@
 
 # create shared object files
-$(BUILD_PATH)$(PATH_SEP)%.pic.o : %.d
+$(BUILD_PATH)$(PATH_SEP)%.pic.o : %.d .FORCE
 	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(FPIC) $(DCFLAGS_IMPORT) -c $< $(OUTPUT)$@
 
 # Generate Header files
