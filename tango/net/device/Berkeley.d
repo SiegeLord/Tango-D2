@@ -1918,7 +1918,7 @@ public class NetHost
 
                 if (i)
                    {
-                   aliases = new char[][i];
+                   aliases = new const(char)[][i];
                    for (i = 0; i != aliases.length; i++)
                         aliases[i] = fromStringz(he.h_aliases[i]);
                    }
