@@ -3694,7 +3694,7 @@ class RegExpT(char_t)
 
         debug(TangoRegex) {}
         else {
-             static if ( is(char_t == dchar) ) {
+            static if ( is(char_t == dchar) ) {
                 scope tnfa_t tnfa_ = new tnfa_t(pattern_);
             }
             else {
