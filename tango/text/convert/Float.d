@@ -96,7 +96,7 @@ private enum
 
 NumType toFloat(T) (const(T[]) src)
 {
-        uint len;
+        size_t len;
 
         auto x = parse (src, &len);
         if (len < src.length || len == 0)
