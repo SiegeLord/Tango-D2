@@ -61,8 +61,8 @@ public class AppendMail : Appender
 
         override final void append (LogEvent event)
         {
-					synchronized
-					{
+            synchronized
+            {
                 auto conduit = new Socket;
                 scope (exit)
                        conduit.close();
@@ -81,7 +81,7 @@ public class AppendMail : Appender
                 layout.format (event, &emit.write);
                 emit.append ("\r\n.\r\nQUIT\r\n");
                 emit.flush();
-					}
+            }
         }
 
         /***********************************************************************

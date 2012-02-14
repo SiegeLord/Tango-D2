@@ -18,9 +18,9 @@ version(has_urandom) {
     /// This is an engine, do not use directly, use RandomG!(Urandom)
     /// should use stdc rad/write?
     struct URandom{
-        static File.Style readStyle;
-        static Mutex lock;
-        static this(){
+        static __gshared File.Style readStyle;
+        static __gshared Mutex lock;
+        shared static this(){
             readStyle.access=File.Access.Read;
             readStyle.open  =File.Open.Exists;
             readStyle.share =File.Share.Read;

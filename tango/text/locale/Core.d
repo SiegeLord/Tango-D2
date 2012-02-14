@@ -215,7 +215,7 @@ public class Culture : IFormatService {
   private NumberFormat numberFormat_;
   private DateTimeFormat dateTimeFormat_;
 
-  static this() {
+  shared static this() {
     invariantCulture_ = new Culture(LCID_INVARIANT);
     invariantCulture_.isReadOnly_ = true;
 

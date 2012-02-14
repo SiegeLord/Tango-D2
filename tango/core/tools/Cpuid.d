@@ -748,7 +748,7 @@ void cpuidSparc()
 }
 
 
-static this()
+shared static this()
 {
     if (hasCPUID()) {
         cpuidX86();

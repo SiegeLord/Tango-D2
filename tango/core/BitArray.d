@@ -193,6 +193,7 @@ struct BitArray
      *  ba2[] = ba; // perform the copy
      *  ba[0] = true;
      *  assert(ba2[0] == false);
+     *  --------------------
      */
      BitArray opSliceAssign(BitArray rhs)
      in

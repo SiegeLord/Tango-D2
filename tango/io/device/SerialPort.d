@@ -214,9 +214,9 @@ class SerialPort : Device
     }
 
     version(Posix) {
-        private static speed_t[uint] baudRates;
+        private __gshared static speed_t[uint] baudRates;
 
-        static this()
+        shared static this()
         {
             baudRates[50] = B50;
             baudRates[75] = B75;

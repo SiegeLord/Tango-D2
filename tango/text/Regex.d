@@ -10,8 +10,8 @@
 
     This is a regular expression compiler and interpreter based on the Tagged NFA/DFA method.
 
-		The Regex class is not thread safe
-		
+    The Regex class is not thread safe
+
     See <a href="http://en.wikipedia.org/wiki/Regular_expression">Wikpedia's article on regular expressions</a>
     for details on regular expressions in general.
 
@@ -67,11 +67,10 @@
     $(TR $(TD \d) $(TD digits) )
     $(TR $(TD \D) $(TD non-digit) )
     </table>
-		
-		Note that "alphanumeric" only applies to Latin-1.
+
+    Note that "alphanumeric" only applies to Latin-1.
 *******************************************************************************/
 module tango.text.Regex;
-
 
 debug(TangoRegex) import tango.io.Stdout;
 
@@ -934,7 +933,7 @@ unittest
     assert(cc.toString(),  "[(0)-(11)(14)-'d']");
     cc.negate();
     assert(cc.toString(),  "[(12)-(13)'e'-(ff)]");
-    
+
     static CharClass!(char) cc2 = { parts: [] };
     assert(cc.toString(),  "[]");
     cc2.optimize();
@@ -945,19 +944,19 @@ unittest
     assert(cc.toString(),  "[(0)-(ff)]");
     cc2.negate();
     assert(cc.toString(),  "[]");
-    
+
     static CharClass!(char) cc3 = { parts: [{l_:0,r_:100},{l_:200,r_:0xff},] };
     assert(cc3.toString(), "[(0)-'d'(c8)-(ff)]");
     cc3.negate();
     assert(cc.toString(),  "['e'-(c7)]");
     cc3.negate();
     assert(cc.toString(),  "[(0)-'d'(c8)-(ff)]");
-    
+
     static CharClass!(char) cc4 = { parts: [{l_:0,r_:200},{l_:100,r_:0xff},] };
     assert(cc.toString(),  "[(0)-(c8)'d'-(ff)]");
     cc4.optimize();
     assert(cc.toString(),  "[(9)-(13)(20)-'~'(a0)-(ff)(100)-(17f)(180)-(24f)(20a3)-(20b5)]");
-    
+
     static CharClass!(dchar) cc5 = { parts: [{l_:0x9,r_:0x13},{0x20,r_:'~'},{l_:0xa0,r_:0xff},{l_:0x100,r_:0x17f},{l_:0x180,r_:0x24f},{l_:0x20a3,r_:0x20b5}] };
     cc5.optimize();
     assert(cc.toString(),  "[(9)-(13)(20)-'~'(a0)-(24f)(20a3)-(20b5)]");
@@ -1247,9 +1246,9 @@ private class TNFATransition(char_t)
 
     /******************************************************************************
         Move through states only going via epsilon transitions, and only choosing
-        the one with highest priority. If the highest priority transition from a 
-        state isn't an epsilon transition, false is returned. 
-        If the accepting NFA state can be reached in this manner, true is returned. 
+        the one with highest priority. If the highest priority transition from a
+        state isn't an epsilon transition, false is returned.
+        If the accepting NFA state can be reached in this manner, true is returned.
 
         NOTE: This method does not look for cycles which should be kept in mind for
         later. larsivi 20090827
@@ -1265,7 +1264,7 @@ private class TNFATransition(char_t)
             }
             if (!(highestPriTrans.predicate.type == Predicate!(char_t).Type.epsilon))
                 return false;
-            
+
             t = highestPriTrans.target;
         }
         return true;
@@ -2030,7 +2029,11 @@ private:
                         default:
                             break;
                     }
+<<<<<<< HEAD
 										goto default;
+=======
+                    goto default;
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                 default:
                     if ( have_range_start )
                         trans.predicate.appendInput(range_t(last));
@@ -3505,7 +3508,7 @@ private:
                             sorted_elms[$-1].nfa_state))
                     throw new Exception ("Something is NULL that is expected to
                             be non-null", __FILE__, __LINE__);
-														
+
                 foreach ( trans; sorted_elms[$-1].nfa_state.transitions ) {
                     if (trans.canFinish()) {
                         r.dfa_state.reluctant = true;
@@ -3694,13 +3697,15 @@ class RegExpT(char_t)
         pattern_ = pattern;
 
         debug(TangoRegex) {}
-        else { scope tnfa_t tnfa_; }
-        static if ( is(char_t == dchar) ) {
-            tnfa_ = new tnfa_t(pattern_);
-        }
         else {
-            tnfa_ = new tnfa_t(tango.text.convert.Utf.toString32(pattern_));
+            static if ( is(char_t == dchar) ) {
+                scope tnfa_t tnfa_ = new tnfa_t(pattern_);
+            }
+            else {
+                scope tnfa_t tnfa_ = new tnfa_t(tango.text.convert.Utf.toString32(pattern_));
+            }
         }
+       
         tnfa_.swapMatchingBracketSyntax = swapMBS;
         tnfa_.parse(unanchored);
         if ( printNFA ) {
@@ -4369,9 +4374,9 @@ class RegExpT(char_t)
     /*********************************************************************************************
         Get the pattern with which this regex was constructed.
     **********************************************************************************************/
-    public const(char_t)[] pattern() 
-    { 
-        return pattern_; 
+    public const(char_t)[] pattern()
+    {
+        return pattern_;
     }
 
     /*********************************************************************************************
@@ -4743,7 +4748,7 @@ debug(UnitTest)
         assert(r.match(1) == "a☃");
 
 
-				
+
         // two captures
         r = new Regex("(.)(.)");
         assert(r.test("a☃c123"));
@@ -4762,11 +4767,11 @@ debug(UnitTest)
         assert(r.match(1) == "☃☃☃☃☃", "Expected: ☃☃☃☃☃ Got: " ~ r.match(1));
         assert(!r.test("abeua"));
 
-        /** 
+        /**
            "*" quantifier bug. In "(☃+)" pattern test ((r.match(0) == "☃☃☃☃☃")&&(r.match(1) == "☃☃☃☃☃")) has passed.
         */
         // multiple snowmen
-        r = new Regex("(☃+)"); 
+        r = new Regex("(☃+)");
         assert(r.test("a☃☃☃☃☃c123"));
         assert(r.match(0) == "☃☃☃☃☃");
         assert(r.match(1) == "☃☃☃☃☃");

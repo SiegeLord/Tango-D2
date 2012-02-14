@@ -29,7 +29,7 @@ public class StringComparer {
   private Culture culture_;
   private bool ignoreCase_;
 
-  static this() {
+  shared static this() {
     invariant_ = new StringComparer(Culture.invariantCulture(), false);
     invariantIgnoreCase_ = new StringComparer(Culture.invariantCulture(), true);
   }
@@ -124,7 +124,7 @@ public class StringSorter {
   private Culture culture_;
   private StringComparison comparison_;
 
-  static this() {
+  shared static this() {
     invariant_ = new StringSorter(StringComparer.invariantCulture());
     invariantIgnoreCase_ = new StringSorter(StringComparer.invariantCultureIgnoreCase());
   }

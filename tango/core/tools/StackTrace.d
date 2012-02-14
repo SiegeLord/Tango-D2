@@ -16,6 +16,8 @@ import tango.core.Traits: ctfe_i2a;
 import tango.stdc.string;
 import tango.stdc.stringz : fromStringz;
 import tango.stdc.stdlib: abort;
+import tango.core.tools.FrameInfo;
+
 version(Windows){
     import tango.core.tools.WinStackTrace;
 } else {
@@ -29,9 +31,9 @@ version(linux){
 }
 
 version(CatchRecursiveTracing){
-    ThreadLocal!(int) recursiveStackTraces;
+    __gshared ThreadLocal!(int) recursiveStackTraces;
 
-    static this(){
+    shared static this(){
         recursiveStackTraces=new ThreadLocal!(int)(0);
     }
 }
@@ -47,11 +49,11 @@ version(Windows){
 }
 
 alias size_t function(TraceContext* context,TraceContext* contextOut,size_t*traceBuf,size_t bufLength,int *flags) AddrBacktraceFunc;
-AddrBacktraceFunc addrBacktraceFnc;
+__gshared AddrBacktraceFunc addrBacktraceFnc;
 alias bool function(ref FrameInfo fInfo,TraceContext* context,char[] buf) SymbolizeFrameInfoFnc;
-SymbolizeFrameInfoFnc symbolizeFrameInfoFnc;
+__gshared SymbolizeFrameInfoFnc symbolizeFrameInfoFnc;
 
-static this(){
+shared static this(){
     addrBacktraceFnc=&defaultAddrBacktrace;
     symbolizeFrameInfoFnc=&defaultSymbolizeFrameInfo;
 }
@@ -93,8 +95,8 @@ extern(C) bool rt_symbolizeFrameInfo(ref FrameInfo fInfo,TraceContext* context,c
 }
 
 // names of the functions that should be ignored for the backtrace
-int[const(char)[]] internalFuncs;
-static this(){
+__gshared int[const(char)[]] internalFuncs;
+shared static this(){
     internalFuncs["D5tango4core10stacktrace10StackTrace20defaultAddrBacktraceFPS5tango4core10stacktrace10StackTrace12TraceContextPS5tango4core10stacktrace10StackTrace12TraceContextPkkPiZk"]=1;
     internalFuncs["_D5tango4core10stacktrace10StackTrace20defaultAddrBacktraceFPS5tango4core10stacktrace10StackTrace12TraceContextPS5tango4core10stacktrace10StackTrace12TraceContextPmmPiZm"]=1;
     internalFuncs["rt_addrBacktrace"]=1;
@@ -284,9 +286,14 @@ version(DladdrSymbolification){
     }
 }
 
-
 version(ElfSymbolification){
-
+version(TangoDoc)
+{
+    bool elfSymbolizeFrameInfo(ref FrameInfo fInfo,
+        TraceContext* context, char[] buf);
+}
+else
+{
     bool elfSymbolizeFrameInfo(ref FrameInfo fInfo,
         TraceContext* context, char[] buf)
     {
@@ -319,6 +326,8 @@ version(ElfSymbolification){
         StaticSectionInfo.resolveLineNumber(fInfo);
         return true;
     }
+
+}
 }
 
 /// loads symbols for the given frame info with the methods defined in tango itself
@@ -404,7 +413,7 @@ version(Posix){
         abort();
     }
 
-    sigaction_t fault_action;
+    __gshared sigaction_t fault_action;
 
     void setupSegfaultTracer(){
         //use an alternative stack; this is useful when infinite recursion
@@ -426,7 +435,7 @@ version(Posix){
 
     version(noSegfaultTrace){
     } else {
-        static this(){
+        shared static this(){
             setupSegfaultTracer();
         }
     }

@@ -20,8 +20,17 @@ private import  tango.core.Exception;
 
 private import  Integer = tango.text.convert.Integer;
 
+<<<<<<< HEAD
 private import  tango.stdc.string : memchr;
+=======
+/*******************************************************************************
 
+        external links
+
+*******************************************************************************/
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
+
+extern(C) void* memchr(in void* s, int c, size_t n);
 
 /*******************************************************************************
 
@@ -75,9 +84,9 @@ class Uri : UriView
                                 fragment_;
         private HeapSlice       decoded;
 
-        private static ubyte    map[];
+        private static __gshared ubyte    map[];
 
-        private static short[immutable(char)[]] genericSchemes;
+        private static __gshared short[immutable(char)[]] genericSchemes;
 
         private enum immutable(char)[] hexDigits = "0123456789abcdef";
 
@@ -138,7 +147,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        static this ()
+        shared static this ()
         {
                 // Map known generic schemes to their default port. Specify
                 // InvalidPort for those schemes that don't use ports. Note
@@ -762,12 +771,20 @@ class Uri : UriView
         final const(char)[] extendQuery (const(char)[] tail)
         {
                 if (tail.length)
+<<<<<<< HEAD
 								{
+=======
+                {
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                     if (query_.length)
                         query_ = query_ ~ "&" ~ tail;
                     else
                        query_ = tail;
+<<<<<<< HEAD
 								}
+=======
+                }
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                 return query_;
         }
 

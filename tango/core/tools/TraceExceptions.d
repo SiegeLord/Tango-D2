@@ -14,6 +14,6 @@ import tango.core.tools.StackTrace;
 
 extern (C) void  rt_setTraceHandler( TraceHandler h );
 
-static this(){
+shared static this(){
     rt_setTraceHandler(&basicTracer);
 }

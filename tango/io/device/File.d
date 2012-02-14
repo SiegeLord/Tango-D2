@@ -327,7 +327,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        static void[] get (char[] path, void[] dst = null)
+        static void[] get (const(char)[] path, void[] dst = null)
         {
                 scope file = new File (path);
 

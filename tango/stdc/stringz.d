@@ -16,28 +16,42 @@ module tango.stdc.stringz;
  * Convert array of chars to a C-style 0 terminated string.
  * Providing a tmp will use that instead of the heap, where
  * appropriate.
+ * 
+ * Warning, don't read from the memory pointed to in the tmp variable after calling this function.
  */
 
-const(char)* toStringz (const(char)[] s, char[] tmp=null)
+inout(char)* toStringz (inout(char)[] s, char[] tmp=null)
 {
-        enum char[] empty = "\0".dup;
-
         auto len = s.length;
         if (s.ptr)
+<<<<<<< HEAD
 				{
             if (len is 0)
 						{
                 s = empty;
 						}
+=======
+        {
+            if (len is 0)
+            {
+                s = cast(inout(char)[])("\0".dup);
+            }
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
             else if (s[len-1] != 0)
             {
                   if (tmp.length <= len)
                       tmp = new char[len+1];
                   tmp [0..len] = s;
                   tmp [len] = 0;
+<<<<<<< HEAD
                   s = tmp;
 						}	
 				}
+=======
+                  s = cast(inout(char)[])tmp;
+            }
+        }
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
         return s.ptr;
 }
 
@@ -47,11 +61,13 @@ const(char)* toStringz (const(char)[] s, char[] tmp=null)
  * This is handy for efficiently converting multiple strings at once.
  *
  * Returns a populated slice of dst
+ * 
+ * Warning, don't read from the memory pointed to in the tmp variable after calling this function.
  *
  * Since: 0.99.7
  */
 
-const(char)*[] toStringz (char[] tmp, const(char)*[] dst, const(char[][]) strings...)
+inout(char)*[] toStringz (char[] tmp, inout(char)*[] dst, inout(char)[][] strings...)
 {
         assert (dst.length >= strings.length);
 
@@ -82,11 +98,11 @@ inout(char)[] fromStringz (inout(char)* s)
  * Convert array of wchars s[] to a C-style 0 terminated string.
  */
 
-const(wchar)* toString16z (const(wchar)[] s)
+inout(wchar)* toString16z (inout(wchar)[] s)
 {
         if (s.ptr)
             if (! (s.length && s[$-1] is 0))
-                   s = s ~ "\0"w;
+                   s = cast(inout(wchar)[])(s ~ "\0"w);
         return s.ptr;
 }
 
@@ -103,11 +119,11 @@ inout(wchar)[] fromString16z (inout(wchar)* s)
  * Convert array of dchars s[] to a C-style 0 terminated string.
  */
 
-const(dchar)* toString32z (const(dchar)[] s)
+inout(dchar)* toString32z (inout(dchar)[] s)
 {
         if (s.ptr)
             if (! (s.length && s[$-1] is 0))
-                   s = s ~ "\0"d;
+                   s = cast(inout(dchar)[])(s ~ "\0"d);
         return s.ptr;
 }
 

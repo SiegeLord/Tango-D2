@@ -113,7 +113,7 @@ public static __gshared Output Stderr; /// global error output
 public alias Stdout            stdout; /// alternative
 public alias Stderr            stderr; /// alternative
 
-static this ()
+shared static this ()
 {
         // note that a static-ctor inside Layout fails
         // to be invoked before this is executed (bug)

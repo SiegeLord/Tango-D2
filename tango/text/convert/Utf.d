@@ -59,9 +59,9 @@ public extern (C) void onUnicodeError (const(char[]) msg, size_t idx = 0);
 
 *******************************************************************************/
 
-inout(char[])  toString (inout(char[]) src, char[] dst, size_t* ate=null) {return src;}
-inout(wchar[]) toString (inout(wchar[]) src, wchar[] dst, size_t* ate=null) {return src;}
-inout(dchar[]) toString (inout(dchar[]) src, dchar[] dst, size_t* ate=null) {return src;}
+inout(char[])  toString (inout(char[]) src, char[] dst = null, size_t* ate=null) {return src;}
+inout(wchar[]) toString16 (inout(wchar[]) src, wchar[] dst = null, size_t* ate=null) {return src;}
+inout(dchar[]) toString32 (inout(dchar[]) src, dchar[] dst = null, size_t* ate=null) {return src;}
 
 /*******************************************************************************
 
@@ -195,14 +195,22 @@ wchar[] toString16 (const(char[]) input, wchar[] output=null, size_t* ate=null)
                 wchar b = cast(wchar) *pIn;
 
                 if (b & 0x80)
+<<<<<<< HEAD
 								{
+=======
+                {
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                     if (b < 0xe0)
                        {
                        b &= 0x1f;
                        b = cast(wchar)((b << 6) | (*++pIn & 0x3f));
                        }
                     else
+<<<<<<< HEAD
 										{
+=======
+                       {
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                        if (b < 0xf0)
                           {
                           b &= 0x0f;
@@ -213,14 +221,23 @@ wchar[] toString16 (const(char[]) input, wchar[] output=null, size_t* ate=null)
                        else
                           // deal with surrogate-pairs
                           return toString16 (toString32(input, null, ate), output);
+<<<<<<< HEAD
 										}
 								}
+=======
+                       }
+                }
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                 d = b;
                 ++produced;
 
                 // did we read past the end of the input?
                 if (++pIn >= pMax)
+<<<<<<< HEAD
 								{
+=======
+                {
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                     if (pIn > pMax)
                        {
                        // yep ~ return tail or throw error?
@@ -234,7 +251,11 @@ wchar[] toString16 (const(char[]) input, wchar[] output=null, size_t* ate=null)
                        }
                     else
                        break;
+<<<<<<< HEAD
 								}
+=======
+                }
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
         }
 
         // do we still have some input left?
@@ -381,14 +402,22 @@ dchar[] toString32 (const(char[]) input, dchar[] output=null, size_t* ate=null)
                 dchar b = cast(dchar) *pIn;
 
                 if (b & 0x80)
+<<<<<<< HEAD
 								{
+=======
+                {
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                     if (b < 0xe0)
                        {
                        b &= 0x1f;
                        b = (b << 6) | (*++pIn & 0x3f);
                        }
                     else
+<<<<<<< HEAD
 										{
+=======
+                       {
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                        if (b < 0xf0)
                           {
                           b &= 0x0f;
@@ -407,14 +436,23 @@ dchar[] toString32 (const(char[]) input, dchar[] output=null, size_t* ate=null)
                               onUnicodeError ("Unicode.toString32 : invalid utf8 input", pIn - input.ptr);
                           pIn += 3;
                           }
+<<<<<<< HEAD
 										}
 								}
+=======
+                       }
+                }
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                 d = b;
                 ++produced;
 
                 // did we read past the end of the input?
                 if (++pIn >= pMax)
+<<<<<<< HEAD
 								{
+=======
+                {
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                     if (pIn > pMax)
                        {
                        // yep ~ return tail or throw error?
@@ -428,7 +466,11 @@ dchar[] toString32 (const(char[]) input, dchar[] output=null, size_t* ate=null)
                        }
                     else
                        break;
+<<<<<<< HEAD
 								}
+=======
+                }
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
         }
 
         // do we still have some input left?
@@ -564,7 +606,11 @@ dchar[] toString32 (const(wchar[]) input, dchar[] output=null, size_t* ate=null)
                 ++produced;
 
                 if (++pIn >= pMax)
+<<<<<<< HEAD
 								{
+=======
+                {
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                     if (pIn > pMax)
                        {
                        // yep ~ return tail or throw error?
@@ -578,7 +624,11 @@ dchar[] toString32 (const(wchar[]) input, dchar[] output=null, size_t* ate=null)
                        }
                     else
                        break;
+<<<<<<< HEAD
 								}
+=======
+                }
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
         }
 
         // do we still have some input left?
@@ -767,7 +817,11 @@ T[] cropRight(T) (T[] s)
            size_t i = s.length - 1;
            static if (is (T == char))
                       while (i && (s[i] & 0x80))
+<<<<<<< HEAD
 											{
+=======
+                      {
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                              if ((s[i] & 0xc0) is 0xc0)
                                 {
                                 // located the first byte of a sequence
@@ -789,7 +843,11 @@ T[] cropRight(T) (T[] s)
                                 }
                              else 
                                 --i;
+<<<<<<< HEAD
 											}
+=======
+                      }
+>>>>>>> 589a64043186d42096900c5e4b26f97339319f32
 
            static if (is (T == wchar))
                       // skip if last char is a leading surrogate

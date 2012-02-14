@@ -75,9 +75,9 @@ struct Twister
 
         **********************************************************************/
 
-        public static Twister instance; 
+        public static __gshared Twister instance; 
 
-        static this ()
+        shared static this ()
         {
                 instance.seed();
         }

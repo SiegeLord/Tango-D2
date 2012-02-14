@@ -294,7 +294,7 @@ struct FileSystem
 
                     const bool wantTrailingBackslash = true;
                     TCHAR[volumePathBufferLen] volPathBuf;
-                    auto volPath = getVolumePath(fp.native.toString, volPathBuf, wantTrailingBackslash);
+                    auto volPath = getVolumePath(fp.native.toString(), volPathBuf, wantTrailingBackslash);
 
                     version (Win32SansUnicode) {
                         alias GetDiskFreeSpaceExA GetDiskFreeSpaceEx;
@@ -341,7 +341,7 @@ struct FileSystem
 
                     bool wantTrailingBackslash = (false == superuser);
                     TCHAR[volumePathBufferLen] volPathBuf;
-                    auto volPath = getVolumePath(fp.native.toString, volPathBuf, wantTrailingBackslash);
+                    auto volPath = getVolumePath(fp.native.toString(), volPathBuf, wantTrailingBackslash);
 
                     if (superuser) {
                         struct GET_LENGTH_INFORMATION {

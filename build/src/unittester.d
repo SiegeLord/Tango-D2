@@ -74,7 +74,7 @@ void main(const(char)[][] args)
 			directory = arg;
 			return null;
 		});
-	arguments("help").aliased('h').halt;
+	arguments("help").aliased('h').halt();
 	arguments(null).params(0, 1024);
 	
 	if(!arguments.parse(args[1..$]) || arguments("help").set)
@@ -88,19 +88,20 @@ void main(const(char)[][] args)
 	{
 		version(Windows)
 		{
-			compiler_options = "-unittest tango.lib -debug=UnitTest";
+			compiler_options = "-unittest libtango-dmd.lib -debug=UnitTest";
 		}
 		else
 		{
 			switch(compiler)
 			{
-				default: goto case;
 				case "dmd":
-					compiler_options = "-unittest -L-ltango -debug=UnitTest";
+					compiler_options = "-unittest -L-ltango-dmd -debug=UnitTest";
 					break;
 				case "ldc2":
-					compiler_options = "-unittest -L-ltango -d-debug=UnitTest";
+					compiler_options = "-unittest -L-ltango-ldc -d-debug=UnitTest";
 					break;
+				default:
+					assert(0, "Unsupported compiler.");
 			}
 		}
 	}
@@ -120,8 +121,8 @@ void main(const(char)[][] args)
 	dummy_file_fp.native;
 	
 	{
-		auto dummy_file = new File(dummy_file_fp.cString[0..$-1], File.WriteCreate);
-		scope(exit) dummy_file.close;
+		auto dummy_file = new File(dummy_file_fp.cString()[0..$-1], File.WriteCreate);
+		scope(exit) dummy_file.close();
 		dummy_file.write(DummyFileContent);
 	}
 	
@@ -132,13 +133,13 @@ void main(const(char)[][] args)
 	output_fp.append("out");
 	output_fp.native;
 	auto proc_raw_arguments = compiler ~ " " ~ compiler_options ~ " " ~ 
-	                          additional_options ~ " -of" ~ output_fp.cString[0..$-1] ~ " " ~ 
-	                          dummy_file_fp.cString[0..$-1];
+	                          additional_options ~ " -of" ~ output_fp.cString()[0..$-1] ~ " " ~ 
+	                          dummy_file_fp.cString()[0..$-1];
 	auto compiler_proc = new Process(true, proc_raw_arguments);
 	compiler_proc.setRedirect(Redirect.All | Redirect.ErrorToOutput);
-	auto proc_arguments = compiler_proc.args[1..$].dup;
+	auto proc_arguments = compiler_proc.args()[1..$].dup;
 	
-	auto test_proc = new Process(true, output_fp.cString[0..$-1]);
+	auto test_proc = new Process(true, output_fp.cString()[0..$-1]);
 	test_proc.setRedirect(Redirect.All | Redirect.ErrorToOutput);
 	
 	auto test_mutex = new Mutex;
@@ -153,7 +154,7 @@ void main(const(char)[][] args)
 	size_t timeout = 0;
 	size_t compile_error = 0;
 	
-	foreach(file; arguments(null).assigned)
+	foreach(file; arguments(null).assigned())
 	{
 		if(Path.parse(file).ext != "d")
 		{
@@ -174,15 +175,15 @@ void main(const(char)[][] args)
 		
 		auto file_fp = new FilePath(file.dup);
 		file_fp.native;
-		auto new_args = proc_arguments ~ file_fp.cString[0..$-1];
-		compiler_proc.setArgs(compiler, new_args).execute;
-		Stdout.copy(compiler_proc.stdout).flush;
-		auto result = compiler_proc.wait;
+		auto new_args = proc_arguments ~ file_fp.cString()[0..$-1];
+		compiler_proc.setArgs(compiler, new_args).execute();
+		Stdout.copy(compiler_proc.stdout).flush();
+		auto result = compiler_proc.wait();
 		
 		if(result.status != 0)
 		{
 			Stdout("COMPILEERROR").nl;
-			Stdout(result.toString).nl;
+			Stdout(result.toString()).nl;
 			compile_error++;
 			continue;
 		}
@@ -197,20 +198,20 @@ void main(const(char)[][] args)
 			{
 				if(!test_condition.wait(10))
 				{
-					test_proc.kill;
+					test_proc.kill();
 				}
 			}
 		}
 
 		thread_pool.assign(&test_thread);
 		
-		test_proc.execute;
-		Stdout.copy(test_proc.stdout).flush;
+		test_proc.execute();
+		Stdout.copy(test_proc.stdout).flush();
 		test_result = test_proc.wait();
 		
-		test_condition.notify;
+		test_condition.notify();
 		
-		thread_pool.wait;
+		thread_pool.wait();
 		
 		if(test_result.reason == Process.Result.Exit && test_result.status == 0)
 		{
@@ -220,13 +221,13 @@ void main(const(char)[][] args)
 		else if(test_result.reason == Process.Result.Signal)
 		{
 			Stdout("TIMEDOUT").nl;
-			Stdout(result.toString).nl;
+			Stdout(result.toString()).nl;
 			timeout++;
 		}
 		else
 		{
 			Stdout("FAIL").nl;
-			Stdout(result.toString).nl;
+			Stdout(result.toString()).nl;
 			fail++;
 		}
 	}

@@ -404,13 +404,13 @@ final class SharedLib {
     }
 
 
-    private static {
+    private __gshared static {
         SharedLib[char[]] loadedLibs;
         Object mutex;
     }
 
 
-    static this() {
+    shared static this() {
         mutex = new Object;
     }
 }

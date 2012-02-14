@@ -60,7 +60,7 @@ else
 
 public __gshared DateTimeLocale DateTimeDefault;
 
-static this()
+shared static this()
 {
         DateTimeDefault = DateTimeLocale.create();
 version (WithExtensions)

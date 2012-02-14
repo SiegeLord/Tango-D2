@@ -102,7 +102,7 @@ struct SysError
         @property static uint lastCode ()
         {
                 version (Win32)
-                         return GetLastError;
+                         return GetLastError();
                      else
                          return errno;
         }

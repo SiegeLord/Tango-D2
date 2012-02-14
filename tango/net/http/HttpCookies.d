@@ -460,7 +460,7 @@ class CookieParser : Iterator!(char)
 
         private CookieStack       stack;
         private Array             array;
-        private static bool[128]  charMap;
+        private static __gshared bool[128]  charMap;
 
         /***********************************************************************
 
@@ -468,7 +468,7 @@ class CookieParser : Iterator!(char)
 
         ***********************************************************************/
 
-        static this ()
+        shared static this ()
         {
                 charMap['('] = true;
                 charMap[')'] = true;

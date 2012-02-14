@@ -296,9 +296,9 @@ version (Win32)
                 //char* inet_ntop(int af, void *src, char *dst, int len);
         }
 
-        private HMODULE lib;
+        private __gshared HMODULE lib;
 
-        static this()
+        shared static this()
         {
                 lib = LoadLibraryA ("Ws2_32.dll");
                 getnameinfo = cast(typeof(getnameinfo)) GetProcAddress(lib, "getnameinfo");
@@ -308,7 +308,7 @@ version (Win32)
                    lib = LoadLibraryA ("Wship6.dll");
                    }
                 getnameinfo = cast(typeof(getnameinfo)) GetProcAddress(lib, "getnameinfo");
-	        getaddrinfo = cast(typeof(getaddrinfo)) GetProcAddress(lib, "getaddrinfo");
+                getaddrinfo = cast(typeof(getaddrinfo)) GetProcAddress(lib, "getaddrinfo");
                 freeaddrinfo = cast(typeof(freeaddrinfo)) GetProcAddress(lib, "freeaddrinfo");
                 if (!getnameinfo)
                    {
@@ -356,13 +356,13 @@ else
         //private alias int socket_t = -1;
         private struct socket_t
         {
-			this(int _payload)
-			{
-				payload = _payload;
-			}
-			int payload = -1;
-			alias payload this;
-		}
+           this(int _payload)
+           {
+              payload = _payload;
+           }
+           int payload = -1;
+           alias payload this;
+        }
 
         package extern (C)
         {
@@ -439,10 +439,7 @@ public struct Berkeley
 version (Windows)
          bool           synchronous;
 
-        enum : socket_t
-        {
-                INVALID_SOCKET = socket_t.init
-        }
+        enum INVALID_SOCKET = socket_t.init;
 
         enum
         {
@@ -745,8 +742,8 @@ version (Windows)
                 if (family is AddressFamily.INET)
                    return new IPv4Address;
                 if (family is AddressFamily.INET6)
-		    return new IPv6Address;
-		return new UnknownAddress;
+                   return new IPv6Address;
+                return new UnknownAddress;
         }
 
         /***********************************************************************
@@ -1658,6 +1655,7 @@ debug(UnitTest)
         scope addr_4 = new IPv6Address("::", "8080");
         address: "::"
         port: 8080
+        ---
 
 *******************************************************************************/
 
@@ -1920,7 +1918,7 @@ public class NetHost
 
                 if (i)
                    {
-                   aliases = new char[][i];
+                   aliases = new const(char)[][i];
                    for (i = 0; i != aliases.length; i++)
                         aliases[i] = fromStringz(he.h_aliases[i]);
                    }
@@ -2306,7 +2304,7 @@ public class SocketSet
                 return isSet(s.handle);
         }
 
-        const size_t max()
+        @property const size_t max()
         {
                 return nbytes / socket_t.sizeof;
         }

@@ -1397,8 +1397,8 @@ private struct Buffer
 }
 
 /// The default demangler.
-static Demangler demangler;
+static __gshared Demangler demangler;
 
-static this(){
+shared static this(){
     demangler=new Demangler(1);
 }

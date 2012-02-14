@@ -113,7 +113,7 @@ public struct StopWatch
 
         ***********************************************************************/
 
-        static this()
+        shared static this()
         {
                 version (Win32)
                 {
