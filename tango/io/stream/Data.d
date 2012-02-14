@@ -351,7 +351,7 @@ class DataOutput : OutputFilter
 
         ***********************************************************************/
 
-        final ulong array (void[] src)
+        final ulong array (const(void)[] src)
         {
                 auto len = src.length;
                 version(DataIntArrayLength)

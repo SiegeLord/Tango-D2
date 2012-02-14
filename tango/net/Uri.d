@@ -20,17 +20,7 @@ private import  tango.core.Exception;
 
 private import  Integer = tango.text.convert.Integer;
 
-<<<<<<< HEAD
 private import  tango.stdc.string : memchr;
-=======
-/*******************************************************************************
-
-        external links
-
-*******************************************************************************/
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
-
-extern(C) void* memchr(in void* s, int c, size_t n);
 
 /*******************************************************************************
 
@@ -771,20 +761,12 @@ class Uri : UriView
         final const(char)[] extendQuery (const(char)[] tail)
         {
                 if (tail.length)
-<<<<<<< HEAD
-								{
-=======
                 {
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                     if (query_.length)
                         query_ = query_ ~ "&" ~ tail;
                     else
                        query_ = tail;
-<<<<<<< HEAD
-								}
-=======
                 }
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                 return query_;
         }
 

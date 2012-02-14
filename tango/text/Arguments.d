@@ -287,22 +287,14 @@ class Arguments
                         {
                         debug(Arguments) stdout.formatln ("'{}'", s);
                         if (done is false)
-<<<<<<< HEAD
-												{
-=======
                         {
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                             if (s == "--")
                                {done=true; version(dashdash){stack.clear().push(get(null));} continue;}
                             else
                                if (argument (s, lp, sloppy, false) ||
                                    argument (s, sp, sloppy, true))
                                    continue;
-<<<<<<< HEAD
-												}
-=======
                         }
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                         stack.top.append (s);
                         }  
                 foreach (arg; args)
@@ -393,22 +385,13 @@ class Arguments
                 char[256] tmp;
                 char[] result;
                 foreach (arg; args)
-<<<<<<< HEAD
-								{
-=======
                 {
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                          if (arg.error)
                              result ~= dg (tmp, msgs[arg.error-1], arg.name, 
                                            arg.values.length, arg.min, arg.max, 
                                            arg.bogus, arg.options);
-<<<<<<< HEAD
-								}
-                return result;                             
-=======
                 }
                 return result;
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
         }
 
         /***********************************************************************
@@ -498,21 +481,13 @@ class Arguments
 
                    // drop further processing of this flag where in error
                    if (arg.error is arg.None)
-<<<<<<< HEAD
-									 {
-=======
                    {
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                        // smush remaining text or treat as additional args
                        if (arg.cat)
                            arg.append (elem, true);
                        else
                           arg = enable (elem, sloppy, true);
-<<<<<<< HEAD
-									 }
-=======
                    }
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                    return arg;
                    }
 
@@ -920,13 +895,8 @@ class Arguments
                 private int valid ()
                 {
                         if (error is None)
-<<<<<<< HEAD
-												{
-                            if (req && !set)      
-=======
                         {
                             if (req && !set)
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                                 error = Required;
                             else if (set)
                             {
@@ -950,11 +920,7 @@ class Arguments
                                                      error = Conflict, bogus=arg.name;
                                         }
                             }
-<<<<<<< HEAD
-												}
-=======
                         }
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                         debug(Arguments) stdout.formatln ("{}: error={}, set={}, min={}, max={}, "
                                                "req={}, values={}, defaults={}, requires={}", 
                                                name, error, set, min, max, req, values, 

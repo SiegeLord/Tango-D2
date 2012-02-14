@@ -2029,11 +2029,7 @@ private:
                         default:
                             break;
                     }
-<<<<<<< HEAD
-										goto default;
-=======
                     goto default;
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                 default:
                     if ( have_range_start )
                         trans.predicate.appendInput(range_t(last));

@@ -1043,18 +1043,9 @@ D toStringFromChar(D,S)(S value)
         static if( is( S == char ) )
         {
             if( 0x20 <= value && value <= 0x7e )
-<<<<<<< HEAD
-						{
-                static if( isMutableString!(D) )
-                    return (&CHARS[value-0x20])[0..1].dup;
-                else
-                    return (&CHARS[value-0x20])[0..1];
-						}
-=======
             {
                 return convertString_!(D)((&CHARS[value-0x20])[0..1]);
             }
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
         }
         auto r = new S[1];
         r[0] = value;

@@ -250,11 +250,7 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
                           else
                              if (pre is '+')
                                  index = 3;
-<<<<<<< HEAD
-												goto case 'U';
-=======
                        goto case 'U';
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                   case 'u':
                   case 'U':
                        pre = '#';
@@ -484,20 +480,12 @@ size_t trim(T) (const(T[]) digits, ref bool sign, ref uint radix)
            else
               // explicit radix must match (optional) prefix
               if (radix != r)
-<<<<<<< HEAD
-							{
-=======
               {
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                   if (radix)
                       p -= 2;
                   else
                      radix = r;
-<<<<<<< HEAD
-							}
-=======
               }
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
            }
 
         // return number of characters eaten

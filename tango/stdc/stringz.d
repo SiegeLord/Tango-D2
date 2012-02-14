@@ -24,34 +24,20 @@ inout(char)* toStringz (inout(char)[] s, char[] tmp=null)
 {
         auto len = s.length;
         if (s.ptr)
-<<<<<<< HEAD
-				{
-            if (len is 0)
-						{
-                s = empty;
-						}
-=======
         {
             if (len is 0)
             {
                 s = cast(inout(char)[])("\0".dup);
             }
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
             else if (s[len-1] != 0)
             {
                   if (tmp.length <= len)
                       tmp = new char[len+1];
                   tmp [0..len] = s;
                   tmp [len] = 0;
-<<<<<<< HEAD
-                  s = tmp;
-						}	
-				}
-=======
                   s = cast(inout(char)[])tmp;
             }
         }
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
         return s.ptr;
 }
 

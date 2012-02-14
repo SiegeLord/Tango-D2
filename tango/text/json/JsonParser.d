@@ -206,20 +206,12 @@ class JsonParser(T)
                        ++p;
 
                 if (*p != '"')
-<<<<<<< HEAD
-								{
-=======
                 {
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                     if (*p == '}')
                         expected ("an attribute-name after (a potentially trailing) ','", p);
                     else
                        expected ("'\"' before attribute-name", p);
-<<<<<<< HEAD
-								}
-=======
                 }
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                 curLoc = p+1;
                 curType = Token.Name;
 

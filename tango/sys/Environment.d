@@ -141,11 +141,7 @@ struct Environment
                 // rifle through the path (after converting to standard format)
                 foreach (pe; Text.patterns (standard(get("PATH")), tango.io.model.IFile.FileConst.SystemPathString))
                          if (bin.path(pe).exists)
-<<<<<<< HEAD
-												 {
-=======
                          {
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                              version (Windows)
                                       return bin;
                                   else
@@ -155,11 +151,7 @@ struct Environment
                                      if (stats.st_mode & octal!(100))
                                          return bin;
                                      }
-<<<<<<< HEAD
-													}
-=======
                          }
->>>>>>> 589a64043186d42096900c5e4b26f97339319f32
                 return null;
         }
 
