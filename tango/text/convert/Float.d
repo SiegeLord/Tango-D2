@@ -55,23 +55,23 @@ private extern (C)
         real powl  (real base, real exp);
 
         int printf (char*, ...);
-				version (float_lib)
-				{
+        version (float_lib)
+        {
             version (Windows)
             {
                 alias ecvt econvert;
                 alias ecvt fconvert;
-								char* ecvt (double d, int digits, int* decpt, int* sign);
-								char* fcvt (double d, int digits, int* decpt, int* sign);
+                char* ecvt (double d, int digits, int* decpt, int* sign);
+                char* fcvt (double d, int digits, int* decpt, int* sign);
             }
             else
             {
                 alias ecvtl econvert;
                 alias ecvtl fconvert;
-								char* ecvtl (real d, int digits, int* decpt, int* sign);
-								char* fcvtl (real d, int digits, int* decpt, int* sign);
+                char* ecvtl (real d, int digits, int* decpt, int* sign);
+                char* fcvtl (real d, int digits, int* decpt, int* sign);
             }
-				}
+        }
 }
 
 /******************************************************************************

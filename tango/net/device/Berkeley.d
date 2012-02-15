@@ -220,9 +220,9 @@ version (Win32)
         private import tango.sys.win32.WsaSock;
 
         private enum socket_t: int
-				{
-					init  = ~0
-				}
+        {
+            init  = ~0
+        }
 
         package extern (Windows)
         {
@@ -349,9 +349,9 @@ else
 
         //private alias int socket_t = -1;
         private enum socket_t: int
-				{
-					init  = -1
-				}
+        {
+            init  = -1
+        }
 
         package extern (C)
         {
