@@ -51,7 +51,7 @@
 
 module tango.core.tools.Demangler;
 
-version(none)
+version(TangoDemangler)
 {
 import tango.core.Traits: ctfe_i2a;
 import tango.stdc.string: memmove,memcpy;
@@ -1412,17 +1412,17 @@ import core = core.demangle;
 
 public class Demangler
 {
-		/** Demangles the given string. */
+    /** Demangles the given string. */
     public inout(char)[] demangle (inout(char)[] input)
     {
-		    return cast(typeof(return))core.demangle(input);
-		}
+        return cast(typeof(return))core.demangle(input);
+    }
 
     /** Demangles the given string using output to hold the result. */
     public inout(char)[] demangle (inout(char)[] input, char[] output)
     {
-		    return cast(typeof(return))core.demangle(input, output);
-		}
+        return cast(typeof(return))core.demangle(input, output);
+    }
 }
 
 /// The default demangler.
