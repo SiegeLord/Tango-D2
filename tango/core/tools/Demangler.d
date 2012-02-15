@@ -51,6 +51,8 @@
 
 module tango.core.tools.Demangler;
 
+version(none)
+{
 import tango.core.Traits: ctfe_i2a;
 import tango.stdc.string: memmove,memcpy;
 
@@ -1397,8 +1399,37 @@ private struct Buffer
 }
 
 /// The default demangler.
-static __gshared Demangler demangler;
+static Demangler demangler;
 
-shared static this(){
+static this(){
     demangler=new Demangler(1);
+}
+
+}
+else
+{
+import core = core.demangle;
+
+public class Demangler
+{
+		/** Demangles the given string. */
+    public inout(char)[] demangle (inout(char)[] input)
+    {
+		    return cast(typeof(return))core.demangle(input);
+		}
+
+    /** Demangles the given string using output to hold the result. */
+    public inout(char)[] demangle (inout(char)[] input, char[] output)
+    {
+		    return cast(typeof(return))core.demangle(input, output);
+		}
+}
+
+/// The default demangler.
+static Demangler demangler;
+
+static this(){
+    demangler=new Demangler;
+}
+
 }

@@ -1,4 +1,0 @@
-COPYRIGHT = Copyright © 2007-$(YEAR), Aziz Köksal. All rights reserved.
-DIL_SYMBOL_ = <a href="http://hg.sharesource.org/dil/file/tip/trunk/src/$(DIL_MODPATH)#L$4">$1</a>
-Maturity = <p><b>Maturity:</b> $1.</p>
-BNF = <pre class="bnf">$0</pre>

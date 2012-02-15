@@ -407,7 +407,7 @@ version(Posix){
         if (tc.hasContext) tc.context=*(cast(ucontext_t*)ctx);
         Exception.TraceInfo info=basicTracer(&tc);
 
-        info.opApply((ref char[] s) { Runtime.console.stderr(s); return 0;});
+        info.opApply((ref char[] s) { Runtime.console.stderr(s~"\n"); return 0;});
 
         Runtime.console.stderr("Stacktrace signal handler abort().\n");
         abort();
