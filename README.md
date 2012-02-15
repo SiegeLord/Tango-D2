@@ -30,6 +30,20 @@ Windows
 
 DMD is the primary testing compiler, but LDC2 seems to compile the library as well.
 
+There is also an experimental Makefile building system. You can invoke it like so (modify the parameters you pass to make to suit preference):
+
+cd PathToTango
+make -f build/Makefile static-lib -j4 DC=ldc2
+make -f build/Makefile install-static-lib install-modules DC=ldc2
+
+Notable version statements
+-------
+
+Define the following version statements to customize your build of the library:
+
+NoPhobos - Removes the Phobos2 dependencies from tango (tango.math.BigInt is the only dependency right now)
+TangoDemangler - Use Tango's old demangler instead of Druntime's
+
 License
 -------
 

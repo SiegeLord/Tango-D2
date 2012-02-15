@@ -219,16 +219,10 @@ version (Win32)
     
         private import tango.sys.win32.WsaSock;
 
-        //private alias int socket_t = ~0;
-        private struct socket_t
+        private enum socket_t: int
         {
-            this(int _payload)
-            {
-               payload = _payload;
-            }
-            int payload = ~0;
-            alias payload this;
-         }
+            init  = ~0
+        }
 
         package extern (Windows)
         {
@@ -342,7 +336,7 @@ version (Win32)
                 closesocket (cast(socket_t)(cast(int)s));
         }
 
-        static ~this()
+        shared static ~this()
         {
                 if (lib)
                     FreeLibrary (lib);
@@ -354,14 +348,9 @@ else
         private import tango.stdc.errno;
 
         //private alias int socket_t = -1;
-        private struct socket_t
+        private enum socket_t: int
         {
-           this(int _payload)
-           {
-              payload = _payload;
-           }
-           int payload = -1;
-           alias payload this;
+            init  = -1
         }
 
         package extern (C)
@@ -2077,7 +2066,7 @@ public class SocketSet
                 import tango.core.BitManip;
 
                 size_t nfdbits;
-                socket_t _maxfd = socket_t(0);
+                socket_t _maxfd = cast(socket_t)0;
 
                 const uint fdelt(socket_t s)
                 {
@@ -2178,7 +2167,7 @@ public class SocketSet
                 else version (Posix)
                 {
                         buf[0 .. nbytes] = 0;
-                        _maxfd = 0;
+                        _maxfd = cast(socket_t)0;
                 }
                 else
                 {
@@ -2368,7 +2357,7 @@ public class SocketSet
                 }
                 else version (Posix)
                 {
-                        socket_t maxfd = 0;
+                        socket_t maxfd = cast(socket_t)0;
 
                         if (checkRead)
                                 maxfd = checkRead.maxfd;
