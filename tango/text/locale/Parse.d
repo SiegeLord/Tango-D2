@@ -68,7 +68,7 @@ package bool tryParseTimeExact(const(char)[] s, const(char)[] format, DateTimeFo
   return true;
 }
 
-private bool tryParseExactMultiple(const(char)[] s, const(char)[][] formats, DateTimeFormat dtf, ref DateTimeParseResult result) {
+private bool tryParseExactMultiple(const(char)[] s, const(char[])[] formats, DateTimeFormat dtf, ref DateTimeParseResult result) {
   foreach (const(char)[] format; formats) {
     if (tryParseExact(s, format, dtf, result))
       return true;
@@ -96,7 +96,7 @@ private bool tryParseExact(const(char)[] s, const(char)[] pattern, DateTimeForma
       return true;
     }
 
-    int parseMultiple(const(char)[] s, ref int pos, const(char)[][] values ...) {
+    int parseMultiple(const(char)[] s, ref int pos, const(char[])[] values ...) {
       int result = -1;
       size_t max;
       foreach (int i, const(char)[] value; values) {

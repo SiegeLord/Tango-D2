@@ -40,7 +40,7 @@ class MemCache : Thread
 
         **********************************************************************/
 
-        this (const(char)[][] hosts, uint watchdog = 3)
+        this (const(char[])[] hosts, uint watchdog = 3)
         {
                 super (&run);
                 setHosts (hosts);
@@ -167,7 +167,7 @@ class MemCache : Thread
 
         **********************************************************************/
 
-        final void status (void delegate (const(char)[], const(char)[][] list) dg)
+        final void status (void delegate (const(char)[], const(char[])[] list) dg)
         {
                 foreach (shared Connection server; hosts)
                          server.status (dg);
@@ -186,7 +186,7 @@ class MemCache : Thread
 
         **********************************************************************/
 
-        final void setHosts (const(char)[][] hosts)
+        final void setHosts (const(char[])[] hosts)
         {
                 auto conn = new shared(Connection) [hosts.length];
 
@@ -587,11 +587,11 @@ private class Connection
 
         **********************************************************************/
 
-        private synchronized void status (scope void delegate (const(char)[], const(char)[][] list) dg)
+        private synchronized void status (scope void delegate (const(char)[], const(char[])[] list) dg)
         {
                 if (connected)
                     try {
-                        const(char)[][] list;
+                        const(char[])[] list;
 
                         output.clear();
                         output.write ("stats\r\n");
@@ -620,7 +620,7 @@ debug (TangoMemCache)
 
 void main()
 {
-        static const(char)[][] hosts = ["192.168.111.224:11211"];
+        static const(char[])[] hosts = ["192.168.111.224:11211"];
 
         auto cache = new MemCache (hosts);
 
@@ -631,7 +631,7 @@ void main()
         if (cache.get ("foo", buffer))
             Cout ("value: ") (cast(const(char)[]) buffer.get).newline;
 
-        void stat (const(char)[] host, const(char)[][] list)
+        void stat (const(char)[] host, const(char[])[] list)
         {
                 foreach (const(char)[] line; list)
                          Cout (host) (" ") (line).newline;

@@ -209,8 +209,8 @@ class Arguments
         private char                    eq;             // '=' or ':'
         private const(char)[]           sp,             // short prefix
                                         lp;             // long prefix
-        private const(char)[][]         msgs = errmsg;  // error messages
-        private const const(char)[][]   errmsg =        // default errors
+        private const(char[])[]         msgs = errmsg;  // error messages
+        private const const(char[])[]   errmsg =        // default errors
                 [
                 "argument '{0}' expects {2} parameter(s) but has {1}\n", 
                 "argument '{0}' expects {3} parameter(s) but has {1}\n", 
@@ -255,7 +255,7 @@ class Arguments
         
         final bool parse (const(char)[] input, bool sloppy=false)
         {
-                const(char)[][] tmp;
+                const(char[])[] tmp;
                 foreach (s; quotes(input, " "))
                          tmp ~= s;
                 return parse (tmp, sloppy);
@@ -276,7 +276,7 @@ class Arguments
 
         ***********************************************************************/
         
-        final bool parse (const(char)[][] input, bool sloppy=false)
+        final bool parse (const(char[])[] input, bool sloppy=false)
         {
                 bool    done;
                 int     error;
@@ -411,7 +411,7 @@ class Arguments
 
         ***********************************************************************/
 
-        final Arguments errors (const(char)[][] errors)
+        final Arguments errors (const(char[])[] errors)
         {
                 if (errors.length is errmsg.length)
                     msgs = errors;
@@ -578,7 +578,7 @@ class Arguments
 
                 ***************************************************************/
         
-                final const(char)[][] assigned ()
+                final const(char[])[] assigned ()
                 {
                         return values.length ? values : deefalts;
                 }
@@ -823,9 +823,9 @@ class Arguments
 
                 ***************************************************************/
         
-                final Argument restrict (const(char)[][] options ...)
+                final Argument restrict (const(char[])[] options ...)
                 {
-                        this.options = options;
+                        this.options = cast(const(char)[][])options;
                         return this;
                 }
 

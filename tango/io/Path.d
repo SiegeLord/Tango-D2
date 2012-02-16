@@ -223,7 +223,7 @@ package struct FS
 
         ***********************************************************************/
 
-        static char[] join (const(char)[][] paths...)
+        static char[] join (const(char[])[] paths...)
         {
                 char[] result;
 
@@ -1685,7 +1685,7 @@ char[][] collate (const(char)[] path, const(char)[] pattern, bool recurse=false)
 
 *******************************************************************************/
 
-char[] join (const(char)[][] paths...)
+char[] join (const(char[])[] paths...)
 {
         return FS.join (paths);
 }

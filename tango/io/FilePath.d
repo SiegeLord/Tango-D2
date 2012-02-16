@@ -408,7 +408,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath cat (const(char)[][] others...)
+        final FilePath cat (const(char[])[] others...)
         {
                 foreach (other; others)
                         {
@@ -606,7 +606,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        static char[] join (const(char)[][] paths...)
+        static char[] join (const(char[])[] paths...)
         {
                 return FS.join (paths);
         }

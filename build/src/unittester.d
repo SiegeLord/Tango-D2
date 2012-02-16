@@ -42,7 +42,7 @@ Options:
                                   -unittest -L-ltango -d-debug=UnitTest
 `;
 
-void main(const(char)[][] args)
+void main(const(char[])[] args)
 {
 	const(char)[] compiler = "dmd";
 	const(char)[] compiler_options;

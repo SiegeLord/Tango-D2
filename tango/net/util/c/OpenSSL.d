@@ -715,7 +715,7 @@ shared static this()
 }*/
 
 
-SharedLib loadLib(const(char)[][] loadPath)
+SharedLib loadLib(const(char[])[] loadPath)
 {
     SharedLib rtn;
     foreach(path; loadPath)
@@ -738,7 +738,7 @@ version (Win32)
 {
     void loadEAY32()
     {
-        const(char)[][] loadPath = [ "libeay32.dll" ];
+        const(char[])[] loadPath = [ "libeay32.dll" ];
         if ((eaylib = loadLib(loadPath)) !is null)
         {
             bindCrypto(eaylib);    
@@ -859,23 +859,23 @@ void loadOpenSSL()
 {
     version (linux)
     {
-        const(char)[][] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
+        const(char[])[] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
     }
     version (Win32)
     {
-        const(char)[][] loadPath = [ "libssl32.dll" ];
+        const(char[])[] loadPath = [ "libssl32.dll" ];
     }
     version (darwin)
     {
-        const(char)[][] loadPath = [ "/usr/lib/libssl.dylib", "libssl.dylib" ];
+        const(char[])[] loadPath = [ "/usr/lib/libssl.dylib", "libssl.dylib" ];
     }
     version (freebsd)
     {
-        const(char)[][] loadPath = [ "libssl.so.5", "libssl.so" ];
+        const(char[])[] loadPath = [ "libssl.so.5", "libssl.so" ];
     }
     version (solaris)
     {
-        const(char)[][] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
+        const(char[])[] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
     }
     if ((ssllib = loadLib(loadPath)) !is null)
     {

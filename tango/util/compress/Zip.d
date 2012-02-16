@@ -1712,7 +1712,7 @@ private:
 //
 // Convenience methods
 
-void createArchive(const(char)[] archive, Method method, const(char)[][] files...)
+void createArchive(const(char)[] archive, Method method, const(char[])[] files...)
 {
     scope zw = new ZipBlockWriter(archive);
     zw.method = method;

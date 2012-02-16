@@ -606,7 +606,7 @@ class FileFilter
               
         ***********************************************************************/
         
-        void exec (const(char)[][] cmd, const(char)[][char[]] env, const(char)[] workDir)
+        void exec (const(char[])[] cmd, const(char[])[char[]] env, const(char)[] workDir)
         {
                 if (args.verbose)
                    {
@@ -671,7 +671,7 @@ struct Args
                                "\t[-p=sysname]\t\tdetermines package filtering (windows|linux|osx|freebsd|solaris)\n\n"
                                "Example: .\\build\\bin\\win32\\bob.exe -vu -c=dmd .\n\n";
 
-        bool populate (const(char)[][] arg)
+        bool populate (const(char[])[] arg)
         {       
                 auto args = new Arguments;
                 auto q = args('q');

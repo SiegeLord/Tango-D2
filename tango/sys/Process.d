@@ -254,12 +254,12 @@ class Process
      * auto p = new Process("myprogram \"first argument\" second third");
      * ---
      */
-    public this(const(char)[][] args ...)
+    public this(const(char[])[] args ...)
     {
         if(args.length == 1)
             _args = splitArgs(args[0]);
         else
-            _args = args;
+            _args = cast(const(char)[][])args;
     }
 
     /**
@@ -281,7 +281,7 @@ class Process
      * auto p = new Process(true, "myprogram \"first argument\" second third");
      * ---
      */
-    public this(bool copyEnv, const(char)[][] args ...)
+    public this(bool copyEnv, const(char[])[] args ...)
     {
         _copyEnv = copyEnv;
         this(args);
@@ -309,7 +309,7 @@ class Process
      * auto p = new Process(command, env)
      * ---
      */
-    public this(const(char)[] command, const(char)[][char[]] env)
+    public this(const(char)[] command, const(char[])[char[]] env)
     in
     {
         assert(command.length > 0);
@@ -317,7 +317,7 @@ class Process
     body
     {
         _args = splitArgs(command);
-        _env = env;
+        _env = cast(const(char)[][const(char)[]])env;
     }
 
     /**
@@ -350,7 +350,7 @@ class Process
      * auto p = new Process(args, env)
      * ---
      */
-    public this(const(char)[][] args, const(char)[][char[]] env)
+    public this(const(char[])[] args, const(char[])[char[]] env)
     in
     {
         assert(args.length > 0);
@@ -358,8 +358,8 @@ class Process
     }
     body
     {
-        _args = args;
-        _env = env;
+        _args = cast(const(char)[][])args;
+        _env = cast(const(char)[][const(char)[]])env;
     }
 
     /**
@@ -439,9 +439,9 @@ class Process
      * p.args("myprogram", "first", "second argument", "third");
      * ---
      */
-    public const(char)[][] args(const(char)[] progname, const(char)[][] args ...)
+    public const(char[])[] args(const(char)[] progname, const(char[])[] args ...)
     {
-        return _args = progname ~ args;
+        return _args = cast(const(char)[][])(progname ~ args);
     }
 
     /**
@@ -458,7 +458,7 @@ class Process
      * p.setArgs("myprogram", "first", "second argument", "third").execute();
      * ---
      */
-    public Process setArgs(const(char)[] progname, const(char)[][] args ...)
+    public Process setArgs(const(char)[] progname, const(char[])[] args ...)
     {
         this.args(progname, args);
         return this;
@@ -529,10 +529,10 @@ class Process
      * p.env = env;
      * ---
      */
-    @property public const(char)[][char[]] env(const(char)[][char[]] env)
+    @property public const(char[])[char[]] env(const(char[])[char[]] env)
     {
         _copyEnv = false;
-        return _env = env;
+        return _env = cast(const(char)[][const(char)[]])env;
     }
 
     /**
@@ -557,10 +557,10 @@ class Process
      * p.setEnv(env).execute();
      * ---
      */
-    public Process setEnv(const(char)[][char[]] env)
+    public Process setEnv(const(char[])[char[]] env)
     {
         _copyEnv = false;
-        _env = env;
+        _env = cast(const(char)[][const(char)[]])env;
         return this;
     }
 
@@ -797,14 +797,14 @@ class Process
      * Deprecated: Use constructor or properties to set up process for
      * execution.
      */
-    deprecated public void execute(const(char)[] arg1, const(char)[][] args ...)
+    deprecated public void execute(const(char)[] arg1, const(char[])[] args ...)
     in
     {
         assert(!_running);
     }
     body
     {
-        this._args = arg1 ~ args;
+        this._args = cast(const(char)[][])(arg1 ~ args);
         execute();
     }
 
@@ -837,7 +837,7 @@ class Process
      * Deprecated: use properties or the constructor to set these parameters
      * instead.
      */
-    deprecated public void execute(const(char)[] command, const(char)[][const(char)[]] env)
+    deprecated public void execute(const(char)[] command, const(char[])[const(char)[]] env)
     in
     {
         assert(!_running);
@@ -847,7 +847,7 @@ class Process
     {
         _args = splitArgs(command);
         _copyEnv = false;
-        _env = env;
+        _env = cast(const(char)[][const(char)[]])env;
         execute();
     }
 
@@ -892,7 +892,7 @@ class Process
      * p.execute(args, null);
      * ---
      */
-    deprecated public void execute(const(char)[][] args, const(char)[][char[]] env)
+    deprecated public void execute(const(char[])[] args, const(char[])[char[]] env)
     in
     {
         assert(!_running);
@@ -900,8 +900,8 @@ class Process
     }
     body
     {
-        _args = args;
-        _env = env;
+        _args = cast(const(char)[][])args;
+        _env = cast(const(char)[][const(char)[]])env;
         _copyEnv = false;
 
         execute();
@@ -1694,7 +1694,7 @@ class Process
      * character can be used to specify arguments with embedded spaces.
      * e.g. first "second param" third
      */
-    protected static const(char)[][] splitArgs(ref const(char)[] command, const(char)[] delims = " \t\r\n")
+    protected static const(char)[][] splitArgs(const(char)[] command, const(char)[] delims = " \t\r\n")
     in
     {
         assert(!contains(delims, '"'),
@@ -1851,7 +1851,7 @@ class Process
          * This is the format expected by the CreateProcess() Windows API for
          * the environment variables.
          */
-        protected static char[] toNullEndedBuffer(const(char)[][char[]] src)
+        protected static char[] toNullEndedBuffer(const(char[])[char[]] src)
         {
             char[] dest;
 
@@ -1872,7 +1872,7 @@ class Process
          * has a null pointer at the end. This is the format expected by
          * the execv*() family of POSIX functions.
          */
-        protected static const(char)*[] toNullEndedArray(const(char)[][] src)
+        protected static const(char)*[] toNullEndedArray(const(char[])[] src)
         {
             if (src !is null)
             {
@@ -1902,7 +1902,7 @@ class Process
          * array has a null pointer at the end. This is the format expected by
          * the execv*() family of POSIX functions for environment variables.
          */
-        protected static const(char)*[] toNullEndedArray(const(char)[][char[]] src)
+        protected static const(char)*[] toNullEndedArray(const(char[])[char[]] src)
         {
             const(char)*[] dest;
 
