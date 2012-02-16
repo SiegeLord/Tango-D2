@@ -111,6 +111,7 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
+        @property
         const(T)[] match ()
         {
                 return what;
@@ -122,6 +123,7 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
+        @property
         void match (const(T)[] what)
         {
                 this.what = what;
@@ -308,6 +310,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
+        @property
         const(T)[] match ()
         {
                 return what;
@@ -319,6 +322,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
+        @property
         void match (const(T)[] what)
         {
                 offsets[] = cast(int)(what.length + 1);

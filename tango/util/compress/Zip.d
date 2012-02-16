@@ -1049,7 +1049,9 @@ class ZipBlockWriter : ZipWriter
      * This property allows you to control what compression method should be
      * used for files being added to the archive.
      */
+    @property
     Method method() { return _method; }
+    @property
     Method method(Method v) { return _method = v; } /// ditto
 
 private:

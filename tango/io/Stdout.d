@@ -122,8 +122,8 @@ shared static this ()
         Stdout = new Output (layout, Cout.stream);
         Stderr = new Output (layout, Cerr.stream);
 
-        Stdout.flush = !Cout.redirected;
-        Stderr.flush = !Cerr.redirected;
+        Stdout.flush(!Cout.redirected);
+        Stderr.flush(!Cerr.redirected);
 }
 
 
