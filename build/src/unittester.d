@@ -49,30 +49,32 @@ void main(const(char[])[] args)
 	const(char)[] directory = ".unittest";
 	const(char)[] additional_options;
 	
+	const(char)[] null_str = null; /* DMD bug*/
+	
 	auto arguments = new Arguments;
 	arguments("compiler").aliased('c').params(1).bind(
 		(const(char)[] arg)
 		{
 			compiler = arg;
-			return null;
+			return null_str;
 		});
 	arguments("options").aliased('o').params(1).bind(
 		(const(char)[] arg)
 		{
 			compiler_options = arg;
-			return null;
+			return null_str;
 		});
 	arguments("additional").aliased('a').params(1).bind(
 		(const(char)[] arg)
 		{
 			additional_options = arg;
-			return null;
+			return null_str;
 		});
 	arguments("directory").aliased('d').params(1).bind(
 		(const(char)[] arg)
 		{
 			directory = arg;
-			return null;
+			return null_str;
 		});
 	arguments("help").aliased('h').halt();
 	arguments(null).params(0, 1024);
