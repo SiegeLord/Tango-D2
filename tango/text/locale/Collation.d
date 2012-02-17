@@ -156,7 +156,7 @@ public class StringSorter {
     Params:
       array = The array of strings to _sort.
   */
-  public void sort(ref const(char[])[] array) {
+  public inout(void) sort(ref inout(char)[][] array) {
     sort(array, 0, array.length);
   }
 
@@ -167,25 +167,24 @@ public class StringSorter {
       index = The starting index of the range.
       count = The number of elements in the range.
   */
-  public void sort(ref const(char[])[] array, size_t index, size_t count) {
-    auto marray = cast(const(char)[][])array;
-    void qsort(size_t left, size_t right) {
+  public inout(void) sort(ref inout(char)[][] array, size_t index, size_t count) {
+    inout(void) qsort(size_t left, size_t right, inout(int*) dummy = null) {
       do {
         size_t i = left, j = right;
-        const(char)[] pivot = marray[left + ((right - left) >> 1)];
+        const(char)[] pivot = array[left + ((right - left) >> 1)];
 
         do {
-          while (comparison_(marray[i], pivot) < 0)
+          while (comparison_(array[i], pivot) < 0)
             i++;
-          while (comparison_(pivot, marray[j]) < 0)
+          while (comparison_(pivot, array[j]) < 0)
             j--;
 
           if (i > j)
             break;
           else if (i < j) {
-            const(char)[] temp = marray[i];
-            marray[i] = array[j];
-            marray[j] = temp;
+            auto temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
           }
 
           i++;
