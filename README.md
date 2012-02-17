@@ -13,6 +13,14 @@ Modules that have not been yet ported are located in the `unported` folder. All 
 
 I do the porting on Linux, so that is the most tested platform. It generally should also compile on Windows, but might not pass all the unit-tests, since DMD does weird things with unittests on Windows. All other platforms probably don't compile at all.
 
+Breaking changes from D1
+--------
+
+Since one of the important use cases of this port is porting programs from D1 to D2, breaking changes in functionality have been avoided as much as possible. Sometimes, however, this would introduce hidden heap usage or unsafe operation. Those things are even more detestable, especially for Tango's future, than breaking backwards compatibility. Cases where changes were introduced are documented here.
+
+tango.sys.Process
+	- args no longer returns the program name as the first element. Get it from programName property instead.
+
 How to use it
 --------
 
