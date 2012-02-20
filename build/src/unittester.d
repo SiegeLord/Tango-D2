@@ -139,7 +139,7 @@ void main(const(char[])[] args)
 	                          dummy_file_fp.cString()[0..$-1];
 	auto compiler_proc = new Process(true, proc_raw_arguments);
 	compiler_proc.setRedirect(Redirect.All | Redirect.ErrorToOutput);
-	auto proc_arguments = compiler_proc.args()[1..$].dup;
+	auto proc_arguments = compiler_proc.args().dup;
 	
 	auto test_proc = new Process(true, output_fp.cString()[0..$-1]);
 	test_proc.setRedirect(Redirect.All | Redirect.ErrorToOutput);
