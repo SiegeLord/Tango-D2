@@ -288,6 +288,7 @@ final class RandomG(SourceT=DefaultEngine)
     /// dependence due to rounding effects on the least significant bit (in case of tie 0 is favored).
     /// if boundCheck is false in the floating point case bounds might be included (but with a
     /// lower propability than other numbers)
+    @property
     T uniform(T,bool boundCheck=true)(){
         static if(is(T==uint)) {
             return source.next();
