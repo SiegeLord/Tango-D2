@@ -659,12 +659,11 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        static char[] prefixed (const(char)[] s, char c = FileConst.PathSeparatorChar)
+        static inout(char)[] prefixed (inout(char)[] s, char c = FileConst.PathSeparatorChar)
         {
                 if (s.length && s[0] != c)
                     s = c ~ s;
-                /* Possibly bad dup */
-                return s.dup;
+                return s;
         }
 
         /***********************************************************************

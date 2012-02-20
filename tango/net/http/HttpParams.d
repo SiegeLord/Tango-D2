@@ -55,7 +55,7 @@ class HttpParams : HttpTokens, HttpParamsView
                 super ('=');
 
                 // construct a line tokenizer for later usage
-                amp = new Delimiters!(char) ("&".dup);
+                amp = new Delimiters!(char) ("&");
         }
 
         /**********************************************************************
@@ -126,7 +126,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        override char[] get (const(char)[] name, const(char)[] ret = null)
+        override const(char)[] get (const(char)[] name, const(char)[] ret = null)
         {
                 return super.get (name, ret);
         }

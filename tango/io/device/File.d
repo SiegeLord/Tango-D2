@@ -344,7 +344,7 @@ class File : Device, Device.Seek, Device.Truncate
                 //read the content
                 len = file.read (dst);
                 if (len is file.Eof)
-                    file.error ("File.read :: unexpected eof".dup);
+                    file.error ("File.read :: unexpected eof");
 
                 return dst [0 .. len];
         }

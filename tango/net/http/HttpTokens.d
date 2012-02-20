@@ -35,8 +35,8 @@ private import  TimeStamp = tango.text.convert.TimeStamp;
 
 struct HttpToken
 {
-        char[]  name,
-                value;
+        const(char)[]  name,
+                       value;
 }
 
 /******************************************************************************
@@ -177,7 +177,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        char[] get (const(char)[] name, const(char)[] ret = null)
+        const(char)[] get (const(char)[] name, const(char)[] ret = null)
         {
                 Token token = stack.findToken (name);
                 if (token)
@@ -187,8 +187,7 @@ class HttpTokens
                    if (split (token, element))
                        ret = trim (element.value);
                    }
-                /* Bad dup ?*/
-                return ret.dup;
+                return ret;
         }
 
         /**********************************************************************
@@ -200,7 +199,7 @@ class HttpTokens
 
         int getInt (const(char)[] name, int ret = -1)
         {       
-                char[] value = get (name);
+                auto value = get (name);
 
                 if (value.length)
                     ret = cast(int) Integer.parse (value);
@@ -217,7 +216,7 @@ class HttpTokens
 
         Time getDate (const(char)[] name, Time date = Time.epoch)
         {
-                char[] value = get (name);
+                auto value = get (name);
 
                 if (value.length)
                     date = TimeStamp.parse (value);
@@ -274,7 +273,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        protected bool handleMissingSeparator (char[] s, ref HttpToken element)
+        protected bool handleMissingSeparator (const(char)[] s, ref HttpToken element)
         {
                 return false;
         }
@@ -287,7 +286,7 @@ class HttpTokens
 
         final private bool split (Token t, ref HttpToken element)
         {
-                auto s = t.toString().dup;
+                auto s = t.toString();
 
                 if (s.length)
                    {
@@ -331,7 +330,7 @@ class HttpTokens
 
         private static class FilteredTokens 
         {       
-                private char[]          match;
+                private const(char)[]          match;
                 private HttpTokens      tokens;
 
                 /**************************************************************
@@ -343,7 +342,7 @@ class HttpTokens
 
                 this (HttpTokens tokens, const(char)[] match)
                 {
-                        this.match = match.dup;
+                        this.match = match;
                         this.tokens = tokens;
                 }
 
@@ -389,7 +388,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        private char[] trim (char[] source)
+        private inout(char)[] trim (inout(char)[] source)
         {
                 size_t  front,
                      back = source.length;
@@ -421,13 +420,13 @@ class HttpTokens
 
         **********************************************************************/
 
-        char[] formatTokens (OutputBuffer dst, char[] delim)
+        char[] formatTokens (OutputBuffer dst, const(char)[] delim)
         {
                 bool first = true;
 
                 foreach (Token token; stack)
                         {
-                        char[] content = token.toString().dup;
+                        auto content = token.toString();
                         if (content.length)
                            {
                            if (first)

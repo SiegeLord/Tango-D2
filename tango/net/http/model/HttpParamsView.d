@@ -44,7 +44,7 @@ interface HttpParamsView
 
         **********************************************************************/
 
-        char[] get (const(char)[] name, const(char)[] ret = null);
+        const(char)[] get (const(char)[] name, const(char)[] ret = null);
 
         /**********************************************************************
                 

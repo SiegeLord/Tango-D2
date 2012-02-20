@@ -612,11 +612,10 @@ class Json(T) : JsonParser!(T)
 
                 ***************************************************************/
 
-                T[] toString (T[] dst = null)
+                const(T)[] toString (T[] dst = null)
                 {
                         if (type is Type.RawString)
-                            /* Bad dup */
-                            return string.dup;
+                            return string;
 
                         if (type is Type.String)
                             return unescape (string, dst);
@@ -633,7 +632,7 @@ class Json(T) : JsonParser!(T)
                       
                 ***************************************************************/
         
-                bool toString (void delegate(const(T)[]) dg)
+                bool toString (scope void delegate(const(T)[]) dg)
                 {
                         if (type is Type.RawString)
                             dg(string);

@@ -529,7 +529,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        private char[] decoder (const(char)[] s, char ignore=0)
+        private const(char)[] decoder (const(char)[] s, char ignore=0)
         {
                 static int toInt (char c)
                 {
@@ -580,8 +580,8 @@ class Uri : UriView
                    return cast(char[]) decoded.slice (j);
                    }
 
-                // return original content (bad dup)
-                return s.dup;
+                // return original content
+                return s;
         }   
 
         /***********************************************************************

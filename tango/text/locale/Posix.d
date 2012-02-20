@@ -37,18 +37,18 @@ int getUserCulture() {
 
   // getenv returns a string of the form <language>_<region>.
   // Therefore we need to replace underscores with hyphens.
-  char[] s;
+  const(char)[] s;
   if (env){
-      s = fromStringz(env).dup;
-      foreach (ref c; s)
+      char[] s2 = fromStringz(env).dup;
+      foreach (ref c; s2)
                if (c == '.')
                    break;
                else
                   if (c == '_')
                       c = '-';
+      s=s2;
   } else {
-      /* Bad dup */
-      s="en-US".dup;
+      s="en-US";
   }
   foreach (entry; CultureData.cultureDataTable) {
     // todo: there is also a local compareString defined. Is it correct that here 

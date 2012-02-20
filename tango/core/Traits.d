@@ -563,8 +563,8 @@ char [] ctfe_i2a(long i){
 }
 /// ditto
 char [] ctfe_i2a(uint i){
-    char[] digit="0123456789".dup;
-    char[] res="".dup;
+    const(char)[] digit="0123456789";
+    char[] res;
     if (i==0){
         return "0".dup;
     }
@@ -577,8 +577,8 @@ char [] ctfe_i2a(uint i){
 }
 /// ditto
 char [] ctfe_i2a(ulong i){
-    char[] digit="0123456789".dup;
-    char[] res="".dup;
+    const(char)[] digit="0123456789";
+    char[] res;
     if (i==0){
         return "0".dup;
     }

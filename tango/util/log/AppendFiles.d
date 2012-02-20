@@ -63,8 +63,7 @@ public class AppendFiles : Filer
                 mask_ = register (path);
 
                 // split the path into components
-                // Bad dup?
-                auto c = Path.parse (path.dup);
+                auto c = Path.parse (path);
 
                 char[3] x;
                 Time mostRecent;

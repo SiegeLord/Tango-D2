@@ -1473,7 +1473,7 @@ else
                 if(pos == fact.length)
                     continue;
 
-                info.facts[Ascii.toLower(fact[0 .. pos].dup).idup] = fact[pos + 1 .. fact.length];
+                info.facts[cast(immutable(char)[])Ascii.toLower(fact[0 .. pos].dup)] = fact[pos + 1 .. fact.length];
             }
 
             // Do we have a type?

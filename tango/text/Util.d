@@ -1047,7 +1047,7 @@ T[] layout(T) (T[] output, const(T[])[] layout ...)
         
 ******************************************************************************/
 
-T[] unescape(T) (const(T)[] src, T[] dst = null)
+inout(T)[] unescape(T) (inout(T)[] src, T[] dst = null)
 {
         size_t delta;
         auto s = src.ptr;
@@ -1119,10 +1119,9 @@ T[] unescape(T) (const(T)[] src, T[] dst = null)
 
            // copy tail too
            d [0 .. len] = s [0 .. len];
-           return dst [0 .. (d + len) - dst.ptr];
+           return cast(inout)(dst [0 .. (d + len) - dst.ptr]);
            }
-        // Bad dup?
-        return src.dup;
+        return src;
 }
 
 
