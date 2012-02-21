@@ -49,8 +49,8 @@ Notable version statements
 
 Define the following version statements to customize your build of the library:
 
-NoPhobos - Removes the Phobos2 dependencies from tango (tango.math.BigInt is the only dependency right now)
-TangoDemangler - Use Tango's old demangler instead of Druntime's
+* NoPhobos - Removes the Phobos2 dependencies from tango (tango.math.BigInt is the only dependency right now)
+* TangoDemangler - Use Tango's old demangler instead of Druntime's
 
 License
 -------
