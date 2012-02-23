@@ -54,8 +54,8 @@ version(linux)
 }
 
 enum uint BYTES_ENTROPY = 2048; // default bytes of entropy to load on startup.
-private CRYPTO_dynlock_value *last = null;
-Mutex _dynLocksMutex = null;
+__gshared private CRYPTO_dynlock_value *last = null;
+__gshared Mutex _dynLocksMutex = null;
 extern (C)
 {
     enum int NID_sha1 = 64;
@@ -333,7 +333,7 @@ extern (C)
 
     uint sslThreadId()
     {
-        return cast(uint)cast(void*)Thread.getThis;
+        return cast(uint)cast(void*)Thread.getThis();
     }
     void sslStaticLock(int mode, int index, const(char) *sourceFile, int lineNo)
     {
@@ -412,6 +412,8 @@ extern (C)
 
 }
 private bool _bioTestFlags = true;
+__gshared
+{
 tBIO_test_flags BIO_test_flags;
 tBIO_new_socket BIO_new_socket;
 tBIO_new_ssl BIO_new_ssl;
@@ -521,7 +523,7 @@ tEVP_DecryptFinal_ex EVP_DecryptFinal_ex;
 tEVP_aes_128_cbc EVP_aes_128_cbc;
 tEVP_CIPHER_CTX_block_size EVP_CIPHER_CTX_block_size;
 tEVP_CIPHER_CTX_cleanup EVP_CIPHER_CTX_cleanup;
-
+}
 int PEM_write_bio_RSAPublicKey(BIO *bp, RSA *x)
 {
     return PEM_ASN1_write_bio(i2d_RSAPublicKey, PEM_STRING_RSA_PUBLIC, bp, cast(char*)x, null, null, 0, null, null);
@@ -629,15 +631,15 @@ body
         throw new Exception("Could not load symbol: " ~ funcName.idup);
 }
 
-static SharedLib ssllib = null;
+static __gshared SharedLib ssllib = null;
 version(Win32)
 {
-    static SharedLib eaylib = null;
+    static __gshared SharedLib eaylib = null;
 }
 version(darwin){
-    static SharedLib cryptolib = null;
+    static __gshared SharedLib cryptolib = null;
 }
-static ReadWriteMutex[] _locks = null;
+static __gshared ReadWriteMutex[] _locks = null;
 
 
 void throwOpenSSLError()
@@ -700,7 +702,7 @@ void _initOpenSSL()
     } 
 }
 
-static this()
+shared static this()
 {
     version(Win32)
         loadEAY32();
@@ -713,7 +715,7 @@ static this()
 }*/
 
 
-SharedLib loadLib(const(char)[][] loadPath)
+SharedLib loadLib(const(char[])[] loadPath)
 {
     SharedLib rtn;
     foreach(path; loadPath)
@@ -724,7 +726,7 @@ SharedLib loadLib(const(char)[][] loadPath)
         {
             scope fp = new FilePath(path.dup);
             try
-                rtn = SharedLib.load(fp.absolute(Environment.cwd()).toString);
+                rtn = SharedLib.load(fp.absolute(Environment.cwd()).toString());
             catch (SharedLibException ex)
             {}
         }
@@ -736,7 +738,7 @@ version (Win32)
 {
     void loadEAY32()
     {
-        const(char)[][] loadPath = [ "libeay32.dll" ];
+        const(char[])[] loadPath = [ "libeay32.dll" ];
         if ((eaylib = loadLib(loadPath)) !is null)
         {
             bindCrypto(eaylib);    
@@ -857,23 +859,23 @@ void loadOpenSSL()
 {
     version (linux)
     {
-        const(char)[][] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
+        const(char[])[] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
     }
     version (Win32)
     {
-        const(char)[][] loadPath = [ "libssl32.dll" ];
+        const(char[])[] loadPath = [ "libssl32.dll" ];
     }
     version (darwin)
     {
-        const(char)[][] loadPath = [ "/usr/lib/libssl.dylib", "libssl.dylib" ];
+        const(char[])[] loadPath = [ "/usr/lib/libssl.dylib", "libssl.dylib" ];
     }
     version (freebsd)
     {
-        const(char)[][] loadPath = [ "libssl.so.5", "libssl.so" ];
+        const(char[])[] loadPath = [ "libssl.so.5", "libssl.so" ];
     }
     version (solaris)
     {
-        const(char)[][] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
+        const(char[])[] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
     }
     if ((ssllib = loadLib(loadPath)) !is null)
     {

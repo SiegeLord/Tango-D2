@@ -608,7 +608,7 @@ unittest {
     // http://www.embedded.com/columns/programmerstoolbox/9900609
    // This has a minimum of cbrt(0.5).
    real crenshawcos(real x) { return cos(2*PI*x*x*x); }
-   minx = findMinimum(&crenshawcos, 0.0L, 1.L, 0.1L, minval);
+   minx = findMinimum(&crenshawcos, 0.0L, 1.0L, 0.1L, minval);
    assert(feqrel(minx*minx*minx, 0.5L)<=real.mant_dig-4);
    
 }

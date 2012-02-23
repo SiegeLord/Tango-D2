@@ -9,7 +9,7 @@
 import tango.io.Stdout;
 
 void main(){
-    char[] myFName = "Johnny";
+    const(char)[] myFName = "Johnny";
     Stdout.formatln("First Name = |{0,15}|", myFName);
     Stdout.formatln("Last Name = |{0,15}|", "Foo de Bar");
 

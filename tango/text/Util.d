@@ -608,7 +608,7 @@ T[] lineOf(T) (T[] src, size_t index)
 
 ******************************************************************************/
 
-T[] join(T) (const(T)[][] src, const(T)[] postfix=null, T[] dst=null)
+T[] join(T) (const(T[])[] src, const(T)[] postfix=null, T[] dst=null)
 {
         return combine!(T) (dst, null, postfix, src);
 }
@@ -628,7 +628,7 @@ T[] join(T) (const(T)[][] src, const(T)[] postfix=null, T[] dst=null)
 
 ******************************************************************************/
 
-T[] prefix(T) (T[] dst, const(T)[] prefix, const(T)[][] src...)
+T[] prefix(T) (T[] dst, const(T)[] prefix, const(T[])[] src...)
 {
         return combine!(T) (dst, prefix, null, src);
 }
@@ -648,7 +648,7 @@ T[] prefix(T) (T[] dst, const(T)[] prefix, const(T)[][] src...)
 
 ******************************************************************************/
 
-T[] postfix(T) (T[] dst, const(T)[] postfix, const(T)[][] src...)
+T[] postfix(T) (T[] dst, const(T)[] postfix, const(T[])[] src...)
 {
         return combine!(T) (dst, null, postfix, src);
 }
@@ -668,7 +668,7 @@ T[] postfix(T) (T[] dst, const(T)[] postfix, const(T)[][] src...)
 
 ******************************************************************************/
 
-T[] combine(T) (T[] dst, const(T)[] prefix, const(T)[] postfix, const(T)[][] src ...)
+T[] combine(T) (T[] dst, const(T)[] prefix, const(T)[] postfix, const(T[])[] src ...)
 {
         size_t len = src.length * prefix.length + 
                    src.length * postfix.length;
@@ -985,7 +985,7 @@ QuoteFruct!(T, M) quotes(T, M) (T[] src, const(M)[] set)
 
 *******************************************************************************/
 
-T[] layout(T) (T[] output, const(T)[][] layout ...)
+T[] layout(T) (T[] output, const(T[])[] layout ...)
 {
         const(T)[] badarg  = cast(const(T)[])"{index out of range}";
         const(T)[] toosmall = cast(const(T)[])"{output buffer too small}";
@@ -1047,7 +1047,7 @@ T[] layout(T) (T[] output, const(T)[][] layout ...)
         
 ******************************************************************************/
 
-T[] unescape(T) (const(T)[] src, T[] dst = null)
+inout(T)[] unescape(T) (inout(T)[] src, T[] dst = null)
 {
         size_t delta;
         auto s = src.ptr;
@@ -1119,10 +1119,9 @@ T[] unescape(T) (const(T)[] src, T[] dst = null)
 
            // copy tail too
            d [0 .. len] = s [0 .. len];
-           return dst [0 .. (d + len) - dst.ptr];
+           return cast(inout)(dst [0 .. (d + len) - dst.ptr]);
            }
-        // Bad dup?
-        return src.dup;
+        return src;
 }
 
 

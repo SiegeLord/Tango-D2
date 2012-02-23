@@ -33,17 +33,17 @@ version=dashdash;       // -- everything assigned to the null argument
         that multiple parameters accumulate:
         ---
         args.parse ("-a=1 -a=2 foo", true);
-        assert (args('a').assigned.length is 3);
+        assert (args('a').assigned().length is 3);
         ---
 
         That example results in argument 'a' assigned three parameters.
         Two parameters are explicitly assigned using '=', while a third
-        is implicitly assigned. Implicit parameters are often useful for
+        is implicitly assigned(). Implicit parameters are often useful for
         collecting filenames or other parameters without specifying the
         associated argument:
         ---
         args.parse ("thisfile.txt thatfile.doc -v", true);
-        assert (args(null).assigned.length is 2);
+        assert (args(null).assigned().length is 2);
         ---
         The 'null' argument is always defined and acts as an accumulator
         for parameters left uncaptured by other arguments. In the above
@@ -134,12 +134,12 @@ version=dashdash;       // -- everything assigned to the null argument
         ---
         args('o').params(1).smush;
         if (args.parse ("-ofile"))
-            assert (args('o').assigned[0] == "file");
+            assert (args('o').assigned()[0] == "file");
         ---
 
         There are two callback varieties supports, where one is invoked
         when an associated argument is parsed and the other is invoked
-        as parameters are assigned. See the bind() methods for delegate
+        as parameters are assigned(). See the bind() methods for delegate
         signature details.
 
         You may change the argument prefix to be something other than 
@@ -154,14 +154,14 @@ version=dashdash;       // -- everything assigned to the null argument
         assert (args("a").set);
         assert (args("b").set);
         assert (args("c").set);
-        assert (args("foo").assigned.length is 1);
+        assert (args("foo").assigned().length is 1);
         ---
 
         Returning to an earlier example we can declare some specifics:
         ---
         args('v').params(0);
         assert (args.parse (`-v thisfile.txt thatfile.doc`));
-        assert (args(null).assigned.length is 2);
+        assert (args(null).assigned().length is 2);
         ---
 
         Note that the -v flag is now in front of the implicit parameters
@@ -193,7 +193,7 @@ version=dashdash;       // -- everything assigned to the null argument
         in the usual right to left fashion (or to the null argument):
         ---
         args.parse (`-- -thisfile --thatfile`);
-        assert (args(null).assigned.length is 2);
+        assert (args(null).assigned().length is 2);
         ---
         
 *******************************************************************************/
@@ -209,8 +209,8 @@ class Arguments
         private char                    eq;             // '=' or ':'
         private const(char)[]           sp,             // short prefix
                                         lp;             // long prefix
-        private const(char)[][]         msgs = errmsg;  // error messages
-        private const const(char)[][]   errmsg =        // default errors
+        private const(char[])[]         msgs = errmsg;  // error messages
+        private const const(char[])[]   errmsg =        // default errors
                 [
                 "argument '{0}' expects {2} parameter(s) but has {1}\n", 
                 "argument '{0}' expects {3} parameter(s) but has {1}\n", 
@@ -235,7 +235,7 @@ class Arguments
                 this.sp = sp;
                 this.lp = lp;
                 this.eq = eq;
-                get(null).params;       // set null argument to consume params
+                get(null).params();       // set null argument to consume params
         }
 
         /***********************************************************************
@@ -255,7 +255,7 @@ class Arguments
         
         final bool parse (const(char)[] input, bool sloppy=false)
         {
-                const(char)[][] tmp;
+                const(char[])[] tmp;
                 foreach (s; quotes(input, " "))
                          tmp ~= s;
                 return parse (tmp, sloppy);
@@ -276,7 +276,7 @@ class Arguments
 
         ***********************************************************************/
         
-        final bool parse (const(char)[][] input, bool sloppy=false)
+        final bool parse (const(char[])[] input, bool sloppy=false)
         {
                 bool    done;
                 int     error;
@@ -287,16 +287,18 @@ class Arguments
                         {
                         debug(Arguments) stdout.formatln ("'{}'", s);
                         if (done is false)
+                        {
                             if (s == "--")
-                               {done=true; version(dashdash){stack.clear.push(get(null));} continue;}
+                               {done=true; version(dashdash){stack.clear().push(get(null));} continue;}
                             else
                                if (argument (s, lp, sloppy, false) ||
                                    argument (s, sp, sloppy, true))
                                    continue;
+                        }
                         stack.top.append (s);
                         }  
                 foreach (arg; args)
-                         error |= arg.valid;
+                         error |= arg.valid();
                 return error is 0;
         }
 
@@ -309,7 +311,7 @@ class Arguments
         
         final Arguments clear ()
         {
-                stack.clear;
+                stack.clear();
                 foreach (arg; args)
                         {
                         arg.set = false;
@@ -383,11 +385,13 @@ class Arguments
                 char[256] tmp;
                 char[] result;
                 foreach (arg; args)
+                {
                          if (arg.error)
                              result ~= dg (tmp, msgs[arg.error-1], arg.name, 
                                            arg.values.length, arg.min, arg.max, 
                                            arg.bogus, arg.options);
-                return result;                             
+                }
+                return result;
         }
 
         /***********************************************************************
@@ -407,7 +411,7 @@ class Arguments
 
         ***********************************************************************/
 
-        final Arguments errors (const(char)[][] errors)
+        final Arguments errors (const(char[])[] errors)
         {
                 if (errors.length is errmsg.length)
                     msgs = errors;
@@ -477,11 +481,13 @@ class Arguments
 
                    // drop further processing of this flag where in error
                    if (arg.error is arg.None)
+                   {
                        // smush remaining text or treat as additional args
                        if (arg.cat)
                            arg.append (elem, true);
                        else
                           arg = enable (elem, sloppy, true);
+                   }
                    return arg;
                    }
 
@@ -489,8 +495,8 @@ class Arguments
                 auto a = elem in args;
                 if (a is null)
                     if ((a = elem in aliases) is null)
-                         return get(elem).params.enable(!sloppy);
-                return a.enable;
+                         return get(elem).params().enable(!sloppy);
+                return a.enable();
         }
 
         /***********************************************************************
@@ -572,7 +578,7 @@ class Arguments
 
                 ***************************************************************/
         
-                final const(char)[][] assigned ()
+                final const(char[])[] assigned ()
                 {
                         return values.length ? values : deefalts;
                 }
@@ -598,7 +604,7 @@ class Arguments
 
                 ***************************************************************/
         
-                final Argument required ()
+                @property final Argument required ()
                 {
                         this.req = true;
                         return this;
@@ -767,7 +773,7 @@ class Arguments
 
                 ***************************************************************/
         
-                final Argument explicit ()
+                @property final Argument explicit ()
                 {
                         exp = true;
                         return this;
@@ -817,9 +823,9 @@ class Arguments
 
                 ***************************************************************/
         
-                final Argument restrict (const(char)[][] options ...)
+                final Argument restrict (const(char[])[] options ...)
                 {
-                        this.options = options;
+                        this.options = cast(const(char)[][])options;
                         return this;
                 }
 
@@ -856,7 +862,7 @@ class Arguments
                         // pop to an argument that can accept implicit parameters?
                         if (explicit is false)
                             for (auto s=&this.outer.stack; exp && s.size>1; this=s.top)
-                                 s.pop;
+                                 s.pop();
 
                         this.set = true;        // needed for default assignments 
                         values ~= value;        // append new value
@@ -877,7 +883,7 @@ class Arguments
                            }
                         // pop to an argument that can accept parameters
                         for (auto s=&this.outer.stack; values.length >= max && s.size>1; this=s.top)
-                             s.pop;
+                             s.pop();
                 }
 
                 /***************************************************************
@@ -889,11 +895,11 @@ class Arguments
                 private int valid ()
                 {
                         if (error is None)
-                            if (req && !set)      
+                        {
+                            if (req && !set)
                                 error = Required;
-                            else
-                               if (set)
-                                  {
+                            else if (set)
+                            {
                                   // short circuit?
                                   if (fail)
                                       return -1;
@@ -913,8 +919,8 @@ class Arguments
                                                  if (arg.set)
                                                      error = Conflict, bogus=arg.name;
                                         }
-                                  }
-
+                            }
+                        }
                         debug(Arguments) stdout.formatln ("{}: error={}, set={}, min={}, max={}, "
                                                "req={}, values={}, defaults={}, requires={}", 
                                                name, error, set, min, max, req, values, 
@@ -940,115 +946,115 @@ debug(UnitTest)
         assert (args.parse (""));
         x.required;
         assert (args.parse ("") is false);
-        assert (args.clear.parse ("-x"));
+        assert (args.clear().parse ("-x"));
         assert (x.set);
 
         // alias
         x.aliased('X');
-        assert (args.clear.parse ("-X"));
+        assert (args.clear().parse ("-X"));
         assert (x.set);
 
         // unexpected arg (with sloppy)
-        assert (args.clear.parse ("-y") is false);
-        assert (args.clear.parse ("-y") is false);
-        assert (args.clear.parse ("-y", true) is false);
+        assert (args.clear().parse ("-y") is false);
+        assert (args.clear().parse ("-y") is false);
+        assert (args.clear().parse ("-y", true) is false);
         assert (args['y'].set);
-        assert (args.clear.parse ("-x -y", true));
+        assert (args.clear().parse ("-x -y", true));
 
         // parameters
         x.params(0);
-        assert (args.clear.parse ("-x param"));
-        assert (x.assigned.length is 0);
-        assert (args(null).assigned.length is 1);
+        assert (args.clear().parse ("-x param"));
+        assert (x.assigned().length is 0);
+        assert (args(null).assigned().length is 1);
         x.params(1);
-        assert (args.clear.parse ("-x=param"));
-        assert (x.assigned.length is 1);
-        assert (x.assigned[0] == "param");
-        assert (args.clear.parse ("-x param"));
-        assert (x.assigned.length is 1);
-        assert (x.assigned[0] == "param");
+        assert (args.clear().parse ("-x=param"));
+        assert (x.assigned().length is 1);
+        assert (x.assigned()[0] == "param");
+        assert (args.clear().parse ("-x param"));
+        assert (x.assigned().length is 1);
+        assert (x.assigned()[0] == "param");
 
         // too many args
         x.params(1);
-        assert (args.clear.parse ("-x param1 param2"));
-        assert (x.assigned.length is 1);
-        assert (x.assigned[0] == "param1");
-        assert (args(null).assigned.length is 1);
-        assert (args(null).assigned[0] == "param2");
+        assert (args.clear().parse ("-x param1 param2"));
+        assert (x.assigned().length is 1);
+        assert (x.assigned()[0] == "param1");
+        assert (args(null).assigned().length is 1);
+        assert (args(null).assigned()[0] == "param2");
         
         // now with default params
-        assert (args.clear.parse ("param1 param2 -x=blah"));
-        assert (args[null].assigned.length is 2);
-        assert (args(null).assigned.length is 2);
-        assert (x.assigned.length is 1);
+        assert (args.clear().parse ("param1 param2 -x=blah"));
+        assert (args[null].assigned().length is 2);
+        assert (args(null).assigned().length is 2);
+        assert (x.assigned().length is 1);
         x.params(0);
-        assert (!args.clear.parse ("-x=blah"));
+        assert (!args.clear().parse ("-x=blah"));
 
         // args as parameter
-        assert (args.clear.parse ("- -x"));
-        assert (args[null].assigned.length is 1);
-        assert (args[null].assigned[0] == "-");
+        assert (args.clear().parse ("- -x"));
+        assert (args[null].assigned().length is 1);
+        assert (args[null].assigned()[0] == "-");
 
         // multiple flags, with alias and sloppy
-        assert (args.clear.parse ("-xy"));
-        assert (args.clear.parse ("-xyX"));
+        assert (args.clear().parse ("-xy"));
+        assert (args.clear().parse ("-xyX"));
         assert (x.set);
         assert (args['y'].set);
-        assert (args.clear.parse ("-xyz") is false);
-        assert (args.clear.parse ("-xyz", true));
+        assert (args.clear().parse ("-xyz") is false);
+        assert (args.clear().parse ("-xyz", true));
         auto z = args['z'];
         assert (z.set);
 
         // multiple flags with trailing arg
-        assert (args.clear.parse ("-xyz=10"));
-        assert (z.assigned.length is 1);
+        assert (args.clear().parse ("-xyz=10"));
+        assert (z.assigned().length is 1);
 
         // again, but without sloppy param declaration
         z.params(0);
-        assert (!args.clear.parse ("-xyz=10"));
-        assert (args.clear.parse ("-xzy=10"));
-        assert (args('y').assigned.length is 1);
-        assert (args('x').assigned.length is 0);
-        assert (args('z').assigned.length is 0);
+        assert (!args.clear().parse ("-xyz=10"));
+        assert (args.clear().parse ("-xzy=10"));
+        assert (args('y').assigned().length is 1);
+        assert (args('x').assigned().length is 0);
+        assert (args('z').assigned().length is 0);
 
         // x requires y
         x.requires('y');
-        assert (args.clear.parse ("-xy"));
-        assert (args.clear.parse ("-xz") is false);
+        assert (args.clear().parse ("-xy"));
+        assert (args.clear().parse ("-xz") is false);
 
         // defaults
         z.defaults("foo");
-        assert (args.clear.parse ("-xy"));
-        assert (z.assigned.length is 1);
+        assert (args.clear().parse ("-xy"));
+        assert (z.assigned().length is 1);
 
         // long names, with params
-        assert (args.clear.parse ("-xy --foobar") is false);
-        assert (args.clear.parse ("-xy --foobar", true));
+        assert (args.clear().parse ("-xy --foobar") is false);
+        assert (args.clear().parse ("-xy --foobar", true));
         assert (args["y"].set && x.set);
         assert (args["foobar"].set);
-        assert (args.clear.parse ("-xy --foobar=10"));
-        assert (args["foobar"].assigned.length is 1);
-        assert (args["foobar"].assigned[0] == "10");
+        assert (args.clear().parse ("-xy --foobar=10"));
+        assert (args["foobar"].assigned().length is 1);
+        assert (args["foobar"].assigned()[0] == "10");
 
         // smush argument z, but not others
-        z.params;
-        assert (args.clear.parse ("-xy -zsmush") is false);
+        z.params();
+        assert (args.clear().parse ("-xy -zsmush") is false);
         assert (x.set);
-        z.smush;
-        assert (args.clear.parse ("-xy -zsmush"));
-        assert (z.assigned.length is 1);
-        assert (z.assigned[0] == "smush");
-        assert (x.assigned.length is 0);
+        z.smush();
+        assert (args.clear().parse ("-xy -zsmush"));
+        assert (z.assigned().length is 1);
+        assert (z.assigned()[0] == "smush");
+        assert (x.assigned().length is 0);
         z.params(0);
 
         // conflict x with z
         x.conflicts(z);
-        assert (args.clear.parse ("-xyz") is false);
+        assert (args.clear().parse ("-xyz") is false);
 
         // word mode, with prefix elimination
         args = new Arguments (null, null);
-        assert (args.clear.parse ("foo bar wumpus") is false);
-        assert (args.clear.parse ("foo bar wumpus wombat", true));
+        assert (args.clear().parse ("foo bar wumpus") is false);
+        assert (args.clear().parse ("foo bar wumpus wombat", true));
         assert (args("foo").set);
         assert (args("bar").set);
         assert (args("wumpus").set);
@@ -1056,8 +1062,8 @@ debug(UnitTest)
 
         // use '/' instead of '-'
         args = new Arguments ("/", "/");
-        assert (args.clear.parse ("/foo /bar /wumpus") is false);
-        assert (args.clear.parse ("/foo /bar /wumpus /wombat", true));
+        assert (args.clear().parse ("/foo /bar /wumpus") is false);
+        assert (args.clear().parse ("/foo /bar /wumpus /wombat", true));
         assert (args("foo").set);
         assert (args("bar").set);
         assert (args("wumpus").set);
@@ -1065,7 +1071,7 @@ debug(UnitTest)
 
         // use '/' for short and '-' for long
         args = new Arguments ("/", "-");
-        assert (args.clear.parse ("-foo -bar -wumpus -wombat /abc", true));
+        assert (args.clear().parse ("-foo -bar -wumpus -wombat /abc", true));
         assert (args("foo").set);
         assert (args("bar").set);
         assert (args("wumpus").set);
@@ -1080,15 +1086,15 @@ debug(UnitTest)
                 {
                 args('f').params(0);
                 assert (args.parse ("-f -- -bar -wumpus -wombat --abc"));
-                assert (args('f').assigned.length is 0);
-                assert (args(null).assigned.length is 4);
+                assert (args('f').assigned().length is 0);
+                assert (args(null).assigned().length is 4);
                 }
              else
                 {
                 args('f').params(2);
                 assert (args.parse ("-f -- -bar -wumpus -wombat --abc"));
-                assert (args('f').assigned.length is 2);
-                assert (args(null).assigned.length is 2);
+                assert (args('f').assigned().length is 2);
+                assert (args(null).assigned().length is 2);
                 }
         }
 }

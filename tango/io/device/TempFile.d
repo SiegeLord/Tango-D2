@@ -75,12 +75,12 @@ version( Win32 )
 
     // Determines if reparse points (aka: symlinks) are supported.  Support
     // was introduced in Windows Vista.
-    bool reparseSupported()
+    @property bool reparseSupported()
     {
         OSVERSIONINFO versionInfo = void;
         versionInfo.dwOSVersionInfoSize = versionInfo.sizeof;
 
-        void e(){throw new Exception("could not determine Windows version");};
+        void e(){throw new Exception("could not determine Windows version");}
 
         version( Win32SansUnicode )
         {
@@ -232,12 +232,12 @@ class TempFile : File
      * TempStyle for creating a transient temporary file that only the current
      * user can access.
      */
-    static const TempStyle Transient = {Transience.Transient};
+    static __gshared const TempStyle Transient = {Transience.Transient};
     /**
      * TempStyle for creating a permanent temporary file that only the current
      * user can access.
      */
-    static const TempStyle Permanent = {Transience.Permanent};
+    static __gshared const TempStyle Permanent = {Transience.Permanent};
 
     // Path to the temporary file
     private char[] _path;
@@ -272,14 +272,14 @@ class TempFile : File
      */
     private void open (TempStyle style)
     {
-        open (tempPath, style);
+        open (tempPath(), style);
     }
 
     private void open (const(char)[] prefix, TempStyle style)
     {
         for( ubyte i=style.attempts; i--; )
         {
-            if( openTempFile(Path.join(prefix, randomName), style) )
+            if( openTempFile(Path.join(prefix, randomName()), style) )
                 return;
         }
 
@@ -288,11 +288,11 @@ class TempFile : File
 
     version( Win32 )
     {
-        private static const DEFAULT_LENGTH = 6;
-        private static const DEFAULT_PREFIX = "~t";
-        private static const DEFAULT_SUFFIX = ".tmp";
+        private static enum DEFAULT_LENGTH = 6;
+        private static enum DEFAULT_PREFIX = "~t";
+        private static enum DEFAULT_SUFFIX = ".tmp";
 
-        private static const JUNK_CHARS =
+        private static enum JUNK_CHARS =
             "abcdefghijklmnopqrstuvwxyz0123456789";
 
        /**********************************************************************
@@ -303,7 +303,7 @@ class TempFile : File
          **********************************************************************/
         public static char[] tempPath()
         {
-            return GetTempPath;
+            return GetTempPath();
         }
 
         /*
@@ -335,13 +335,13 @@ class TempFile : File
     }
     else version( Posix )
     {
-        private static const DEFAULT_LENGTH = 6;
-        private static const DEFAULT_PREFIX = ".tmp";
+        private static enum DEFAULT_LENGTH = 6;
+        private static enum DEFAULT_PREFIX = ".tmp";
 
         // Use "~" to work around a bug in DMD where it elides empty constants
-        private static const DEFAULT_SUFFIX = "~";
+        private static enum DEFAULT_SUFFIX = "~";
 
-        private static const JUNK_CHARS =
+        private static enum JUNK_CHARS =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             "abcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -386,7 +386,7 @@ class TempFile : File
                 auto root_uid = pwe.pw_uid;
 
                 // Make sure either we or root are the owner
-                if( !(sb.st_uid == root_uid || sb.st_uid == getuid) )
+                if( !(sb.st_uid == root_uid || sb.st_uid == getuid()) )
                     error("temporary directory owned by neither root nor user");
 
                 // Check to see if anyone other than us can write to the dir.

@@ -1,7 +1,7 @@
 ifdef SystemRoot
     OS              = "Windows"
     STATIC_LIB_EXT  = .lib
-    DYNAMIC_LIB_EXT = .dll
+    SHARED_LIB_EXT = .dll
     PATH_SEP        =\
     message         = @(echo $1)
     SHELL           = cmd.exe
@@ -14,25 +14,25 @@ else
     ifeq ($(shell uname), Linux)
         OS              = "Linux"
         STATIC_LIB_EXT  = .a
-        DYNAMIC_LIB_EXT = .so
+        SHARED_LIB_EXT = .so
         message         = @(echo \033[31m $1 \033[0;0m1)
         Filter          = tango/sys/win32/%.d tango/sys/darwin/%.d tango/sys/freebsd/%.d tango/sys/solaris/%.d
     else ifeq ($(shell uname), Solaris)
         STATIC_LIB_EXT  = .a
-        DYNAMIC_LIB_EXT = .so
+        SHARED_LIB_EXT = .so
         OS              = "Solaris"
         message         = @(echo \033[31m $1 \033[0;0m1)
         Filter          = tango/sys/win32/%.d tango/sys/linux/%.d tango/sys/darwin/%.d tango/sys/freebsd/%.d
     else ifeq ($(shell uname),Freebsd)
         STATIC_LIB_EXT  = .a
-        DYNAMIC_LIB_EXT = .so
+        SHARED_LIB_EXT = .so
         OS              = "Freebsd"
         FixPath         = $1
         message         = @(echo \033[31m $1 \033[0;0m1)
         Filter          = tango/sys/win32/%.d tango/sys/linux/%.d tango/sys/darwin/%.d tango/sys/solaris/%.d
     else ifeq ($(shell uname),Darwin)
         STATIC_LIB_EXT  = .a
-        DYNAMIC_LIB_EXT = .so
+        SHARED_LIB_EXT = .so
         OS              = "Darwin"
         message         = @(echo \033[31m $1 \033[0;0m1)
         Filter          = tango/sys/win32/%.d tango/sys/linux/%.d tango/sys/freebsd/%.d tango/sys/solaris/%.d
@@ -42,27 +42,29 @@ endif
 # Define command for copy, remove and create file/dir
 ifeq ($(OS),"Windows")
     RM    = del /Q
+    RMDIR = del /Q
     CP    = copy /Y
     MKDIR = mkdir
     MV    = move
 else ifeq ($(OS),"Linux")
-    RM    = rm -fr
+    RM    = rm -f
+    RMDIR = rm -rf
     CP    = cp -fr
     MKDIR = mkdir -p
     MV    = mv
 else ifeq ($(OS),"Freebsd")
-    RM    = rm -fr
-    CP    = cp -fr
+    RM    = rm -f
+    RMDIR = rm -rf
     MKDIR = mkdir -p
     MV    = mv
 else ifeq ($(OS),"Solaris")
-    RM    = rm -fr
-    CP    = cp -fr
+    RM    = rm -f
+    RMDIR = rm -rf
     MKDIR = mkdir -p
     MV    = mv
 else ifeq ($(OS),"Darwin")
-    RM    = rm -fr
-    CP    = cp -fr
+    RM    = rm -f
+    RMDIR = rm -rf
     MKDIR = mkdir -p
     MV    = mv
 endif
@@ -78,25 +80,6 @@ ifndef DC
     else
         DC=gdc
     endif
-endif
-
-# Define flag for gdc other
-ifeq ($(DC),gdc)
-    DCFLAGS    = -O2 -fdeprecated
-    LINKERFLAG= -Xlinker
-    OUTPUT    = -o
-    HF        = -fintfc-file=
-    DF        = -fdoc-file=
-    NO_OBJ    = -fsyntax-only
-    DDOC_MACRO= -fdoc-inc=
-else
-    DCFLAGS    = -O -d
-    LINKERFLAG= -L
-    OUTPUT    = -of
-    HF        = -Hf
-    DF        = -Df
-    NO_OBJ    = -o-
-    DDOC_MACRO=
 endif
 
 #define a suufix lib who inform is build with which compiler
@@ -116,8 +99,40 @@ else ifeq ($(DC),dmd2)
     COMPILER=dmd
 endif
 
+# Define flag for gdc other
+ifeq ($(COMPILER),gdc)
+    DCFLAGS    = -O2
+    LINKERFLAG= -Xlinker
+    OUTPUT    = -o
+    HF        = -fintfc-file=
+    DF        = -fdoc-file=
+    NO_OBJ    = -fsyntax-only
+    DDOC_MACRO= -fdoc-inc=
+else
+    DCFLAGS    = -O
+    LINKERFLAG= -L
+    OUTPUT    = -of
+    HF        = -Hf
+    DF        = -Df
+    NO_OBJ    = -o-
+    DDOC_MACRO=
+endif
+
+
+# Version statement / soname flag
+ifeq ($(COMPILER),ldc)
+    DVERSION    = -d-version
+    SONAME_FLAG = -soname
+else ifeq ($(COMPILER),gdc)
+    DVERSION    = -fversion
+    SONAME_FLAG = $(LINKERFLAG) -soname
+else
+    DVERSION    = -version
+    SONAME_FLAG = $(LINKERFLAG) -soname
+endif
+
 # Define relocation model for ldc or other
-ifneq (,$(findstring ldc,$(DC)))
+ifeq ($(COMPILER),ldc)
     FPIC = -relocation-model=pic
 else
     FPIC = -fPIC
@@ -125,7 +140,7 @@ endif
 
 # Add -ldl flag for linux
 ifeq ($(OS),"Linux")
-    LDCFLAGS += $(LINKERFLAG) -ldl
+    LDCFLAGS += $(LINKERFLAG)-ldl
 endif
 
 # If model are not given take the same as current system
@@ -218,17 +233,20 @@ ifndef CC
     CC = gcc
 endif
 
-DLIB_PATH           = ./lib
 IMPORT_PATH         = ./import
+PLAIN_DOC_PATH      = ./plain_documentation
 DOC_PATH            = ./documentation
-DDOC_PATH           = ./ddoc
-BUILD_PATH          = ./build
+BUILD_PATH          = ./objs
 
 DCFLAGS_IMPORT      =
 DCFLAGS_LINK        = $(LDCFLAGS)
 
-LIBNAME             = lib$(PROJECT_NAME)-$(COMPILER)$(STATIC_LIB_EXT)
-SONAME              = lib$(PROJECT_NAME)-$(COMPILER)$(DYNAMIC_LIB_EXT)
+ifndef LIBNAME
+    LIBNAME         = lib$(PROJECT_NAME)-$(COMPILER)
+endif
+
+STATIC_LIBNAME      = $(LIBNAME)$(STATIC_LIB_EXT)
+SHARED_LIBNAME      = $(LIBNAME)$(SHARED_LIB_EXT)
 
 PKG_CONFIG_FILE     = $(PROJECT_NAME).pc
 
@@ -252,10 +270,9 @@ export DCFLAGS
 export DCFLAGS_IMPORT
 export DCFLAGS_LINK
 export DESTDIR
-export DLIB_PATH
+export PLAIN_DOC_PATH
 export DOC_PATH
-export DDOC_PATH
-export DYNAMIC_LIB_EXT
+export SHARED_LIB_EXT
 export FixPath
 export HF
 export INCLUDE_DIR
@@ -278,4 +295,5 @@ export PREFIX
 export RANLIB
 export RM
 export STATIC_LIB_EXT
-export SONAME
+export STATIC_LIBNAME
+export SHARED_LIBNAME

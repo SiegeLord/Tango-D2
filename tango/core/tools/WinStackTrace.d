@@ -11,12 +11,11 @@ module tango.core.tools.WinStackTrace;
 
 version(Windows) {
 
-import tango.core.thread;
-
+import tango.core.Thread;
+import tango.core.tools.FrameInfo;
 
 version(D_Version2)
 {
-
     private const(char)[] intToUtf8 (char[] tmp, uint val)
     in {
          assert (tmp.length > 9, "atoi buffer should be more than 9 chars wide");
@@ -32,24 +31,6 @@ version(D_Version2)
             return tmp [cast(size_t)(p - tmp.ptr) .. $];
     }
 
-    // convert uint to const(char)[], within the given buffer
-    // Returns a valid slice of the populated buffer
-    private const(char)[] ulongToUtf8 (char[] tmp, ulong val)
-    in {
-         assert (tmp.length > 19, "atoi buffer should be more than 19 chars wide");
-         }
-    body
-    {
-            char* p = tmp.ptr + tmp.length;
-
-            do {
-                 *--p = cast(char)((val % 10) + '0');
-                 } while (val /= 10);
-
-            return tmp [cast(size_t)(p - tmp.ptr) .. $];
-    }
-
-
     // function to compare two strings
     private int stringCompare (in char[] s1, in char[] s2)
     {
@@ -64,89 +45,6 @@ version(D_Version2)
                     result = (s1.length<s2.length)?-1:((s1.length==s2.length)?0:1);
 
             return result;
-    }
-
-package struct FrameInfo{
-        /// line number in the source of the most likely start adress (0 if not available)
-        size_t line;
-        /// number of the stack frame (starting at 0 for the top frame)
-        size_t iframe;
-        /// offset from baseSymb: within the function, or from the closest symbol
-        ptrdiff_t offsetSymb;
-        /// adress of the symbol in this execution
-        size_t baseSymb;
-        /// offset within the image (from this you can use better methods to get line number
-        /// a posteriory)
-        ptrdiff_t offsetImg;
-        /// base adress of the image (will be dependent on randomization schemes)
-        size_t baseImg;
-        /// adress of the function, or at which the ipc will return
-        /// (which most likely is the one after the adress where it started)
-        /// this is the raw adress returned by the backtracing function
-        size_t address;
-        /// file (image) of the current adress
-        const(char)[] file;
-        /// name of the function, if possible demangled
-        char[] func;
-        /// extra information (for example calling arguments)
-        const(char)[] extra;
-        /// if the address is exact or it is the return address
-        bool exactAddress;
-        /// if this function is an internal functions (for example the backtracing function itself)
-        /// if true by default the frame is not printed
-        bool internalFunction;
-        alias void function(FrameInfo*,void delegate(in char[])) FramePrintHandler;
-        /// the default printing function
-        static FramePrintHandler defaultFramePrintingFunction;
-        /// writes out the current frame info
-        
-        void writeOut(void delegate(in char[])sink){
-
-            if (defaultFramePrintingFunction){
-                defaultFramePrintingFunction(&this,sink);
-            } else {
-                char[26] buf;
-                //auto len=snprintf(buf.ptr,26,"[%8zx]",address);
-                //sink(buf[0..len]);
-                //len=snprintf(buf.ptr,26,"%8zx",baseImg);
-                //sink(buf[0..len]);
-                //len=snprintf(buf.ptr,26,"%+td ",offsetImg);
-                //sink(buf[0..len]);
-                //while (++len<6) sink(" ");
-                if (func.length) {
-                    sink(func);
-                } else {
-                    sink("???");
-                }
-                for (size_t i=func.length;i<80;++i) sink(" ");
-                //len=snprintf(buf.ptr,26," @%zx",baseSymb);
-                //sink(buf[0..len]);
-                //len=snprintf(buf.ptr,26,"%+td ",offsetSymb);
-                //sink(buf[0..len]);
-                if (extra.length){
-                    sink(extra);
-                    sink(" ");
-                }
-                sink(file);
-                sink(":");
-                sink(ulongToUtf8(buf, line));
-            }
-        }
-        /// clears the frame information stored
-        void clear(){
-            line=0;
-            iframe=-1;
-            offsetImg=0;
-            baseImg=0;
-            offsetSymb=0;
-            baseSymb=0;
-            address=0;
-            exactAddress=true;
-            internalFunction=false;
-            file=null;
-            func=null;
-            extra=null;
-        }
     }
 }
 
@@ -262,7 +160,7 @@ package struct FrameInfo{
 
 private extern(C) {
     void        _Dmain();
-    void        D5tango4core6Thread5Fiber3runMFZv();
+    void        D4core6thread5Fiber3runMFZv();
 }
 private {
     size_t  fiberRunFuncLength = 0;
@@ -406,8 +304,8 @@ void walkStack(LPCONTEXT ContextRecord, HANDLE hProcess, HANDLE hThread, void de
                     if  (
                             callAddr == cast(uint)&_Dmain
                             || true == (inFiber = (
-                                callAddr >= cast(uint)&D5tango4core6Thread5Fiber3runMFZv
-                                && callAddr < cast(uint)&D5tango4core6Thread5Fiber3runMFZv + fiberRunFuncLength
+                                callAddr >= cast(uint)&D4core6thread5Fiber3runMFZv
+                                && callAddr < cast(uint)&D4core6thread5Fiber3runMFZv + fiberRunFuncLength
                             ))
                         )
                     {
@@ -504,8 +402,10 @@ public {
     init = whether to init the allocated items to their default values or not
     
     Examples:
+    ---
     int[] foo;
     foo.alloc(20);
+    ---
     
     Remarks:
     The array must be null and empty for this function to succeed. The rationale behind this is that the coder should state his decision clearly. This will help and has
@@ -550,9 +450,11 @@ T clone(T)(T array) {
     init = whether to init the newly allocated items to their default values or not
     
     Examples:
+    ---
     int[] foo;
     foo.alloc(20);
     foo.realloc(10);        // <--
+    ---
 */
 void realloc(T, intT)(ref T array, intT numItems, bool init = true)
 in {
@@ -730,8 +632,8 @@ alias WCHAR* PWCHAR, LPWCH, PWCH, LPWSTR, PWSTR;
 alias CHAR* PCHAR, LPCH, PCH, LPSTR, PSTR;
 
 // const versions
-alias WCHAR* LPCWCH, PCWCH, LPCWSTR, PCWSTR;
-alias CHAR* LPCCH, PCSTR, LPCSTR;
+alias const(WCHAR)* LPCWCH, PCWCH, LPCWSTR, PCWSTR;
+alias const(CHAR)* LPCCH, PCSTR, LPCSTR;
 
 version(Unicode) {
     alias WCHAR TCHAR, _TCHAR;
@@ -815,18 +717,18 @@ void loadWinAPIFunctions() {
 
 
 extern (Windows) {
-    fp_SymFromAddr      SymFromAddr;
-    fp_SymFromName      SymFromName;
-    fp_SymLoadModule64  SymLoadModule64;
-    fp_SymInitialize            SymInitialize;
-    fp_SymCleanup           SymCleanup;
-    fp_SymSetOptions        SymSetOptions;
-    fp_SymGetLineFromAddr64 SymGetLineFromAddr64;
-    fp_SymEnumSymbols           SymEnumSymbols;
-    fp_SymGetModuleBase64   SymGetModuleBase64;
-    fp_GetModuleFileNameExA     GetModuleFileNameExA;
-    fp_StackWalk64                      StackWalk64;
-    fp_SymFunctionTableAccess64 SymFunctionTableAccess64;
+    __gshared fp_SymFromAddr      SymFromAddr;
+    __gshared fp_SymFromName      SymFromName;
+    __gshared fp_SymLoadModule64  SymLoadModule64;
+    __gshared fp_SymInitialize            SymInitialize;
+    __gshared fp_SymCleanup           SymCleanup;
+    __gshared fp_SymSetOptions        SymSetOptions;
+    __gshared fp_SymGetLineFromAddr64 SymGetLineFromAddr64;
+    __gshared fp_SymEnumSymbols           SymEnumSymbols;
+    __gshared fp_SymGetModuleBase64   SymGetModuleBase64;
+    __gshared fp_GetModuleFileNameExA     GetModuleFileNameExA;
+    __gshared fp_StackWalk64                      StackWalk64;
+    __gshared fp_SymFunctionTableAccess64 SymFunctionTableAccess64;
 
 
     alias DWORD function(
@@ -852,8 +754,8 @@ extern (Windows) {
     alias DWORD64 function(
         HANDLE hProcess,
         HANDLE hFile,
-        LPSTR ImageName,
-        LPSTR ModuleName,
+        LPCSTR ImageName,
+        LPCSTR ModuleName,
         DWORD64 BaseOfDll,
         DWORD SizeOfDll
     ) fp_SymLoadModule64;
@@ -1154,7 +1056,7 @@ class GlobalDebugInfo {
         if (info.next) {
             info.next.prev = info.prev;
         }
-        info.freeArrays;
+        info.freeArrays();
         info.prev = info.next = null;
         
         delete info;
@@ -1163,7 +1065,7 @@ class GlobalDebugInfo {
 }
 
 private __gshared GlobalDebugInfo globalDebugInfo;
-static this() {
+shared static this() {
     globalDebugInfo = new GlobalDebugInfo;
 }
 
@@ -1957,8 +1859,8 @@ extern (C) {
         minfo.addDebugInfo(addr, file, func, line);
     }
     
-    char* ModuleDebugInfo_bufferString(ModuleDebugInfo minfo, const(char)[] str) {
-        const(char)[] res;
+    char* ModuleDebugInfo_bufferString(ModuleDebugInfo minfo, char[] str) {
+        char[] res;
         res.alloc(str.length+1, false);
         res[0..$-1] = str[];
         res[str.length] = 0;
@@ -1975,11 +1877,11 @@ extern (C) {
     }
 }
 //#line 2 "parts/Init.di"
-static this() {
+shared static this() {
     loadWinAPIFunctions();
 
     for (fiberRunFuncLength = 0; fiberRunFuncLength < 0x100; ++fiberRunFuncLength) {
-        ubyte* ptr = cast(ubyte*)&D5tango4core6Thread5Fiber3runMFZv + fiberRunFuncLength;
+        ubyte* ptr = cast(ubyte*)&D4core6thread5Fiber3runMFZv + fiberRunFuncLength;
         enum {
             RetOpcode = 0xc3
         }
@@ -1989,11 +1891,11 @@ static this() {
     }
     
     version (StacktraceSpam) printf ("found Thread.Fiber.run at %p with length %x",
-            &D5tango4core6Thread5Fiber3runMFZv, fiberRunFuncLength);
+            &D4core6thread5Fiber3runMFZv, fiberRunFuncLength);
 
     char modNameBuf[512] = 0;
     int modNameLen = GetModuleFileNameExA(GetCurrentProcess(), null, modNameBuf.ptr, modNameBuf.length-1);
-    const(char)[] modName = modNameBuf[0..modNameLen];
+    char[] modName = modNameBuf[0..modNameLen];
     SymSetOptions(SYMOPT_DEFERRED_LOADS/+ | SYMOPT_UNDNAME+/);
     SymInitialize(GetCurrentProcess(), null, false);
     DWORD64 base;
@@ -2003,12 +1905,19 @@ static this() {
         }
     }
 
-    
+    size_t slash_idx;
+    for(slash_idx = modName.length - 1; slash_idx >= 0; slash_idx--)
+    {
+        if(modName[slash_idx] == '\\')
+            break;
+    }
+    auto sym_name = modName[slash_idx + 1..$-4] ~ "!__initLGPLHostExecutableDebugInfo\0";
+
     SYMBOL_INFO sym;
     sym.SizeOfStruct = SYMBOL_INFO.sizeof; 
 
     extern(C) void function(const(char)[]) initTrace;
-    if (SymFromName(GetCurrentProcess(), "__initLGPLHostExecutableDebugInfo".ptr, &sym)) {
+    if (SymFromName(GetCurrentProcess(), sym_name.ptr, &sym)) {
         initTrace = cast(typeof(initTrace))sym.Address;
         assert (initTrace !is null); 
         initTrace(modName);

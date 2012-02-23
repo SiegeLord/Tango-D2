@@ -196,7 +196,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                static char[][] roots ()
+                @property static char[][] roots ()
                 {
                         int             len;
                         char[]          str;
@@ -290,11 +290,11 @@ struct FileSystem
 
                 static long freeSpace(const(char)[] folder, bool superuser = false)
                 {
-                    scope fp = new FilePath(folder);
+                    scope fp = new FilePath(folder.dup);
 
                     const bool wantTrailingBackslash = true;
                     TCHAR[volumePathBufferLen] volPathBuf;
-                    auto volPath = getVolumePath(fp.native.toString, volPathBuf, wantTrailingBackslash);
+                    auto volPath = getVolumePath(fp.native.toString(), volPathBuf, wantTrailingBackslash);
 
                     version (Win32SansUnicode) {
                         alias GetDiskFreeSpaceExA GetDiskFreeSpaceEx;
@@ -337,11 +337,11 @@ struct FileSystem
                         alias CreateFileW CreateFile;
                     }
 
-                    scope fp = new FilePath(folder);
+                    scope fp = new FilePath(folder.dup);
 
                     bool wantTrailingBackslash = (false == superuser);
                     TCHAR[volumePathBufferLen] volPathBuf;
-                    auto volPath = getVolumePath(fp.native.toString, volPathBuf, wantTrailingBackslash);
+                    auto volPath = getVolumePath(fp.native.toString(), volPathBuf, wantTrailingBackslash);
 
                     if (superuser) {
                         struct GET_LENGTH_INFORMATION {
@@ -364,7 +364,7 @@ struct FileSystem
                                 h, IOCTL_DISK_GET_LENGTH_INFO, null , 0,
                                 cast(void*)&lenInfo, lenInfo.sizeof, &numBytes, &overlap
                             )) {
-                            exception ("IOCTL_DISK_GET_LENGTH_INFO failed:" ~ SysError.lastMsg);
+                            exception ("IOCTL_DISK_GET_LENGTH_INFO failed:" ~ SysError.lastMsg.idup);
                         }
 
                         return cast(ulong)lenInfo.Length.QuadPart;
@@ -428,7 +428,7 @@ struct FileSystem
 
                  ***************************************************************/
 
-                static char[][] roots ()
+                @property static char[][] roots ()
                 {
                         version(darwin)
                         {
@@ -442,7 +442,7 @@ struct FileSystem
 
                             auto fc = new File("/etc/mtab");
                             scope (exit)
-                                   fc.close;
+                                   fc.close();
 
                             auto content = new char[cast(size_t)fc.length];
                             fc.input.read (content);
@@ -501,7 +501,7 @@ struct FileSystem
                 {
                     scope fp = new FilePath(folder.dup);
                     statvfs_t info;
-                    int res = statvfs(fp.native.cString.ptr, &info);
+                    int res = statvfs(fp.native.cString().ptr, &info);
                     if (res == -1)
                         exception ("freeSpace->statvfs failed:"
                                    ~ SysError.lastMsg.idup);
@@ -536,7 +536,7 @@ struct FileSystem
                 {
                     scope fp = new FilePath(folder.dup);
                     statvfs_t info;
-                    int res = statvfs(fp.native.cString.ptr, &info);
+                    int res = statvfs(fp.native.cString().ptr, &info);
                     if (res == -1)
                         exception ("totalSpace->statvfs failed:"
                                    ~ SysError.lastMsg.idup);

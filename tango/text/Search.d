@@ -111,6 +111,7 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
+        @property
         const(T)[] match ()
         {
                 return what;
@@ -122,6 +123,7 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
+        @property
         void match (const(T)[] what)
         {
                 this.what = what;
@@ -308,6 +310,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
+        @property
         const(T)[] match ()
         {
                 return what;
@@ -319,12 +322,13 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
+        @property
         void match (const(T)[] what)
         {
                 offsets[] = cast(int)(what.length + 1);
                 this.fore = true;
                 this.what = what;
-                reset;
+                reset();
         }
 
         /***********************************************************************
@@ -340,7 +344,7 @@ private struct SearchFruct(T)
         size_t forward (const(T)[] content, size_t ofs = 0) 
         {
                 if (! fore)
-                      flip;
+                      flip();
 
                 if (ofs > content.length)
                     ofs = content.length;
@@ -363,7 +367,7 @@ private struct SearchFruct(T)
         size_t reverse (const(T)[] content, size_t ofs = size_t.max) 
         {
                 if (fore)
-                    flip;
+                    flip();
 
                 if (ofs > content.length)
                     ofs = content.length;
@@ -554,7 +558,7 @@ private struct SearchFruct(T)
         private void flip ()
         {
                 fore ^= true;
-                reset;
+                reset();
         }
 
         /***********************************************************************

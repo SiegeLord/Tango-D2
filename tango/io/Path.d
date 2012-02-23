@@ -138,8 +138,8 @@ package struct FS
                         // sanity check on Win32 ...
                         version (Win32)
                                 {
-                                bool kosher(){foreach (c; path) if (c is '\\') return false; return true;};
-                                assert (kosher, "attempting to use non-standard '\\' in a path for a folder listing");
+                                bool kosher(){foreach (c; path) if (c is '\\') return false; return true;}
+                                assert (kosher(), "attempting to use non-standard '\\' in a path for a folder listing");
                                 }
 
                         return list (path, dg, allFiles);
@@ -223,13 +223,13 @@ package struct FS
 
         ***********************************************************************/
 
-        static char[] join (const(char)[][] paths...)
+        static char[] join (const(char[])[] paths...)
         {
                 char[] result;
 
                 if (paths.length)
                 {
-                    result ~= paths[0];
+                    result ~= stripped(paths[0]);
 
                     foreach (path; paths[1 .. $-1])
                         result ~= paddedLeading (stripped(path));
@@ -649,7 +649,7 @@ package struct FS
                                   if ((ret = dg(info)) != 0)
                                        break;
                               }
-                           } while (next);
+                           } while (next());
 
                         return ret;
                 }
@@ -993,14 +993,16 @@ package struct FS
                                  info.folder = info.system = false;
 
                                  if (! stat (sfnbuf.ptr, &sbuf))
-                                    {
+                                 {
                                     info.folder = (sbuf.st_mode & S_IFDIR) != 0;
                                     if (info.folder is false)
+                                    {
                                         if ((sbuf.st_mode & S_IFREG) is 0)
                                              info.system = true;
                                         else
                                            info.bytes = cast(ulong) sbuf.st_size;
                                     }
+                                 }
                                  if (all || (info.hidden | info.system) is false)
                                      if ((ret = dg(info)) != 0)
                                           break;
@@ -1067,7 +1069,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        PathParser dup () const
+        @property PathParser dup () const
         {
                 PathParser ret;
                 ret.fp = fp.dup;
@@ -1098,7 +1100,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        inout(char_t)[] root () inout
+        @property inout(char_t)[] root () inout
         {
                 return fp [0 .. folder_];
         }
@@ -1115,7 +1117,7 @@ struct PathParser(char_t = char)
 
 
         
-        inout(char_t)[] folder () inout
+        @property inout(char_t)[] folder () inout
         {
                 return fp [folder_ .. name_];
         }
@@ -1137,7 +1139,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        inout(char_t)[] parent () inout
+        @property inout(char_t)[] parent () inout
         {
                 auto p = path;
                 if (name.length is 0)
@@ -1177,7 +1179,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        inout(char_t)[] name () inout
+        @property inout(char_t)[] name () inout
         {
                 return fp [name_ .. suffix_];
         }
@@ -1191,17 +1193,19 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        char_t[] ext ()
+        @property char_t[] ext ()
         {
                 auto x = suffix;
                 if (x.length)
                    {
                    if (ext_ is 0)
                        foreach (c; x)
+                       {
                                 if (c is '.')
                                     ++ext_;
                                 else
                                    break;
+                       }
                    x = x [ext_ .. $];
                    }
                 return x;
@@ -1214,7 +1218,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        inout(char_t)[] suffix () inout
+        @property inout(char_t)[] suffix () inout
         {
                 return fp [suffix_ .. end_];
         }
@@ -1225,7 +1229,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        inout(char_t)[] path () inout
+        @property inout(char_t)[] path () inout
         {
                 return fp [0 .. name_];
         }
@@ -1236,7 +1240,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        inout(char_t)[] file () inout
+        @property inout(char_t)[] file () inout
         {
                 return fp [name_ .. end_];
         }
@@ -1248,7 +1252,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        const bool isAbsolute ()
+        @property const bool isAbsolute ()
         {
                 return (folder_ > 0) ||
                        (folder_ < end_ && fp[folder_] is FileConst.PathSeparatorChar);
@@ -1260,7 +1264,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        const bool isEmpty ()
+        @property const bool isEmpty ()
         {
                 return end_ is 0;
         }
@@ -1274,7 +1278,7 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        const bool isChild ()
+        @property const bool isChild ()
         {
                 return folder().length > 0;
         }
@@ -1292,7 +1296,7 @@ struct PathParser(char_t = char)
         }*/
         const bool equals (const(char)[] s)
         {
-                return FS.stripped(s) == FS.stripped(toString);
+                return FS.stripped(s) == FS.stripped(toString());
         }
 
         /***********************************************************************
@@ -1330,7 +1334,7 @@ struct PathParser(char_t = char)
                             // standard() or equivalent to convert first
                             case '\\':
                                  FS.exception ("unexpected '\\' character in path: ", path[0..end]);
-
+                                 break;
                             version (Win32)
                             {
                             case ':':
@@ -1573,11 +1577,13 @@ void createPath (const(char)[] path)
         void test (const(char)[] segment)
         {
                 if (segment.length)
+                {
                     if (! exists (segment))
                           createFolder (segment);
                     else
                        if (! isFolder (segment))
                              throw new IllegalArgumentException (("Path.createPath :: file/folder conflict: " ~ segment).idup);
+                }
         }
 
         foreach (i, char c; path)
@@ -1679,7 +1685,7 @@ char[][] collate (const(char)[] path, const(char)[] pattern, bool recurse=false)
 
 *******************************************************************************/
 
-char[] join (const(char)[][] paths...)
+char[] join (const(char[])[] paths...)
 {
         return FS.join (paths);
 }
@@ -2062,7 +2068,7 @@ debug (UnitTest)
 
 char[] normalize (const(char)[] in_path, char[] buf = null)
 {
-	    char[] path;            // Mutable path
+        char[] path;            // Mutable path
         size_t  idx;            // Current position
         size_t  moveTo;         // Position to move
         bool    isAbsolute;     // Whether the path is absolute

@@ -27,7 +27,7 @@ private import  tango.util.log.LayoutDate,
                 
 *******************************************************************************/
 
-static this ()
+shared static this ()
 {
         Log.root.add (new AppendConsole (new LayoutDate));
 }

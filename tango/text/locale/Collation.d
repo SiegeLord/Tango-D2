@@ -29,9 +29,9 @@ public class StringComparer {
   private Culture culture_;
   private bool ignoreCase_;
 
-  static this() {
-    invariant_ = new StringComparer(Culture.invariantCulture, false);
-    invariantIgnoreCase_ = new StringComparer(Culture.invariantCulture, true);
+  shared static this() {
+    invariant_ = new StringComparer(Culture.invariantCulture(), false);
+    invariantIgnoreCase_ = new StringComparer(Culture.invariantCulture(), true);
   }
 
   /**
@@ -124,9 +124,9 @@ public class StringSorter {
   private Culture culture_;
   private StringComparison comparison_;
 
-  static this() {
-    invariant_ = new StringSorter(StringComparer.invariantCulture);
-    invariantIgnoreCase_ = new StringSorter(StringComparer.invariantCultureIgnoreCase);
+  shared static this() {
+    invariant_ = new StringSorter(StringComparer.invariantCulture());
+    invariantIgnoreCase_ = new StringSorter(StringComparer.invariantCultureIgnoreCase());
   }
 
   /**
@@ -136,7 +136,7 @@ public class StringSorter {
   */
   public this(StringComparer comparer = null) {
     if (comparer is null)
-      comparer = StringComparer.currentCulture;
+      comparer = StringComparer.currentCulture();
     comparison_ = &comparer.compare;
   }
 
@@ -156,7 +156,7 @@ public class StringSorter {
     Params:
       array = The array of strings to _sort.
   */
-  public void sort(ref const(char)[][] array) {
+  public inout(void) sort(ref inout(char)[][] array) {
     sort(array, 0, array.length);
   }
 
@@ -167,9 +167,8 @@ public class StringSorter {
       index = The starting index of the range.
       count = The number of elements in the range.
   */
-  public void sort(ref const(char)[][] array, size_t index, size_t count) {
-
-    void qsort(size_t left, size_t right) {
+  public inout(void) sort(ref inout(char)[][] array, size_t index, size_t count) {
+    inout(void) qsort(size_t left, size_t right, inout(int*) dummy = null) {
       do {
         size_t i = left, j = right;
         const(char)[] pivot = array[left + ((right - left) >> 1)];
@@ -183,7 +182,7 @@ public class StringSorter {
           if (i > j)
             break;
           else if (i < j) {
-            const(char)[] temp = array[i];
+            auto temp = array[i];
             array[i] = array[j];
             array[j] = temp;
           }
@@ -212,16 +211,16 @@ public class StringSorter {
     $(I Property.) Retrieves an instance that performs a case-sensitive sort using the rules of the current culture.
     Returns: A StringSorter instance.
   */
-  public static StringSorter currentCulture() {
-    return new StringSorter(StringComparer.currentCulture);
+  @property public static StringSorter currentCulture() {
+    return new StringSorter(StringComparer.currentCulture());
   }
 
   /**
     $(I Property.) Retrieves an instance that performs a case-insensitive sort using the rules of the current culture.
     Returns: A StringSorter instance.
   */
-  public static StringSorter currentCultureIgnoreCase() {
-    return new StringSorter(StringComparer.currentCultureIgnoreCase);
+  @property public static StringSorter currentCultureIgnoreCase() {
+    return new StringSorter(StringComparer.currentCultureIgnoreCase());
   }
 
   /**

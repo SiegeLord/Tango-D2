@@ -22,12 +22,12 @@ int main (char[][] args)
                         {return isDir || fp.suffix == ".mp3" || fp.suffix == ".wma"|| fp.suffix == ".m4a";});
 
         // shuffle the files 
-        Stdout.formatln ("{} music files", songs.files.length);
-        Array.shuffle (songs.files);
+        Stdout.formatln ("{} music files", songs.files().length);
+        Array.shuffle (songs.files());
 
         // sequentially fill the target until done, or it quits with an
         // exception when the device is full
-        foreach (song; songs.files)
+        foreach (song; songs.files())
                  dst.file(song.file).copy(song);
 
         Stdout.formatln ("Done");

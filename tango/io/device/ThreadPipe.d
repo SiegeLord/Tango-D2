@@ -72,7 +72,7 @@ class ThreadPipe : Conduit
      * since all the ThreadPipe data is in memory, buffering doesn't make
      * much sense.
      */
-    const size_t bufferSize()
+    override const size_t bufferSize()
     {
         return _buf.length;
     }
@@ -82,7 +82,7 @@ class ThreadPipe : Conduit
      *
      * Returns "&lt;thread conduit&gt;"
      */
-    string toString()
+    override string toString()
     {
         return "<threadpipe>";
     }
@@ -144,7 +144,7 @@ class ThreadPipe : Conduit
      * TODO: move stop() functionality to detach when it becomes possible to
      * have fully-owned members
      */
-    void detach()
+    override void detach()
     {
     }
 
@@ -157,7 +157,7 @@ class ThreadPipe : Conduit
      * Returns the number of bytes read, which may be less than requested in
      * dst. Eof is returned whenever an end-of-flow condition arises.
      */
-    size_t read(void[] dst)
+    override size_t read(void[] dst)
     {
         //
         // don't block for empty read
@@ -237,7 +237,7 @@ class ThreadPipe : Conduit
      * the quantity provided. Eof is returned when an end-of-flow condition
      * arises.
      */
-    size_t write(const(void)[] src)
+    override size_t write(const(void)[] src)
     {
         //
         // don't block for empty write
@@ -283,9 +283,9 @@ debug(UnitTest)
 
     unittest
     {
-        auto source = new size_t[1000];
+        auto source = new uint[1000];
         foreach(i, ref x; source)
-            x = i;
+            x = cast(uint)i;
 
         ThreadPipe tp = new ThreadPipe(16);
         void threadA()

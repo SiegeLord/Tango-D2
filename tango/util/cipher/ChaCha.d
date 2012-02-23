@@ -12,7 +12,7 @@ private import tango.util.cipher.Salsa20;
 /** Implementation of ChaCha designed by Daniel J. Bernstein. */
 class ChaCha : Salsa20
 {
-    const(char)[] name()
+    @property override const(char)[] name()
     {
         return "ChaCha";
     }
@@ -28,7 +28,7 @@ class ChaCha : Salsa20
         init(encrypt, key, iv);
     }
 
-    protected void keySetup()
+    override protected void keySetup()
     {
         uint offset;
         const(ubyte)[] constants;
@@ -55,14 +55,14 @@ class ChaCha : Salsa20
         state[ 3] = ByteConverter.LittleEndian.to!(uint)(constants[12..16]);
     }
     
-    protected void ivSetup()
+    override protected void ivSetup()
     {
         state[12] = state[13] = 0;
         state[14] = ByteConverter.LittleEndian.to!(uint)(workingIV[0..4]);
         state[15] = ByteConverter.LittleEndian.to!(uint)(workingIV[4..8]);
     }
     
-    protected void salsa20WordToByte(const(uint[]) input, ref ubyte[] output)
+    override protected void salsa20WordToByte(const(uint[]) input, ref ubyte[] output)
     {
         uint[] x = new uint[16];
         x[] = input[0..16];

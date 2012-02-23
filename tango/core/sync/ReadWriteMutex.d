@@ -133,7 +133,7 @@ class ReadWriteMutex
      * Returns:
      *  A reader sub-mutex.
      */
-    Reader reader()
+    @property Reader reader()
     {
         return m_reader;
     }
@@ -145,7 +145,7 @@ class ReadWriteMutex
      * Returns:
      *  A writer sub-mutex.
      */
-    Writer writer()
+    @property Writer writer()
     {
         return m_writer;
     }

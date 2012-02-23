@@ -79,7 +79,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final const(char)[] name ()
+        @property final const(char)[] name ()
         {
                 return Path.parse(path).name;
         }
@@ -90,7 +90,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final string toString ()
+        override final string toString ()
         {
                 return path.idup;
         }
@@ -109,8 +109,8 @@ class FileFolder : VfsFolder
         {
                 if (mounting && cast(FileFolder) folder)
                    {
-                   auto src = Path.FS.padded (this.toString);
-                   auto dst = Path.FS.padded (folder.toString);
+                   auto src = Path.FS.padded (this.toString());
+                   auto dst = Path.FS.padded (folder.toString());
 
                    auto len = src.length;
                    if (len > dst.length)
@@ -127,7 +127,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final VfsFile file (const(char)[] name)
+        @property final VfsFile file (const(char)[] name)
         {
                 return new FileHost (Path.join (path, name));
         }
@@ -138,7 +138,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final VfsFolderEntry folder (const(char)[] path)
+        @property final VfsFolderEntry folder (const(char)[] path)
         {
                 return new FolderHost (this, path);
         }
@@ -161,7 +161,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final bool writable ()
+        @property final bool writable ()
         {
                 return Path.isWritable (path);
         }
@@ -172,7 +172,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final VfsFolders self ()
+        @property final VfsFolders self ()
         {
                 return new FolderGroup (this, false);
         }
@@ -183,7 +183,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final VfsFolders tree ()
+        @property final VfsFolders tree ()
         {
                 return new FolderGroup (this, true);
         }
@@ -228,7 +228,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private FileFolder[] folders (bool collect)
+        @property private FileFolder[] folders (bool collect)
         {
                 FileFolder[] folders;
 
@@ -330,7 +330,7 @@ class FileGroup : VfsFiles
                         if (files.length)
                            {
                            group ~= files;
-                           //hosts ~= folder.toString;
+                           //hosts ~= folder.toString();
                            }
                         }
         }
@@ -349,7 +349,7 @@ class FileGroup : VfsFiles
                 foreach (file; group)
                         {
                         VfsFile x = host;
-                        host.path = Path.PathParser!(const(char))(file);
+                        host.path = Path.parse(file);
                         if ((result = dg(x)) != 0)
                              break;
                         }
@@ -362,7 +362,7 @@ class FileGroup : VfsFiles
 
         ***********************************************************************/
 
-        final size_t files ()
+        @property final size_t files ()
         {
                 return group.length;
         }
@@ -373,7 +373,7 @@ class FileGroup : VfsFiles
 
         ***********************************************************************/
 
-        final ulong bytes ()
+        @property final ulong bytes ()
         {
                 return stats.bytes;
         }
@@ -438,7 +438,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final size_t files ()
+        @property final size_t files ()
         {
                 size_t files;
                 foreach (folder; members)
@@ -452,7 +452,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final ulong bytes ()
+        @property final ulong bytes ()
         {
                 ulong bytes;
 
@@ -467,7 +467,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final size_t folders ()
+        @property final size_t folders ()
         {
                 if (members.length is 1)
                     return members[0].stats.folders;
@@ -480,7 +480,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final size_t entries ()
+        @property final size_t entries ()
         {
                 return files + folders;
         }
@@ -507,7 +507,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final FileGroup catalog (const(char)[] pattern)
+        @property final FileGroup catalog (const(char)[] pattern)
         {
                 bool foo (VfsInfo info)
                 {
@@ -523,7 +523,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final FileGroup catalog (VfsFilter filter = null)
+        @property final FileGroup catalog (VfsFilter filter = null)
         {
                 return new FileGroup (this, filter);
         }
@@ -591,7 +591,7 @@ private class FolderHost : VfsFolderEntry
 
         ***********************************************************************/
 
-        bool exists ()
+        @property bool exists ()
         {
                 try {
                     open();
@@ -627,7 +627,7 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        final const(char)[] name()
+        @property final const(char)[] name()
         {
                 return path.file;
         }
@@ -638,9 +638,9 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        final string toString ()
+        override final string toString ()
         {
-                return path.toString.idup;
+                return path.toString().idup;
         }
 
         /***********************************************************************
@@ -649,9 +649,9 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        final bool exists()
+        @property final bool exists()
         {
-                return Path.exists (path.toString);
+                return Path.exists (path.toString());
         }
 
         /***********************************************************************
@@ -660,9 +660,9 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        final ulong size()
+        @property final ulong size()
         {
-                return Path.fileSize(path.toString);
+                return Path.fileSize(path.toString());
         }
 
         /***********************************************************************
@@ -673,7 +673,7 @@ private class FileHost : VfsFile
 
         final VfsFile create ()
         {
-                Path.createFile(path.toString);
+                Path.createFile(path.toString());
                 return this;
         }
 
@@ -685,7 +685,7 @@ private class FileHost : VfsFile
 
         final VfsFile create (InputStream input)
         {
-                create.output.copy(input).close;
+                create().output.copy(input).close();
                 return this;
         }
 
@@ -698,7 +698,7 @@ private class FileHost : VfsFile
         VfsFile copy (VfsFile source)
         {
                 auto input = source.input;
-                scope (exit) input.close;
+                scope (exit) input.close();
                 return create (input);
         }
 
@@ -711,7 +711,7 @@ private class FileHost : VfsFile
         final VfsFile move (VfsFile source)
         {
                 copy (source);
-                source.remove;
+                source.remove();
                 return this;
         }
 
@@ -721,9 +721,9 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        final InputStream input ()
+        @property final InputStream input ()
         {
-                return new File (path.toString);
+                return new File (path.toString());
         }
 
         /***********************************************************************
@@ -732,9 +732,9 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        final OutputStream output ()
+        @property final OutputStream output ()
         {
-                return new File (path.toString, File.WriteExisting);
+                return new File (path.toString(), File.WriteExisting);
         }
 
         /***********************************************************************
@@ -745,7 +745,7 @@ private class FileHost : VfsFile
 
         final VfsFile remove ()
         {
-                Path.remove (path.toString);
+                Path.remove (path.toString());
                 return this;
         }
 
@@ -755,7 +755,7 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        final VfsFile dup()
+        @property final VfsFile dup()
         {
                 auto ret = new FileHost;
                 ret.path = path.dup;
@@ -768,9 +768,9 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        final Time modified ()
+        @property final Time modified ()
         {
-                return Path.timeStamps(path.toString).modified;
+                return Path.timeStamps(path.toString()).modified;
         }
 }
 
@@ -814,6 +814,6 @@ void main()
         Stdout.formatln ("cat.bytes = {}", cat.bytes);
 +/
         //foreach (file; cat)
-        //         Stdout.formatln ("cat.name '{}' '{}'", file.name, file.toString);
+        //         Stdout.formatln ("cat.name '{}' '{}'", file.name, file.toString());
 }
 }

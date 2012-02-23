@@ -55,22 +55,23 @@ private extern (C)
         real powl  (real base, real exp);
 
         int printf (char*, ...);
-        version (Windows)
-                {
+        version (float_lib)
+        {
+            version (Windows)
+            {
                 alias ecvt econvert;
                 alias ecvt fconvert;
-                }
-        else
-           {
-           alias ecvtl econvert;
-           alias ecvtl fconvert;
-           }
-
- 
-        char* ecvt (double d, int digits, int* decpt, int* sign);
-        char* fcvt (double d, int digits, int* decpt, int* sign);
-        char* ecvtl (real d, int digits, int* decpt, int* sign);
-        char* fcvtl (real d, int digits, int* decpt, int* sign);
+                char* ecvt (double d, int digits, int* decpt, int* sign);
+                char* fcvt (double d, int digits, int* decpt, int* sign);
+            }
+            else
+            {
+                alias ecvtl econvert;
+                alias ecvtl fconvert;
+                char* ecvtl (real d, int digits, int* decpt, int* sign);
+                char* fcvtl (real d, int digits, int* decpt, int* sign);
+            }
+        }
 }
 
 /******************************************************************************
@@ -96,7 +97,7 @@ private enum
 
 NumType toFloat(T) (const(T[]) src)
 {
-        uint len;
+        size_t len;
 
         auto x = parse (src, &len);
         if (len < src.length || len == 0)

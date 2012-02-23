@@ -92,17 +92,17 @@ private
             }
         }
 
-        bool isDir()
+        @property bool isDir()
         {
             return (type == EntryType.Dir);
         }
 
-        bool isFile()
+        @property bool isFile()
         {
             return (type == EntryType.File);
         }
 
-        ulong fileSize()
+        @property ulong fileSize()
         in
         {
             assert( type == EntryType.File );
@@ -110,7 +110,7 @@ private
         body
         {
             if( file.zipEntry !is null )
-                return file.zipEntry.size;
+                return file.zipEntry.size();
 
             else if( file.tempFile !is null )
             {
@@ -139,8 +139,8 @@ private
         {
             if( file.zipEntry !is null )
             {
-                file.zipEntry.verify;
-                return file.zipEntry.open;
+                file.zipEntry.verify();
+                return file.zipEntry.open();
             }
             else if( file.tempFile !is null )
                 return new WrapSeekInputStream(file.tempFile, 0);
@@ -173,11 +173,11 @@ private
                 if( file.zipEntry !is null )
                 {
                     {
-                        auto zi = file.zipEntry.open;
-                        scope(exit) zi.close;
+                        auto zi = file.zipEntry.open();
+                        scope(exit) zi.close();
 
                         file.tempFile = new TempFile;
-                        file.tempFile.copy(zi).close;
+                        file.tempFile.copy(zi).close();
 
                         debug( ZipFolder )
                             Stderr.formatln("Entry.openOutput: duplicated"
@@ -201,7 +201,7 @@ private
                 }
 
                 assert( file.tempFile !is null );
-                return openOutput;
+                return openOutput();
             }
         }
 
@@ -214,7 +214,7 @@ private
                 name = path = null;
             }
 
-            dispose_children;
+            dispose_children();
         }
 
         void dispose_children()
@@ -288,7 +288,7 @@ private
 class ZipSubFolder : VfsFolder, VfsSync
 {
     ///
-    final const(char)[] name()
+    @property final const(char)[] name()
     in { assert( valid ); }
     body
     {
@@ -304,7 +304,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final VfsFile file(const(char)[] path)
+    @property final VfsFile file(const(char)[] path)
     in
     {
         assert( valid );
@@ -325,7 +325,7 @@ class ZipSubFolder : VfsFolder, VfsSync
         if( dir.nz() )
         {
             auto dir_ent = this.folder(dir);
-            auto dir_obj = dir_ent.open;
+            auto dir_obj = dir_ent.open();
             return dir_obj.file(name);
         }
         else
@@ -346,7 +346,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final VfsFolderEntry folder(const(char)[] path)
+    @property final VfsFolderEntry folder(const(char)[] path)
     in
     {
         assert( valid );
@@ -390,7 +390,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final VfsFolders self()
+    @property final VfsFolders self()
     in { assert( valid ); }
     body
     {
@@ -398,7 +398,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final VfsFolders tree()
+    @property final VfsFolders tree()
     in { assert( valid ); }
     body
     {
@@ -438,17 +438,17 @@ version( ZipFolder_NonMutating )
 else
 {
         // MUTATE
-        enforce_mutable;
+        enforce_mutable();
 
         // Disposing of the underlying entry subtree should do our job for us.
-        entry.dispose_children;
-        mutate;
+        entry.dispose_children();
+        mutate();
         return this;
 }
     }
 
     ///
-    final bool writable()
+    @property final bool writable()
     in { assert( valid ); }
     body
     {
@@ -496,7 +496,7 @@ else
     protected VfsFolder closeImpl(bool commit = true)
     {
         // MUTATE
-        if( commit ) sync;
+        if( commit ) sync();
 
         // Just clean up our pointers
         archive = null;
@@ -513,7 +513,7 @@ else
     body
     {
         // MUTATE
-        archive.sync;
+        archive.sync();
         return this;
     }
 
@@ -528,8 +528,8 @@ else
                 && zipfolder !is null
                 && zipfolder.archive is archive )
         {
-            auto src = this.toString;
-            auto dst = zipfolder.toString;
+            auto src = this.toString();
+            auto dst = zipfolder.toString();
 
             auto len = src.length > dst.length ? dst.length : src.length;
 
@@ -542,14 +542,14 @@ else
     /**
      * Returns a reference to the underlying ZipFolder instance.
      */
-    final ZipFolder archive() { return _archive; }
+    @property final ZipFolder archive() { return _archive; }
 
 private:
     ZipFolder _archive;
     Entry* entry;
     VfsStats stats;
 
-    final ZipFolder archive(ZipFolder v) { return _archive = v; }
+    @property final ZipFolder archive(ZipFolder v) { return _archive = v; }
 
     this(ZipFolder archive, Entry* entry)
     {
@@ -569,7 +569,7 @@ private:
         this.entry = entry;
     }
 
-    final bool valid()
+    @property final bool valid()
     {
         return( (archive !is null) && !archive.closed );
     }
@@ -587,7 +587,7 @@ private:
     in { assert( valid ); }
     body
     {
-        enforce_mutable;
+        enforce_mutable();
         archive.modified = true;
     }
 
@@ -625,7 +625,7 @@ private:
         foreach( _,childEntry ; entry.dir.children )
         {
             if( childEntry.isFile )
-                if( filter is null || filter(childEntry.vfsInfo) )
+                if( filter is null || filter(childEntry.vfsInfo()) )
                 {
                     files ~= childEntry;
                     stats.bytes += childEntry.fileSize;
@@ -673,7 +673,7 @@ class ZipFolder : ZipSubFolder
             Stderr.formatln("ZipFolder.close({})",commit);
 
         // MUTATE
-        if( commit ) sync;
+        if( commit ) sync();
 
         // Close ZipReader
         if( zr !is null )
@@ -717,7 +717,7 @@ version( ZipFolder_NonMutating )
 }
 else
 {
-        enforce_mutable;
+        enforce_mutable();
 
         // First, we need to determine if we have any zip entries.  If we
         // don't, then we can write directly to the path.  If there *are*
@@ -747,7 +747,7 @@ else
             // using.
             if( zr !is null )
             {
-                zr.close;
+                zr.close();
                 delete zr;
             }
 
@@ -759,7 +759,7 @@ else
             scope zw = new ZipBlockWriter(os);
             foreach( file ; this.tree.catalog )
             {
-                auto zei = ZipEntryInfo(file.toString[1..$]);
+                auto zei = ZipEntryInfo(file.toString()[1..$]);
                 // BUG: Passthru doesn't maintain compression for some
                 // reason...
                 if( auto zf = cast(ZipFile) file )
@@ -772,14 +772,14 @@ else
                 else
                     zw.putStream(zei, file.input);
             }
-            zw.finish;
+            zw.finish();
         }
 
         // With that done, we can free all our handles, etc.
         debug( ZipFolder )
             Stderr(" sync: close").newline;
         this.close(/*commit*/ false);
-        os.close;
+        os.close();
 
         // If we wrote the archive into a temporary file, move that over the
         // top of the old archive.
@@ -792,7 +792,7 @@ else
                 Stderr.formatln(" sync: renaming {} to {}",
                         tempFile, path);
 
-            Path.rename (tempFile.toString, path);
+            Path.rename (tempFile.toString(), path);
         }
 
         // Finally, re-open the archive so that we have all the nicely
@@ -817,15 +817,15 @@ else
      * that in addition to the readonly constructor flag, this is also
      * influenced by whether the file itself is read-only or not.
      */
-    final bool readonly() { return _readonly; }
+    @property final bool readonly() { return _readonly; }
 
     /**
      * Allows you to read and specify the path to the archive.  The effect of
      * setting this is to change where the archive will be written to when
      * flushed to disk.
      */
-    final const(char)[] path() { return _path; }
-    final const(char)[] path(const(char)[] v) { return _path = v; } /// ditto
+    @property final const(char)[] path() { return _path; }
+    @property final const(char)[] path(const(char)[] v) { return _path = v; } /// ditto
 
 private:
     ZipReader zr;
@@ -834,16 +834,16 @@ private:
     bool _readonly;
     bool modified = false;
 
-    final bool readonly(bool v) { return _readonly = v; }
+    @property final bool readonly(bool v) { return _readonly = v; }
 
-    final bool closed()
+    @property final bool closed()
     {
         debug( ZipFolder )
             Stderr("ZipFolder.closed()").newline;
         return (root is null);
     }
 
-    final bool valid()
+    @property final bool valid()
     {
         debug( ZipFolder )
             Stderr("ZipFolder.valid()").newline;
@@ -897,12 +897,14 @@ private:
         // Update readonly to reflect the write-protected status of the
         // archive.
         this.readonly = this.readonly || !Path.isWritable(path);
+        
+        zr = new ZipBlockReader(path);
 
         // Parse the contents of the archive
         foreach( zipEntry ; zr )
         {
             // Normalise name
-            auto name = FilePath(zipEntry.info.name.dup).standard.toString;
+            auto name = FilePath(zipEntry.info.name.dup).standard.toString();
 
             // If the last character is '/', treat as a directory and skip
             // TODO: is there a better way of detecting this?
@@ -969,9 +971,9 @@ private:
                     else
                         filent.fullname = "/" ~ h;
                     filent.name = filent.fullname[$-h.length..$];
-                    filent.file.zipEntry = zipEntry.dup;
+                    filent.file.zipEntry = zipEntry.dup();
 
-                    filent.makeVfsInfo;
+                    filent.makeVfsInfo();
 
                     // Insert
                     curent.dir.children[filent.name] = filent;
@@ -990,7 +992,7 @@ private:
 class ZipFile : VfsFile
 {
     ///
-    final const(char)[] name()
+    @property final const(char)[] name()
     in { assert( valid ); }
     body
     {
@@ -1008,7 +1010,7 @@ class ZipFile : VfsFile
     }
 
     ///
-    final bool exists()
+    @property final bool exists()
     in { assert( valid ); }
     body
     {
@@ -1018,7 +1020,7 @@ class ZipFile : VfsFile
     }
 
     ///
-    final ulong size()
+    @property final ulong size()
     in { assert( valid ); }
     body
     {
@@ -1044,9 +1046,9 @@ version( ZipFolder_NonMutating )
 else
 {
         // MUTATE
-        enforce_mutable;
+        enforce_mutable();
 
-        if( !exists ) this.create;
+        if( !exists ) this.create();
         this.output.copy(source.input);
 
         return this;
@@ -1066,10 +1068,10 @@ version( ZipFolder_NonMutating )
 else
 {
         // MUTATE
-        enforce_mutable;
+        enforce_mutable();
 
         this.copy(source);
-        source.remove;
+        source.remove();
 
         return this;
 }
@@ -1093,18 +1095,18 @@ else
                     "this folder ain't big enough for the both of 'em");
 
         // MUTATE
-        enforce_mutable;
+        enforce_mutable();
 
         auto entry = new Entry;
         entry.type = EntryType.File;
         entry.fullname = parent.fullname.dir_app(name);
         entry.name = entry.fullname[$-name.length..$];
-        entry.makeVfsInfo;
+        entry.makeVfsInfo();
 
         assert( !(entry.name in parent.dir.children) );
         parent.dir.children[entry.name] = entry;
         this.reset(archive, parent, entry);
-        mutate;
+        mutate();
 
         // Done
         return this;
@@ -1123,8 +1125,8 @@ version( ZipFolder_NonMutating )
 }
 else
 {
-        create;
-        output.copy(stream).close;
+        create();
+        output.copy(stream).close();
         return this;
 }
     }
@@ -1147,7 +1149,7 @@ else
                     "rather redundant, really");
 
         // MUTATE
-        enforce_mutable;
+        enforce_mutable();
 
         // Save the old name
         auto old_name = name;
@@ -1155,9 +1157,9 @@ else
         // Do the removal
         assert( !!(name in parent.dir.children) );
         parent.dir.children.remove(name);
-        entry.dispose;
+        entry.dispose();
         entry = null;
-        mutate;
+        mutate();
 
         // Swap out our now empty entry for the name, so the file can be
         // directly recreated.
@@ -1168,12 +1170,12 @@ else
     }
 
     ///
-    final InputStream input()
+    @property final InputStream input()
     in { assert( valid ); }
     body
     {
         if( exists )
-            return entry.openInput;
+            return entry.openInput();
 
         else
             error("ZipFile.input: cannot open non-existent file for input; "
@@ -1183,7 +1185,7 @@ else
     }
 
     ///
-    final OutputStream output()
+    @property final OutputStream output()
     in { assert( valid ); }
     body
     {
@@ -1195,16 +1197,16 @@ version( ZipFolder_NonMutable )
 else
 {
         // MUTATE
-        enforce_mutable;
+        enforce_mutable();
 
-        // Don't call mutate; defer that until the user actually writes to or
+        // Don't call mutate(); defer that until the user actually writes to or
         // modifies the underlying stream.
-        return archive.mutateStream(entry.openOutput);
+        return archive.mutateStream(entry.openOutput());
 }
     }
 
     ///
-    final VfsFile dup()
+    @property final VfsFile dup()
     in { assert( valid ); }
     body
     {
@@ -1215,7 +1217,7 @@ else
     }
 
     ///
-    final Time modified()
+    @property final Time modified()
     {
         return entry.file.zipEntry.info.modified;
     }
@@ -1264,7 +1266,7 @@ else
         this.reset(archive, parent, name);
     }
 
-    final bool valid()
+    @property final bool valid()
     {
         return( (archive !is null) && !archive.closed );
     }
@@ -1282,7 +1284,7 @@ else
     in { assert( valid ); }
     body
     {
-        enforce_mutable;
+        enforce_mutable();
         archive.modified = true;
     }
 
@@ -1373,7 +1375,7 @@ version( ZipFolder_NonMutating )
 else
 {
         // MUTATE
-        enforce_mutable;
+        enforce_mutable();
 
         // If the folder exists, we can't really create it, now can we?
         if( this.exists )
@@ -1385,18 +1387,18 @@ else
         entry.type = EntryType.Dir;
         entry.fullname = parent.fullname.dir_app(name);
         entry.name = entry.fullname[$-name.length..$];
-        entry.makeVfsInfo;
+        entry.makeVfsInfo();
 
         assert( !(entry.name in parent.dir.children) );
         parent.dir.children[entry.name] = entry;
-        mutate;
+        mutate();
 
         // Done
         return new ZipSubFolder(archive, entry);
 }
     }
 
-    final bool exists()
+    @property final bool exists()
     in { assert( valid ); }
     body
     {
@@ -1424,7 +1426,7 @@ private:
         this.name = name;
     }
 
-    final bool valid()
+    @property final bool valid()
     {
         return (archive !is null) && !archive.closed;
     }
@@ -1442,7 +1444,7 @@ private:
     in { assert( valid ); }
     body
     {
-        enforce_mutable;
+        enforce_mutable();
         archive.modified = true;
     }
 }
@@ -1468,7 +1470,7 @@ class ZipSubFolderGroup : VfsFolders
         return result;
     }
 
-    final size_t files()
+    @property final size_t files()
     in { assert( valid ); }
     body
     {
@@ -1480,21 +1482,21 @@ class ZipSubFolderGroup : VfsFolders
         return files;
     }
 
-    final size_t folders()
+    @property final size_t folders()
     in { assert( valid ); }
     body
     {
         return members.length;
     }
 
-    final size_t entries()
+    @property final size_t entries()
     in { assert( valid ); }
     body
     {
         return files + folders;
     }
 
-    final ulong bytes()
+    @property final ulong bytes()
     in { assert( valid ); }
     body
     {
@@ -1519,7 +1521,7 @@ class ZipSubFolderGroup : VfsFolders
         return new ZipSubFolderGroup(archive, set);
     }
 
-    final VfsFiles catalog(const(char)[] pattern)
+    @property final VfsFiles catalog(const(char)[] pattern)
     in { assert( valid ); }
     body
     {
@@ -1531,7 +1533,7 @@ class ZipSubFolderGroup : VfsFolders
         return catalog (&filter);
     }
 
-    final VfsFiles catalog(VfsFilter filter = null)
+    @property final VfsFiles catalog(VfsFilter filter = null)
     in { assert( valid ); }
     body
     {
@@ -1558,7 +1560,7 @@ private:
         this.members = members;
     }
 
-    final bool valid()
+    @property final bool valid()
     {
         return (archive !is null) && !archive.closed;
     }
@@ -1600,14 +1602,14 @@ class ZipFileGroup : VfsFiles
         return result;
     }
 
-    final size_t files()
+    @property final size_t files()
     in { assert( valid ); }
     body
     {
         return group.length;
     }
 
-    final ulong bytes()
+    @property final ulong bytes()
     in { assert( valid ); }
     body
     {
@@ -1635,7 +1637,7 @@ private:
                 group ~= FileEntry(folder.entry, file);
     }
 
-    final bool valid()
+    @property final bool valid()
     {
         return (archive !is null) && !archive.closed;
     }
@@ -1686,7 +1688,7 @@ inout(char)[] headTail(inout(char)[] path, out inout(char)[] head, out inout(cha
         {
             head = path[0..i+1];
             tail = path[i+2..$];
-            return head;;
+            return head;
         }
 
     head = path;
@@ -1849,7 +1851,7 @@ class EventSeekInputStream : InputStream //, IConduit.Seek
 
     override void close()
     {
-        source.close;
+        source.close();
         source = null;
         seeker = null;
         if( callbacks.close ) callbacks.close();
@@ -1932,7 +1934,7 @@ class EventSeekOutputStream : OutputStream //, IConduit.Seek
 
     override void close()
     {
-        source.close;
+        source.close();
         source = null;
         seeker = null;
         if( callbacks.close ) callbacks.close();
@@ -1997,7 +1999,7 @@ private:
 
 /**
  * This stream can be used to provide access to another stream.
- * Its distinguishing feature is that users cannot close the underlying
+ * Its distinguishing feature is that users cannot.close() the underlying
  * stream.
  *
  * This stream fully supports seeking, and as such requires that the
@@ -2094,7 +2096,7 @@ private:
 
 /**
  * This stream can be used to provide access to another stream.
- * Its distinguishing feature is that the users cannot close the underlying
+ * Its distinguishing feature is that the users cannot.close() the underlying
  * stream.
  *
  * This stream fully supports seeking, and as such requires that the

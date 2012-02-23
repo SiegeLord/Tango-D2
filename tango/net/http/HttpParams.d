@@ -55,7 +55,7 @@ class HttpParams : HttpTokens, HttpParamsView
                 super ('=');
 
                 // construct a line tokenizer for later usage
-                amp = new Delimiters!(char) ("&".dup);
+                amp = new Delimiters!(char) ("&");
         }
 
         /**********************************************************************
@@ -76,13 +76,13 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void parse (InputBuffer input)
+        override void parse (InputBuffer input)
         {
                 setParsed (true);
                 amp.set (input);
 
-                while (amp.next || amp.get.length)
-                       stack.push (amp.get);
+                while (amp.next || amp.get().length)
+                       stack.push (amp.get());
         }
 
         /**********************************************************************
@@ -91,7 +91,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void add (const(char)[] name, const(char)[] value)
+        override void add (const(char)[] name, const(char)[] value)
         {
                 super.add (name, value);
         }
@@ -114,7 +114,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void addDate (const(char)[] name, Time value)
+        override void addDate (const(char)[] name, Time value)
         {
                 super.addDate (name, value);
         }
@@ -126,7 +126,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        char[] get (const(char)[] name, const(char)[] ret = null)
+        override const(char)[] get (const(char)[] name, const(char)[] ret = null)
         {
                 return super.get (name, ret);
         }
@@ -138,7 +138,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        int getInt (const(char)[] name, int ret = -1)
+        override int getInt (const(char)[] name, int ret = -1)
         {
                 return super.getInt (name, ret);
         }
@@ -150,7 +150,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        Time getDate (const(char)[] name, Time ret = Time.epoch)
+        override Time getDate (const(char)[] name, Time ret = Time.epoch)
         {
                 return super.getDate (name, ret);
         }
@@ -162,7 +162,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void produce (scope size_t delegate(const(void)[]) consume, const(char)[] eol=null)
+        override void produce (scope size_t delegate(const(void)[]) consume, const(char)[] eol=null)
         {
                 return super.produce (consume, eol);
         }

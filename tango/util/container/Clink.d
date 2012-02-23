@@ -63,7 +63,7 @@ struct Clink (V)
          * Return true if current cell is the only one on the list
         **/
 
-        const bool singleton()
+        @property const bool singleton()
         {
                 return next is &this;
         }
@@ -122,7 +122,7 @@ struct Clink (V)
          * return the number of cells in the list
         **/
 
-        const int size()
+        @property const int size()
         {
                 int c = 0;
                 auto p = &this;

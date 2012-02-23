@@ -26,7 +26,7 @@ class AES : BlockCipher
         ];
         
         // Sbox and its inverse
-        enum ubyte[256] S = [
+        const ubyte[256] S = [
             0x63u, 0x7cu, 0x77u, 0x7bu, 0xf2u, 0x6bu, 0x6fu, 0xc5u,
             0x30u, 0x01u, 0x67u, 0x2bu, 0xfeu, 0xd7u, 0xabu, 0x76u,
             0xcau, 0x82u, 0xc9u, 0x7du, 0xfau, 0x59u, 0x47u, 0xf0u,
@@ -97,7 +97,7 @@ class AES : BlockCipher
         ];
         
         // Round tables
-        enum uint[256] TE0 = [
+        const uint[256] TE0 = [
             0xc66363a5u, 0xf87c7c84u, 0xee777799u, 0xf67b7b8du,
             0xfff2f20du, 0xd66b6bbdu, 0xde6f6fb1u, 0x91c5c554u,
             0x60303050u, 0x02010103u, 0xce6767a9u, 0x562b2b7du,
@@ -647,7 +647,7 @@ class AES : BlockCipher
         init(encrypt, key);
     }
 
-    final override const(char[]) name()
+    @property final override const(char[]) name()
     {
         return "AES";
     }
@@ -659,7 +659,7 @@ class AES : BlockCipher
         return ROUNDS;
     }
     
-    final override const uint blockSize()
+    @property final override const uint blockSize()
     {
         return BLOCK_SIZE;
     }

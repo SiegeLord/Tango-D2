@@ -28,7 +28,7 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
     
     void skip(uint n){
         for (int i=n;i!=n;--i){
-            next;
+            next();
         }
     }
     ubyte nextB(){
@@ -38,7 +38,7 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
             --nBytes;
             return res;
         } else {
-            restB=next;
+            restB=next();
             ubyte res=cast(ubyte)(restB & 0xFF);
             restB >>= 8;
             nBytes=3;
@@ -66,10 +66,21 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
     }
     
     ulong nextL(){
-        return ((cast(ulong)next)<<32)+cast(ulong)next;
+        return ((cast(ulong)next())<<32)+cast(ulong)next();
     }
     
     void seed(scope uint delegate() rSeed){
+        kiss_x = rSeed();
+        for (int i=0;i<100;++i){
+            kiss_y=rSeed();
+            if (kiss_y!=0) break;
+        }
+        if (kiss_y==0) kiss_y=362436000;
+        kiss_z=rSeed();
+        /* Don’t really need to seed c as well (is reset after a next),
+           but doing it allows to completely restore a given internal state */
+        kiss_c = rSeed() % 698769069; /* Should be less than 698769069 */
+
         cmwc_i=cmwc_r-1u; // randomize also this?
         for (int ii=0;ii<10;++ii){
             for (uint i=0;i<cmwc_r;++i){
@@ -93,16 +104,6 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
             } else return;
         }
         cmwc_c=1;
-        kiss_x = rSeed();
-        for (int i=0;i<100;++i){
-            kiss_y=rSeed();
-            if (kiss_y!=0) break;
-        }
-        if (kiss_y==0) kiss_y=362436000;
-        kiss_z=rSeed();
-        /* Don’t really need to seed c as well (is reset after a next),
-           but doing it allows to completely restore a given internal state */
-        kiss_c = rSeed() % 698769069; /* Should be less than 698769069 */
     }
     /// writes the current status in a string
     char[] toString(){

@@ -40,7 +40,7 @@ int main (char[][] args)
            auto dst = new FilePath;
            dst.path = args[2]; 
            foreach (song; songs)
-                    dst.file(song.name).copy(song.toString);
+                    dst.file(song.name).copy(song.toString());
            }
         Stdout.formatln ("Done");
         return 0;

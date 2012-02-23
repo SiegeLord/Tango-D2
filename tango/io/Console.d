@@ -127,7 +127,7 @@ struct Console
                             return true;
 
                         // assign trailing content and return false
-                        content = cast(char[]) buffer.slice (buffer.readable);
+                        content = cast(char[]) buffer.slice (buffer.readable());
                         return false;
                 }
 
@@ -137,7 +137,7 @@ struct Console
 
                 **************************************************************/
 
-                final InputStream stream ()
+                @property final InputStream stream ()
                 {
                         return buffer;
                 }
@@ -155,7 +155,7 @@ struct Console
 
                 **************************************************************/
 
-                final bool redirected ()
+                @property final bool redirected ()
                 {
                         return redirect;
                 }
@@ -172,7 +172,7 @@ struct Console
 
                 **************************************************************/
 
-                final Input redirected (bool yes)
+                @property final Input redirected (bool yes)
                 {
                          redirect = yes;
                          return this;
@@ -189,7 +189,7 @@ struct Console
 
                 **************************************************************/
 
-                final InputStream input ()
+                @property final InputStream input ()
                 {
                         return buffer.input;
                 }
@@ -200,7 +200,7 @@ struct Console
 
                 **************************************************************/
 
-                final Input input (InputStream source)
+                @property final Input input (InputStream source)
                 {
                         buffer.input = source;
                         return this;
@@ -267,7 +267,7 @@ struct Console
 
                 final Output append (Object other)        
                 {           
-                        return append (other.toString);
+                        return append (other.toString());
                 }
 
                 /**************************************************************
@@ -288,11 +288,11 @@ struct Console
 
                 **************************************************************/
 
-                final Output newline ()
+                @property final Output newline ()
                 {
                         buffer.append (Eol);
                         if (redirect is false)
-                            buffer.flush;
+                            buffer.flush();
 
                         return this;
                 }
@@ -312,7 +312,7 @@ struct Console
 
                 final Output flush ()
                 {
-                        buffer.flush;
+                        buffer.flush();
                         return this;
                 }
 
@@ -322,7 +322,7 @@ struct Console
 
                 **************************************************************/
 
-                final OutputStream stream ()
+                @property final OutputStream stream ()
                 {
                         return buffer;
                 }
@@ -339,7 +339,7 @@ struct Console
 
                 **************************************************************/
 
-                final bool redirected ()
+                @property final bool redirected ()
                 {
                         return redirect;
                 }
@@ -356,7 +356,7 @@ struct Console
 
                 **************************************************************/
 
-                final Output redirected (bool yes)
+                @property final Output redirected (bool yes)
                 {
                          redirect = yes;
                          return this;
@@ -373,7 +373,7 @@ struct Console
 
                 **************************************************************/
 
-                final OutputStream output ()
+                @property final OutputStream output ()
                 {
                         return buffer.output;
                 }
@@ -384,7 +384,7 @@ struct Console
 
                 **************************************************************/
 
-                final Output output (OutputStream sink)
+                @property final Output output (OutputStream sink)
                 {
                         buffer.output = sink;
                         return this;
@@ -626,7 +626,7 @@ static __gshared Console.Output   Cerr; /// The standard error stream.
 
 ******************************************************************************/
 
-static this ()
+shared static this ()
 {
         auto conduit = new Console.Conduit (0);
         Cin  = new Console.Input (conduit, conduit.redirected);
@@ -649,10 +649,10 @@ static this ()
 static ~this()
 {
    synchronized (Cout.stream)
-        Cout.flush;
+        Cout.flush();
 
    synchronized (Cerr.stream)
-        Cerr.flush;
+        Cerr.flush();
 }
 
 

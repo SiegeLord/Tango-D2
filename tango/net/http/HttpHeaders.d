@@ -31,7 +31,7 @@ private import  tango.net.http.HttpTokens;
 struct HeaderElement
 {
         HttpHeaderName  name;
-        const(char)[]          value;
+        const(char)[]   value;
 }
 
 /******************************************************************************
@@ -119,8 +119,8 @@ class HttpHeadersView : HttpTokens
                 setParsed (true);
                 line.set (input);
 
-                while (line.next && line.get.length)
-                       stack.push (preserve ? line.get.dup : line.get);
+                while (line.next && line.get().length)
+                       stack.push (preserve ? line.get().dup : line.get());
         }
 
         /**********************************************************************
@@ -130,7 +130,7 @@ class HttpHeadersView : HttpTokens
 
         **********************************************************************/
 
-        char[] get (HttpHeaderName name, const(char)[] def = null)
+        const(char)[] get (HttpHeaderName name, const(char)[] def = null)
         {
                 return super.get (name.value, def);
         }
@@ -282,7 +282,7 @@ class HttpHeaders : HttpHeadersView
 
         **********************************************************************/
 
-        HttpHeaders clone ()
+        override HttpHeaders clone ()
         {
                 return new HttpHeaders (this);
         }

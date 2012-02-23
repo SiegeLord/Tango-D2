@@ -309,7 +309,7 @@ class FtpException: Exception
     /***********************************************************************
      A string representation of the error.
      ***********************************************************************/
-    string toString() {
+    override string toString() {
         char[] buffer = new char[this.msg.length + 4];
 
         buffer[0 .. 3] = this.responseCode_;
@@ -337,14 +337,14 @@ class FTPConnection: Telnet
     /***********************************************************************
      Added Since: 0.99.8
      ***********************************************************************/
-    public TimeSpan timeout() {
+    @property public TimeSpan timeout() {
         return timeout_;
     }
 
     /***********************************************************************
      Added Since: 0.99.8
      ***********************************************************************/
-    public void timeout(TimeSpan t) {
+    @property public void timeout(TimeSpan t) {
         timeout_ = t;
     }
 
@@ -369,7 +369,7 @@ class FTPConnection: Telnet
     /***********************************************************************
      Changed Since: 0.99.8
      ***********************************************************************/
-    void exception(string message) {
+    override void exception(string message) {
         throw new FtpException(message);
     }
 
@@ -824,7 +824,7 @@ class FTPConnection: Telnet
         // What type are we using?
         switch(this.inf_.type) {
             default:
-                exception("unknown connection type");
+                exception("unknown connection type"); assert(0);
 
             // Passive is complicated.  Handle it in another member.
             case FtpConnectionType.passive:
@@ -884,6 +884,12 @@ class FTPConnection: Telnet
      Returns:             a connected socket
      Changed Since: 0.99.8
      *******************************************************************************/
+version(TangoDoc)
+{
+    public Socket connectPassive();
+}
+else
+{
     public Socket connectPassive() {
         Address connect_to = null;
 
@@ -946,6 +952,7 @@ class FTPConnection: Telnet
         sock.connect(connect_to);
         return sock;
     }
+}
 
     /*
      Socket sock = new Socket();
@@ -989,7 +996,7 @@ class FTPConnection: Telnet
     protected void prepareDataSocket(ref Socket data) {
         switch(this.inf_.type) {
             default:
-                exception("unknown connection type");
+                exception("unknown connection type"); assert(0);
 
             case FtpConnectionType.active:
                 Berkeley new_data;
@@ -1016,7 +1023,7 @@ class FTPConnection: Telnet
                throw new FtpException("CLIENT: No connection from server", "420");
 
             // We don't need the listener anymore.
-            data.shutdown.detach;
+            data.shutdown().detach();
 
             // This is the actual socket.
             data.socket.sock = new_data.sock;
@@ -1466,7 +1473,7 @@ class FTPConnection: Telnet
                 if(pos == fact.length)
                     continue;
 
-                info.facts[Ascii.toLower(fact[0 .. pos].dup).idup] = fact[pos + 1 .. fact.length];
+                info.facts[cast(immutable(char)[])Ascii.toLower(fact[0 .. pos].dup)] = fact[pos + 1 .. fact.length];
             }
 
             // Do we have a type?

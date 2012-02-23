@@ -69,7 +69,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                         return set (v, n);
                 }
 
-                final int hash()
+                final hash_t hash()
                 {
                         return typeid(K).getHash(&key);
                 }

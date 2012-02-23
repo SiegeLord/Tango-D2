@@ -30,7 +30,7 @@ version (Posix)
         extern (C) char*** _NSGetEnviron();
         private __gshared char** environ;
 
-        static this ()
+        shared static this ()
         {
             environ = *_NSGetEnviron();
         }
@@ -215,8 +215,9 @@ class Process
     enum uint DefaultStderrBufferSize   = 512;
     enum Redirect DefaultRedirectFlags  = Redirect.All;
 
-    private const(char)[][]        _args;
-    private const(char)[][char[]]  _env;
+    private const(char[])[]        _args;
+    private const(char)[]          _program;
+    private const(char[])[char[]]  _env;
     private const(char)[]          _workDir;
     private PipeConduit            _stdin;
     private PipeConduit            _stdout;
@@ -246,6 +247,7 @@ class Process
      *            argument, spaces that are not intended to separate
      *            parameters should be embedded in quotes.  The arguments can
      *            also be empty.
+     *            Note: The class will use only slices, .dup when necessary. 
      *
      * Examples:
      * ---
@@ -253,12 +255,17 @@ class Process
      * auto p = new Process("myprogram \"first argument\" second third");
      * ---
      */
-    public this(const(char)[][] args ...)
+    public this(const(char[])[] args ...)
     {
         if(args.length == 1)
             _args = splitArgs(args[0]);
         else
             _args = args;
+        if(_args.length > 0)
+        {
+			_program = _args[0];
+			_args = _args[1..$];
+		}
     }
 
     /**
@@ -272,6 +279,7 @@ class Process
      *            argument, spaces that are not intended to separate
      *            parameters should be embedded in quotes.  The arguments can
      *            also be empty.
+     *            Note: The class will use only slices, .dup when necessary. 
      *
      * Examples:
      * ---
@@ -279,7 +287,7 @@ class Process
      * auto p = new Process(true, "myprogram \"first argument\" second third");
      * ---
      */
-    public this(bool copyEnv, const(char)[][] args ...)
+    public this(bool copyEnv, const(char[])[] args ...)
     {
         _copyEnv = copyEnv;
         this(args);
@@ -291,6 +299,7 @@ class Process
      * Params:
      * command  = string with the process' command line; arguments that have
      *            embedded whitespace must be enclosed in inside double-quotes (").
+     *            Note: The class will use only slices, .dup when necessary. 
      * env      = associative array of strings with the process' environment
      *            variables; the variable name must be the key of each entry.
      *
@@ -306,7 +315,7 @@ class Process
      * auto p = new Process(command, env)
      * ---
      */
-    public this(const(char)[] command, const(char)[][char[]] env)
+    public this(const(char)[] command, const(char[])[char[]] env)
     in
     {
         assert(command.length > 0);
@@ -315,6 +324,11 @@ class Process
     {
         _args = splitArgs(command);
         _env = env;
+        if(_args.length > 0)
+        {
+			_program = _args[0];
+			_args = _args[1..$];
+		}
     }
 
     /**
@@ -324,6 +338,7 @@ class Process
      * args     = array of strings with the process' arguments; the first
      *            argument must be the process' name; the arguments can be
      *            empty.
+     *            Note: The class will use only slices, .dup when necessary. 
      * env      = associative array of strings with the process' environment
      *            variables; the variable name must be the key of each entry.
      *
@@ -346,7 +361,7 @@ class Process
      * auto p = new Process(args, env)
      * ---
      */
-    public this(const(char)[][] args, const(char)[][char[]] env)
+    public this(const(char[])[] args, const(char[])[char[]] env)
     in
     {
         assert(args.length > 0);
@@ -356,6 +371,11 @@ class Process
     {
         _args = args;
         _env = env;
+        if(_args.length > 0)
+        {
+			_program = _args[0];
+			_args = _args[1..$];
+		}
     }
 
     /**
@@ -372,6 +392,7 @@ class Process
      * Returns: an int with the process ID if the process is running;
      *          -1 if not.
      */
+    @property
     public const int pid()
     {
         version (Windows)
@@ -387,21 +408,19 @@ class Process
     /**
      * Return the process' executable filename.
      */
+    @property
     public const const(char)[] programName()
     {
-        return (_args !is null ? _args[0] : null);
+        return _program;
     }
 
     /**
      * Set the process' executable filename.
      */
+    @property
     public const(char)[] programName(const(char)[] name)
     {
-        if (_args.length == 0)
-        {
-            _args.length = 1;
-        }
-        return _args[0] = name;
+        return _program = name;
     }
 
     /**
@@ -414,9 +433,10 @@ class Process
     }
 
     /**
-     * Return an array with the process' arguments.
+     * Return an array with the process' arguments. This does not include the actual program name.
      */
-    public const const(char[])[] args()
+    public 
+    const(char[])[] args() const
     {
         return _args;
     }
@@ -428,16 +448,17 @@ class Process
      * The first element of the array must be the name of the process'
      * executable.
      *
-     * Returns: the arugments that were set.
+     * Returns: the arguments that were set. This doesn't include the progname.
      *
      * Examples:
      * ---
      * p.args("myprogram", "first", "second argument", "third");
      * ---
      */
-    public const(char)[][] args(const(char)[] progname, const(char)[][] args ...)
+    public const(char[])[] args(const(char)[] progname, const(char[])[] args ...)
     {
-        return _args = progname ~ args;
+		_program = progname;
+        return _args = args;
     }
 
     /**
@@ -454,7 +475,7 @@ class Process
      * p.setArgs("myprogram", "first", "second argument", "third").execute();
      * ---
      */
-    public Process setArgs(const(char)[] progname, const(char)[][] args ...)
+    public Process setArgs(const(char)[] progname, const(char[])[] args ...)
     {
         this.args(progname, args);
         return this;
@@ -464,6 +485,7 @@ class Process
      * If true, the environment from the current process will be copied to the
      * child process.
      */
+    @property
     public const bool copyEnv()
     {
         return _copyEnv;
@@ -474,6 +496,7 @@ class Process
      * copied from the current process.  If set to false, then the environment
      * is set from the env field.
      */
+    @property
     public bool copyEnv(bool b)
     {
         return _copyEnv = b;
@@ -498,7 +521,8 @@ class Process
      *
      * Note that if copyEnv is set to true, this value is ignored.
      */
-    public const const(char[])[const(char)[]] env()
+    @property
+    public const(char[])[const(char)[]] env() const
     {
         return _env;
     }
@@ -525,7 +549,8 @@ class Process
      * p.env = env;
      * ---
      */
-    public const(char)[][char[]] env(const(char)[][char[]] env)
+    @property
+    public const(char[])[char[]] env(const(char[])[char[]] env)
     {
         _copyEnv = false;
         return _env = env;
@@ -553,7 +578,7 @@ class Process
      * p.setEnv(env).execute();
      * ---
      */
-    public Process setEnv(const(char)[][char[]] env)
+    public Process setEnv(const(char[])[char[]] env)
     {
         _copyEnv = false;
         _env = env;
@@ -563,9 +588,12 @@ class Process
     /**
      * Return an UTF-8 string with the process' command line.
      */
-    public immutable(char)[] toString()
+    public override 
+    string toString()
     {
         immutable(char)[] command;
+        
+        command ~= _program.substitute("\\", "\\\\").substitute(`"`, `\"`);
 
         for (size_t i = 0; i < _args.length; ++i)
         {
@@ -593,7 +621,8 @@ class Process
      * Returns: a string with the working directory; null if the working
      *          directory is the current directory.
      */
-    public const const(char)[] workDir()
+    @property
+    public const(char)[] workDir() const
     {
         return _workDir;
     }
@@ -607,6 +636,7 @@ class Process
      *
      * Returns: the directory set.
      */
+    @property
     public const(char)[] workDir(const(char)[] dir)
     {
         return _workDir = dir;
@@ -650,7 +680,7 @@ class Process
      * stderr to stdout, and you redirect stdout to a pipe, only stdout will
      * be non-null.
      */
-    public const Redirect redirect()
+    @property public const Redirect redirect()
     {
         return _redirect;
     }
@@ -658,7 +688,7 @@ class Process
     /**
      * Set the redirect flags for the process.
      */
-    public Redirect redirect(Redirect flags)
+    @property public Redirect redirect(Redirect flags)
     {
         return _redirect = flags;
     }
@@ -683,7 +713,8 @@ class Process
      * Without this flag, a console window will be allocated if it doesn't
      * already exist.
      */
-    public const bool gui()
+    @property
+    public bool gui() const
     {
         version(Windows)
             return _gui;
@@ -701,6 +732,7 @@ class Process
      * Without this flag, a console window will be allocated if it doesn't
      * already exist.
      */
+    @property
     public bool gui(bool value)
     {
         version(Windows)
@@ -738,7 +770,7 @@ class Process
      * The stream will be null if no child process has been executed, or the
      * standard input stream was not redirected.
      */
-    public PipeConduit stdin()
+    @property public PipeConduit stdin()
     {
         return _stdin;
     }
@@ -753,7 +785,7 @@ class Process
      * The stream will be null if no child process has been executed, or the
      * standard output stream was not redirected.
      */
-    public PipeConduit stdout()
+    @property public PipeConduit stdout()
     {
         return _stdout;
     }
@@ -768,7 +800,7 @@ class Process
      * The stream will be null if no child process has been executed, or the
      * standard error stream was not redirected.
      */
-    public PipeConduit stderr()
+    @property public PipeConduit stderr()
     {
         return _stderr;
     }
@@ -793,14 +825,15 @@ class Process
      * Deprecated: Use constructor or properties to set up process for
      * execution.
      */
-    deprecated public void execute(const(char)[] arg1, const(char)[][] args ...)
+    deprecated public void execute(const(char)[] arg1, const(char[])[] args ...)
     in
     {
         assert(!_running);
     }
     body
     {
-        this._args = arg1 ~ args;
+		this._program = arg1;
+        this._args = args;
         execute();
     }
 
@@ -833,7 +866,7 @@ class Process
      * Deprecated: use properties or the constructor to set these parameters
      * instead.
      */
-    deprecated public void execute(const(char)[] command, const(char)[][const(char)[]] env)
+    deprecated public void execute(const(char)[] command, const(char[])[const(char)[]] env)
     in
     {
         assert(!_running);
@@ -842,6 +875,11 @@ class Process
     body
     {
         _args = splitArgs(command);
+        if (_args.length > 0)
+        {
+			_program = _args[0];
+			_args = _args[1..$];
+		}
         _copyEnv = false;
         _env = env;
         execute();
@@ -888,7 +926,7 @@ class Process
      * p.execute(args, null);
      * ---
      */
-    deprecated public void execute(const(char)[][] args, const(char)[][char[]] env)
+    deprecated public void execute(const(char[])[] args, const(char[])[char[]] env)
     in
     {
         assert(!_running);
@@ -897,6 +935,11 @@ class Process
     body
     {
         _args = args;
+        if (_args.length > 0)
+        {
+			_program = _args[0];
+			_args = _args[1..$];
+		}
         _env = env;
         _copyEnv = false;
 
@@ -927,7 +970,7 @@ class Process
     in
     {
         assert(!_running);
-        assert(_args.length > 0 && _args[0] !is null);
+        assert(_program !is null);
     }
     body
     {
@@ -953,7 +996,7 @@ class Process
             if(_redirect != Redirect.None)
             {
                 if((_redirect & (Redirect.OutputToError | Redirect.ErrorToOutput)) == (Redirect.OutputToError | Redirect.ErrorToOutput))
-                    throw new ProcessCreateException(_args[0], "Illegal redirection flags", __FILE__, __LINE__);
+                    throw new ProcessCreateException(_program, "Illegal redirection flags", __FILE__, __LINE__);
                 //
                 // some redirection is specified, set the flag that indicates
                 startup.dwFlags |= STARTF_USESTDHANDLES;
@@ -1060,9 +1103,10 @@ class Process
             * for escapes.
             */
             char[] command;
-            foreach(a; _args)
+            
+            void append_arg(const(char)[] arg)
             {
-              const(char)[] nextarg = a.substitute(`"`, `\"`);
+			  const(char)[] nextarg = a.substitute(`"`, `\"`);
               //
               // find all instances where \\" occurs, and double all the
               // backslashes.  Otherwise, it will fall under rule 1, and those
@@ -1119,7 +1163,12 @@ class Process
 
               command ~= ' ';
               command ~= nextarg;
-            }
+			}
+			
+			append_arg(_program);
+            
+            foreach(a; _args)
+				append_arg(a);
 
             command ~= '\0';
             command = command[1..$];
@@ -1151,7 +1200,7 @@ class Process
               }
               else
               {
-                throw new ProcessCreateException(_args[0], __FILE__, __LINE__);
+                throw new ProcessCreateException(_program, __FILE__, __LINE__);
               }
             }
             else
@@ -1173,7 +1222,7 @@ class Process
               }
               else
               {
-                throw new ProcessCreateException(_args[0], __FILE__, __LINE__);
+                throw new ProcessCreateException(_program, __FILE__, __LINE__);
               }
             }
         }
@@ -1185,7 +1234,7 @@ class Process
 
             // validate the redirection flags
             if((_redirect & (Redirect.OutputToError | Redirect.ErrorToOutput)) == (Redirect.OutputToError | Redirect.ErrorToOutput))
-                throw new ProcessCreateException(_args[0], "Illegal redirection flags", __FILE__, __LINE__);
+                throw new ProcessCreateException(_program, "Illegal redirection flags", __FILE__, __LINE__);
 
 
             Pipe pin, pout, perr;
@@ -1250,7 +1299,7 @@ class Process
                         errno = status;
                         _running = false;
 
-                        throw new ProcessCreateException(_args[0], __FILE__, __LINE__);
+                        throw new ProcessCreateException(_program, __FILE__, __LINE__);
                     }
                 }
                 else
@@ -1314,7 +1363,7 @@ class Process
                     {
                         // Convert the arguments and the environment variables to
                         // the format expected by the execv() family of functions.
-                        argptr = toNullEndedArray(_args);
+                        argptr = toNullEndedArray(_program, _args);
                         envptr = (_copyEnv ? null : toNullEndedArray(_env));
 
                         // Switch to the working directory if it has been set.
@@ -1326,10 +1375,10 @@ class Process
                         // Replace the child fork with a new process. We always use the
                         // system PATH to look for executables that don't specify
                         // directories in their names.
-                        rc = execvpe(_args[0], argptr, envptr);
+                        rc = execvpe(_program, argptr, envptr);
                         if (rc == -1)
                         {
-                            Cerr("Failed to exec ")(_args[0])(": ")(SysError.lastMsg).newline;
+                            Cerr("Failed to exec ")(_program)(": ")(SysError.lastMsg).newline;
 
                             try
                             {
@@ -1349,7 +1398,7 @@ class Process
                     else
                     {
                         Cerr("Failed to set notification pipe to close-on-exec for ")
-                            (_args[0])(": ")(SysError.lastMsg).newline;
+                            (_program)(": ")(SysError.lastMsg).newline;
                         exit(errno);
                     }
                 }
@@ -1442,7 +1491,7 @@ class Process
 
                     debug (Process)
                         Stdout.formatln("Child process '{0}' ({1}) returned with code {2}\n",
-                                        _args[0], pid, result.status);
+                                        _program, pid, result.status);
                 }
                 else if (rc == WAIT_FAILED)
                 {
@@ -1452,7 +1501,7 @@ class Process
                     debug (Process)
                         Stdout.formatln("Child process '{0}' ({1}) failed "
                                         "with unknown exit status {2}\n",
-                                        _args[0], pid, result.status);
+                                        _program, pid, result.status);
                 }
             }
             else
@@ -1461,7 +1510,7 @@ class Process
                 result.status = -1;
 
                 debug (Process)
-                    Stdout.formatln("Child process '{0}' is not running", _args[0]);
+                    Stdout.formatln("Child process '{0}' is not running", _program);
             }
             return result;
         }
@@ -1496,7 +1545,7 @@ class Process
                         {
                             debug (Process)
                                 Stdout.formatln("Child process '{0}' ({1}) returned with code {2}\n",
-                                                _args[0], _pid, result.status);
+                                                _program, _pid, result.status);
                         }
                     }
                     else
@@ -1509,7 +1558,7 @@ class Process
                             debug (Process)
                                 Stdout.formatln("Child process '{0}' ({1}) was killed prematurely "
                                                 "with signal {2}",
-                                                _args[0], _pid, result.status);
+                                                _program, _pid, result.status);
                         }
                         else if (WIFSTOPPED(rc))
                         {
@@ -1519,7 +1568,7 @@ class Process
                             debug (Process)
                                 Stdout.formatln("Child process '{0}' ({1}) was stopped "
                                                 "with signal {2}",
-                                                _args[0], _pid, result.status);
+                                                _program, _pid, result.status);
                         }
                         else if (WIFCONTINUED(rc))
                         {
@@ -1529,7 +1578,7 @@ class Process
                             debug (Process)
                                 Stdout.formatln("Child process '{0}' ({1}) was continued "
                                                 "with signal {2}",
-                                                _args[0], _pid, result.status);
+                                                _program, _pid, result.status);
                         }
                         else
                         {
@@ -1539,7 +1588,7 @@ class Process
                             debug (Process)
                                 Stdout.formatln("Child process '{0}' ({1}) failed "
                                                 "with unknown exit status {2}\n",
-                                                _args[0], _pid, result.status);
+                                                _program, _pid, result.status);
                         }
                     }
                 }
@@ -1550,7 +1599,7 @@ class Process
 
                     debug (Process)
                         Stdout.formatln("Could not wait on child process '{0}' ({1}): ({2}) {3}",
-                                        _args[0], _pid, result.status, SysError.lastMsg);
+                                        _program, _pid, result.status, SysError.lastMsg);
                 }
             }
             else
@@ -1559,7 +1608,7 @@ class Process
                 result.status = -1;
 
                 debug (Process)
-                    Stdout.formatln("Child process '{0}' is not running", _args[0]);
+                    Stdout.formatln("Child process '{0}' is not running", _program);
             }
             return result;
         }
@@ -1690,7 +1739,7 @@ class Process
      * character can be used to specify arguments with embedded spaces.
      * e.g. first "second param" third
      */
-    protected static const(char)[][] splitArgs(ref const(char)[] command, const(char)[] delims = " \t\r\n")
+    protected static const(char)[][] splitArgs(const(char)[] command, const(char)[] delims = " \t\r\n")
     in
     {
         assert(!contains(delims, '"'),
@@ -1835,7 +1884,7 @@ class Process
      */
     public void close()
     {
-        this.cleanPipes;
+        this.cleanPipes();
     }
 
     version (Windows)
@@ -1847,7 +1896,7 @@ class Process
          * This is the format expected by the CreateProcess() Windows API for
          * the environment variables.
          */
-        protected static char[] toNullEndedBuffer(const(char)[][char[]] src)
+        protected static char[] toNullEndedBuffer(const(char[])[char[]] src)
         {
             char[] dest;
 
@@ -1868,22 +1917,24 @@ class Process
          * has a null pointer at the end. This is the format expected by
          * the execv*() family of POSIX functions.
          */
-        protected static const(char)*[] toNullEndedArray(const(char)[][] src)
+        protected static const(char)*[] toNullEndedArray(const(char)[] elem0, const(char[])[] src)
         {
-            if (src !is null)
+            if (src !is null && elem0 !is null)
             {
-                const(char)*[] dest = new const(char)*[src.length + 1];
+                const(char)*[] dest = new const(char)*[src.length + 2];
                 auto i = src.length;
 
                 // Add terminating null pointer to the array
-                dest[i] = null;
+                dest[i + 1] = null;
 
                 while (i > 0)
                 {
                     --i;
                     // Add a terminating null character to each string
-                    dest[i] = toStringz(src[i]);
+                    dest[i + 1] = toStringz(src[i]);
                 }
+                
+                dest[0] = toStringz(elem0);
                 return dest;
             }
             else
@@ -1898,7 +1949,7 @@ class Process
          * array has a null pointer at the end. This is the format expected by
          * the execv*() family of POSIX functions for environment variables.
          */
-        protected static const(char)*[] toNullEndedArray(const(char)[][char[]] src)
+        protected static const(char)*[] toNullEndedArray(const(char[])[char[]] src)
         {
             const(char)*[] dest;
 
@@ -1930,7 +1981,7 @@ class Process
             if (!contains(filename, FileConst.PathSeparatorChar) &&
                 (str = getenv("PATH")) !is null)
             {
-                const(char)[][] pathList = delimit(str[0 .. strlen(str)], ":");
+                auto pathList = delimit(str[0 .. strlen(str)], ":");
 
                 char[] path_buf;
 
@@ -2058,7 +2109,7 @@ debug (UnitTest)
         try
         {
             auto p = new Process(command, null);
-            Stdout.flush;
+            Stdout.flush();
             p.execute();
             char[255] buffer;
 

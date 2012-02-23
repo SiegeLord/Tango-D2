@@ -50,7 +50,7 @@ class Telnet
         /// Returns: the line read
         const(char)[] readLine()
         {
-                char[] to_return;
+                const(char)[] to_return;
                 iterator.readln(to_return);
                 return to_return;
         }

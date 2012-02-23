@@ -181,7 +181,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 
         ***********************************************************************/
 
-        final const size_t size ()
+        @property final const size_t size ()
         {
                 return count;
         }
@@ -192,7 +192,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                  
         ***********************************************************************/
 
-        final SortedMap dup ()
+        @property final SortedMap dup ()
         {
                 auto clone = new SortedMap!(K, V, Reap, Heap) (cmp, count);
                 if (count)

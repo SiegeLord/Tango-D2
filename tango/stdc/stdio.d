@@ -275,7 +275,7 @@ version( Win32 )
         __gshared FILE* stdaux;
         __gshared FILE* stdprn;
 
-        static this()
+        shared static this()
         {
             stdin  = &(*_imp___iob)[0];
             stdout = &(*_imp___iob)[1];
@@ -295,7 +295,7 @@ version( Win32 )
         __gshared FILE* stdaux;
         __gshared FILE* stdprn;
 
-        static this()
+        shared static this()
         {
             stdin  = &(*_imp___iob)[0];
             stdout = &(*_imp___iob)[1];
@@ -338,7 +338,7 @@ else version( darwin )
     __gshared FILE* stdout;
     __gshared FILE* stderr;
 
-    static this()
+    shared static this()
     {
         stdin  = __stdinp;
         stdout = __stdoutp;
@@ -355,7 +355,7 @@ else version( freebsd )
     __gshared FILE* stdout;
     __gshared FILE* stderr;
 
-    static this()
+    shared static this()
     {
         stdin  = __stdinp;
         stdout = __stdoutp;

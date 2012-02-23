@@ -25,10 +25,11 @@ private import  tango.core.Exception;
         existing key will overwrite any previous content. What follows
         is a contrived example:
         
+        Example:
         ---
-        char[] text = "this is a test";
+        const(char)[] text = "this is a test";
 
-        auto bucket = new FileBucket (new FilePath("bucket.bin"), FileBucket.HalfK);
+        auto bucket = new FileBucket ("bucket.bin", FileBucket.FileBucket.HalfK);
 
         // insert some data, and retrieve it again
         bucket.put ("a key", text);
@@ -54,7 +55,7 @@ class FileBucket
         }
 
         // basic capacity for each record
-        private char[]                  path;
+        private const(char)[]           path;
 
         // basic capacity for each record
         private BlockSize               block;
@@ -72,7 +73,7 @@ class FileBucket
         private long                    waterLine;
 
         // supported block sizes
-        public static const BlockSize   EighthK  = {128-1},
+        public static enum  BlockSize   EighthK  = {128-1},
                                         HalfK    = {512-1},
                                         OneK     = {1024*1-1},
                                         TwoK     = {1024*2-1},
@@ -93,7 +94,7 @@ class FileBucket
 
         **********************************************************************/
 
-        this (char[] path, BlockSize block, uint initialRecords = 100)
+        this (const(char)[] path, BlockSize block, uint initialRecords = 100)
         {
                 this.path = path;
                 this.block = block;
@@ -113,7 +114,7 @@ class FileBucket
 
         **********************************************************************/
 
-        int getBufferSize ()
+        int getBufferSize () const
         {
                 return block.capacity+1;
         }
@@ -124,7 +125,7 @@ class FileBucket
 
         **********************************************************************/
 
-        char[] getFilePath ()
+        const(char)[] getFilePath () const
         {
                 return path;
         }
@@ -135,9 +136,12 @@ class FileBucket
 
         **********************************************************************/
 
-        synchronized long length ()
+        long length () const
         {
-                return waterLine;
+                synchronized(this)
+                {
+                    return waterLine;
+                }
         }
 
         /**********************************************************************
@@ -147,16 +151,19 @@ class FileBucket
 
         **********************************************************************/
 
-        synchronized void[] get (char[] key)
+        void[] get (const(char)[] key)
         {
-                Record r = null;
+                synchronized(this)
+                {
+                    Record r = null;
 
-                if (key in map)
-                   {
-                   r = map [key];
-                   return r.read (this);
-                   }
-                return null;
+                    if (key in map)
+                       {
+                       r = map [key];
+                       return r.read (this);
+                       }
+                    return null;
+                }
         }
 
         /**********************************************************************
@@ -165,9 +172,12 @@ class FileBucket
 
         **********************************************************************/
 
-        synchronized void remove (char[] key)
+        void remove (const(char)[] key)
         {
-                map.remove(key);
+                synchronized(this)
+                {
+                    map.remove(key);
+                }
         }
 
         /**********************************************************************
@@ -184,17 +194,20 @@ class FileBucket
 
         **********************************************************************/
 
-        synchronized void put (char[] key, void[] data)
+        void put (const(char)[] key, const(char)[] data)
         {
-                Record* r = key in map;
+                synchronized(this)
+                {
+                    Record* r = key in map;
 
-                if (r is null)
-                   {
-                   auto rr = new Record;
-                   map [key] =  rr;
-                   r = &rr;
-                   }
-                r.write (this, data, block);
+                    if (r is null)
+                       {
+                       auto rr = new Record;
+                       map [key] =  rr;
+                       r = &rr;
+                       }
+                    r.write (this, data, block);
+                }
         }
 
         /**********************************************************************
@@ -203,14 +216,17 @@ class FileBucket
 
         **********************************************************************/
 
-        synchronized void close ()
+        void close ()
         {
-                if (file)
-                   {
-                   file.detach;
-                   file = null;
-                   map = null;
-                   }
+                synchronized(this)
+                {
+                    if (file)
+                       {
+                       file.detach();
+                       file = null;
+                       map = null;
+                       }
+                }
         }
 
         /**********************************************************************
@@ -226,7 +242,7 @@ class FileBucket
         private static class Record
         {
                 private long            offset;
-                private int             length,
+                private long            length,
                                         capacity = -1;
 
                 /**************************************************************
@@ -235,7 +251,7 @@ class FileBucket
 
                 private static void eof (FileBucket bucket)
                 {
-                        throw new IOException ("Unexpected EOF in FileBucket '"~bucket.path~"'");
+                        throw new IOException ("Unexpected EOF in FileBucket '"~bucket.path.idup~"'");
                 }
 
                 /**************************************************************
@@ -263,7 +279,7 @@ class FileBucket
 
                 **************************************************************/
 
-                void write (FileBucket bucket, void[] data, BlockSize block)
+                void write (FileBucket bucket, const(void)[] data, BlockSize block)
                 {
                         length = data.length;
 
@@ -283,7 +299,7 @@ class FileBucket
 
                 **************************************************************/
 
-                void createBucket (FileBucket bucket, int bytes, BlockSize block)
+                void createBucket (FileBucket bucket, long bytes, BlockSize block)
                 {
                         offset = bucket.waterLine;
                         capacity = (bytes + block.capacity) & ~block.capacity;

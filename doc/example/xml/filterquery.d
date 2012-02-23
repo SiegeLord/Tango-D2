@@ -22,7 +22,7 @@ void main () {
     auto root = doc.elements;
 
     // query the doc for all country elements with an id attribute that contains a 'B'
-    auto result = root.query.descendant("country").filter((doc.Node node) {
+    auto result = root.query().descendant("country").filter((doc.Node node) {
         return contains!(char)(node.attributes.name(null, "id").value, 'B');
     });
 

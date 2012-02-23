@@ -23,7 +23,7 @@ private import tango.text.convert.Layout;
 
 public __gshared Layout!(char) Format;
 
-static this()
+shared static this()
 {
         Format = Layout!(char).instance;
 }

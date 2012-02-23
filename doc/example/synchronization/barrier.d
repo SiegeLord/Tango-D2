@@ -14,8 +14,8 @@ private import tango.text.convert.Integer;
 debug (barrier)
 {
     private import tango.util.log.Log;
-    private import tango.util.log.ConsoleAppender;
-    private import tango.util.log.DateLayout;
+    private import tango.util.log.AppendConsole;
+    private import tango.util.log.LayoutDate;
 }
 
 
@@ -31,7 +31,7 @@ void main(char[][] args)
     {
         Logger log = Log.getLogger("barrier");
 
-        log.addAppender(new ConsoleAppender(new DateLayout()));
+        log.add(new AppendConsole(new LayoutDate()));
 
         log.info("Barrier test");
     }
@@ -87,7 +87,7 @@ void main(char[][] args)
                 //     log.trace("Releasing mutex");
             }
         }
-        catch (SyncException e)
+        catch (tango.core.Exception.SyncException e)
         {
             Stderr.formatln("Sync exception caught in Barrier test thread {0}:\n{1}\n",
                             Thread.getThis().name, e.toString());
@@ -106,7 +106,7 @@ void main(char[][] args)
     for (uint i = 0; i < MaxThreadCount; ++i)
     {
         thread = new Thread(&barrierTestThread);
-        thread.name = "thread-" ~ format(tmp, i);
+        thread.name = "thread-" ~ format(tmp, i).idup;
 
         group.add(thread);
         debug (barrier)

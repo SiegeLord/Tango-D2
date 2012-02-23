@@ -114,7 +114,7 @@ struct Container
                 T* allocate ()
                 {
                         if (cache is null)
-                            newlist;
+                            newlist();
                         auto p = cache;
                         cache = p.next;
                         return cast(T*) p;
@@ -202,7 +202,7 @@ struct Container
                         this.chunks = chunks;
                         if (allocate)
                             for (size_t i=allocate/chunks+1; i--;)
-                                 newlist;
+                                 newlist();
                 }
         
                 /***************************************************************
@@ -279,7 +279,7 @@ struct Container
                 T* allocate ()
                 {
                         if (cache is null)
-                            newlist;
+                            newlist();
                         auto p = cache;
                         cache = p.next;
                         return cast(T*) p;
@@ -360,7 +360,7 @@ struct Container
                         this.chunks = chunks;
                         if (allocate)
                             for (int i=allocate/chunks+1; i--;)
-                                 newlist;
+                                 newlist();
                 }
         
                 /***************************************************************

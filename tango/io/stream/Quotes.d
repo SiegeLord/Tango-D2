@@ -100,7 +100,7 @@ class Quotes(T) : Iterator!(T)
                             else
                                if (has (delim, c))
                                    return found (set (content.ptr, 0, i));
-                return notFound;
+                return notFound();
         }
 }
 

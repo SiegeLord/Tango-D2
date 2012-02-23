@@ -115,7 +115,7 @@ final class Whirlpool : MerkleDamgard
 
          ***********************************************************************/
 
-        protected uint addSize()   { return 32;  }
+        protected override uint addSize()   { return 32;  }
 
         /***********************************************************************
 
@@ -1003,7 +1003,7 @@ debug(UnitTest)
     	    foreach (int i, immutable(char)[] s; strings)
     	            {
     	            h.update(cast(ubyte[]) s);
-    	            char[] d = h.hexDigest;
+    	            char[] d = h.hexDigest();
 
     	            assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
     	            }
@@ -1013,7 +1013,7 @@ debug(UnitTest)
     	    	for (auto i = 0; i < s.length; i++) s[i] = 'a';
     	    	immutable(char)[] result = "0c99005beb57eff50a7cf005560ddf5d29057fd86b20bfd62deca0f1ccea4af51fc15490eddc47af32bb2b66c34ff9ad8c6008ad677f77126953b226e4ed8b01";
     	    	h.update(cast(ubyte[]) s);
-    	    	char[] d = h.hexDigest;
+    	    	char[] d = h.hexDigest();
 
     	    	assert(d == result,":(1 million times \"a\")("~d~")!=("~result~")");
     	    }    		
@@ -1158,7 +1158,7 @@ debug(UnitTest)
     	    for (int i = 0; i < data.length; i++)
     	            {
     	            h.update(data[0..i]);
-    	            char[] d = h.hexDigest;
+    	            char[] d = h.hexDigest();
 
     	            assert(d == results[i],":( 0-bytes)("~d~")!=("~results[i]~")");
     	            }         
@@ -1691,7 +1691,7 @@ debug(UnitTest)
     	    		data[i] = 0x80 >>> j;
 
         	        h.update(data);
-        	        char[] d = h.hexDigest;
+        	        char[] d = h.hexDigest();
 
         	        assert(d == results[i*8+j],":( 1-bytes)("~d~")!=("~results[i*8+j]~")");
     	    	}

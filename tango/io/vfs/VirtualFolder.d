@@ -60,7 +60,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final const(char)[] name()
+        @property final const(char)[] name()
         {
                 return name_;
         }
@@ -73,7 +73,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final string toString()
+        override final string toString()
         {
                 return name.idup;
         }
@@ -99,11 +99,12 @@ class VirtualFolder : VfsHost
                 // link virtual children to us
                 auto child = cast(VirtualFolder) folder;
                 if (child)
+                {
                     if (child.parent)
                         error ("folder '"~name.idup~"' belongs to another host");
                     else
                        child.parent = this;
-
+                }
                 // reach up to the root, and initiate tree sweep
                 auto root = this;
                 while (root.parent)
@@ -239,11 +240,11 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        VfsFile file (const(char)[] path)
+        @property VfsFile file (const(char)[] path)
         {
                 auto tail = locatePrior (path, cast(const(char))FileConst.PathSeparatorChar);
                 if (tail < path.length)
-                    return folder(path[0..tail]).open.file(path[tail..$]);
+                    return folder(path[0..tail]).open().file(path[tail..$]);
 
                 auto sym = path in files;
                 if (sym is null)
@@ -260,7 +261,7 @@ class VirtualFolder : VfsHost
         final VfsFolder clear ()
         {
                 foreach (name, child; mounts)
-                         child.clear;
+                         child.clear();
                 return this;
         }
 
@@ -270,7 +271,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final bool writable ()
+        @property final bool writable ()
         {
                 foreach (name, child; mounts)
                          if (! child.writable)
@@ -286,7 +287,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final VfsFolders self ()
+        @property final VfsFolders self ()
         {
                 return new VirtualFolders (this, false);
         }
@@ -298,7 +299,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final VfsFolders tree ()
+        @property final VfsFolders tree ()
         {
                 return new VirtualFolders (this, true);
         }
@@ -421,7 +422,7 @@ private class VirtualFolders : VfsFolders
 
         ***********************************************************************/
 
-        final uint files ()
+        @property final size_t files ()
         {
                 uint files;
                 foreach (group; members)
@@ -435,7 +436,7 @@ private class VirtualFolders : VfsFolders
 
         ***********************************************************************/
 
-        final ulong bytes ()
+        @property final ulong bytes ()
         {
                 ulong bytes;
                 foreach (group; members)
@@ -449,7 +450,7 @@ private class VirtualFolders : VfsFolders
 
         ***********************************************************************/
 
-        final uint folders ()
+        @property final size_t folders ()
         {
                 uint count;
                 foreach (group; members)
@@ -463,7 +464,7 @@ private class VirtualFolders : VfsFolders
 
         ***********************************************************************/
 
-        final uint entries ()
+        @property final size_t entries ()
         {
                 uint count;
                 foreach (group; members)
@@ -492,7 +493,7 @@ private class VirtualFolders : VfsFolders
 
         ***********************************************************************/
 
-        final VfsFiles catalog (const(char)[] pattern)
+        @property final VfsFiles catalog (const(char)[] pattern)
         {
                 return catalog ((VfsInfo info){return patternMatch (info.name, pattern);});
         }
@@ -503,7 +504,7 @@ private class VirtualFolders : VfsFolders
 
         ***********************************************************************/
 
-        final VfsFiles catalog (VfsFilter filter = null)
+        @property final VfsFiles catalog (VfsFilter filter = null)
         {
                 return new VirtualFiles (this, filter);
         }
@@ -555,7 +556,7 @@ private class VirtualFiles : VfsFiles
 
         ***********************************************************************/
 
-        final uint files ()
+        @property final size_t files ()
         {
                 uint count;
                 foreach (group; members)
@@ -569,7 +570,7 @@ private class VirtualFiles : VfsFiles
 
         ***********************************************************************/
 
-        final ulong bytes ()
+        @property final ulong bytes ()
         {
                 ulong count;
                 foreach (group; members)

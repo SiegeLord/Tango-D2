@@ -61,7 +61,7 @@ class HttpGet : HttpClient
                 super (HttpClient.Get, uri);
 
                 // enable header duplication
-                getResponseHeaders.retain (true);
+                getResponseHeaders().retain (true);
         }
 
         /***********************************************************************
@@ -70,12 +70,12 @@ class HttpGet : HttpClient
 
         void[] read ()
         {
-                auto buffer = super.open;
+                auto buffer = super.open();
                 try {
-                    if (super.isResponseOK)
-                        buffer.load (getResponseHeaders.getInt(HttpHeader.ContentLength));
-                    } finally {super.close;}
-                return buffer.slice;
+                    if (super.isResponseOK())
+                        buffer.load (getResponseHeaders().getInt(HttpHeader.ContentLength));
+                    } finally {super.close();}
+                return buffer.slice();
         }
 }
 

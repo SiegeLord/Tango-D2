@@ -37,7 +37,7 @@ class Device : Conduit, ISelectable
 
         final void error ()
         {
-                error (this.toString ~ " :: " ~ SysError.lastMsg);
+                error (this.toString() ~ " :: " ~ SysError.lastMsg);
         }
 
         /***********************************************************************
@@ -97,7 +97,7 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                final Handle fileHandle ()
+                @property final Handle fileHandle ()
                 {
                         return io.handle;
                 }
@@ -276,7 +276,7 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                final Handle fileHandle ()
+                @property final Handle fileHandle ()
                 {
                         return cast(Handle) handle;
                 }
@@ -312,7 +312,7 @@ class Device : Conduit, ISelectable
                         auto read = posix.read (handle, dst.ptr, dst.length);
 
                         if (read is -1)
-                            error;
+                            error();
                         else
                            if (read is 0 && dst.length > 0)
                                return Eof;
@@ -331,7 +331,7 @@ class Device : Conduit, ISelectable
                 {
                         size_t written = posix.write (handle, src.ptr, src.length);
                         if (written is -1)
-                            error;
+                            error();
                         return written;
                 }
         }

@@ -115,7 +115,7 @@ class Iterator(T) : InputFilter
                 int  result;
 
                 do {
-                   more = consume;
+                   more = consume();
                    result = dg (slice);
                    } while (more && !result);
                 return result;
@@ -135,7 +135,7 @@ class Iterator(T) : InputFilter
                      tokens;
 
                 do {
-                   more = consume;
+                   more = consume();
                    result = dg (tokens, slice);
                    ++tokens;
                    } while (more && !result);
@@ -157,7 +157,7 @@ class Iterator(T) : InputFilter
 
                 do {
                    delim = null;
-                   more = consume;
+                   more = consume();
                    result = dg (tokens, slice, delim);
                    ++tokens;
                    } while (more && !result);
@@ -190,7 +190,7 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        final const(T)[] next ()
+        @property final const(T)[] next ()
         {
                 if (consume() || slice.length)
                     return slice;

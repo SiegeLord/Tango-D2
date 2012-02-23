@@ -81,9 +81,9 @@ class FileMap : Array
 
         override void close ()
         {
-                super.close;
+                super.close();
                 if (file)
-                    file.close;
+                    file.close();
                 file = null;
         }
 }
@@ -115,7 +115,7 @@ class MappedFile
 
         ***********************************************************************/
 
-        final long length ()
+        @property final long length ()
         {
                 return host.length;
         }
@@ -124,9 +124,9 @@ class MappedFile
 
         ***********************************************************************/
 
-        final const(char)[] path ()
+        @property final const(char)[] path ()
         {
-                return host.toString;
+                return host.toString();
         }
 
         /***********************************************************************
@@ -158,13 +158,13 @@ class MappedFile
 
                 ***************************************************************/
 
-                final ubyte[] map ()
+                @property final ubyte[] map ()
                 {
                         DWORD flags;
 
                         // be wary of redundant references
                         if (base)
-                            reset;
+                            reset();
 
                         // can only do 32bit mapping on 32bit platform
                         auto size = cast(size_t) host.length;
@@ -177,7 +177,7 @@ class MappedFile
                         auto handle = cast(HANDLE) host.fileHandle;
                         mmFile = CreateFileMappingA (handle, null, flags, 0, 0, null);
                         if (mmFile is null)
-                            host.error;
+                            host.error();
 
                         flags = FILE_MAP_READ;
                         if (access & host.Access.Write)
@@ -185,7 +185,7 @@ class MappedFile
 
                         base = MapViewOfFile (mmFile, flags, 0, 0, 0);
                         if (base is null)
-                            host.error;
+                            host.error();
 
                         return (cast(ubyte*) base) [0 .. size];
                 }
@@ -198,9 +198,9 @@ class MappedFile
 
                 final void close ()
                 {
-                        reset;
+                        reset();
                         if (host)
-                            host.close;
+                            host.close();
                         host = null;
                 }
 
@@ -233,7 +233,7 @@ class MappedFile
                 {
                         // flush all dirty pages
                         if (! FlushViewOfFile (base, 0))
-                              host.error;
+                              host.error();
                         return this;
                 }
         }
@@ -256,11 +256,11 @@ class MappedFile
 
                 ***************************************************************/
 
-                final ubyte[] map ()
+                @property final ubyte[] map ()
                 {
                         // be wary of redundant references
                         if (base)
-                            reset;
+                            reset();
 
                         // can only do 32bit mapping on 32bit platform
                         size = cast (size_t) host.length;
@@ -277,7 +277,7 @@ class MappedFile
                         if (base is MAP_FAILED)
                            {
                            base = null;
-                           host.error;
+                           host.error();
                            }
 
                         return (cast(ubyte*) base) [0 .. size];
@@ -291,9 +291,9 @@ class MappedFile
 
                 final void close ()
                 {
-                        reset;
+                        reset();
                         if (host)
-                            host.close;
+                            host.close();
                         host = null;
                 }
 
@@ -309,7 +309,7 @@ class MappedFile
                         //       file descriptor is closed.  This function unmaps explicitly.
                         if (base)
                             if (munmap (base, size))
-                                host.error;
+                                host.error();
 
                         base = null;
                 }
@@ -327,7 +327,7 @@ class MappedFile
                         // MS_INVALIDATE: invalidate all mappings of the same file (shared)
 
                         if (msync (base, size, MS_SYNC | MS_INVALIDATE))
-                            host.error;
+                            host.error();
                         return this;
                 }
         }
@@ -350,10 +350,10 @@ debug (FileMap)
                 auto file1 = new MappedFile ("foo1.map");
                 auto heap1 = file1.resize (1_000_000);
 
-                file.close;
+                file.close();
                 remove ("foo.map");
 
-                file1.close;
+                file1.close();
                 remove ("foo1.map");
         }
 }

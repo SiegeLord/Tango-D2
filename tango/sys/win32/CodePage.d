@@ -32,7 +32,7 @@ struct CodePage
 
         **********************************************************************/
 
-        static bool isAscii (char[] src)
+        static bool isAscii (const(char)[] src)
         {
                 foreach (c; src)
                          if (c & 0x80)
@@ -64,7 +64,7 @@ struct CodePage
 
         **********************************************************************/
 
-        static char[] into (char[] src, char[] dst, uint page=0)
+        static char[] into (const(char)[] src, char[] dst, uint page=0)
         {
                 return convert (src, dst, CP_UTF8, page);
         }
@@ -93,7 +93,7 @@ struct CodePage
 
         **********************************************************************/
 
-        static char[] from (char[] src, char[] dst, uint page=0)
+        static char[] from (const(char)[] src, char[] dst, uint page=0)
         {
                 return convert (src, dst, page, CP_UTF8);
         }
@@ -107,9 +107,9 @@ struct CodePage
 
         **********************************************************************/
 
-        private static char[] convert (char[] src, char[] dst, uint from, uint into)
+        private static char[] convert (const(char)[] src, char[] dst, uint from, uint into)
         {
-                uint len = 0;
+                size_t len = 0;
 
                 // sanity check
                 assert (dst.length);
@@ -126,7 +126,7 @@ struct CodePage
                        len = WideCharToMultiByte (into, 0, wide.ptr, len,
                                                   cast(PCHAR)dst.ptr, dst.length-1, null, null);
                    if (len is 0)
-                       throw new IllegalArgumentException ("CodePage.convert :: "~SysError.lastMsg);
+                       throw new IllegalArgumentException ("CodePage.convert :: "~SysError.lastMsg.idup);
                    }
 
                 // append a null terminator

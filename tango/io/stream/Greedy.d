@@ -73,7 +73,7 @@ class GreedyInput : InputFilter
                       {
                       auto i = read (dst);
                       if (i is Eof)
-                          conduit.error ("unexpected Eof while reading: "~conduit.toString);
+                          conduit.error ("unexpected Eof while reading: "~conduit.toString());
                       dst = dst [i .. $];
                       }
                 return this;
@@ -141,7 +141,7 @@ class GreedyOutput : OutputFilter
                       {
                       auto i = write (src);
                       if (i is Eof)
-                          conduit.error ("unexpected Eof while writing: "~conduit.toString);
+                          conduit.error ("unexpected Eof while writing: "~conduit.toString());
                       src = src [i .. $];
                       }
                 return this;

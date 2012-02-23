@@ -104,7 +104,7 @@ struct TimeSpan
          * TimeSpan copyOfMyTimeSpan = TimeSpan(ticks);
          * --------
          */
-        const long ticks()
+        @property const long ticks()
         {
                 return ticks_;
         }
@@ -265,7 +265,7 @@ struct TimeSpan
          *
          * Returns: The number of nanoseconds that this TimeSpan represents.
          */
-        const long nanos()
+        @property const long nanos()
         {
                 return ticks_ * NanosecondsPerTick;
         }
@@ -275,7 +275,7 @@ struct TimeSpan
          *
          * Returns: The number of microseconds that this TimeSpan represents.
          */
-        const long micros()
+        @property const long micros()
         {
                 return ticks_ / TicksPerMicrosecond;
         }
@@ -285,7 +285,7 @@ struct TimeSpan
          *
          * Returns: The number of milliseconds that this TimeSpan represents.
          */
-        const long millis()
+        @property const long millis()
         {
                 return ticks_ / TicksPerMillisecond;
         }
@@ -295,7 +295,7 @@ struct TimeSpan
          *
          * Returns: The number of seconds that this TimeSpan represents.
          */
-        const long seconds()
+        @property const long seconds()
         {
                 return ticks_ / TicksPerSecond;
         }
@@ -305,7 +305,7 @@ struct TimeSpan
          *
          * Returns: The number of minutes that this TimeSpan represents.
          */
-        const long minutes()
+        @property const long minutes()
         {
                 return ticks_ / TicksPerMinute;
         }
@@ -315,7 +315,7 @@ struct TimeSpan
          *
          * Returns: The number of hours that this TimeSpan represents.
          */
-        const long hours()
+        @property const long hours()
         {
                 return ticks_ / TicksPerHour;
         }
@@ -325,7 +325,7 @@ struct TimeSpan
          *
          * Returns: The number of days that this TimeSpan represents.
          */
-        const long days()
+        @property const long days()
         {
                 return ticks_ / TicksPerDay;
         }
@@ -339,7 +339,7 @@ struct TimeSpan
          * Returns: An interval representing the seconds and fractional
          * seconds that this TimeSpan represents.
          */
-        const double interval()
+        @property const double interval()
         {
                 return (cast(double) ticks_) / TicksPerSecond;
         }
@@ -349,7 +349,7 @@ struct TimeSpan
          *
          * Returns: the TimeOfDay this TimeSpan represents.
          */
-        const TimeOfDay time()
+        @property const TimeOfDay time()
         {
                 return TimeOfDay(ticks_);
         }
@@ -509,7 +509,7 @@ struct Time
 
         **********************************************************************/
 
-        const long ticks ()
+        @property const long ticks ()
         {
                 return ticks_;
         }
@@ -635,7 +635,7 @@ struct Time
 
         **********************************************************************/
 
-        const Time date () 
+        @property const Time date () 
         {
                 return this - TimeOfDay.modulo24(ticks_);
         }
@@ -649,7 +649,7 @@ struct Time
 
         **********************************************************************/
 
-        const TimeOfDay time () 
+        @property const TimeOfDay time () 
         {
                 return TimeOfDay (ticks_);
         }
@@ -662,7 +662,7 @@ struct Time
 
         **********************************************************************/
 
-        const TimeSpan span () 
+        @property const TimeSpan span () 
         {
                 return TimeSpan (ticks_);
         }
@@ -682,7 +682,7 @@ struct Time
 
         **********************************************************************/
 
-        const TimeSpan unix()
+        @property const TimeSpan unix()
         {
                 return TimeSpan(ticks_ - epoch1970.ticks_);
         }
@@ -801,7 +801,7 @@ struct TimeOfDay
          * normalized, so the hours wrap.  If you pass in 25 hours, the
          * resulting TimeOfDay will have a hour component of 1.
          */
-        const TimeSpan span ()
+        @property const TimeSpan span ()
         {
                 return TimeSpan.fromHours(hours) +
                        TimeSpan.fromMinutes(minutes) + 

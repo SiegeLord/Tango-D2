@@ -64,7 +64,7 @@ class Windows : FileFilter
                 {
                         auto temp = objname (file);
                         if (args.quick is false || isOverdue (file, temp))
-                            exec (cmd~temp~" "~file.toString);
+                            exec (cmd~temp~" "~file.toString());
                         addToLib (temp);
                 }
 
@@ -77,7 +77,7 @@ class Windows : FileFilter
                 foreach (file; scan(".c"))
                          compile ("dmc -c -mn -6 -r -o", file);
 
-                File.set("tango.lsp", libs.slice);
+                File.set("tango.lsp", libs.slice());
                 exec ("lib @tango.lsp");
 
                 // retain obj files only when -q is specified
@@ -94,7 +94,7 @@ class Windows : FileFilter
                 {
                         auto temp = objname (file, ".o");
                         if (args.quick is false || isOverdue (file, temp))
-                            exec (cmd~temp~" "~file.toString);
+                            exec (cmd~temp~" "~file.toString());
                         return temp;
                 }
 
@@ -105,7 +105,7 @@ class Windows : FileFilter
                          addToLib(obj);
                 }
 
-                File.set("tango.lsp", libs.slice);
+                File.set("tango.lsp", libs.slice());
                 exec ("ar -r "~args.lib~" @tango.lsp");
                 exec ("cmd /q /c del tango.lsp");
 
@@ -136,7 +136,7 @@ class Linux : FileFilter
         {
                 auto temp = objname (file, ".o");
                 if (args.quick is false || isOverdue(file, temp))
-                    exec (split(cmd~temp~" "~file.toString, " "), Environment.get, null);
+                    exec (split(cmd~temp~" "~file.toString(), " "), Environment.get(), null);
                 return temp;
         }
 
@@ -146,13 +146,11 @@ class Linux : FileFilter
 
         int dmd ()
         {
-                const(char)[] gcc = gcc00;
                 const(char)[] march;
 
                 if (args.march.length)
                 {
                     march = (args.march == "64") ? " -m64" : " -m32";
-                    gcc = (args.march == "64") ? gcc64 : gcc32;
                 }
 
                 auto dmd = "dmd -c -I"~args.root~march~" "~args.flags~" -of";
@@ -167,13 +165,11 @@ class Linux : FileFilter
 
         int ldc2 ()
         {
-                const(char)[] gcc = gcc00;
                 const(char)[] march;
 
                 if (args.march.length)
                 {
                     march = (args.march == "64") ? " -m64" : " -m32";
-                    gcc = (args.march == "64") ? gcc64 : gcc32;
                 }
 
                 auto ldc2 = "ldc2 -c " ~ march ~ " -I"~args.root~" "~args.flags~" -of";
@@ -188,13 +184,11 @@ class Linux : FileFilter
 
         int gdc ()
         {
-                const(char)[] gcc = gcc00;
                 const(char)[] march;
 
                 if (args.march.length)
                 {
                     march = (args.march == "64") ? " -m64" : " -m32";
-                    gcc = (args.march == "64") ? gcc64 : gcc32;
                 }
 
                 auto gdc = "gdc -c -I"~args.root ~ march ~ " "~args.flags~" -o";
@@ -219,7 +213,7 @@ class MacOSX : FileFilter
         this (ref Args args)
         {
                 super (args);
-                //include ("tango/sys/darwin");
+                include ("tango/sys/darwin");
                 register ("osx", "dmd", &dmd);
                 register ("osx", "ldc2", &ldc2);
                 register ("osx", "gdc", &gdc);
@@ -229,12 +223,9 @@ class MacOSX : FileFilter
         {
                 auto temp = objname (file, ".o");
                 if (args.quick is false || isOverdue(file, temp))
-                    exec (split(cmd~temp~" "~file.toString, " "), Environment.get, null);
+                    exec (split(cmd~temp~" "~file.toString(), " "), Environment.get(), null);
                 return temp;
         }
-
-        private auto gcc = "gcc -c -o";
-        private auto gcc32 = "gcc -c -m32 -o";
 
         int dmd ()
         {
@@ -282,7 +273,7 @@ class FreeBSD : FileFilter
         this (ref Args args)
         {
                 super (args);
-                //include ("tango/sys/freebsd");
+                include ("tango/sys/freebsd");
                 register ("freebsd", "dmd", &dmd);
                 register ("freebsd", "ldc2", &ldc2);
                 register ("freebsd", "gdc", &gdc);
@@ -292,7 +283,7 @@ class FreeBSD : FileFilter
         {
                 auto temp = objname (file, ".o");
                 if (args.quick is false || isOverdue(file, temp))
-                    exec (split(cmd~temp~" "~file.toString, " "), Environment.get, null);
+                    exec (split(cmd~temp~" "~file.toString(), " "), Environment.get(), null);
                 return temp;
         }
 
@@ -343,7 +334,7 @@ class Solaris : FileFilter
         this (ref Args args)
         {
                 super (args);
-                // include ("tango/sys/solaris");
+                include ("tango/sys/solaris");
                 register ("solaris", "dmd", &dmd);
                 register ("solaris", "ldc2", &ldc2);
                 register ("solaris", "gdc", &gdc);
@@ -353,7 +344,7 @@ class Solaris : FileFilter
         {
                 auto temp = objname (file, ".o");
                 if (args.quick is false || isOverdue(file, temp))
-                    exec (split(cmd~temp~" "~file.toString, " "), Environment.get, null);
+                    exec (split(cmd~temp~" "~file.toString(), " "), Environment.get(), null);
                 return temp;
         }
 
@@ -446,10 +437,10 @@ class FileFilter
                 libs = new Array (0, 1024 * 16);
 
                 exclude ("tango/sys/win32");
-                //exclude ("tango/sys/darwin");
-                //exclude ("tango/sys/freebsd");
+                exclude ("tango/sys/darwin");
+                exclude ("tango/sys/freebsd");
                 exclude ("tango/sys/linux");
-                //exclude ("tango/sys/solaris");
+                exclude ("tango/sys/solaris");
         }
 
         /***********************************************************************
@@ -497,7 +488,7 @@ class FileFilter
 
         final void exclude (const(char)[] path)
         {
-                assert(FilePath(path).exists, "FileFilter.exclude: Path does not exist: " ~ path);
+                assert(Path.exists(Path.join(args.root, path)), "FileFilter.exclude: Path does not exist: " ~ path);
                 assert(path[$-1] != '/', "FileFilter.exclude: Inconsistent path syntax, no trailing '/' allowed: " ~ path);
                 excluded[path] = true;
         }
@@ -522,7 +513,7 @@ class FileFilter
                    {    
                    auto tango = locatePatternPrior (fp.path, "tango");
                    if (tango < fp.path.length)
-                       return ! (fp.toString[tango..$] in excluded);
+                       return ! (fp.toString()[tango..$] in excluded);
                    return false;
                    }
 
@@ -551,7 +542,7 @@ class FileFilter
                 if (! Path.exists (objfile))
                       return true;
 
-                auto src = fp.timeStamps.modified;
+                auto src = fp.timeStamps().modified;
                 auto obj = Path.modified (objfile);
                 return src >= obj;
         }
@@ -574,11 +565,11 @@ class FileFilter
 
         ***********************************************************************/
 
-        private void makeLib (bool use32bit = false)
+        @property private void makeLib (bool use32bit = false)
         {
                 if (libs.readable > 2)
                    {
-                   auto files = cast(char[]) libs.slice [0..$-1];
+                   auto files = cast(char[]) libs.slice() [0..$-1];
                    
                    if (args.dynamic)
                    {
@@ -615,7 +606,7 @@ class FileFilter
               
         ***********************************************************************/
         
-        void exec (const(char)[][] cmd, const(char)[][char[]] env, const(char)[] workDir)
+        void exec (const(char[])[] cmd, const(char[])[char[]] env, const(char)[] workDir)
         {
                 if (args.verbose)
                    {
@@ -627,7 +618,7 @@ class FileFilter
                 if (! args.inhibit)
                    {
                    scope proc = new Process (cmd, env);
-                   scope (exit) proc.close;
+                   scope (exit) proc.close();
                    if (workDir) 
                        proc.workDir = workDir;
                    if (env is null)
@@ -636,9 +627,9 @@ class FileFilter
                    proc.execute();
                    Stdout.stream.copy (proc.stderr);
                    Stdout.stream.copy (proc.stdout);
-                   auto result = proc.wait;
+                   auto result = proc.wait();
                    if (result.status != 0 || result.reason != Process.Result.Exit)
-                       throw new Exception (result.toString.idup);
+                       throw new Exception (result.toString().idup);
                    }
         }
 }
@@ -657,7 +648,6 @@ struct Args
                 dynamic;
 
         const(char)[]  os,
-                       gc,
                        lib,
                        root,
                        flags,
@@ -681,20 +671,19 @@ struct Args
                                "\t[-p=sysname]\t\tdetermines package filtering (windows|linux|osx|freebsd|solaris)\n\n"
                                "Example: .\\build\\bin\\win32\\bob.exe -vu -c=dmd .\n\n";
 
-        bool populate (const(char)[][] arg)
+        bool populate (const(char[])[] arg)
         {       
                 auto args = new Arguments;
                 auto q = args('q');
                 auto u = args('u');
                 auto i = args('i');
                 auto v = args('v');
-                auto l = args('l').smush.params(1);
-                auto p = args('p').smush.params(1);
-                auto o = args('o').smush.params(1).defaults("-release");
-                auto c = args('c').smush.params(1).defaults("dmd").restrict("dmd", "gdc", "ldc2");
-                auto g = args('g').smush.params(1).defaults("basic").restrict("basic", "cdgc", "stub");
+                auto l = args('l').smush().params(1);
+                auto p = args('p').smush().params(1);
+                auto o = args('o').smush().params(1).defaults("-release");
+                auto c = args('c').smush().params(1).defaults("dmd").restrict("dmd", "gdc", "ldc2");
                 auto n = args(null).params(1).required.title("tango-path");
-                auto h = args("help").aliased('h').aliased('?').halt;
+                auto h = args("help").aliased('h').aliased('?').halt();
                 auto d = args('d');
                 auto m = args('m').params(1).restrict("64", "32");
 
@@ -714,17 +703,6 @@ struct Args
                          p.defaults("solaris");
                 else
                    p.required;
-                
-                version (Windows)
-                        {
-                        l.defaults("tango");
-                        auto libext = ".lib";
-                        }
-                     else
-                        {
-                        l.defaults("libtango");
-                        auto libext = ".a";
-                        }
 
                 if (args.parse (arg))
                    {
@@ -733,13 +711,34 @@ struct Args
                    inhibit = i.set;
                    verbose = v.set;
                    dynamic = d.set;
-                   os = p.assigned[0];
-                   root = n.assigned[0];
-                   flags = o.assigned[0];
-                   compiler = c.assigned[0];
-                   gc = g.assigned[0];
-                   lib = l.assigned[0];
-                   march = m.assigned.length > 0 ? m.assigned[0] : "";
+                   os = p.assigned()[0];
+                   root = n.assigned()[0];
+                   flags = o.assigned()[0];
+                   compiler = c.assigned()[0];
+                   march = m.assigned().length > 0 ? m.assigned()[0] : "";
+                   
+                   if(l.assigned().length == 0)
+                   {
+                        lib = "libtango-";
+                        switch(c.assigned()[0])
+                        {
+                            case "dmd":
+                                lib ~= "dmd";
+                                break;
+                            case "gdc":
+                                lib ~= "gdc";
+                                break;
+                            case "ldc2":
+                                lib ~= "ldc";
+                                break;
+                            default:
+                                assert(0);
+                        }
+                   }
+                   else
+                   {
+                       lib = l.assigned()[0];
+                   }
                        
                     if(compiler == "gdc" && flags == "-release")
                         flags = "-frelease";
@@ -755,7 +754,6 @@ struct Args
                    {
                        version (Windows)
                            lib ~= ".lib";
-                           
                        else
                            lib ~= ".a";
                    }

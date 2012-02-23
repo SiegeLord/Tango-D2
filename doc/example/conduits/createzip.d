@@ -14,10 +14,10 @@ import tango.io.vfs.FileFolder;
 
 void main()
 {
-        char[][] files;
+        const(char)[][] files;
         auto root = new FileFolder (".");
         foreach (file; root.tree.catalog ("*.d"))
-                 files ~= file.toString;
+                 files ~= file.toString();
 
         createArchive("tmp.zip", Method.Deflate, files);
 }

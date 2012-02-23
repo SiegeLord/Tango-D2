@@ -161,7 +161,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 
         ***********************************************************************/
 
-        final const size_t size ()
+        @property final const size_t size ()
         {
                 return count;
         }
@@ -386,7 +386,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 
         ***********************************************************************/
 
-        final HashMap dup ()
+        @property final HashMap dup ()
         {
                 auto clone = new HashMap!(K, V, Hash, Reap, Heap) (loadFactor);
 

@@ -125,9 +125,9 @@ class DataInput : InputFilter
         final size_t array (void[] dst)
         {
                 version(DataIntArrayLength)
-                    auto len = cast(size_t)int32;
+                    auto len = cast(size_t)int32();
                 else
-                    auto len = cast(size_t)int64;
+                    auto len = cast(size_t)int64();
                 if (len > dst.length)
                     conduit.error ("DataInput.readArray :: dst array is too small");
                 eat (dst.ptr, len);
@@ -156,9 +156,9 @@ class DataInput : InputFilter
         final void[] array ()
         {
                 version(DataIntArrayLength)
-                    auto len = cast(size_t)int32;
+                    auto len = cast(size_t)int32();
                 else
-                    auto len = cast(size_t)int64;
+                    auto len = cast(size_t)int64();
                 auto dst = allocator (len);
                 eat (dst.ptr, len);
                 return dst;
@@ -351,7 +351,7 @@ class DataOutput : OutputFilter
 
         ***********************************************************************/
 
-        final ulong array (void[] src)
+        final ulong array (const(void)[] src)
         {
                 auto len = src.length;
                 version(DataIntArrayLength)
@@ -475,7 +475,7 @@ debug (UnitTest)
 
                 auto input = new DataInput (buf);
                 assert (input.array(new char[9]) is 9);
-                assert (input.int32 is 1024);
+                assert (input.int32() is 1024);
         }
 }
 

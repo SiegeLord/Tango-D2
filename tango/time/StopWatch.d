@@ -98,7 +98,7 @@ public struct StopWatch
 
         ***********************************************************************/
         
-        ulong microsec ()
+        @property ulong microsec ()
         {
                 version (Posix)
                          return (timer - started);
@@ -113,7 +113,7 @@ public struct StopWatch
 
         ***********************************************************************/
 
-        static this()
+        shared static this()
         {
                 version (Win32)
                 {
@@ -131,7 +131,7 @@ public struct StopWatch
 
         ***********************************************************************/
 
-        private static ulong timer ()
+        @property private static ulong timer ()
         {
                 version (Posix)       
                 {
@@ -170,6 +170,6 @@ debug (StopWatch)
 
                 for (int i=0; i < 100_000_000; ++i)
                     {}
-                Stdout.format ("{:f9}".dup, t.stop).newline;
+                Stdout.format ("{:f9}", t.stop).newline;
         }
 }

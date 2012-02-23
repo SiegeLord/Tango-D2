@@ -29,7 +29,7 @@ TODO
 import tango.core.ByteSwap : ByteSwap;
 import tango.io.device.Array : Array;
 import tango.io.device.File : File;
-import tango.io.FilePath : FilePath, PathView;
+import Path = tango.io.Path;
 import tango.io.device.FileMap : FileMap;
 import tango.io.stream.Zlib : ZlibInput, ZlibOutput;
 import tango.util.digest.Crc32 : Crc32;
@@ -142,7 +142,7 @@ struct LocalFileHeader
 
     void fill(InputStream src)
     {
-        readExact(src, data_arr);
+        readExact(src, data_arr());
         version( BigEndian ) swapAll(data);
 
         //debug(Zip) data.dump;
@@ -177,7 +177,7 @@ struct LocalFileHeader
         
         // We need a separate check for the sizes and crc32, since these will
         // be zero if a trailing descriptor was used.
-        if( !h.usingDataDescriptor && (
+        if( !h.usingDataDescriptor() && (
                    data.crc_32 != h.data.crc_32
                 || data.compressed_size != h.data.compressed_size
                 || data.uncompressed_size != h.data.uncompressed_size ) )
@@ -340,7 +340,7 @@ struct FileHeader
         //debug(Zip) data.dump;
 
         inout(char[]) function(inout(ubyte[])) conv_fn;
-        if( usingUtf8 )
+        if( usingUtf8() )
             conv_fn = &cp437_to_utf8;
         else
             conv_fn = &utf8_to_utf8;
@@ -436,7 +436,7 @@ struct EndOfCDRecord
     {
         //Stderr.formatln("EndOfCDRecord.fill([0..{}])",src.length);
 
-        auto _data = data_arr;
+        auto _data = data_arr();
         _data[] = src[0.._data.length];
         src = src[_data.length..$];
         version( BigEndian ) swapAll(data);
@@ -581,7 +581,7 @@ class ZipBlockReader : ZipReader
      * Creates a ZipBlockReader using the specified file on the local
      * filesystem.
      */
-    this(char[] path)
+    this(const(char)[] path)
     {
         file_source = new File(path);
         this(file_source);
@@ -623,7 +623,7 @@ class ZipBlockReader : ZipReader
 
         if( file_source !is null )  
           {
-          file_source.close;
+          file_source.close();
           delete file_source;
           }
     }
@@ -639,9 +639,9 @@ class ZipBlockReader : ZipReader
         switch( state )
         {
             case State.Init:
-                read_cd;
+                read_cd();
                 assert( state == State.Open );
-                return more;
+                return more();
 
             case State.Open:
                 return (current_index < headers.length);
@@ -664,7 +664,7 @@ class ZipBlockReader : ZipReader
      */
     ZipEntry get()
     {
-        if( !more )
+        if( !more() )
             ZipExhaustedException();
 
         return new ZipEntry(headers[current_index++], &open_file);
@@ -673,7 +673,7 @@ class ZipBlockReader : ZipReader
     /// ditto
     ZipEntry get(ZipEntry reuse)
     {
-        if( !more )
+        if( !more() )
             ZipExhaustedException();
 
         if( reuse is null )
@@ -693,7 +693,7 @@ class ZipBlockReader : ZipReader
         int result = 0;
         ZipEntry entry;
 
-        while( more )
+        while( more() )
         {
             entry = get(entry);
 
@@ -745,14 +745,14 @@ private:
 
         // First, we need to locate the end of cd record, so that we know
         // where the cd itself is, and how big it is.
-        auto eocdr = read_eocd_record;
+        auto eocdr = read_eocd_record();
 
         // Now, make sure the archive is all in one file.
         if( eocdr.data.disk_number !=
                     eocdr.data.disk_with_start_of_central_directory
                 || eocdr.data.central_directory_entries_on_this_disk !=
                     eocdr.data.central_directory_entries_total )
-            ZipNotSupportedException.spanned;
+            ZipNotSupportedException.spanned();
 
         // Ok, read the whole damn thing in one go.
         cd_data = new ubyte[eocdr.data.size_of_central_directory];
@@ -884,7 +884,7 @@ private:
             ZipNotSupportedException.zipver(header.data.extract_version);
 
         if( header.data.general_flags & UNSUPPORTED_FLAGS )
-            ZipNotSupportedException.flags;
+            ZipNotSupportedException.flags();
 
         if( toMethod(header.data.compression_method) == Method.Unsupported )
             ZipNotSupportedException.method(header.data.compression_method);
@@ -998,7 +998,7 @@ class ZipBlockWriter : ZipWriter
      */
     void finish()
     {
-        put_cd;
+        put_cd();
         output.close();
         output = null;
         seeker = null;
@@ -1041,7 +1041,7 @@ class ZipBlockWriter : ZipWriter
     {
         //scope mc = new MemoryConduit(data);
         scope mc = new Array(data.dup);
-        scope(exit) mc.close;
+        scope(exit) mc.close();
         put_compressed(info, mc);
     }
 
@@ -1049,7 +1049,9 @@ class ZipBlockWriter : ZipWriter
      * This property allows you to control what compression method should be
      * used for files being added to the archive.
      */
+    @property
     Method method() { return _method; }
+    @property
     Method method(Method v) { return _method = v; } /// ditto
 
 private:
@@ -1141,8 +1143,8 @@ private:
 
         // Output file contents
         {
-            auto input = entry.open_raw;
-            scope(exit) input.close;
+            auto input = entry.open_raw();
+            scope(exit) input.close();
             output.copy(input).flush();
         }
     }
@@ -1172,14 +1174,14 @@ private:
             // Count number of bytes coming in from the source file
             scope in_counter = new CounterInput(in_chain);
             in_chain = in_counter;
-            assert( in_counter.count <= typeof(uncompressed_size).max );
-            scope(success) uncompressed_size = cast(uint) in_counter.count;
+            assert( in_counter.count() <= typeof(uncompressed_size).max );
+            scope(success) uncompressed_size = cast(uint) in_counter.count();
 
             // Count the number of bytes going out to the archive
             scope out_counter = new CounterOutput(out_chain);
             out_chain = out_counter;
-            assert( out_counter.count <= typeof(compressed_size).max );
-            scope(success) compressed_size = cast(uint) out_counter.count;
+            assert( out_counter.count() <= typeof(compressed_size).max );
+            scope(success) compressed_size = cast(uint) out_counter.count();
 
             // Add crc
             scope crc_d = new Crc32(/*CRC_MAGIC*/);
@@ -1188,7 +1190,7 @@ private:
             scope(success)
             {
                 debug(Zip) Stderr.formatln(" . Success: storing CRC.");
-                crc = crc_d.crc32Digest;
+                crc = crc_d.crc32Digest();
             }
 
             // Add compression
@@ -1215,7 +1217,7 @@ private:
             scope(success) in_chain.flush();
             scope(exit) out_chain.close();
 
-            out_chain.copy(in_chain).flush;
+            out_chain.copy(in_chain).flush();
 
             debug(Zip) if( compress !is null )
             {
@@ -1422,11 +1424,11 @@ class ZipEntry
     {
         // If we haven't verified the contents yet, just read everything in
         // to trigger it.
-        auto s = open;
+        auto s = open();
         auto buffer = new ubyte[s.conduit.bufferSize];
         while( s.read(buffer) != s.Eof )
             {/*Do nothing*/}
-        s.close;
+        s.close();
     }
 
     /**
@@ -1536,69 +1538,69 @@ private:
     alias typeof(this) thisT;
     static void opCall(immutable(char)[] msg) { throw new ZipException(msg); }
 
-    static void badsig()
+    @property static void badsig()
     {
         thisT("corrupt signature or unexpected section found");
     }
 
-    static void badsig(const(char)[] type)
+    @property static void badsig(const(char)[] type)
     {
         thisT("corrupt "~type.idup~" signature or unexpected section found");
     }
 
-    static void incons(const(char)[] name)
+    @property static void incons(const(char)[] name)
     {
         thisT("inconsistent headers for file \""~name.idup~"\"; "
                 "archive is likely corrupted");
     }
 
-    static void missingdir()
+    @property static void missingdir()
     {
         thisT("could not locate central archive directory; "
                 "file is corrupt or possibly not a Zip archive");
     }
 
-    static void toomanyentries()
+    @property static void toomanyentries()
     {
         thisT("too many archive entries");
     }
 
-    static void toolong()
+    @property static void toolong()
     {
         thisT("archive is too long; limited to 4GB total");
     }
 
-    static void cdtoolong()
+    @property static void cdtoolong()
     {
         thisT("central directory is too long; limited to 4GB total");
     }
 
-    static void fntoolong()
+    @property static void fntoolong()
     {
         thisT("file name too long; limited to 65,535 characters");
     }
 
-    static void eftoolong()
+    @property static void eftoolong()
     {
         thisT("extra field too long; limited to 65,535 characters");
     }
 
-    static void cotoolong()
+    @property static void cotoolong()
     {
         thisT("extra field too long; limited to 65,535 characters");
     }
 
-    static void fnencode()
+    @property static void fnencode()
     {
         thisT("could not encode filename into codepage 437");
     }
 
-    static void coencode()
+    @property static void coencode()
     {
         thisT("could not encode comment into codepage 437");
     }
 
-    static void tooold()
+    @property static void tooold()
     {
         thisT("cannot represent dates before January 1, 1980");
     }
@@ -1710,26 +1712,24 @@ private:
 //
 // Convenience methods
 
-void createArchive(char[] archive, Method method, char[][] files...)
+void createArchive(const(char)[] archive, Method method, const(char[])[] files...)
 {
     scope zw = new ZipBlockWriter(archive);
     zw.method = method;
 
     foreach( file ; files )
     {
-        scope fp = new FilePath(file);
-        
         ZipEntryInfo zi;
         zi.name = file;
-        zi.modified = fp.modified;
+        zi.modified = Path.modified(file);
 
         zw.putFile(zi, file);
     }
 
-    zw.finish;
+    zw.finish();
 }
 
-void extractArchive(char[] archive, char[] dest)
+void extractArchive(const(char)[] archive, const(char)[] dest)
 {
     scope zr = new ZipBlockReader(archive);
 
@@ -1753,8 +1753,8 @@ void extractArchive(char[] archive, char[] dest)
 
         // Write out the file
         scope fout = new File(path, File.WriteCreate);
-        fout.copy(entry.open);
-        fout.close;
+        fout.copy(entry.open());
+        fout.close();
 
         // Update timestamps
         auto oldTS = Path.timeStamps(path);
@@ -1815,9 +1815,9 @@ class ZipEntryVerifier : InputStream
 
     void close()
     {
-        check;
+        check();
 
-        this.source.close;
+        this.source.close();
         this.entry = null;
         this.digest = null;
         this.source = null;
@@ -1827,7 +1827,7 @@ class ZipEntryVerifier : InputStream
     {
         auto bytes = source.read(dst);
         if( bytes == IConduit.Eof )
-            check;
+            check();
         return bytes;
     }
 
@@ -1838,7 +1838,7 @@ class ZipEntryVerifier : InputStream
     
     override InputStream flush()
     {
-        this.source.flush;
+        this.source.flush();
         return this;
     }
 
@@ -1851,7 +1851,7 @@ private:
     {
         if( digest is null ) return;
 
-        auto crc = digest.crc32Digest;
+        auto crc = digest.crc32Digest();
         delete digest;
 
         if( crc != entry.header.data.crc_32 )
@@ -2067,9 +2067,9 @@ debug( UnitTest )
     }
 }
 
-const char[dchar] utf8_to_cp437_map;
+__gshared const char[dchar] utf8_to_cp437_map;
 
-static this()
+shared static this()
 {
     utf8_to_cp437_map = [
         '\u0000': '\x00', '\u263a': '\x01', '\u263b': '\x02', '\u2665': '\x03',

@@ -261,18 +261,18 @@ private
         /*
          * Any pointer can be cast to void*.
          */
-        static if( is( dsttypeT == void* ) )
+        else static if( is( dsttypeT == void* ) )
             return (cast(TypeInfo_Pointer) srctype) !is null;
 
         /*
          * Any array can be cast to void[], however remember that it has to
          * be manually adjusted to preserve the correct length.
          */
-        static if( is( dsttypeT == void[] ) )
+        else static if( is( dsttypeT == void[] ) )
             return ((cast(TypeInfo_Array) srctype) !is null)
                 || ((cast(TypeInfo_StaticArray) srctype) !is null);
 
-        return false;
+        else return false;
     }
 
     /*
@@ -316,8 +316,8 @@ class VariantTypeMismatchException : Exception
 {
     this(TypeInfo expected, TypeInfo got)
     {
-        super("cannot convert "~expected.toString
-                    ~" value to a "~got.toString);
+        super("cannot convert "~expected.toString()
+                    ~" value to a "~got.toString());
     }
 }
 
@@ -420,6 +420,12 @@ struct Variant
         {
             return (this = value.dup);
         }
+        else static if( is(T == Variant) )
+        {
+            type = value.type;
+            this.value = value.value;
+            return this;
+        }
         else
         {
             type = typeid(T);
@@ -472,7 +478,7 @@ struct Variant
      *  assert( ! v.isA!(short) ); // note no implicit conversion
      * -----
      */
-    bool isA(T)()
+    @property bool isA(T)()
     {
         return cast(bool)(typeid(T) is type);
     }
@@ -494,7 +500,7 @@ struct Variant
      *  assert( v.isA!(short) ); // note implicit conversion
      * -----
      */
-    bool isImplicitly(T)()
+    @property bool isImplicitly(T)()
     {
         static if( is( T == class ) || is( T == interface ) )
         {
@@ -523,7 +529,7 @@ struct Variant
      * Returns:
      *  true if the Variant does not contain a value, false otherwise.
      */
-    bool isEmpty()
+    @property bool isEmpty()
     {
         return isA!(void);
     }
@@ -555,14 +561,14 @@ struct Variant
          * Returns:
          *  The value stored within the Variant.
          */
-        T get(T)()
+        @property T get(T)()
         {
             // For actual implementation, see below.
         }
     }
     else
     {
-        returnT!(S) get(S)()
+        @property returnT!(S) get(S)()
         {
             alias returnT!(S) T;
 
@@ -654,43 +660,20 @@ struct Variant
      * expression.  One side of the operator must be a concrete type in order
      * for the Variant to know what code to generate.
      */
-    auto opAdd(T)(T rhs)     { return get!(T) + rhs; }
-    auto opAdd_r(T)(T lhs)   { return lhs + get!(T); } /// ditto
-    auto opSub(T)(T rhs)     { return get!(T) - rhs; } /// ditto
-    auto opSub_r(T)(T lhs)   { return lhs - get!(T); } /// ditto
-    auto opMul(T)(T rhs)     { return get!(T) * rhs; } /// ditto
-    auto opMul_r(T)(T lhs)   { return lhs * get!(T); } /// ditto
-    auto opDiv(T)(T rhs)     { return get!(T) / rhs; } /// ditto
-    auto opDiv_r(T)(T lhs)   { return lhs / get!(T); } /// ditto
-    auto opMod(T)(T rhs)     { return get!(T) % rhs; } /// ditto
-    auto opMod_r(T)(T lhs)   { return lhs % get!(T); } /// ditto
-    auto opAnd(T)(T rhs)     { return get!(T) & rhs; } /// ditto
-    auto opAnd_r(T)(T lhs)   { return lhs & get!(T); } /// ditto
-    auto opOr(T)(T rhs)      { return get!(T) | rhs; } /// ditto
-    auto opOr_r(T)(T lhs)    { return lhs | get!(T); } /// ditto
-    auto opXor(T)(T rhs)     { return get!(T) ^ rhs; } /// ditto
-    auto opXor_r(T)(T lhs)   { return lhs ^ get!(T); } /// ditto
-    auto opShl(T)(T rhs)    { return get!(T) << rhs; } /// ditto
-    auto opShl_r(T)(T lhs)  { return lhs << get!(T); } /// ditto
-    auto opShr(T)(T rhs)    { return get!(T) >> rhs; } /// ditto
-    auto opShr_r(T)(T lhs)  { return lhs >> get!(T); } /// ditto
-    auto opUShr(T)(T rhs)  { return get!(T) >>> rhs; } /// ditto
-    auto opUShr_r(T)(T lhs){ return lhs >>> get!(T); } /// ditto
-    auto opCat(T)(T rhs)     { return get!(T) ~ rhs; } /// ditto
-    auto opCat_r(T)(T lhs)   { return lhs ~ get!(T); } /// ditto
-
-    Variant opAddAssign(T)(T value) { return (this = get!(T) + value); } /// ditto
-    Variant opSubAssign(T)(T value) { return (this = get!(T) - value); } /// ditto
-    Variant opMulAssign(T)(T value) { return (this = get!(T) * value); } /// ditto
-    Variant opDivAssign(T)(T value) { return (this = get!(T) / value); } /// ditto
-    Variant opModAssign(T)(T value) { return (this = get!(T) % value); } /// ditto
-    Variant opAndAssign(T)(T value) { return (this = get!(T) & value); } /// ditto
-    Variant opOrAssign(T)(T value)  { return (this = get!(T) | value); } /// ditto
-    Variant opXorAssign(T)(T value) { return (this = get!(T) ^ value); } /// ditto
-    Variant opShlAssign(T)(T value) { return (this = get!(T) << value); } /// ditto
-    Variant opShrAssign(T)(T value) { return (this = get!(T) >> value); } /// ditto
-    Variant opUShrAssign(T)(T value){ return (this = get!(T) >>> value); } /// ditto
-    Variant opCatAssign(T)(T value) { return (this = get!(T) ~ value); } /// ditto
+    auto opBinary(immutable(char)[] op, T)(T rhs)
+    {
+        mixin("return get!(T) " ~ op ~ " rhs;");
+    }
+    
+    auto opBinaryRight(immutable(char)[] op, T)(T lhs)
+    {
+        mixin("return lhs " ~ op ~ " get!(T);");
+    }
+    
+    Variant opOpAssign(immutable(char)[] op, T)(T value)
+    {
+        mixin("return (this = get!(T) " ~ op ~ " value);"); 
+    }
 
     /**
      * The following operators can be used with Variants on both sides.  Note
@@ -733,14 +716,14 @@ struct Variant
      */
     string toString()
     {
-        return type.toString;
+        return type.toString();
     }
 
     /**
      * This can be used to retrieve the TypeInfo for the currently stored
      * value.
      */
-    TypeInfo type()
+    @property TypeInfo type()
     {
         return _type;
     }
@@ -749,7 +732,7 @@ struct Variant
      * This can be used to retrieve a pointer to the value stored in the
      * variant.
      */
-    void* ptr()
+    @property void* ptr()
     {
         if( type.tsize <= value.sizeof )
             return &value;
@@ -763,28 +746,22 @@ struct Variant
         /**
          * Converts a vararg function argument list into an array of Variants.
          */
-        static Variant[] fromVararg(TypeInfo[] types, va_list args)
+        static Variant[] fromVararg(TypeInfo[] types, void* args)
         {
             auto vs = new Variant[](types.length);
 
             foreach( i, ref v ; vs )
             {
-                version(DigitalMars) version(X86_64)
+                version(DigitalMarsX64)
                 {
-                    scope void[] buffer;
-                    size_t len = 0;
-
-                    foreach(argType; types)
-                        len =  max(len,(argType.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1));
-
-                    buffer.length = len;
-
-                    va_arg(args, types[i], buffer.ptr);
-
+                    scope void[] buffer = new void[types[i].tsize];
+                    va_arg(cast(va_list)args, types[i], buffer.ptr);
                     Variant.fromPtr(types[i], buffer.ptr, v);
                 }
                 else
+                {
                     args = Variant.fromPtr(types[i], args, v);
+                }
             }
 
             return vs;
@@ -806,6 +783,7 @@ struct Variant
                 return Variant.fromVararg(_arguments, _argptr);
         }
 
+        /+
         /**
          * Converts an array of Variants into a vararg function argument list.
          *
@@ -845,13 +823,14 @@ struct Variant
                 arg_temp = v.toPtr(arg_temp);
             }
         }
+        +/
     } // version( EnableVararg )
 
 private:
     TypeInfo _type = typeid(void);
     VariantStorage value;
 
-    TypeInfo type(TypeInfo v)
+    @property TypeInfo type(TypeInfo v)
     {
         return (_type = v);
     }
@@ -922,7 +901,7 @@ private:
         return ptr + ( (type.tsize + size_t.sizeof-1) & ~(size_t.sizeof-1) );
     }
 
-    version( EnableVararg )
+    /+version( EnableVararg )
     {
         /*
          * Takes the current Variant, and dumps its contents into memory pointed
@@ -1006,6 +985,7 @@ private:
             return ptr + ( (type.tsize + size_t.sizeof-1) & ~(size_t.sizeof-1) );
         }
     } // version( EnableVararg )
+    +/
 
     /*
      * Performs a type-dependant comparison.  Note that this obviously doesn't
@@ -1061,33 +1041,33 @@ debug( UnitTest )
     unittest
     {
         Variant v;
-        assert( v.isA!(void), v.type.toString );
-        assert( v.isEmpty, v.type.toString );
+        assert( v.isA!(void), v.type.toString() );
+        assert( v.isEmpty, v.type.toString() );
 
         // Test basic integer storage and implicit casting support
         v = 42;
-        assert( v.isA!(int), v.type.toString );
-        assert( v.isImplicitly!(long), v.type.toString );
-        assert( v.isImplicitly!(ulong), v.type.toString );
-        assert( !v.isImplicitly!(uint), v.type.toString );
+        assert( v.isA!(int), v.type.toString() );
+        assert( v.isImplicitly!(long), v.type.toString() );
+        assert( v.isImplicitly!(ulong), v.type.toString() );
+        assert( !v.isImplicitly!(uint), v.type.toString() );
         assert( v.get!(int) == 42 );
         assert( v.get!(long) == 42L );
         assert( v.get!(ulong) == 42uL );
 
         // Test clearing
-        v.clear;
-        assert( v.isA!(void), v.type.toString );
-        assert( v.isEmpty, v.type.toString );
+        v.clear();
+        assert( v.isA!(void), v.type.toString() );
+        assert( v.isEmpty, v.type.toString() );
 
         // Test strings
         v = "Hello, World!"c;
-        assert( v.isA!(char[]), v.type.toString );
-        assert( !v.isImplicitly!(wchar[]), v.type.toString );
-        assert( v.get!(char[]) == "Hello, World!" );
+        assert( v.isA!(immutable(char)[]), v.type.toString() );
+        assert( !v.isImplicitly!(wchar[]), v.type.toString() );
+        assert( v.get!(immutable(char)[]) == "Hello, World!" );
 
         // Test array storage
         v = [1,2,3,4,5];
-        assert( v.isA!(int[]), v.type.toString );
+        assert( v.isA!(int[]), v.type.toString() );
         assert( v.get!(int[]) == [1,2,3,4,5] );
 
         // Make sure arrays are correctly stored so that .ptr works.
@@ -1102,16 +1082,16 @@ debug( UnitTest )
 
         // Test pointer storage
         v = &v;
-        assert( v.isA!(Variant*), v.type.toString );
-        assert( !v.isImplicitly!(int*), v.type.toString );
-        assert( v.isImplicitly!(void*), v.type.toString );
+        assert( v.isA!(Variant*), v.type.toString() );
+        assert( !v.isImplicitly!(int*), v.type.toString() );
+        assert( v.isImplicitly!(void*), v.type.toString() );
         assert( v.get!(Variant*) == &v );
 
         // Test object storage
         {
             scope o = new Object;
             v = o;
-            assert( v.isA!(Object), v.type.toString );
+            assert( v.isA!(Object), v.type.toString() );
             assert( v.get!(Object) is o );
         }
 
@@ -1143,35 +1123,35 @@ debug( UnitTest )
             K e;
 
             Variant v2 = a;
-            assert( v2.isImplicitly!(Object), v2.type.toString );
-            assert( v2.isImplicitly!(G), v2.type.toString );
-            assert(!v2.isImplicitly!(I), v2.type.toString );
+            assert( v2.isImplicitly!(Object), v2.type.toString() );
+            assert( v2.isImplicitly!(G), v2.type.toString() );
+            assert(!v2.isImplicitly!(I), v2.type.toString() );
 
             v2 = c;
-            assert( v2.isImplicitly!(Object), v2.type.toString );
-            assert( v2.isImplicitly!(G), v2.type.toString );
-            assert( v2.isImplicitly!(I), v2.type.toString );
+            assert( v2.isImplicitly!(Object), v2.type.toString() );
+            assert( v2.isImplicitly!(G), v2.type.toString() );
+            assert( v2.isImplicitly!(I), v2.type.toString() );
 
             v2 = d;
-            assert( v2.isImplicitly!(Object), v2.type.toString );
-            assert(!v2.isImplicitly!(G), v2.type.toString );
-            assert( v2.isImplicitly!(H), v2.type.toString );
-            assert( v2.isImplicitly!(J), v2.type.toString );
+            assert( v2.isImplicitly!(Object), v2.type.toString() );
+            assert(!v2.isImplicitly!(G), v2.type.toString() );
+            assert( v2.isImplicitly!(H), v2.type.toString() );
+            assert( v2.isImplicitly!(J), v2.type.toString() );
 
             v2 = e;
-            assert(!v2.isImplicitly!(Object), v2.type.toString );
+            assert(!v2.isImplicitly!(Object), v2.type.toString() );
         }
 
         // Test doubles and implicit casting
         v = 3.1413;
-        assert( v.isA!(double), v.type.toString );
-        assert( v.isImplicitly!(real), v.type.toString );
-        assert( !v.isImplicitly!(float), v.type.toString );
+        assert( v.isA!(double), v.type.toString() );
+        assert( v.isImplicitly!(real), v.type.toString() );
+        assert( !v.isImplicitly!(float), v.type.toString() );
         assert( v.get!(double) == 3.1413 );
 
         // Test storage transitivity
         auto u = Variant(v);
-        assert( u.isA!(double), u.type.toString );
+        assert( u.isA!(double), u.type.toString() );
         assert( u.get!(double) == 3.1413 );
 
         // Test operators
@@ -1264,20 +1244,20 @@ debug( UnitTest )
         {
             class A
             {
-                const(char)[] msg() { return "A"; }
+                @property const(char)[] msg() { return "A"; }
             }
             class B : A
             {
-                override const(char)[] msg() { return "B"; }
+                @property override const(char)[] msg() { return "B"; }
             }
             interface C
             {
-                const(char)[] name();
+                @property const(char)[] name();
             }
             class D : B, C
             {
-                override const(char)[] msg() { return "D"; }
-                override const(char)[] name() { return "phil"; }
+                @property override const(char)[] msg() { return "D"; }
+                @property override const(char)[] name() { return "phil"; }
             }
 
             struct S { int a, b, c, d; }
@@ -1336,6 +1316,7 @@ debug( UnitTest )
             assert( vs[0xb].get!(typeof(va_b)).name == "phil" );
             assert( vs[0xc].get!(typeof(va_c)).name == "phil" );
 
+            /+
             version (none) version(X86) // TODO toVararg won't work in x86_64 as it is now
             {
                 TypeInfo[] types;
@@ -1394,6 +1375,7 @@ debug( UnitTest )
                 assert( vb_b.name == "phil" );
                 assert( vb_c.name == "phil" );
             }
+            +/
         }
     }
 }

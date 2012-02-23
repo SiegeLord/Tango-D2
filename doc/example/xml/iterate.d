@@ -22,7 +22,7 @@ void main () {
     auto root = doc.elements;
 
     // query the doc for all country elements
-    auto result = root.query.descendant("country");
+    auto result = root.query().descendant("country");
 
     foreach (e; result) {
         Stdout(e.value).newline;

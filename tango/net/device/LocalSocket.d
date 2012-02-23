@@ -162,7 +162,7 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        final sockaddr* name () 
+        @property override final sockaddr* name () 
         { 
                 return cast(sockaddr*) &sun; 
         }
@@ -171,7 +171,7 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        final const int nameLen ()
+        @property override final const int nameLen ()
         { 
                 return cast(int)(_pathLength + ushort.sizeof);
         }
@@ -180,7 +180,7 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        final AddressFamily addressFamily () 
+        @property override final AddressFamily addressFamily () 
         { 
                 return AddressFamily.UNIX; 
         }
@@ -189,7 +189,7 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        final immutable(char)[] toString ()
+        final override string toString ()
         {
                 if (isAbstract)
                     return "unix:abstract=" ~ _path[1..$].idup;
@@ -201,7 +201,7 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        final const const(char)[] path ()
+        @property final const const(char)[] path ()
         {
                 return _path;
         }
@@ -210,7 +210,7 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        final const bool isAbstract ()
+        @property final const bool isAbstract ()
         {
                 return _path[0] == 0;
         }
