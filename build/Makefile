@@ -31,7 +31,7 @@ endef
 ############# BUILD #############
 all: static-lib header plain-doc pkgfile-static
 	@echo ------------------ Building $^ done
-all-shared: static-shared header plain-doc pkgfile-shared
+all-shared: shared-lib header plain-doc pkgfile-shared
 	@echo ------------------ Building $^ done
 
 .PHONY : pkgfile
@@ -121,7 +121,7 @@ $(STATIC_LIBNAME): $(OBJECTS)
 # For build shared lib need create shared object files
 $(SHARED_LIBNAME): $(PICOBJECTS)
 	@echo ------------------ Building shared library
-	$(DC) $(SONAME_FLAG) $@.$(call stripBugfix,$(VERSION)) $(OUTPUT)$@.$(call stripBugfix,$(VERSION)) $^
+	$(DC) -shared $(SONAME_FLAG) $@.$(call stripBugfix,$(VERSION)) $(OUTPUT)$@.$(call stripBugfix,$(VERSION)) $^
 	#~ $(CC) -shared -Wl,-soname,$@.$(VERSION) -o $@.$(VERSION) $^
 
 # create object files
