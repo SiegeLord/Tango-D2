@@ -2,7 +2,7 @@
 export PROJECT_NAME     = tango
 export AUTHOR           = Tango contributors
 export DESCRIPTION      =
-export VERSION          = 2
+export VERSION          = 2.0
 export LICENSE          = ACL v3
 SOURCES                 = $(filter-out $(Filter), $(getSource))
 
@@ -17,6 +17,12 @@ HEADERS             = $(patsubst %.d,$(IMPORT_PATH)$(PATH_SEP)%.di,      $(SOURC
 PLAIN_DOC_FILES     = $(patsubst %.d,$(PLAIN_DOC_PATH)$(PATH_SEP)%.html, $(SOURCES))
 DOC_FILES           = $(patsubst %.d,$(DOC_PATH)$(PATH_SEP)%.html,       $(SOURCES))
 DDOC_FLAGS          = $(foreach macro,$(DDOCFILES), $(DDOC_MACRO)$(macro))
+
+space :=
+space +=
+
+stripBugfix = $(subst $(space),.,$(strip $(wordlist 1, 2, $(subst ., ,$(1)))))
+
 define make-lib
 	$(AR) rcs $@ $^
 	$(RANLIB) $@
@@ -63,7 +69,7 @@ pkgfile-shared:
 	@echo prefix=$(PREFIX)                                              >> $(PKG_CONFIG_FILE)
 	@echo exec_prefix=$(PREFIX)                                         >> $(PKG_CONFIG_FILE)
 	@echo libdir=$(LIB_DIR)                                             >> $(PKG_CONFIG_FILE)
-	@echo includedir=$(INCLUDE_DIR)sqlite                               >> $(PKG_CONFIG_FILE)
+	@echo includedir=$(INCLUDE_DIR)$(PATH_SEP)tango                     >> $(PKG_CONFIG_FILE)
 	@echo                                                               >> $(PKG_CONFIG_FILE)
 	@echo Name: "$(PROJECT_NAME)"                                       >> $(PKG_CONFIG_FILE)
 	@echo Description: "$(DESCRIPTION)"                                 >> $(PKG_CONFIG_FILE)
@@ -82,7 +88,7 @@ pkgfile-static:
 	@echo prefix=$(PREFIX)                                              >> $(PKG_CONFIG_FILE)
 	@echo exec_prefix=$(PREFIX)                                         >> $(PKG_CONFIG_FILE)
 	@echo libdir=$(LIB_DIR)                                             >> $(PKG_CONFIG_FILE)
-	@echo includedir=$(INCLUDE_DIR)sqlite                               >> $(PKG_CONFIG_FILE)
+	@echo includedir=$(INCLUDE_DIR)$(PATH_SEP)tango                     >> $(PKG_CONFIG_FILE)
 	@echo                                                               >> $(PKG_CONFIG_FILE)
 	@echo Name: "$(PROJECT_NAME)"                                       >> $(PKG_CONFIG_FILE)
 	@echo Description: "$(DESCRIPTION)"                                 >> $(PKG_CONFIG_FILE)
@@ -115,7 +121,7 @@ $(STATIC_LIBNAME): $(OBJECTS)
 # For build shared lib need create shared object files
 $(SHARED_LIBNAME): $(PICOBJECTS)
 	@echo ------------------ Building shared library
-	$(DC) $(SONAME_FLAG) $(OUTPUT)$@.$(VERSION) $^
+	$(DC) $(SONAME_FLAG) $@.$(call stripBugfix,$(VERSION)) $(OUTPUT)$@.$(call stripBugfix,$(VERSION)) $^
 	#~ $(CC) -shared -Wl,-soname,$@.$(VERSION) -o $@.$(VERSION) $^
 
 # create object files
@@ -202,7 +208,8 @@ install-static-lib:
 install-shared-lib:
 	$(MKDIR) $(LIB_DIR)
 	$(CP) $(SHARED_LIBNAME) $(DESTDIR)$(LIB_DIR)
-	ln -s $(DESTDIR)$(LIB_DIR)$(SHARED_LIBNAME).$(SO_VERSION)   $(DESTDIR)$(LIB_DIR)$(PATH_SEP)$(SHARED_LIBNAME)
+	cd $(DESTDIR)$(LIB_DIR)$(PATH_SEP) & ln -s $(SHARED_LIBNAME).$(call stripBugfix,$(VERSION)) $(SHARED_LIBNAME).$(VERSION)
+	cd $(DESTDIR)$(LIB_DIR)$(PATH_SEP) & ln -s $(SHARED_LIBNAME).$(VERSION) $(SHARED_LIBNAME)
 	@echo ------------------ Installing shared-lib done
 
 install-header:
