@@ -2,7 +2,10 @@
 export PROJECT_NAME     = tango
 export AUTHOR           = Tango contributors
 export DESCRIPTION      =
-export VERSION          = 2.0
+export MAJOR_VERSION    = 2
+export MINOR_VERSION    = 0
+export PATCH_VERSION    = 0
+export PROJECT_VERSION  = $(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)
 export LICENSE          = ACL v3
 SOURCES                 = $(filter-out $(Filter), $(getSource))
 
@@ -73,7 +76,7 @@ pkgfile-shared:
 	@echo                                                               >> $(PKG_CONFIG_FILE)
 	@echo Name: "$(PROJECT_NAME)"                                       >> $(PKG_CONFIG_FILE)
 	@echo Description: "$(DESCRIPTION)"                                 >> $(PKG_CONFIG_FILE)
-	@echo Version: "$(VERSION)"                                         >> $(PKG_CONFIG_FILE)
+	@echo Version: "$(PROJECT_VERSION)"                                 >> $(PKG_CONFIG_FILE)
 	@echo Libs: $(LINKERFLAG)-l$(LIB_NAME)                              >> $(PKG_CONFIG_FILE)
 	@echo Cflags: -I$(INCLUDE_DIR)$(PATH_SEP)$(PROJECT_NAME) $(LDCFLAGS)>> $(PKG_CONFIG_FILE)
 	@echo                                                               >> $(PKG_CONFIG_FILE)
@@ -92,7 +95,7 @@ pkgfile-static:
 	@echo                                                               >> $(PKG_CONFIG_FILE)
 	@echo Name: "$(PROJECT_NAME)"                                       >> $(PKG_CONFIG_FILE)
 	@echo Description: "$(DESCRIPTION)"                                 >> $(PKG_CONFIG_FILE)
-	@echo Version: "$(VERSION)"                                         >> $(PKG_CONFIG_FILE)
+	@echo Version: "$(PROJECT_VERSION)"                                 >> $(PKG_CONFIG_FILE)
 	@echo Libs: $(LIB_DIR)$(PATH_SEP)$(STATIC_LIBNAME)                  >> $(PKG_CONFIG_FILE)
 	@echo Cflags: -I$(INCLUDE_DIR)$(PATH_SEP)$(PROJECT_NAME) $(LDCFLAGS)>> $(PKG_CONFIG_FILE)
 	@echo
@@ -121,8 +124,8 @@ $(STATIC_LIBNAME): $(OBJECTS)
 # For build shared lib need create shared object files
 $(SHARED_LIBNAME): $(PICOBJECTS)
 	@echo ------------------ Building shared library
-	$(DC) -shared $(SONAME_FLAG) $@.$(call stripBugfix,$(VERSION)) $(OUTPUT)$@.$(call stripBugfix,$(VERSION)) $^
-	#~ $(CC) -shared -Wl,-soname,$@.$(VERSION) -o $@.$(VERSION) $^
+	$(CC) -shared -Wl,-soname,$@.$(MAJOR_VERSION) -o $@.$(MAJOR_VERSION) $^
+# $(DC) -shared $(SONAME_FLAG) $@.$(MAJOR_VERSION) $(OUTPUT)$@.$(MAJOR_VERSION) $^
 
 # create object files
 $(BUILD_PATH)$(PATH_SEP)%.o : %.d .FORCE
@@ -201,43 +204,43 @@ install-shared: install-shared-lib install-plain-doc install-header install-pkgf
 	@echo ------------------ Installing $^ done
 
 install-static-lib:
-	$(MKDIR) $(LIB_DIR)
+	$(MKDIR) $(DESTDIR)$(LIB_DIR)
 	$(CP) $(STATIC_LIBNAME) $(DESTDIR)$(LIB_DIR)
 	@echo ------------------ Installing static-lib done
 
 install-shared-lib:
-	$(MKDIR) $(LIB_DIR)
-	$(CP) $(SHARED_LIBNAME) $(DESTDIR)$(LIB_DIR)
-	cd $(DESTDIR)$(LIB_DIR)$(PATH_SEP) & ln -s $(SHARED_LIBNAME).$(call stripBugfix,$(VERSION)) $(SHARED_LIBNAME).$(VERSION)
-	cd $(DESTDIR)$(LIB_DIR)$(PATH_SEP) & ln -s $(SHARED_LIBNAME).$(VERSION) $(SHARED_LIBNAME)
+	$(MKDIR) $(DESTDIR)$(LIB_DIR)
+	$(CP) $(SHARED_LIBNAME).$(MAJOR_VERSION) $(DESTDIR)$(LIB_DIR)
+	cd $(DESTDIR)$(LIB_DIR)$(PATH_SEP) & $(LN) $(SHARED_LIBNAME).$(MAJOR_VERSION) $(SHARED_LIBNAME).$(VERSION_PROJECT)
+	cd $(DESTDIR)$(LIB_DIR)$(PATH_SEP) & $(LN) $(SHARED_LIBNAME).$(VERSION_PROJECT) $(SHARED_LIBNAME)
 	@echo ------------------ Installing shared-lib done
 
 install-header:
-	$(MKDIR) $(INCLUDE_DIR)
+	$(MKDIR) $(DESTDIR)$(INCLUDE_DIR)
 	$(CP) $(IMPORT_PATH)$(PATH_SEP)$(PROJECT_NAME) $(DESTDIR)$(INCLUDE_DIR)
 	@echo ------------------ Installing header done
 
 install-modules:
-	$(MKDIR) $(INCLUDE_DIR)
+	$(MKDIR) $(DESTDIR)$(INCLUDE_DIR)
 	$(CP) tango $(DESTDIR)$(INCLUDE_DIR)
 	@echo ------------------ Installing header done
 
 install-plain-doc:
-	$(MKDIR) $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)plain_doc$(PATH_SEP)
+	$(MKDIR) $(DESTDIR)$(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)plain_doc$(PATH_SEP)
 	$(CP) $(PLAIN_DOC_PATH)$(PATH_SEP)* $(DESTDIR)$(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)plain_doc$(PATH_SEP)
 	@echo ------------------ Installing doc done
 
 install-doc:
-	$(MKDIR) $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)doc$(PATH_SEP)
+	$(MKDIR) $(DESTDIR)$(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)doc$(PATH_SEP)
 	$(CP) $(DOC_PATH)$(PATH_SEP)* $(DESTDIR)$(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)doc$(PATH_SEP)
 	@echo ------------------ Installing doc done
 
 install-geany-tag:
-	$(MKDIR) $(DATA_DIR)$(PATH_SEP)geany$(PATH_SEP)tags$(PATH_SEP)
+	$(MKDIR) $(DESTDIR)$(DATA_DIR)$(PATH_SEP)geany$(PATH_SEP)tags$(PATH_SEP)
 	$(CP) $(PROJECT_NAME).d.tags $(DESTDIR)$(DATA_DIR)$(PATH_SEP)geany$(PATH_SEP)tags$(PATH_SEP)
 	@echo ------------------ Installing geany tag done
 
 install-pkgfile:
-	$(MKDIR) $(PKGCONFIG_DIR)
+	$(MKDIR) $(DESTDIR)$(PKGCONFIG_DIR)
 	$(CP) $(PKG_CONFIG_FILE) $(DESTDIR)$(PKGCONFIG_DIR)$(PATH_SEP)$(PROJECT_NAME).pc
 	@echo ------------------ Installing pkgfile done
