@@ -46,27 +46,32 @@ ifeq ($(OS),"Windows")
     CP    = copy /Y
     MKDIR = mkdir
     MV    = move
+    LN    = mklink
 else ifeq ($(OS),"Linux")
     RM    = rm -f
     RMDIR = rm -rf
     CP    = cp -fr
     MKDIR = mkdir -p
     MV    = mv
+    LN    = ln -s
 else ifeq ($(OS),"Freebsd")
     RM    = rm -f
     RMDIR = rm -rf
     MKDIR = mkdir -p
     MV    = mv
+    LN    = ln -s
 else ifeq ($(OS),"Solaris")
     RM    = rm -f
     RMDIR = rm -rf
     MKDIR = mkdir -p
     MV    = mv
+    LN    = ln -s
 else ifeq ($(OS),"Darwin")
     RM    = rm -f
     RMDIR = rm -rf
     MKDIR = mkdir -p
     MV    = mv
+    LN    = ln -s
 endif
 
 # If compiler is not define try to find it
@@ -118,13 +123,17 @@ else
     DDOC_MACRO=
 endif
 
-# Version statement differences
+
+# Version statement / soname flag
 ifeq ($(COMPILER),ldc)
-    DVERSION = -d-version
+    DVERSION    = -d-version
+    SONAME_FLAG = -soname
 else ifeq ($(COMPILER),gdc)
-    DVERSION = -fversion
+    DVERSION    = -fversion
+    SONAME_FLAG = $(LINKERFLAG) -soname
 else
-    DVERSION = -version
+    DVERSION    = -version
+    SONAME_FLAG = $(LINKERFLAG) -soname
 endif
 
 # Define relocation model for ldc or other
