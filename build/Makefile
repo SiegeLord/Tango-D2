@@ -124,8 +124,7 @@ $(STATIC_LIBNAME): $(OBJECTS)
 # For build shared lib need create shared object files
 $(SHARED_LIBNAME): $(PICOBJECTS)
 	@echo ------------------ Building shared library
-	$(CC) -shared -Wl,-soname,$@.$(MAJOR_VERSION) -o $@.$(MAJOR_VERSION) $^
-# $(DC) -shared $(SONAME_FLAG) $@.$(MAJOR_VERSION) $(OUTPUT)$@.$(MAJOR_VERSION) $^
+	$(DC) -shared $(SONAME_FLAG) $@.$(MAJOR_VERSION) $(OUTPUT)$@.$(MAJOR_VERSION) $^
 
 # create object files
 $(BUILD_PATH)$(PATH_SEP)%.o : %.d .FORCE
