@@ -130,10 +130,10 @@ ifeq ($(COMPILER),ldc)
     SONAME_FLAG = -soname
 else ifeq ($(COMPILER),gdc)
     DVERSION    = -fversion
-    SONAME_FLAG = $(LINKERFLAG) -soname
+    SONAME_FLAG = $(LINKERFLAG)-soname
 else
     DVERSION    = -version
-    SONAME_FLAG = $(LINKERFLAG) -soname
+    SONAME_FLAG = $(LINKERFLAG)-soname
 endif
 
 # Define relocation model for ldc or other
