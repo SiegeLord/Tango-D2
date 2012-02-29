@@ -19,7 +19,7 @@ Breaking changes from D1
 Since one of the important use cases of this port is porting programs from D1 to D2, breaking changes in functionality have been avoided as much as possible. Sometimes, however, this would introduce hidden heap usage or unsafe operation. Those things are even more detestable, especially for Tango's future, than breaking backwards compatibility. Cases where changes were introduced are documented here.
 
 - tango.sys.Process
--- args no longer returns the program name as the first element. Get it from programName property instead.
+    - args no longer returns the program name as the first element. Get it from programName property instead.
 
 How to use it
 --------
