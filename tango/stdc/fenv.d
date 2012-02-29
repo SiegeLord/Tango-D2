@@ -126,8 +126,8 @@ else version( linux )
 }
 else version( darwin )
 {
-    private extern fenv_t _FE_DFL_ENV;
-    fenv_t* FE_DFL_ENV = &_FE_DFL_ENV;
+    private extern const fenv_t _FE_DFL_ENV;
+    const fenv_t* FE_DFL_ENV = &_FE_DFL_ENV;
 }
 else version( freebsd )
 {
@@ -136,7 +136,7 @@ else version( freebsd )
 }
 else version( solaris )
 {
-    private extern constfenv_t __fenv_dfl_env;
+    private extern const fenv_t __fenv_dfl_env;
     const fenv_t* FE_DFL_ENV = &__fe_dfl_env;
 }
 else

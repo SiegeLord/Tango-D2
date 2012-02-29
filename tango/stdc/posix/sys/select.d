@@ -133,7 +133,7 @@ else version( darwin )
 
         extern (D) int __FDELT( int d )
         {
-            return d / __NFDBITS;
+            return d / cast(int)__NFDBITS;
         }
 
         extern (D) __fd_mask __FDMASK( int d )
