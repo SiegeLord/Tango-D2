@@ -491,7 +491,7 @@ else
                             if (prefix.ptr && prefix != n.prefixed)
                                 continue;
 
-                            if (dg.ptr && dg(n) is false)
+                            if (dg !is null && dg(n) is false)
                                 continue;
 
                             return n;
