@@ -664,7 +664,7 @@ package struct FS
                 {
                         HANDLE h;
 
-                        auto flags = dg.ptr ? OPEN_EXISTING : CREATE_ALWAYS;
+                        auto flags = dg !is null ? OPEN_EXISTING : CREATE_ALWAYS;
                         version (Win32SansUnicode)
                                  h = CreateFileA (name.ptr, GENERIC_WRITE,
                                                   0, null, flags, FILE_ATTRIBUTE_NORMAL,
@@ -680,7 +680,7 @@ package struct FS
                         if (h is INVALID_HANDLE_VALUE)
                             exception (name);
 
-                        if (dg.ptr)
+                        if (dg !is null)
                             dg(h);
 
                         if (! CloseHandle (h))
