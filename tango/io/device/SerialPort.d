@@ -168,7 +168,7 @@ class SerialPort : Device
                     auto r = rest(path.name, "cu");
                     if(r.length == 0) return false;
                     return true;
-                } else version(freebsd) { // untested
+                } else version(FreeBSD) { // untested
                     auto r = rest(path.name, "cuaa");
                     if(r is null) r = rest(path.name, "cuad");
                     if(r.length == 0) return false;
@@ -252,7 +252,7 @@ class SerialPort : Device
                 baudRates[3500000] = B3500000;
                 baudRates[4000000] = B4000000;
             }
-            else version( freebsd )
+            else version( FreeBSD )
             {
                 baudRates[7200] = B7200;
                 baudRates[14400] = B14400;

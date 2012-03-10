@@ -869,7 +869,7 @@ void loadOpenSSL()
     {
         const(char[])[] loadPath = [ "/usr/lib/libssl.dylib", "libssl.dylib" ];
     }
-    version (freebsd)
+    version (FreeBSD)
     {
         const(char[])[] loadPath = [ "libssl.so.5", "libssl.so" ];
     }

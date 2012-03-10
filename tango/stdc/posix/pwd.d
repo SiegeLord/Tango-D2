@@ -143,7 +143,7 @@ else version ( darwin )
     passwd* getpwent();
     void    setpwent();
 }
-else version ( FreeBSD )
+else version (FreeBSD)
 {
     void    endpwent();
     passwd* getpwent();

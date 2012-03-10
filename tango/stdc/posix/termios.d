@@ -368,7 +368,7 @@ else version( linux )
     int     tcsendbreak(int, int);
     int     tcsetattr(int, int, in termios*);
 }
-else version ( FreeBSD )
+else version (FreeBSD)
 {
     alias ubyte cc_t;
     alias uint  speed_t;

@@ -6,7 +6,7 @@ else
 version (linux)
          public import tango.sys.linux.consts.unistd;
 else
-version (freebsd)
+version (FreeBSD)
          public import tango.sys.freebsd.consts.unistd;
 else
 version (darwin)

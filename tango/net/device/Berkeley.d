@@ -1060,7 +1060,7 @@ public abstract class Address
                 int       ai_socktype;
                 int       ai_protocol;
                 uint      ai_addrlen;
-                version (freebsd)
+                version (FreeBSD)
                         {
                         char*     ai_canonname;
                         sockaddr* ai_addr;
@@ -1384,7 +1384,7 @@ public class IPv4Address : Address
 
         struct sockaddr_in
         {
-                version (freebsd)
+                version (FreeBSD)
                         {
                         ubyte sin_len;
                         ubyte sinfamily  = AddressFamily.INET;
