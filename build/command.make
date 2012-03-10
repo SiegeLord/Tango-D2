@@ -26,7 +26,7 @@ else
     else ifeq ($(shell uname),Freebsd)
         STATIC_LIB_EXT  = .a
         SHARED_LIB_EXT = .so
-        OS              = "Freebsd"
+        OS              = "FreeBSD"
         FixPath         = $1
         message         = @(echo \033[31m $1 \033[0;0m1)
         Filter          = tango/sys/win32/%.d tango/sys/linux/%.d tango/sys/darwin/%.d tango/sys/solaris/%.d
