@@ -245,7 +245,7 @@ else version (darwin)
     int        usleep(useconds_t);
     pid_t      vfork();
 }
-else version (freebsd)
+else version (FreeBSD)
 {
     char*      crypt(in char*, in char*);
     //char*      ctermid(char*);

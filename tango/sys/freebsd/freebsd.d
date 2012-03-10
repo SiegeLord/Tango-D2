@@ -1,6 +1,6 @@
 module tango.sys.freebsd.freebsd;
 
-version (freebsd) {
+version (FreeBSD) {
     public import tango.stdc.time;
     public import tango.stdc.posix.dlfcn;
     public import tango.stdc.posix.fcntl;

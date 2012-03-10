@@ -28,7 +28,7 @@ version (darwin)
 	}
 }
 
-else version (freebsd)
+else version (FreeBSD)
 {
 	private const size_t len = 256;
 	

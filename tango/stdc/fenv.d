@@ -62,7 +62,7 @@ else version ( darwin )
         alias ushort fexcept_t;
     }
 }
-else version ( freebsd )
+else version ( FreeBSD )
 {
     struct fenv_t
     {

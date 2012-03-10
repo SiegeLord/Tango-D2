@@ -121,7 +121,7 @@ else version ( darwin )
     group* getgrent();
     void    setgrent();
 }
-else version ( freebsd )
+else version ( FreeBSD )
 {
     void    endgrent();
     group* getgrent();

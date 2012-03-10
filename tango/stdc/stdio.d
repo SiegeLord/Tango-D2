@@ -63,7 +63,7 @@ extern (C){
             }
         }
     }
-    else version ( freebsd )
+    else version ( FreeBSD )
     {
         const int EOF           = -1;
         const int FOPEN_MAX     = 20;
