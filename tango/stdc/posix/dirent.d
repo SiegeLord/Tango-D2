@@ -103,7 +103,7 @@ else version( darwin )
 
     dirent* readdir(DIR*);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     enum
     {
@@ -221,7 +221,7 @@ else version( darwin )
 {
     int readdir_r(DIR*, dirent*, dirent**);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     int readdir_r(DIR*, dirent*, dirent**);
 }

@@ -72,7 +72,7 @@ else version( darwin )
 {
 
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     struct ipc_perm
     {

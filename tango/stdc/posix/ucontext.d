@@ -159,7 +159,7 @@ version(darwin){
     }
 }
 
-version( freebsd ) {
+version( FreeBSD ) {
     alias int	__register_t;
     alias int	c_int;
     struct mcontext_t { /* from /usr/include/machine/ucontext.h */

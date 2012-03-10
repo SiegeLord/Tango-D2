@@ -174,7 +174,7 @@ extern (C){
             int       _blksize;
             fpos_t    _offset;
         }
-        else version( freebsd )
+        else version( FreeBSD )
         {
             ubyte*    _p;
             int       _r;
@@ -345,7 +345,7 @@ else version( darwin )
         stderr = __stderrp;
     }
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     extern(C) extern __gshared FILE* __stdinp;
     extern(C) extern __gshared FILE* __stdoutp;
@@ -474,7 +474,7 @@ else version( darwin )
     int  snprintf(char* s, size_t n, in char* format, ...);
     int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     void rewind(FILE*);
     void clearerr(FILE*);

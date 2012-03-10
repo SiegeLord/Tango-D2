@@ -103,7 +103,7 @@ version( linux )
     int   ftruncate(int, off_t);
   }
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     off_t lseek(int, off_t, int);
     int   ftruncate(int, off_t);

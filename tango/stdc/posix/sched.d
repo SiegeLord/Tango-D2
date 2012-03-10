@@ -65,7 +65,7 @@ else version( darwin )
         byte[__SCHED_PARAM_SIZE__]  opaque;
     }
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     struct sched_param
     {
@@ -111,7 +111,7 @@ else version( darwin )
 {
     int sched_yield();
 }
-else version( freebsd )
+else version( FreeBSD )
 {
 	int sched_yield();
 }
@@ -141,7 +141,7 @@ else version( darwin )
     int sched_get_priority_max(int);
     //int sched_rr_get_interval(pid_t, timespec*); // FIXME: unavailable?
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     int sched_get_priority_min(int);
     int sched_get_priority_max(int);

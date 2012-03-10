@@ -78,7 +78,7 @@ else version( darwin )
     //time_t (defined in tango.stdc.time)
     alias uint      uid_t;
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     alias long      blkcnt_t;
     alias uint      blksize_t;
@@ -169,7 +169,7 @@ else version( darwin )
     alias int   suseconds_t;
     alias uint  useconds_t;
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     //clock_t
     alias ulong     fsblkcnt_t;
@@ -397,7 +397,7 @@ else version( darwin )
 
     alias _opaque_pthread_t* pthread_t;
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     alias int lwpid_t;
 
@@ -520,7 +520,7 @@ else version( darwin )
         int             pshared;
     }
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     alias void* pthread_barrier_t;
     alias void* pthread_barrierattr_t;
@@ -560,7 +560,7 @@ else version( darwin )
     else
         struct pthread_spinlock_t;
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     alias void* pthread_spinlock_t;
 }

@@ -107,7 +107,7 @@ else version( darwin )
    }
 
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     const uint SEM_MAGIC = 0x09fa4012;
     const SEM_USER = 0;
@@ -154,7 +154,7 @@ else version( darwin )
 {
     // int sem_timedwait(sem_t*, in timespec*); // not defined, use mach semaphores instead
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     int sem_timedwait(sem_t*, in timespec*);
 }

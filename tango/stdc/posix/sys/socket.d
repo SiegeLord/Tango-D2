@@ -297,7 +297,7 @@ else version( darwin )
     int     sockatmark(int);
     int     socketpair(int, int, int, int[2]);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     alias uint   socklen_t;
     alias ubyte  sa_family_t;

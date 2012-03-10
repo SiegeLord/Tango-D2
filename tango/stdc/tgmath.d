@@ -14,7 +14,7 @@ private static import tango.stdc.complex;
 
 extern (C):
 
-version( freebsd )
+version( FreeBSD )
 {
     alias tango.stdc.math.acos          acos;
     alias tango.stdc.math.acosf         acos;

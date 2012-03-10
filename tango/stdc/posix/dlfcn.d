@@ -51,7 +51,7 @@ else version( darwin )
     void* dlopen(in char*, int);
     void* dlsym(void*, in char*);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     const RTLD_LAZY     = 1;
     const RTLD_NOW      = 2;

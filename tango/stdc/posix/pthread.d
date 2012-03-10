@@ -192,7 +192,7 @@ else version( solaris )
         #define PTHREAD_ONCE_DONE       1
         #define PTHREAD_ONCE_INIT       { {0, 0, 0, PTHREAD_ONCE_NOTDONE} }
     */
-} else version( freebsd ) { 
+} else version( FreeBSD ) { 
     enum 
     { 
         PTHREAD_CANCEL_ENABLE   = 0, 
@@ -514,7 +514,7 @@ else version( darwin )
     int pthread_mutexattr_settype(pthread_mutexattr_t*, int);
     int pthread_setconcurrency(int);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     enum
     {
@@ -676,7 +676,7 @@ else version( darwin )
     int pthread_setschedparam(pthread_t, int, in sched_param*);
     //int pthread_setschedprio(pthread_t, int);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     enum
     {
@@ -743,7 +743,7 @@ else version( darwin )
     int pthread_attr_setstackaddr(pthread_attr_t*, void*);
     int pthread_attr_setstacksize(pthread_attr_t*, size_t);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     int pthread_attr_getstack(in pthread_attr_t*, void**, size_t*);
     int pthread_attr_getstackaddr(in pthread_attr_t*, void**);

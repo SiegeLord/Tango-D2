@@ -92,7 +92,7 @@ else version( darwin )
     int setitimer(int, in itimerval*, itimerval*);
     int utimes(in char*, in timeval[2]);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     struct timeval
     {

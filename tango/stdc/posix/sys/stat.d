@@ -252,7 +252,7 @@ else version( darwin )
     extern (D) bool S_ISLNK( mode_t mode )  { return S_ISTYPE( mode, S_IFLNK );  }
     extern (D) bool S_ISSOCK( mode_t mode ) { return S_ISTYPE( mode, S_IFSOCK ); }
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     struct stat_t
     {
@@ -510,7 +510,7 @@ else version( darwin )
 
     int mknod(in char*, mode_t, dev_t);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     const S_IFMT    = octal!(170000);
     const S_IFBLK   = octal!(60000);

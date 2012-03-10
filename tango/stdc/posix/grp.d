@@ -49,7 +49,7 @@ else version( darwin )
         char**  gr_mem;
     }
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     struct group
     {
@@ -90,7 +90,7 @@ else version( darwin )
     int getgrnam_r(in char*, group*, char*, size_t, group**);
     int getgrgid_r(gid_t, group*, char*, size_t, group**);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     int getgrnam_r(in char*, group*, char*, size_t, group**);
     int getgrgid_r(gid_t, group*, char*, size_t, group**);

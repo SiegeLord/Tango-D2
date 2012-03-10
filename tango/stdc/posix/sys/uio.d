@@ -52,7 +52,7 @@ else version( darwin )
     ssize_t readv(int, in iovec*, int);
     ssize_t writev(int, in iovec*, int);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     struct iovec
     {

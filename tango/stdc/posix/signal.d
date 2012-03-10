@@ -153,7 +153,7 @@ else version( darwin )
     const SIGUSR2   = 31;
     const SIGURG    = 16;
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     //SIGABRT (defined in tango.stdc.signal)
     const SIGALRM   = 14;
@@ -244,7 +244,7 @@ struct sigaction_t
     {
         sigfn_t     sa_handler;
     }
-    version(freebsd){
+    version(FreeBSD){
         int             sa_flags;
         sigset_t        sa_mask;
     }else{
@@ -491,7 +491,7 @@ else version( darwin )
     int sigwait(in sigset_t*, int*);
     int sigaltstack(void * , void * );
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     struct sigset_t
     {
@@ -888,7 +888,7 @@ version( linux )
     int sigpause(int);
     int sigrelse(int);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     const SIGPROF       = 27;
     const SIGSYS        = 12;
@@ -1072,7 +1072,7 @@ else version( darwin )
         c_long  tv_nsec;
     }
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     struct timespec
     {
@@ -1143,7 +1143,7 @@ version( linux )
     int sigtimedwait(in sigset_t*, siginfo_t*, in timespec*);
     int sigwaitinfo(in sigset_t*, siginfo_t*);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     struct sigevent
     {
@@ -1204,7 +1204,7 @@ else version( darwin )
     int pthread_kill(pthread_t, int);
     int pthread_sigmask(int, in sigset_t*, sigset_t*);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     int pthread_kill(pthread_t, int);
     int pthread_sigmask(int, in sigset_t*, sigset_t*);

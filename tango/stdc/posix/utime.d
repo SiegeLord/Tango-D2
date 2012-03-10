@@ -46,7 +46,7 @@ else version( darwin )
 
     int utime(in char*, in utimbuf*);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     struct utimbuf
     {

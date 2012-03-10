@@ -48,7 +48,7 @@ else version( darwin )
     const POSIX_MADV_WILLNEED   = 3;
     const POSIX_MADV_DONTNEED   = 4;
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     const POSIX_MADV_NORMAL     = 0;
     const POSIX_MADV_RANDOM     = 1;
@@ -92,7 +92,7 @@ else version( darwin )
     const PROT_WRITE    = 0x02;
     const PROT_EXEC     = 0x04;
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     const PROT_NONE     = 0x00;
     const PROT_READ     = 0x01;
@@ -138,7 +138,7 @@ else version( darwin )
     void* mmap(void*, size_t, int, int, int, off_t);
     int   munmap(void*, size_t);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     void* mmap(void*, size_t, int, int, int, off_t);
     int   munmap(void*, size_t);
@@ -207,7 +207,7 @@ else version( darwin )
 
     int msync(void*, size_t, int);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     const MAP_SHARED    = 0x0001;
     const MAP_PRIVATE   = 0x0002;
@@ -269,7 +269,7 @@ else version( darwin )
     int mlockall(int);
     int munlockall();
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     const MCL_CURRENT   = 0x0001;
     const MCL_FUTURE    = 0x0002;
@@ -304,7 +304,7 @@ else version( darwin )
     int mlock(in void*, size_t);
     int munlock(in void*, size_t);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     int mlock(in void*, size_t);
     int munlock(in void*, size_t);
@@ -330,7 +330,7 @@ else version( darwin )
 {
     int mprotect(void*, size_t, int);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     int mprotect(void*, size_t, int);
 }
@@ -357,7 +357,7 @@ else version( darwin )
     int shm_open(in char*, int, mode_t);
     int shm_unlink(in char*);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     int shm_open(in char*, int, mode_t);
     int shm_unlink(in char*);

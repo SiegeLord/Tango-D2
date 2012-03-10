@@ -97,7 +97,7 @@ else version( darwin )
 
     int poll(pollfd*, nfds_t, int);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     struct pollfd
     {

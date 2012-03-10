@@ -50,7 +50,7 @@ version(darwin) {
     }
 }
 
-version( freebsd )
+version( FreeBSD )
 {
     alias ulong __fsblkcnt_t, __fsfilcnt_t;
     struct statvfs_t {

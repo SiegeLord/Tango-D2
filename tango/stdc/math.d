@@ -361,7 +361,7 @@ else version( darwin )
     }
   }
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     enum
     {
@@ -464,7 +464,7 @@ extern (D)
 
 // NOTE: freebsd < 8-CURRENT doesn't appear to support *l, but we can
 //       approximate.
-version( freebsd )
+version( FreeBSD )
 {
     double  acos(double x);
     float   acosf(float x);

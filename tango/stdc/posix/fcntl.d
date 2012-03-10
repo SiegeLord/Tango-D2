@@ -106,7 +106,7 @@ else version( darwin )
     int creat(in char*, mode_t);
     int open(in char*, int, ...);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     struct flock
     {

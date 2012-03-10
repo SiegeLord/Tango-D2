@@ -75,7 +75,7 @@ version( linux )
     int   shmdt(in void*);
     int   shmget(key_t, size_t, int);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     const SHM_RDONLY    = octal!10000;
     const SHM_RND       = octal!20000;

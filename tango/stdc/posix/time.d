@@ -38,7 +38,7 @@ else version( darwin )
 {
     time_t timegm(tm*); // non-standard
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     time_t timegm(tm*); // non-standard
 }
@@ -181,7 +181,7 @@ else version( darwin )
 {
     int nanosleep(in timespec*, timespec*);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     const CLOCK_PROCESS_CPUTIME_ID  = 2; // (TMR|CPT)
     const CLOCK_THREAD_CPUTIME_ID   = 3; // (TMR|TCT)
@@ -277,7 +277,7 @@ else version( darwin )
     tm*   gmtime_r(in time_t*, tm*);
     tm*   localtime_r(in time_t*, tm*);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     char* asctime_r(in tm*, char*);
     char* ctime_r(in time_t*, char*);
@@ -320,7 +320,7 @@ else version( darwin )
     tm*   getdate(in char*);
     char* strptime(in char*, in char*, tm*);
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     extern __gshared c_long timezone;
 

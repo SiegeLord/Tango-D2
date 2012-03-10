@@ -107,7 +107,7 @@ else version( darwin )
     const uint INADDR_ANY       = 0x00000000;
     const uint INADDR_BROADCAST = 0xffffffff;
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     private const __SOCK_SIZE__ = 16;
 

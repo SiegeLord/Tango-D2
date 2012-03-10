@@ -27,7 +27,7 @@ else version( darwin )
 {
     const TCP_NODELAY = 1;
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     const TCP_NODELAY = 1;
 }

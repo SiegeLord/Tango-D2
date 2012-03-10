@@ -85,7 +85,7 @@ else version( darwin )
     extern (D) int  WSTOPSIG( int status )     { return status >> 8;                     }
     extern (D) int  WTERMSIG( int status )     { return _WSTATUS( status );              }
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     const WNOHANG       = 1;
     const WUNTRACED     = 2;

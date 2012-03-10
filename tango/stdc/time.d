@@ -57,7 +57,7 @@ else version( darwin )
 {
     enum:clock_t {CLOCKS_PER_SEC = 100}
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     enum:clock_t {CLOCKS_PER_SEC = 128}
 }
@@ -101,7 +101,7 @@ else version( linux )
 {
     void tzset();
 }
-else version( freebsd )
+else version( FreeBSD )
 {
     void tzset();
 }
