@@ -325,7 +325,7 @@ else version( FreeBSD )
             p1 = &buf[$-1]; 
             while (fi != 0) { 
                 fj = modf(fi/10, &fi); 
-                *--p1 = cast(int)((fj+.03)*10) + '0'; 
+                *--p1 = cast(char)((cast(char) (fj+.03)*10) + '0');
                 r2++; 
             } 
             while (p1 < &buf[$-1]) 
@@ -347,7 +347,7 @@ else version( FreeBSD )
         while (p<=p1 && p<&buf[$-1]) { 
             arg *= 10; 
             arg = modf(arg, &fj); 
-            *p++ = cast(int)fj + '0'; 
+            *p++ = cast(char) (cast(char)(fj) + '0');
         } 
         if (p1 >= &buf[$-1]) { 
             buf[$-2] = '\0'; 

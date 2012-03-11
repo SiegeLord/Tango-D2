@@ -675,7 +675,7 @@ real ldexp(real n, int exp) /* intrinsic */
             fild exp;
             fld n;
             fscale;
-            fstp ST(1), ST(0);
+            fstp ST(1);//, ST(0);
         }
     }
     else
@@ -789,7 +789,7 @@ real logb(real x)
         asm {
             fld x;
             fxtract;
-            fstp ST(0), ST; // drop significand
+            fstp ST(0);//, ST; // drop significand
         }
     } else {
         return tango.stdc.math.logbl(x);
@@ -827,7 +827,7 @@ real scalbn(real x, int n)
             fild n;
             fld x;
             fscale;
-            fstp ST(1), ST;
+            fstp ST(1);//, ST;
         }
     } else {
         // NOTE: Not implemented in DMD

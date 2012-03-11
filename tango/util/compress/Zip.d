@@ -39,7 +39,6 @@ import tango.time.Time : Time, TimeSpan;
 import tango.time.WallClock : WallClock;
 import tango.time.chrono.Gregorian : Gregorian;
 
-import Path = tango.io.Path;
 import Integer = tango.text.convert.Integer;
 
 debug(Zip) import tango.io.Stdout : Stderr;
@@ -2246,8 +2245,8 @@ void dosToTime(ushort dostime, ushort dosdate, out Time time)
 void timeToDos(Time time, out ushort dostime, out ushort dosdate)
 {
     // Treat Time.min specially
-    if( time == Time.min )
-        time = WallClock.now;
+    // if( time == Time.min ) FIXME: Again, this Time.opEquals error.
+        // time = WallClock.now; FIXME: ^
 
     // *muttering happily*
     auto date = Gregorian.generic.toDate(time);
