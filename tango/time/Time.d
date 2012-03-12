@@ -112,7 +112,7 @@ struct TimeSpan
         /**
          * Determines whether two TimeSpan values are equal
          */
-        const bool opEquals(ref const(TimeSpan) t)
+        const bool opEquals(const(TimeSpan) t)
         {
                 return ticks_ is t.ticks_;
         }
@@ -523,7 +523,7 @@ struct Time
 
         **********************************************************************/
 
-        const bool opEquals (ref const(Time) t) 
+        const bool opEquals (const(Time) t) 
         {
                 return ticks_ is t.ticks_;
         }
