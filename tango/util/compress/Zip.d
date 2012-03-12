@@ -39,7 +39,6 @@ import tango.time.Time : Time, TimeSpan;
 import tango.time.WallClock : WallClock;
 import tango.time.chrono.Gregorian : Gregorian;
 
-import Path = tango.io.Path;
 import Integer = tango.text.convert.Integer;
 
 debug(Zip) import tango.io.Stdout : Stderr;

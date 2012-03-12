@@ -23,7 +23,7 @@ else
         OS              = "Solaris"
         message         = @(echo \033[31m $1 \033[0;0m1)
         Filter          = tango/sys/win32/%.d tango/sys/linux/%.d tango/sys/darwin/%.d tango/sys/freebsd/%.d
-    else ifeq ($(shell uname),Freebsd)
+    else ifeq ($(shell uname),FreeBSD)
         STATIC_LIB_EXT  = .a
         SHARED_LIB_EXT = .so
         OS              = "FreeBSD"
@@ -54,7 +54,7 @@ else ifeq ($(OS),"Linux")
     MKDIR = mkdir -p
     MV    = mv
     LN    = ln -s
-else ifeq ($(OS),"Freebsd")
+else ifeq ($(OS),"FreeBSD")
     RM    = rm -f
     RMDIR = rm -rf
     MKDIR = mkdir -p
