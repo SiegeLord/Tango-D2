@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.compress.Zip</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.compress.Zip">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.compress.Zip"><a href="htmlsrc/tango.util.compress.Zip.html" class="symbol">tango.util.compress.Zip</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: December 2007</div>
+<p class="sec_header">Author:</p><div class="cmnt">Daniel Keep</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="LocalFileHeaderData" href="htmlsrc/tango.util.compress.Zip.html#L66">LocalFileHeaderData</a> <a href="tango.util.compress.Zip.html#LocalFileHeaderData" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="FileHeaderData" href="htmlsrc/tango.util.compress.Zip.html#L196">FileHeaderData</a> <a href="tango.util.compress.Zip.html#FileHeaderData" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="EndOfCDRecordData" href="htmlsrc/tango.util.compress.Zip.html#L371">EndOfCDRecordData</a> <a href="tango.util.compress.Zip.html#EndOfCDRecordData" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="Method" href="htmlsrc/tango.util.compress.Zip.html#L462">Method</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.util.compress.Zip.html#Method" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This enumeration denotes the kind of compression used on a file.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="Method.Store" href="htmlsrc/tango.util.compress.Zip.html#L465">Store</a> <a href="tango.util.compress.Zip.html#Method.Store" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">No compression should be used.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="Method.Deflate" href="htmlsrc/tango.util.compress.Zip.html#L467">Deflate</a> <a href="tango.util.compress.Zip.html#Method.Deflate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Deflate compression.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="Method.Unsupported" href="htmlsrc/tango.util.compress.Zip.html#L472">Unsupported</a> <a href="tango.util.compress.Zip.html#Method.Unsupported" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This is a special value used for unsupported or unrecognised
+ compression methods.  This value is only used internally.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="ZipReader" href="htmlsrc/tango.util.compress.Zip.html#L520">ZipReader</a> <a href="tango.util.compress.Zip.html#ZipReader" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="ZipWriter" href="htmlsrc/tango.util.compress.Zip.html#L535">ZipWriter</a> <a href="tango.util.compress.Zip.html#ZipWriter" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ZipBlockReader" href="htmlsrc/tango.util.compress.Zip.html#L577">ZipBlockReader</a> : <span class="bclass">ZipReader</span> <a href="tango.util.compress.Zip.html#ZipBlockReader" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The ZipBlockReader class is used to parse a Zip archive.  It exposes the
+ contents of the archive via an iteration interface.  For instance, to loop
+ over all files in an archive, one can use either</div></div>
+<div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">foreach</span>( <span class="i">entry</span> ; <span class="i">reader</span> )
+    ...</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+ Or
+<p class="bl"></p>
+ <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+<a href="#L3_ex2" name="L3_ex2">3</a>
+<a href="#L4_ex2" name="L4_ex2">4</a>
+<a href="#L5_ex2" name="L5_ex2">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">while</span>( <span class="i">reader</span>.<span class="i">more</span> )
+{
+    <span class="k">auto</span> <span class="i">entry</span> = <span class="i">reader</span>.<span class="i">get</span>;
+    ...
+}</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+ See the ZipEntry class for more information on the contents of entries.
+<p class="bl"></p>
+ Note that this class can only be used with input sources which can be
+ freely seeked.  Also note that you may open a ZipEntry instance produced by
+ this reader at any time until the ZipReader that created it is closed.</div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="ZipBlockReader.this" href="htmlsrc/tango.util.compress.Zip.html#L583">this</a><span class="params">(const(char)[] <em>path</em>)</span> <a href="tango.util.compress.Zip.html#ZipBlockReader.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Creates a ZipBlockReader using the specified file on the local
+ filesystem.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="ZipBlockReader.this:2" href="htmlsrc/tango.util.compress.Zip.html#L594">this</a><span class="params">(InputStream <em>source</em>)</span> <a href="tango.util.compress.Zip.html#ZipBlockReader.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Creates a ZipBlockReader using the provided InputStream.  Please note
+ that this InputStream must be attached to a conduit implementing the 
+ IConduit.Seek interface.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ZipBlockReader.close" href="htmlsrc/tango.util.compress.Zip.html#L612">close</a><span class="params">()</span> <a href="tango.util.compress.Zip.html#ZipBlockReader.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Closes the reader, and releases all resources.  After this operation,
+ all ZipEntry instances created by this ZipReader are invalid and should
+ not be used.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ZipBlockReader.more" href="htmlsrc/tango.util.compress.Zip.html#L636">more</a><span class="params">()</span> <a href="tango.util.compress.Zip.html#ZipBlockReader.more" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns true if and only if there are additional files in the archive
+ which have not been read via the get method.  This returns true before
+ the first call to get (assuming the opened archive is non-empty), and
+ false after the last file has been accessed.</div></div></dd>
+<dt class="decl"><span class="rettyp">ZipEntry</span> <a class="symbol _function" name="ZipBlockReader.get" href="htmlsrc/tango.util.compress.Zip.html#L664">get</a><span class="params">()</span> <a href="tango.util.compress.Zip.html#ZipBlockReader.get" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">ZipEntry</span> <a class="symbol _function" name="ZipBlockReader.get:2" href="htmlsrc/tango.util.compress.Zip.html#L673">get</a><span class="params">(ZipEntry <em>reuse</em>)</span> <a href="tango.util.compress.Zip.html#ZipBlockReader.get:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Retrieves the next file from the archive.  Note that although this does
+ perform IO operations, it will not read the contents of the file.</div></div>
+<div class="cmnt">The optional reuse argument can be used to instruct the reader to reuse
+ an existing ZipEntry instance.  If passed a null reference, it will
+ create a new ZipEntry instance.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="ZipBlockReader.opApply" href="htmlsrc/tango.util.compress.Zip.html#L690">opApply</a><span class="params">(int delegate(ref ZipEntry) <em>dg</em>)</span> <a href="tango.util.compress.Zip.html#ZipBlockReader.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This is used to iterate over the contents of an archive using a foreach
+ loop.  Please note that the iteration will reuse the ZipEntry instance
+ passed to your loop.  If you wish to keep the instance and re-use it
+ later, you <b>must</b> use the dup member to create a copy.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ZipBlockWriter" href="htmlsrc/tango.util.compress.Zip.html#L962">ZipBlockWriter</a> : <span class="bclass">ZipWriter</span> <a href="tango.util.compress.Zip.html#ZipBlockWriter" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The ZipBlockWriter class is used to create a Zip archive.  It uses a
+ writing iterator interface.</div></div>
+<div class="cmnt">Note that this class can only be used with output streams which can be
+ freely seeked.</div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="ZipBlockWriter.this" href="htmlsrc/tango.util.compress.Zip.html#L968">this</a><span class="params">(const(char)[] <em>path</em>)</span> <a href="tango.util.compress.Zip.html#ZipBlockWriter.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Creates a ZipBlockWriter using the specified file on the local
+ filesystem.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="ZipBlockWriter.this:2" href="htmlsrc/tango.util.compress.Zip.html#L979">this</a><span class="params">(OutputStream <em>output</em>)</span> <a href="tango.util.compress.Zip.html#ZipBlockWriter.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Creates a ZipBlockWriter using the provided OutputStream.  Please note
+ that this OutputStream must be attached to a conduit implementing the 
+ IConduit.Seek interface.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ZipBlockWriter.finish" href="htmlsrc/tango.util.compress.Zip.html#L998">finish</a><span class="params">()</span> <a href="tango.util.compress.Zip.html#ZipBlockWriter.finish" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Finalises the archive, writes out the central directory, and closes the
+ output stream.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ZipBlockWriter.putFile" href="htmlsrc/tango.util.compress.Zip.html#L1011">putFile</a><span class="params">(ZipEntryInfo <em>info</em>, const(char)[] <em>path</em>)</span> <a href="tango.util.compress.Zip.html#ZipBlockWriter.putFile" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Adds a file from the local filesystem to the archive.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ZipBlockWriter.putStream" href="htmlsrc/tango.util.compress.Zip.html#L1021">putStream</a><span class="params">(ZipEntryInfo <em>info</em>, InputStream <em>source</em>)</span> <a href="tango.util.compress.Zip.html#ZipBlockWriter.putStream" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Adds a file using the contents of the given InputStream to the archive.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ZipBlockWriter.putEntry" href="htmlsrc/tango.util.compress.Zip.html#L1031">putEntry</a><span class="params">(ZipEntryInfo <em>info</em>, ZipEntry <em>entry</em>)</span> <a href="tango.util.compress.Zip.html#ZipBlockWriter.putEntry" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Transfers a file from another archive into this archive.  Note that
+ this method will not perform any compression: whatever compression was
+ applied to the file originally will be preserved.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ZipBlockWriter.putData" href="htmlsrc/tango.util.compress.Zip.html#L1039">putData</a><span class="params">(ZipEntryInfo <em>info</em>, const(void)[] <em>data</em>)</span> <a href="tango.util.compress.Zip.html#ZipBlockWriter.putData" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Adds a file using the contents of the given array to the archive.</div></div></dd>
+<dt class="decl"><span class="rettyp">Method</span> <a class="symbol _function" name="ZipBlockWriter.method" href="htmlsrc/tango.util.compress.Zip.html#L1052">method</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.util.compress.Zip.html#ZipBlockWriter.method" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Method</span> <a class="symbol _function" name="ZipBlockWriter.method:2" href="htmlsrc/tango.util.compress.Zip.html#L1054">method</a><span class="params">(Method <em>v</em>)</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.util.compress.Zip.html#ZipBlockWriter.method:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This property allows you to control what compression method should be
+ used for files being added to the archive.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ZipEntry" href="htmlsrc/tango.util.compress.Zip.html#L1372">ZipEntry</a> <a href="tango.util.compress.Zip.html#ZipEntry" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This class is used to represent a single entry in an archive.
+ Specifically, it combines meta-data about the file (see the info field)
+ along with the two basic operations on an entry: open and verify.</div></div>
+<dl>
+<dt class="decl">ZipEntryInfo <a class="symbol _variable" name="ZipEntry.info" href="htmlsrc/tango.util.compress.Zip.html#L1378">info</a> <a href="tango.util.compress.Zip.html#ZipEntry.info" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Header information on the file.  See the ZipEntryInfo structure for
+ more information.</div></div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="ZipEntry.size" href="htmlsrc/tango.util.compress.Zip.html#L1383">size</a><span class="params">()</span> <a href="tango.util.compress.Zip.html#ZipEntry.size" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Size (in bytes) of the file's uncompressed contents.</div></div></dd>
+<dt class="decl"><span class="rettyp">InputStream</span> <a class="symbol _function" name="ZipEntry.open" href="htmlsrc/tango.util.compress.Zip.html#L1404">open</a><span class="params">()</span> <a href="tango.util.compress.Zip.html#ZipEntry.open" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Opens a stream for reading from the file.  The contents of this stream
+ represent the decompressed contents of the file stored in the archive.</div></div>
+<div class="cmnt">You should not assume that the returned stream is seekable.
+<p class="bl"></p>
+ Note that the returned stream may be safely closed without affecting
+ the underlying archive stream.
+<p class="bl"></p>
+ If the file has not yet been verified, then the stream will be checked
+ as you read from it.  When the stream is either exhausted or closed,
+ then the integrity of the file's data will be checked.  This means that
+ if the file is corrupt, an exception will be thrown only after you have
+ finished reading from the stream.  If you wish to make sure the data is
+ valid before you read from the file, call the verify method.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ZipEntry.verify" href="htmlsrc/tango.util.compress.Zip.html#L1422">verify</a><span class="params">()</span> <a href="tango.util.compress.Zip.html#ZipEntry.verify" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Verifies the contents of this file by computing the CRC32 checksum,
+ and comparing it against the stored one.  Throws an exception if the
+ checksums do not match.</div></div>
+<div class="cmnt">Not valid on streamed Zip archives.</div></dd>
+<dt class="decl"><span class="rettyp">ZipEntry</span> <a class="symbol _function" name="ZipEntry.dup" href="htmlsrc/tango.util.compress.Zip.html#L1436">dup</a><span class="params">()</span> <a href="tango.util.compress.Zip.html#ZipEntry.dup" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Creates a new, independent copy of this instance.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="ZipEntryInfo" href="htmlsrc/tango.util.compress.Zip.html#L1510">ZipEntryInfo</a> <a href="tango.util.compress.Zip.html#ZipEntryInfo" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This structure contains various pieces of meta-data on a file.  The
+ contents of this structure may be safely mutated.</div></div>
+<div class="cmnt">This structure is also used to specify meta-data about a file when adding
+ it to an archive.</div>
+<dl>
+<dt class="decl">const(char)[] <a class="symbol _variable" name="ZipEntryInfo.name" href="htmlsrc/tango.util.compress.Zip.html#L1513">name</a> <a href="tango.util.compress.Zip.html#ZipEntryInfo.name" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Full path and file name of this file.</div></div></dd>
+<dt class="decl">Time <a class="symbol _variable" name="ZipEntryInfo.modified" href="htmlsrc/tango.util.compress.Zip.html#L1516">modified</a> <a href="tango.util.compress.Zip.html#ZipEntryInfo.modified" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Modification timestamp.  If this is left uninitialised when passed to
+ a ZipWriter, it will be reset to the current system time.</div></div></dd>
+<dt class="decl">const(char)[] <a class="symbol _variable" name="ZipEntryInfo.comment" href="htmlsrc/tango.util.compress.Zip.html#L1518">comment</a> <a href="tango.util.compress.Zip.html#ZipEntryInfo.comment" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Comment on the file.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ZipException" href="htmlsrc/tango.util.compress.Zip.html#L1532">ZipException</a> : <span class="bclass">Exception</span> <a href="tango.util.compress.Zip.html#ZipException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This is the base class from which all exceptions generated by this module
+ derive from.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ZipChecksumException" href="htmlsrc/tango.util.compress.Zip.html#L1612">ZipChecksumException</a> : <span class="bclass">ZipException</span> <a href="tango.util.compress.Zip.html#ZipChecksumException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This exception is thrown if a ZipReader detects that a file's contents do
+ not match the stored checksum.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ZipExhaustedException" href="htmlsrc/tango.util.compress.Zip.html#L1627">ZipExhaustedException</a> : <span class="bclass">ZipException</span> <a href="tango.util.compress.Zip.html#ZipExhaustedException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This exception is thrown if you call get reader method when there are no
+ more files in the archive.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ZipNotSupportedException" href="htmlsrc/tango.util.compress.Zip.html#L1639">ZipNotSupportedException</a> : <span class="bclass">ZipException</span> <a href="tango.util.compress.Zip.html#ZipNotSupportedException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This exception is thrown if you attempt to read an archive that uses
+ features not supported by the reader.</div></div>
+</dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="createArchive" href="htmlsrc/tango.util.compress.Zip.html#L1714">createArchive</a><span class="params">(const(char)[] <em>archive</em>, Method <em>method</em>, const(char[])[] <em>files</em>...)</span> <a href="tango.util.compress.Zip.html#createArchive" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl">char[][] <a class="symbol _variable" name="cp437_to_utf8_map_low" href="htmlsrc/tango.util.compress.Zip.html#L1947">cp437_to_utf8_map_low</a> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.util.compress.Zip.html#cp437_to_utf8_map_low" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2007 Daniel Keep.  All rights reserved.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:40 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

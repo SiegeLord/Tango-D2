@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.core.Traits</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.core.Traits">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.core.Traits"><a href="htmlsrc/tango.core.Traits.html" class="symbol">tango.core.Traits</a></h1>
+
+<div class="summary"><div class="cmnt">The traits module defines tools useful for obtaining detailed compile-time
+ information about a type.  Please note that the mixed naming scheme used in
+ this module is intentional.  Templates which evaluate to a type follow the
+ naming convention used for types, and templates which evaluate to a value
+ follow the naming convention used for functions.</div></div>
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Authors:</p><div class="cmnt">Sean Kelly, Fawzi Mohamed, Abscissa</div>
+<dl>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="BaseTypeOf" href="htmlsrc/tango.core.Traits.html#L18">BaseTypeOf</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#BaseTypeOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Strips the qualifiers from a type</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="InoutTypeOf" href="htmlsrc/tango.core.Traits.html#L34">InoutTypeOf</a><span class="tparams">(<em>T</em>, <em>M</em>)</span> <a href="tango.core.Traits.html#InoutTypeOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Computes the effective type that inout would have if you have it two parameters of difference constness</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isStringType" href="htmlsrc/tango.core.Traits.html#L48">isStringType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isStringType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to true if T is char[], wchar[], or dchar[].</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isCharType" href="htmlsrc/tango.core.Traits.html#L58">isCharType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isCharType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to true if T is char, wchar, or dchar.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isSignedIntegerType" href="htmlsrc/tango.core.Traits.html#L69">isSignedIntegerType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isSignedIntegerType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to true if T is a signed integer type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isUnsignedIntegerType" href="htmlsrc/tango.core.Traits.html#L82">isUnsignedIntegerType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isUnsignedIntegerType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to true if T is an unsigned integer type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isIntegerType" href="htmlsrc/tango.core.Traits.html#L95">isIntegerType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isIntegerType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to true if T is a signed or unsigned integer type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isRealType" href="htmlsrc/tango.core.Traits.html#L105">isRealType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isRealType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to true if T is a real floating-point type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isComplexType" href="htmlsrc/tango.core.Traits.html#L116">isComplexType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isComplexType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to true if T is a complex floating-point type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isImaginaryType" href="htmlsrc/tango.core.Traits.html#L127">isImaginaryType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isImaginaryType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to true if T is an imaginary floating-point type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isFloatingPointType" href="htmlsrc/tango.core.Traits.html#L139">isFloatingPointType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isFloatingPointType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to true if T is any floating-point type: real, complex, or
+ imaginary.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isAtomicType" href="htmlsrc/tango.core.Traits.html#L147">isAtomicType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isAtomicType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">true if T is an atomic type</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="ComplexTypeOf" href="htmlsrc/tango.core.Traits.html#L175">ComplexTypeOf</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#ComplexTypeOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">complex type for the given type</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="RealTypeOf" href="htmlsrc/tango.core.Traits.html#L188">RealTypeOf</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#RealTypeOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">real type for the given type</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="ImaginaryTypeOf" href="htmlsrc/tango.core.Traits.html#L201">ImaginaryTypeOf</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#ImaginaryTypeOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">imaginary type for the given type</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="MaxPrecTypeOf" href="htmlsrc/tango.core.Traits.html#L212">MaxPrecTypeOf</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#MaxPrecTypeOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">type with maximum precision</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isPointerType" href="htmlsrc/tango.core.Traits.html#L226">isPointerType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isPointerType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to true if T is a pointer type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isReferenceType" href="htmlsrc/tango.core.Traits.html#L280">isReferenceType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isReferenceType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to true if T is a a pointer, class, interface, or delegate.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isDynamicArrayType" href="htmlsrc/tango.core.Traits.html#L293">isDynamicArrayType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isDynamicArrayType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaulates to true if T is a dynamic array type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isStaticArrayType" href="htmlsrc/tango.core.Traits.html#L301">isStaticArrayType</a><span class="tparams">(<em>T</em> : <span class="spec">T[U]</span>, size_t <em>U</em>)</span> <a href="tango.core.Traits.html#isStaticArrayType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to true if T is a static array type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isArrayType" href="htmlsrc/tango.core.Traits.html#L312">isArrayType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isArrayType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">true for array types</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isAssocArrayType" href="htmlsrc/tango.core.Traits.html#L343">isAssocArrayType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isAssocArrayType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to true if T is an associative array type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isCallableType" href="htmlsrc/tango.core.Traits.html#L353">isCallableType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#isCallableType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to true if T is a function, function pointer, delegate, or
+ callable object.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="ReturnTypeOf" href="htmlsrc/tango.core.Traits.html#L365">ReturnTypeOf</a><span class="tparams">(<em>Fn</em>)</span> <a href="tango.core.Traits.html#ReturnTypeOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to the return type of Fn.  Fn is required to be a callable type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="ExprTypeOf" href="htmlsrc/tango.core.Traits.html#L377">ExprTypeOf</a><span class="tparams">(<em>Expr</em>)</span> <a href="tango.core.Traits.html#ExprTypeOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the type that a T would evaluate to in an expression.
+ Expr is not required to be a callable type</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="ReturnTypeOf:2" href="htmlsrc/tango.core.Traits.html#L389">ReturnTypeOf</a><span class="tparams">(<span class="kw">alias</span> <em>fn</em>)</span> <a href="tango.core.Traits.html#ReturnTypeOf:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to the return type of fn.  fn is required to be callable.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="ParameterTupleOf" href="htmlsrc/tango.core.Traits.html#L402">ParameterTupleOf</a><span class="tparams">(<em>Fn</em>)</span> <a href="tango.core.Traits.html#ParameterTupleOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to a tuple representing the parameters of Fn.  Fn is required to
+ be a callable type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="ParameterTupleOf:2" href="htmlsrc/tango.core.Traits.html#L419">ParameterTupleOf</a><span class="tparams">(<span class="kw">alias</span> <em>fn</em>)</span> <a href="tango.core.Traits.html#ParameterTupleOf:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to a tuple representing the parameters of fn.  n is required to
+ be callable.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="BaseTypeTupleOf" href="htmlsrc/tango.core.Traits.html#L432">BaseTypeTupleOf</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#BaseTypeTupleOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluates to a tuple representing the ancestors of T.  T is required to be
+ a class or interface type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="BaseTypeOfArrays" href="htmlsrc/tango.core.Traits.html#L443">BaseTypeOfArrays</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#BaseTypeOfArrays" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Strips the []'s off of a type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="ElementTypeOfArray" href="htmlsrc/tango.core.Traits.html#L456">ElementTypeOfArray</a><span class="tparams">(<em>T</em> : <span class="spec">T[]</span>)</span> <a href="tango.core.Traits.html#ElementTypeOfArray" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">strips one [] off a type</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="rankOfArray" href="htmlsrc/tango.core.Traits.html#L464">rankOfArray</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#rankOfArray" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Count the []'s on an array type</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="KeyTypeOfAA" href="htmlsrc/tango.core.Traits.html#L473">KeyTypeOfAA</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#KeyTypeOfAA" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">type of the keys of an AA</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="ValTypeOfAA" href="htmlsrc/tango.core.Traits.html#L478">ValTypeOfAA</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#ValTypeOfAA" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">type of the values of an AA</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="staticArraySize" href="htmlsrc/tango.core.Traits.html#L483">staticArraySize</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#staticArraySize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns the size of a static array</div></div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="DynamicArrayType" href="htmlsrc/tango.core.Traits.html#L491">DynamicArrayType</a><span class="tparams">(<em>T</em>)</span> <a href="tango.core.Traits.html#DynamicArrayType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">is T is static array returns a dynamic array, otherwise returns T</div></div>
+</dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="ctfe_i2a" href="htmlsrc/tango.core.Traits.html#L523">ctfe_i2a</a><span class="params">(int <em>i</em>)</span> <a href="tango.core.Traits.html#ctfe_i2a" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="ctfe_i2a:2" href="htmlsrc/tango.core.Traits.html#L544">ctfe_i2a</a><span class="params">(long <em>i</em>)</span> <a href="tango.core.Traits.html#ctfe_i2a:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="ctfe_i2a:3" href="htmlsrc/tango.core.Traits.html#L565">ctfe_i2a</a><span class="params">(uint <em>i</em>)</span> <a href="tango.core.Traits.html#ctfe_i2a:3" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="ctfe_i2a:4" href="htmlsrc/tango.core.Traits.html#L579">ctfe_i2a</a><span class="params">(ulong <em>i</em>)</span> <a href="tango.core.Traits.html#ctfe_i2a:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">compile time integer to string</div></div></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:07 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

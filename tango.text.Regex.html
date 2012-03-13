@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.Regex</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.Regex">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.Regex"><a href="htmlsrc/tango.text.Regex.html" class="symbol">tango.text.Regex</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: Jan 2008</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Jascha Wetzel
+<p class="bl"></p>
+    This is a regular expression compiler and interpreter based on the Tagged NFA/DFA method.
+<p class="bl"></p>
+    The Regex class is not thread safe
+<p class="bl"></p>
+    See <a href="http://en.wikipedia.org/wiki/Regular_expression">Wikpedia's article on regular expressions</a>
+    for details on regular expressions in general.
+<p class="bl"></p>
+    The used method implies, that the expressions are <i>regular</i>, in the way language theory defines it,
+    as opposed to what &quot;regular expression&quot; means in most implementations
+    (e.g. PCRE or those from the standard libraries of Perl, Java or Python).
+    The advantage of this method is it's performance, it's disadvantage is the inability to realize some features
+    that Perl-like regular expressions have (e.g. back-references).
+    See <a href="http://swtch.com/~rsc/regexp/regexp1.html">&quot;Regular Expression Matching Can Be Simple And Fast&quot;</a>
+    for details on the differences.
+<p class="bl"></p>
+    The time for matching a regular expression against an input string of length N is in O(M*N), where M depends on the
+    number of matching brackets and the complexity of the expression. That is, M is constant wrt. the input
+    and therefore matching is a linear-time process.
+<p class="bl"></p>
+    The syntax of a regular expressions is as follows.
+    <i>X</i> and <i>Y</i> stand for an arbitrary regular expression.
+<p class="bl"></p>
+    <table border=1 cellspacing=0 cellpadding=5>
+    <caption>Operators</caption>
+    <tr><td>X|Y</td> <td>alternation, i.e. X or Y</td> </tr>
+    <tr><td>(X)</td> <td>matching brackets - creates a sub-match</td> </tr>
+    <tr><td>(?X)</td> <td>non-matching brackets - only groups X, no sub-match is created</td> </tr>
+    <tr><td>[Z]</td> <td>character class specification, Z is a string of characters or character ranges, e.g. [a-zA-Z0-9_.\-]</td> </tr>
+    <tr><td>[^Z]</td> <td>negated character class specification</td> </tr>
+    <tr><td>&lt;X</td> <td>lookbehind, X may be a single character or a character class</td> </tr>
+    <tr><td>&gt;X</td> <td>lookahead, X may be a single character or a character class</td> </tr>
+    <tr><td>^</td> <td>start of input or start of line</td> </tr>
+    <tr><td>$</td> <td>end of input or end of line</td> </tr>
+    <tr><td>\b</td> <td>start or end of word, equals (?&lt;\s&gt;\S|&lt;\S&gt;\s)</td> </tr>
+    <tr><td>\B</td> <td>opposite of \b, equals (?&lt;\S&gt;\S|&lt;\s&gt;\s)</td> </tr>
+    </table>
+<p class="bl"></p>
+    <table border=1 cellspacing=0 cellpadding=5>
+    <caption>Quantifiers</caption>
+    <tr><td>X?</td> <td>zero or one</td> </tr>
+    <tr><td>X*</td> <td>zero or more</td> </tr>
+    <tr><td>X+</td> <td>one or more</td> </tr>
+    <tr><td>X{n,m}</td> <td>at least n, at most m instances of X.<br>If n is missing, it's set to 0.<br>If m is missing, it is set to infinity.</td> </tr>
+    <tr><td>X??</td> <td>non-greedy version of the above operators</td> </tr>
+    <tr><td>X*?</td> <td>see above</td> </tr>
+    <tr><td>X+?</td> <td>see above</td> </tr>
+    <tr><td>X{n,m}?</td> <td>see above</td> </tr>
+    </table>
+<p class="bl"></p>
+    <table border=1 cellspacing=0 cellpadding=5>
+    <caption>Pre-defined character classes</caption>
+    <tr><td>.</td> <td>any printable character</td> </tr>
+    <tr><td>\s</td> <td>whitespace</td> </tr>
+    <tr><td>\S</td> <td>non-whitespace</td> </tr>
+    <tr><td>\w</td> <td>alpha-numeric characters or underscore</td> </tr>
+    <tr><td>\W</td> <td>opposite of \w</td> </tr>
+    <tr><td>\d</td> <td>digits</td> </tr>
+    <tr><td>\D</td> <td>non-digit</td> </tr>
+    </table>
+<p class="bl"></p>
+    Note that "alphanumeric" only applies to Latin-1.</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="RegExpT" href="htmlsrc/tango.text.Regex.html#L3666">RegExpT</a><span class="tparams">(<em>char_t</em>)</span> <a href="tango.text.Regex.html#RegExpT" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Regular expression compiler and interpreter.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="RegExpT.this" href="htmlsrc/tango.text.Regex.html#L3685">this</a><span class="params">(const(char_t)[] <em>pattern</em>, const(char_t)[] <em>attributes</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Regex.html#RegExpT.this" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _ctor" name="RegExpT.this:2" href="htmlsrc/tango.text.Regex.html#L3691">this</a><span class="params">(const(char_t)[] <em>pattern</em>, bool <em>swapMBS</em>, bool <em>unanchored</em>, bool <em>printNFA</em> = <span class="defval"><span class="k">false</span></span>)</span> <a href="tango.text.Regex.html#RegExpT.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a RegExpT object.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>pattern</em></td><td>Regular expression.</td></tr></table>
+<p class="sec_header">Throws:</p><div class="cmnt">RegExpException if there are any compilation errors.</div>
+<p class="sec_header">Example:</p><div class="cmnt">Declare two variables and assign to them a Regex object:
+            <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">r</span> = <span class="k">new</span> <span class="i">Regex</span>(<span class="sl">"pattern"</span>);
+<span class="k">auto</span> <span class="i">s</span> = <span class="k">new</span> <span class="i">Regex</span>(<span class="sl">r"p[1-5]\s*"</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">RegExpT!(char_t)</span> <a class="symbol _function" name="RegExpT.opCall" href="htmlsrc/tango.text.Regex.html#L3727">opCall</a><span class="params">(const(char_t)[] <em>pattern</em>, const(char_t)[] <em>attributes</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.text.Regex.html#RegExpT.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generate instance of Regex.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>pattern</em></td><td>Regular expression.</td></tr></table>
+<p class="sec_header">Throws:</p><div class="cmnt">RegExpException if there are any compilation errors.</div>
+<p class="sec_header">Example:</p><div class="cmnt">Declare two variables and assign to them a Regex object:
+            <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">r</span> = <span class="i">Regex</span>(<span class="sl">"pattern"</span>);
+<span class="k">auto</span> <span class="i">s</span> = <span class="i">Regex</span>(<span class="sl">r"p[1-5]\s*"</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">RegExpT!(char_t)</span> <a class="symbol _function" name="RegExpT.search" href="htmlsrc/tango.text.Regex.html#L3752">search</a><span class="params">(const(char_t)[] <em>input</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.Regex.html#RegExpT.search" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="RegExpT.opApply" href="htmlsrc/tango.text.Regex.html#L3761">opApply</a><span class="params">(int delegate(ref RegExpT!(char_t)) <em>dg</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.Regex.html#RegExpT.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set up for start of foreach loop.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Instance of RegExpT set up to search input.</div>
+<p class="sec_header">Example:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+<a href="#L3_ex3" name="L3_ex3">3</a>
+<a href="#L4_ex3" name="L4_ex3">4</a>
+<a href="#L5_ex3" name="L5_ex3">5</a>
+<a href="#L6_ex3" name="L6_ex3">6</a>
+<a href="#L7_ex3" name="L7_ex3">7</a>
+<a href="#L8_ex3" name="L8_ex3">8</a>
+<a href="#L9_ex3" name="L9_ex3">9</a>
+<a href="#L10_ex3" name="L10_ex3">10</a>
+<a href="#L11_ex3" name="L11_ex3">11</a>
+<a href="#L12_ex3" name="L12_ex3">12</a>
+<a href="#L13_ex3" name="L13_ex3">13</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">text</span>.<span class="i">Regex</span>;
+
+<span class="k">void</span> <span class="i">main</span>()
+{
+    <span class="k">foreach</span>(<span class="i">m</span>; <span class="i">Regex</span>(<span class="sl">"ab"</span>).<span class="i">search</span>(<span class="sl">"qwerabcabcababqwer"</span>))
+        <span class="i">Stdout</span>.<span class="i">formatln</span>(<span class="sl">"{}[{}]{}"</span>, <span class="i">m</span>.<span class="i">pre</span>, <span class="i">m</span>.<span class="i">match</span>(<span class="n">0</span>), <span class="i">m</span>.<span class="i">post</span>);
+}
+<span class="lc">// Prints:</span>
+<span class="lc">// qwer[ab]cabcababqwer</span>
+<span class="lc">// qwerabc[ab]cababqwer</span>
+<span class="lc">// qwerabcabc[ab]abqwer</span>
+<span class="lc">// qwerabcabcab[ab]qwer</span></pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="RegExpT.test" href="htmlsrc/tango.text.Regex.html#L3773">test</a><span class="params">(const(char_t)[] <em>input</em>)</span> <a href="tango.text.Regex.html#RegExpT.test" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Search input for match.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">false for no match, true for match</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="RegExpT.test:2" href="htmlsrc/tango.text.Regex.html#L3785">test</a><span class="params">()</span> <a href="tango.text.Regex.html#RegExpT.test:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Pick up where last test(input) or test() left off, and search again.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">false for no match, true for match</div></dd>
+<dt class="decl"><span class="rettyp">const(char_t)[]</span> <a class="symbol _function" name="RegExpT.match" href="htmlsrc/tango.text.Regex.html#L3985">match</a><span class="params">(uint <em>index</em>)</span> <a href="tango.text.Regex.html#RegExpT.match" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(char_t)[]</span> <a class="symbol _function" name="RegExpT.opIndex" href="htmlsrc/tango.text.Regex.html#L3997">opIndex</a><span class="params">(uint <em>index</em>)</span> <a href="tango.text.Regex.html#RegExpT.opIndex" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return submatch with the given index.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>index</em></td><td>index   index = 0 returns whole match, index &gt; 0 returns submatch of bracket #index</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">Slice of input for the requested submatch, or null if no such submatch exists.</div></dd>
+<dt class="decl"><span class="rettyp">const(char_t)[]</span> <a class="symbol _function" name="RegExpT.pre" href="htmlsrc/tango.text.Regex.html#L4006">pre</a><span class="params">()</span> <a href="tango.text.Regex.html#RegExpT.pre" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the slice of the input that precedes the matched substring.
+        If no match was found, null is returned.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char_t)[]</span> <a class="symbol _function" name="RegExpT.post" href="htmlsrc/tango.text.Regex.html#L4018">post</a><span class="params">()</span> <a href="tango.text.Regex.html#RegExpT.post" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the slice of the input that follows the matched substring.
+        If no match was found, the whole slice of the input that was processed in the last test.</div></div></dd>
+<dt class="decl"><span class="rettyp">inout(char_t)[][]</span> <a class="symbol _function" name="RegExpT.split" href="htmlsrc/tango.text.Regex.html#L4044">split</a><span class="params">(inout(char_t)[] <em>input</em>)</span> <a href="tango.text.Regex.html#RegExpT.split" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Splits the input at the matches of this regular expression into an array of slices.</div></div>
+<p class="sec_header">Example:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+<a href="#L2_ex4" name="L2_ex4">2</a>
+<a href="#L3_ex4" name="L3_ex4">3</a>
+<a href="#L4_ex4" name="L4_ex4">4</a>
+<a href="#L5_ex4" name="L5_ex4">5</a>
+<a href="#L6_ex4" name="L6_ex4">6</a>
+<a href="#L7_ex4" name="L7_ex4">7</a>
+<a href="#L8_ex4" name="L8_ex4">8</a>
+<a href="#L9_ex4" name="L9_ex4">9</a>
+<a href="#L10_ex4" name="L10_ex4">10</a>
+<a href="#L11_ex4" name="L11_ex4">11</a>
+<a href="#L12_ex4" name="L12_ex4">12</a>
+<a href="#L13_ex4" name="L13_ex4">13</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">text</span>.<span class="i">Regex</span>;
+
+<span class="k">void</span> <span class="i">main</span>()
+{
+    <span class="k">auto</span> <span class="i">strs</span> = <span class="i">Regex</span>(<span class="sl">"ab"</span>).<span class="i">split</span>(<span class="sl">"abcabcababqwer"</span>);
+    <span class="k">foreach</span>( <span class="i">s</span>; <span class="i">strs</span> )
+        <span class="i">Stdout</span>.<span class="i">formatln</span>(<span class="sl">"{}"</span>, <span class="i">s</span>);
+}
+<span class="lc">// Prints:</span>
+<span class="lc">// c</span>
+<span class="lc">// c</span>
+<span class="lc">// qwer</span></pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">char_t[]</span> <a class="symbol _function" name="RegExpT.replaceAll" href="htmlsrc/tango.text.Regex.html#L4067">replaceAll</a><span class="params">(const(char_t)[] <em>input</em>, const(char_t)[] <em>replacement</em>, char_t[] <em>output_buffer</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Regex.html#RegExpT.replaceAll" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a copy of the input with all matches replaced by replacement.</div></div></dd>
+<dt class="decl"><span class="rettyp">char_t[]</span> <a class="symbol _function" name="RegExpT.replaceLast" href="htmlsrc/tango.text.Regex.html#L4089">replaceLast</a><span class="params">(const(char_t)[] <em>input</em>, const(char_t)[] <em>replacement</em>, char_t[] <em>output_buffer</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Regex.html#RegExpT.replaceLast" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a copy of the input with the last match replaced by replacement.</div></div></dd>
+<dt class="decl"><span class="rettyp">char_t[]</span> <a class="symbol _function" name="RegExpT.replaceFirst" href="htmlsrc/tango.text.Regex.html#L4115">replaceFirst</a><span class="params">(const(char_t)[] <em>input</em>, const(char_t)[] <em>replacement</em>, char_t[] <em>output_buffer</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Regex.html#RegExpT.replaceFirst" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a copy of the input with the first match replaced by replacement.</div></div></dd>
+<dt class="decl"><span class="rettyp">char_t[]</span> <a class="symbol _function" name="RegExpT.replaceAll:2" href="htmlsrc/tango.text.Regex.html#L4137">replaceAll</a><span class="params">(const(char_t)[] <em>input</em>, char_t[] delegate(RegExpT!(char_t)) <em>dg</em>, char_t[] <em>output_buffer</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Regex.html#RegExpT.replaceAll:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calls dg for each match and replaces it with dg's return value.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="RegExpT.compileToD" href="htmlsrc/tango.text.Regex.html#L4164">compileToD</a><span class="params">(const(char)[] <em>func_name</em> = <span class="defval"><span class="sl">"match"</span></span>, bool <em>lexer</em> = <span class="defval"><span class="k">false</span></span>)</span> <a href="tango.text.Regex.html#RegExpT.compileToD" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compiles the regular expression to D code.</div></div>
+<div class="cmnt">NOTE : Remember to import this module (tango.text.Regex) in the module where you put the
+        generated D code.</div></dd>
+<dt class="decl"><span class="rettyp">const(char_t)[]</span> <a class="symbol _function" name="RegExpT.pattern" href="htmlsrc/tango.text.Regex.html#L4373">pattern</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.Regex.html#RegExpT.pattern" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the pattern with which this regex was constructed.</div></div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="RegExpT.tagCount" href="htmlsrc/tango.text.Regex.html#L4383">tagCount</a><span class="params">()</span> <a href="tango.text.Regex.html#RegExpT.tagCount" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the tag count of this regex, representing the number of sub-matches.</div></div>
+<div class="cmnt">This value is the max valid value for match/opIndex.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2007-2008 Jascha Wetzel. All rights reserved.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:21 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

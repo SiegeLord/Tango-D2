@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.locale.Collation</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.locale.Collation">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.locale.Collation"><a href="htmlsrc/tango.text.locale.Collation.html" class="symbol">tango.text.locale.Collation</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: 2005</div>
+<p class="sec_header">Author:</p><div class="cmnt">John Chapman</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="StringComparer" href="htmlsrc/tango.text.locale.Collation.html#L25">StringComparer</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Collation.html#StringComparer" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compares strings using the specified case and cultural comparision rules.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="StringComparer.this" href="htmlsrc/tango.text.locale.Collation.html#L43">this</a><span class="params">(Culture <em>culture</em>, bool <em>ignoreCase</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Collation.html#StringComparer.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Creates an instance that compares strings using the rules of the specified culture.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>culture</em></td><td>A Culture instance whose rules are used to compare strings.</td></tr>
+<tr><td><em>ignoreCase</em></td><td>true to perform case-insensitive comparisons; false to perform case-sensitive comparisions.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="StringComparer.compare" href="htmlsrc/tango.text.locale.Collation.html#L56">compare</a><span class="params">(const(char)[] <em>strA</em>, const(char)[] <em>strB</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Collation.html#StringComparer.compare" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compares two strings and returns the sort order.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">-1 is strA is less than strB; 0 if strA is equal to strB; 1 if strA is greater than strB.</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>strA</em></td><td>A string to compare to strB.</td></tr>
+<tr><td><em>strB</em></td><td>A string to compare to strA.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="StringComparer.equals" href="htmlsrc/tango.text.locale.Collation.html#L68">equals</a><span class="params">(const(char)[] <em>strA</em>, const(char)[] <em>strB</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Collation.html#StringComparer.equals" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Indicates whether the two strings are equal.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">true if strA and strB are equal; otherwise, false.</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>strA</em></td><td>A string to compare to strB.</td></tr>
+<tr><td><em>strB</em></td><td>A string to compare to strA.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">StringComparer</span> <a class="symbol _function" name="StringComparer.currentCulture" href="htmlsrc/tango.text.locale.Collation.html#L77">currentCulture</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Collation.html#StringComparer.currentCulture" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves an instance that performs case-sensitive comparisons using the rules of the current culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A new StringComparer instance.</div></dd>
+<dt class="decl"><span class="rettyp">StringComparer</span> <a class="symbol _function" name="StringComparer.currentCultureIgnoreCase" href="htmlsrc/tango.text.locale.Collation.html#L86">currentCultureIgnoreCase</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Collation.html#StringComparer.currentCultureIgnoreCase" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves an instance that performs case-insensitive comparisons using the rules of the current culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A new StringComparer instance.</div></dd>
+<dt class="decl"><span class="rettyp">StringComparer</span> <a class="symbol _function" name="StringComparer.invariantCulture" href="htmlsrc/tango.text.locale.Collation.html#L95">invariantCulture</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Collation.html#StringComparer.invariantCulture" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves an instance that performs case-sensitive comparisons using the rules of the invariant culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A new StringComparer instance.</div></dd>
+<dt class="decl"><span class="rettyp">StringComparer</span> <a class="symbol _function" name="StringComparer.invariantCultureIgnoreCase" href="htmlsrc/tango.text.locale.Collation.html#L104">invariantCultureIgnoreCase</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Collation.html#StringComparer.invariantCultureIgnoreCase" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves an instance that performs case-insensitive comparisons using the rules of the invariant culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A new StringComparer instance.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">alias</span> int delegate(const(char)[], const(char)[]) <a class="symbol _alias" name="StringComparison" href="htmlsrc/tango.text.locale.Collation.html#L115">StringComparison</a> <a href="tango.text.locale.Collation.html#StringComparison" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Delegate.</i> Represents the method that will handle the string comparison.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The delegate has the signature <i>int delegate(const(char)[], const(char)[])</i>.</div></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="StringSorter" href="htmlsrc/tango.text.locale.Collation.html#L120">StringSorter</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Collation.html#StringSorter" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sorts strings according to the rules of the specified culture.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="StringSorter.this" href="htmlsrc/tango.text.locale.Collation.html#L137">this</a><span class="params">(StringComparer <em>comparer</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Collation.html#StringSorter.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Creates an instance using the specified StringComparer.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>comparer</em></td><td>The StringComparer to use when comparing strings. <i>Optional.</i></td></tr></table></dd>
+<dt class="decl"><a class="symbol _ctor" name="StringSorter.this:2" href="htmlsrc/tango.text.locale.Collation.html#L150">this</a><span class="params">(StringComparison <em>comparison</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Collation.html#StringSorter.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Creates an instance using the specified delegate.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>comparison</em></td><td>The delegate to use when comparing strings.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">The comparison parameter must have the same signature as StringComparison.</div></dd>
+<dt class="decl"><span class="rettyp">inout(void)</span> <a class="symbol _function" name="StringSorter.sort" href="htmlsrc/tango.text.locale.Collation.html#L159">sort</a><span class="params">(<span class="k">ref</span> inout(char)[][] <em>array</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Collation.html#StringSorter.sort" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sorts all the elements in an array.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>array</em></td><td>The array of strings to _sort.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">inout(void)</span> <a class="symbol _function" name="StringSorter.sort:2" href="htmlsrc/tango.text.locale.Collation.html#L170">sort</a><span class="params">(<span class="k">ref</span> inout(char)[][] <em>array</em>, size_t <em>index</em>, size_t <em>count</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Collation.html#StringSorter.sort:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sorts a range of the elements in an array.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>array</em></td><td>The array of strings to _sort.</td></tr>
+<tr><td><em>index</em></td><td>The starting index of the range.</td></tr>
+<tr><td><em>count</em></td><td>The number of elements in the range.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">StringSorter</span> <a class="symbol _function" name="StringSorter.currentCulture" href="htmlsrc/tango.text.locale.Collation.html#L214">currentCulture</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Collation.html#StringSorter.currentCulture" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves an instance that performs a case-sensitive sort using the rules of the current culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A StringSorter instance.</div></dd>
+<dt class="decl"><span class="rettyp">StringSorter</span> <a class="symbol _function" name="StringSorter.currentCultureIgnoreCase" href="htmlsrc/tango.text.locale.Collation.html#L222">currentCultureIgnoreCase</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Collation.html#StringSorter.currentCultureIgnoreCase" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves an instance that performs a case-insensitive sort using the rules of the current culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A StringSorter instance.</div></dd>
+<dt class="decl"><span class="rettyp">StringSorter</span> <a class="symbol _function" name="StringSorter.invariantCulture" href="htmlsrc/tango.text.locale.Collation.html#L230">invariantCulture</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Collation.html#StringSorter.invariantCulture" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves an instance that performs a case-sensitive sort using the rules of the invariant culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A StringSorter instance.</div></dd>
+<dt class="decl"><span class="rettyp">StringSorter</span> <a class="symbol _function" name="StringSorter.invariantCultureIgnoreCase" href="htmlsrc/tango.text.locale.Collation.html#L238">invariantCultureIgnoreCase</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Collation.html#StringSorter.invariantCultureIgnoreCase" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves an instance that performs a case-insensitive sort using the rules of the invariant culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A StringSorter instance.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2005 John Chapman. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:34 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

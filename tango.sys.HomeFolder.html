@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.sys.HomeFolder</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.sys.HomeFolder">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.sys.HomeFolder"><a href="htmlsrc/tango.sys.HomeFolder.html" class="symbol">tango.sys.HomeFolder</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: December 2006
+                        Updated and readded: August 2009</div>
+<p class="sec_header">Author:</p><div class="cmnt">Lars Ivar Igesund, Thomas Kühne,
+                        Grzegorz Adam Hankiewicz, sleek</div>
+<p class="sec_header">Since:</p><div class="cmnt">0.99.9</div>
+<dl>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="homeFolder" href="htmlsrc/tango.sys.HomeFolder.html#L41">homeFolder</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.sys.HomeFolder.html#homeFolder" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the home folder set in the current environment.</div></div></dd>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="expandTilde" href="htmlsrc/tango.sys.HomeFolder.html#L272">expandTilde</a><span class="params">(inout(char)[] <em>inputPath</em>)</span> <a href="tango.sys.HomeFolder.html#expandTilde" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Performs tilde expansion in paths.</div></div>
+<div class="cmnt">There are two ways of using tilde expansion in a path. One
+        involves using the tilde alone or followed by a path separator. In
+        this case, the tilde will be expanded with the value of the
+        environment variable <i>HOME</i>.  The second way is putting
+        a username after the tilde (i.e. <tt>~john/Mail</tt>). Here,
+        the username will be searched for in the user database
+        (i.e. <tt>/etc/passwd</tt> on Unix systems) and will expand to
+        whatever path is stored there.  The username is considered the
+        string after the tilde ending at the first instance of a path
+        separator.
+<p class="bl"></p>
+        Note that using the <i>~user</i> syntax may give different
+        values from just <i>~</i> if the environment variable doesn't
+        match the value stored in the user database.
+<p class="bl"></p>
+        When the environment variable version is used, the path won't
+        be modified if the environment variable doesn't exist or it
+        is empty. When the database version is used, the path won't be
+        modified if the user doesn't exist in the database or there is
+        not enough memory to perform the query.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">inputPath with the tilde expanded, or just inputPath
+        if it could not be expanded.</div>
+<p class="sec_header">Throws:</p><div class="cmnt">OutOfMemoryException if there is not enough memory to
+                perform the database lookup for the <i>~user</i> syntax.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">HomeFolder</span>;
+
+<span class="k">void</span> <span class="i">processFile</span>(<span class="k">char</span>[] <span class="i">filename</span>)
+{
+     <span class="k">char</span>[] <span class="i">path</span> = <span class="i">expandTilde</span>(<span class="i">filename</span>);
+    ...
+}</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+<a href="#L3_ex2" name="L3_ex2">3</a>
+<a href="#L4_ex2" name="L4_ex2">4</a>
+<a href="#L5_ex2" name="L5_ex2">5</a>
+<a href="#L6_ex2" name="L6_ex2">6</a>
+<a href="#L7_ex2" name="L7_ex2">7</a>
+<a href="#L8_ex2" name="L8_ex2">8</a>
+<a href="#L9_ex2" name="L9_ex2">9</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">HomeFolder</span>;
+
+<span class="k">const</span> <span class="k">char</span>[] <span class="i">RESOURCE_DIR_TEMPLATE</span> = <span class="sl">"~/.applicationrc"</span>;
+<span class="k">char</span>[] <span class="i">RESOURCE_DIR</span>;    <span class="lc">// This gets expanded below.</span>
+
+<span class="k">static</span> <span class="k">this</span>()
+{
+    <span class="i">RESOURCE_DIR</span> = <span class="i">expandTilde</span>(<span class="i">RESOURCE_DIR_TEMPLATE</span>);
+}</pre>
+</td></tr>
+</table></div></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2006-2009 Lars Ivar Igesund, Thomas Kühne,
+                                           Grzegorz Adam Hankiewicz, sleek</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:16 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

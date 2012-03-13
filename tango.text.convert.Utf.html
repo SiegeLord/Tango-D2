@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.convert.Utf</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.convert.Utf">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.convert.Utf"><a href="htmlsrc/tango.text.convert.Utf.html" class="symbol">tango.text.convert.Utf</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: Oct 2004</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Kris
+<p class="bl"></p>
+        Fast Unicode transcoders. These are particularly sensitive to
+        minor changes on 32bit x86 devices, because the register set of
+        those devices is so small. Beware of subtle changes which might
+        extend the execution-period by as much as 200%. Because of this,
+        three of the six transcoders might read past the end of input by
+        one, two, or three bytes before arresting themselves. Note that
+        support for streaming adds a 15% overhead to the dchar =&gt; char
+        conversion, but has little effect on the others.
+<p class="bl"></p>
+        These routines were tuned on an Intel P4; other devices may work
+        more efficiently with a slightly different approach, though this
+        is likely to be reasonably optimal on AMD x86 CPUs also. These
+        algorithms would benefit significantly from those extra AMD64
+        registers. On a 3GHz P4, the dchar/char conversions take around
+        2500ns to process an array of 1000 ASCII elements. Invoking the
+        memory manager doubles that period, and quadruples the time for
+        arrays of 100 elements. Memory allocation can slow down notably
+        in a multi-threaded environment, so avoid that where possible.
+<p class="bl"></p>
+        Surrogate-pairs are dealt with in a non-optimal fashion when
+        transcoding between utf16 and utf8. Such cases are considered
+        to be boundary-conditions for this module.
+<p class="bl"></p>
+        There are three common cases where the input may be incomplete,
+        including each 'widening' case of utf8 =&gt; utf16, utf8 =&gt; utf32,
+        and utf16 =&gt; utf32. An edge-case is utf16 =&gt; utf8, if surrogate
+        pairs are present. Such cases will throw an exception, unless
+        streaming-mode is enabled ~ in the latter mode, an additional
+        integer is returned indicating how many elements of the input
+        have been consumed. In all cases, a correct slice of the output
+        is returned.
+<p class="bl"></p>
+        For details on Unicode processing see:
+        <ul><a href="http://www.utf-8.com/">http://www.utf-8.com/</a></ul>
+        <ul><a href="http://www.hackcraft.net/xmlUnicode/">http://www.hackcraft.net/xmlUnicode/</a></ul>
+        <ul><a href="http://www.azillionmonkeys.com/qed/unicode.html/">http://www.azillionmonkeys.com/qed/unicode.html/</a></ul>
+        <ul><a href="http://icu.sourceforge.net/docs/papers/forms_of_unicode/">http://icu.sourceforge.net/docs/papers/forms_of_unicode/</a></ul></div>
+<dl>
+<dt class="decl"><span class="rettyp">inout(char[])</span> <a class="symbol _function" name="toString" href="htmlsrc/tango.text.convert.Utf.html#L62">toString</a><span class="params">(inout(char[]) <em>src</em>, char[] <em>dst</em> = <span class="defval"><span class="k">null</span></span>, size_t* <em>ate</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.convert.Utf.html#toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Symmetric calls for equivalent types; these return the provided
+        input with no conversion</div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="toString:2" href="htmlsrc/tango.text.convert.Utf.html#L99">toString</a><span class="params">(const(wchar[]) <em>input</em>, char[] <em>output</em> = <span class="defval"><span class="k">null</span></span>, size_t* <em>ate</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.convert.Utf.html#toString:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Encode Utf8 up to a maximum of 4 bytes long (five &amp; six byte
+        variations are not supported).</div></div>
+<div class="cmnt">If the output is provided off the stack, it should be large
+        enough to encompass the entire transcoding; failing to do
+        so will cause the output to be moved onto the heap instead.
+<p class="bl"></p>
+        Returns a slice of the output buffer, corresponding to the
+        converted characters. For optimum performance, the returned
+        buffer should be specified as 'output' on subsequent calls.
+        For example:
+<p class="bl"></p>
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">char</span>[] <span class="i">output</span>;
+
+<span class="k">char</span>[] <span class="i">result</span> = <span class="i">toString</span> (<span class="i">input</span>, <span class="i">output</span>);
+
+<span class="lc">// reset output after a realloc</span>
+<span class="k">if</span> (<span class="i">result</span>.<span class="i">length</span> &gt; <span class="i">output</span>.<span class="i">length</span>)
+    <span class="i">output</span> = <span class="i">result</span>;</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Where 'ate' is provided, it will be set to the number of 
+        elements consumed from the input, and the output buffer 
+        will not be resized (or allocated). This represents a
+        streaming mode, where slices of the input are processed
+        in sequence rather than all at one time (should use 'ate'
+        as an index for slicing into unconsumed input).</div></dd>
+<dt class="decl"><span class="rettyp">wchar[]</span> <a class="symbol _function" name="toString16" href="htmlsrc/tango.text.convert.Utf.html#L180">toString16</a><span class="params">(const(char[]) <em>input</em>, wchar[] <em>output</em> = <span class="defval"><span class="k">null</span></span>, size_t* <em>ate</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.convert.Utf.html#toString16" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Decode Utf8 produced by the above toString() method.</div></div>
+<div class="cmnt">If the output is provided off the stack, it should be large
+        enough to encompass the entire transcoding; failing to do
+        so will cause the output to be moved onto the heap instead.
+<p class="bl"></p>
+        Returns a slice of the output buffer, corresponding to the
+        converted characters. For optimum performance, the returned
+        buffer should be specified as 'output' on subsequent calls.
+<p class="bl"></p>
+        Where 'ate' is provided, it will be set to the number of 
+        elements consumed from the input, and the output buffer 
+        will not be resized (or allocated). This represents a
+        streaming mode, where slices of the input are processed
+        in sequence rather than all at one time (should use 'ate'
+        as an index for slicing into unconsumed input).</div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="toString:3" href="htmlsrc/tango.text.convert.Utf.html#L276">toString</a><span class="params">(const(dchar[]) <em>input</em>, char[] <em>output</em> = <span class="defval"><span class="k">null</span></span>, size_t* <em>ate</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.convert.Utf.html#toString:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Encode Utf8 up to a maximum of 4 bytes long (five &amp; six
+        byte variations are not supported). Throws an exception
+        where the input dchar is greater than 0x10ffff.</div></div>
+<div class="cmnt">If the output is provided off the stack, it should be large
+        enough to encompass the entire transcoding; failing to do
+        so will cause the output to be moved onto the heap instead.
+<p class="bl"></p>
+        Returns a slice of the output buffer, corresponding to the
+        converted characters. For optimum performance, the returned
+        buffer should be specified as 'output' on subsequent calls.
+<p class="bl"></p>
+        Where 'ate' is provided, it will be set to the number of 
+        elements consumed from the input, and the output buffer 
+        will not be resized (or allocated). This represents a
+        streaming mode, where slices of the input are processed
+        in sequence rather than all at one time (should use 'ate'
+        as an index for slicing into unconsumed input).</div></dd>
+<dt class="decl"><span class="rettyp">dchar[]</span> <a class="symbol _function" name="toString32" href="htmlsrc/tango.text.convert.Utf.html#L366">toString32</a><span class="params">(const(char[]) <em>input</em>, dchar[] <em>output</em> = <span class="defval"><span class="k">null</span></span>, size_t* <em>ate</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.convert.Utf.html#toString32" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Decode Utf8 produced by the above toString() method.</div></div>
+<div class="cmnt">If the output is provided off the stack, it should be large
+        enough to encompass the entire transcoding; failing to do
+        so will cause the output to be moved onto the heap instead.
+<p class="bl"></p>
+        Returns a slice of the output buffer, corresponding to the
+        converted characters. For optimum performance, the returned
+        buffer should be specified as 'output' on subsequent calls.
+<p class="bl"></p>
+        Where 'ate' is provided, it will be set to the number of 
+        elements consumed from the input, and the output buffer 
+        will not be resized (or allocated). This represents a
+        streaming mode, where slices of the input are processed
+        in sequence rather than all at one time (should use 'ate'
+        as an index for slicing into unconsumed input).</div></dd>
+<dt class="decl"><span class="rettyp">wchar[]</span> <a class="symbol _function" name="toString16:2" href="htmlsrc/tango.text.convert.Utf.html#L468">toString16</a><span class="params">(const(dchar[]) <em>input</em>, wchar[] <em>output</em> = <span class="defval"><span class="k">null</span></span>, size_t* <em>ate</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.convert.Utf.html#toString16:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Encode Utf16 up to a maximum of 2 bytes long. Throws an exception
+        where the input dchar is greater than 0x10ffff.</div></div>
+<div class="cmnt">If the output is provided off the stack, it should be large
+        enough to encompass the entire transcoding; failing to do
+        so will cause the output to be moved onto the heap instead.
+<p class="bl"></p>
+        Returns a slice of the output buffer, corresponding to the
+        converted characters. For optimum performance, the returned
+        buffer should be specified as 'output' on subsequent calls.
+<p class="bl"></p>
+        Where 'ate' is provided, it will be set to the number of 
+        elements consumed from the input, and the output buffer 
+        will not be resized (or allocated). This represents a
+        streaming mode, where slices of the input are processed
+        in sequence rather than all at one time (should use 'ate'
+        as an index for slicing into unconsumed input).</div></dd>
+<dt class="decl"><span class="rettyp">dchar[]</span> <a class="symbol _function" name="toString32:2" href="htmlsrc/tango.text.convert.Utf.html#L539">toString32</a><span class="params">(const(wchar[]) <em>input</em>, dchar[] <em>output</em> = <span class="defval"><span class="k">null</span></span>, size_t* <em>ate</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.convert.Utf.html#toString32:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Decode Utf16 produced by the above toString16() method.</div></div>
+<div class="cmnt">If the output is provided off the stack, it should be large
+        enough to encompass the entire transcoding; failing to do
+        so will cause the output to be moved onto the heap instead.
+<p class="bl"></p>
+        Returns a slice of the output buffer, corresponding to the
+        converted characters. For optimum performance, the returned
+        buffer should be specified as 'output' on subsequent calls.
+<p class="bl"></p>
+        Where 'ate' is provided, it will be set to the number of 
+        elements consumed from the input, and the output buffer 
+        will not be resized (or allocated). This represents a
+        streaming mode, where slices of the input are processed
+        in sequence rather than all at one time (should use 'ate'
+        as an index for slicing into unconsumed input).</div></dd>
+<dt class="decl"><span class="rettyp">dchar</span> <a class="symbol _function" name="decode" href="htmlsrc/tango.text.convert.Utf.html#L604">decode</a><span class="params">(const(char[]) <em>src</em>,  <span class="k">ref</span> size_t <em>ate</em>)</span> <a href="tango.text.convert.Utf.html#decode" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Decodes a single dchar from the given src text, and indicates how
+        many chars were consumed from src to do so.</div></div></dd>
+<dt class="decl"><span class="rettyp">dchar</span> <a class="symbol _function" name="decode:2" href="htmlsrc/tango.text.convert.Utf.html#L617">decode</a><span class="params">(const(wchar[]) <em>src</em>,  <span class="k">ref</span> size_t <em>ate</em>)</span> <a href="tango.text.convert.Utf.html#decode:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Decodes a single dchar from the given src text, and indicates how
+        many wchars were consumed from src to do so.</div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="encode" href="htmlsrc/tango.text.convert.Utf.html#L630">encode</a><span class="params">(char[] <em>dst</em>, dchar <em>c</em>)</span> <a href="tango.text.convert.Utf.html#encode" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Encode a dchar into the provided dst array, and return a slice of 
+        it representing the encoding</div></div></dd>
+<dt class="decl"><span class="rettyp">wchar[]</span> <a class="symbol _function" name="encode:2" href="htmlsrc/tango.text.convert.Utf.html#L642">encode</a><span class="params">(wchar[] <em>dst</em>, dchar <em>c</em>)</span> <a href="tango.text.convert.Utf.html#encode:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Encode a dchar into the provided dst array, and return a slice of 
+        it representing the encoding</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isValid" href="htmlsrc/tango.text.convert.Utf.html#L653">isValid</a><span class="params">(dchar <em>c</em>)</span> <a href="tango.text.convert.Utf.html#isValid" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is the given character valid?</div></div></dd>
+<dt class="decl"><span class="rettyp">inout(T[])</span> <a class="symbol _function" name="fromString8" href="htmlsrc/tango.text.convert.Utf.html#L668">fromString8</a><span class="tparams">(<em>T</em>)</span><span class="params">(inout(char[]) <em>s</em>, T[] <em>dst</em>)</span> <a href="tango.text.convert.Utf.html#fromString8" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert from a char[] into the type of the dst provided.</div></div>
+<div class="cmnt">Returns a slice of the given dst, where it is sufficiently large
+        to house the result, or a heap-allocated array otherwise. Returns
+        the original input where no conversion is required.</div></dd>
+<dt class="decl"><span class="rettyp">inout(T[])</span> <a class="symbol _function" name="fromString16" href="htmlsrc/tango.text.convert.Utf.html#L692">fromString16</a><span class="tparams">(<em>T</em>)</span><span class="params">(inout(wchar[]) <em>s</em>, T[] <em>dst</em>)</span> <a href="tango.text.convert.Utf.html#fromString16" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert from a wchar[] into the type of the dst provided.</div></div>
+<div class="cmnt">Returns a slice of the given dst, where it is sufficiently large
+        to house the result, or a heap-allocated array otherwise. Returns
+        the original input where no conversion is required.</div></dd>
+<dt class="decl"><span class="rettyp">inout(T[])</span> <a class="symbol _function" name="fromString32" href="htmlsrc/tango.text.convert.Utf.html#L716">fromString32</a><span class="tparams">(<em>T</em>)</span><span class="params">(inout(dchar[]) <em>s</em>, T[] <em>dst</em>)</span> <a href="tango.text.convert.Utf.html#fromString32" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert from a dchar[] into the type of the dst provided.</div></div>
+<div class="cmnt">Returns a slice of the given dst, where it is sufficiently large
+        to house the result, or a heap-allocated array otherwise. Returns
+        the original input where no conversion is required.</div></dd>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="cropLeft" href="htmlsrc/tango.text.convert.Utf.html#L739">cropLeft</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>s</em>)</span> <a href="tango.text.convert.Utf.html#cropLeft" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Adjust the content such that no partial encodings exist on the 
+        left side of the provided text.</div></div>
+<div class="cmnt">Returns a slice of the input</div></dd>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="cropRight" href="htmlsrc/tango.text.convert.Utf.html#L763">cropRight</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>s</em>)</span> <a href="tango.text.convert.Utf.html#cropRight" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Adjust the content such that no partial encodings exist on the 
+        right side of the provided text.</div></div>
+<div class="cmnt">Returns a slice of the input</div></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:33 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

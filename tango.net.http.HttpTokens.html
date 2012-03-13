@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.net.http.HttpTokens</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.net.http.HttpTokens">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.net.http.HttpTokens"><a href="htmlsrc/tango.net.http.HttpTokens.html" class="symbol">tango.net.http.HttpTokens</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: April 2004</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="HttpToken" href="htmlsrc/tango.net.http.HttpTokens.html#L36">HttpToken</a> <a href="tango.net.http.HttpTokens.html#HttpToken" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Struct used to expose freachable HttpToken instances.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="HttpTokens" href="htmlsrc/tango.net.http.HttpTokens.html#L58">HttpTokens</a> <a href="tango.net.http.HttpTokens.html#HttpTokens" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Maintains a set of HTTP tokens. These tokens include headers, query-
+        parameters, and anything else vaguely related. Both input and output
+        are supported, though a subclass may choose to expose as read-only.</div></div>
+<div class="cmnt">All tokens are mapped directly onto a buffer, so there is no memory
+        allocation or copying involved. 
+<p class="bl"></p>
+        Note that this class does not support deleting tokens, per se. Instead
+        it marks tokens as being 'unused' by setting content to null, avoiding 
+        unwarranted reshaping of the token stack. The token stack is reused as
+        time goes on, so there's only minor runtime overhead.</div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="HttpTokens.this" href="htmlsrc/tango.net.http.HttpTokens.html#L80">this</a><span class="params">(char <em>separator</em>, bool <em>inclusive</em> = <span class="defval"><span class="k">false</span></span>)</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a set of tokens based upon the given delimiter, 
+                and an indication of whether said delimiter should be
+                considered part of the left side (effectively the name).
+        
+                The latter is useful with headers, since the seperating
+                ':' character should really be considered part of the 
+                name for purposes of subsequent token matching.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="HttpTokens.this:2" href="htmlsrc/tango.net.http.HttpTokens.html#L103">this</a><span class="params">(HttpTokens <em>source</em>)</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clone a source set of HttpTokens</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpTokens.parse" href="htmlsrc/tango.net.http.HttpTokens.html#L121">parse</a><span class="params">(InputBuffer <em>input</em>)</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read all tokens. Everything is mapped rather than being 
+                allocated &amp; copied</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpTokens.parse:2" href="htmlsrc/tango.net.http.HttpTokens.html#L129">parse</a><span class="params">(char[] <em>content</em>)</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.parse:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse an input string.</div></div></dd>
+<dt class="decl"><span class="rettyp">HttpTokens</span> <a class="symbol _function" name="HttpTokens.reset" href="htmlsrc/tango.net.http.HttpTokens.html#L141">reset</a><span class="params">()</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reset this set of tokens.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="HttpTokens.isParsed" href="htmlsrc/tango.net.http.HttpTokens.html#L157">isParsed</a><span class="params">()</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.isParsed" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Have tokens been parsed yet?</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpTokens.setParsed" href="htmlsrc/tango.net.http.HttpTokens.html#L168">setParsed</a><span class="params">(bool <em>parsed</em>)</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.setParsed" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Indicate whether tokens have been parsed or not.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="HttpTokens.get" href="htmlsrc/tango.net.http.HttpTokens.html#L180">get</a><span class="params">(const(char)[] <em>name</em>, const(char)[] <em>ret</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.get" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the value of the provided header, or null if the
+                header does not exist</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="HttpTokens.getInt" href="htmlsrc/tango.net.http.HttpTokens.html#L200">getInt</a><span class="params">(const(char)[] <em>name</em>, int <em>ret</em> = <span class="defval">-<span class="n">1</span></span>)</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.getInt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the integer value of the provided header, or the 
+                provided default-vaule if the header does not exist</div></div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="HttpTokens.getDate" href="htmlsrc/tango.net.http.HttpTokens.html#L217">getDate</a><span class="params">(const(char)[] <em>name</em>, Time <em>date</em> = <span class="defval"><span class="i">epoch</span></span>)</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.getDate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the date value of the provided header, or the 
+                provided default-value if the header does not exist</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="HttpTokens.opApply" href="htmlsrc/tango.net.http.HttpTokens.html#L233">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref HttpToken) <em>dg</em>)</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate over the set of tokens</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpTokens.produce" href="htmlsrc/tango.net.http.HttpTokens.html#L254">produce</a><span class="params">(<span class="k">scope</span> size_t delegate(const(void)[]) <em>consume</em>, const(char)[] <em>eol</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.produce" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Output the token list to the provided consumer</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="HttpTokens.handleMissingSeparator" href="htmlsrc/tango.net.http.HttpTokens.html#L276">handleMissingSeparator</a><span class="params">(const(char)[] <em>s</em>,  <span class="k">ref</span> HttpToken <em>element</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.handleMissingSeparator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">overridable method to handle the case where a token does
+                not have a separator. Apparently, this can happen in HTTP 
+                usage</div></div></dd>
+<dt class="decl"><span class="rettyp">FilteredTokens</span> <a class="symbol _function" name="HttpTokens.createFilter" href="htmlsrc/tango.net.http.HttpTokens.html#L317">createFilter</a><span class="params">(char[] <em>match</em>)</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.createFilter" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a filter for iterating over the tokens matching
+                a particular name.</div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="HttpTokens.formatTokens" href="htmlsrc/tango.net.http.HttpTokens.html#L423">formatTokens</a><span class="params">(OutputBuffer <em>dst</em>, const(char)[] <em>delim</em>)</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.formatTokens" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">these should be exposed carefully ******************</div></div>
+<div class="cmnt">Return a char[] representing the output. An empty array
+                is returned if output was not configured. This perhaps
+                could just return our 'output' buffer content, but that
+                would not reflect deletes, or seperators. Better to do 
+                it like this instead, for a small cost.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpTokens.add" href="htmlsrc/tango.net.http.HttpTokens.html#L451">add</a><span class="params">(const(char)[] <em>name</em>,  <span class="k">scope</span> void delegate(OutputBuffer) <em>value</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.add" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a token with the given name. The content is provided
+                via the specified delegate. We stuff this name &amp; content
+                into the output buffer, and map a new Token onto the
+                appropriate buffer slice.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpTokens.add:2" href="htmlsrc/tango.net.http.HttpTokens.html#L477">add</a><span class="params">(const(char)[] <em>name</em>, const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.add:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a simple name/value pair to the output</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpTokens.addInt" href="htmlsrc/tango.net.http.HttpTokens.html#L493">addInt</a><span class="params">(const(char)[] <em>name</em>, size_t <em>value</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.addInt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a name/integer pair to the output</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpTokens.addDate" href="htmlsrc/tango.net.http.HttpTokens.html#L506">addDate</a><span class="params">(const(char)[] <em>name</em>, Time <em>value</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.addDate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a name/date(long) pair to the output</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="HttpTokens.remove" href="htmlsrc/tango.net.http.HttpTokens.html#L520">remove</a><span class="params">(const(char)[] <em>name</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.http.HttpTokens.html#HttpTokens.remove" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">remove a token from our list. Returns false if the named
+               token is not found.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:13 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.device.SerialPort</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.device.SerialPort">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.device.SerialPort"><a href="htmlsrc/tango.io.device.SerialPort.html" class="symbol">tango.io.device.SerialPort</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Author:</p><div class="cmnt">Robin Kreis</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SerialPort" href="htmlsrc/tango.io.device.SerialPort.html#L45">SerialPort</a> : <span class="bclass">Device</span> <a href="tango.io.device.SerialPort.html#SerialPort" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Enables applications to use a serial port (aka COM-port, ttyS).
+        Usage is similar to that of File:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">serCond</span> = <span class="k">new</span> <span class="i">SerialPort</span>(<span class="sl">"ttyS0"</span>);
+<span class="i">serCond</span>.<span class="i">speed</span> = <span class="n">38400</span>;
+<span class="i">serCond</span>.<span class="i">write</span>(<span class="sl">"Hello world!"</span>);
+<span class="i">serCond</span>.<span class="i">close</span>();</pre>
+</td></tr>
+</table></div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="SerialPort.this" href="htmlsrc/tango.io.device.SerialPort.html#L64">this</a><span class="params">(const(char)[] <em>port</em>)</span> <a href="tango.io.device.SerialPort.html#SerialPort.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a new SerialPort instance. The port will be opened and
+            set to raw mode with 9600-8N1.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>port</em></td><td>A string identifying the port. On Posix, this must be a
+                   device file like /dev/ttyS0. If the input doesn't begin
+                   with "/", "/dev/" is automatically prepended, so "ttyS0"
+                   is sufficent. On Windows, this must be a device name like
+                   COM1.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="SerialPort.toString" href="htmlsrc/tango.io.device.SerialPort.html#L76">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.SerialPort.html#SerialPort.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a string describing this serial port.
+            For example: "ttyS0", "COM1", "cuad0".</div></div></dd>
+<dt class="decl"><span class="rettyp">SerialPort</span> <a class="symbol _function" name="SerialPort.speed" href="htmlsrc/tango.io.device.SerialPort.html#L97">speed</a><span class="params">(uint <em>speed</em>)</span> <a href="tango.io.device.SerialPort.html#SerialPort.speed" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sets the baud rate of this port. Usually, the baud rate can
+            only be set to fixed values (common values are 1200 * 2^n).</div></div>
+<div class="cmnt">Note that for Posix, the specification only mandates speeds up
+            to 38400, excluding speeds such as 7200, 14400 and 28800.
+            Most Posix systems have chosen to support at least higher speeds
+            though.</div>
+<p class="sec_header">See Also:</p><div class="cmnt">maxSpeed</div>
+<p class="sec_header">Throws:</p><div class="cmnt">IOException if speed is unsupported.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[][]</span> <a class="symbol _function" name="SerialPort.ports" href="htmlsrc/tango.io.device.SerialPort.html#L137">ports</a><span class="params">()</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.device.SerialPort.html#SerialPort.ports" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Tries to enumerate all serial ports. While this usually works on
+            Windows, it's more problematic on other OS. Posix provides no way
+            to list serial ports, and the only option is searching through
+            "/dev".</div></div>
+<div class="cmnt">Because there's no naming standard for the device files, this method
+            must be ported for each OS. This method is also unreliable because
+            the user could have created invalid device files, or deleted them.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">A string array of all the serial ports that could be found, in
+            alphabetical order. Every string is formatted as a valid argument
+            to the constructor, but the port may not be accessible.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008 Robin Kreis. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:09 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

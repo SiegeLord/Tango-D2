@@ -1,0 +1,463 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.stream.Buffered</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.stream.Buffered">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.stream.Buffered"><a href="htmlsrc/tango.io.stream.Buffered.html" class="symbol">tango.io.stream.Buffered</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Mar 2004: Initial release<br/>
+                        Dec 2006: Outback release</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> BufferedInput <a class="symbol _alias" name="Bin" href="htmlsrc/tango.io.stream.Buffered.html#L24">Bin</a> <a href="tango.io.stream.Buffered.html#Bin" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> BufferedOutput <a class="symbol _alias" name="Bout" href="htmlsrc/tango.io.stream.Buffered.html#L25">Bout</a> <a href="tango.io.stream.Buffered.html#Bout" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Shorthand aliases.</div></div></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="BufferedInput" href="htmlsrc/tango.io.stream.Buffered.html#L58">BufferedInput</a> : <span class="bclass">InputFilter</span>, <span class="bclass">InputBuffer</span> <a href="tango.io.stream.Buffered.html#BufferedInput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Buffers the flow of data from a upstream input. A downstream
+        neighbour can locate and use this buffer instead of creating
+        another instance of their own.</div></div>
+<div class="cmnt">(Note that upstream is closer to the source, and downstream is
+        further away.)</div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> flush <a class="symbol _alias" name="BufferedInput.clear" href="htmlsrc/tango.io.stream.Buffered.html#L60">clear</a> <a href="tango.io.stream.Buffered.html#BufferedInput.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clear/flush are the same.</div></div></dd>
+<dt class="decl"><span class="kw">alias</span> InputFilter.input <a class="symbol _alias" name="BufferedInput.input" href="htmlsrc/tango.io.stream.Buffered.html#L61">input</a> <a href="tango.io.stream.Buffered.html#BufferedInput.input" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Access the source.</div></div></dd>
+<dt class="decl"><a class="symbol _invariant" name="BufferedInput.invariant" href="htmlsrc/tango.io.stream.Buffered.html#L74">invariant</a> <a href="tango.io.stream.Buffered.html#BufferedInput.invariant" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Ensure the buffer remains valid between method calls.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="BufferedInput.this" href="htmlsrc/tango.io.stream.Buffered.html#L93">this</a><span class="params">(InputStream <em>stream</em>)</span> <a href="tango.io.stream.Buffered.html#BufferedInput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a buffer.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>stream</em></td><td>An input stream.</td></tr>
+<tr><td><em>capacity</em></td><td>Desired buffer capacity.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Construct a Buffer upon the provided input stream.</div></dd>
+<dt class="decl"><a class="symbol _ctor" name="BufferedInput.this:2" href="htmlsrc/tango.io.stream.Buffered.html#L112">this</a><span class="params">(InputStream <em>stream</em>, size_t <em>capacity</em>)</span> <a href="tango.io.stream.Buffered.html#BufferedInput.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a buffer.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>stream</em></td><td>An input stream.</td></tr>
+<tr><td><em>capacity</em></td><td>Desired buffer capacity.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Construct a Buffer upon the provided input stream.</div></dd>
+<dt class="decl"><span class="rettyp">InputBuffer</span> <a class="symbol _function" name="BufferedInput.create" href="htmlsrc/tango.io.stream.Buffered.html#L133">create</a><span class="params">(InputStream <em>stream</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.create" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Attempt to share an upstream Buffer, and create an instance
+                where there's not one available.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>stream</em></td><td>An input stream.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">If an upstream Buffer instances is visible, it will be shared.
+                Otherwise, a new instance is created based upon the bufferSize
+                exposed by the stream endpoint (conduit).</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedInput.populate" href="htmlsrc/tango.io.stream.Buffered.html#L163">populate</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.populate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Place more data from the source stream into this buffer, and
+                return the number of bytes added. This does not compress the
+                current buffer content, so consider doing that explicitly.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Number of bytes added, which will be Eof when there
+                         is no further input available. Zero is also a valid
+                         response, meaning no data was actually added.</div></dd>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="BufferedInput.opSlice" href="htmlsrc/tango.io.stream.Buffered.html#L175">opSlice</a><span class="params">(size_t <em>start</em>, size_t <em>end</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.opSlice" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a void[] slice of the buffer from start to end, where
+                end is exclusive.</div></div></dd>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="BufferedInput.slice" href="htmlsrc/tango.io.stream.Buffered.html#L195">slice</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.slice" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Retrieve the valid content.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A void[] slice of the buffer.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Return a void[] slice of the buffer, from the current position
+                up to the limit of valid content. The content remains in the
+                buffer for future extraction.</div></dd>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="BufferedInput.slice:2" href="htmlsrc/tango.io.stream.Buffered.html#L237">slice</a><span class="params">(size_t <em>size</em>, bool <em>eat</em> = <span class="defval"><span class="k">true</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.slice:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Access buffer content.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>size</em></td><td>Number of bytes to access.</td></tr>
+<tr><td><em>eat</em></td><td>Whether to consume the content or not.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The corresponding buffer slice when successful, or
+                null if there's not enough data available (Eof; Eob).</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Read a slice of data from the buffer, loading from the
+                conduit as necessary. The specified number of bytes is
+                sliced from the buffer, and marked as having been read
+                when the 'eat' parameter is set true. When 'eat' is set
+                false, the read position is not adjusted.
+<p class="bl"></p>
+                Note that the slice cannot be larger than the size of
+                the buffer ~ use method fill(void[]) instead where you
+                simply want the content copied, or use conduit.read()
+                to extract directly from an attached conduit. Also note
+                that if you need to retain the slice, then it should be
+                .dup'd before the buffer is compressed or repopulated.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// create a buffer with some content</span>
+<span class="k">auto</span> <span class="i">buffer</span> = <span class="k">new</span> <span class="i">Buffer</span> (<span class="sl">"hello world"</span>);
+
+<span class="lc">// consume everything unread</span>
+<span class="k">auto</span> <span class="i">slice</span> = <span class="i">buffer</span>.<span class="i">slice</span> (<span class="i">buffer</span>.<span class="i">readable</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedInput.reader" href="htmlsrc/tango.io.stream.Buffered.html#L285">reader</a><span class="params">(<span class="k">scope</span> size_t delegate(const(void)[]) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.reader" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read directly from this buffer.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>dg</em></td><td>Callback to provide buffer access to.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns whatever the delegate returns.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Exposes the raw data buffer at the current _read position. The
+                delegate is provided with a void[] representing the available
+                data, and should return zero to leave the current _read position
+                intact.
+<p class="bl"></p>
+                If the delegate consumes data, it should return the number of
+                bytes consumed; or IConduit.Eof to indicate an error.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedInput.writer" href="htmlsrc/tango.io.stream.Buffered.html#L317">writer</a><span class="params">(<span class="k">scope</span> size_t delegate(void[]) <em>dg</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.writer" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write into this buffer.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>dg</em></td><td>The callback to provide buffer access to.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns whatever the delegate returns.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Exposes the raw data buffer at the current _write position,
+                The delegate is provided with a void[] representing space
+                available within the buffer at the current _write position.
+<p class="bl"></p>
+                The delegate should return the appropriate number of bytes
+                if it writes valid content, or IConduit.Eof on error.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedInput.read" href="htmlsrc/tango.io.stream.Buffered.html#L349">read</a><span class="params">(void[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.read" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Transfer content into the provided dst.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>dst</em></td><td>Destination of the content.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">Return the number of bytes read, which may be less than
+                dst.length. Eof is returned when no further content is
+                available.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Populates the provided array with content. We try to
+                satisfy the request from the buffer content, and read
+                directly from an attached conduit when the buffer is
+                empty.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedInput.fill" href="htmlsrc/tango.io.stream.Buffered.html#L390">fill</a><span class="params">(void[] <em>dst</em>, bool <em>exact</em> = <span class="defval"><span class="k">false</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.fill" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Fill the provided buffer. Returns the number of bytes
+                actually read, which will be less that dst.length when
+                Eof has been reached and Eof thereafter.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>dst</em></td><td>Where data should be placed.</td></tr>
+<tr><td><em>exact</em></td><td>Whether to throw an exception when dst is not
+                        filled (an Eof occurs first). Defaults to false.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="BufferedInput.skip" href="htmlsrc/tango.io.stream.Buffered.html#L429">skip</a><span class="params">(ptrdiff_t <em>size</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.skip" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Move the current read location.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>size</em></td><td>The number of bytes to move.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns true if successful, false otherwise.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Skip ahead by the specified number of bytes, streaming from
+                the associated conduit as necessary.
+<p class="bl"></p>
+                Can also reverse the read position by 'size' bytes, when size
+                is negative. This may be used to support lookahead operations.
+                Note that a negative size will fail where there is not sufficient
+                content available in the buffer (can't _skip beyond the beginning).</div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="BufferedInput.seek" href="htmlsrc/tango.io.stream.Buffered.html#L450">seek</a><span class="params">(long <em>offset</em>, Anchor <em>start</em> = <span class="defval"><span class="i">Begin</span></span>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.seek" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Move the current read location.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="BufferedInput.next" href="htmlsrc/tango.io.stream.Buffered.html#L506">next</a><span class="params">(<span class="k">scope</span> size_t delegate(const(void)[]) <em>scan</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.next" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterator support.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>scan</em></td><td>The delegate to invoke with the current content.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns true if a token was isolated, false otherwise.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Upon success, the delegate should return the byte-based
+                index of the consumed pattern (tail end of it). Failure
+                to match a pattern should be indicated by returning an
+                Eof
+<p class="bl"></p>
+                Each pattern is expected to be stripped of the delimiter.
+                An end-of-file condition causes trailing content to be
+                placed into the token. Requests made beyond Eof result
+                in empty matches (length is zero).
+<p class="bl"></p>
+                Note that additional iterator and/or reader instances
+                will operate in lockstep when bound to a common buffer.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedInput.reserve" href="htmlsrc/tango.io.stream.Buffered.html#L536">reserve</a><span class="params">(size_t <em>space</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.reserve" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reserve the specified space within the buffer, compressing
+                existing content as necessary to make room.</div></div>
+<div class="cmnt">Returns the current read point, after compression if that
+                was required.</div></dd>
+<dt class="decl"><span class="rettyp">BufferedInput</span> <a class="symbol _function" name="BufferedInput.compress" href="htmlsrc/tango.io.stream.Buffered.html#L563">compress</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.compress" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compress buffer space.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The buffer instance.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">If we have some data left after an export, move it to
+                front-of-buffer and set position to be just after the
+                remains. This is for supporting certain conduits which
+                choose to write just the initial portion of a request.
+<p class="bl"></p>
+                Limit is set to the amount of data remaining. Position
+                is always reset to zero.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedInput.drain" href="htmlsrc/tango.io.stream.Buffered.html#L590">drain</a><span class="params">(OutputStream <em>dst</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.drain" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Drain buffer content to the specific conduit.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns the number of bytes written, or Eof.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Write as much of the buffer that the associated conduit
+                can consume. The conduit is not obliged to consume all
+                content, so some may remain within the buffer.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedInput.limit" href="htmlsrc/tango.io.stream.Buffered.html#L614">limit</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.limit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Access buffer limit.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns the limit of readable content within this buffer.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Each buffer has a capacity, a limit, and a position. The
+                capacity is the maximum content a buffer can contain, limit
+                represents the extent of valid content, and position marks
+                the current read location.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedInput.capacity" href="htmlsrc/tango.io.stream.Buffered.html#L634">capacity</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.capacity" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Access buffer capacity.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns the maximum capacity of this buffer.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Each buffer has a capacity, a limit, and a position. The
+                capacity is the maximum content a buffer can contain, limit
+                represents the extent of valid content, and position marks
+                the current read location.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedInput.position" href="htmlsrc/tango.io.stream.Buffered.html#L654">position</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.position" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Access buffer read position.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns the current read-position within this buffer.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Each buffer has a capacity, a limit, and a position. The
+                capacity is the maximum content a buffer can contain, limit
+                represents the extent of valid content, and position marks
+                the current read location.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedInput.readable" href="htmlsrc/tango.io.stream.Buffered.html#L669">readable</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.readable" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Available content.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Return count of _readable bytes remaining in buffer. This is
+                calculated simply as limit() - position().</div></dd>
+<dt class="decl"><span class="rettyp">inout(T)[]</span> <a class="symbol _function" name="BufferedInput.convert" href="htmlsrc/tango.io.stream.Buffered.html#L682">convert</a><span class="tparams">(<em>T</em>)</span><span class="params">(inout(void)[] <em>x</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.convert" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Cast to a target type without invoking the wrath of the
+                runtime checks for misalignment. Instead, we truncate the
+                array length.</div></div></dd>
+<dt class="decl"><span class="rettyp">BufferedInput</span> <a class="symbol _function" name="BufferedInput.flush" href="htmlsrc/tango.io.stream.Buffered.html#L697">flush</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.flush" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clear buffer content.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Reset 'position' and 'limit' to zero. This effectively
+                clears all content from the buffer.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="BufferedInput.input:2" href="htmlsrc/tango.io.stream.Buffered.html#L713">input</a><span class="params">(InputStream <em>source</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.input:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the input stream.</div></div></dd>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="BufferedInput.load" href="htmlsrc/tango.io.stream.Buffered.html#L731">load</a><span class="params">(size_t <em>max</em> = <span class="defval"><span class="i">max</span></span>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedInput.load" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Load the bits from a stream, up to an indicated length, and
+                return them all in an array. The function may consume more
+                than the indicated size where additional data is available
+                during a block read operation, but will not wait for more
+                than specified. An Eof terminates the operation.</div></div>
+<div class="cmnt">Returns an array representing the content, and throws
+                IOException on error.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="BufferedOutput" href="htmlsrc/tango.io.stream.Buffered.html#L838">BufferedOutput</a> : <span class="bclass">OutputFilter</span>, <span class="bclass">OutputBuffer</span> <a href="tango.io.stream.Buffered.html#BufferedOutput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Buffers the flow of data from a upstream output. A downstream
+        neighbour can locate and use this buffer instead of creating
+        another instance of their own.</div></div>
+<div class="cmnt">(Note that upstream is closer to the source, and downstream is
+        further away.)
+<p class="bl"></p>
+        Don't forget to flush() buffered content before closing.</div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> OutputFilter.output <a class="symbol _alias" name="BufferedOutput.output" href="htmlsrc/tango.io.stream.Buffered.html#L840">output</a> <a href="tango.io.stream.Buffered.html#BufferedOutput.output" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">access the sink</div></div></dd>
+<dt class="decl"><a class="symbol _invariant" name="BufferedOutput.invariant" href="htmlsrc/tango.io.stream.Buffered.html#L853">invariant</a> <a href="tango.io.stream.Buffered.html#BufferedOutput.invariant" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Ensure the buffer remains valid between method calls.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="BufferedOutput.this" href="htmlsrc/tango.io.stream.Buffered.html#L872">this</a><span class="params">(OutputStream <em>stream</em>)</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a buffer.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>stream</em></td><td>An input stream.</td></tr>
+<tr><td><em>capacity</em></td><td>Desired buffer capacity.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Construct a Buffer upon the provided input stream.</div></dd>
+<dt class="decl"><a class="symbol _ctor" name="BufferedOutput.this:2" href="htmlsrc/tango.io.stream.Buffered.html#L891">this</a><span class="params">(OutputStream <em>stream</em>, size_t <em>capacity</em>)</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a buffer.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>stream</em></td><td>An input stream.</td></tr>
+<tr><td><em>capacity</em></td><td>Desired buffer capacity.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Construct a Buffer upon the provided input stream.</div></dd>
+<dt class="decl"><span class="rettyp">OutputBuffer</span> <a class="symbol _function" name="BufferedOutput.create" href="htmlsrc/tango.io.stream.Buffered.html#L912">create</a><span class="params">(OutputStream <em>stream</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.create" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Attempts to share an upstream BufferedOutput, and creates a new
+                instance where there's not a shared one available.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>stream</em></td><td>An output stream.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Where an upstream instance is visible it will be returned.
+                Otherwise, a new instance is created based upon the bufferSize
+                exposed by the associated conduit</div></dd>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="BufferedOutput.slice" href="htmlsrc/tango.io.stream.Buffered.html#L944">slice</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.slice" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Retrieve the valid content.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A void[] slice of the buffer.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Return a void[] slice of the buffer, from the current position
+                up to the limit of valid content. The content remains in the
+                buffer for future extraction.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedOutput.write" href="htmlsrc/tango.io.stream.Buffered.html#L967">write</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.write" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Emulate OutputStream.write().</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>src</em></td><td>The content to write.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">Return the number of bytes written, which may be less than
+                provided (conceptually).</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Appends src content to the buffer, flushing to an attached
+                conduit as necessary. An IOException is thrown upon write
+                failure.</div></dd>
+<dt class="decl"><span class="rettyp">BufferedOutput</span> <a class="symbol _function" name="BufferedOutput.append" href="htmlsrc/tango.io.stream.Buffered.html#L990">append</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.append" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append content.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>src</em></td><td>The content to _append.
+<p class="bl"></p>
+                Returns a chaining reference if all content was written.
+                Throws an IOException indicating Eof or Eob if not.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Append an array to this buffer, and flush to the
+                conduit as necessary. This is often used in lieu of
+                a Writer.</div></dd>
+<dt class="decl"><span class="rettyp">BufferedOutput</span> <a class="symbol _function" name="BufferedOutput.append:2" href="htmlsrc/tango.io.stream.Buffered.html#L1013">append</a><span class="params">(const(void)* <em>src</em>, size_t <em>length</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.append:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append content.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>src</em></td><td>The content to _append.</td></tr>
+<tr><td><em>length</em></td><td>The number of bytes in src.
+<p class="bl"></p>
+                Returns a chaining reference if all content was written.
+                Throws an IOException indicating Eof or Eob if not.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Append an array to this buffer, and flush to the
+                conduit as necessary. This is often used in lieu of
+                a Writer.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedOutput.writable" href="htmlsrc/tango.io.stream.Buffered.html#L1050">writable</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.writable" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Available space.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Return count of _writable bytes available in buffer. This is
+                calculated as capacity() - limit().</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedOutput.limit" href="htmlsrc/tango.io.stream.Buffered.html#L1070">limit</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.limit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Access buffer limit.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns the limit of readable content within this buffer.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Each buffer has a capacity, a limit, and a position. The
+                capacity is the maximum content a buffer can contain, limit
+                represents the extent of valid content, and position marks
+                the current read location.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedOutput.capacity" href="htmlsrc/tango.io.stream.Buffered.html#L1090">capacity</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.capacity" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Access buffer capacity.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns the maximum capacity of this buffer.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Each buffer has a capacity, a limit, and a position. The
+                capacity is the maximum content a buffer can contain, limit
+                represents the extent of valid content, and position marks
+                the current read location.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="BufferedOutput.truncate" href="htmlsrc/tango.io.stream.Buffered.html#L1105">truncate</a><span class="params">(size_t <em>length</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.truncate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Truncate buffer content.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Truncate the buffer within its extent. Returns true if
+                the new length is valid, false otherwise.</div></dd>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="BufferedOutput.convert" href="htmlsrc/tango.io.stream.Buffered.html#L1123">convert</a><span class="tparams">(<em>T</em>)</span><span class="params">(void[] <em>x</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.convert" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Cast to a target type without invoking the wrath of the
+                runtime checks for misalignment. Instead, we truncate the
+                array length.</div></div></dd>
+<dt class="decl"><span class="rettyp">BufferedOutput</span> <a class="symbol _function" name="BufferedOutput.flush" href="htmlsrc/tango.io.stream.Buffered.html#L1141">flush</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.flush" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Flush all buffer content to the specific conduit.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Flush the contents of this buffer. This will block until
+                all content is actually flushed via the associated conduit,
+                whereas drain() will not.
+<p class="bl"></p>
+                Throws an IOException on premature Eof.</div></dd>
+<dt class="decl"><span class="rettyp">BufferedOutput</span> <a class="symbol _function" name="BufferedOutput.copy" href="htmlsrc/tango.io.stream.Buffered.html#L1171">copy</a><span class="params">(InputStream <em>src</em>, size_t <em>max</em> = <span class="defval">-<span class="n">1</span></span>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.copy" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Copy content via this buffer from the provided src
+                conduit.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The src conduit has its content transferred through
+                this buffer via a series of fill &amp; drain operations,
+                until there is no more content available. The buffer
+                content should be explicitly flushed by the caller.
+<p class="bl"></p>
+                Throws an IOException on premature Eof.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedOutput.drain" href="htmlsrc/tango.io.stream.Buffered.html#L1202">drain</a><span class="params">(OutputStream <em>dst</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.drain" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Drain buffer content to the specific conduit.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns the number of bytes written, or Eof.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Write as much of the buffer that the associated conduit
+                can consume. The conduit is not obliged to consume all
+                content, so some may remain within the buffer.</div></dd>
+<dt class="decl"><span class="rettyp">BufferedOutput</span> <a class="symbol _function" name="BufferedOutput.clear" href="htmlsrc/tango.io.stream.Buffered.html#L1221">clear</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clear buffer content.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Reset 'position' and 'limit' to zero. This effectively
+                clears all content from the buffer.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="BufferedOutput.output:2" href="htmlsrc/tango.io.stream.Buffered.html#L1233">output</a><span class="params">(OutputStream <em>sink</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.output:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the output stream.</div></div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="BufferedOutput.seek" href="htmlsrc/tango.io.stream.Buffered.html#L1246">seek</a><span class="params">(long <em>offset</em>, Anchor <em>start</em> = <span class="defval"><span class="i">Begin</span></span>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.seek" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Seek within this stream. Any and all buffered output is
+                disposed before the upstream is invoked. Use an explicit
+                flush() to emit content prior to seeking.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BufferedOutput.writer" href="htmlsrc/tango.io.stream.Buffered.html#L1272">writer</a><span class="params">(<span class="k">scope</span> size_t delegate(void[]) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Buffered.html#BufferedOutput.writer" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write into this buffer.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>dg</em></td><td>The callback to provide buffer access to.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns whatever the delegate returns.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Exposes the raw data buffer at the current _write position,
+                The delegate is provided with a void[] representing space
+                available within the buffer at the current _write position.
+<p class="bl"></p>
+                The delegate should return the appropriate number of bytes
+                if it writes valid content, or Eof on error.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:09 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

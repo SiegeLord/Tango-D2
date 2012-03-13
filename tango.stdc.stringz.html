@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.stdc.stringz</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.stdc.stringz">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.stdc.stringz"><a href="htmlsrc/tango.stdc.stringz.html" class="symbol">tango.stdc.stringz</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: October 2006</div>
+<p class="sec_header">Author:</p><div class="cmnt">Keinfarbton &amp; Kris</div>
+<dl>
+<dt class="decl"><span class="rettyp">inout(char)*</span> <a class="symbol _function" name="toStringz" href="htmlsrc/tango.stdc.stringz.html#L23">toStringz</a><span class="params">(inout(char)[] <em>s</em>, char[] <em>tmp</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.stdc.stringz.html#toStringz" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert array of chars to a C-style 0 terminated string.
+ Providing a tmp will use that instead of the heap, where
+ appropriate.
+ 
+ Warning, don't read from the memory pointed to in the tmp variable after calling this function.</div></div></dd>
+<dt class="decl"><span class="rettyp">inout(char)*[]</span> <a class="symbol _function" name="toStringz:2" href="htmlsrc/tango.stdc.stringz.html#L56">toStringz</a><span class="params">(char[] <em>tmp</em>, inout(char)*[] <em>dst</em>, inout(char)[][] <em>strings</em>...)</span> <a href="tango.stdc.stringz.html#toStringz:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert a series of char[] to C-style 0 terminated strings, using 
+ tmp as a workspace and dst as a place to put the resulting char*'s.
+ This is handy for efficiently converting multiple strings at once.</div></div>
+<div class="cmnt">Returns a populated slice of dst
+ 
+ Warning, don't read from the memory pointed to in the tmp variable after calling this function.</div>
+<p class="sec_header">Since:</p><div class="cmnt">0.99.7</div></dd>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="fromStringz" href="htmlsrc/tango.stdc.stringz.html#L78">fromStringz</a><span class="params">(inout(char)* <em>s</em>)</span> <a href="tango.stdc.stringz.html#fromStringz" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert a C-style 0 terminated string to an array of char</div></div></dd>
+<dt class="decl"><span class="rettyp">inout(wchar)*</span> <a class="symbol _function" name="toString16z" href="htmlsrc/tango.stdc.stringz.html#L87">toString16z</a><span class="params">(inout(wchar)[] <em>s</em>)</span> <a href="tango.stdc.stringz.html#toString16z" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert array of wchars s[] to a C-style 0 terminated string.</div></div></dd>
+<dt class="decl"><span class="rettyp">inout(wchar)[]</span> <a class="symbol _function" name="fromString16z" href="htmlsrc/tango.stdc.stringz.html#L99">fromString16z</a><span class="params">(inout(wchar)* <em>s</em>)</span> <a href="tango.stdc.stringz.html#fromString16z" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert a C-style 0 terminated string to an array of wchar</div></div></dd>
+<dt class="decl"><span class="rettyp">inout(dchar)*</span> <a class="symbol _function" name="toString32z" href="htmlsrc/tango.stdc.stringz.html#L108">toString32z</a><span class="params">(inout(dchar)[] <em>s</em>)</span> <a href="tango.stdc.stringz.html#toString32z" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert array of dchars s[] to a C-style 0 terminated string.</div></div></dd>
+<dt class="decl"><span class="rettyp">inout(dchar)[]</span> <a class="symbol _function" name="fromString32z" href="htmlsrc/tango.stdc.stringz.html#L120">fromString32z</a><span class="params">(inout(dchar)* <em>s</em>)</span> <a href="tango.stdc.stringz.html#fromString32z" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert a C-style 0 terminated string to an array of dchar</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="strlenz" href="htmlsrc/tango.stdc.stringz.html#L129">strlenz</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T)* <em>s</em>)</span> <a href="tango.stdc.stringz.html#strlenz" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">portable strlen</div></div></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2006 Keinfarbton. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:16 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>
