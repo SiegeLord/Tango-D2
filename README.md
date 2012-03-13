@@ -13,6 +13,8 @@ Modules that have not been yet ported are located in the `unported` folder. All 
 
 I do the porting on Linux, so that is the most tested platform. It generally should also compile on Windows, but might not pass all the unit-tests, since DMD does weird things with unittests on Windows. All other platforms probably don't compile at all.
 
+Documentation can be found here: http://siegelord.github.com/Tango-D2/
+
 Breaking changes from D1
 --------
 
