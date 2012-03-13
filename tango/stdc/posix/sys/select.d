@@ -199,7 +199,7 @@ else version( FreeBSD )
 
     extern (D) int  FD_ISSET( int fd, fd_set* fdset )
     {
-        return fdset.fds_bits[__FDELT( fd )] & __FDMASK( fd );
+        return cast(int) (fdset.fds_bits[__FDELT( fd )] & __FDMASK( fd ));
     }
 
     extern (D) void FD_SET( int fd, fd_set* fdset )
