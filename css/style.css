@@ -1,36 +1,43 @@
 @charset "utf-8";
 /* Author: Aziz Köksal */
-a { color: DarkBlue; }
-a:visited { color: DarkSlateBlue; }
-body { margin: 0; }
-body.progress { cursor: progress; }
-
-
-#navbar {
-  position:fixed;
-  top:0;
-  left:0;
-  height:100%;
-  overflow: hidden;
-  background-color:#CCDDCC;
-  box-shadow: 7px 0px 10px rgba(0,0,0,0.4);
+* { color: black; }
+body {
+	margin: 0; 
+	/*new:*/
+	font-family: verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
+	padding: 8px 20px;
 }
 
 #kandil-content {
-  padding: 0em 1.2em;
+  margin: 0.5em;
 }
 
 #kandil-footer {
   margin: 0.5em 0;
-  font-size: 0.9em;
+  font-size: 0.6em;
+  /*new:*/
+  color: #666666;
+  background-color: #EEFFEE;
+  border: 1px solid #A0A0A0;
+}
+
+/*new:*/
+#kandil-footer p { margin: 0.2em 0.5em; }
+
+#kandil-content.left_margin { /* To make place for the navbar. */
+  margin-left: 265px;
 }
 
 .splitbar {
-  width: 4px;
+/*width: 4px;*/
   height: 100%;
   position: fixed;
   top: 0;
-  background-color: #308430;
+  left: 250px;
+   /*background-color: #308430;*/
+  /*new:*/
+   width: 2px;
+  background-color: DarkGray;
 }
 
 .splitbar, body.moving_splitbar {
@@ -39,101 +46,87 @@ body.progress { cursor: progress; }
 }
 
 .splitbar > .handle {
-  border: 1px dotted #00DD00;
+/*border: 1px dotted #00DD00;*/
   height: 15%;
   position: absolute;
   top: 42.5%;
   bottom: 42.5%;
   margin-left: 1px;
+/*new:*/
+  border: 1px dotted LightSteelBlue;
 }
 
 .splitbar:hover, .splitbar.moving {
-  background-color: #60A460;
+/*background-color: #60A460;*/
+  /*new:*/
+  background-color: LightSteelBlue;
 }
 
-#panels {
-  font-size: 0.95em;
-  padding: 2px;
-}
-
-#panels > div {
+#navbar {
+  width: 250px;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+/*background-color: #CDC;*/
   overflow: hidden;
 }
 
-div.scroll { /* The panel that should display scroll bars. */
-  margin-top: 1px;
-  overflow: auto;
-  border: 1px inset DarkGreen;
-  border-radius: 2px;
-  background-color: white;
-}
-
-div.offsetTop {
-  position: relative;
+#panels {
+/*border-top: 2px outset DarkGreen;*/
+  font-size: 0.95em;
 }
 
 #navtabs {
-  padding: 0.5em 0em 0em 0em;
-  text-align: center;
-  border-bottom: 2px inset DarkGreen;
+  margin: 0.5em 0em 0em 0em;
+/*text-align: center;*/
+  /*new:*/
+  text-align: left;
+  font-weight: bold;
 }
 
 #navtabs span {
   margin: 0.1em;
   padding: 0.2em;
-  padding-bottom: 0;
-  border: 1px outset #586;
-  border-bottom: none;
-  color: #586;
-  background-color: #C0D9AF;
+/*padding-bottom: 0;
+  border: 1px outset Green;
+border-bottom: none;*/
+  color: Gray;
+  background-color: #EFE;
   white-space: nowrap;
   cursor: pointer;
-  border-radius: 4px 4px 0 0;
-  text-shadow: 0 -1px 2px rgba(0,0,0,0.1);
-  box-shadow: 1px 0px 2px rgba(0,0,0,0.4);
+  /*new:*/
+  padding-bottom: 2px;
+  background-color: #F0F0F0;
 }
 #navtabs span > img {
   vertical-align: top;
 }
 
 #navtabs span.current, #navtabs span:hover {
-  padding-bottom: 2px;
-  color: White;
-  background-color: #526F35;
-  text-shadow: 0 -1px 2px rgba(0,0,0,0.8);
+/*padding-bottom: 2px;
+  color: GhostWhite;
+  background-color: #474;
+*/
+/*new:*/
+  color: Black;
 }
 
-/* The filter box. */
-.filter_elem {
-  border: 1px inset DarkGreen;
-  border-radius: 6px 2px 2px 6px;
-  background-color:white;
-}
-
-.filter_elem > table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-.filter_elem img {
-  vertical-align: middle;
-}
-
-.filter_elem img:hover {
-  background-image: url("../img/icon_magnifier.png");
-}
-
-.filter_elem input.filterbox {
-  margin: 0;
-  padding: 0;
-  border: none;
-  width: 100%;
-  color: black;
-}
+/* Use absolute positioning so that > ul can show scrollbars on overflow. */
+#apipanel, #modpanel { position: absolute; height: 100%; width: 100%; }
 
 /* Treeview */
-ul.tview {
+#panels .tview {
+  position: absolute;
+  top: 23px;
+  bottom: 26px;
+  left: 0; right: 0;
+
+  overflow: auto;
   margin: 1px;
+  padding: 0.1em;
+  border: 1px inset DarkGreen;
+  background-color: white;
 }
 
 .tview li sub {
@@ -180,9 +173,9 @@ ul.tview {
 .tview .closed > ul {
   display: none;
 }
-.tview .selected > label {
+/*.tview .selected > label {
   background-color: YellowGreen;
-}
+}*/
 .tview, .tview ul {
   margin-left: 16px;
   padding-left: 0;
@@ -219,12 +212,29 @@ ul.tview {
   display: block;
 }
 
+input.filterbox {
+/*  margin: 1px;*/
+  padding-left: 17px;
+/*  border: 1px inset DarkGreen;*/
+  width: 91.2%;
+  color: black;
+  background: white url("../img/icon_magnifier.png") no-repeat;
+/*new:*/
+  margin: 0.2em 0.2em 0em 0.2em;
+  border: 1px inset Gray;
+}
+
+.konqueror input.filterbox {
+  /* Konqueror doesn't support background images for inputs properly. */
+  padding-left: 0;
+  width: 98.2%;
+  background: white;
+}
+
 .tooltip {
   padding: 0.3em;
   background-color: LightGoldenRodYellow;
   border: 1px solid PaleGoldenRod;
-  border-radius: 2px;
-  box-shadow: 3px 3px 5px rgba(0,0,0,0.4);
 }
 
 /* Content */
@@ -235,9 +245,13 @@ ul.tview {
 
 .decl {
   font-family: monospace;
-  font-size: 1em;
+ /* font-size: 1em;*/
   font-weight: normal;
   margin: 0.5em 0;
+/*new:*/
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #000000;
 }
 
 .decl:target { /* Highlight targetted decls */
@@ -256,38 +270,33 @@ ul.tview {
   border-top: 1px dashed Gray;
 }
 
-.plink, .plink:visited, .srclink, .srclink:visited {
+.symlink, .srclink{
   padding: 0em 0.2em;
   text-decoration: none;
   color: DarkRed;
 }
 
-.plink, .srclink {
+.decl .symlink, .decl .srclink {
   display: none;
 }
 
-.decl:hover .plink, .plink:focus,
-.decl:hover .srclink, .srclink:focus,
-h1.module:hover .srclink {
+.decl:hover .symlink, .symlink:focus,
+.decl:hover .srclink, .srclink:focus {
   display: inline;
 }
 
-.plink:hover, .srclink:hover {
+.symlink:hover, .srclink:hover {
   border: 1px outset #300;
   color: white;
   background-color: DarkRed;
 }
 
-.symbol, .symbol:visited {
-  color: ForestGreen;
+.symbol {
+/*  color: ForestGreen;*/
   text-decoration: none;
   font-weight: bold;
-  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
-}
-
-.decl:hover > .symbol,
-.symbol:target {
-  border-bottom: 1px solid ForestGreen;
+/*new:*/
+  color: #000099;
 }
 
 .summary {
@@ -295,14 +304,15 @@ h1.module:hover .srclink {
 }
 
 .params em, .tparams em {
-  font-family: monospace;
   font-weight: normal;
-  color: OliveDrab;
+ /*color: OliveDrab;*/
+ /*new:*/
+  color: #331200;
+  font-style: italic;
 }
 
 .attrs {
   font-size: 0.8em;
-  color: #555;
 }
 
 table.params td {
@@ -310,12 +320,12 @@ table.params td {
 }
 
 table.params td:first-child {
-  padding-right: 0.5em;
+  padding-right: 0.2em;
   text-align: right;
 }
 
 #kandil-loading, .ajaxerror {
-  background-color: White;
+  background-color: white;
   position: fixed;
   margin: 0.5em;
   padding: 0.2em;
@@ -332,7 +342,11 @@ table.params td:first-child {
 .d_code {
   margin: 0.5em 0em;
   border: 1px dotted Gray;
-  border-collapse: collapse;
+/*border: 1px dotted Gray;*/
+   border-collapse: collapse;
+  /*new:*/
+  border: 1px dotted #99CC99;
+  background-color:#EEFFEE;
 }
 .d_code pre {
   margin: 0.1em 0.2em;
@@ -352,55 +366,52 @@ table.params td:first-child {
   color: Gray;
 }
 
+dl .loaded_code {
+  max-height:400px; 
+  margin:0.5em 2.5em; 
+}
+
 .loaded_code .d_code {
   margin: 0;
   border: none;
 }
 
 .loaded_code {
-  margin: 0.5em 2.5em;
+  margin: 0.5em 0.1em;
   border: 1px dotted Gray;
-  max-height: 300px;
+  max-height: 1000px;
   overflow: auto;
 }
 
-.d_codelines a {
+.loaded_code .d_codelines a {
   color: DimGray;
   text-decoration: none;
-  display: inline-block;
-  width: 100%;
 }
 
-.d_codelines a:hover {
+.loaded_code .d_codelines a:hover {
   text-decoration: underline;
 }
 
-.d_codelines a:target {
-  background-color: yellow;
-}
-
 /* Number */
-/*.d_code*/ .n { color: teal; }
+.d_code .n { color: teal; }
 /* Keyword */
-/*.d_code*/ .k, .kw { color: darkblue; font-weight: bold; }
+.d_code .k { color: darkblue; font-weight: bold; }
 /* Line, block and nested comments */
-.d_code .lc, .d_code .bc, .d_code .nc { color: gray; }
+.d_code .lc, .bc, .nc { color: gray; }
 /* Identifier */
-/*.d_code*/ .i { color: black; }
+.d_code .i { color: black; }
 /* String literal */
-/*.d_code*/ .sl { color: firebrick; }
+.d_code .sl { /*color: firebrick;*/ /*new*/ color: navy; }
 /* Character literal */
-/*.d_code*/ .cl { color: purple; }
+.d_code .cl { color: purple; }
 /* Special tokens */
-/*.d_code*/ .st { color: green; font-weight: bold; }
+.d_code .st { color: green; font-weight: bold; }
 /* #line, hash line */
 .d_code .hl { color: green; }
 /* filespec (e.g. #line number [filespec]) */
 .d_code .fs { color: purple;}
-/* The first line that starts with "#!" is called a "shebang" */
+/* When the first line starts with "#!" it's a "shebang" */
 .d_code .shebang { color: gray; }
-/* Escape sequences. */
-.d_code .es { color: teal; }
 
 .d_code .d.Module .i, .d_code .d.Import .i { color: blue; }
 .d_code .t.Identifier .i, .d_code .TemplateTypeParameter .i { color: DarkRed; }
