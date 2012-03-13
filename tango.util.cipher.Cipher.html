@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.cipher.Cipher</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.cipher.Cipher">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.cipher.Cipher"><a href="htmlsrc/tango.util.cipher.Cipher.html" class="symbol">tango.util.cipher.Cipher</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Authors:</p><div class="cmnt">Thomas Dixon</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Cipher" href="htmlsrc/tango.util.cipher.Cipher.html#L12">Cipher</a> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.util.cipher.Cipher.html#Cipher" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Base symmetric cipher class</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Cipher.update" href="htmlsrc/tango.util.cipher.Cipher.html#L30">update</a><span class="params">(const(void[]) <em>input_</em>, void[] <em>output_</em>)</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.util.cipher.Cipher.html#Cipher.update" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Process a block of plaintext data from the input array
+ and place it in the output array.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input_</em></td><td>Array containing input data.</td></tr>
+<tr><td><em>output_</em></td><td>Array to hold the output data.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The amount of encrypted data processed.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Cipher.name" href="htmlsrc/tango.util.cipher.Cipher.html#L33">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">abstract</span>]</span> <a href="tango.util.cipher.Cipher.html#Cipher.name" class="plink">¶</a></dt>
+<dd class="ddef">
+<p class="sec_header">Returns:</p><div class="cmnt">The name of the algorithm of this cipher.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Cipher.reset" href="htmlsrc/tango.util.cipher.Cipher.html#L36">reset</a><span class="params">()</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.util.cipher.Cipher.html#Cipher.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reset cipher to its state immediately subsequent the last init.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Cipher.invalid" href="htmlsrc/tango.util.cipher.Cipher.html#L44">invalid</a><span class="params">(const(char[]) <em>msg</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.util.cipher.Cipher.html#Cipher.invalid" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">throw an InvalidArgument exception</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>msg</em></td><td>message to associate with the exception</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Cipher.initialized" href="htmlsrc/tango.util.cipher.Cipher.html#L50">initialized</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.util.cipher.Cipher.html#Cipher.initialized" class="plink">¶</a></dt>
+<dd class="ddef">
+<p class="sec_header">Returns:</p><div class="cmnt">Whether or not the cipher has been initialized.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="BlockCipher" href="htmlsrc/tango.util.cipher.Cipher.html#L59">BlockCipher</a> : <span class="bclass">Cipher</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.util.cipher.Cipher.html#BlockCipher" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Interface for a standard block cipher.</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="BlockCipher.blockSize" href="htmlsrc/tango.util.cipher.Cipher.html#L62">blockSize</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.util.cipher.Cipher.html#BlockCipher.blockSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<p class="sec_header">Returns:</p><div class="cmnt">The block size in bytes that this cipher will operate on.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="StreamCipher" href="htmlsrc/tango.util.cipher.Cipher.html#L67">StreamCipher</a> : <span class="bclass">Cipher</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.util.cipher.Cipher.html#StreamCipher" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Interface for a standard stream cipher.</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">ubyte</span> <a class="symbol _function" name="StreamCipher.returnByte" href="htmlsrc/tango.util.cipher.Cipher.html#L77">returnByte</a><span class="params">(ubyte <em>input</em>)</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.util.cipher.Cipher.html#StreamCipher.returnByte" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Process one byte of input.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>Byte to XOR with keystream.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">One byte of input XORed with the keystream.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="BlockCipherPadding" href="htmlsrc/tango.util.cipher.Cipher.html#L82">BlockCipherPadding</a> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.util.cipher.Cipher.html#BlockCipherPadding" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Base padding class for implementing block padding schemes.</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="BlockCipherPadding.name" href="htmlsrc/tango.util.cipher.Cipher.html#L85">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">abstract</span>]</span> <a href="tango.util.cipher.Cipher.html#BlockCipherPadding.name" class="plink">¶</a></dt>
+<dd class="ddef">
+<p class="sec_header">Returns:</p><div class="cmnt">The name of the padding scheme implemented.</div></dd>
+<dt class="decl"><span class="rettyp">ubyte[]</span> <a class="symbol _function" name="BlockCipherPadding.pad" href="htmlsrc/tango.util.cipher.Cipher.html#L95">pad</a><span class="params">(uint <em>len</em>)</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.util.cipher.Cipher.html#BlockCipherPadding.pad" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generate padding to a specific length.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>len</em></td><td>Length of padding to generate</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The padding bytes to be added.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="BlockCipherPadding.unpad" href="htmlsrc/tango.util.cipher.Cipher.html#L108">unpad</a><span class="params">(const(void[]) <em>input_</em>)</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.util.cipher.Cipher.html#BlockCipherPadding.unpad" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the number of pad bytes in the block.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input_</em></td><td>Padded block of which to count the pad bytes.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of pad bytes in the block.</div>
+<p class="sec_header">Throws:</p><div class="cmnt">dcrypt.crypto.errors.InvalidPaddingError if 
+         pad length cannot be discerned.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="ByteConverter" href="htmlsrc/tango.util.cipher.Cipher.html#L136">ByteConverter</a> <a href="tango.util.cipher.Cipher.html#ByteConverter" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts between integral types and unsigned byte arrays</div></div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="ByteConverter.LittleEndian" href="htmlsrc/tango.util.cipher.Cipher.html#L142">LittleEndian</a> <a href="tango.util.cipher.Cipher.html#ByteConverter.LittleEndian" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Conversions between little endian integrals and bytes</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="ByteConverter.LittleEndian.to" href="htmlsrc/tango.util.cipher.Cipher.html#L154">to</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(void[]) <em>x_</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.util.cipher.Cipher.html#ByteConverter.LittleEndian.to" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts the supplied array to integral type T</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>x_</em></td><td>The supplied array of bytes (ubytes, bytes, chars, whatever)</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A integral of type T created with the supplied bytes placed
+     in the specified byte order.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ByteConverter.LittleEndian.from" href="htmlsrc/tango.util.cipher.Cipher.html#L188">from</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>input</em>, ubyte[] <em>output</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.util.cipher.Cipher.html#ByteConverter.LittleEndian.from" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts the supplied integral to an array of unsigned bytes.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>Integral to convert to bytes</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">Integral input of type T split into its respective bytes
+     with the bytes placed in the specified byte order.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="ByteConverter.BigEndian" href="htmlsrc/tango.util.cipher.Cipher.html#L210">BigEndian</a> <a href="tango.util.cipher.Cipher.html#ByteConverter.BigEndian" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Conversions between big endian integrals and bytes</div></div>
+</dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (C) Thomas Dixon 2008. All rights reserved.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:21 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.stream.Format</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.stream.Format">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.stream.Format"><a href="htmlsrc/tango.io.stream.Format.html" class="symbol">tango.io.stream.Format</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: Oct 2007</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="FormatOutput" href="htmlsrc/tango.io.stream.Format.html#L98">FormatOutput</a><span class="tparams">(<em>T</em>)</span> : <span class="bclass">OutputFilter</span> <a href="tango.io.stream.Format.html#FormatOutput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A bridge between a Layout instance and a stream. This is used for
+        the Stdout &amp; Stderr globals, but can be used for general purpose
+        buffer-formatting as desired. The Template type 'T' dictates the
+        text arrangement within the target buffer ~ one of char, wchar or
+        dchar (UTF8, UTF16, or UTF32).</div></div>
+<div class="cmnt">FormatOutput exposes this style of usage:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+<a href="#L12_ex1" name="L12_ex1">12</a>
+<a href="#L13_ex1" name="L13_ex1">13</a>
+<a href="#L14_ex1" name="L14_ex1">14</a>
+<a href="#L15_ex1" name="L15_ex1">15</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">print</span> = <span class="k">new</span> <span class="i">FormatOutput</span>!(<span class="k">char</span>) (...);
+
+<span class="i">print</span> (<span class="sl">"hello"</span>);                    <span class="lc">// =&gt; hello</span>
+<span class="i">print</span> (<span class="n">1</span>);                          <span class="lc">// =&gt; 1</span>
+<span class="i">print</span> (<span class="n">3.14</span>);                       <span class="lc">// =&gt; 3.14</span>
+<span class="i">print</span> (<span class="cl">'b'</span>);                        <span class="lc">// =&gt; b</span>
+<span class="i">print</span> (<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>);                    <span class="lc">// =&gt; 1, 2, 3</span>
+<span class="i">print</span> (<span class="sl">"abc"</span>, <span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>);             <span class="lc">// =&gt; abc, 1, 2, 3</span>
+<span class="i">print</span> (<span class="sl">"abc"</span>, <span class="n">1</span>, <span class="n">2</span>) (<span class="sl">"foo"</span>);        <span class="lc">// =&gt; abc, 1, 2foo</span>
+<span class="i">print</span> (<span class="sl">"abc"</span>) (<span class="sl">"def"</span>) (<span class="n">3.14</span>);       <span class="lc">// =&gt; abcdef3.14</span>
+
+<span class="i">print</span>.<span class="i">format</span> (<span class="sl">"abc {}"</span>, <span class="n">1</span>);         <span class="lc">// =&gt; abc 1</span>
+<span class="i">print</span>.<span class="i">format</span> (<span class="sl">"abc {}:{}"</span>, <span class="n">1</span>, <span class="n">2</span>);   <span class="lc">// =&gt; abc 1:2</span>
+<span class="i">print</span>.<span class="i">format</span> (<span class="sl">"abc {1}:{0}"</span>, <span class="n">1</span>, <span class="n">2</span>); <span class="lc">// =&gt; abc 2:1</span>
+<span class="i">print</span>.<span class="i">format</span> (<span class="sl">"abc "</span>, <span class="n">1</span>);           <span class="lc">// =&gt; abc</span></pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Note that the last example does not throw an exception. There
+        are several use-cases where dropping an argument is legitimate,
+        so we're currently not enforcing any particular trap mechanism.
+<p class="bl"></p>
+        Flushing the output is achieved through the flush() method, or
+        via an empty pair of parens:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+<a href="#L3_ex2" name="L3_ex2">3</a>
+<a href="#L4_ex2" name="L4_ex2">4</a>
+<a href="#L5_ex2" name="L5_ex2">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">print</span> (<span class="sl">"hello world"</span>) ();
+<span class="i">print</span> (<span class="sl">"hello world"</span>).<span class="i">flush</span>;
+
+<span class="i">print</span>.<span class="i">format</span> (<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>) ();
+<span class="i">print</span>.<span class="i">format</span> (<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>).<span class="i">flush</span>;</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Special character sequences, such as "\n", are written directly to
+        the output without any translation (though an output-filter could
+        be inserted to perform translation as required). Platform-specific
+        newlines are generated instead via the newline() method, which also
+        flushes the output when configured to do so:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+<a href="#L3_ex3" name="L3_ex3">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">print</span> (<span class="sl">"hello "</span>) (<span class="sl">"world"</span>).<span class="i">newline</span>;
+<span class="i">print</span>.<span class="i">format</span> (<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>).<span class="i">newline</span>;
+<span class="i">print</span>.<span class="i">formatln</span> (<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        The format() method supports the range of formatting options
+        exposed by tango.text.convert.Layout and extensions thereof;
+        including the full I18N extensions where configured in that
+        manner. To create a French instance of FormatOutput:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+<a href="#L2_ex4" name="L2_ex4">2</a>
+<a href="#L3_ex4" name="L3_ex4">3</a>
+<a href="#L4_ex4" name="L4_ex4">4</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">text</span>.<span class="i">locale</span>.<span class="i">Locale</span>;
+
+<span class="k">auto</span> <span class="i">locale</span> = <span class="k">new</span> <span class="i">Locale</span> (<span class="i">Culture</span>.<span class="i">getCulture</span> (<span class="sl">"fr-FR"</span>));
+<span class="k">auto</span> <span class="i">print</span> = <span class="k">new</span> <span class="i">FormatOutput</span>!(<span class="k">char</span>) (<span class="i">locale</span>, ...);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Note that FormatOutput is *not* intended to be thread-safe.</div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> print <a class="symbol _alias" name="FormatOutput.opCall" href="htmlsrc/tango.io.stream.Format.html#L106">opCall</a> <a href="tango.io.stream.Format.html#FormatOutput.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">opCall -&gt; print</div></div></dd>
+<dt class="decl"><span class="kw">alias</span> newline <a class="symbol _alias" name="FormatOutput.nl" href="htmlsrc/tango.io.stream.Format.html#L107">nl</a> <a href="tango.io.stream.Format.html#FormatOutput.nl" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">nl -&gt; newline</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="FormatOutput.this" href="htmlsrc/tango.io.stream.Format.html#L121">this</a><span class="params">(OutputStream <em>output</em>, const(T[]) <em>eol</em> = <span class="defval"><span class="i">Eol</span></span>)</span> <a href="tango.io.stream.Format.html#FormatOutput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a FormatOutput instance, tying the provided stream
+                to a layout formatter.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="FormatOutput.this:2" href="htmlsrc/tango.io.stream.Format.html#L133">this</a><span class="params">(Layout!(T) <em>convert</em>, OutputStream <em>output</em>, const(T[]) <em>eol</em> = <span class="defval"><span class="i">Eol</span></span>)</span> <a href="tango.io.stream.Format.html#FormatOutput.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a FormatOutput instance, tying the provided stream
+                to a layout formatter.</div></div></dd>
+<dt class="decl"><span class="rettyp">FormatOutput</span> <a class="symbol _function" name="FormatOutput.format" href="htmlsrc/tango.io.stream.Format.html#L149">format</a><span class="params">(const(T[]) <em>fmt</em>, ...)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Format.html#FormatOutput.format" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Layout using the provided formatting specification.</div></div></dd>
+<dt class="decl"><span class="rettyp">FormatOutput</span> <a class="symbol _function" name="FormatOutput.formatln" href="htmlsrc/tango.io.stream.Format.html#L173">formatln</a><span class="params">(const(T[]) <em>fmt</em>, ...)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Format.html#FormatOutput.formatln" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Layout using the provided formatting specification.</div></div></dd>
+<dt class="decl"><span class="rettyp">FormatOutput</span> <a class="symbol _function" name="FormatOutput.print" href="htmlsrc/tango.io.stream.Format.html#L198">print</a><span class="params">(...)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Format.html#FormatOutput.print" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Unformatted layout, with commas inserted between args.
+                Currently supports a maximum of 24 arguments.</div></div></dd>
+<dt class="decl"><span class="rettyp">FormatOutput</span> <a class="symbol _function" name="FormatOutput.newline" href="htmlsrc/tango.io.stream.Format.html#L233">newline</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Format.html#FormatOutput.newline" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Output a newline and optionally flush.</div></div></dd>
+<dt class="decl"><span class="rettyp">FormatOutput</span> <a class="symbol _function" name="FormatOutput.flush" href="htmlsrc/tango.io.stream.Format.html#L248">flush</a><span class="params">(bool <em>yes</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Format.html#FormatOutput.flush" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Control implicit flushing of newline(), where true enables
+                flushing. An explicit flush() will always flush the output.</div></div></dd>
+<dt class="decl"><span class="rettyp">OutputStream</span> <a class="symbol _function" name="FormatOutput.stream" href="htmlsrc/tango.io.stream.Format.html#L260">stream</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Format.html#FormatOutput.stream" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the associated output stream.</div></div></dd>
+<dt class="decl"><span class="rettyp">FormatOutput</span> <a class="symbol _function" name="FormatOutput.stream:2" href="htmlsrc/tango.io.stream.Format.html#L271">stream</a><span class="params">(OutputStream <em>output</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Format.html#FormatOutput.stream:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the associated output stream.</div></div></dd>
+<dt class="decl"><span class="rettyp">Layout!(T)</span> <a class="symbol _function" name="FormatOutput.layout" href="htmlsrc/tango.io.stream.Format.html#L283">layout</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Format.html#FormatOutput.layout" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the associated Layout.</div></div></dd>
+<dt class="decl"><span class="rettyp">FormatOutput</span> <a class="symbol _function" name="FormatOutput.layout:2" href="htmlsrc/tango.io.stream.Format.html#L294">layout</a><span class="params">(Layout!(T) <em>layout</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Format.html#FormatOutput.layout:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the associated Layout.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2007 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

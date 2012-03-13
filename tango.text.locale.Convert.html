@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.locale.Convert</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.locale.Convert">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.locale.Convert"><a href="htmlsrc/tango.text.locale.Convert.html" class="symbol">tango.text.locale.Convert</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: 2005</div>
+<p class="sec_header">Author:</p><div class="cmnt">John Chapman</div>
+<dl>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="formatDateTime" href="htmlsrc/tango.text.locale.Convert.html#L172">formatDateTime</a><span class="params">(char[] <em>output</em>, Time <em>dateTime</em>, const(char)[] <em>format</em>, IFormatService <em>formatService</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Convert.html#formatDateTime" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts the value of this instance to its equivalent string representation using the specified _format and culture-specific formatting information.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>format</em></td><td>A _format string.</td></tr>
+<tr><td><em>formatService</em></td><td>An IFormatService that provides culture-specific formatting information.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A string representation of the value of this instance as specified by format and formatService.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">See <a href="datetimeformat.html">Time Formatting</a> for more information about date and time formatting.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+<a href="#L12_ex1" name="L12_ex1">12</a>
+<a href="#L13_ex1" name="L13_ex1">13</a>
+<a href="#L14_ex1" name="L14_ex1">14</a>
+<a href="#L15_ex1" name="L15_ex1">15</a>
+<a href="#L16_ex1" name="L16_ex1">16</a>
+<a href="#L17_ex1" name="L17_ex1">17</a>
+<a href="#L18_ex1" name="L18_ex1">18</a>
+<a href="#L19_ex1" name="L19_ex1">19</a>
+<a href="#L20_ex1" name="L20_ex1">20</a>
+<a href="#L21_ex1" name="L21_ex1">21</a>
+<a href="#L22_ex1" name="L22_ex1">22</a>
+<a href="#L23_ex1" name="L23_ex1">23</a>
+<a href="#L24_ex1" name="L24_ex1">24</a>
+<a href="#L25_ex1" name="L25_ex1">25</a>
+<a href="#L26_ex1" name="L26_ex1">26</a>
+<a href="#L27_ex1" name="L27_ex1">27</a>
+<a href="#L28_ex1" name="L28_ex1">28</a>
+<a href="#L29_ex1" name="L29_ex1">29</a>
+<a href="#L30_ex1" name="L30_ex1">30</a>
+<a href="#L31_ex1" name="L31_ex1">31</a>
+<a href="#L32_ex1" name="L32_ex1">32</a>
+<a href="#L33_ex1" name="L33_ex1">33</a>
+<a href="#L34_ex1" name="L34_ex1">34</a>
+<a href="#L35_ex1" name="L35_ex1">35</a>
+<a href="#L36_ex1" name="L36_ex1">36</a>
+<a href="#L37_ex1" name="L37_ex1">37</a>
+<a href="#L38_ex1" name="L38_ex1">38</a>
+<a href="#L39_ex1" name="L39_ex1">39</a>
+<a href="#L40_ex1" name="L40_ex1">40</a>
+<a href="#L41_ex1" name="L41_ex1">41</a>
+<a href="#L42_ex1" name="L42_ex1">42</a>
+<a href="#L43_ex1" name="L43_ex1">43</a>
+<a href="#L44_ex1" name="L44_ex1">44</a>
+<a href="#L45_ex1" name="L45_ex1">45</a>
+<a href="#L46_ex1" name="L46_ex1">46</a>
+<a href="#L47_ex1" name="L47_ex1">47</a>
+<a href="#L48_ex1" name="L48_ex1">48</a>
+<a href="#L49_ex1" name="L49_ex1">49</a>
+<a href="#L50_ex1" name="L50_ex1">50</a>
+<a href="#L51_ex1" name="L51_ex1">51</a>
+<a href="#L52_ex1" name="L52_ex1">52</a>
+<a href="#L53_ex1" name="L53_ex1">53</a>
+<a href="#L54_ex1" name="L54_ex1">54</a>
+<a href="#L55_ex1" name="L55_ex1">55</a>
+<a href="#L56_ex1" name="L56_ex1">56</a>
+<a href="#L57_ex1" name="L57_ex1">57</a>
+<a href="#L58_ex1" name="L58_ex1">58</a>
+<a href="#L59_ex1" name="L59_ex1">59</a>
+<a href="#L60_ex1" name="L60_ex1">60</a>
+<a href="#L61_ex1" name="L61_ex1">61</a>
+<a href="#L62_ex1" name="L62_ex1">62</a>
+<a href="#L63_ex1" name="L63_ex1">63</a>
+<a href="#L64_ex1" name="L64_ex1">64</a>
+<a href="#L65_ex1" name="L65_ex1">65</a>
+<a href="#L66_ex1" name="L66_ex1">66</a>
+<a href="#L67_ex1" name="L67_ex1">67</a>
+<a href="#L68_ex1" name="L68_ex1">68</a>
+<a href="#L69_ex1" name="L69_ex1">69</a>
+<a href="#L70_ex1" name="L70_ex1">70</a>
+<a href="#L71_ex1" name="L71_ex1">71</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Print</span>, <span class="i">tango</span>.<span class="i">text</span>.<span class="i">locale</span>.<span class="i">Core</span>, <span class="i">tango</span>.<span class="i">time</span>.<span class="i">WallClock</span>;
+
+<span class="k">void</span> <span class="i">main</span>() {
+  <span class="i">Culture</span> <span class="i">culture</span> = <span class="i">Culture</span>.<span class="i">current</span>;
+  <span class="i">Time</span> <span class="i">now</span> = <span class="i">WallClock</span>.<span class="i">now</span>;
+
+  <span class="i">Println</span>(<span class="sl">"Current date and time: %s"</span>, <span class="i">now</span>.<span class="i">toString</span>());
+  <span class="i">Println</span>();
+
+  <span class="lc">// Format the current date and time in a number of ways.</span>
+  <span class="i">Println</span>(<span class="sl">"Culture: %s"</span>, <span class="i">culture</span>.<span class="i">englishName</span>);
+  <span class="i">Println</span>();
+
+  <span class="i">Println</span>(<span class="sl">"Short date:              %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"d"</span>));
+  <span class="i">Println</span>(<span class="sl">"Long date:               %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"D"</span>));
+  <span class="i">Println</span>(<span class="sl">"Short time:              %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"t"</span>));
+  <span class="i">Println</span>(<span class="sl">"Long time:               %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"T"</span>));
+  <span class="i">Println</span>(<span class="sl">"General date short time: %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"g"</span>));
+  <span class="i">Println</span>(<span class="sl">"General date long time:  %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"G"</span>));
+  <span class="i">Println</span>(<span class="sl">"Month:                   %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"M"</span>));
+  <span class="i">Println</span>(<span class="sl">"RFC1123:                 %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"R"</span>));
+  <span class="i">Println</span>(<span class="sl">"Sortable:                %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"s"</span>));
+  <span class="i">Println</span>(<span class="sl">"Year:                    %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"Y"</span>));
+  <span class="i">Println</span>();
+
+  <span class="lc">// Display the same values using a different culture.</span>
+  <span class="i">culture</span> = <span class="i">Culture</span>.<span class="i">getCulture</span>(<span class="sl">"fr-FR"</span>);
+  <span class="i">Println</span>(<span class="sl">"Culture: %s"</span>, <span class="i">culture</span>.<span class="i">englishName</span>);
+  <span class="i">Println</span>();
+
+  <span class="i">Println</span>(<span class="sl">"Short date:              %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"d"</span>, <span class="i">culture</span>));
+  <span class="i">Println</span>(<span class="sl">"Long date:               %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"D"</span>, <span class="i">culture</span>));
+  <span class="i">Println</span>(<span class="sl">"Short time:              %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"t"</span>, <span class="i">culture</span>));
+  <span class="i">Println</span>(<span class="sl">"Long time:               %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"T"</span>, <span class="i">culture</span>));
+  <span class="i">Println</span>(<span class="sl">"General date short time: %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"g"</span>, <span class="i">culture</span>));
+  <span class="i">Println</span>(<span class="sl">"General date long time:  %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"G"</span>, <span class="i">culture</span>));
+  <span class="i">Println</span>(<span class="sl">"Month:                   %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"M"</span>, <span class="i">culture</span>));
+  <span class="i">Println</span>(<span class="sl">"RFC1123:                 %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"R"</span>, <span class="i">culture</span>));
+  <span class="i">Println</span>(<span class="sl">"Sortable:                %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"s"</span>, <span class="i">culture</span>));
+  <span class="i">Println</span>(<span class="sl">"Year:                    %s"</span>, <span class="i">now</span>.<span class="i">toString</span>(<span class="sl">"Y"</span>, <span class="i">culture</span>));
+  <span class="i">Println</span>();
+}
+
+<span class="lc">// Produces the following output:</span>
+<span class="lc">// Current date and time: 26/05/2006 10:04:57 AM</span>
+<span class="lc">//</span>
+<span class="lc">// Culture: English (United Kingdom)</span>
+<span class="lc">//</span>
+<span class="lc">// Short date:              26/05/2006</span>
+<span class="lc">// Long date:               26 May 2006</span>
+<span class="lc">// Short time:              10:04</span>
+<span class="lc">// Long time:               10:04:57 AM</span>
+<span class="lc">// General date short time: 26/05/2006 10:04</span>
+<span class="lc">// General date long time:  26/05/2006 10:04:57 AM</span>
+<span class="lc">// Month:                   26 May</span>
+<span class="lc">// RFC1123:                 Fri, 26 May 2006 10:04:57 GMT</span>
+<span class="lc">// Sortable:                2006-05-26T10:04:57</span>
+<span class="lc">// Year:                    May 2006</span>
+<span class="lc">//</span>
+<span class="lc">// Culture: French (France)</span>
+<span class="lc">//</span>
+<span class="lc">// Short date:              26/05/2006</span>
+<span class="lc">// Long date:               vendredi 26 mai 2006</span>
+<span class="lc">// Short time:              10:04</span>
+<span class="lc">// Long time:               10:04:57</span>
+<span class="lc">// General date short time: 26/05/2006 10:04</span>
+<span class="lc">// General date long time:  26/05/2006 10:04:57</span>
+<span class="lc">// Month:                   26 mai</span>
+<span class="lc">// RFC1123:                 ven., 26 mai 2006 10:04:57 GMT</span>
+<span class="lc">// Sortable:                2006-05-26T10:04:57</span>
+<span class="lc">// Year:                    mai 2006</span></pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl">immutable(char)[] <a class="symbol _variable" name="positiveNumberFormat" href="htmlsrc/tango.text.locale.Convert.html#L497">positiveNumberFormat</a> <span class="attrs">[<span class="prot">package</span>, <span class="stc">manifest</span>]</span> <a href="tango.text.locale.Convert.html#positiveNumberFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="charTerm" href="htmlsrc/tango.text.locale.Convert.html#L523">charTerm</a><span class="tparams">(<em>T</em>)</span> <span class="attrs">[<span class="prot">package</span>]</span> <a href="tango.text.locale.Convert.html#charTerm" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="longToString" href="htmlsrc/tango.text.locale.Convert.html#L538">longToString</a><span class="params">(char[] <em>buffer</em>, long <em>value</em>, int <em>digits</em>, const(char)[] <em>negativeSign</em>)</span> <a href="tango.text.locale.Convert.html#longToString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="longToHexString" href="htmlsrc/tango.text.locale.Convert.html#L578">longToHexString</a><span class="params">(char[] <em>buffer</em>, ulong <em>value</em>, int <em>digits</em>, char <em>format</em>)</span> <a href="tango.text.locale.Convert.html#longToHexString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="longToBinString" href="htmlsrc/tango.text.locale.Convert.html#L598">longToBinString</a><span class="params">(char[] <em>buffer</em>, ulong <em>value</em>, int <em>digits</em>)</span> <a href="tango.text.locale.Convert.html#longToBinString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">char</span> <a class="symbol _function" name="parseFormatSpecifier" href="htmlsrc/tango.text.locale.Convert.html#L617">parseFormatSpecifier</a><span class="params">(const(char)[] <em>format</em>,  <span class="k">out</span> int <em>length</em>)</span> <a href="tango.text.locale.Convert.html#parseFormatSpecifier" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="formatInteger" href="htmlsrc/tango.text.locale.Convert.html#L654">formatInteger</a><span class="params">(char[] <em>output</em>, long <em>value</em>, const(char)[] <em>format</em>, NumberFormat <em>nf</em>)</span> <a href="tango.text.locale.Convert.html#formatInteger" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="formatGeneral" href="htmlsrc/tango.text.locale.Convert.html#L762">formatGeneral</a><span class="params">(<span class="k">ref</span> Number <em>number</em>,  <span class="k">ref</span> Result <em>target</em>, int <em>length</em>, char <em>format</em>, NumberFormat <em>nf</em>)</span> <a href="tango.text.locale.Convert.html#formatGeneral" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="formatNumber" href="htmlsrc/tango.text.locale.Convert.html#L796">formatNumber</a><span class="params">(<span class="k">ref</span> Number <em>number</em>,  <span class="k">ref</span> Result <em>target</em>, int <em>length</em>, NumberFormat <em>nf</em>)</span> <a href="tango.text.locale.Convert.html#formatNumber" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="formatCurrency" href="htmlsrc/tango.text.locale.Convert.html#L826">formatCurrency</a><span class="params">(<span class="k">ref</span> Number <em>number</em>,  <span class="k">ref</span> Result <em>target</em>, int <em>length</em>, NumberFormat <em>nf</em>)</span> <a href="tango.text.locale.Convert.html#formatCurrency" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="formatFixed" href="htmlsrc/tango.text.locale.Convert.html#L860">formatFixed</a><span class="params">(<span class="k">ref</span> Number <em>number</em>,  <span class="k">ref</span> Result <em>target</em>, int <em>length</em>, const(int)[] <em>groupSizes</em>, const(char)[] <em>decimalSeparator</em>, const(char)[] <em>groupSeparator</em>)</span> <a href="tango.text.locale.Convert.html#formatFixed" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="toString" href="htmlsrc/tango.text.locale.Convert.html#L958">toString</a><span class="params">(<span class="k">ref</span> Number <em>number</em>,  <span class="k">ref</span> Result <em>result</em>, char <em>format</em>, int <em>length</em>, NumberFormat <em>nf</em>)</span> <a href="tango.text.locale.Convert.html#toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2005 John Chapman. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:15 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

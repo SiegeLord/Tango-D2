@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.core.tools.WinStackTrace</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.core.tools.WinStackTrace">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.core.tools.WinStackTrace"><a href="htmlsrc/tango.core.tools.WinStackTrace.html" class="symbol">tango.core.tools.WinStackTrace</a></h1>
+
+<div class="summary"><div class="cmnt">Stacktracing</div></div>
+<div class="cmnt">Inclusion of this module activates traced exceptions using the tango own tracers if possible.</div>
+<p class="sec_header">License:</p><div class="cmnt">Tango License, Apache 2.0</div>
+<p class="sec_header">Author:</p><div class="cmnt">Tomasz Stachowiak (h3r3tic)</div>
+<dl>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="alloc" href="htmlsrc/tango.core.tools.WinStackTrace.html#L414">alloc</a><span class="tparams">(<em>T</em>, <em>intT</em>)</span><span class="params">(<span class="k">ref</span> T <em>array</em>, intT <em>numItems</em>, bool <em>init</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.core.tools.WinStackTrace.html#alloc" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Allocate the array using malloc</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>array</em></td><td>the array which will be resized</td></tr>
+<tr><td><em>numItems</em></td><td>number of items to be allocated in the array</td></tr>
+<tr><td><em>init</em></td><td>whether to init the allocated items to their default values or not</td></tr></table>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">int</span>[] <span class="i">foo</span>;
+<span class="i">foo</span>.<span class="i">alloc</span>(<span class="n">20</span>);</pre>
+</td></tr>
+</table></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The array must be null and empty for this function to succeed. The rationale behind this is that the coder should state his decision clearly. This will help and has
+    already helped to spot many intricate bugs.</div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="clone" href="htmlsrc/tango.core.tools.WinStackTrace.html#L437">clone</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>array</em>)</span> <a href="tango.core.tools.WinStackTrace.html#clone" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clone the given array. The result is allocated using alloc() and copied piecewise from the param. Then it's returned</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="realloc" href="htmlsrc/tango.core.tools.WinStackTrace.html#L459">realloc</a><span class="tparams">(<em>T</em>, <em>intT</em>)</span><span class="params">(<span class="k">ref</span> T <em>array</em>, intT <em>numItems</em>, bool <em>init</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.core.tools.WinStackTrace.html#realloc" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Realloc the contents of an array
+    
+    array = the array which will be resized
+    numItems = the new size for the array
+    init = whether to init the newly allocated items to their default values or not</div></div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+<a href="#L3_ex2" name="L3_ex2">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">int</span>[] <span class="i">foo</span>;
+<span class="i">foo</span>.<span class="i">alloc</span>(<span class="n">20</span>);
+<span class="i">foo</span>.<span class="i">realloc</span>(<span class="n">10</span>);        <span class="lc">// &lt;--</span></pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="free" href="htmlsrc/tango.core.tools.WinStackTrace.html#L482">free</a><span class="tparams">(<em>T</em>)</span><span class="params">(<span class="k">ref</span> T <em>array</em>)</span> <a href="tango.core.tools.WinStackTrace.html#free" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Deallocate an array allocated with alloc()</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="append" href="htmlsrc/tango.core.tools.WinStackTrace.html#L516">append</a><span class="tparams">(<em>T</em>, <em>I</em>)</span><span class="params">(<span class="k">ref</span> T <em>array</em>, I <em>elem</em>, uint* <em>realLength</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.core.tools.WinStackTrace.html#append" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append an item to an array. Optionally keep track of an external 'real length', while doing squared reallocation of the array</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>array</em></td><td>the array to append the item to</td></tr>
+<tr><td><em>elem</em></td><td>the new item to be appended</td></tr>
+<tr><td><em>realLength</em></td><td>the optional external 'real length'</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">if realLength isn't null, the array is not resized by one, but allocated in a std::vector manner. The array's length becomes it's capacity, while 'realLength'
+    is the number of items in the array.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+<a href="#L3_ex3" name="L3_ex3">3</a>
+<a href="#L4_ex3" name="L4_ex3">4</a>
+<a href="#L5_ex3" name="L5_ex3">5</a>
+<a href="#L6_ex3" name="L6_ex3">6</a>
+<a href="#L7_ex3" name="L7_ex3">7</a>
+<a href="#L8_ex3" name="L8_ex3">8</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">uint</span> <span class="i">barLen</span> = <span class="n">0</span>;
+<span class="k">int</span>[] <span class="i">bar</span>;
+<span class="i">append</span>(<span class="i">bar</span>, <span class="n">10</span>, &amp;<span class="i">barLen</span>);
+<span class="i">append</span>(<span class="i">bar</span>, <span class="n">20</span>, &amp;<span class="i">barLen</span>);
+<span class="i">append</span>(<span class="i">bar</span>, <span class="n">30</span>, &amp;<span class="i">barLen</span>);
+<span class="i">append</span>(<span class="i">bar</span>, <span class="n">40</span>, &amp;<span class="i">barLen</span>);
+<span class="k">assert</span> (<span class="i">bar</span>.<span class="i">length</span> == <span class="n">16</span>);
+<span class="k">assert</span> (<span class="i">barLen</span> == <span class="n">4</span>);</pre>
+</td></tr>
+</table></div></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (C) 2009 h3r3tic</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:53 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

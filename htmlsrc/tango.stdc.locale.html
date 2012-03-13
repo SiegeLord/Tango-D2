@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.stdc.locale</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a><a id="L38" href="#L38">38</a><a id="L39" href="#L39">39</a><a id="L40" href="#L40">40</a><a id="L41" href="#L41">41</a><a id="L42" href="#L42">42</a><a id="L43" href="#L43">43</a><a id="L44" href="#L44">44</a><a id="L45" href="#L45">45</a><a id="L46" href="#L46">46</a><a id="L47" href="#L47">47</a><a id="L48" href="#L48">48</a><a id="L49" href="#L49">49</a><a id="L50" href="#L50">50</a><a id="L51" href="#L51">51</a><a id="L52" href="#L52">52</a><a id="L53" href="#L53">53</a><a id="L54" href="#L54">54</a><a id="L55" href="#L55">55</a><a id="L56" href="#L56">56</a><a id="L57" href="#L57">57</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/**
+ * D header file for C99.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Sean Kelly
+ * Standards: ISO/IEC 9899:1999 (E)
+ */</span>
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">stdc</span>.<span class="i">locale</span>;</span>
+
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span>:
+
+<span class="d Compound"><span class="d Struct"><span class="k">struct</span> <span class="i">lconv</span>
+<span class="d Compound">{
+    <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">decimal_point</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">thousands_sep</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">grouping</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">int_curr_symbol</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">currency_symbol</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">mon_decimal_point</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">mon_thousands_sep</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">mon_grouping</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">positive_sign</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">negative_sign</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">byte</span></span>  <span class="i">int_frac_digits</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">byte</span></span>  <span class="i">frac_digits</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">byte</span></span>  <span class="i">p_cs_precedes</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">byte</span></span>  <span class="i">p_sep_by_space</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">byte</span></span>  <span class="i">n_cs_precedes</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">byte</span></span>  <span class="i">n_sep_by_space</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">byte</span></span>  <span class="i">p_sign_posn</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">byte</span></span>  <span class="i">n_sign_posn</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">byte</span></span>  <span class="i">int_p_cs_precedes</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">byte</span></span>  <span class="i">int_p_sep_by_space</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">byte</span></span>  <span class="i">int_n_cs_precedes</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">byte</span></span>  <span class="i">int_n_sep_by_space</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">byte</span></span>  <span class="i">int_p_sign_posn</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">byte</span></span>  <span class="i">int_n_sign_posn</span>;</span>
+}</span></span>
+
+<span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">LC_CTYPE</span>          = <span class="e Int"><span class="n">0</span></span>;</span>
+<span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">LC_NUMERIC</span>        = <span class="e Int"><span class="n">1</span></span>;</span>
+<span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">LC_TIME</span>           = <span class="e Int"><span class="n">2</span></span>;</span>
+<span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">LC_COLLATE</span>        = <span class="e Int"><span class="n">3</span></span>;</span>
+<span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">LC_MONETARY</span>       = <span class="e Int"><span class="n">4</span></span>;</span>
+<span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">LC_MESSAGES</span>       = <span class="e Int"><span class="n">5</span></span>;</span>
+<span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">LC_ALL</span>            = <span class="e Int"><span class="n">6</span></span>;</span>
+<span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">LC_PAPER</span>          = <span class="e Int"><span class="n">7</span></span>;</span>
+<span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">LC_NAME</span>           = <span class="e Int"><span class="n">8</span></span>;</span>
+<span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">LC_ADDRESS</span>        = <span class="e Int"><span class="n">9</span></span>;</span>
+<span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">LC_TELEPHONE</span>      = <span class="e Int"><span class="n">10</span></span>;</span>
+<span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">LC_MEASUREMENT</span>    = <span class="e Int"><span class="n">11</span></span>;</span>
+<span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">LC_IDENTIFICATION</span> = <span class="e Int"><span class="n">12</span></span>;</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span>  <span class="i">setlocale</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">category</span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">locale</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">lconv</span></span><span class="t Pointer">*</span> <span class="i">localeconv</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span></span></span>
+
+</pre></td>
+</tr></table>
+</body>
+</html>

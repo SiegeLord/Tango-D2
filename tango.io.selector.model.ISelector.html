@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.selector.model.ISelector</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.selector.model.ISelector">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.selector.model.ISelector"><a href="htmlsrc/tango.io.selector.model.ISelector.html" class="symbol">tango.io.selector.model.ISelector</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Author:</p><div class="cmnt">Juan Jose Comellas &lt;<a href="mailto:juanjo@comellas.com.ar">juanjo@comellas.com.ar</a>&gt;</div>
+<dl>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="Event" href="htmlsrc/tango.io.selector.model.ISelector.html#L18">Event</a> : uint <a href="tango.io.selector.model.ISelector.html#Event" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Events that are used to register a Conduit to a selector and are returned
+ in a SelectionKey after calling ISelector.select().</div></div>
+</dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="SelectionKey" href="htmlsrc/tango.io.selector.model.ISelector.html#L51">SelectionKey</a> <a href="tango.io.selector.model.ISelector.html#SelectionKey" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The SelectionKey struct holds the information concerning the conduits and
+ their association to a selector. Each key keeps a reference to a registered
+ conduit and the events that are to be tracked for it. The 'events' member
+ of the key can take two meanings, depending on where it's used. If used
+ with the register() method of the selector it represents the events we want
+ to track; if used within a foreach cycle on an ISelectionSet it represents
+ the events that have been detected for a conduit.</div></div>
+<div class="cmnt">The SelectionKey can also hold an optional object via the 'attachment'
+ member. This member is very convenient to keep application-specific data
+ that will be needed when the tracked events are triggered.</div>
+<p class="sec_header">See Also:</p><div class="cmnt"><a href="#ISelector">ISelector</a>,
+           <a href="#ISelectionSet">ISelectionSet</a></div>
+<dl>
+<dt class="decl">ISelectable <a class="symbol _variable" name="SelectionKey.conduit" href="htmlsrc/tango.io.selector.model.ISelector.html#L56">conduit</a> <a href="tango.io.selector.model.ISelector.html#SelectionKey.conduit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The conduit referred to by the SelectionKey.</div></div></dd>
+<dt class="decl">Event <a class="symbol _variable" name="SelectionKey.events" href="htmlsrc/tango.io.selector.model.ISelector.html#L62">events</a> <a href="tango.io.selector.model.ISelector.html#SelectionKey.events" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The registered (or selected) events as a bit mask of different Event
+ values.</div></div></dd>
+<dt class="decl">Object <a class="symbol _variable" name="SelectionKey.attachment" href="htmlsrc/tango.io.selector.model.ISelector.html#L67">attachment</a> <a href="tango.io.selector.model.ISelector.html#SelectionKey.attachment" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The attached Object referred to by the SelectionKey.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SelectionKey.isReadable" href="htmlsrc/tango.io.selector.model.ISelector.html#L72">isReadable</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.model.ISelector.html#SelectionKey.isReadable" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Check if a Read event has been associated to this SelectionKey.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SelectionKey.isUrgentRead" href="htmlsrc/tango.io.selector.model.ISelector.html#L80">isUrgentRead</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.model.ISelector.html#SelectionKey.isUrgentRead" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Check if an UrgentRead event has been associated to this SelectionKey.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SelectionKey.isWritable" href="htmlsrc/tango.io.selector.model.ISelector.html#L88">isWritable</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.model.ISelector.html#SelectionKey.isWritable" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Check if a Write event has been associated to this SelectionKey.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SelectionKey.isError" href="htmlsrc/tango.io.selector.model.ISelector.html#L96">isError</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.model.ISelector.html#SelectionKey.isError" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Check if an Error event has been associated to this SelectionKey.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SelectionKey.isHangup" href="htmlsrc/tango.io.selector.model.ISelector.html#L104">isHangup</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.model.ISelector.html#SelectionKey.isHangup" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Check if a Hangup event has been associated to this SelectionKey.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SelectionKey.isInvalidHandle" href="htmlsrc/tango.io.selector.model.ISelector.html#L112">isInvalidHandle</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.model.ISelector.html#SelectionKey.isInvalidHandle" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Check if an InvalidHandle event has been associated to this SelectionKey.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="ISelectionSet" href="htmlsrc/tango.io.selector.model.ISelector.html#L125">ISelectionSet</a> <a href="tango.io.selector.model.ISelector.html#ISelectionSet" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Container that holds the SelectionKey's for all the conduits that have
+ triggered events during a previous invocation to ISelector.select().
+ Instances of this container are normally returned from calls to
+ ISelector.selectedSet().</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="ISelectionSet.length" href="htmlsrc/tango.io.selector.model.ISelector.html#L130">length</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.selector.model.ISelector.html#ISelectionSet.length" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the number of SelectionKey's in the set.</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="ISelectionSet.opApply" href="htmlsrc/tango.io.selector.model.ISelector.html#L136">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref SelectionKey) <em>dg</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.selector.model.ISelector.html#ISelectionSet.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Operator to iterate over a set via a foreach block.  Note that any
+ modifications to the SelectionKey will be ignored.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="ISelector" href="htmlsrc/tango.io.selector.model.ISelector.html#L236">ISelector</a> <a href="tango.io.selector.model.ISelector.html#ISelector" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A selector is a multiplexor for I/O events associated to a Conduit.
+ All selectors must implement this interface.</div></div>
+<div class="cmnt">A selector needs to be initialized by calling the open() method to pass
+ it the initial amount of conduits that it will handle and the maximum
+ amount of events that will be returned per call to select(). In both cases,
+ these values are only hints and may not even be used by the specific
+ ISelector implementation you choose to use, so you cannot make any
+ assumptions regarding what results from the call to select() (i.e. you
+ may receive more or less events per call to select() than what was passed
+ in the 'maxEvents' argument. The amount of conduits that the selector can
+ manage will be incremented dynamically if necessary.
+<p class="bl"></p>
+ To add or modify conduit registrations in the selector, use the register()
+ method.  To remove conduit registrations from the selector, use the
+ unregister() method.
+<p class="bl"></p>
+ To wait for events from the conduits you need to call any of the select()
+ methods. The selector cannot be modified from another thread while
+ blocking on a call to these methods.
+<p class="bl"></p>
+ Once the selector is no longer used you must call the close() method so
+ that the selector can free any resources it may have allocated in the call
+ to open().</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+<a href="#L12_ex1" name="L12_ex1">12</a>
+<a href="#L13_ex1" name="L13_ex1">13</a>
+<a href="#L14_ex1" name="L14_ex1">14</a>
+<a href="#L15_ex1" name="L15_ex1">15</a>
+<a href="#L16_ex1" name="L16_ex1">16</a>
+<a href="#L17_ex1" name="L17_ex1">17</a>
+<a href="#L18_ex1" name="L18_ex1">18</a>
+<a href="#L19_ex1" name="L19_ex1">19</a>
+<a href="#L20_ex1" name="L20_ex1">20</a>
+<a href="#L21_ex1" name="L21_ex1">21</a>
+<a href="#L22_ex1" name="L22_ex1">22</a>
+<a href="#L23_ex1" name="L23_ex1">23</a>
+<a href="#L24_ex1" name="L24_ex1">24</a>
+<a href="#L25_ex1" name="L25_ex1">25</a>
+<a href="#L26_ex1" name="L26_ex1">26</a>
+<a href="#L27_ex1" name="L27_ex1">27</a>
+<a href="#L28_ex1" name="L28_ex1">28</a>
+<a href="#L29_ex1" name="L29_ex1">29</a>
+<a href="#L30_ex1" name="L30_ex1">30</a>
+<a href="#L31_ex1" name="L31_ex1">31</a>
+<a href="#L32_ex1" name="L32_ex1">32</a>
+<a href="#L33_ex1" name="L33_ex1">33</a>
+<a href="#L34_ex1" name="L34_ex1">34</a>
+<a href="#L35_ex1" name="L35_ex1">35</a>
+<a href="#L36_ex1" name="L36_ex1">36</a>
+<a href="#L37_ex1" name="L37_ex1">37</a>
+<a href="#L38_ex1" name="L38_ex1">38</a>
+<a href="#L39_ex1" name="L39_ex1">39</a>
+<a href="#L40_ex1" name="L40_ex1">40</a>
+<a href="#L41_ex1" name="L41_ex1">41</a>
+<a href="#L42_ex1" name="L42_ex1">42</a>
+<a href="#L43_ex1" name="L43_ex1">43</a>
+<a href="#L44_ex1" name="L44_ex1">44</a>
+<a href="#L45_ex1" name="L45_ex1">45</a>
+<a href="#L46_ex1" name="L46_ex1">46</a>
+<a href="#L47_ex1" name="L47_ex1">47</a>
+<a href="#L48_ex1" name="L48_ex1">48</a>
+<a href="#L49_ex1" name="L49_ex1">49</a>
+<a href="#L50_ex1" name="L50_ex1">50</a>
+<a href="#L51_ex1" name="L51_ex1">51</a>
+<a href="#L52_ex1" name="L52_ex1">52</a>
+<a href="#L53_ex1" name="L53_ex1">53</a>
+<a href="#L54_ex1" name="L54_ex1">54</a>
+<a href="#L55_ex1" name="L55_ex1">55</a>
+<a href="#L56_ex1" name="L56_ex1">56</a>
+<a href="#L57_ex1" name="L57_ex1">57</a>
+<a href="#L58_ex1" name="L58_ex1">58</a>
+<a href="#L59_ex1" name="L59_ex1">59</a>
+<a href="#L60_ex1" name="L60_ex1">60</a>
+<a href="#L61_ex1" name="L61_ex1">61</a>
+<a href="#L62_ex1" name="L62_ex1">62</a>
+<a href="#L63_ex1" name="L63_ex1">63</a>
+<a href="#L64_ex1" name="L64_ex1">64</a>
+<a href="#L65_ex1" name="L65_ex1">65</a>
+<a href="#L66_ex1" name="L66_ex1">66</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">selector</span>.<span class="i">model</span>.<span class="i">ISelector</span>;
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">SocketConduit</span>;
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;
+
+<span class="i">ISelector</span> <span class="i">selector</span>;
+<span class="i">SocketConduit</span> <span class="i">conduit1</span>;
+<span class="i">SocketConduit</span> <span class="i">conduit2</span>;
+<span class="i">MyClass</span> <span class="i">object1</span>;
+<span class="i">MyClass</span> <span class="i">object2</span>;
+<span class="k">int</span> <span class="i">eventCount</span>;
+
+<span class="lc">// Initialize the selector assuming that it will deal with 2 conduits and</span>
+<span class="lc">// will receive 2 events per invocation to the select() method.</span>
+<span class="i">selector</span>.<span class="i">open</span>(<span class="n">2</span>, <span class="n">2</span>);
+
+<span class="i">selector</span>.<span class="i">register</span>(<span class="i">conduit</span>, <span class="i">Event</span>.<span class="i">Read</span>, <span class="i">object1</span>);
+<span class="i">selector</span>.<span class="i">register</span>(<span class="i">conduit</span>, <span class="i">Event</span>.<span class="i">Write</span>, <span class="i">object2</span>);
+
+<span class="i">eventCount</span> = <span class="i">selector</span>.<span class="i">select</span>();
+
+<span class="k">if</span> (<span class="i">eventCount</span> &gt; <span class="n">0</span>)
+{
+    <span class="k">char</span>[<span class="n">16</span>] <span class="i">buffer</span>;
+    <span class="k">int</span> <span class="i">count</span>;
+
+    <span class="k">foreach</span> (<span class="i">SelectionKey</span> <span class="i">key</span>, <span class="i">selector</span>.<span class="i">selectedSet</span>())
+    {
+        <span class="k">if</span> (<span class="i">key</span>.<span class="i">isReadable</span>())
+        {
+            <span class="i">count</span> = (<span class="k">cast</span>(<span class="i">SocketConduit</span>) <span class="i">key</span>.<span class="i">conduit</span>).<span class="i">read</span>(<span class="i">buffer</span>);
+            <span class="k">if</span> (<span class="i">count</span> != <span class="i">IConduit</span>.<span class="i">Eof</span>)
+            {
+                <span class="i">Stdout</span>.<span class="i">format</span>(<span class="sl">"Received '{0}' from peer<span class="es">\n</span>"</span>, <span class="i">buffer</span>[<span class="n">0</span>..<span class="i">count</span>]);
+                <span class="i">selector</span>.<span class="i">register</span>(<span class="i">key</span>.<span class="i">conduit</span>, <span class="i">Event</span>.<span class="i">Write</span>, <span class="i">key</span>.<span class="i">attachment</span>);
+            }
+            <span class="k">else</span>
+            {
+                <span class="i">selector</span>.<span class="i">unregister</span>(<span class="i">key</span>.<span class="i">conduit</span>);
+                <span class="i">key</span>.<span class="i">conduit</span>.<span class="i">close</span>();
+            }
+        }
+
+        <span class="k">if</span> (<span class="i">key</span>.<span class="i">isWritable</span>())
+        {
+            <span class="i">count</span> = (<span class="k">cast</span>(<span class="i">SocketConduit</span>) <span class="i">key</span>.<span class="i">conduit</span>).<span class="i">write</span>(<span class="sl">"MESSAGE"</span>);
+            <span class="k">if</span> (<span class="i">count</span> != <span class="i">IConduit</span>.<span class="i">Eof</span>)
+            {
+                <span class="i">Stdout</span>.<span class="i">print</span>(<span class="sl">"Sent 'MESSAGE' to peer<span class="es">\n</span>"</span>);
+                <span class="i">selector</span>.<span class="i">register</span>(<span class="i">key</span>.<span class="i">conduit</span>, <span class="i">Event</span>.<span class="i">Read</span>, <span class="i">key</span>.<span class="i">attachment</span>);
+            }
+            <span class="k">else</span>
+            {
+                <span class="i">selector</span>.<span class="i">unregister</span>(<span class="i">key</span>.<span class="i">conduit</span>);
+                <span class="i">key</span>.<span class="i">conduit</span>.<span class="i">close</span>();
+            }
+        }
+
+        <span class="k">if</span> (<span class="i">key</span>.<span class="i">isError</span>() || <span class="i">key</span>.<span class="i">isHangup</span>() || <span class="i">key</span>.<span class="i">isInvalidHandle</span>())
+        {
+            <span class="i">selector</span>.<span class="i">unregister</span>(<span class="i">key</span>.<span class="i">conduit</span>);
+            <span class="i">key</span>.<span class="i">conduit</span>.<span class="i">close</span>();
+        }
+    }
+}
+
+<span class="i">selector</span>.<span class="i">close</span>();</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ISelector.open" href="htmlsrc/tango.io.selector.model.ISelector.html#L248">open</a><span class="params">(uint <em>size</em>, uint <em>maxEvents</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.selector.model.ISelector.html#ISelector.open" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Initialize the selector.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>size</em></td><td>value that provides a hint for the maximum amount of
+                conduits that will be registered</td></tr>
+<tr><td><em>maxEvents</em></td><td>value that provides a hint for the maximum amount of
+                conduit events that will be returned in the selection
+                set per call to select.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ISelector.close" href="htmlsrc/tango.io.selector.model.ISelector.html#L259">close</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.selector.model.ISelector.html#ISelector.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Free any operating system resources that may have been allocated in the
+ call to open().</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Not all of the selectors need to free resources other than allocated
+ memory, but those that do will normally also add a call to close() in
+ their destructors.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ISelector.register" href="htmlsrc/tango.io.selector.model.ISelector.html#L283">register</a><span class="params">(ISelectable <em>conduit</em>, Event <em>events</em>, Object <em>attachment</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.selector.model.ISelector.html#ISelector.register" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Associate a conduit to the selector and track specific I/O events.
+ If the conduit is already part of the selector, modify the events or
+ atachment.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>conduit</em></td><td>conduit that will be associated to the selector;
+                must be a valid conduit (i.e. not null and open).</td></tr>
+<tr><td><em>events</em></td><td>bit mask of Event values that represent the events that
+                will be tracked for the conduit.</td></tr>
+<tr><td><em>attachment</em></td><td>optional object with application-specific data that will
+                be available when an event is triggered for the conduit</td></tr></table>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+<a href="#L3_ex2" name="L3_ex2">3</a>
+<a href="#L4_ex2" name="L4_ex2">4</a>
+<a href="#L5_ex2" name="L5_ex2">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">ISelector</span> <span class="i">selector</span>;
+<span class="i">SocketConduit</span> <span class="i">conduit</span>;
+<span class="i">MyClass</span> <span class="i">object</span>;
+
+<span class="i">selector</span>.<span class="i">register</span>(<span class="i">conduit</span>, <span class="i">Event</span>.<span class="i">Read</span> | <span class="i">Event</span>.<span class="i">Write</span>, <span class="i">object</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ISelector.reregister" href="htmlsrc/tango.io.selector.model.ISelector.html#L290">reregister</a><span class="params">(ISelectable <em>conduit</em>, Event <em>events</em>, Object <em>attachment</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">deprecated</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.selector.model.ISelector.html#ISelector.reregister" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Deprecated, use register instead</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ISelector.unregister" href="htmlsrc/tango.io.selector.model.ISelector.html#L304">unregister</a><span class="params">(ISelectable <em>conduit</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.selector.model.ISelector.html#ISelector.unregister" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove a conduit from the selector.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>conduit</em></td><td>conduit that had been previously associated to the
+                selector; it can be null.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Unregistering a null conduit is allowed and no exception is thrown
+ if this happens.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="ISelector.select" href="htmlsrc/tango.io.selector.model.ISelector.html#L315">select</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.selector.model.ISelector.html#ISelector.select" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Wait indefinitely for I/O events from the registered conduits.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The amount of conduits that have received events; 0 if no conduits
+ have received events within the specified timeout and -1 if there
+ was an error.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="ISelector.select:2" href="htmlsrc/tango.io.selector.model.ISelector.html#L332">select</a><span class="params">(TimeSpan <em>timeout</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.selector.model.ISelector.html#ISelector.select:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Wait for I/O events from the registered conduits for a specified
+ amount of time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>timeout</em></td><td>TimeSpan with the maximum amount of time that the
+            selector will wait for events from the conduits; the
+            amount of time is relative to the current system time
+            (i.e. just the number of milliseconds that the selector
+            has to wait for the events).</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The amount of conduits that have received events; 0 if no conduits
+ have received events within the specified timeout.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="ISelector.select:3" href="htmlsrc/tango.io.selector.model.ISelector.html#L358">select</a><span class="params">(double <em>timeout</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.selector.model.ISelector.html#ISelector.select:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Wait for I/O events from the registered conduits for a specified
+ amount of time.</div></div>
+<p class="sec_header">Note:</p><div class="cmnt">This representation of timeout is not always accurate, so it is
+ possible that the function will return with a timeout before the
+ specified period.  For more accuracy, use the TimeSpan version.</div>
+<p class="sec_header">Note:</p><div class="cmnt">Implementers should define this method as:
+ <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">select</span>(<span class="i">TimeSpan</span>.<span class="i">interval</span>(<span class="i">timeout</span>));</pre>
+</td></tr>
+</table></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>timeout</em></td><td>the maximum amount of time in seconds that the
+            selector will wait for events from the conduits; the
+            amount of time is relative to the current system time
+            (i.e. just the number of milliseconds that the selector
+            has to wait for the events).</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The amount of conduits that have received events; 0 if no conduits
+ have received events within the specified timeout.</div></dd>
+<dt class="decl"><span class="rettyp">ISelectionSet</span> <a class="symbol _function" name="ISelector.selectedSet" href="htmlsrc/tango.io.selector.model.ISelector.html#L368">selectedSet</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.selector.model.ISelector.html#ISelector.selectedSet" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the selection set resulting from the call to any of the select()
+ methods.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">If the call to select() was unsuccessful or it did not return any
+ events, the returned value will be null.</div></dd>
+<dt class="decl"><span class="rettyp">SelectionKey</span> <a class="symbol _function" name="ISelector.key" href="htmlsrc/tango.io.selector.model.ISelector.html#L379">key</a><span class="params">(ISelectable <em>conduit</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.selector.model.ISelector.html#ISelector.key" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the selection key resulting from the registration of a conduit
+ to the selector.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">If the conduit is not registered to the selector the returned
+ value will SelectionKey.init. No exception will be thrown by this
+ method.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="ISelector.opApply" href="htmlsrc/tango.io.selector.model.ISelector.html#L386">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref SelectionKey sk) <em>dg</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.selector.model.ISelector.html#ISelector.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate through the currently registered selection keys.  Note that you
+ should not erase or add any items from the selector while iterating,
+ although you can register existing conduits again.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2006 Juan Jose Comellas. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,656 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.sys.Process</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.sys.Process">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.sys.Process"><a href="htmlsrc/tango.sys.Process.html" class="symbol">tango.sys.Process</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Author:</p><div class="cmnt">Juan Jose Comellas <juanjo@comellas.com.ar></div>
+<dl>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="Redirect" href="htmlsrc/tango.sys.Process.html#L64">Redirect</a> <a href="tango.sys.Process.html#Redirect" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Redirect flags for processes.  Defined outside process class to cut down on
+ verbosity.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="Redirect.None" href="htmlsrc/tango.sys.Process.html#L69">None</a> <a href="tango.sys.Process.html#Redirect.None" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Redirect none of the standard handles</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="Redirect.Output" href="htmlsrc/tango.sys.Process.html#L74">Output</a> <a href="tango.sys.Process.html#Redirect.Output" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Redirect the stdout handle to a pipe.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="Redirect.Error" href="htmlsrc/tango.sys.Process.html#L79">Error</a> <a href="tango.sys.Process.html#Redirect.Error" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Redirect the stderr handle to a pipe.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="Redirect.Input" href="htmlsrc/tango.sys.Process.html#L84">Input</a> <a href="tango.sys.Process.html#Redirect.Input" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Redirect the stdin handle to a pipe.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="Redirect.All" href="htmlsrc/tango.sys.Process.html#L89">All</a> <a href="tango.sys.Process.html#Redirect.All" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Redirect all three handles to pipes (default).</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="Redirect.ErrorToOutput" href="htmlsrc/tango.sys.Process.html#L95">ErrorToOutput</a> <a href="tango.sys.Process.html#Redirect.ErrorToOutput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Send stderr to stdout's handle.  Note that the stderr PipeConduit will
+ be null.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="Redirect.OutputToError" href="htmlsrc/tango.sys.Process.html#L101">OutputToError</a> <a href="tango.sys.Process.html#Redirect.OutputToError" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Send stdout to stderr's handle.  Note that the stdout PipeConduit will
+ be null.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Process" href="htmlsrc/tango.sys.Process.html#L152">Process</a> <a href="tango.sys.Process.html#Process" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The Process class is used to start external programs and communicate with
+ them via their standard input, output and error streams.</div></div>
+<div class="cmnt">You can pass either the command line or an array of arguments to execute,
+ either in the constructor or to the args property. The environment
+ variables can be set in a similar way using the env property and you can
+ set the program's working directory via the workDir property.
+<p class="bl"></p>
+ To actually start a process you need to use the execute() method. Once the
+ program is running you will be able to write to its standard input via the
+ stdin OutputStream and you will be able to read from its standard output and
+ error through the stdout and stderr InputStream respectively.
+<p class="bl"></p>
+ You can check whether the process is running or not with the isRunning()
+ method and you can get its process ID via the pid property.
+<p class="bl"></p>
+ After you are done with the process, or if you just want to wait for it to
+ end, you need to call the wait() method which will return once the process
+ is no longer running.
+<p class="bl"></p>
+ To stop a running process you must use kill() method. If you do this you
+ cannot call the wait() method. Once the kill() method returns the process
+ will be already dead.
+<p class="bl"></p>
+ After calling either wait() or kill(), and no more data is expected on the
+ pipes, you should call close() as this will clean the pipes. Not doing this
+ may lead to a depletion of the available file descriptors for the main
+ process if many processes are created.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+<a href="#L12_ex1" name="L12_ex1">12</a>
+<a href="#L13_ex1" name="L13_ex1">13</a>
+<a href="#L14_ex1" name="L14_ex1">14</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">try</span>
+{
+    <span class="k">auto</span> <span class="i">p</span> = <span class="k">new</span> <span class="i">Process</span> (<span class="sl">"ls -al"</span>, <span class="k">null</span>);
+    <span class="i">p</span>.<span class="i">execute</span>;
+
+    <span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"Output from {}:"</span>, <span class="i">p</span>.<span class="i">programName</span>);
+    <span class="i">Stdout</span>.<span class="i">copy</span> (<span class="i">p</span>.<span class="i">stdout</span>).<span class="i">flush</span>;
+    <span class="k">auto</span> <span class="i">result</span> = <span class="i">p</span>.<span class="i">wait</span>;
+
+    <span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"Process '{}' ({}) exited with reason {}, status {}"</span>,
+                     <span class="i">p</span>.<span class="i">programName</span>, <span class="i">p</span>.<span class="i">pid</span>, <span class="k">cast</span>(<span class="k">int</span>) <span class="i">result</span>.<span class="i">reason</span>, <span class="i">result</span>.<span class="i">status</span>);
+}
+<span class="k">catch</span> (<span class="i">ProcessException</span> <span class="i">e</span>)
+       <span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"Process execution failed: {}"</span>, <span class="i">e</span>);</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Process.Result" href="htmlsrc/tango.sys.Process.html#L157">Result</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.Result" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Result returned by wait().</div></div>
+<dl>
+<dt class="decl"><a class="symbol _enum" name="Process.Result.enum" href="htmlsrc/tango.sys.Process.html#L163">enum</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.Result.enum" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reasons returned by wait() indicating why the process is no
+ longer running.</div></div>
+</dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Process.Result.toString" href="htmlsrc/tango.sys.Process.html#L178">toString</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.Result.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a string with a description of the process execution result.</div></div></dd></dl></dd>
+<dt class="decl"><a class="symbol _ctor" name="Process.this" href="htmlsrc/tango.sys.Process.html#L258">this</a><span class="params">(const(char[])[] <em>args</em>...)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Constructor (variadic version).  Note that by default, the environment
+ will not be copied.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>args</em></td><td>array of strings with the process' arguments.  If there is
+            exactly one argument, it is considered to contain the entire
+            command line including parameters.  If you pass only one
+            argument, spaces that are not intended to separate
+            parameters should be embedded in quotes.  The arguments can
+            also be empty.</td></tr></table>
+<p class="sec_header">Note:</p><div class="cmnt">The class will use only slices, .dup when necessary.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">p</span> = <span class="k">new</span> <span class="i">Process</span>(<span class="sl">"myprogram"</span>, <span class="sl">"first argument"</span>, <span class="sl">"second"</span>, <span class="sl">"third"</span>);
+<span class="k">auto</span> <span class="i">p</span> = <span class="k">new</span> <span class="i">Process</span>(<span class="sl">"myprogram <span class="es">\"</span>first argument<span class="es">\"</span> second third"</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Process.this:2" href="htmlsrc/tango.sys.Process.html#L290">this</a><span class="params">(bool <em>copyEnv</em>, const(char[])[] <em>args</em>...)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Constructor (variadic version, with environment copy).</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>copyEnv</em></td><td>if true, the environment is copied from the current process.</td></tr>
+<tr><td><em>args</em></td><td>array of strings with the process' arguments.  If there is
+            exactly one argument, it is considered to contain the entire
+            command line including parameters.  If you pass only one
+            argument, spaces that are not intended to separate
+            parameters should be embedded in quotes.  The arguments can
+            also be empty.</td></tr></table>
+<p class="sec_header">Note:</p><div class="cmnt">The class will use only slices, .dup when necessary.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">p</span> = <span class="k">new</span> <span class="i">Process</span>(<span class="k">true</span>, <span class="sl">"myprogram"</span>, <span class="sl">"first argument"</span>, <span class="sl">"second"</span>, <span class="sl">"third"</span>);
+<span class="k">auto</span> <span class="i">p</span> = <span class="k">new</span> <span class="i">Process</span>(<span class="k">true</span>, <span class="sl">"myprogram <span class="es">\"</span>first argument<span class="es">\"</span> second third"</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Process.this:3" href="htmlsrc/tango.sys.Process.html#L318">this</a><span class="params">(const(char)[] <em>command</em>, const(char[])[char[]] <em>env</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.this:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Constructor.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>command</em></td><td>string with the process' command line; arguments that have
+            embedded whitespace must be enclosed in inside double-quotes (").</td></tr></table>
+<p class="sec_header">Note:</p><div class="cmnt">The class will use only slices, .dup when necessary. 
+ env      = associative array of strings with the process' environment
+            variables; the variable name must be the key of each entry.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+<a href="#L2_ex4" name="L2_ex4">2</a>
+<a href="#L3_ex4" name="L3_ex4">3</a>
+<a href="#L4_ex4" name="L4_ex4">4</a>
+<a href="#L5_ex4" name="L5_ex4">5</a>
+<a href="#L6_ex4" name="L6_ex4">6</a>
+<a href="#L7_ex4" name="L7_ex4">7</a>
+<a href="#L8_ex4" name="L8_ex4">8</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">char</span>[] <span class="i">command</span> = <span class="sl">"myprogram <span class="es">\"</span>first argument<span class="es">\"</span> second third"</span>;
+<span class="k">char</span>[][<span class="k">char</span>[]] <span class="i">env</span>;
+
+<span class="lc">// Environment variables</span>
+<span class="i">env</span>[<span class="sl">"MYVAR1"</span>] = <span class="sl">"first"</span>;
+<span class="i">env</span>[<span class="sl">"MYVAR2"</span>] = <span class="sl">"second"</span>;
+
+<span class="k">auto</span> <span class="i">p</span> = <span class="k">new</span> <span class="i">Process</span>(<span class="i">command</span>, <span class="i">env</span>)</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Process.this:4" href="htmlsrc/tango.sys.Process.html#L364">this</a><span class="params">(const(char[])[] <em>args</em>, const(char[])[char[]] <em>env</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.this:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Constructor.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>args</em></td><td>array of strings with the process' arguments; the first
+            argument must be the process' name; the arguments can be
+            empty.</td></tr></table>
+<p class="sec_header">Note:</p><div class="cmnt">The class will use only slices, .dup when necessary. 
+ env      = associative array of strings with the process' environment
+            variables; the variable name must be the key of each entry.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex5" name="L1_ex5">1</a>
+<a href="#L2_ex5" name="L2_ex5">2</a>
+<a href="#L3_ex5" name="L3_ex5">3</a>
+<a href="#L4_ex5" name="L4_ex5">4</a>
+<a href="#L5_ex5" name="L5_ex5">5</a>
+<a href="#L6_ex5" name="L6_ex5">6</a>
+<a href="#L7_ex5" name="L7_ex5">7</a>
+<a href="#L8_ex5" name="L8_ex5">8</a>
+<a href="#L9_ex5" name="L9_ex5">9</a>
+<a href="#L10_ex5" name="L10_ex5">10</a>
+<a href="#L11_ex5" name="L11_ex5">11</a>
+<a href="#L12_ex5" name="L12_ex5">12</a>
+<a href="#L13_ex5" name="L13_ex5">13</a>
+<a href="#L14_ex5" name="L14_ex5">14</a>
+<a href="#L15_ex5" name="L15_ex5">15</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">char</span>[][] <span class="i">args</span>;
+<span class="k">char</span>[][<span class="k">char</span>[]] <span class="i">env</span>;
+
+<span class="lc">// Process name</span>
+<span class="i">args</span> ~= <span class="sl">"myprogram"</span>;
+<span class="lc">// Process arguments</span>
+<span class="i">args</span> ~= <span class="sl">"first argument"</span>;
+<span class="i">args</span> ~= <span class="sl">"second"</span>;
+<span class="i">args</span> ~= <span class="sl">"third"</span>;
+
+<span class="lc">// Environment variables</span>
+<span class="i">env</span>[<span class="sl">"MYVAR1"</span>] = <span class="sl">"first"</span>;
+<span class="i">env</span>[<span class="sl">"MYVAR2"</span>] = <span class="sl">"second"</span>;
+
+<span class="k">auto</span> <span class="i">p</span> = <span class="k">new</span> <span class="i">Process</span>(<span class="i">args</span>, <span class="i">env</span>)</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Process.isRunning" href="htmlsrc/tango.sys.Process.html#L384">isRunning</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">const</span>]</span> <a href="tango.sys.Process.html#Process.isRunning" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Indicate whether the process is running or not.</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Process.pid" href="htmlsrc/tango.sys.Process.html#L396">pid</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.sys.Process.html#Process.pid" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the running process' ID.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">an int with the process ID if the process is running;
+          -1 if not.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Process.programName" href="htmlsrc/tango.sys.Process.html#L412">programName</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.sys.Process.html#Process.programName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the process' executable filename.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Process.programName:2" href="htmlsrc/tango.sys.Process.html#L421">programName</a><span class="params">(const(char)[] <em>name</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.sys.Process.html#Process.programName:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the process' executable filename.</div></div></dd>
+<dt class="decl"><span class="rettyp">Process</span> <a class="symbol _function" name="Process.setProgramName" href="htmlsrc/tango.sys.Process.html#L429">setProgramName</a><span class="params">(const(char)[] <em>name</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.setProgramName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the process' executable filename, return 'this' for chaining</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char[])[]</span> <a class="symbol _function" name="Process.args" href="htmlsrc/tango.sys.Process.html#L439">args</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">const</span>]</span> <a href="tango.sys.Process.html#Process.args" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return an array with the process' arguments. This does not include the actual program name.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char[])[]</span> <a class="symbol _function" name="Process.args:2" href="htmlsrc/tango.sys.Process.html#L458">args</a><span class="params">(const(char)[] <em>progname</em>, const(char[])[] <em>args</em>...)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.args:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the process' arguments from the arguments received by the method.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The first element of the array must be the name of the process'
+ executable.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">the arguments that were set. This doesn't include the progname.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex6" name="L1_ex6">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">p</span>.<span class="i">args</span>(<span class="sl">"myprogram"</span>, <span class="sl">"first"</span>, <span class="sl">"second argument"</span>, <span class="sl">"third"</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">Process</span> <a class="symbol _function" name="Process.setArgs" href="htmlsrc/tango.sys.Process.html#L478">setArgs</a><span class="params">(const(char)[] <em>progname</em>, const(char[])[] <em>args</em>...)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.setArgs" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the process' arguments from the arguments received by the method.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The first element of the array must be the name of the process'
+ executable.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">a reference to this for chaining</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex7" name="L1_ex7">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">p</span>.<span class="i">setArgs</span>(<span class="sl">"myprogram"</span>, <span class="sl">"first"</span>, <span class="sl">"second argument"</span>, <span class="sl">"third"</span>).<span class="i">execute</span>();</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Process.copyEnv" href="htmlsrc/tango.sys.Process.html#L489">copyEnv</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.sys.Process.html#Process.copyEnv" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">If true, the environment from the current process will be copied to the
+ child process.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Process.copyEnv:2" href="htmlsrc/tango.sys.Process.html#L500">copyEnv</a><span class="params">(bool <em>b</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.sys.Process.html#Process.copyEnv:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the copyEnv flag.  If set to true, then the environment will be
+ copied from the current process.  If set to false, then the environment
+ is set from the env field.</div></div></dd>
+<dt class="decl"><span class="rettyp">Process</span> <a class="symbol _function" name="Process.setCopyEnv" href="htmlsrc/tango.sys.Process.html#L513">setCopyEnv</a><span class="params">(bool <em>b</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.setCopyEnv" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the copyEnv flag.  If set to true, then the environment will be
+ copied from the current process.  If set to false, then the environment
+ is set from the env field.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A reference to this for chaining</div></dd>
+<dt class="decl"><span class="rettyp">const(char[])[const(char)[]]</span> <a class="symbol _function" name="Process.env" href="htmlsrc/tango.sys.Process.html#L525">env</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.sys.Process.html#Process.env" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return an associative array with the process' environment variables.</div></div>
+<div class="cmnt">Note that if copyEnv is set to true, this value is ignored.</div></dd>
+<dt class="decl"><span class="rettyp">const(char[])[char[]]</span> <a class="symbol _function" name="Process.env:2" href="htmlsrc/tango.sys.Process.html#L553">env</a><span class="params">(const(char[])[char[]] <em>env</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.sys.Process.html#Process.env:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the process' environment variables from the associative array
+ received by the method.</div></div>
+<div class="cmnt">This also clears the copyEnv flag.</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>env</em></td><td>associative array of strings containing the environment
+        variables for the process. The variable name should be the key
+        used for each entry.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">the env set.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex8" name="L1_ex8">1</a>
+<a href="#L2_ex8" name="L2_ex8">2</a>
+<a href="#L3_ex8" name="L3_ex8">3</a>
+<a href="#L4_ex8" name="L4_ex8">4</a>
+<a href="#L5_ex8" name="L5_ex8">5</a>
+<a href="#L6_ex8" name="L6_ex8">6</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">char</span>[][<span class="k">char</span>[]] <span class="i">env</span>;
+
+<span class="i">env</span>[<span class="sl">"MYVAR1"</span>] = <span class="sl">"first"</span>;
+<span class="i">env</span>[<span class="sl">"MYVAR2"</span>] = <span class="sl">"second"</span>;
+
+<span class="i">p</span>.<span class="i">env</span> = <span class="i">env</span>;</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">Process</span> <a class="symbol _function" name="Process.setEnv" href="htmlsrc/tango.sys.Process.html#L581">setEnv</a><span class="params">(const(char[])[char[]] <em>env</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.setEnv" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the process' environment variables from the associative array
+ received by the method.  Returns a 'this' reference for chaining.</div></div>
+<div class="cmnt">This also clears the copyEnv flag.</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>env</em></td><td>associative array of strings containing the environment
+        variables for the process. The variable name should be the key
+        used for each entry.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A reference to this process object</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex9" name="L1_ex9">1</a>
+<a href="#L2_ex9" name="L2_ex9">2</a>
+<a href="#L3_ex9" name="L3_ex9">3</a>
+<a href="#L4_ex9" name="L4_ex9">4</a>
+<a href="#L5_ex9" name="L5_ex9">5</a>
+<a href="#L6_ex9" name="L6_ex9">6</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">char</span>[][<span class="k">char</span>[]] <span class="i">env</span>;
+
+<span class="i">env</span>[<span class="sl">"MYVAR1"</span>] = <span class="sl">"first"</span>;
+<span class="i">env</span>[<span class="sl">"MYVAR2"</span>] = <span class="sl">"second"</span>;
+
+<span class="i">p</span>.<span class="i">setEnv</span>(<span class="i">env</span>).<span class="i">execute</span>();</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="Process.toString" href="htmlsrc/tango.sys.Process.html#L592">toString</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.sys.Process.html#Process.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return an UTF-8 string with the process' command line.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Process.workDir" href="htmlsrc/tango.sys.Process.html#L625">workDir</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.sys.Process.html#Process.workDir" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the working directory for the process.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">a string with the working directory; null if the working
+          directory is the current directory.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Process.workDir:2" href="htmlsrc/tango.sys.Process.html#L640">workDir</a><span class="params">(const(char)[] <em>dir</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.sys.Process.html#Process.workDir:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the working directory for the process.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>dir</em></td><td>a string with the working directory; null if the working
+         directory is the current directory.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">the directory set.</div></dd>
+<dt class="decl"><span class="rettyp">Process</span> <a class="symbol _function" name="Process.setWorkDir" href="htmlsrc/tango.sys.Process.html#L655">setWorkDir</a><span class="params">(const(char)[] <em>dir</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.setWorkDir" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the working directory for the process.  Returns a 'this' reference
+ for chaining</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>dir</em></td><td>a string with the working directory; null if the working
+         directory is the current directory.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">a reference to this process.</div></dd>
+<dt class="decl"><span class="rettyp">Redirect</span> <a class="symbol _function" name="Process.redirect" href="htmlsrc/tango.sys.Process.html#L683">redirect</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.sys.Process.html#Process.redirect" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the redirect flags for the process.</div></div>
+<div class="cmnt">The redirect flags are used to determine whether stdout, stderr, or
+ stdin are redirected.  The flags are an or'd combination of which
+ standard handles to redirect.  A redirected handle creates a pipe,
+ whereas a non-redirected handle simply points to the same handle this
+ process is pointing to.
+<p class="bl"></p>
+ You can also redirect stdout or stderr to each other.  The flags to
+ redirect a handle to a pipe and to redirect it to another handle are
+ mutually exclusive.  In the case both are specified, the redirect to
+ the other handle takes precedent.  It is illegal to specify both
+ redirection from stdout to stderr and from stderr to stdout.  If both
+ of these are specified, an exception is thrown.
+<p class="bl"></p>
+ If redirected to a pipe, once the process is executed successfully, its
+ input and output can be manipulated through the stdin, stdout and
+ stderr member PipeConduit's.  Note that if you redirect for example
+ stderr to stdout, and you redirect stdout to a pipe, only stdout will
+ be non-null.</div></dd>
+<dt class="decl"><span class="rettyp">Redirect</span> <a class="symbol _function" name="Process.redirect:2" href="htmlsrc/tango.sys.Process.html#L691">redirect</a><span class="params">(Redirect <em>flags</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.sys.Process.html#Process.redirect:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the redirect flags for the process.</div></div></dd>
+<dt class="decl"><span class="rettyp">Process</span> <a class="symbol _function" name="Process.setRedirect" href="htmlsrc/tango.sys.Process.html#L700">setRedirect</a><span class="params">(Redirect <em>flags</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.setRedirect" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the redirect flags for the process.  Return a reference to this
+ process for chaining.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Process.gui" href="htmlsrc/tango.sys.Process.html#L717">gui</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.sys.Process.html#Process.gui" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the GUI flag.</div></div>
+<div class="cmnt">This flag indicates on Windows systems that the CREATE_NO_WINDOW flag
+ should be set on CreateProcess.  Although this is a specific windows
+ flag, it is present on posix systems as a noop for compatibility.
+<p class="bl"></p>
+ Without this flag, a console window will be allocated if it doesn't
+ already exist.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Process.gui:2" href="htmlsrc/tango.sys.Process.html#L736">gui</a><span class="params">(bool <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.sys.Process.html#Process.gui:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the GUI flag.</div></div>
+<div class="cmnt">This flag indicates on Windows systems that the CREATE_NO_WINDOW flag
+ should be set on CreateProcess.  Although this is a specific windows
+ flag, it is present on posix systems as a noop for compatibility.
+<p class="bl"></p>
+ Without this flag, a console window will be allocated if it doesn't
+ already exist.</div></dd>
+<dt class="decl"><span class="rettyp">Process</span> <a class="symbol _function" name="Process.setGui" href="htmlsrc/tango.sys.Process.html#L754">setGui</a><span class="params">(bool <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.setGui" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the GUI flag.  Returns a reference to this process for chaining.</div></div>
+<div class="cmnt">This flag indicates on Windows systems that the CREATE_NO_WINDOW flag
+ should be set on CreateProcess.  Although this is a specific windows
+ flag, it is present on posix systems as a noop for compatibility.
+<p class="bl"></p>
+ Without this flag, a console window will be allocated if it doesn't
+ already exist.</div></dd>
+<dt class="decl"><span class="rettyp">PipeConduit</span> <a class="symbol _function" name="Process.stdin" href="htmlsrc/tango.sys.Process.html#L773">stdin</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.sys.Process.html#Process.stdin" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the running process' standard input pipe.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">a write-only PipeConduit connected to the child
+          process' stdin.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The stream will be null if no child process has been executed, or the
+ standard input stream was not redirected.</div></dd>
+<dt class="decl"><span class="rettyp">PipeConduit</span> <a class="symbol _function" name="Process.stdout" href="htmlsrc/tango.sys.Process.html#L788">stdout</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.sys.Process.html#Process.stdout" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the running process' standard output pipe.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">a read-only PipeConduit connected to the child
+          process' stdout.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The stream will be null if no child process has been executed, or the
+ standard output stream was not redirected.</div></dd>
+<dt class="decl"><span class="rettyp">PipeConduit</span> <a class="symbol _function" name="Process.stderr" href="htmlsrc/tango.sys.Process.html#L803">stderr</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.sys.Process.html#Process.stderr" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the running process' standard error pipe.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">a read-only PipeConduit connected to the child
+          process' stderr.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The stream will be null if no child process has been executed, or the
+ standard error stream was not redirected.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Process.execute" href="htmlsrc/tango.sys.Process.html#L828">execute</a><span class="params">(const(char)[] <em>arg1</em>, const(char[])[] <em>args</em>...)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">deprecated</span>]</span> <a href="tango.sys.Process.html#Process.execute" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Execute a process using the arguments as parameters to this method.</div></div>
+<div class="cmnt">Once the process is executed successfully, its input and output can be
+ manipulated through the stdin, stdout and
+ stderr member PipeConduit's.</div>
+<p class="sec_header">Throws:</p><div class="cmnt">ProcessCreateException if the process could not be created
+ successfully; ProcessForkException if the call to the fork()
+ system call failed (on POSIX-compatible platforms).</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The process must not be running and the provided list of arguments must
+ not be empty. If there was any argument already present in the args
+ member, they will be replaced by the arguments supplied to the method.</div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">Use constructor or properties to set up process for
+ execution.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Process.execute:2" href="htmlsrc/tango.sys.Process.html#L869">execute</a><span class="params">(const(char)[] <em>command</em>, const(char[])[const(char)[]] <em>env</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">deprecated</span>]</span> <a href="tango.sys.Process.html#Process.execute:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Execute a process using the command line arguments as parameters to
+ this method.</div></div>
+<div class="cmnt">Once the process is executed successfully, its input and output can be
+ manipulated through the stdin, stdout and
+ stderr member PipeConduit's.
+<p class="bl"></p>
+ This also clears the copyEnv flag</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>command</em></td><td>string with the process' command line; arguments that have
+            embedded whitespace must be enclosed in inside double-quotes (").</td></tr>
+<tr><td><em>env</em></td><td>associative array of strings with the process' environment
+            variables; the variable name must be the key of each entry.</td></tr></table>
+<p class="sec_header">Throws:</p><div class="cmnt">ProcessCreateException if the process could not be created
+ successfully; ProcessForkException if the call to the fork()
+ system call failed (on POSIX-compatible platforms).</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The process must not be running and the provided list of arguments must
+ not be empty. If there was any argument already present in the args
+ member, they will be replaced by the arguments supplied to the method.</div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">use properties or the constructor to set these parameters
+ instead.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Process.execute:3" href="htmlsrc/tango.sys.Process.html#L929">execute</a><span class="params">(const(char[])[] <em>args</em>, const(char[])[char[]] <em>env</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">deprecated</span>]</span> <a href="tango.sys.Process.html#Process.execute:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Execute a process using the command line arguments as parameters to
+ this method.</div></div>
+<div class="cmnt">Once the process is executed successfully, its input and output can be
+ manipulated through the stdin, stdout and
+ stderr member PipeConduit's.
+<p class="bl"></p>
+ This also clears the copyEnv flag</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>args</em></td><td>array of strings with the process' arguments; the first
+            argument must be the process' name; the arguments can be
+            empty.</td></tr>
+<tr><td><em>env</em></td><td>associative array of strings with the process' environment
+            variables; the variable name must be the key of each entry.</td></tr></table>
+<p class="sec_header">Throws:</p><div class="cmnt">ProcessCreateException if the process could not be created
+ successfully; ProcessForkException if the call to the fork()
+ system call failed (on POSIX-compatible platforms).</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The process must not be running and the provided list of arguments must
+ not be empty. If there was any argument already present in the args
+ member, they will be replaced by the arguments supplied to the method.</div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">Use properties or the constructor to set these parameters instead.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex10" name="L1_ex10">1</a>
+<a href="#L2_ex10" name="L2_ex10">2</a>
+<a href="#L3_ex10" name="L3_ex10">3</a>
+<a href="#L4_ex10" name="L4_ex10">4</a>
+<a href="#L5_ex10" name="L5_ex10">5</a>
+<a href="#L6_ex10" name="L6_ex10">6</a>
+<a href="#L7_ex10" name="L7_ex10">7</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">p</span> = <span class="k">new</span> <span class="i">Process</span>();
+<span class="k">char</span>[][] <span class="i">args</span>;
+
+<span class="i">args</span> ~= <span class="sl">"ls"</span>;
+<span class="i">args</span> ~= <span class="sl">"-l"</span>;
+
+<span class="i">p</span>.<span class="i">execute</span>(<span class="i">args</span>, <span class="k">null</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">Process</span> <a class="symbol _function" name="Process.execute:4" href="htmlsrc/tango.sys.Process.html#L969">execute</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.execute:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Execute a process using the arguments that were supplied to the
+ constructor or to the args property.</div></div>
+<div class="cmnt">Once the process is executed successfully, its input and output can be
+ manipulated through the stdin, stdout and
+ stderr member PipeConduit's.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">A reference to this process object for chaining.</div>
+<p class="sec_header">Throws:</p><div class="cmnt">ProcessCreateException if the process could not be created
+ successfully; ProcessForkException if the call to the fork()
+ system call failed (on POSIX-compatible platforms).</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The process must not be running and the list of arguments must
+ not be empty before calling this method.</div></dd>
+<dt class="decl"><span class="rettyp">Result</span> <a class="symbol _function" name="Process.wait" href="htmlsrc/tango.sys.Process.html#L1458">wait</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.wait" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Unconditionally wait for a process to end and return the reason and
+ status code why the process ended.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The return value is a Result struct, which has two members:
+ reason and status. The reason can take the
+ following values:
+<p class="bl"></p>
+ Process.Result.Exit: the child process exited normally;
+                      status has the process' return
+                      code.
+<p class="bl"></p>
+ Process.Result.Signal: the child process was killed by a signal;
+                        status has the signal number
+                        that killed the process.
+<p class="bl"></p>
+ Process.Result.Stop: the process was stopped; status
+                      has the signal number that was used to stop
+                      the process.
+<p class="bl"></p>
+ Process.Result.Continue: the process had been previously stopped
+                          and has now been restarted;
+                          status has the signal number
+                          that was used to continue the process.
+<p class="bl"></p>
+ Process.Result.Error: We could not properly wait on the child
+                       process; status has the
+                       errno value if the process was
+                       running and -1 if not.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">You can only call wait() on a running process once. The Signal, Stop
+ and Continue reasons will only be returned on POSIX-compatible
+ platforms.
+ Calling wait() will not clean the pipes as the parent process may still
+ want the remaining output. It is however recommended to call close()
+ when no more content is expected, as this will close the pipes.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Process.kill" href="htmlsrc/tango.sys.Process.html#L1638">kill</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.kill" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Kill a running process. This method will not return until the process
+ has been killed.</div></div>
+<p class="sec_header">Throws:</p><div class="cmnt">ProcessKillException if the process could not be killed;
+ ProcessWaitException if we could not wait on the process after
+ killing it.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">After calling this method you will not be able to call wait() on the
+ process.
+ Killing the process does not clean the attached pipes as the parent
+ process may still want/need the remaining content. However, it is
+ recommended to call close() on the process when it is no longer needed
+ as this will clean the pipes.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[][]</span> <a class="symbol _function" name="Process.splitArgs" href="htmlsrc/tango.sys.Process.html#L1742">splitArgs</a><span class="params">(const(char)[] <em>command</em>, const(char)[] <em>delims</em> = <span class="defval"><span class="sl">" <span class="es">\t</span><span class="es">\r</span><span class="es">\n</span>"</span></span>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">static</span>]</span> <a href="tango.sys.Process.html#Process.splitArgs" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Split a string containing the command line used to invoke a program
+ and return and array with the parsed arguments. The double-quotes (")
+ character can be used to specify arguments with embedded spaces.
+ e.g. first "second param" third</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Process.cleanPipes" href="htmlsrc/tango.sys.Process.html#L1874">cleanPipes</a><span class="params">()</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.sys.Process.html#Process.cleanPipes" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Close and delete any pipe that may have been left open in a previous
+ execution of a child process.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Process.close" href="htmlsrc/tango.sys.Process.html#L1885">close</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.sys.Process.html#Process.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Explicitly close any resources held by this process object. It is recommended
+ to always call this when you are done with the process.</div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="Process.toNullEndedBuffer" href="htmlsrc/tango.sys.Process.html#L1899">toNullEndedBuffer</a><span class="params">(const(char[])[char[]] <em>src</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">static</span>]</span> <a href="tango.sys.Process.html#Process.toNullEndedBuffer" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert an associative array of strings to a buffer containing a
+ concatenation of "<name>=<value>" strings separated by a null
+ character and with an additional null character at the end of it.
+ This is the format expected by the CreateProcess() Windows API for
+ the environment variables.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ProcessCreateException" href="htmlsrc/tango.sys.Process.html#L2030">ProcessCreateException</a> : <span class="bclass">ProcessException</span> <a href="tango.sys.Process.html#ProcessCreateException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Exception thrown when the process cannot be created.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ProcessForkException" href="htmlsrc/tango.sys.Process.html#L2048">ProcessForkException</a> : <span class="bclass">ProcessException</span> <a href="tango.sys.Process.html#ProcessForkException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Exception thrown when the parent process cannot be forked.</div></div>
+<div class="cmnt">This exception will only be thrown on POSIX-compatible platforms.</div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ProcessKillException" href="htmlsrc/tango.sys.Process.html#L2059">ProcessKillException</a> : <span class="bclass">ProcessException</span> <a href="tango.sys.Process.html#ProcessKillException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Exception thrown when the process cannot be killed.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ProcessWaitException" href="htmlsrc/tango.sys.Process.html#L2071">ProcessWaitException</a> : <span class="bclass">ProcessException</span> <a href="tango.sys.Process.html#ProcessWaitException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Exception thrown when the parent process tries to wait on the child
+ process and fails.</div></div>
+</dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2006 Juan Jose Comellas. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:00 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

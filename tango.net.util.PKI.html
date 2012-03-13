@@ -1,0 +1,446 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.net.util.PKI</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.net.util.PKI">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.net.util.PKI"><a href="htmlsrc/tango.net.util.PKI.html" class="symbol">tango.net.util.PKI</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Author:</p><div class="cmnt">Jeff Davey <j@submersion.com></div>
+<dl>
+<dt class="decl">int <a class="symbol _variable" name="SSL_VERIFY_NONE" href="htmlsrc/tango.net.util.PKI.html#L49">SSL_VERIFY_NONE</a> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.net.util.PKI.html#SSL_VERIFY_NONE" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">PKI provides Public Key Infrastructure.</div></div>
+<div class="cmnt">Specifically, it provides the ability to:
+<p class="bl"></p>
+  - Make a X509 Certificate (SSL Certificate)
+<p class="bl"></p>
+  - Make a Public and Private key pair
+<p class="bl"></p>
+  - Validate a X509 Certificate against a Certificate Authority
+<p class="bl"></p>
+  - Generate a SSLCtx for SSLSocket and SSLServerSocket
+<p class="bl"></p>
+  - Wrap a SSLVerifyCallback so that retrieving the peer cert is easier
+<p class="bl"></p>
+  PKI requires the OpenSSL library, and uses a dynamic binding to the library.
+  You can find the library at http://www.openssl.org and a Win32 specific port 
+  at http://www.slproweb.com/products/Win32OpenSSL.html.
+<p class="bl"></p>
+
+<p class="bl"></p>
+
+  Do not verify the peer certificate. Nor fail if it's not provided (server 
+  only).</div></dd>
+<dt class="decl">int <a class="symbol _variable" name="SSL_VERIFY_PEER" href="htmlsrc/tango.net.util.PKI.html#L57">SSL_VERIFY_PEER</a> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.net.util.PKI.html#SSL_VERIFY_PEER" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Ask for a peer certificate, but do not fail if it is not provided.</div></div></dd>
+<dt class="decl">int <a class="symbol _variable" name="SSL_VERIFY_FAIL_IF_NO_PEER_CERT" href="htmlsrc/tango.net.util.PKI.html#L65">SSL_VERIFY_FAIL_IF_NO_PEER_CERT</a> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.net.util.PKI.html#SSL_VERIFY_FAIL_IF_NO_PEER_CERT" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Ask for a peer certificate, however, fail if it is not provided</div></div></dd>
+<dt class="decl">int <a class="symbol _variable" name="SSL_VERIFY_CLIENT_ONCE" href="htmlsrc/tango.net.util.PKI.html#L73">SSL_VERIFY_CLIENT_ONCE</a> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.net.util.PKI.html#SSL_VERIFY_CLIENT_ONCE" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Only validate once, do not re-validate during handshake renegotiation.</div></div></dd>
+<dt class="decl"><span class="kw">alias</span> int function(int, X509_STORE_CTX* ctx) <a class="symbol _alias" name="SSLVerifyCallback" href="htmlsrc/tango.net.util.PKI.html#L87">SSLVerifyCallback</a> <span class="attrs">[<span class="linkg">extern(C)</span>]</span> <a href="tango.net.util.PKI.html#SSLVerifyCallback" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">SSLVerifyCallback is passed into SSLCtx and is called during handshake
+  when OpenSSL is doing certificate validation.</div></div>
+<div class="cmnt">Wrapping the X509_STORE_CTX in the CertificateStoreCtx utility class
+  gives the ability to access the peer certificate, and reason for error.</div></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SSLCtx" href="htmlsrc/tango.net.util.PKI.html#L109">SSLCtx</a> <a href="tango.net.util.PKI.html#SSLCtx" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">SSLCtx is provided to SSLSocket and SSLServerSocket.</div></div>
+<div class="cmnt">It contains the public/private keypair, and some additional options that
+    control how the SSL streams work.
+<p class="bl"></p>
+    Example
+    <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">cert</span> = <span class="k">new</span> <span class="i">Certificate</span>(<span class="k">cast</span>(<span class="k">char</span>[])<span class="i">File</span>(<span class="sl">"public.pem"</span>).<span class="i">read</span>);
+<span class="k">auto</span> <span class="i">pkey</span> = <span class="k">new</span> <span class="i">PrivateKey</span>(<span class="k">cast</span>(<span class="k">char</span>[])<span class="i">File</span>(<span class="sl">"private.pem"</span>).<span class="i">read</span>);;
+<span class="k">auto</span> <span class="i">ctx</span> = <span class="k">new</span> <span class="i">SSLCtx</span>();
+<span class="i">ctx</span>.<span class="i">certificate</span> = <span class="i">cert</span>;
+<span class="i">ctx</span>.<span class="i">pkey</span> = <span class="i">pkey</span>;
+<span class="i">ctx</span>.<span class="i">checkKey</span>();</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="SSLCtx.this" href="htmlsrc/tango.net.util.PKI.html#L122">this</a><span class="params">()</span> <a href="tango.net.util.PKI.html#SSLCtx.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Creates a new SSLCtx supporting SSLv3 and TLSv1 methods.</div></div></dd>
+<dt class="decl"><span class="rettyp">SSL_CTX*</span> <a class="symbol _function" name="SSLCtx.native" href="htmlsrc/tango.net.util.PKI.html#L146">native</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.net.util.PKI.html#SSLCtx.native" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the native context from OpenSSL</div></div></dd>
+<dt class="decl"><span class="rettyp">SSLCtx</span> <a class="symbol _function" name="SSLCtx.certificate" href="htmlsrc/tango.net.util.PKI.html#L159">certificate</a><span class="params">(Certificate <em>cert</em>)</span> <a href="tango.net.util.PKI.html#SSLCtx.certificate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Assigns a X509 Certificate to the SSLCtx.</div></div>
+<div class="cmnt">This is required for SSL</div></dd>
+<dt class="decl"><span class="rettyp">SSLCtx</span> <a class="symbol _function" name="SSLCtx.privateKey" href="htmlsrc/tango.net.util.PKI.html#L177">privateKey</a><span class="params">(PrivateKey <em>key</em>)</span> <a href="tango.net.util.PKI.html#SSLCtx.privateKey" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Assigns a PrivateKey (public/private keypair to the SSLCtx.</div></div>
+<div class="cmnt">This is required for SSL.</div></dd>
+<dt class="decl"><span class="rettyp">SSLCtx</span> <a class="symbol _function" name="SSLCtx.checkKey" href="htmlsrc/tango.net.util.PKI.html#L193">checkKey</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.net.util.PKI.html#SSLCtx.checkKey" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Validates that the X509 certificate was signed with the provided
+        public/private keypair. Throws an exception if this is not the case.</div></div></dd>
+<dt class="decl"><span class="rettyp">SSLCtx</span> <a class="symbol _function" name="SSLCtx.setVerification" href="htmlsrc/tango.net.util.PKI.html#L207">setVerification</a><span class="params">(int <em>flags</em>, SSLVerifyCallback <em>cb</em>)</span> <a href="tango.net.util.PKI.html#SSLCtx.setVerification" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sets a SSLVerifyCallback function using the SSL_VERIFY_(NONE|PEER|etc) flags
+        to control how verification is handled.</div></div></dd>
+<dt class="decl"><span class="rettyp">SSLCtx</span> <a class="symbol _function" name="SSLCtx.store" href="htmlsrc/tango.net.util.PKI.html#L221">store</a><span class="params">(CertificateStore <em>store</em>)</span> <a href="tango.net.util.PKI.html#SSLCtx.store" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sets a CertificateStore of certs that are valid and trust Certificate
+        Authorities during verification.</div></div></dd>
+<dt class="decl"><span class="rettyp">SSLCtx</span> <a class="symbol _function" name="SSLCtx.caCertsPath" href="htmlsrc/tango.net.util.PKI.html#L243">caCertsPath</a><span class="params">(const(char)[] <em>path</em>)</span> <a href="tango.net.util.PKI.html#SSLCtx.caCertsPath" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Loads valid Certificate Authorities from the specified path.</div></div>
+<div class="cmnt">From the SSL_CTX_load_verify_locations manpage:
+<p class="bl"></p>
+        Each file must contain only one CA certificate. Also, the files are
+        looked up by the CA subject name hash value, which must be available. If
+        more than one CA certificate with the same name hash value exists, the
+        extension must be different. (ie: 9d66eef0.0, 9d66eef0.1, etc). The search 
+        is performed in the ordering of the extension, regardless of other properties
+        of the certificates. Use the c_rehash utility to create the necessary symlinks</div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="CertificateStoreCtx" href="htmlsrc/tango.net.util.PKI.html#L291">CertificateStoreCtx</a> <a href="tango.net.util.PKI.html#CertificateStoreCtx" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The CertificateStoreCtx is a wrapper to the SSLVerifyCallback X509_STORE_CTX
+    parameter.</div></div>
+<div class="cmnt">It allows retrieving the peer certificate, and examining any errors during
+    validation.
+<p class="bl"></p>
+
+    The following example will probably change sometime soon.
+<p class="bl"></p>
+    Example
+    <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+<a href="#L3_ex2" name="L3_ex2">3</a>
+<a href="#L4_ex2" name="L4_ex2">4</a>
+<a href="#L5_ex2" name="L5_ex2">5</a>
+<a href="#L6_ex2" name="L6_ex2">6</a>
+<a href="#L7_ex2" name="L7_ex2">7</a>
+<a href="#L8_ex2" name="L8_ex2">8</a>
+<a href="#L9_ex2" name="L9_ex2">9</a>
+<a href="#L10_ex2" name="L10_ex2">10</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">extern</span> (<span class="i">C</span>)
+{
+    <span class="k">int</span> <span class="i">myCallback</span>(<span class="k">int</span> <span class="i">code</span>, <span class="i">X509_STORE_CTX</span> *<span class="i">ctx</span>)
+    {
+        <span class="k">auto</span> <span class="i">myCtx</span> = <span class="k">new</span> <span class="i">CertificateStoreCtx</span>(<span class="i">ctx</span>);
+        <span class="i">Certificate</span> <span class="i">cert</span> = <span class="i">myCtx</span>.<span class="i">cert</span>;
+        <span class="i">Stdout</span>(<span class="i">cert</span>.<span class="i">subject</span>).<span class="i">newline</span>;
+        <span class="k">return</span> <span class="n">0</span>; <span class="lc">// BAD CERT! (1 is good)</span>
+    }
+}</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="CertificateStoreCtx.this" href="htmlsrc/tango.net.util.PKI.html#L302">this</a><span class="params">(X509_STORE_CTX* <em>ctx</em>)</span> <a href="tango.net.util.PKI.html#CertificateStoreCtx.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This constructor takes a X509_STORE_CTX as provided by the SSLVerifyCallback
+        function.</div></div></dd>
+<dt class="decl"><span class="rettyp">Certificate</span> <a class="symbol _function" name="CertificateStoreCtx.cert" href="htmlsrc/tango.net.util.PKI.html#L313">cert</a><span class="params">()</span> <a href="tango.net.util.PKI.html#CertificateStoreCtx.cert" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the peer certificate.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="CertificateStore" href="htmlsrc/tango.net.util.PKI.html#L354">CertificateStore</a> <a href="tango.net.util.PKI.html#CertificateStore" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">CertificateStore stores numerous X509 Certificates for use in CRL lists,
+    CA lists, etc.</div></div>
+<div class="cmnt">Example
+    <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+<a href="#L3_ex3" name="L3_ex3">3</a>
+<a href="#L4_ex3" name="L4_ex3">4</a>
+<a href="#L5_ex3" name="L5_ex3">5</a>
+<a href="#L6_ex3" name="L6_ex3">6</a>
+<a href="#L7_ex3" name="L7_ex3">7</a>
+<a href="#L8_ex3" name="L8_ex3">8</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">store</span> = <span class="k">new</span> <span class="i">CertificateStore</span>();
+<span class="k">auto</span> <span class="i">caCert</span> = <span class="k">new</span> <span class="i">Certificate</span>(<span class="k">cast</span>(<span class="k">char</span>[])<span class="i">File</span>(<span class="sl">"cacert.pem"</span>).<span class="i">read</span>);
+<span class="i">store</span>.<span class="i">add</span>(<span class="i">caCert</span>);
+<span class="k">auto</span> <span class="i">untrustedCert</span> = <span class="k">new</span> <span class="i">Certificate</span>(<span class="k">cast</span>(<span class="k">char</span>[])<span class="i">File</span>(<span class="sl">"cert.pem"</span>).<span class="i">read</span>);
+<span class="k">if</span> (<span class="i">untrustedCert</span>.<span class="i">verify</span>(<span class="i">store</span>))
+    <span class="i">Stdout</span>(<span class="sl">"The untrusted cert was signed by our caCert and is valid."</span>).<span class="i">newline</span>;
+<span class="k">else</span>
+    <span class="i">Stdout</span>(<span class="sl">"The untrusted cert was expired, or not signed by the caCert"</span>).<span class="i">newline</span>;</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><span class="rettyp">CertificateStore</span> <a class="symbol _function" name="CertificateStore.add" href="htmlsrc/tango.net.util.PKI.html#L381">add</a><span class="params">(Certificate <em>cert</em>)</span> <a href="tango.net.util.PKI.html#CertificateStore.add" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a Certificate to the store.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="PublicKey" href="htmlsrc/tango.net.util.PKI.html#L409">PublicKey</a> <a href="tango.net.util.PKI.html#PublicKey" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">PublicKey contains the RSA public key from a private/public keypair.</div></div>
+<div class="cmnt">It also allows extraction of the public key from a keypair.
+<p class="bl"></p>
+    This is useful for encryption, you can encrypt data with someone's public key
+    and they can decrypt it with their private key.
+<p class="bl"></p>
+    Example
+    <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+<a href="#L2_ex4" name="L2_ex4">2</a>
+<a href="#L3_ex4" name="L3_ex4">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="k">public</span> = <span class="k">new</span> <span class="i">PublicKey</span>(<span class="k">cast</span>(<span class="k">char</span>[])<span class="i">File</span>(<span class="sl">"public.pem"</span>).<span class="i">read</span>);
+<span class="k">auto</span> <span class="i">encrypted</span> = <span class="k">public</span>.<span class="i">encrypt</span>(<span class="k">cast</span>(<span class="k">ubyte</span>[])<span class="sl">"Hello, how are you today?"</span>);
+<span class="k">auto</span> <span class="i">pemData</span> = <span class="k">public</span>.<span class="i">pemFormat</span>;</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="PublicKey.this" href="htmlsrc/tango.net.util.PKI.html#L422">this</a><span class="params">(char[] <em>publicPemData</em>)</span> <a href="tango.net.util.PKI.html#PublicKey.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generate a PublicKey object from the passed PEM formatted data</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>publicPemData</em></td><td>pem encoded data containing the public key</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="PublicKey.pemFormat" href="htmlsrc/tango.net.util.PKI.html#L460">pemFormat</a><span class="params">()</span> <a href="tango.net.util.PKI.html#PublicKey.pemFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a PublicKey in the PEM format.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="PublicKey.verify" href="htmlsrc/tango.net.util.PKI.html#L488">verify</a><span class="params">(ubyte[] <em>data</em>, ubyte[] <em>signature</em>)</span> <a href="tango.net.util.PKI.html#PublicKey.verify" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Verify the data passed was signed with the public key.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>the data to verify</td></tr>
+<tr><td><em>signature</em></td><td>the digital signature</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">ubyte[]</span> <a class="symbol _function" name="PublicKey.encrypt" href="htmlsrc/tango.net.util.PKI.html#L515">encrypt</a><span class="params">(ubyte[] <em>data</em>)</span> <a href="tango.net.util.PKI.html#PublicKey.encrypt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Encrypt the passed data using the PublicKey</div></div>
+<p class="sec_header">Notes:</p><div class="cmnt">This is size limited based off the key
+        Not recommended for general encryption, use RSA for encrypting a 
+        random key instead and switch to a block cipher.</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>the data to encrypt</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">ubyte[]</span> <a class="symbol _function" name="PublicKey.decrypt" href="htmlsrc/tango.net.util.PKI.html#L542">decrypt</a><span class="params">(ubyte[] <em>data</em>)</span> <a href="tango.net.util.PKI.html#PublicKey.decrypt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Decrypts data previously encrypted with the matching PrivateKey</div></div>
+<div class="cmnt">Please see the encrypt notes.</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>the data to encrypt</td></tr></table></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="PrivateKey" href="htmlsrc/tango.net.util.PKI.html#L574">PrivateKey</a> <a href="tango.net.util.PKI.html#PrivateKey" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generates a RSA public/private key pair for use with X509 Certificates
+    and other applications search as S/MIME, DomainKeys, etc.</div></div>
+<div class="cmnt">Example
+    <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex5" name="L1_ex5">1</a>
+<a href="#L2_ex5" name="L2_ex5">2</a>
+<a href="#L3_ex5" name="L3_ex5">3</a>
+<a href="#L4_ex5" name="L4_ex5">4</a>
+<a href="#L5_ex5" name="L5_ex5">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">newPkey</span> = <span class="k">new</span> <span class="i">PrivateKey</span>(<span class="n">2048</span>); <span class="lc">// create new keypair</span>
+<span class="i">Stdout</span>(<span class="i">newPkey</span>.<span class="i">pemFormat</span>(<span class="sl">"password"</span>)); <span class="lc">// dumps in pemFormat with encryption</span>
+<span class="i">Stdout</span>(<span class="i">newPkey</span>.<span class="i">pemFormat</span>()); <span class="lc">// dumps in pemFormat without encryption</span>
+<span class="i">Stdout</span>(<span class="i">newPkey</span>.<span class="i">publicKey</span>.<span class="i">pemFormat</span>); <span class="lc">// dump out just the public key portion</span>
+<span class="k">auto</span> <span class="i">data</span> = <span class="i">newPkey</span>.<span class="i">decrypt</span>(<span class="i">someData</span>); <span class="lc">// decrypt data encrypted with public Key</span></pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="PrivateKey.this" href="htmlsrc/tango.net.util.PKI.html#L589">this</a><span class="params">(char[] <em>privatePemData</em>, char[] <em>certPass</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.net.util.PKI.html#PrivateKey.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reads in the provided PEM data, with an optional password to decrypt
+        the private key.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>privatePemData</em></td><td>the PEM encoded data of the private key</td></tr>
+<tr><td><em>certPass</em></td><td>an optional password to decrypt the key.</td></tr></table></dd>
+<dt class="decl"><a class="symbol _ctor" name="PrivateKey.this:2" href="htmlsrc/tango.net.util.PKI.html#L612">this</a><span class="params">(int <em>bits</em>)</span> <a href="tango.net.util.PKI.html#PrivateKey.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generates a new private/public key at the specified bit leve.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>bits</em></td><td>Number of bits to use, 2048 is a good number for this.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="PrivateKey.opEquals" href="htmlsrc/tango.net.util.PKI.html#L642">opEquals</a><span class="params">(Object <em>obj</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.util.PKI.html#PrivateKey.opEquals" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compares two PrivateKey classes to see if the internal structures are 
+        the same.</div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="PrivateKey.pemFormat" href="htmlsrc/tango.net.util.PKI.html#L659">pemFormat</a><span class="params">(char[] <em>pass</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.net.util.PKI.html#PrivateKey.pemFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the underlying public/private key pair in PEM format.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>pass</em></td><td>If this is provided, the private key will be encrypted using
+            AES 256bit encryption, with this as the key.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">PublicKey</span> <a class="symbol _function" name="PrivateKey.publicKey" href="htmlsrc/tango.net.util.PKI.html#L684">publicKey</a><span class="params">()</span> <a href="tango.net.util.PKI.html#PrivateKey.publicKey" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the underlying PublicKey</div></div></dd>
+<dt class="decl"><span class="rettyp">ubyte[]</span> <a class="symbol _function" name="PrivateKey.sign" href="htmlsrc/tango.net.util.PKI.html#L701">sign</a><span class="params">(const(ubyte)[] <em>data</em>, ubyte[] <em>sigbuf</em>)</span> <a href="tango.net.util.PKI.html#PrivateKey.sign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sign the given data with the private key</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>the data to sign</td></tr>
+<tr><td><em>sigbuf</em></td><td>the buffer to store the signature in
+        
+        Returns a slice of the signature or null</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">ubyte[]</span> <a class="symbol _function" name="PrivateKey.encrypt" href="htmlsrc/tango.net.util.PKI.html#L735">encrypt</a><span class="params">(ubyte[] <em>data</em>)</span> <a href="tango.net.util.PKI.html#PrivateKey.encrypt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Encrypt the passed data using the PrivateKey</div></div>
+<p class="sec_header">Notes:</p><div class="cmnt">This is size limited based off the key
+        Not recommended for general encryption, use RSA for encrypting a 
+        random key instead and switch to a block cipher.</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>the data to encrypt</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">ubyte[]</span> <a class="symbol _function" name="PrivateKey.decrypt" href="htmlsrc/tango.net.util.PKI.html#L762">decrypt</a><span class="params">(ubyte[] <em>data</em>)</span> <a href="tango.net.util.PKI.html#PrivateKey.decrypt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Decrypts data previously encrypted with the matching PublicKey</div></div>
+<div class="cmnt">Please see the encrypt notes.</div>
+<p class="sec_header">Parmas:</p><div class="cmnt">data = the data to encrypt</div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Certificate" href="htmlsrc/tango.net.util.PKI.html#L804">Certificate</a> <a href="tango.net.util.PKI.html#Certificate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Certificate provides necessary functionality to create and read X509 
+    Certificates.</div></div>
+<div class="cmnt">Note, once a Certificate has been signed, it is immutable, and cannot
+    be modified.
+<p class="bl"></p>
+    X509 Certificates are sometimes called SSL Certificates.
+<p class="bl"></p>
+    Example
+    <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex6" name="L1_ex6">1</a>
+<a href="#L2_ex6" name="L2_ex6">2</a>
+<a href="#L3_ex6" name="L3_ex6">3</a>
+<a href="#L4_ex6" name="L4_ex6">4</a>
+<a href="#L5_ex6" name="L5_ex6">5</a>
+<a href="#L6_ex6" name="L6_ex6">6</a>
+<a href="#L7_ex6" name="L7_ex6">7</a>
+<a href="#L8_ex6" name="L8_ex6">8</a>
+<a href="#L9_ex6" name="L9_ex6">9</a>
+<a href="#L10_ex6" name="L10_ex6">10</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">newPkey</span> = <span class="k">new</span> <span class="i">PrivateKey</span>(<span class="n">2048</span>); <span class="lc">// create new keypair</span>
+<span class="k">auto</span> <span class="i">cert</span> = <span class="k">new</span> <span class="i">Certificate</span>();
+<span class="i">cert</span>.<span class="i">privateKey</span> = <span class="i">newPkey</span>;
+<span class="i">cert</span>.<span class="i">serialNumber</span> = <span class="n">1</span>;
+<span class="i">cert</span>.<span class="i">dateBeforeOffset</span> = <span class="i">TimeSpan</span>.<span class="i">zero</span>;
+<span class="i">cert</span>.<span class="i">dateAfterOffset</span> = <span class="i">TimeSpan</span>.<span class="i">days</span>(<span class="n">365</span>); <span class="lc">// cert is valid for one year</span>
+<span class="i">cert</span>.<span class="i">setSubject</span>(<span class="sl">"US"</span>, <span class="sl">"State"</span>, <span class="sl">"City"</span>, <span class="sl">"Organization"</span>, <span class="sl">"CN"</span>, <span class="sl">"Organizational Unit"</span>, <span class="sl">"Email"</span>);
+<span class="i">cert</span>.<span class="i">sign</span>(<span class="i">cert</span>, <span class="i">newPkey</span>); <span class="lc">// self signed cert</span>
+<span class="i">Stdout</span>(<span class="i">newPkey</span>.<span class="i">pemFormat</span>).<span class="i">newline</span>;
+<span class="i">Stdout</span>(<span class="i">cert</span>.<span class="i">pemFormat</span>).<span class="i">newline</span>;</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="Certificate.this" href="htmlsrc/tango.net.util.PKI.html#L822">this</a><span class="params">(char[] <em>publicPemData</em>)</span> <a href="tango.net.util.PKI.html#Certificate.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parses a X509 Certificate from the provided PEM encoded data.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Certificate.this:2" href="htmlsrc/tango.net.util.PKI.html#L840">this</a><span class="params">()</span> <a href="tango.net.util.PKI.html#Certificate.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Creates a new and un-signed (empty) X509 certificate. Useful for generating
+        X509 certificates programatically.</div></div></dd>
+<dt class="decl"><span class="rettyp">Certificate</span> <a class="symbol _function" name="Certificate.serialNumber" href="htmlsrc/tango.net.util.PKI.html#L876">serialNumber</a><span class="params">(uint <em>serial</em>)</span> <a href="tango.net.util.PKI.html#Certificate.serialNumber" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sets the serial number of the new unsigned certificate.</div></div>
+<div class="cmnt">Note, this serial number should be unique for all certificates signed
+        by the provided certificate authority. Having two Certificates with the
+        same serial number can cause problems with web browsers and other apps
+        because they will be different certificates.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Certificate.serialNumber:2" href="htmlsrc/tango.net.util.PKI.html#L889">serialNumber</a><span class="params">()</span> <a href="tango.net.util.PKI.html#Certificate.serialNumber:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the serial number of the Certificate</div></div></dd>
+<dt class="decl"><span class="rettyp">Certificate</span> <a class="symbol _function" name="Certificate.dateBeforeOffset" href="htmlsrc/tango.net.util.PKI.html#L909">dateBeforeOffset</a><span class="params">(TimeSpan <em>t</em>)</span> <a href="tango.net.util.PKI.html#Certificate.dateBeforeOffset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">If the current date is "before" the date set here, the certificate will be
+        invalid.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>t</em></td><td>A TimeSpan representing the earliest time the Certificate will be valid</td></tr></table>
+<p class="sec_header">Example:</p><div class="cmnt">cert.dateBeforeOffset = TimeSpan.seconds(-86400); // Certificate is invalid before yesterday</div></dd>
+<dt class="decl"><span class="rettyp">Certificate</span> <a class="symbol _function" name="Certificate.dateAfterOffset" href="htmlsrc/tango.net.util.PKI.html#L931">dateAfterOffset</a><span class="params">(TimeSpan <em>t</em>)</span> <a href="tango.net.util.PKI.html#Certificate.dateAfterOffset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">If the current date is "after" the date set here, the certificate will be
+        invalid.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>t</em></td><td>A TimeSpan representing the amount of time from now that the
+            Certificate will be valid. This must be larger than dateBefore</td></tr></table>
+<p class="sec_header">Example:</p><div class="cmnt">cert.dateAfterOffset = TimeSpan.seconds(86400 * 365); // Certificate is valid up to one year from now</div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="Certificate.dateAfter" href="htmlsrc/tango.net.util.PKI.html#L948">dateAfter</a><span class="params">()</span> <a href="tango.net.util.PKI.html#Certificate.dateAfter" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the dateAfter field of the certificate in ASN1_GENERALIZEDTIME.</div></div>
+<div class="cmnt">Note, this will eventually befome a DateTime struct.</div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="Certificate.dateBefore" href="htmlsrc/tango.net.util.PKI.html#L969">dateBefore</a><span class="params">()</span> <a href="tango.net.util.PKI.html#Certificate.dateBefore" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the dateBefore field of the certificate in ASN1_GENERALIZEDTIME.</div></div>
+<div class="cmnt">Note, this will eventually befome a DateTime struct.</div></dd>
+<dt class="decl"><span class="rettyp">Certificate</span> <a class="symbol _function" name="Certificate.privateKey" href="htmlsrc/tango.net.util.PKI.html#L987">privateKey</a><span class="params">(PrivateKey <em>key</em>)</span> <a href="tango.net.util.PKI.html#Certificate.privateKey" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sets the public/private keypair of an unsigned certificate.</div></div></dd>
+<dt class="decl"><span class="rettyp">Certificate</span> <a class="symbol _function" name="Certificate.setSubject" href="htmlsrc/tango.net.util.PKI.html#L1017">setSubject</a><span class="params">(const(char)[] <em>country</em>, const(char)[] <em>stateProvince</em>, const(char)[] <em>city</em>, const(char)[] <em>organization</em>, const(char)[] <em>cn</em>, const(char)[] <em>organizationalUnit</em> = <span class="defval"><span class="k">null</span></span>, const(char)[] <em>email</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.net.util.PKI.html#Certificate.setSubject" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sets the subject (who this certificate is for) of an unsigned certificate.</div></div>
+<div class="cmnt">The country code must be a valid two-letter country code (ie: CA, US, etc)</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>country</em></td><td>the two letter country code of the subject</td></tr>
+<tr><td><em>stateProvince</em></td><td>the state or province of the subject</td></tr>
+<tr><td><em>city</em></td><td>the city the subject belong to</td></tr>
+<tr><td><em>organization</em></td><td>the organization the subject belongs to</td></tr>
+<tr><td><em>cn</em></td><td>the cn of the subject. For websites, this should be the website url
+        or a wildcard version of it (ie: *.dsource.org)</td></tr>
+<tr><td><em>organizationUnit</em></td><td>the optional orgnizationalUnit of the subject</td></tr>
+<tr><td><em>email</em></td><td>the optional email address of the subject</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="Certificate.subject" href="htmlsrc/tango.net.util.PKI.html#L1052">subject</a><span class="params">()</span> <a href="tango.net.util.PKI.html#Certificate.subject" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the Certificate subject in a multi-line string.</div></div></dd>
+<dt class="decl"><span class="rettyp">Certificate</span> <a class="symbol _function" name="Certificate.sign" href="htmlsrc/tango.net.util.PKI.html#L1084">sign</a><span class="params">(Certificate <em>caCert</em>, PrivateKey <em>caKey</em>)</span> <a href="tango.net.util.PKI.html#Certificate.sign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Signs the unsigned Certificate with the specified CA X509 Certificate and
+        it's corresponding public/private keypair.</div></div>
+<div class="cmnt">Once the Certificate is signed, it can no longer be modified.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Certificate.opEquals" href="htmlsrc/tango.net.util.PKI.html#L1114">opEquals</a><span class="params">(Object <em>obj</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.util.PKI.html#Certificate.opEquals" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Checks if the underlying data structur of the Certificate is equal</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Certificate.verify" href="htmlsrc/tango.net.util.PKI.html#L1132">verify</a><span class="params">(CertificateStore <em>store</em>)</span> <a href="tango.net.util.PKI.html#Certificate.verify" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Verifies that the Certificate was signed and issues by a CACert in the 
+        passed CertificateStore.</div></div>
+<div class="cmnt">This will also verify the dateBefore and dateAfter fields to see if the
+        current date falls between them.</div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="Certificate.pemFormat" href="htmlsrc/tango.net.util.PKI.html#L1155">pemFormat</a><span class="params">()</span> <a href="tango.net.util.PKI.html#Certificate.pemFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the Certificate in a PEM encoded string.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008 Jeff Davey. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:58 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

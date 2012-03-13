@@ -1,0 +1,302 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.util.log.AppendSyslog</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a><a id="L38" href="#L38">38</a><a id="L39" href="#L39">39</a><a id="L40" href="#L40">40</a><a id="L41" href="#L41">41</a><a id="L42" href="#L42">42</a><a id="L43" href="#L43">43</a><a id="L44" href="#L44">44</a><a id="L45" href="#L45">45</a><a id="L46" href="#L46">46</a><a id="L47" href="#L47">47</a><a id="L48" href="#L48">48</a><a id="L49" href="#L49">49</a><a id="L50" href="#L50">50</a><a id="L51" href="#L51">51</a><a id="L52" href="#L52">52</a><a id="L53" href="#L53">53</a><a id="L54" href="#L54">54</a><a id="L55" href="#L55">55</a><a id="L56" href="#L56">56</a><a id="L57" href="#L57">57</a><a id="L58" href="#L58">58</a><a id="L59" href="#L59">59</a><a id="L60" href="#L60">60</a><a id="L61" href="#L61">61</a><a id="L62" href="#L62">62</a><a id="L63" href="#L63">63</a><a id="L64" href="#L64">64</a><a id="L65" href="#L65">65</a><a id="L66" href="#L66">66</a><a id="L67" href="#L67">67</a><a id="L68" href="#L68">68</a><a id="L69" href="#L69">69</a><a id="L70" href="#L70">70</a><a id="L71" href="#L71">71</a><a id="L72" href="#L72">72</a><a id="L73" href="#L73">73</a><a id="L74" href="#L74">74</a><a id="L75" href="#L75">75</a><a id="L76" href="#L76">76</a><a id="L77" href="#L77">77</a><a id="L78" href="#L78">78</a><a id="L79" href="#L79">79</a><a id="L80" href="#L80">80</a><a id="L81" href="#L81">81</a><a id="L82" href="#L82">82</a><a id="L83" href="#L83">83</a><a id="L84" href="#L84">84</a><a id="L85" href="#L85">85</a><a id="L86" href="#L86">86</a><a id="L87" href="#L87">87</a><a id="L88" href="#L88">88</a><a id="L89" href="#L89">89</a><a id="L90" href="#L90">90</a><a id="L91" href="#L91">91</a><a id="L92" href="#L92">92</a><a id="L93" href="#L93">93</a><a id="L94" href="#L94">94</a><a id="L95" href="#L95">95</a><a id="L96" href="#L96">96</a><a id="L97" href="#L97">97</a><a id="L98" href="#L98">98</a><a id="L99" href="#L99">99</a><a id="L100" href="#L100">100</a><a id="L101" href="#L101">101</a><a id="L102" href="#L102">102</a><a id="L103" href="#L103">103</a><a id="L104" href="#L104">104</a><a id="L105" href="#L105">105</a><a id="L106" href="#L106">106</a><a id="L107" href="#L107">107</a><a id="L108" href="#L108">108</a><a id="L109" href="#L109">109</a><a id="L110" href="#L110">110</a><a id="L111" href="#L111">111</a><a id="L112" href="#L112">112</a><a id="L113" href="#L113">113</a><a id="L114" href="#L114">114</a><a id="L115" href="#L115">115</a><a id="L116" href="#L116">116</a><a id="L117" href="#L117">117</a><a id="L118" href="#L118">118</a><a id="L119" href="#L119">119</a><a id="L120" href="#L120">120</a><a id="L121" href="#L121">121</a><a id="L122" href="#L122">122</a><a id="L123" href="#L123">123</a><a id="L124" href="#L124">124</a><a id="L125" href="#L125">125</a><a id="L126" href="#L126">126</a><a id="L127" href="#L127">127</a><a id="L128" href="#L128">128</a><a id="L129" href="#L129">129</a><a id="L130" href="#L130">130</a><a id="L131" href="#L131">131</a><a id="L132" href="#L132">132</a><a id="L133" href="#L133">133</a><a id="L134" href="#L134">134</a><a id="L135" href="#L135">135</a><a id="L136" href="#L136">136</a><a id="L137" href="#L137">137</a><a id="L138" href="#L138">138</a><a id="L139" href="#L139">139</a><a id="L140" href="#L140">140</a><a id="L141" href="#L141">141</a><a id="L142" href="#L142">142</a><a id="L143" href="#L143">143</a><a id="L144" href="#L144">144</a><a id="L145" href="#L145">145</a><a id="L146" href="#L146">146</a><a id="L147" href="#L147">147</a><a id="L148" href="#L148">148</a><a id="L149" href="#L149">149</a><a id="L150" href="#L150">150</a><a id="L151" href="#L151">151</a><a id="L152" href="#L152">152</a><a id="L153" href="#L153">153</a><a id="L154" href="#L154">154</a><a id="L155" href="#L155">155</a><a id="L156" href="#L156">156</a><a id="L157" href="#L157">157</a><a id="L158" href="#L158">158</a><a id="L159" href="#L159">159</a><a id="L160" href="#L160">160</a><a id="L161" href="#L161">161</a><a id="L162" href="#L162">162</a><a id="L163" href="#L163">163</a><a id="L164" href="#L164">164</a><a id="L165" href="#L165">165</a><a id="L166" href="#L166">166</a><a id="L167" href="#L167">167</a><a id="L168" href="#L168">168</a><a id="L169" href="#L169">169</a><a id="L170" href="#L170">170</a><a id="L171" href="#L171">171</a><a id="L172" href="#L172">172</a><a id="L173" href="#L173">173</a><a id="L174" href="#L174">174</a><a id="L175" href="#L175">175</a><a id="L176" href="#L176">176</a><a id="L177" href="#L177">177</a><a id="L178" href="#L178">178</a><a id="L179" href="#L179">179</a><a id="L180" href="#L180">180</a><a id="L181" href="#L181">181</a><a id="L182" href="#L182">182</a><a id="L183" href="#L183">183</a><a id="L184" href="#L184">184</a><a id="L185" href="#L185">185</a><a id="L186" href="#L186">186</a><a id="L187" href="#L187">187</a><a id="L188" href="#L188">188</a><a id="L189" href="#L189">189</a><a id="L190" href="#L190">190</a><a id="L191" href="#L191">191</a><a id="L192" href="#L192">192</a><a id="L193" href="#L193">193</a><a id="L194" href="#L194">194</a><a id="L195" href="#L195">195</a><a id="L196" href="#L196">196</a><a id="L197" href="#L197">197</a><a id="L198" href="#L198">198</a><a id="L199" href="#L199">199</a><a id="L200" href="#L200">200</a><a id="L201" href="#L201">201</a><a id="L202" href="#L202">202</a><a id="L203" href="#L203">203</a><a id="L204" href="#L204">204</a><a id="L205" href="#L205">205</a><a id="L206" href="#L206">206</a><a id="L207" href="#L207">207</a><a id="L208" href="#L208">208</a><a id="L209" href="#L209">209</a><a id="L210" href="#L210">210</a><a id="L211" href="#L211">211</a><a id="L212" href="#L212">212</a><a id="L213" href="#L213">213</a><a id="L214" href="#L214">214</a><a id="L215" href="#L215">215</a><a id="L216" href="#L216">216</a><a id="L217" href="#L217">217</a><a id="L218" href="#L218">218</a><a id="L219" href="#L219">219</a><a id="L220" href="#L220">220</a><a id="L221" href="#L221">221</a><a id="L222" href="#L222">222</a><a id="L223" href="#L223">223</a><a id="L224" href="#L224">224</a><a id="L225" href="#L225">225</a><a id="L226" href="#L226">226</a><a id="L227" href="#L227">227</a><a id="L228" href="#L228">228</a><a id="L229" href="#L229">229</a><a id="L230" href="#L230">230</a><a id="L231" href="#L231">231</a><a id="L232" href="#L232">232</a><a id="L233" href="#L233">233</a><a id="L234" href="#L234">234</a><a id="L235" href="#L235">235</a><a id="L236" href="#L236">236</a><a id="L237" href="#L237">237</a><a id="L238" href="#L238">238</a><a id="L239" href="#L239">239</a><a id="L240" href="#L240">240</a><a id="L241" href="#L241">241</a><a id="L242" href="#L242">242</a><a id="L243" href="#L243">243</a><a id="L244" href="#L244">244</a><a id="L245" href="#L245">245</a><a id="L246" href="#L246">246</a><a id="L247" href="#L247">247</a><a id="L248" href="#L248">248</a><a id="L249" href="#L249">249</a><a id="L250" href="#L250">250</a><a id="L251" href="#L251">251</a><a id="L252" href="#L252">252</a><a id="L253" href="#L253">253</a><a id="L254" href="#L254">254</a><a id="L255" href="#L255">255</a><a id="L256" href="#L256">256</a><a id="L257" href="#L257">257</a><a id="L258" href="#L258">258</a><a id="L259" href="#L259">259</a><a id="L260" href="#L260">260</a><a id="L261" href="#L261">261</a><a id="L262" href="#L262">262</a><a id="L263" href="#L263">263</a><a id="L264" href="#L264">264</a><a id="L265" href="#L265">265</a><a id="L266" href="#L266">266</a><a id="L267" href="#L267">267</a><a id="L268" href="#L268">268</a><a id="L269" href="#L269">269</a><a id="L270" href="#L270">270</a><a id="L271" href="#L271">271</a><a id="L272" href="#L272">272</a><a id="L273" href="#L273">273</a><a id="L274" href="#L274">274</a><a id="L275" href="#L275">275</a><a id="L276" href="#L276">276</a><a id="L277" href="#L277">277</a><a id="L278" href="#L278">278</a><a id="L279" href="#L279">279</a><a id="L280" href="#L280">280</a><a id="L281" href="#L281">281</a><a id="L282" href="#L282">282</a><a id="L283" href="#L283">283</a><a id="L284" href="#L284">284</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/*******************************************************************************
+
+ copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
+
+ license:        BSD style: $(LICENSE)
+ 
+ version:        Initial release: May 2004
+ 
+ author:         Kris &amp; Marenz
+
+ *******************************************************************************/</span>
+
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">util</span>.<span class="i">log</span>.<span class="i">AppendSyslog</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">time</span>.<span class="i">Time</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">Path</span> = <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Path</span>, <span class="i">tango</span>.<span class="i">io</span>.<span class="i">device</span>.<span class="i">File</span>, <span class="i">tango</span>.<span class="i">io</span>.<span class="i">FilePath</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">model</span>.<span class="i">IFile</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">util</span>.<span class="i">log</span>.<span class="i">Log</span>, <span class="i">tango</span>.<span class="i">util</span>.<span class="i">log</span>.<span class="i">AppendFile</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">Integer</span> = <span class="i">tango</span>.<span class="i">text</span>.<span class="i">convert</span>.<span class="i">Integer</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">text</span>.<span class="i">convert</span>.<span class="i">Format</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">util</span>.<span class="i">MinMax</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">Process</span>;</span>
+
+<span class="bc">/*******************************************************************************
+
+ Append log messages to a file set 
+
+ *******************************************************************************/</span>
+
+<span class="d Protection"><span class="k">public</span></span> <span class="d Class"><span class="k">class</span> <span class="i">AppendSyslog</span>: <span class="t BaseClass"><span class="t Identifier"><span class="i">Filer</span></span></span>
+<span class="d Compound">{
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Mask</span></span> <span class="i">mask_</span>;</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">long</span></span> <span class="i">max_size</span>, <span class="i">file_size</span>, <span class="i">max_files</span>, <span class="i">compress_index</span>;</span>
+    
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">FilePath</span></span> <span class="i">file_path</span>;</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">path</span>;</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">compress_suffix</span>;</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Process</span></span> <span class="i">compress_cmd</span>;</span>
+    
+    <span class="bc">/***********************************************************************
+     
+     Create an AppendSyslog upon a file-set with the specified 
+     path and optional layout. The minimal file count is two 
+     and the maximum is 1000 (explicitly 999). 
+     The minimal compress_begin index is 2.
+     
+
+        Params:
+            path            = path to the first logfile
+            count           = maximum number of logfiles
+            max_size        = maximum size of a logfile in bytes
+            compress_cmd    = command to use to compress logfiles
+            compress_suffix = suffix for compressed logfiles
+            compress_begin  = index after which logfiles should be compressed
+            how             = which layout to use 
+
+     ***********************************************************************/</span>
+
+    <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">( <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">count</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">max_size</span></span>, 
+           <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">compress_cmd</span> = <span class="e Null"><span class="k">null</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">compress_suffix</span> = <span class="e Null"><span class="k">null</span></span></span>,
+           <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">compress_begin</span> = <span class="e Int"><span class="n">2</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Appender</span></span>.<span class="t Identifier"><span class="i">Layout</span></span> <span class="i">how</span> = <span class="e Null"><span class="k">null</span></span></span> )</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Identifier"><span class="i">path</span></span>)</span>;</span>
+        <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">count</span></span> &lt; <span class="e Int"><span class="n">1000</span></span></span>)</span>;</span>
+        <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">compress_begin</span></span> &gt;= <span class="e Int"><span class="n">2</span></span></span>)</span>;</span>
+        
+        <span class="lc">// Get a unique fingerprint for this instance</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">mask_</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">register</span></span>(<span class="i">path</span>)</span></span>;</span>
+
+        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">style</span> = <span class="e Identifier"><span class="i">File</span></span>.<span class="e Identifier"><span class="i">WriteAppending</span></span>;</span></span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">style</span></span>.<span class="e Identifier"><span class="i">share</span></span> = <span class="e Identifier"><span class="i">File</span></span>.<span class="e Identifier"><span class="i">Share</span></span>.<span class="e Identifier"><span class="i">Read</span></span></span>;</span>
+        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">conduit</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">File</span></span>(<span class="e Identifier"><span class="i">path</span></span>, <span class="e Identifier"><span class="i">style</span></span>)</span>;</span></span>
+
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">configure</span></span>(<span class="i">conduit</span>);</span></span>
+        
+        <span class="lc">// remember the maximum size </span>
+        <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">max_size</span></span>  = <span class="e Identifier"><span class="i">max_size</span></span></span>;</span>
+        <span class="lc">// and the current size</span>
+        <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_size</span></span> = <span class="e Identifier"><span class="i">conduit</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">max_files</span></span> = <span class="e Identifier"><span class="i">count</span></span></span>;</span>
+        
+        <span class="lc">// set provided layout (ignored when null)</span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">layout</span></span>(<span class="i">how</span>);</span></span>
+        
+        <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_path</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FilePath</span></span>(<span class="e Identifier"><span class="i">path</span></span>)</span></span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_path</span></span>.<span class="e Identifier"><span class="i">pop</span></span>()</span>;</span>
+        
+        <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path</span></span> = <span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">dup</span></span></span>;</span>
+        <span class="lc">// "gzip {}"   this.path.{}</span>
+        
+        <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">512</span></span>]</span> <span class="i">buf</span>, <span class="i">buf1</span>;</span></span>
+        
+        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">compr_path</span> = <span class="e Call"><span class="e Identifier"><span class="i">Format</span></span>.<span class="e Identifier"><span class="i">sprint</span></span>(<span class="i">buf</span>, <span class="sl">"{}.{}"</span>, <span class="k">this</span>.<span class="i">path</span>, <span class="i">compress_begin</span>)</span>;</span></span>
+        
+        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">cmd</span> = <span class="e Call"><span class="e Identifier"><span class="i">Format</span></span>.<span class="e Identifier"><span class="i">sprint</span></span>(<span class="i">buf1</span>, <span class="i">compress_cmd</span>, <span class="i">compr_path</span>)</span>;</span></span>
+            
+        <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">compress_cmd</span></span>    = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Process</span></span>(<span class="e Identifier"><span class="i">cmd</span></span>.<span class="e Identifier"><span class="i">dup</span></span>)</span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">compress_suffix</span></span> = <span class="e Cat"><span class="e String"><span class="sl">"."</span></span> ~ <span class="e Identifier"><span class="i">compress_suffix</span></span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">compress_index</span></span>  = <span class="e Identifier"><span class="i">compress_begin</span></span></span>;</span>
+    }</span></span></span>
+
+    <span class="bc">/***********************************************************************
+     
+     Return the fingerprint for this class
+
+     ***********************************************************************/</span>
+
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Mask</span></span> <span class="i">mask</span> <span class="o Parameters">( )</span> <span class="k">const</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">mask_</span></span>;</span>
+    }</span></span></span>
+
+    <span class="bc">/***********************************************************************
+     
+     Return the name of this class
+
+     ***********************************************************************/</span>
+
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o Parameters">( )</span> <span class="k">const</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">classinfo</span></span>.<span class="e Identifier"><span class="i">name</span></span>;</span>
+    }</span></span></span>
+
+    <span class="bc">/***********************************************************************
+     
+     Append an event to the output
+     
+     ***********************************************************************/</span>
+
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">append</span> <span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span> )</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Synchronized"><span class="k">synchronized</span>(<span class="e This"><span class="k">this</span></span>)
+        <span class="s Scope"><span class="s Compound">{
+            <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">msg</span>;</span></span>
+
+            <span class="lc">// file already full?</span>
+            <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">file_size</span></span> &gt;= <span class="e Identifier"><span class="i">max_size</span></span></span>) <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">nextFile</span></span>()</span>;</span></span></span>
+
+            <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span> <span class="o Parameters">( <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span> )</span>
+            <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">file_size</span></span> += <span class="e Identifier"><span class="i">content</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span>
+                <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">buffer</span></span>.<span class="e Identifier"><span class="i">write</span></span>(<span class="i">content</span>)</span>;</span>
+            }</span></span></span></span>
+
+            <span class="lc">// write log message and flush it</span>
+            <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">layout</span></span>.<span class="e Identifier"><span class="i">format</span></span>(<span class="i">event</span>, &amp;<span class="i">write</span>)</span>;</span>
+            <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">write</span></span>(<span class="i">tango</span>.<span class="i">io</span>.<span class="i">model</span>.<span class="i">IFile</span>.<span class="i">FileConst</span>.<span class="i">NewlineString</span>)</span>;</span>
+            <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">buffer</span></span>.<span class="e Identifier"><span class="i">flush</span></span>()</span>;</span>
+        }</span></span></span>
+    }</span></span></span>
+
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">openConduit</span> <span class="o Parameters">()</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_size</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span>          
+        <span class="lc">// make it shareable for read</span>
+        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">style</span> = <span class="e Identifier"><span class="i">File</span></span>.<span class="e Identifier"><span class="i">WriteAppending</span></span>;</span></span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">style</span></span>.<span class="e Identifier"><span class="i">share</span></span> = <span class="e Identifier"><span class="i">File</span></span>.<span class="e Identifier"><span class="i">Share</span></span>.<span class="e Identifier"><span class="i">Read</span></span></span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Paren">(<span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">File</span></span>) <span class="e This"><span class="k">this</span></span></span>.<span class="e Identifier"><span class="i">conduit</span></span>)</span>.<span class="e Identifier"><span class="i">open</span></span>(<span class="k">this</span>.<span class="i">path</span>, <span class="i">style</span>)</span>;</span>
+        <span class="lc">//this.buffer.output(this.conduit);</span>
+    }</span></span></span>
+    
+    <span class="bc">/***********************************************************************
+     
+     Switch to the next file within the set
+
+     ***********************************************************************/</span>
+    
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">nextFile</span> <span class="o Parameters">( )</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">free</span>, <span class="i">used</span>;</span></span>       
+
+        <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">long</span></span> <span class="i">oldest</span> = <span class="e Int"><span class="n">1</span></span>;</span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">512</span></span>]</span> <span class="i">buf</span>;</span></span>
+        
+        <span class="s Expression"><span class="e Assign"><span class="e Slice"><span class="e Identifier"><span class="i">buf</span></span>[<span class="e Int"><span class="n">0</span></span> .. <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">length</span></span>]</span> = <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path</span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Identifier"><span class="i">buf</span></span>[<span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">length</span></span>]</span>  = <span class="e Char"><span class="cl">'.'</span></span></span>;</span>
+        
+        <span class="lc">// release currently opened file</span>
+        <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">conduit</span></span>.<span class="e Identifier"><span class="i">detach</span></span>()</span>;</span>
+        
+        <span class="s Foreach"><span class="k">foreach</span> ( <span class="o Parameters"><span class="o Parameter"><span class="k">ref</span> <span class="i">file</span></span></span>; <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_path</span></span> )
+        <span class="s Scope"><span class="s Compound">{
+            <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">pathlen</span> = <span class="e Identifier"><span class="i">file</span></span>.<span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span></span>
+            
+            <span class="s If"><span class="k">if</span> ( <span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">file</span></span>.<span class="e Identifier"><span class="i">name</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Minus"><span class="e Plus"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">length</span></span> + <span class="e Int"><span class="n">1</span></span></span> - <span class="e Identifier"><span class="i">pathlen</span></span></span></span> &amp;&amp;
+                 <span class="e Equal"><span class="e Slice"><span class="e Identifier"><span class="i">file</span></span>.<span class="e Identifier"><span class="i">name</span></span>[<span class="e Int"><span class="n">0</span></span> .. <span class="e Minus"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">length</span></span> - <span class="e Identifier"><span class="i">pathlen</span></span></span>]</span> == <span class="e Slice"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path</span></span>[<span class="e Identifier"><span class="i">pathlen</span></span> .. <span class="e Dollar">$</span>]</span></span></span> )
+            <span class="s Scope"><span class="s Compound">{
+                <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">ate</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">num</span> = <span class="e Call"><span class="e Identifier"><span class="i">Integer</span></span>.<span class="e Identifier"><span class="i">parse</span></span>(<span class="i">file</span>.<span class="i">name</span>[<span class="k">this</span>.<span class="i">path</span>.<span class="i">length</span> - <span class="i">pathlen</span> + <span class="n">1</span> .. $], <span class="n">0</span>, &amp;<span class="i">ate</span>)</span>;</span></span>
+                
+                <span class="s If"><span class="k">if</span> ( <span class="e Equal"><span class="e Identifier"><span class="i">ate</span></span> != <span class="e Int"><span class="n">0</span></span></span> )
+                <span class="s Scope"><span class="s Compound">{        
+                    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">oldest</span></span> = <span class="e Call"><span class="e TmplInstance"><span class="i">max</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">long</span></span>)</span></span>(<span class="i">oldest</span>, <span class="i">num</span>)</span></span>;</span>
+                }</span></span></span>
+            }</span></span></span>
+        }</span></span></span>
+                
+        <span class="s For"><span class="k">for</span> ( <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">long</span></span> <span class="i">i</span> = <span class="e Identifier"><span class="i">oldest</span></span>;</span></span> <span class="e Rel"><span class="e Identifier"><span class="i">i</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span>; <span class="e PreDecr">--<span class="e Identifier"><span class="i">i</span></span></span> )
+        <span class="s Scope"><span class="s Compound">{
+            <span class="s Declaration"><span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">compress</span> = <span class="e Cond"><span class="e Rel"><span class="e Identifier"><span class="i">i</span></span> &gt;= <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">compress_index</span></span></span> ? 
+                                     <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">compress_suffix</span></span> : <span class="e String"><span class="sl">""</span></span></span>;</span></span>
+            
+            <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">path</span> = <span class="e Call"><span class="e Identifier"><span class="i">Format</span></span>.<span class="e Identifier"><span class="i">sprint</span></span>(<span class="i">buf</span>, <span class="sl">"{}.{}{}"</span>, <span class="k">this</span>.<span class="i">path</span>, <span class="i">i</span>,
+                                      <span class="i">compress</span>)</span>;</span></span>
+            
+            <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_path</span></span>.<span class="e Identifier"><span class="i">set</span></span>(<span class="i">path</span>, <span class="k">true</span>)</span>;</span>
+            
+            <span class="s If"><span class="k">if</span> ( <span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_path</span></span>.<span class="e Identifier"><span class="i">exists</span></span>()</span> )
+            <span class="s Scope"><span class="s Compound">{
+                <span class="s If"><span class="k">if</span> ( <span class="e Rel"><span class="e Plus"><span class="e Identifier"><span class="i">i</span></span> + <span class="e Int"><span class="n">1</span></span></span> &lt; <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">max_files</span></span></span>)
+                <span class="s Scope"><span class="s Compound">{                    
+                    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">path</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">Format</span></span>.<span class="e Identifier"><span class="i">sprint</span></span>(<span class="i">buf</span>, <span class="sl">"{}.{}{}<span class="es">\0</span>"</span>, <span class="k">this</span>.<span class="i">path</span>, <span class="i">i</span>+<span class="n">1</span>,
+                                         <span class="i">compress</span>)</span></span>;</span>
+                    
+                    <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_path</span></span>.<span class="e Identifier"><span class="i">rename</span></span>(<span class="i">path</span>)</span>;</span>
+                    
+                    <span class="s If"><span class="k">if</span> ( <span class="e Equal"><span class="e Plus"><span class="e Identifier"><span class="i">i</span></span> + <span class="e Int"><span class="n">1</span></span></span> == <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">compress_index</span></span></span> ) <span class="s Scope"><span class="s With"><span class="k">with</span> (<span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">compress_cmd</span></span>) 
+                    <span class="s Scope"><span class="s Compound">{
+                        <span class="s If"><span class="k">if</span> ( <span class="e Call"><span class="e Identifier"><span class="i">isRunning</span></span>()</span> )
+                        <span class="s Scope"><span class="s Compound">{
+                            <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">wait</span></span>()</span>;</span>
+                            <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">close</span></span>()</span>;</span>
+                        }</span></span></span>       
+                        
+                        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">execute</span></span>()</span>;</span>
+                    }</span></span></span></span></span>                    
+                }</span></span>
+                <span class="k">else</span> <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_path</span></span>.<span class="e Identifier"><span class="i">remove</span></span>()</span>;</span></span></span>
+            }</span></span></span>            
+        }</span></span></span>
+        
+        <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_path</span></span>.<span class="e Identifier"><span class="i">set</span></span>(<span class="k">this</span>.<span class="i">path</span>)</span>;</span>
+               
+        <span class="s If"><span class="k">if</span> ( <span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_path</span></span>.<span class="e Identifier"><span class="i">exists</span></span>()</span> )
+        <span class="s Scope"><span class="s Compound">{
+            <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">path</span> = <span class="e Call"><span class="e Identifier"><span class="i">Format</span></span>.<span class="e Identifier"><span class="i">sprint</span></span>(<span class="i">buf</span>, <span class="sl">"{}.{}<span class="es">\0</span>"</span>, <span class="k">this</span>.<span class="i">path</span>, <span class="n">1</span>)</span>;</span></span>
+                
+            <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_path</span></span>.<span class="e Identifier"><span class="i">rename</span></span>(<span class="i">path</span>)</span>;</span>
+        }</span></span></span>
+            
+        <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">openConduit</span></span> ()</span>;</span>
+                
+        <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_path</span></span>.<span class="e Identifier"><span class="i">set</span></span>(<span class="k">this</span>.<span class="i">path</span>)</span>;</span>                
+        <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_path</span></span>.<span class="e Identifier"><span class="i">pop</span></span>()</span>;</span>
+    }</span></span></span>
+}</span></span>
+
+<span class="bc">/*******************************************************************************
+
+ *******************************************************************************/</span>
+
+<span class="d Debug"><span class="k">debug</span> (<span class="i">AppendSyslog</span>)
+<span class="d Compound">{
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span> <span class="o Parameters">( )</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Log</span></span>.<span class="e Identifier"><span class="i">root</span></span>.<span class="e Identifier"><span class="i">add</span></span>(<span class="k">new</span> <span class="i">AppendFiles</span>(<span class="sl">"foo"</span>, <span class="n">5</span>, <span class="n">6</span>))</span>;</span>
+        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">log</span> = <span class="e Call"><span class="e Identifier"><span class="i">Log</span></span>.<span class="e Identifier"><span class="i">lookup</span></span>(<span class="sl">"fu.bar"</span>)</span>;</span></span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"hello {}"</span>, <span class="sl">"world"</span>)</span>;</span>
+
+    }</span></span></span>
+}</span></span></span>
+
+</pre></td>
+</tr></table>
+</body>
+</html>

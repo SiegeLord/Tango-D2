@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.math.random.ExpSource</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.math.random.ExpSource">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.math.random.ExpSource"><a href="htmlsrc/tango.math.random.ExpSource.html" class="symbol">tango.math.random.ExpSource</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: July 2008</div>
+<p class="sec_header">Author:</p><div class="cmnt">Fawzi Mohamed</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ExpSource" href="htmlsrc/tango.math.random.ExpSource.html#L14">ExpSource</a><span class="tparams">(<em>RandG</em>, <em>T</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.math.random.ExpSource.html#ExpSource" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">class that returns exponential distributed numbers (f=exp(-x) for x&gt;0, 0 otherwise)</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="ExpSource.probDensityF" href="htmlsrc/tango.math.random.ExpSource.html#L17">probDensityF</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.ExpSource.html#ExpSource.probDensityF" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">probability distribution</div></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="ExpSource.invProbDensityF" href="htmlsrc/tango.math.random.ExpSource.html#L19">invProbDensityF</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.ExpSource.html#ExpSource.invProbDensityF" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">inverse probability distribution</div></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="ExpSource.cumProbDensityFCompl" href="htmlsrc/tango.math.random.ExpSource.html#L21">cumProbDensityFCompl</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.ExpSource.html#ExpSource.cumProbDensityFCompl" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">complement of the cumulative density distribution (integral x..infinity probDensityF)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="ExpSource.tailGenerator" href="htmlsrc/tango.math.random.ExpSource.html#L23">tailGenerator</a><span class="params">(RandG <em>r</em>, T <em>dMin</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.ExpSource.html#ExpSource.tailGenerator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">tail for exponential distribution</div></div></dd>
+<dt class="decl">SourceT <a class="symbol _variable" name="ExpSource.source" href="htmlsrc/tango.math.random.ExpSource.html#L29">source</a> <a href="tango.math.random.ExpSource.html#ExpSource.source" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">internal source of exp distribued numbers</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="ExpSource.this" href="htmlsrc/tango.math.random.ExpSource.html#L31">this</a><span class="params">(RandG <em>r</em>)</span> <a href="tango.math.random.ExpSource.html#ExpSource.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes the probability distribution</div></div></dd>
+<dt class="decl"><span class="rettyp">ExpSource</span> <a class="symbol _function" name="ExpSource.opCall" href="htmlsrc/tango.math.random.ExpSource.html#L35">opCall</a><span class="tparams">(<em>U</em>, <em>S</em>...)</span><span class="params">(<span class="k">ref</span> U <em>a</em>, S <em>args</em>)</span> <a href="tango.math.random.ExpSource.html#ExpSource.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">chainable call style initialization of variables (thorugh a call to randomize)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="ExpSource.getRandom" href="htmlsrc/tango.math.random.ExpSource.html#L40">getRandom</a><span class="params">()</span> <a href="tango.math.random.ExpSource.html#ExpSource.getRandom" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a exp distribued number</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="ExpSource.getRandom:2" href="htmlsrc/tango.math.random.ExpSource.html#L45">getRandom</a><span class="params">(T <em>beta</em>)</span> <a href="tango.math.random.ExpSource.html#ExpSource.getRandom:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a exp distribued number with the given beta (survival rate, average)
+ f=1/beta*exp(-x/beta)</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="ExpSource.randomize" href="htmlsrc/tango.math.random.ExpSource.html#L49">randomize</a><span class="tparams">(<em>U</em>)</span><span class="params">(<span class="k">ref</span> U <em>x</em>)</span> <a href="tango.math.random.ExpSource.html#ExpSource.randomize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes the given variable with an exponentially distribued number</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="ExpSource.randomize:2" href="htmlsrc/tango.math.random.ExpSource.html#L54">randomize</a><span class="tparams">(<em>U</em>, <em>V</em>)</span><span class="params">(<span class="k">ref</span> U <em>x</em>, V <em>beta</em>)</span> <a href="tango.math.random.ExpSource.html#ExpSource.randomize:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes the given variable with an exponentially distribued number with
+ scale parameter beta</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="ExpSource.randomizeOp" href="htmlsrc/tango.math.random.ExpSource.html#L58">randomizeOp</a><span class="tparams">(<em>U</em>, <em>S</em>)</span><span class="params">(<span class="k">scope</span> S delegate(T) <em>op</em>, <span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.ExpSource.html#ExpSource.randomizeOp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes the given variable with an exponentially distribued number and maps op on it</div></div></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="ExpSource.ExpDistribution" href="htmlsrc/tango.math.random.ExpSource.html#L63">ExpDistribution</a> <a href="tango.math.random.ExpSource.html#ExpSource.ExpDistribution" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">exp distribution with different default scale parameter beta
+ f=1/beta*exp(-x/beta) for x&gt;0, 0 otherwise</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">ExpDistribution</span> <a class="symbol _function" name="ExpSource.ExpDistribution.create" href="htmlsrc/tango.math.random.ExpSource.html#L67">create</a><span class="tparams">()</span><span class="params">(ExpSource <em>source</em>, T <em>beta</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.ExpSource.html#ExpSource.ExpDistribution.create" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">constructor</div></div></dd>
+<dt class="decl"><span class="rettyp">ExpDistribution</span> <a class="symbol _function" name="ExpSource.ExpDistribution.opCall" href="htmlsrc/tango.math.random.ExpSource.html#L74">opCall</a><span class="tparams">(<em>U</em>, <em>S</em>...)</span><span class="params">(<span class="k">ref</span> U <em>a</em>, S <em>args</em>)</span> <a href="tango.math.random.ExpSource.html#ExpSource.ExpDistribution.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">chainable call style initialization of variables (thorugh a call to randomize)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="ExpSource.ExpDistribution.getRandom" href="htmlsrc/tango.math.random.ExpSource.html#L79">getRandom</a><span class="params">()</span> <a href="tango.math.random.ExpSource.html#ExpSource.ExpDistribution.getRandom" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a single number</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="ExpSource.ExpDistribution.randomize" href="htmlsrc/tango.math.random.ExpSource.html#L83">randomize</a><span class="tparams">(<em>U</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.ExpSource.html#ExpSource.ExpDistribution.randomize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initialize a</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="ExpSource.ExpDistribution.randomize:2" href="htmlsrc/tango.math.random.ExpSource.html#L87">randomize</a><span class="tparams">(<em>U</em>, <em>V</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>, V <em>b</em>)</span> <a href="tango.math.random.ExpSource.html#ExpSource.ExpDistribution.randomize:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initialize a</div></div></dd></dl></dd>
+<dt class="decl"><span class="rettyp">ExpDistribution</span> <a class="symbol _function" name="ExpSource.expD" href="htmlsrc/tango.math.random.ExpSource.html#L92">expD</a><span class="params">(T <em>beta</em>)</span> <a href="tango.math.random.ExpSource.html#ExpSource.expD" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns an exp distribution with a different beta</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008. Fawzi Mohamed</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:56 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

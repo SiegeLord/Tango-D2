@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.time.chrono.Hijri</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.time.chrono.Hijri">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.time.chrono.Hijri"><a href="htmlsrc/tango.time.chrono.Hijri.html" class="symbol">tango.time.chrono.Hijri</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Mid 2005: Initial release
+                        Apr 2007: reshaped</div>
+<p class="sec_header">Author:</p><div class="cmnt">John Chapman, Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Hijri" href="htmlsrc/tango.time.chrono.Hijri.html#L23">Hijri</a> : <span class="bclass">Calendar</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="_Hijri"></a>
+ Represents the Hijri calendar.</div></div>
+<dl>
+<dt class="decl">uint <a class="symbol _variable" name="Hijri.HIJRI_ERA" href="htmlsrc/tango.time.chrono.Hijri.html#L30">HIJRI_ERA</a> <span class="attrs">[<span class="prot">public</span>, <span class="stc">manifest</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri.HIJRI_ERA" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Represents the current era.</div></div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Hijri.toTime" href="htmlsrc/tango.time.chrono.Hijri.html#L45">toTime</a><span class="params">(uint <em>year</em>, uint <em>month</em>, uint <em>day</em>, uint <em>hour</em>, uint <em>minute</em>, uint <em>second</em>, uint <em>millisecond</em>, uint <em>era</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri.toTime" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Overridden. Returns a Time value set to the specified date and time in the specified _era.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr>
+<tr><td><em>month</em></td><td>An integer representing the _month.</td></tr>
+<tr><td><em>day</em></td><td>An integer representing the _day.</td></tr>
+<tr><td><em>hour</em></td><td>An integer representing the _hour.</td></tr>
+<tr><td><em>minute</em></td><td>An integer representing the _minute.</td></tr>
+<tr><td><em>second</em></td><td>An integer representing the _second.</td></tr>
+<tr><td><em>millisecond</em></td><td>An integer representing the _millisecond.</td></tr>
+<tr><td><em>era</em></td><td>An integer representing the _era.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A Time set to the specified date and time.</div></dd>
+<dt class="decl"><span class="rettyp">DayOfWeek</span> <a class="symbol _function" name="Hijri.getDayOfWeek" href="htmlsrc/tango.time.chrono.Hijri.html#L54">getDayOfWeek</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri.getDayOfWeek" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Overridden. Returns the day of the week in the specified Time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>time</em></td><td>A Time value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A DayOfWeek value representing the day of the week of time.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Hijri.getDayOfMonth" href="htmlsrc/tango.time.chrono.Hijri.html#L63">getDayOfMonth</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri.getDayOfMonth" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Overridden. Returns the day of the month in the specified Time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>time</em></td><td>A Time value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer representing the day of the month of time.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Hijri.getDayOfYear" href="htmlsrc/tango.time.chrono.Hijri.html#L72">getDayOfYear</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri.getDayOfYear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Overridden. Returns the day of the year in the specified Time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>time</em></td><td>A Time value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer representing the day of the year of time.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Hijri.getMonth" href="htmlsrc/tango.time.chrono.Hijri.html#L81">getMonth</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri.getMonth" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Overridden. Returns the day of the year in the specified Time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>time</em></td><td>A Time value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer representing the day of the year of time.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Hijri.getYear" href="htmlsrc/tango.time.chrono.Hijri.html#L90">getYear</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri.getYear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Overridden. Returns the year in the specified Time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>time</em></td><td>A Time value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer representing the year in time.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Hijri.getEra" href="htmlsrc/tango.time.chrono.Hijri.html#L99">getEra</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri.getEra" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Overridden. Returns the era in the specified Time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>time</em></td><td>A Time value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer representing the ear in time.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Hijri.getDaysInMonth" href="htmlsrc/tango.time.chrono.Hijri.html#L111">getDaysInMonth</a><span class="params">(uint <em>year</em>, uint <em>month</em>, uint <em>era</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri.getDaysInMonth" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Overridden. Returns the number of days in the specified _year and _month of the specified _era.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr>
+<tr><td><em>month</em></td><td>An integer representing the _month.</td></tr>
+<tr><td><em>era</em></td><td>An integer representing the _era.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of days in the specified _year and _month of the specified _era.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Hijri.getDaysInYear" href="htmlsrc/tango.time.chrono.Hijri.html#L124">getDaysInYear</a><span class="params">(uint <em>year</em>, uint <em>era</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri.getDaysInYear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Overridden. Returns the number of days in the specified _year of the specified _era.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr>
+<tr><td><em>era</em></td><td>An integer representing the _era.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of days in the specified _year in the specified _era.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Hijri.getMonthsInYear" href="htmlsrc/tango.time.chrono.Hijri.html#L135">getMonthsInYear</a><span class="params">(uint <em>year</em>, uint <em>era</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri.getMonthsInYear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Overridden. Returns the number of months in the specified _year of the specified _era.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr>
+<tr><td><em>era</em></td><td>An integer representing the _era.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of months in the specified _year in the specified _era.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Hijri.isLeapYear" href="htmlsrc/tango.time.chrono.Hijri.html#L145">isLeapYear</a><span class="params">(uint <em>year</em>, uint <em>era</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri.isLeapYear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Overridden. Indicates whether the specified _year in the specified _era is a leap _year.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr></table>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>era</em></td><td>An integer representing the _era.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">true is the specified _year is a leap _year; otherwise, false.</div></dd>
+<dt class="decl"><span class="rettyp">uint[]</span> <a class="symbol _function" name="Hijri.eras" href="htmlsrc/tango.time.chrono.Hijri.html#L153">eras</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri.eras" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Overridden. Retrieves the list of eras in the current calendar.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer array representing the eras in the current calendar.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Hijri.id" href="htmlsrc/tango.time.chrono.Hijri.html#L162">id</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.time.chrono.Hijri.html#Hijri.id" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Overridden. Retrieves the identifier associated with the current calendar.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer representing the identifier of the current calendar.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2005 John Chapman. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:20 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

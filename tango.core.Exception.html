@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.core.Exception</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.core.Exception">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.core.Exception"><a href="htmlsrc/tango.core.Exception.html" class="symbol">tango.core.Exception</a></h1>
+
+<div class="summary"><div class="cmnt">The exception module defines all system-level exceptions and provides a
+ mechanism to alter system-level error handling.</div></div>
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Authors:</p><div class="cmnt">Sean Kelly, Kris Bell</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="PlatformException" href="htmlsrc/tango.core.Exception.html#L55">PlatformException</a> : <span class="bclass">Exception</span> <a href="tango.core.Exception.html#PlatformException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Base class for operating system or library exceptions.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="TextException" href="htmlsrc/tango.core.Exception.html#L66">TextException</a> : <span class="bclass">Exception</span> <a href="tango.core.Exception.html#TextException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Represents a text processing error.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ThreadPoolException" href="htmlsrc/tango.core.Exception.html#L77">ThreadPoolException</a> : <span class="bclass">Exception</span> <a href="tango.core.Exception.html#ThreadPoolException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Base class for ThreadPoolException</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SyncException" href="htmlsrc/tango.core.Exception.html#L89">SyncException</a> : <span class="bclass">PlatformException</span> <a href="tango.core.Exception.html#SyncException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Base class for synchronization exceptions.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="IOException" href="htmlsrc/tango.core.Exception.html#L101">IOException</a> : <span class="bclass">PlatformException</span> <a href="tango.core.Exception.html#IOException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The basic exception thrown by the tango.io package. One should try to ensure
+ that all Tango exceptions related to IO are derived from this one.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="VfsException" href="htmlsrc/tango.core.Exception.html#L112">VfsException</a> : <span class="bclass">IOException</span> <a href="tango.core.Exception.html#VfsException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The basic exception thrown by the tango.io.vfs package.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ClusterException" href="htmlsrc/tango.core.Exception.html#L123">ClusterException</a> : <span class="bclass">IOException</span> <a href="tango.core.Exception.html#ClusterException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The basic exception thrown by the tango.io.cluster package.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SocketException" href="htmlsrc/tango.core.Exception.html#L134">SocketException</a> : <span class="bclass">IOException</span> <a href="tango.core.Exception.html#SocketException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Base class for socket exceptions.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="HostException" href="htmlsrc/tango.core.Exception.html#L148">HostException</a> : <span class="bclass">IOException</span> <a href="tango.core.Exception.html#HostException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Base class for exception thrown by an InternetHost.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="AddressException" href="htmlsrc/tango.core.Exception.html#L160">AddressException</a> : <span class="bclass">IOException</span> <a href="tango.core.Exception.html#AddressException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Base class for exceptiond thrown by an Address.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SocketAcceptException" href="htmlsrc/tango.core.Exception.html#L172">SocketAcceptException</a> : <span class="bclass">SocketException</span> <a href="tango.core.Exception.html#SocketAcceptException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Thrown when a socket failed to accept an incoming connection.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ProcessException" href="htmlsrc/tango.core.Exception.html#L184">ProcessException</a> : <span class="bclass">PlatformException</span> <a href="tango.core.Exception.html#ProcessException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Thrown on a process error.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="RegexException" href="htmlsrc/tango.core.Exception.html#L196">RegexException</a> : <span class="bclass">TextException</span> <a href="tango.core.Exception.html#RegexException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Base class for regluar expression exceptions.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="LocaleException" href="htmlsrc/tango.core.Exception.html#L208">LocaleException</a> : <span class="bclass">TextException</span> <a href="tango.core.Exception.html#LocaleException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Base class for locale exceptions.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="XmlException" href="htmlsrc/tango.core.Exception.html#L220">XmlException</a> : <span class="bclass">TextException</span> <a href="tango.core.Exception.html#XmlException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Base class for XML exceptions.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="RegistryException" href="htmlsrc/tango.core.Exception.html#L234">RegistryException</a> : <span class="bclass">Exception</span> <a href="tango.core.Exception.html#RegistryException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">RegistryException is thrown when the NetworkRegistry encounters a
+ problem during proxy registration, or when it sees an unregistered
+ guid.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="IllegalArgumentException" href="htmlsrc/tango.core.Exception.html#L246">IllegalArgumentException</a> : <span class="bclass">Exception</span> <a href="tango.core.Exception.html#IllegalArgumentException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Thrown when an illegal argument is encountered.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="IllegalElementException" href="htmlsrc/tango.core.Exception.html#L262">IllegalElementException</a> : <span class="bclass">IllegalArgumentException</span> <a href="tango.core.Exception.html#IllegalElementException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">IllegalElementException is thrown by Collection methods
+ that add (or replace) elements (and/or keys) when their
+ arguments are null or do not pass screeners.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="NoSuchElementException" href="htmlsrc/tango.core.Exception.html#L274">NoSuchElementException</a> : <span class="bclass">Exception</span> <a href="tango.core.Exception.html#NoSuchElementException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Thrown on past-the-end errors by iterators and containers.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="CorruptedIteratorException" href="htmlsrc/tango.core.Exception.html#L286">CorruptedIteratorException</a> : <span class="bclass">NoSuchElementException</span> <a href="tango.core.Exception.html#CorruptedIteratorException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Thrown when a corrupt iterator is detected.</div></div>
+</dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (C) 2005-2006 Sean Kelly, Kris Bell.  All rights reserved.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:52 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

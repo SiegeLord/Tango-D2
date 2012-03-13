@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.net.http.HttpCookies</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.net.http.HttpCookies">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.net.http.HttpCookies"><a href="htmlsrc/tango.net.http.HttpCookies.html" class="symbol">tango.net.http.HttpCookies</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: April 2004</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Cookie" href="htmlsrc/tango.net.http.HttpCookies.html#L39">Cookie</a> <a href="tango.net.http.HttpCookies.html#Cookie" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Defines the Cookie class, and the means for reading &amp; writing them.
+        Cookie implementation conforms with RFC 2109, but supports parsing 
+        of server-side cookies only. Client-side cookies are supported in
+        terms of output, but response parsing is not yet implemented ...</div></div>
+<div class="cmnt">See over <A HREF="http://www.faqs.org/rfcs/rfc2109.html">here</A>
+        for the RFC document.</div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="Cookie.this" href="htmlsrc/tango.net.http.HttpCookies.html#L58">this</a><span class="params">()</span> <a href="tango.net.http.HttpCookies.html#Cookie.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct an empty client-side cookie. You add these
+                to an output request using HttpClient.addCookie(), or
+                the equivalent.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Cookie.this:2" href="htmlsrc/tango.net.http.HttpCookies.html#L68">this</a><span class="params">(const(char)[] <em>name</em>, const(char)[] <em>value</em>)</span> <a href="tango.net.http.HttpCookies.html#Cookie.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a cookie with the provided attributes. You add 
+                these to an output request using HttpClient.addCookie(), 
+                or the equivalent.</div></div></dd>
+<dt class="decl"><span class="rettyp">Cookie</span> <a class="symbol _function" name="Cookie.setName" href="htmlsrc/tango.net.http.HttpCookies.html#L80">setName</a><span class="params">(const(char)[] <em>name</em>)</span> <a href="tango.net.http.HttpCookies.html#Cookie.setName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the name of this cookie</div></div></dd>
+<dt class="decl"><span class="rettyp">Cookie</span> <a class="symbol _function" name="Cookie.setValue" href="htmlsrc/tango.net.http.HttpCookies.html#L92">setValue</a><span class="params">(const(char)[] <em>value</em>)</span> <a href="tango.net.http.HttpCookies.html#Cookie.setValue" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the value of this cookie</div></div></dd>
+<dt class="decl"><span class="rettyp">Cookie</span> <a class="symbol _function" name="Cookie.setVersion" href="htmlsrc/tango.net.http.HttpCookies.html#L104">setVersion</a><span class="params">(uint <em>vrsn</em>)</span> <a href="tango.net.http.HttpCookies.html#Cookie.setVersion" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the version of this cookie</div></div></dd>
+<dt class="decl"><span class="rettyp">Cookie</span> <a class="symbol _function" name="Cookie.setPath" href="htmlsrc/tango.net.http.HttpCookies.html#L116">setPath</a><span class="params">(const(char)[] <em>path</em>)</span> <a href="tango.net.http.HttpCookies.html#Cookie.setPath" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the path of this cookie</div></div></dd>
+<dt class="decl"><span class="rettyp">Cookie</span> <a class="symbol _function" name="Cookie.setDomain" href="htmlsrc/tango.net.http.HttpCookies.html#L128">setDomain</a><span class="params">(const(char)[] <em>domain</em>)</span> <a href="tango.net.http.HttpCookies.html#Cookie.setDomain" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the domain of this cookie</div></div></dd>
+<dt class="decl"><span class="rettyp">Cookie</span> <a class="symbol _function" name="Cookie.setComment" href="htmlsrc/tango.net.http.HttpCookies.html#L140">setComment</a><span class="params">(const(char)[] <em>comment</em>)</span> <a href="tango.net.http.HttpCookies.html#Cookie.setComment" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the comment associated with this cookie</div></div></dd>
+<dt class="decl"><span class="rettyp">Cookie</span> <a class="symbol _function" name="Cookie.setMaxAge" href="htmlsrc/tango.net.http.HttpCookies.html#L152">setMaxAge</a><span class="params">(long <em>maxAge</em>)</span> <a href="tango.net.http.HttpCookies.html#Cookie.setMaxAge" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the maximum duration of this cookie</div></div></dd>
+<dt class="decl"><span class="rettyp">Cookie</span> <a class="symbol _function" name="Cookie.setSecure" href="htmlsrc/tango.net.http.HttpCookies.html#L164">setSecure</a><span class="params">(bool <em>secure</em>)</span> <a href="tango.net.http.HttpCookies.html#Cookie.setSecure" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Indicate whether this cookie should be considered secure or not</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Cookie.produce" href="htmlsrc/tango.net.http.HttpCookies.html#L187">produce</a><span class="params">(<span class="k">scope</span> size_t delegate(const(void)[]) <em>consume</em>)</span> <a href="tango.net.http.HttpCookies.html#Cookie.produce" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Output the cookie as a text stream, via the provided consumer</div></div></dd>
+<dt class="decl"><span class="rettyp">Cookie</span> <a class="symbol _function" name="Cookie.clear" href="htmlsrc/tango.net.http.HttpCookies.html#L224">clear</a><span class="params">()</span> <a href="tango.net.http.HttpCookies.html#Cookie.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reset this cookie</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="CookieStack" href="htmlsrc/tango.net.http.HttpCookies.html#L244">CookieStack</a> <a href="tango.net.http.HttpCookies.html#CookieStack" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Implements a stack of cookies. Each cookie is pushed onto the
+        stack by a parser, which takes its input from HttpHeaders. The
+        stack can be populated for both client and server side cookies.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="CookieStack.this" href="htmlsrc/tango.net.http.HttpCookies.html#L256">this</a><span class="params">(int <em>size</em>)</span> <a href="tango.net.http.HttpCookies.html#CookieStack.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a cookie stack with the specified initial extent.
+                The stack will grow as necessary over time.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="CookieStack.reset" href="htmlsrc/tango.net.http.HttpCookies.html#L268">reset</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.http.HttpCookies.html#CookieStack.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Pop the stack all the way to zero</div></div></dd>
+<dt class="decl"><span class="rettyp">Cookie</span> <a class="symbol _function" name="CookieStack.push" href="htmlsrc/tango.net.http.HttpCookies.html#L279">push</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.http.HttpCookies.html#CookieStack.push" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a fresh cookie from the stack</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="CookieStack.opApply" href="htmlsrc/tango.net.http.HttpCookies.html#L306">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref Cookie) <em>dg</em>)</span> <a href="tango.net.http.HttpCookies.html#CookieStack.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate over all cookies in stack</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="HttpCookiesView" href="htmlsrc/tango.net.http.HttpCookies.html#L328">HttpCookiesView</a> <a href="tango.net.http.HttpCookies.html#HttpCookiesView" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This is the support point for server-side cookies. It wraps a
+        CookieStack together with a set of HttpHeaders, along with the
+        appropriate cookie parser. One would do something very similar
+        for client side cookie parsing also.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="HttpCookiesView.this" href="htmlsrc/tango.net.http.HttpCookies.html#L341">this</a><span class="params">(HttpHeadersView <em>headers</em>)</span> <a href="tango.net.http.HttpCookies.html#HttpCookiesView.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct cookie wrapper with the provided headers.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpCookiesView.produce" href="htmlsrc/tango.net.http.HttpCookies.html#L369">produce</a><span class="params">(<span class="k">scope</span> size_t delegate(const(void)[]) <em>consume</em>, const(char)[] <em>eol</em> = <span class="defval"><span class="i">Eol</span></span>)</span> <a href="tango.net.http.HttpCookies.html#HttpCookiesView.produce" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Output the token list to the provided consumer</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpCookiesView.reset" href="htmlsrc/tango.net.http.HttpCookies.html#L381">reset</a><span class="params">()</span> <a href="tango.net.http.HttpCookies.html#HttpCookiesView.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reset these cookies for another parse</div></div></dd>
+<dt class="decl"><span class="rettyp">CookieStack</span> <a class="symbol _function" name="HttpCookiesView.parse" href="htmlsrc/tango.net.http.HttpCookies.html#L394">parse</a><span class="params">()</span> <a href="tango.net.http.HttpCookies.html#HttpCookiesView.parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse all cookies from our HttpHeaders, pushing each onto
+                the CookieStack as we go.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="HttpCookies" href="htmlsrc/tango.net.http.HttpCookies.html#L417">HttpCookies</a> <a href="tango.net.http.HttpCookies.html#HttpCookies" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Handles a set of output cookies by writing them into the list of
+        output headers.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="HttpCookies.this" href="htmlsrc/tango.net.http.HttpCookies.html#L430">this</a><span class="params">(HttpHeaders <em>headers</em>, const(HttpHeaderName) <em>name</em> = <span class="defval"><span class="i">SetCookie</span></span>)</span> <a href="tango.net.http.HttpCookies.html#HttpCookies.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct an output cookie wrapper upon the provided 
+                output headers. Each cookie added is converted to an
+                addition to those headers.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpCookies.add" href="htmlsrc/tango.net.http.HttpCookies.html#L442">add</a><span class="params">(Cookie <em>cookie</em>)</span> <a href="tango.net.http.HttpCookies.html#HttpCookies.add" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a cookie to our output headers.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="CookieParser" href="htmlsrc/tango.net.http.HttpCookies.html#L457">CookieParser</a> : <span class="bclass">Iterator!(char)</span> <a href="tango.net.http.HttpCookies.html#CookieParser" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Server-side cookie parser. See RFC 2109 for details.</div></div>
+<dl>
+<dt class="decl"><span class="kw">static</span> <a class="symbol _sctor" name="CookieParser.this" href="htmlsrc/tango.net.http.HttpCookies.html#L471">this</a>() <span class="attrs">[<span class="stc">shared</span>]</span> <a href="tango.net.http.HttpCookies.html#CookieParser.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">populate a map of token separators</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="CookieParser.this:2" href="htmlsrc/tango.net.http.HttpCookies.html#L496">this</a><span class="params">(CookieStack <em>stack</em>)</span> <a href="tango.net.http.HttpCookies.html#CookieParser.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="CookieParser.scan" href="htmlsrc/tango.net.http.HttpCookies.html#L510">scan</a><span class="params">(const(void)[] <em>data</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">override</span>]</span> <a href="tango.net.http.HttpCookies.html#CookieParser.scan" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Callback for iterator.next(). We scan for name-value
+                pairs, populating Cookie instances along the way.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="CookieParser.parse" href="htmlsrc/tango.net.http.HttpCookies.html#L674">parse</a><span class="params">(const(char)[] <em>header</em>)</span> <a href="tango.net.http.HttpCookies.html#CookieParser.parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Locate the next token from the provided buffer, and map a
+                buffer reference into token. Returns true if a token was 
+                located, false otherwise.</div></div>
+<div class="cmnt">Note that the buffer content is not duplicated. Instead, a
+                slice of the buffer is referenced by the token. You can use
+                Token.clone() or Token.toString().dup() to copy content per
+                your application needs.
+<p class="bl"></p>
+                Note also that there may still be one token left in a buffer 
+                that was not terminated correctly (as in eof conditions). In 
+                such cases, tokens are mapped onto remaining content and the 
+                buffer will have no more readable content.</div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="CookieParser.toLower" href="htmlsrc/tango.net.http.HttpCookies.html#L686">toLower</a><span class="params">(<span class="k">ref</span> char[] <em>src</em>)</span> <span class="attrs">[<span class="stc">static</span>, <span class="stc">final</span>]</span> <a href="tango.net.http.HttpCookies.html#CookieParser.toLower" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">in-place conversion to lowercase</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:57 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

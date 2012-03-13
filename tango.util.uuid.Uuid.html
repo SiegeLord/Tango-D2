@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.uuid.Uuid</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.uuid.Uuid">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.uuid.Uuid"><a href="htmlsrc/tango.util.uuid.Uuid.html" class="symbol">tango.util.uuid.Uuid</a></h1>
+
+<div class="summary"><div class="cmnt">A UUID is a Universally Unique Identifier.
+ It is a 128-bit number generated either randomly or according to some
+ inscrutable algorithm, depending on the UUID version used.</div></div>
+<div class="cmnt">Here, we implement a data structure for holding and formatting UUIDs.
+ To generate a UUID, use one of the other modules in the UUID package.
+ You can also create a UUID by parsing a string containing a textual
+ representation of a UUID, or by providing the constituent bytes.</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Uuid" href="htmlsrc/tango.util.uuid.Uuid.html#L42">Uuid</a> <a href="tango.util.uuid.Uuid.html#Uuid" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This struct represents a UUID. It offers static members for creating and
+ parsing UUIDs.
+ 
+ This struct treats a UUID as an opaque type. The specification has fields
+ for time, version, client MAC address, and several other data points, but
+ these are meaningless for most applications and means of generating a UUID.</div></div>
+<div class="cmnt">There are versions of UUID generation involving the system time and MAC 
+ address. These are not used for several reasons:
+      - One version contains identifying information, which is undesirable.
+      - Ensuring uniqueness between processes requires inter-process 
+              communication. This would be unreasonably slow and complex.
+      - Obtaining the MAC address is a system-dependent operation and beyond
+              the scope of this module.
+      - Using Java and .NET as a guide, they only implement randomized creation
+              of UUIDs, not the MAC address/time based generation.
+<p class="bl"></p>
+ When generating a random UUID, use a carefully seeded random number 
+ generator. A poorly chosen seed may produce undesirably consistent results.</div>
+<dl>
+<dt class="decl"><span class="rettyp">Uuid</span> <a class="symbol _function" name="Uuid.opCall" href="htmlsrc/tango.util.uuid.Uuid.html#L48">opCall</a><span class="params">(const(ubyte[]) <em>data</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.util.uuid.Uuid.html#Uuid.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Copy the givent bytes into a UUID. If you supply more or fewer than
+ 16 bytes, throws an IllegalArgumentException.</div></div></dd>
+<dt class="decl"><span class="rettyp">Uuid</span> <a class="symbol _function" name="Uuid.parse" href="htmlsrc/tango.util.uuid.Uuid.html#L67">parse</a><span class="params">(const(char[]) <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.util.uuid.Uuid.html#Uuid.parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Attempt to parse the representation of a UUID given in value. If the
+ value is not in the correct format, throw IllegalArgumentException.
+ If the value is in the correct format, return a UUID representing the
+ given value.</div></div>
+<div class="cmnt">The following is an example of a UUID in the expected format:
+     67e55044-10b1-426f-9247-bb680e5fe0c8</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Uuid.tryParse" href="htmlsrc/tango.util.uuid.Uuid.html#L83">tryParse</a><span class="params">(const(char[]) <em>value</em>,  <span class="k">out</span> Uuid <em>uuid</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.util.uuid.Uuid.html#Uuid.tryParse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Attempt to parse the representation of a UUID given in value. If the
+ value is not in the correct format, return false rather than throwing
+ an exception. If the value is in the correct format, set uuid to 
+ represent the given value.</div></div>
+<div class="cmnt">The following is an example of a UUID in the expected format:
+     67e55044-10b1-426f-9247-bb680e5fe0c8</div></dd>
+<dt class="decl"><span class="rettyp">Uuid</span> <a class="symbol _function" name="Uuid.random" href="htmlsrc/tango.util.uuid.Uuid.html#L145">random</a><span class="tparams">(<em>Random</em>)</span><span class="params">(Random <em>generator</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.util.uuid.Uuid.html#Uuid.random" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generate a UUID based on the given random number generator.
+ The generator must have a method 'uint natural()' that returns
+ a random number. The generated UUID conforms to version 4 of the
+ specification.</div></div></dd>
+<dt class="decl"><span class="rettyp">Uuid</span> <a class="symbol _function" name="Uuid.empty" href="htmlsrc/tango.util.uuid.Uuid.html#L199">empty</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.util.uuid.Uuid.html#Uuid.empty" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return an empty UUID (with all bits set to 0). This doesn't conform
+ to any particular version of the specification. It's equivalent to
+ using an uninitialized UUID. This method is provided for clarity.</div></div></dd>
+<dt class="decl"><span class="rettyp">ubyte[]</span> <a class="symbol _function" name="Uuid.toBytes" href="htmlsrc/tango.util.uuid.Uuid.html#L207">toBytes</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">const</span>]</span> <a href="tango.util.uuid.Uuid.html#Uuid.toBytes" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get a copy of this UUID's value as an array of unsigned bytes.</div></div></dd>
+<dt class="decl"><span class="rettyp">ubyte</span> <a class="symbol _function" name="Uuid.format" href="htmlsrc/tango.util.uuid.Uuid.html#L229">format</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">const</span>]</span> <a href="tango.util.uuid.Uuid.html#Uuid.format" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Gets the version of this UUID. 
+ RFC 4122 defines five types of UUIDs:
+     -       Version 1 is based on the system's MAC address and the current time.
+     -       Version 2 uses the current user's userid and user domain in 
+                     addition to the time and MAC address.
+ -   Version 3 is namespace-based, as generated by the NamespaceGenV3
+                     module. It uses MD5 as a hash algorithm. RFC 4122 states that
+                     version 5 is preferred over version 3.
+ -   Version 4 is generated randomly.
+ -   Version 5 is like version 3, but uses SHA-1 rather than MD5. Use
+                     the NamespaceGenV5 module to create UUIDs like this.</div></div>
+<div class="cmnt">The following additional versions exist:
+ -   Version 0 is reserved for backwards compatibility.
+ -   Version 6 is a non-standard Microsoft extension.
+ -   Version 7 is reserved for future use.</div></dd>
+<dt class="decl"><span class="rettyp">const(char[])</span> <a class="symbol _function" name="Uuid.toString" href="htmlsrc/tango.util.uuid.Uuid.html#L240">toString</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.util.uuid.Uuid.html#Uuid.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the canonical string representation of a UUID.
+ The canonical representation is in hexidecimal, with hyphens inserted
+ after the eighth, twelfth, sixteenth, and twentieth digits. For example:
+     67e55044-10b1-426f-9247-bb680e5fe0c8
+ This is the format used by the parsing functions.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Uuid.opEquals" href="htmlsrc/tango.util.uuid.Uuid.html#L278">opEquals</a><span class="params">(<span class="k">ref</span> const(Uuid) <em>other</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">const</span>]</span> <a href="tango.util.uuid.Uuid.html#Uuid.opEquals" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Determines if this UUID has the same value as another.</div></div></dd>
+<dt class="decl"><span class="rettyp">hash_t</span> <a class="symbol _function" name="Uuid.toHash" href="htmlsrc/tango.util.uuid.Uuid.html#L288">toHash</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">const</span>]</span> <a href="tango.util.uuid.Uuid.html#Uuid.toHash" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get a hash code representing this UUID.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="UuidGen" href="htmlsrc/tango.util.uuid.Uuid.html#L423">UuidGen</a> <a href="tango.util.uuid.Uuid.html#UuidGen" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A base interface for any UUID generator for UUIDs. That is,
+ this interface is specified so that you write your code dependent on a
+ UUID generator that takes an arbitrary random source, and easily switch
+ to a different random source. Since the default uses KISS, if you find
+ yourself needing more secure random numbers, you could trivially switch 
+ your code to use the Mersenne twister, or some other PRNG.</div></div>
+<div class="cmnt">You could also, if you wish, use this to switch to deterministic UUID
+ generation, if your needs require it.</div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="RandomGen" href="htmlsrc/tango.util.uuid.Uuid.html#L431">RandomGen</a><span class="tparams">(<em>TRandom</em>)</span> : <span class="bclass">UuidGen</span> <a href="tango.util.uuid.Uuid.html#RandomGen" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Given a random number generator conforming to Tango's standard random
+ interface, this will generate random UUIDs according to version 4 of
+ RFC 4122.</div></div>
+</dd></dl>
+</div>
+<div id="kandil-footer">
+  <p></p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:27 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

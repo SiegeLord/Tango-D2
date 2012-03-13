@@ -1,0 +1,250 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.container.CircularList</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.container.CircularList">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.container.CircularList"><a href="htmlsrc/tango.util.container.CircularList.html" class="symbol">tango.util.container.CircularList</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Apr 2008: Initial release</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Kris</div>
+<p class="sec_header">Since:</p><div class="cmnt">0.99.7
+<p class="bl"></p>
+        Based upon Doug Lea's Java collection package</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="CircularList" href="htmlsrc/tango.util.container.CircularList.html#L73">CircularList</a><span class="tparams">(<em>V</em>, <span class="kw">alias</span> <em>Reap</em> = <span class="defval">Container.reap</span>, <span class="kw">alias</span> <em>Heap</em> = <span class="defval">Container.DefaultCollect</span>)</span> : <span class="bclass">IContainer!(V)</span> <a href="tango.util.container.CircularList.html#CircularList" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Circular linked list</div></div>
+<div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+<a href="#L12_ex1" name="L12_ex1">12</a>
+<a href="#L13_ex1" name="L13_ex1">13</a>
+<a href="#L14_ex1" name="L14_ex1">14</a>
+<a href="#L15_ex1" name="L15_ex1">15</a>
+<a href="#L16_ex1" name="L16_ex1">16</a>
+<a href="#L17_ex1" name="L17_ex1">17</a>
+<a href="#L18_ex1" name="L18_ex1">18</a>
+<a href="#L19_ex1" name="L19_ex1">19</a>
+<a href="#L20_ex1" name="L20_ex1">20</a>
+<a href="#L21_ex1" name="L21_ex1">21</a>
+<a href="#L22_ex1" name="L22_ex1">22</a>
+<a href="#L23_ex1" name="L23_ex1">23</a>
+<a href="#L24_ex1" name="L24_ex1">24</a>
+<a href="#L25_ex1" name="L25_ex1">25</a>
+<a href="#L26_ex1" name="L26_ex1">26</a>
+<a href="#L27_ex1" name="L27_ex1">27</a>
+<a href="#L28_ex1" name="L28_ex1">28</a>
+<a href="#L29_ex1" name="L29_ex1">29</a>
+<a href="#L30_ex1" name="L30_ex1">30</a>
+<a href="#L31_ex1" name="L31_ex1">31</a>
+<a href="#L32_ex1" name="L32_ex1">32</a>
+<a href="#L33_ex1" name="L33_ex1">33</a>
+<a href="#L34_ex1" name="L34_ex1">34</a>
+<a href="#L35_ex1" name="L35_ex1">35</a>
+<a href="#L36_ex1" name="L36_ex1">36</a>
+<a href="#L37_ex1" name="L37_ex1">37</a>
+<a href="#L38_ex1" name="L38_ex1">38</a>
+<a href="#L39_ex1" name="L39_ex1">39</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">Iterator</span> <span class="i">iterator</span> ()
+<span class="k">int</span> <span class="i">opApply</span> (<span class="k">scope</span> <span class="k">int</span> <span class="k">delegate</span>(<span class="k">ref</span> <span class="i">V</span> <span class="i">value</span>) <span class="i">dg</span>)
+
+<span class="i">CircularList</span> <span class="i">add</span> (<span class="i">V</span> <span class="i">element</span>)
+<span class="i">CircularList</span> <span class="i">addAt</span> (<span class="i">size_t</span> <span class="i">index</span>, <span class="i">V</span> <span class="i">element</span>)
+<span class="i">CircularList</span> <span class="i">append</span> (<span class="i">V</span> <span class="i">element</span>)
+<span class="i">CircularList</span> <span class="i">prepend</span> (<span class="i">V</span> <span class="i">element</span>)
+<span class="i">size_t</span> <span class="i">addAt</span> (<span class="i">size_t</span> <span class="i">index</span>, <span class="i">IContainer</span>!(<span class="i">V</span>) <span class="i">e</span>)
+<span class="i">size_t</span> <span class="i">append</span> (<span class="i">IContainer</span>!(<span class="i">V</span>) <span class="i">e</span>)
+<span class="i">size_t</span> <span class="i">prepend</span> (<span class="i">IContainer</span>!(<span class="i">V</span>) <span class="i">e</span>)
+
+<span class="k">bool</span> <span class="i">take</span> (<span class="k">ref</span> <span class="i">V</span> <span class="i">v</span>)
+<span class="k">bool</span> <span class="i">contains</span> (<span class="i">V</span> <span class="i">element</span>)
+<span class="i">V</span> <span class="i">get</span> (<span class="i">size_t</span> <span class="i">index</span>)
+<span class="i">size_t</span> <span class="i">first</span> (<span class="i">V</span> <span class="i">element</span>, <span class="i">size_t</span> <span class="i">startingIndex</span> = <span class="n">0</span>)
+<span class="i">size_t</span> <span class="i">last</span> (<span class="i">V</span> <span class="i">element</span>, <span class="i">size_t</span> <span class="i">startingIndex</span> = <span class="n">0</span>)
+
+<span class="i">V</span> <span class="i">head</span> ()
+<span class="i">V</span> <span class="i">tail</span> ()
+<span class="i">V</span> <span class="i">head</span> (<span class="i">V</span> <span class="i">element</span>)
+<span class="i">V</span> <span class="i">tail</span> (<span class="i">V</span> <span class="i">element</span>)
+<span class="i">V</span> <span class="i">removeHead</span> ()
+<span class="i">V</span> <span class="i">removeTail</span> ()
+
+<span class="k">bool</span> <span class="i">removeAt</span> (<span class="i">size_t</span> <span class="i">index</span>)
+<span class="i">size_t</span> <span class="i">remove</span> (<span class="i">V</span> <span class="i">element</span>, <span class="k">bool</span> <span class="i">all</span>)
+<span class="i">size_t</span> <span class="i">removeRange</span> (<span class="i">size_t</span> <span class="i">fromIndex</span>, <span class="i">size_t</span> <span class="i">toIndex</span>)
+
+<span class="i">size_t</span> <span class="i">replace</span> (<span class="i">V</span> <span class="i">oldElement</span>, <span class="i">V</span> <span class="i">newElement</span>, <span class="k">bool</span> <span class="i">all</span>)
+<span class="k">bool</span> <span class="i">replaceAt</span> (<span class="i">size_t</span> <span class="i">index</span>, <span class="i">V</span> <span class="i">element</span>)
+
+<span class="i">size_t</span> <span class="i">size</span> ()
+<span class="k">bool</span> <span class="i">isEmpty</span> ()
+<span class="i">V</span>[] <span class="i">toArray</span> (<span class="i">V</span>[] <span class="i">dst</span>)
+<span class="i">CircularList</span> <span class="i">dup</span> ()
+<span class="i">CircularList</span> <span class="i">subset</span> (<span class="i">size_t</span> <span class="i">from</span>, <span class="i">size_t</span> <span class="i">length</span>)
+<span class="i">CircularList</span> <span class="i">clear</span> ()
+<span class="i">CircularList</span> <span class="i">reset</span> ()
+<span class="i">CircularList</span> <span class="i">check</span> ()</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="CircularList.this" href="htmlsrc/tango.util.container.CircularList.html#L103">this</a><span class="params">()</span> <a href="tango.util.container.CircularList.html#CircularList.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Make an empty list</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="CircularList.this:2" href="htmlsrc/tango.util.container.CircularList.html#L114">this</a><span class="params">(Ref <em>h</em>, size_t <em>c</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Make an configured list</div></div></dd>
+<dt class="decl"><a class="symbol _dtor" name="CircularList.~this" href="htmlsrc/tango.util.container.CircularList.html#L126">~this</a>() <a href="tango.util.container.CircularList.html#CircularList.~this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clean up when deleted</div></div></dd>
+<dt class="decl"><span class="rettyp">Iterator</span> <a class="symbol _function" name="CircularList.iterator" href="htmlsrc/tango.util.container.CircularList.html#L137">iterator</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.iterator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a generic iterator for contained elements</div></div></dd>
+<dt class="decl"><span class="rettyp">CircularList</span> <a class="symbol _function" name="CircularList.cache" href="htmlsrc/tango.util.container.CircularList.html#L160">cache</a><span class="params">(size_t <em>chunk</em>, size_t <em>count</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.cache" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Configure the assigned allocator with the size of each
+                allocation block (number of nodes allocated at one time)
+                and the number of nodes to pre-populate the cache with.
+                
+                Time complexity: O(n)</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="CircularList.opApply" href="htmlsrc/tango.util.container.CircularList.html#L171">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref V value) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="CircularList.size" href="htmlsrc/tango.util.container.CircularList.html#L182">size</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.size" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the number of elements contained</div></div></dd>
+<dt class="decl"><span class="rettyp">CircularList</span> <a class="symbol _function" name="CircularList.dup" href="htmlsrc/tango.util.container.CircularList.html#L194">dup</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.dup" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Make an independent copy of the list. Elements themselves 
+                are not cloned</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="CircularList.contains" href="htmlsrc/tango.util.container.CircularList.html#L205">contains</a><span class="params">(V <em>element</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.contains" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)</div></div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="CircularList.head" href="htmlsrc/tango.util.container.CircularList.html#L218">head</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.head" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(1)</div></div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="CircularList.tail" href="htmlsrc/tango.util.container.CircularList.html#L229">tail</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.tail" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(1)</div></div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="CircularList.get" href="htmlsrc/tango.util.container.CircularList.html#L240">get</a><span class="params">(size_t <em>index</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.get" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="CircularList.first" href="htmlsrc/tango.util.container.CircularList.html#L252">first</a><span class="params">(V <em>element</em>, size_t <em>startingIndex</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.first" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)
+                Returns size_t.max if no element found.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="CircularList.last" href="htmlsrc/tango.util.container.CircularList.html#L280">last</a><span class="params">(V <em>element</em>, size_t <em>startingIndex</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.last" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)
+                Returns size_t.max if no element found.</div></div></dd>
+<dt class="decl"><span class="rettyp">CircularList</span> <a class="symbol _function" name="CircularList.subset" href="htmlsrc/tango.util.container.CircularList.html#L315">subset</a><span class="params">(size_t <em>from</em>, size_t <em>length</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.subset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(length)</div></div></dd>
+<dt class="decl"><span class="rettyp">CircularList</span> <a class="symbol _function" name="CircularList.clear" href="htmlsrc/tango.util.container.CircularList.html#L347">clear</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(1)</div></div></dd>
+<dt class="decl"><span class="rettyp">CircularList</span> <a class="symbol _function" name="CircularList.reset" href="htmlsrc/tango.util.container.CircularList.html#L361">reset</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reset the HashMap contents and optionally configure a new
+                heap manager. This releases more memory than clear() does</div></div>
+<div class="cmnt">Time complexity: O(n)</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="CircularList.take" href="htmlsrc/tango.util.container.CircularList.html#L374">take</a><span class="params">(<span class="k">ref</span> V <em>v</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.take" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)</div></div>
+<div class="cmnt">Takes the last element on the list</div></dd>
+<dt class="decl"><span class="rettyp">CircularList</span> <a class="symbol _function" name="CircularList.prepend" href="htmlsrc/tango.util.container.CircularList.html#L391">prepend</a><span class="params">(V <em>element</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.prepend" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(1)</div></div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="CircularList.head:2" href="htmlsrc/tango.util.container.CircularList.html#L407">head</a><span class="params">(V <em>element</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.head:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(1)</div></div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="CircularList.removeHead" href="htmlsrc/tango.util.container.CircularList.html#L422">removeHead</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.removeHead" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(1)</div></div></dd>
+<dt class="decl"><span class="rettyp">CircularList</span> <a class="symbol _function" name="CircularList.add" href="htmlsrc/tango.util.container.CircularList.html#L445">add</a><span class="params">(V <em>element</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.add" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(1)</div></div></dd>
+<dt class="decl"><span class="rettyp">CircularList</span> <a class="symbol _function" name="CircularList.append" href="htmlsrc/tango.util.container.CircularList.html#L456">append</a><span class="params">(V <em>element</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.append" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(1)</div></div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="CircularList.tail:2" href="htmlsrc/tango.util.container.CircularList.html#L474">tail</a><span class="params">(V <em>element</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.tail:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(1)</div></div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="CircularList.removeTail" href="htmlsrc/tango.util.container.CircularList.html#L489">removeTail</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.removeTail" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(1)</div></div></dd>
+<dt class="decl"><span class="rettyp">CircularList</span> <a class="symbol _function" name="CircularList.addAt" href="htmlsrc/tango.util.container.CircularList.html#L508">addAt</a><span class="params">(size_t <em>index</em>, V <em>element</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.addAt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)</div></div></dd>
+<dt class="decl"><span class="rettyp">CircularList</span> <a class="symbol _function" name="CircularList.replaceAt" href="htmlsrc/tango.util.container.CircularList.html#L526">replaceAt</a><span class="params">(size_t <em>index</em>, V <em>element</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.replaceAt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)</div></div></dd>
+<dt class="decl"><span class="rettyp">CircularList</span> <a class="symbol _function" name="CircularList.removeAt" href="htmlsrc/tango.util.container.CircularList.html#L539">removeAt</a><span class="params">(size_t <em>index</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.removeAt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="CircularList.remove" href="htmlsrc/tango.util.container.CircularList.html#L558">remove</a><span class="params">(V <em>element</em>, bool <em>all</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.remove" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="CircularList.replace" href="htmlsrc/tango.util.container.CircularList.html#L603">replace</a><span class="params">(V <em>oldElement</em>, V <em>newElement</em>, bool <em>all</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.replace" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="CircularList.prepend:2" href="htmlsrc/tango.util.container.CircularList.html#L630">prepend</a><span class="params">(IContainer!(V) <em>e</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.prepend:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(number of elements in e)</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="CircularList.append:2" href="htmlsrc/tango.util.container.CircularList.html#L673">append</a><span class="params">(IContainer!(V) <em>e</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.append:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(number of elements in e)</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="CircularList.addAt:2" href="htmlsrc/tango.util.container.CircularList.html#L697">addAt</a><span class="params">(size_t <em>index</em>, IContainer!(V) <em>e</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.addAt:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(size() + number of elements in e)</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="CircularList.removeRange" href="htmlsrc/tango.util.container.CircularList.html#L721">removeRange</a><span class="params">(size_t <em>fromIndex</em>, size_t <em>toIndex</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.removeRange" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)</div></div></dd>
+<dt class="decl"><span class="rettyp">V[]</span> <a class="symbol _function" name="CircularList.toArray" href="htmlsrc/tango.util.container.CircularList.html#L758">toArray</a><span class="params">(V[] <em>dst</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.toArray" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Copy and return the contained set of values in an array, 
+                using the optional dst as a recipient (which is resized 
+                as necessary).</div></div>
+<div class="cmnt">Returns a slice of dst representing the container values.
+                
+                Time complexity: O(n)</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="CircularList.isEmpty" href="htmlsrc/tango.util.container.CircularList.html#L777">isEmpty</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.isEmpty" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is this container empty?
+                
+                Time complexity: O(1)</div></div></dd>
+<dt class="decl"><span class="rettyp">CircularList</span> <a class="symbol _function" name="CircularList.check" href="htmlsrc/tango.util.container.CircularList.html#L787">check</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.CircularList.html#CircularList.check" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:22 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

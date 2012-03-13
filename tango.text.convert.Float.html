@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.convert.Float</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.convert.Float">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.convert.Float"><a href="htmlsrc/tango.text.convert.Float.html" class="symbol">tango.text.convert.Float</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Nov 2005: Initial release
+                        Jan 2010: added internal ecvt()</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris
+<p class="bl"></p>
+        A set of functions for converting between string and floating-
+        point values.
+<p class="bl"></p>
+        Applying the D "import alias" mechanism to this module is highly
+        recommended, in order to limit namespace pollution:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">Float</span> = <span class="i">tango</span>.<span class="i">text</span>.<span class="i">convert</span>.<span class="i">Float</span>;
+
+<span class="k">auto</span> <span class="i">f</span> = <span class="i">Float</span>.<span class="i">parse</span> (<span class="sl">"3.14159"</span>);</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><span class="rettyp">NumType</span> <a class="symbol _function" name="toFloat" href="htmlsrc/tango.text.convert.Float.html#L98">toFloat</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T[]) <em>src</em>)</span> <a href="tango.text.convert.Float.html#toFloat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert a formatted string of digits to a floating-point
+        number. Throws an exception where the input text is not
+        parsable in its entirety.</div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="toString" href="htmlsrc/tango.text.convert.Float.html#L117">toString</a><span class="params">(NumType <em>d</em>, uint <em>decimals</em> = <span class="defval"><span class="i">Dec</span></span>, int <em>e</em> = <span class="defval"><span class="i">Exp</span></span>)</span> <a href="tango.text.convert.Float.html#toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Template wrapper to make life simpler. Returns a text version
+        of the provided value.</div></div>
+<div class="cmnt">See format() for details</div></dd>
+<dt class="decl"><span class="rettyp">wchar[]</span> <a class="symbol _function" name="toString16" href="htmlsrc/tango.text.convert.Float.html#L133">toString16</a><span class="params">(NumType <em>d</em>, uint <em>decimals</em> = <span class="defval"><span class="i">Dec</span></span>, int <em>e</em> = <span class="defval"><span class="i">Exp</span></span>)</span> <a href="tango.text.convert.Float.html#toString16" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Template wrapper to make life simpler. Returns a text version
+        of the provided value.</div></div>
+<div class="cmnt">See format() for details</div></dd>
+<dt class="decl"><span class="rettyp">dchar[]</span> <a class="symbol _function" name="toString32" href="htmlsrc/tango.text.convert.Float.html#L149">toString32</a><span class="params">(NumType <em>d</em>, uint <em>decimals</em> = <span class="defval"><span class="i">Dec</span></span>, int <em>e</em> = <span class="defval"><span class="i">Exp</span></span>)</span> <a href="tango.text.convert.Float.html#toString32" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Template wrapper to make life simpler. Returns a text version
+        of the provided value.</div></div>
+<div class="cmnt">See format() for details</div></dd>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="truncate" href="htmlsrc/tango.text.convert.Float.html#L165">truncate</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>s</em>)</span> <a href="tango.text.convert.Float.html#truncate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Truncate trailing '0' and '.' from a string, such that 200.000 
+        becomes 200, and 20.10 becomes 20.1</div></div>
+<div class="cmnt">Returns a potentially shorter slice of what you give it.</div></dd>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="format" href="htmlsrc/tango.text.convert.Float.html#L221">format</a><span class="tparams">(<em>T</em>, <em>D</em> = <span class="defval">NumType</span>, <em>U</em> = <span class="defval">int</span>)</span><span class="params">(T[] <em>dst</em>, D <em>x</em>, U <em>decimals</em> = <span class="defval"><span class="i">Dec</span></span>, U <em>e</em> = <span class="defval"><span class="i">Exp</span></span>, bool <em>pad</em> = <span class="defval"><span class="i">Pad</span></span>)</span> <a href="tango.text.convert.Float.html#format" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert a floating-point number to a string.</div></div>
+<div class="cmnt">The e parameter controls the number of exponent places emitted, 
+        and can thus control where the output switches to the scientific 
+        notation. For example, setting e=2 for 0.01 or 10.0 would result
+        in normal output. Whereas setting e=1 would result in both those
+        values being rendered in scientific notation instead. Setting e
+        to 0 forces that notation on for everything. Parameter pad will
+        append trailing '0' decimals when set ~ otherwise trailing '0's 
+        will be elided</div></dd>
+<dt class="decl"><span class="rettyp">NumType</span> <a class="symbol _function" name="parse" href="htmlsrc/tango.text.convert.Float.html#L506">parse</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T[]) <em>src</em>, size_t* <em>ate</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.convert.Float.html#parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert a formatted string of digits to a floating-point number.
+        Good for general use, but use David Gay's dtoa package if serious
+        rounding adjustments should be applied.</div></div></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:14 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

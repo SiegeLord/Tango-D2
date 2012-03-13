@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.model.IFile</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.model.IFile">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.model.IFile"><a href="htmlsrc/tango.io.model.IFile.html" class="symbol">tango.io.model.IFile</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: March 2005</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="FileConst" href="htmlsrc/tango.io.model.IFile.html#L21">FileConst</a> <a href="tango.io.model.IFile.html#FileConst" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generic file-oriented attributes.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _enum" name="FileConst.enum" href="htmlsrc/tango.io.model.IFile.html#L35">enum</a> : char <a href="tango.io.model.IFile.html#FileConst.enum" class="plink">¶</a></dt>
+<dd class="ddef">
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="FileConst.enum.CurrentDirChar" href="htmlsrc/tango.io.model.IFile.html#L38">CurrentDirChar</a> <a href="tango.io.model.IFile.html#FileConst.enum.CurrentDirChar" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The current directory character.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="FileConst.enum.FileSeparatorChar" href="htmlsrc/tango.io.model.IFile.html#L41">FileSeparatorChar</a> <a href="tango.io.model.IFile.html#FileConst.enum.FileSeparatorChar" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The file separator character.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="FileConst.enum.PathSeparatorChar" href="htmlsrc/tango.io.model.IFile.html#L44">PathSeparatorChar</a> <a href="tango.io.model.IFile.html#FileConst.enum.PathSeparatorChar" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The path separator character.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="FileConst.enum.SystemPathChar" href="htmlsrc/tango.io.model.IFile.html#L47">SystemPathChar</a> <a href="tango.io.model.IFile.html#FileConst.enum.SystemPathChar" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The system path character.</div></div></dd></dl></dd>
+<dt class="decl">immutable(char)[] <a class="symbol _variable" name="FileConst.ParentDirString" href="htmlsrc/tango.io.model.IFile.html#L51">ParentDirString</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.model.IFile.html#FileConst.ParentDirString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The parent directory string</div></div></dd>
+<dt class="decl">immutable(char)[] <a class="symbol _variable" name="FileConst.CurrentDirString" href="htmlsrc/tango.io.model.IFile.html#L54">CurrentDirString</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.model.IFile.html#FileConst.CurrentDirString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The current directory string</div></div></dd>
+<dt class="decl">immutable(char)[] <a class="symbol _variable" name="FileConst.FileSeparatorString" href="htmlsrc/tango.io.model.IFile.html#L57">FileSeparatorString</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.model.IFile.html#FileConst.FileSeparatorString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The file separator string</div></div></dd>
+<dt class="decl">immutable(char)[] <a class="symbol _variable" name="FileConst.PathSeparatorString" href="htmlsrc/tango.io.model.IFile.html#L60">PathSeparatorString</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.model.IFile.html#FileConst.PathSeparatorString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The path separator string</div></div></dd>
+<dt class="decl">immutable(char)[] <a class="symbol _variable" name="FileConst.SystemPathString" href="htmlsrc/tango.io.model.IFile.html#L63">SystemPathString</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.model.IFile.html#FileConst.SystemPathString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The system path string</div></div></dd>
+<dt class="decl">immutable(char)[] <a class="symbol _variable" name="FileConst.NewlineString" href="htmlsrc/tango.io.model.IFile.html#L66">NewlineString</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.model.IFile.html#FileConst.NewlineString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The newline string</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="FileInfo" href="htmlsrc/tango.io.model.IFile.html#L113">FileInfo</a> <a href="tango.io.model.IFile.html#FileInfo" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Passed around during file-scanning.</div></div>
+</dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2005 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.sys.Common</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a><a id="L38" href="#L38">38</a><a id="L39" href="#L39">39</a><a id="L40" href="#L40">40</a><a id="L41" href="#L41">41</a><a id="L42" href="#L42">42</a><a id="L43" href="#L43">43</a><a id="L44" href="#L44">44</a><a id="L45" href="#L45">45</a><a id="L46" href="#L46">46</a><a id="L47" href="#L47">47</a><a id="L48" href="#L48">48</a><a id="L49" href="#L49">49</a><a id="L50" href="#L50">50</a><a id="L51" href="#L51">51</a><a id="L52" href="#L52">52</a><a id="L53" href="#L53">53</a><a id="L54" href="#L54">54</a><a id="L55" href="#L55">55</a><a id="L56" href="#L56">56</a><a id="L57" href="#L57">57</a><a id="L58" href="#L58">58</a><a id="L59" href="#L59">59</a><a id="L60" href="#L60">60</a><a id="L61" href="#L61">61</a><a id="L62" href="#L62">62</a><a id="L63" href="#L63">63</a><a id="L64" href="#L64">64</a><a id="L65" href="#L65">65</a><a id="L66" href="#L66">66</a><a id="L67" href="#L67">67</a><a id="L68" href="#L68">68</a><a id="L69" href="#L69">69</a><a id="L70" href="#L70">70</a><a id="L71" href="#L71">71</a><a id="L72" href="#L72">72</a><a id="L73" href="#L73">73</a><a id="L74" href="#L74">74</a><a id="L75" href="#L75">75</a><a id="L76" href="#L76">76</a><a id="L77" href="#L77">77</a><a id="L78" href="#L78">78</a><a id="L79" href="#L79">79</a><a id="L80" href="#L80">80</a><a id="L81" href="#L81">81</a><a id="L82" href="#L82">82</a><a id="L83" href="#L83">83</a><a id="L84" href="#L84">84</a><a id="L85" href="#L85">85</a><a id="L86" href="#L86">86</a><a id="L87" href="#L87">87</a><a id="L88" href="#L88">88</a><a id="L89" href="#L89">89</a><a id="L90" href="#L90">90</a><a id="L91" href="#L91">91</a><a id="L92" href="#L92">92</a><a id="L93" href="#L93">93</a><a id="L94" href="#L94">94</a><a id="L95" href="#L95">95</a><a id="L96" href="#L96">96</a><a id="L97" href="#L97">97</a><a id="L98" href="#L98">98</a><a id="L99" href="#L99">99</a><a id="L100" href="#L100">100</a><a id="L101" href="#L101">101</a><a id="L102" href="#L102">102</a><a id="L103" href="#L103">103</a><a id="L104" href="#L104">104</a><a id="L105" href="#L105">105</a><a id="L106" href="#L106">106</a><a id="L107" href="#L107">107</a><a id="L108" href="#L108">108</a><a id="L109" href="#L109">109</a><a id="L110" href="#L110">110</a><a id="L111" href="#L111">111</a><a id="L112" href="#L112">112</a><a id="L113" href="#L113">113</a><a id="L114" href="#L114">114</a><a id="L115" href="#L115">115</a><a id="L116" href="#L116">116</a><a id="L117" href="#L117">117</a><a id="L118" href="#L118">118</a><a id="L119" href="#L119">119</a><a id="L120" href="#L120">120</a><a id="L121" href="#L121">121</a><a id="L122" href="#L122">122</a><a id="L123" href="#L123">123</a><a id="L124" href="#L124">124</a><a id="L125" href="#L125">125</a><a id="L126" href="#L126">126</a><a id="L127" href="#L127">127</a><a id="L128" href="#L128">128</a><a id="L129" href="#L129">129</a><a id="L130" href="#L130">130</a><a id="L131" href="#L131">131</a><a id="L132" href="#L132">132</a><a id="L133" href="#L133">133</a><a id="L134" href="#L134">134</a><a id="L135" href="#L135">135</a><a id="L136" href="#L136">136</a><a id="L137" href="#L137">137</a><a id="L138" href="#L138">138</a><a id="L139" href="#L139">139</a><a id="L140" href="#L140">140</a><a id="L141" href="#L141">141</a><a id="L142" href="#L142">142</a><a id="L143" href="#L143">143</a><a id="L144" href="#L144">144</a><a id="L145" href="#L145">145</a><a id="L146" href="#L146">146</a><a id="L147" href="#L147">147</a><a id="L148" href="#L148">148</a><a id="L149" href="#L149">149</a><a id="L150" href="#L150">150</a><a id="L151" href="#L151">151</a><a id="L152" href="#L152">152</a><a id="L153" href="#L153">153</a><a id="L154" href="#L154">154</a><a id="L155" href="#L155">155</a><a id="L156" href="#L156">156</a><a id="L157" href="#L157">157</a><a id="L158" href="#L158">158</a><a id="L159" href="#L159">159</a><a id="L160" href="#L160">160</a><a id="L161" href="#L161">161</a><a id="L162" href="#L162">162</a><a id="L163" href="#L163">163</a><a id="L164" href="#L164">164</a><a id="L165" href="#L165">165</a><a id="L166" href="#L166">166</a><a id="L167" href="#L167">167</a><a id="L168" href="#L168">168</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/*******************************************************************************
+
+        copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Initial release: November 2005
+
+        author:         Kris
+
+*******************************************************************************/</span>
+
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">Common</span>;</span>
+
+<span class="d Version"><span class="k">version</span> (<span class="i">Win32</span>)
+        <span class="d Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">win32</span>.<span class="i">UserGdi</span>;</span>
+        }</span></span>
+
+<span class="d Version"><span class="k">version</span> (<span class="i">linux</span>)
+        <span class="d Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">linux</span>.<span class="i">linux</span>;</span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">tango</span></span>.<span class="t Identifier"><span class="i">sys</span></span>.<span class="t Identifier"><span class="i">linux</span></span>.<span class="t Identifier"><span class="i">linux</span></span> <span class="i">posix</span>;</span></span>
+        }</span></span>
+
+<span class="d Version"><span class="k">version</span> (<span class="i">darwin</span>)
+        <span class="d Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">darwin</span>.<span class="i">darwin</span>;</span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">tango</span></span>.<span class="t Identifier"><span class="i">sys</span></span>.<span class="t Identifier"><span class="i">darwin</span></span>.<span class="t Identifier"><span class="i">darwin</span></span> <span class="i">posix</span>;</span></span>
+        }</span></span>
+<span class="d Version"><span class="k">version</span> (<span class="i">FreeBSD</span>)
+        <span class="d Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">freebsd</span>.<span class="i">freebsd</span>;</span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">tango</span></span>.<span class="t Identifier"><span class="i">sys</span></span>.<span class="t Identifier"><span class="i">freebsd</span></span>.<span class="t Identifier"><span class="i">freebsd</span></span> <span class="i">posix</span>;</span></span>
+        }</span></span>
+<span class="d Version"><span class="k">version</span> (<span class="i">solaris</span>)
+        <span class="d Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">solaris</span>.<span class="i">solaris</span>;</span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">tango</span></span>.<span class="t Identifier"><span class="i">sys</span></span>.<span class="t Identifier"><span class="i">solaris</span></span>.<span class="t Identifier"><span class="i">solaris</span></span> <span class="i">posix</span>;</span></span>
+        }</span></span>
+
+<span class="bc">/*******************************************************************************
+
+        Stuff for sysErrorMsg(), kindly provided by Regan Heath.
+
+*******************************************************************************/</span>
+
+<span class="d Version"><span class="k">version</span> (<span class="i">Win32</span>)
+        <span class="d Compound">{
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">FORMAT_MESSAGE_ALLOCATE_BUFFER</span> = <span class="e Int"><span class="n">0x00000100</span></span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">FORMAT_MESSAGE_IGNORE_INSERTS</span>  = <span class="e Int"><span class="n">0x00000200</span></span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">FORMAT_MESSAGE_FROM_STRING</span>     = <span class="e Int"><span class="n">0x00000400</span></span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">FORMAT_MESSAGE_FROM_HMODULE</span>    = <span class="e Int"><span class="n">0x00000800</span></span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">FORMAT_MESSAGE_FROM_SYSTEM</span>     = <span class="e Int"><span class="n">0x00001000</span></span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">FORMAT_MESSAGE_ARGUMENT_ARRAY</span>  = <span class="e Int"><span class="n">0x00002000</span></span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">FORMAT_MESSAGE_MAX_WIDTH_MASK</span>  = <span class="e Int"><span class="n">0x000000FF</span></span>;</span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">MAKELANGID</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">WORD</span></span> <span class="i">p</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">WORD</span></span> <span class="i">s</span></span>)</span>  <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e Or"><span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">WORD</span></span>)<span class="e Identifier"><span class="i">s</span></span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">10</span></span></span>)</span> | <span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">WORD</span></span>)<span class="e Identifier"><span class="i">p</span></span></span></span>)</span>;</span> }</span></span></span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">HGLOBAL</span></span> <span class="i">HLOCAL</span>;</span></span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">LANG_NEUTRAL</span> = <span class="e Int"><span class="n">0x00</span></span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">SUBLANG_DEFAULT</span> = <span class="e Int"><span class="n">0x01</span></span>;</span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span> (<span class="i">Windows</span>)</span>
+                       <span class="d Compound">{
+                       <span class="d Function"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">FormatMessageW</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">dwFlags</span></span>,
+                                             <span class="o Parameter"><span class="t Identifier"><span class="i">LPCVOID</span></span> <span class="i">lpSource</span></span>,
+                                             <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">dwMessageId</span></span>,
+                                             <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">dwLanguageId</span></span>,
+                                             <span class="o Parameter"><span class="t Identifier"><span class="i">LPWSTR</span></span> <span class="i">lpBuffer</span></span>,
+                                             <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">nSize</span></span>,
+                                             <span class="o Parameter"><span class="t Identifier"><span class="i">LPCVOID</span></span> <span class="i">args</span></span>
+                                             )</span><span class="s FuncBody">;</span></span>
+
+                       <span class="d Function"><span class="t Identifier"><span class="i">HLOCAL</span></span> <span class="i">LocalFree</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">HLOCAL</span></span> <span class="i">hMem</span></span>)</span><span class="s FuncBody">;</span></span>
+                       }</span>
+        }</span>
+<span class="k">else</span>
+<span class="d Version"><span class="k">version</span> (<span class="i">Posix</span>)
+        <span class="d Compound">{
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">stdc</span>.<span class="i">errno</span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">stdc</span>.<span class="i">string</span>;</span>
+        }</span>
+<span class="k">else</span>
+   <span class="d Compound">{
+   <span class="d Pragma"><span class="k">pragma</span> (<span class="i">msg</span>, <span class="e String"><span class="sl">"Unsupported environment; neither Win32 or Posix is declared"</span></span>)</span><span class="d Empty">;</span>
+   <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>(<span class="e Int"><span class="n">0</span></span>);</span>
+   }</span></span></span>
+
+   
+<span class="bc">/*******************************************************************************
+
+*******************************************************************************/</span>
+
+<span class="d Struct"><span class="k">struct</span> <span class="i">SysError</span>
+<span class="d Compound">{   
+        <span class="bc">/***********************************************************************
+
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">lastCode</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Version"><span class="k">version</span> (<span class="i">Win32</span>)
+                         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">GetLastError</span></span>()</span>;</span>
+                     <span class="k">else</span>
+                         <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">errno</span></span>;</span></span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">lastMsg</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">lookup</span></span> (<span class="i">lastCode</span>)</span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">lookup</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">errcode</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">text</span>;</span></span>
+
+                <span class="s Version"><span class="k">version</span> (<span class="i">Win32</span>)
+                        <span class="s Compound">{
+                        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">DWORD</span></span>  <span class="i">i</span>;</span></span>
+                        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">LPWSTR</span></span> <span class="i">lpMsgBuf</span>;</span></span>
+
+                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">i</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">FormatMessageW</span></span> (
+                                <span class="i">FORMAT_MESSAGE_ALLOCATE_BUFFER</span> |
+                                <span class="i">FORMAT_MESSAGE_FROM_SYSTEM</span> |
+                                <span class="i">FORMAT_MESSAGE_IGNORE_INSERTS</span>,
+                                <span class="k">null</span>,
+                                <span class="i">errcode</span>,
+                                <span class="i">MAKELANGID</span>(<span class="i">LANG_NEUTRAL</span>, <span class="i">SUBLANG_DEFAULT</span>), <span class="lc">// Default language</span>
+                                <span class="k">cast</span>(<span class="i">LPWSTR</span>)&amp;<span class="i">lpMsgBuf</span>,
+                                <span class="n">0</span>,
+                                <span class="k">null</span>)</span></span>;</span>
+
+                        <span class="bc">/* Remove \r\n from error string */</span>
+                        <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">i</span></span> &gt;= <span class="e Int"><span class="n">2</span></span></span>) <span class="s Scope"><span class="s Expression"><span class="e MinusAssign"><span class="e Identifier"><span class="i">i</span></span> -= <span class="e Int"><span class="n">2</span></span></span>;</span></span></span>
+                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">text</span></span> = <span class="e New"><span class="k">new</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Mul"><span class="e Identifier"><span class="i">i</span></span> * <span class="e Int"><span class="n">3</span></span></span>]</span></span></span>;</span>
+                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">i</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">WideCharToMultiByte</span></span> (<span class="i">CP_UTF8</span>, <span class="n">0</span>, <span class="i">lpMsgBuf</span>, <span class="i">i</span>, 
+                                                 <span class="k">cast</span>(<span class="i">PCHAR</span>)<span class="i">text</span>.<span class="i">ptr</span>, <span class="i">text</span>.<span class="i">length</span>, <span class="k">null</span>, <span class="k">null</span>)</span></span>;</span>
+                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">text</span></span> = <span class="e Slice"><span class="e Identifier"><span class="i">text</span></span> [<span class="e Int"><span class="n">0</span></span> .. <span class="e Identifier"><span class="i">i</span></span>]</span></span>;</span>
+                        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">LocalFree</span></span> (<span class="k">cast</span>(<span class="i">HLOCAL</span>) <span class="i">lpMsgBuf</span>)</span>;</span>
+                        }</span>
+                     <span class="k">else</span>
+                        <span class="s Compound">{
+                        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span>  <span class="i">r</span>;</span></span>
+                        <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">pemsg</span>;</span></span>
+
+                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">pemsg</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">strerror</span></span>(<span class="i">errcode</span>)</span></span>;</span>
+                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">r</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">strlen</span></span>(<span class="i">pemsg</span>)</span></span>;</span>
+
+                        <span class="bc">/* Remove \r\n from error string */</span>
+                        <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Index"><span class="e Identifier"><span class="i">pemsg</span></span>[<span class="e Minus"><span class="e Identifier"><span class="i">r</span></span>-<span class="e Int"><span class="n">1</span></span></span>]</span> == <span class="e Char"><span class="cl">'<span class="es">\n</span>'</span></span></span>) <span class="s Scope"><span class="s Expression"><span class="e PostDecr"><span class="e Identifier"><span class="i">r</span></span>--</span>;</span></span></span>
+                        <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Index"><span class="e Identifier"><span class="i">pemsg</span></span>[<span class="e Minus"><span class="e Identifier"><span class="i">r</span></span>-<span class="e Int"><span class="n">1</span></span></span>]</span> == <span class="e Char"><span class="cl">'<span class="es">\r</span>'</span></span></span>) <span class="s Scope"><span class="s Expression"><span class="e PostDecr"><span class="e Identifier"><span class="i">r</span></span>--</span>;</span></span></span>
+                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">text</span></span> = <span class="e Slice"><span class="e Identifier"><span class="i">pemsg</span></span>[<span class="e Int"><span class="n">0</span></span>..<span class="e Identifier"><span class="i">r</span></span>]</span>.<span class="e Identifier"><span class="i">dup</span></span></span>;</span>
+                        }</span></span>
+
+                <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">text</span></span>;</span>
+        }</span></span></span>
+}</span></span></span>
+
+</pre></td>
+</tr></table>
+</body>
+</html>

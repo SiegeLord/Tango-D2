@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.net.http.ChunkStream</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.net.http.ChunkStream">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.net.http.ChunkStream"><a href="htmlsrc/tango.net.http.ChunkStream.html" class="symbol">tango.net.http.ChunkStream</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Nov 2007: Initial release</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris
+<p class="bl"></p>
+        Support for HTTP chunked I/O.
+<p class="bl"></p>
+        See http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ChunkOutput" href="htmlsrc/tango.net.http.ChunkStream.html#L35">ChunkOutput</a> : <span class="bclass">OutputFilter</span> <a href="tango.net.http.ChunkStream.html#ChunkOutput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Prefix each block of data with its length (in hex digits) and add
+        appropriate \r\n sequences. To commit the stream you'll need to use
+        the terminate() function and optionally provide it with a callback
+        for writing trailing headers</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="ChunkOutput.this" href="htmlsrc/tango.net.http.ChunkStream.html#L45">this</a><span class="params">(OutputStream <em>stream</em>)</span> <a href="tango.net.http.ChunkStream.html#ChunkOutput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Use a buffer belonging to our sibling, if one is available</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="ChunkOutput.write" href="htmlsrc/tango.net.http.ChunkStream.html#L57">write</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.net.http.ChunkStream.html#ChunkOutput.write" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write a chunk to the output, prefixed and postfixed in a
+                manner consistent with the HTTP chunked transfer coding</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ChunkOutput.terminate" href="htmlsrc/tango.net.http.ChunkStream.html#L75">terminate</a><span class="params">(<span class="k">scope</span> void delegate(OutputBuffer) <em>headers</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.http.ChunkStream.html#ChunkOutput.terminate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write a zero length chunk, trailing headers and a terminating
+                blank line</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ChunkInput" href="htmlsrc/tango.net.http.ChunkStream.html#L94">ChunkInput</a> : <span class="bclass">Lines!(char)</span> <a href="tango.net.http.ChunkStream.html#ChunkInput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse hex digits, and use the resultant size to modulate requests
+        for incoming data. A chunk size of 0 terminates the stream, so to
+        read any trailing headers you'll need to provide a delegate handler
+        for receiving those</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="ChunkInput.this" href="htmlsrc/tango.net.http.ChunkStream.html#L108">this</a><span class="params">(InputStream <em>stream</em>, Headers <em>headers</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.net.http.ChunkStream.html#ChunkInput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Prime the available chunk size by reading and parsing the
+                first available line</div></div></dd>
+<dt class="decl"><span class="rettyp">ChunkInput</span> <a class="symbol _function" name="ChunkInput.set" href="htmlsrc/tango.net.http.ChunkStream.html#L120">set</a><span class="params">(InputStream <em>stream</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.http.ChunkStream.html#ChunkInput.set" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reset ChunkInput to a new InputStream</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="ChunkInput.read" href="htmlsrc/tango.net.http.ChunkStream.html#L133">read</a><span class="params">(void[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.net.http.ChunkStream.html#ChunkInput.read" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read content based on a previously parsed chunk size</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) Nov 2007 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:57 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

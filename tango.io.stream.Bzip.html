@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.stream.Bzip</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.stream.Bzip">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.stream.Bzip"><a href="htmlsrc/tango.io.stream.Bzip.html" class="symbol">tango.io.stream.Bzip</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: July 2007</div>
+<p class="sec_header">Author:</p><div class="cmnt">Daniel Keep</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="BzipOutput" href="htmlsrc/tango.io.stream.Bzip.html#L42">BzipOutput</a> : <span class="bclass">OutputFilter</span> <a href="tango.io.stream.Bzip.html#BzipOutput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This output filter can be used to perform compression of data into a bzip2
+    stream.</div></div>
+<dl>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="BzipOutput.BlockSize" href="htmlsrc/tango.io.stream.Bzip.html#L52">BlockSize</a> : int <a href="tango.io.stream.Bzip.html#BzipOutput.BlockSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This enumeration represents several pre-defined compression block
+        sizes, measured in hundreds of kilobytes.  See the documentation for
+        the BzipOutput class' constructor for more details.</div></div>
+</dd>
+<dt class="decl"><a class="symbol _ctor" name="BzipOutput.this" href="htmlsrc/tango.io.stream.Bzip.html#L91">this</a><span class="params">(OutputStream <em>stream</em>, int <em>blockSize</em> = <span class="defval"><span class="i">Normal</span></span>)</span> <a href="tango.io.stream.Bzip.html#BzipOutput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Constructs a new bzip2 compression filter.  You need to pass in the
+        stream that the compression filter will write to.  If you are using
+        this filter with a conduit, the idiom to use is:</div></div>
+<div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">output</span> = <span class="k">new</span> <span class="i">BzipOutput</span>(<span class="i">myConduit</span>.<span class="i">output</span>);
+<span class="i">output</span>.<span class="i">write</span>(<span class="i">myContent</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        blockSize relates to the size of the window bzip2 uses when
+        compressing data and determines how much memory is required to
+        decompress a stream.  It is measured in hundreds of kilobytes.
+        
+        ccording to the bzip2 documentation, there is no dramatic difference
+        between the various block sizes, so the default should suffice in most
+        cases.
+<p class="bl"></p>
+        BlockSize.Normal (the default) is the same as BlockSize.Best
+        (or 9).  The blockSize may be any integer between 1 and 9 inclusive.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="BzipOutput.reset" href="htmlsrc/tango.io.stream.Bzip.html#L136">reset</a><span class="params">(OutputStream <em>stream</em>, int <em>blockSize</em> = <span class="defval"><span class="i">Normal</span></span>)</span> <a href="tango.io.stream.Bzip.html#BzipOutput.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Resets and re-initialises this instance.</div></div>
+<div class="cmnt">If you are creating compression streams inside a loop, you may wish to
+        use this method to re-use a single instance.  This prevents the
+        potentially costly re-allocation of internal buffers.
+<p class="bl"></p>
+        The stream must have already been closed before calling reset.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BzipOutput.write" href="htmlsrc/tango.io.stream.Bzip.html#L154">write</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.stream.Bzip.html#BzipOutput.write" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compresses the given data to the underlying conduit.</div></div>
+<div class="cmnt">Returns the number of bytes from src that were compressed, which may
+        be less than given.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BzipOutput.written" href="htmlsrc/tango.io.stream.Bzip.html#L203">written</a><span class="params">()</span> <a href="tango.io.stream.Bzip.html#BzipOutput.written" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This read-only property returns the number of compressed bytes that
+        have been written to the underlying stream.  Following a call to
+        either close or commit, this will contain the total compressed size of
+        the input data stream.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="BzipOutput.close" href="htmlsrc/tango.io.stream.Bzip.html#L215">close</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.stream.Bzip.html#BzipOutput.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Close the compression stream.  This will cause any buffered content to
+        be committed to the underlying stream.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="BzipOutput.commit" href="htmlsrc/tango.io.stream.Bzip.html#L233">commit</a><span class="params">()</span> <a href="tango.io.stream.Bzip.html#BzipOutput.commit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Purge any buffered content.  Calling this will implicitly end the
+        bzip2 stream, so it should not be called until you are finished
+        compressing data.  Any calls to either write or commit after a
+        compression filter has been committed will throw an exception.</div></div>
+<div class="cmnt">The only difference between calling this method and calling close is
+        that the underlying stream will not be closed.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="BzipInput" href="htmlsrc/tango.io.stream.Bzip.html#L314">BzipInput</a> : <span class="bclass">InputFilter</span> <a href="tango.io.stream.Bzip.html#BzipInput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This input filter can be used to perform decompression of bzip2 streams.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="BzipInput.this" href="htmlsrc/tango.io.stream.Bzip.html#L340">this</a><span class="params">(InputStream <em>stream</em>, bool <em>small</em> = <span class="defval"><span class="k">false</span></span>)</span> <a href="tango.io.stream.Bzip.html#BzipInput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Constructs a new bzip2 decompression filter.  You need to pass in the
+        stream that the decompression filter will read from.  If you are using
+        this filter with a conduit, the idiom to use is:</div></div>
+<div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">input</span> = <span class="k">new</span> <span class="i">BzipInput</span>(<span class="i">myConduit</span>.<span class="i">input</span>);
+<span class="i">input</span>.<span class="i">read</span>(<span class="i">myContent</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        The small argument, if set to true, instructs bzip2 to perform
+        decompression using half the regular amount of memory, at the cost of
+        running at half speed.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="BzipInput.reset" href="htmlsrc/tango.io.stream.Bzip.html#L381">reset</a><span class="params">(InputStream <em>stream</em>, bool <em>small</em> = <span class="defval"><span class="k">false</span></span>)</span> <a href="tango.io.stream.Bzip.html#BzipInput.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Resets and re-initialises this instance.</div></div>
+<div class="cmnt">If you are creating compression streams inside a loop, you may wish to
+        use this method to re-use a single instance.  This prevents the
+        potentially costly re-allocation of internal buffers.
+<p class="bl"></p>
+        The stream must have already been closed before calling reset.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BzipInput.read" href="htmlsrc/tango.io.stream.Bzip.html#L399">read</a><span class="params">(void[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.stream.Bzip.html#BzipInput.read" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Decompresses data from the underlying conduit into a target array.</div></div>
+<div class="cmnt">Returns the number of bytes stored into dst, which may be less than
+        requested.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="BzipInput.close" href="htmlsrc/tango.io.stream.Bzip.html#L443">close</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.stream.Bzip.html#BzipInput.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Closes the compression stream.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="BzipException" href="htmlsrc/tango.io.stream.Bzip.html#L485">BzipException</a> : <span class="bclass">IOException</span> <a href="tango.io.stream.Bzip.html#BzipException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This exception is thrown when an error occurs in the underlying bzip2
+    library.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="BzipClosedException" href="htmlsrc/tango.io.stream.Bzip.html#L531">BzipClosedException</a> : <span class="bclass">IOException</span> <a href="tango.io.stream.Bzip.html#BzipClosedException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This exception is thrown if you attempt to perform a read, write or flush
+    operation on a closed bzip2 filter stream.  This can occur if the input
+    stream has finished, or an output stream was flushed.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="BzipStillOpenException" href="htmlsrc/tango.io.stream.Bzip.html#L547">BzipStillOpenException</a> : <span class="bclass">IOException</span> <a href="tango.io.stream.Bzip.html#BzipStillOpenException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This exception is thrown if you attempt to reset a compression stream that
+    is still open.  You must either close or commit a stream before it can be
+    reset.</div></div>
+</dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (C) 2007 Daniel Keep.  All rights reserved.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

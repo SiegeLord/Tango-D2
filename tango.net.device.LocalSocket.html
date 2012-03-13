@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.net.device.LocalSocket</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.net.device.LocalSocket">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.net.device.LocalSocket"><a href="htmlsrc/tango.net.device.LocalSocket.html" class="symbol">tango.net.device.LocalSocket</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Nov 2009: Initial release</div>
+<p class="sec_header">Author:</p><div class="cmnt">Lukas Pinkowski, Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="LocalSocket" href="htmlsrc/tango.net.device.LocalSocket.html#L34">LocalSocket</a> : <span class="bclass">Socket</span> <a href="tango.net.device.LocalSocket.html#LocalSocket" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A wrapper around the Berkeley API to implement the IConduit 
+        abstraction and add stream-specific functionality.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="LocalSocket.this" href="htmlsrc/tango.net.device.LocalSocket.html#L53">this</a><span class="params">(const(char)[] <em>path</em>)</span> <a href="tango.net.device.LocalSocket.html#LocalSocket.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a streaming local socket</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="LocalSocket.this:2" href="htmlsrc/tango.net.device.LocalSocket.html#L64">this</a><span class="params">(LocalAddress <em>addr</em>)</span> <a href="tango.net.device.LocalSocket.html#LocalSocket.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a streaming local socket</div></div></dd>
+<dt class="decl"><span class="rettyp">immutable(char)[]</span> <a class="symbol _function" name="LocalSocket.toString" href="htmlsrc/tango.net.device.LocalSocket.html#L76">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.LocalSocket.html#LocalSocket.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the name of this device</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="LocalServerSocket" href="htmlsrc/tango.net.device.LocalSocket.html#L87">LocalServerSocket</a> : <span class="bclass">LocalSocket</span> <a href="tango.net.device.LocalSocket.html#LocalServerSocket" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="LocalServerSocket.this" href="htmlsrc/tango.net.device.LocalSocket.html#L93">this</a><span class="params">(const(char)[] <em>path</em>, int <em>backlog</em> = <span class="defval"><span class="n">32</span></span>, bool <em>reuse</em> = <span class="defval"><span class="k">false</span></span>)</span> <a href="tango.net.device.LocalSocket.html#LocalServerSocket.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">immutable(char)[]</span> <a class="symbol _function" name="LocalServerSocket.toString" href="htmlsrc/tango.net.device.LocalSocket.html#L105">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.LocalSocket.html#LocalServerSocket.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the name of this device</div></div></dd>
+<dt class="decl"><span class="rettyp">Socket</span> <a class="symbol _function" name="LocalServerSocket.accept" href="htmlsrc/tango.net.device.LocalSocket.html#L114">accept</a><span class="params">(Socket <em>recipient</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.net.device.LocalSocket.html#LocalServerSocket.accept" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="LocalAddress" href="htmlsrc/tango.net.device.LocalSocket.html#L129">LocalAddress</a> : <span class="bclass">Address</span> <a href="tango.net.device.LocalSocket.html#LocalAddress" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="LocalAddress.this" href="htmlsrc/tango.net.device.LocalSocket.html#L150">this</a><span class="params">(const(char)[] <em>path</em>)</span> <a href="tango.net.device.LocalSocket.html#LocalAddress.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">-path- path to a unix domain socket (which is a filename)</div></div></dd>
+<dt class="decl"><span class="rettyp">sockaddr*</span> <a class="symbol _function" name="LocalAddress.name" href="htmlsrc/tango.net.device.LocalSocket.html#L165">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.net.device.LocalSocket.html#LocalAddress.name" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="LocalAddress.nameLen" href="htmlsrc/tango.net.device.LocalSocket.html#L174">nameLen</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.LocalSocket.html#LocalAddress.nameLen" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">AddressFamily</span> <a class="symbol _function" name="LocalAddress.addressFamily" href="htmlsrc/tango.net.device.LocalSocket.html#L183">addressFamily</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.net.device.LocalSocket.html#LocalAddress.addressFamily" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="LocalAddress.toString" href="htmlsrc/tango.net.device.LocalSocket.html#L192">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.net.device.LocalSocket.html#LocalAddress.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="LocalAddress.path" href="htmlsrc/tango.net.device.LocalSocket.html#L204">path</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.LocalSocket.html#LocalAddress.path" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="LocalAddress.isAbstract" href="htmlsrc/tango.net.device.LocalSocket.html#L213">isAbstract</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.LocalSocket.html#LocalAddress.isAbstract" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2009 Tango. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:57 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

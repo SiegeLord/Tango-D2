@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.selector.SelectorException</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.selector.SelectorException">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.selector.SelectorException"><a href="htmlsrc/tango.io.selector.SelectorException.html" class="symbol">tango.io.selector.SelectorException</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Author:</p><div class="cmnt">Juan Jose Comellas &lt;<a href="mailto:juanjo@comellas.com.ar">juanjo@comellas.com.ar</a>&gt;</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SelectorException" href="htmlsrc/tango.io.selector.SelectorException.html#L16">SelectorException</a> : <span class="bclass">Exception</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.SelectorException.html#SelectorException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">SelectorException is thrown when the Selector cannot be created because
+ of insufficient resources (file descriptors, memory, etc.)</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="SelectorException.this" href="htmlsrc/tango.io.selector.SelectorException.html#L27">this</a><span class="params">(string <em>msg</em>, string <em>file</em>, size_t <em>line</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.SelectorException.html#SelectorException.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a selector exception with the provided text string</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>file</em></td><td>name of the source file where the exception was thrown; you
+            would normally use __FILE__ for this parameter.</td></tr>
+<tr><td><em>line</em></td><td>line number of the source file where the exception was
+            thrown; you would normally use __LINE__ for this parameter.</td></tr></table></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="UnregisteredConduitException" href="htmlsrc/tango.io.selector.SelectorException.html#L38">UnregisteredConduitException</a> : <span class="bclass">SelectorException</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.SelectorException.html#UnregisteredConduitException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">UnregisteredConduitException is thrown when the selector looks for a
+ registered conduit and it cannot find it.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="UnregisteredConduitException.this" href="htmlsrc/tango.io.selector.SelectorException.html#L49">this</a><span class="params">(string <em>file</em>, size_t <em>line</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.SelectorException.html#UnregisteredConduitException.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a selector exception with the provided text string</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>file</em></td><td>name of the source file where the exception was thrown; you
+            would normally use __FILE__ for this parameter.</td></tr>
+<tr><td><em>line</em></td><td>line number of the source file where the exception was
+            thrown; you would normally use __LINE__ for this parameter.</td></tr></table></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="RegisteredConduitException" href="htmlsrc/tango.io.selector.SelectorException.html#L59">RegisteredConduitException</a> : <span class="bclass">SelectorException</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.SelectorException.html#RegisteredConduitException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">RegisteredConduitException is thrown when a selector detects that a conduit
+ registration was attempted more than once.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="RegisteredConduitException.this" href="htmlsrc/tango.io.selector.SelectorException.html#L70">this</a><span class="params">(string <em>file</em>, size_t <em>line</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.SelectorException.html#RegisteredConduitException.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a selector exception with the provided text string</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>file</em></td><td>name of the source file where the exception was thrown; you
+            would normally use __FILE__ for this parameter.</td></tr>
+<tr><td><em>line</em></td><td>line number of the source file where the exception was
+            thrown; you would normally use __LINE__ for this parameter.</td></tr></table></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="InterruptedSystemCallException" href="htmlsrc/tango.io.selector.SelectorException.html#L80">InterruptedSystemCallException</a> : <span class="bclass">SelectorException</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.SelectorException.html#InterruptedSystemCallException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">InterruptedSystemCallException is thrown when a system call is interrupted
+ by a signal and the selector was not set to restart it automatically.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="InterruptedSystemCallException.this" href="htmlsrc/tango.io.selector.SelectorException.html#L91">this</a><span class="params">(string <em>file</em>, size_t <em>line</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.SelectorException.html#InterruptedSystemCallException.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a selector exception with the provided text string</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>file</em></td><td>name of the source file where the exception was thrown; you
+            would normally use __FILE__ for this parameter.</td></tr>
+<tr><td><em>line</em></td><td>line number of the source file where the exception was
+            thrown; you would normally use __LINE__ for this parameter.</td></tr></table></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="OutOfMemoryException" href="htmlsrc/tango.io.selector.SelectorException.html#L100">OutOfMemoryException</a> : <span class="bclass">SelectorException</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.SelectorException.html#OutOfMemoryException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">OutOfMemoryException is thrown when there is not enough memory.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="OutOfMemoryException.this" href="htmlsrc/tango.io.selector.SelectorException.html#L111">this</a><span class="params">(string <em>file</em>, size_t <em>line</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.SelectorException.html#OutOfMemoryException.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a selector exception with the provided text string</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>file</em></td><td>name of the source file where the exception was thrown; you
+            would normally use __FILE__ for this parameter.</td></tr>
+<tr><td><em>line</em></td><td>line number of the source file where the exception was
+            thrown; you would normally use __LINE__ for this parameter.</td></tr></table></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2006 Juan Jose Comellas. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

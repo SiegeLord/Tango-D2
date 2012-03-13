@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.core.BitArray</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.core.BitArray">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.core.BitArray"><a href="htmlsrc/tango.core.BitArray.html" class="symbol">tango.core.BitArray</a></h1>
+
+<div class="summary"><div class="cmnt">This module contains a packed bit array implementation in the style of D's
+ built-in dynamic arrays.</div></div>
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Authors:</p><div class="cmnt">Walter Bright, Sean Kelly</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="BitArray" href="htmlsrc/tango.core.BitArray.html#L24">BitArray</a> <a href="tango.core.BitArray.html#BitArray" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This struct represents an array of boolean values, each of which occupy one
+ bit of memory for storage.  Thus an array of 32 bits would occupy the same
+ space as one integer value.  The typical array operations--such as indexing
+ and sorting--are supported, as well as bitwise operations such as and, or,
+ xor, and complement.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="BitArray.this" href="htmlsrc/tango.core.BitArray.html#L49">this</a><span class="params">(size_t <em>_len</em>, size_t* <em>_ptr</em>)</span> <a href="tango.core.BitArray.html#BitArray.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This initializes a BitArray of bits.length bits, where each bit value
+ matches the corresponding boolean value in bits.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>bits</em></td><td>The initialization value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A BitArray with the same number and sequence of elements as bits.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BitArray.length" href="htmlsrc/tango.core.BitArray.html#L68">length</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.core.BitArray.html#BitArray.length" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the number of bits in this array.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of bits in this array.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="BitArray.length:2" href="htmlsrc/tango.core.BitArray.html#L81">length</a><span class="params">(<span class="k">const</span> size_t <em>newlen</em>)</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.BitArray.html#BitArray.length:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Resizes this array to newlen bits.  If newlen is larger than the current
+ length, the new bits will be initialized to zero.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>newlen</em></td><td>The number of bits this array should contain.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="BitArray.dim" href="htmlsrc/tango.core.BitArray.html#L112">dim</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.BitArray.html#BitArray.dim" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Gets the length of a uint array large enough to hold all stored bits.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The size a uint array would have to be to store this array.</div></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.dup" href="htmlsrc/tango.core.BitArray.html#L124">dup</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.BitArray.html#BitArray.dup" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Duplicates this array, much like the dup property for built-in arrays.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A duplicate of this array.</div></dd>
+<dt class="decl"><a class="symbol _ctor" name="BitArray.this:2" href="htmlsrc/tango.core.BitArray.html#L164">this</a><span class="params">()</span> <a href="tango.core.BitArray.html#BitArray.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Resets the length of this array to bits.length and then initializes this</div></div>
+<div class="cmnt">Resizes this array to hold bits.length bits and initializes each bit
+ value to match the corresponding boolean value in bits.</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>bits</em></td><td>The initialization value.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opSliceAssign" href="htmlsrc/tango.core.BitArray.html#L198">opSliceAssign</a><span class="params">(BitArray <em>rhs</em>)</span> <a href="tango.core.BitArray.html#BitArray.opSliceAssign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Copy the bits from one array into this array.  This is not a shallow
+ copy.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>rhs</em></td><td>A BitArray with at least the same number of bits as this bit
+  array.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A shallow copy of this array.
+<p class="bl"></p>
+  <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">BitArray</span> <span class="i">ba</span> = [<span class="n">0</span>,<span class="n">1</span>,<span class="n">0</span>,<span class="n">1</span>,<span class="n">0</span>];
+<span class="i">BitArray</span> <span class="i">ba2</span>;
+<span class="i">ba2</span>.<span class="i">length</span> = <span class="i">ba</span>.<span class="i">length</span>;
+<span class="i">ba2</span>[] = <span class="i">ba</span>; <span class="lc">// perform the copy</span>
+<span class="i">ba</span>[<span class="n">0</span>] = <span class="k">true</span>;
+<span class="k">assert</span>(<span class="i">ba2</span>[<span class="n">0</span>] == <span class="k">false</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="BitArray.init" href="htmlsrc/tango.core.BitArray.html#L224">init</a><span class="params">(void[] <em>target</em>, size_t <em>numbits</em>)</span> <a href="tango.core.BitArray.html#BitArray.init" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Map BitArray onto target, with numbits being the number of bits in the
+ array. Does not copy the data.  This is the inverse of opCast.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>target</em></td><td>The array to map.</td></tr>
+<tr><td><em>numbits</em></td><td>The number of bits to map in target.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.reverse" href="htmlsrc/tango.core.BitArray.html#L277">reverse</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.BitArray.html#BitArray.reverse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reverses the contents of this array in place, much like the reverse
+ property for built-in arrays.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A shallow copy of this array.</div></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.sort" href="htmlsrc/tango.core.BitArray.html#L325">sort</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.BitArray.html#BitArray.sort" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sorts this array in place, with zero entries sorting before one.  This
+ is equivalent to the sort property for built-in arrays.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A shallow copy of this array.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="BitArray.opApply" href="htmlsrc/tango.core.BitArray.html#L393">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref bool) <em>dg</em>)</span> <a href="tango.core.BitArray.html#BitArray.opApply" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="BitArray.opApply:2" href="htmlsrc/tango.core.BitArray.html#L410">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref size_t, ref bool) <em>dg</em>)</span> <a href="tango.core.BitArray.html#BitArray.opApply:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Operates on all bits in this array.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>dg</em></td><td>The supplied code as a delegate.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="BitArray.opEquals" href="htmlsrc/tango.core.BitArray.html#L469">opEquals</a><span class="params">(<span class="k">ref</span> const(BitArray) <em>rhs</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.core.BitArray.html#BitArray.opEquals" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compares this array to another for equality.  Two bit arrays are equal
+ if they are the same size and contain the same series of bits.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>rhs</em></td><td>The array to compare against.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">false if not equal and non-zero otherwise.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="BitArray.opCmp" href="htmlsrc/tango.core.BitArray.html#L517">opCmp</a><span class="params">(BitArray <em>rhs</em>)</span> <a href="tango.core.BitArray.html#BitArray.opCmp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Performs a lexicographical comparison of this array to the supplied
+ array.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>rhs</em></td><td>The array to compare against.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A value less than zero if this array sorts before the supplied array,
+  zero if the arrays are equavalent, and a value greater than zero if
+  this array sorts after the supplied array.</div></dd>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="BitArray.opCast" href="htmlsrc/tango.core.BitArray.html#L573">opCast</a><span class="params">()</span> <a href="tango.core.BitArray.html#BitArray.opCast" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert this array to a void array.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">This array represented as a void array.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="BitArray.opIndex" href="htmlsrc/tango.core.BitArray.html#L603">opIndex</a><span class="params">(size_t <em>pos</em>)</span> <a href="tango.core.BitArray.html#BitArray.opIndex" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Support for index operations, much like the behavior of built-in arrays.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>pos</em></td><td>The desired index position.</td></tr></table>
+<p class="sec_header">In:</p><div class="cmnt">pos must be less than the length of this array.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">The value of the bit at pos.</div></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opCom" href="htmlsrc/tango.core.BitArray.html#L621">opCom</a><span class="params">()</span> <a href="tango.core.BitArray.html#BitArray.opCom" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generates a copy of this array with the unary complement operation
+ applied.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A new array which is the complement of this array.</div></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opAnd" href="htmlsrc/tango.core.BitArray.html#L666">opAnd</a><span class="params">(BitArray <em>rhs</em>)</span> <a href="tango.core.BitArray.html#BitArray.opAnd" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generates a new array which is the result of a bitwise and operation
+ between this array and the supplied array.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>rhs</em></td><td>The array with which to perform the bitwise and operation.</td></tr></table>
+<p class="sec_header">In:</p><div class="cmnt">rhs.length must equal the length of this array.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">A new array which is the result of a bitwise and with this array and
+  the supplied array.</div></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opOr" href="htmlsrc/tango.core.BitArray.html#L716">opOr</a><span class="params">(BitArray <em>rhs</em>)</span> <a href="tango.core.BitArray.html#BitArray.opOr" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generates a new array which is the result of a bitwise or operation
+ between this array and the supplied array.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>rhs</em></td><td>The array with which to perform the bitwise or operation.</td></tr></table>
+<p class="sec_header">In:</p><div class="cmnt">rhs.length must equal the length of this array.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">A new array which is the result of a bitwise or with this array and
+  the supplied array.</div></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opXor" href="htmlsrc/tango.core.BitArray.html#L766">opXor</a><span class="params">(BitArray <em>rhs</em>)</span> <a href="tango.core.BitArray.html#BitArray.opXor" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generates a new array which is the result of a bitwise xor operation
+ between this array and the supplied array.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>rhs</em></td><td>The array with which to perform the bitwise xor operation.</td></tr></table>
+<p class="sec_header">In:</p><div class="cmnt">rhs.length must equal the length of this array.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">A new array which is the result of a bitwise xor with this array and
+  the supplied array.</div></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opSub" href="htmlsrc/tango.core.BitArray.html#L816">opSub</a><span class="params">(BitArray <em>rhs</em>)</span> <a href="tango.core.BitArray.html#BitArray.opSub" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generates a new array which is the result of this array minus the
+ supplied array.  <i>a - b</i> for BitArrays means the same thing as
+ <i>a &amp; ~b</i>.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>rhs</em></td><td>The array with which to perform the subtraction operation.</td></tr></table>
+<p class="sec_header">In:</p><div class="cmnt">rhs.length must equal the length of this array.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">A new array which is the result of this array minus the supplied array.</div></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opCat" href="htmlsrc/tango.core.BitArray.html#L863">opCat</a><span class="params">(bool <em>rhs</em>)</span> <a href="tango.core.BitArray.html#BitArray.opCat" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opCat_r" href="htmlsrc/tango.core.BitArray.html#L875">opCat_r</a><span class="params">(bool <em>lhs</em>)</span> <a href="tango.core.BitArray.html#BitArray.opCat_r" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opCat:2" href="htmlsrc/tango.core.BitArray.html#L888">opCat</a><span class="params">(BitArray <em>rhs</em>)</span> <a href="tango.core.BitArray.html#BitArray.opCat:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generates a new array which is the result of this array concatenated
+ with the supplied array.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>rhs</em></td><td>The array with which to perform the concatenation operation.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A new array which is the result of this array concatenated with the
+  supplied array.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="BitArray.opIndexAssign" href="htmlsrc/tango.core.BitArray.html#L942">opIndexAssign</a><span class="params">(bool <em>b</em>, size_t <em>pos</em>)</span> <a href="tango.core.BitArray.html#BitArray.opIndexAssign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Support for index operations, much like the behavior of built-in arrays.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>b</em></td><td>The new bit value to set.</td></tr>
+<tr><td><em>pos</em></td><td>The desired index position.</td></tr></table>
+<p class="sec_header">In:</p><div class="cmnt">pos must be less than the length of this array.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">The new value of the bit at pos.</div></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opAndAssign" href="htmlsrc/tango.core.BitArray.html#L970">opAndAssign</a><span class="params">(BitArray <em>rhs</em>)</span> <a href="tango.core.BitArray.html#BitArray.opAndAssign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Updates the contents of this array with the result of a bitwise and
+ operation between this array and the supplied array.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>rhs</em></td><td>The array with which to perform the bitwise and operation.</td></tr></table>
+<p class="sec_header">In:</p><div class="cmnt">rhs.length must equal the length of this array.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">A shallow copy of this array.</div></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opOrAssign" href="htmlsrc/tango.core.BitArray.html#L1015">opOrAssign</a><span class="params">(BitArray <em>rhs</em>)</span> <a href="tango.core.BitArray.html#BitArray.opOrAssign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Updates the contents of this array with the result of a bitwise or
+ operation between this array and the supplied array.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>rhs</em></td><td>The array with which to perform the bitwise or operation.</td></tr></table>
+<p class="sec_header">In:</p><div class="cmnt">rhs.length must equal the length of this array.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">A shallow copy of this array.</div></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opXorAssign" href="htmlsrc/tango.core.BitArray.html#L1060">opXorAssign</a><span class="params">(BitArray <em>rhs</em>)</span> <a href="tango.core.BitArray.html#BitArray.opXorAssign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Updates the contents of this array with the result of a bitwise xor
+ operation between this array and the supplied array.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>rhs</em></td><td>The array with which to perform the bitwise xor operation.</td></tr></table>
+<p class="sec_header">In:</p><div class="cmnt">rhs.length must equal the length of this array.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">A shallow copy of this array.</div></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opSubAssign" href="htmlsrc/tango.core.BitArray.html#L1106">opSubAssign</a><span class="params">(BitArray <em>rhs</em>)</span> <a href="tango.core.BitArray.html#BitArray.opSubAssign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Updates the contents of this array with the result of this array minus
+ the supplied array.  <i>a - b</i> for BitArrays means the same thing as
+ <i>a &amp; ~b</i>.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>rhs</em></td><td>The array with which to perform the subtraction operation.</td></tr></table>
+<p class="sec_header">In:</p><div class="cmnt">rhs.length must equal the length of this array.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">A shallow copy of this array.</div></dd>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opCatAssign" href="htmlsrc/tango.core.BitArray.html#L1148">opCatAssign</a><span class="params">(bool <em>b</em>)</span> <a href="tango.core.BitArray.html#BitArray.opCatAssign" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">BitArray</span> <a class="symbol _function" name="BitArray.opCatAssign:2" href="htmlsrc/tango.core.BitArray.html#L1177">opCatAssign</a><span class="params">(BitArray <em>rhs</em>)</span> <a href="tango.core.BitArray.html#BitArray.opCatAssign:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Updates the contents of this array with the result of this array
+ concatenated with the supplied array.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>rhs</em></td><td>The array with which to perform the concatenation operation.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A shallow copy of this array.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (C) 2005-2006 Digital Mars, www.digitalmars.com.
+            All rights reserved.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:52 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

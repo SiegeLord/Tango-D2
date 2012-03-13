@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.time.StopWatch</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.time.StopWatch">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.time.StopWatch"><a href="htmlsrc/tango.time.StopWatch.html" class="symbol">tango.time.StopWatch</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Feb 2007: Initial release</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="StopWatch" href="htmlsrc/tango.time.StopWatch.html#L65">StopWatch</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.time.StopWatch.html#StopWatch" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Timer for measuring small intervals, such as the duration of a 
+        subroutine or other reasonably small period.
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">StopWatch</span> <span class="i">elapsed</span>;
+
+<span class="i">elapsed</span>.<span class="i">start</span>;
+
+<span class="lc">// do something</span>
+<span class="lc">// ...</span>
+
+<span class="k">double</span> <span class="i">i</span> = <span class="i">elapsed</span>.<span class="i">stop</span>;</pre>
+</td></tr>
+</table></div></div>
+<div class="cmnt">The measured interval is in units of seconds, using floating-
+        point to represent fractions. This approach is more flexible 
+        than integer arithmetic since it migrates trivially to more
+        capable timer hardware (there no implicit granularity to the
+        measurable intervals, except the limits of fp representation)
+<p class="bl"></p>
+        StopWatch is accurate to the extent of what the underlying OS
+        supports. On linux systems, this accuracy is typically 1 us at 
+        best. Win32 is generally more precise. 
+<p class="bl"></p>
+        There is some minor overhead in using StopWatch, so take that into 
+        account</div>
+<dl>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="StopWatch.start" href="htmlsrc/tango.time.StopWatch.html#L79">start</a><span class="params">()</span> <a href="tango.time.StopWatch.html#StopWatch.start" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Start the timer</div></div></dd>
+<dt class="decl"><span class="rettyp">double</span> <a class="symbol _function" name="StopWatch.stop" href="htmlsrc/tango.time.StopWatch.html#L90">stop</a><span class="params">()</span> <a href="tango.time.StopWatch.html#StopWatch.stop" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Stop the timer and return elapsed duration since start()</div></div></dd>
+<dt class="decl"><span class="rettyp">ulong</span> <a class="symbol _function" name="StopWatch.microsec" href="htmlsrc/tango.time.StopWatch.html#L101">microsec</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.time.StopWatch.html#StopWatch.microsec" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return elapsed time since the last start() as microseconds</div></div></dd>
+<dt class="decl"><span class="kw">static</span> <a class="symbol _sctor" name="StopWatch.this" href="htmlsrc/tango.time.StopWatch.html#L116">this</a>() <span class="attrs">[<span class="stc">shared</span>]</span> <a href="tango.time.StopWatch.html#StopWatch.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Setup timing information for later use</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2007 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:19 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

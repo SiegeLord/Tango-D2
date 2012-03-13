@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.FileScan</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.FileScan">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.FileScan"><a href="htmlsrc/tango.io.FileScan.html" class="symbol">tango.io.FileScan</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Jun 2004: Initial release</div>
+<p class="sec_header">Version:</p><div class="cmnt">Dec 2006: Pacific release</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="FileScan" href="htmlsrc/tango.io.FileScan.html#L56">FileScan</a> <span class="attrs">[<span class="stc">deprecated</span>]</span> <a href="tango.io.FileScan.html#FileScan" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This module is deprecated because it doesn't support file globbing
+    or regexes for matching files and because it ignores folders that
+    it doesn't recurse into (a non-recursive scan will never return any
+    folders).</div></div>
+<div class="cmnt">Recursively scan files and directories, adding filtered files to
+        an output structure as we go. This can be used to produce a list
+        of subdirectories and the files contained therein. The following
+        example lists all files with suffix ".d" located via the current
+        directory, along with the folders containing them:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">scan</span> = <span class="k">new</span> <span class="i">FileScan</span>;
+
+<span class="i">scan</span> (<span class="sl">"."</span>, <span class="sl">".d"</span>);
+
+<span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"{} Folders"</span>, <span class="i">scan</span>.<span class="i">folders</span>.<span class="i">length</span>);
+<span class="k">foreach</span> (<span class="i">folder</span>; <span class="i">scan</span>.<span class="i">folders</span>)
+         <span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"{}"</span>, <span class="i">folder</span>);
+
+<span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"<span class="es">\n</span>{} Files"</span>, <span class="i">scan</span>.<span class="i">files</span>.<span class="i">length</span>);
+<span class="k">foreach</span> (<span class="i">file</span>; <span class="i">scan</span>.<span class="i">files</span>)
+         <span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"{}"</span>, <span class="i">file</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        This is unlikely the most efficient method to scan a vast number of
+        files, but operates in a convenient manner.</div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> FilePath.Filter <a class="symbol _alias" name="FileScan.Filter" href="htmlsrc/tango.io.FileScan.html#L82">Filter</a> <a href="tango.io.FileScan.html#FileScan.Filter" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Alias for Filter delegate. Accepts a FilePath &amp; a bool as
+            arguments and returns a bool.</div></div>
+<div class="cmnt">The FilePath argument represents a file found by the scan,
+            and the bool whether the FilePath represents a folder.
+<p class="bl"></p>
+            The filter should return true, if matched by the filter. Note
+            that returning false where the path is a folder will result
+            in all files contained being ignored. To always recurse folders,
+            do something like this:
+            <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">return</span> (<span class="i">isDir</span> || <span class="i">match</span> (<span class="i">fp</span>.<span class="i">name</span>));</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[][]</span> <a class="symbol _function" name="FileScan.errors" href="htmlsrc/tango.io.FileScan.html#L90">errors</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.FileScan.html#FileScan.errors" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return all the errors found in the last scan</div></div></dd>
+<dt class="decl"><span class="rettyp">FilePath[]</span> <a class="symbol _function" name="FileScan.files" href="htmlsrc/tango.io.FileScan.html#L101">files</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.FileScan.html#FileScan.files" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return all the files found in the last scan</div></div></dd>
+<dt class="decl"><span class="rettyp">FilePath[]</span> <a class="symbol _function" name="FileScan.folders" href="htmlsrc/tango.io.FileScan.html#L112">folders</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.FileScan.html#FileScan.folders" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return all directories found in the last scan</div></div></dd>
+<dt class="decl"><span class="rettyp">FileScan</span> <a class="symbol _function" name="FileScan.sweep" href="htmlsrc/tango.io.FileScan.html#L124">sweep</a><span class="params">(const(char)[] <em>path</em>, bool <em>recurse</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.io.FileScan.html#FileScan.sweep" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sweep a set of files and directories from the given parent
+                path, with no filtering applied</div></div></dd>
+<dt class="decl"><span class="rettyp">FileScan</span> <a class="symbol _function" name="FileScan.sweep:2" href="htmlsrc/tango.io.FileScan.html#L136">sweep</a><span class="params">(const(char)[] <em>path</em>, const(char)[] <em>match</em>, bool <em>recurse</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.io.FileScan.html#FileScan.sweep:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sweep a set of files and directories from the given parent
+                path, where the files are filtered by the given suffix</div></div></dd>
+<dt class="decl"><span class="rettyp">FileScan</span> <a class="symbol _function" name="FileScan.sweep:3" href="htmlsrc/tango.io.FileScan.html#L149">sweep</a><span class="params">(const(char)[] <em>path</em>, Filter <em>filter</em>, bool <em>recurse</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.io.FileScan.html#FileScan.sweep:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sweep a set of files and directories from the given parent
+                path, where the files are filtered by the provided delegate</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

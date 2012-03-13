@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.net.model.UriView</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.net.model.UriView">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.net.model.UriView"><a href="htmlsrc/tango.net.model.UriView.html" class="symbol">tango.net.model.UriView</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: April 2004</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="UriView" href="htmlsrc/tango.net.model.UriView.html#L34">UriView</a> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.net.model.UriView.html#UriView" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Implements an RFC 2396 compliant URI specification. See 
+        <A HREF="http://ftp.ics.uci.edu/pub/ietf/uri/rfc2396.txt">this page</A>
+        for more information.</div></div>
+<div class="cmnt">The implementation fails the spec on two counts: it doesn't insist
+        on a scheme being present in the UriView, and it doesn't implement the
+        "Relative References" support noted in section 5.2. 
+        
+        Note that IRI support can be implied by assuming each of userinfo, path, 
+        query, and fragment are UTF-8 encoded 
+        (see <A HREF="http://www.w3.org/2001/Talks/0912-IUC-IRI/paper.html">
+        this page</A> for further details).
+<p class="bl"></p>
+        Use a Uri instead where you need to alter specific uri attributes.</div>
+<dl>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="UriView.defaultPort" href="htmlsrc/tango.net.model.UriView.html#L63">defaultPort</a><span class="params">(const(char)[] <em>scheme</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.net.model.UriView.html#UriView.defaultPort" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the default port for the given scheme. InvalidPort
+                is returned if the scheme is unknown, or does not accept
+                a port.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="UriView.scheme" href="htmlsrc/tango.net.model.UriView.html#L72">scheme</a><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.net.model.UriView.html#UriView.scheme" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the parsed scheme, or null if the scheme was not
+                specified</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="UriView.host" href="htmlsrc/tango.net.model.UriView.html#L81">host</a><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.net.model.UriView.html#UriView.host" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the parsed host, or null if the host was not
+                specified</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="UriView.port" href="htmlsrc/tango.net.model.UriView.html#L90">port</a><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.net.model.UriView.html#UriView.port" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the parsed port number, or InvalidPort if the port
+                was not provided.</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="UriView.validPort" href="htmlsrc/tango.net.model.UriView.html#L99">validPort</a><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.net.model.UriView.html#UriView.validPort" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a valid port number by performing a lookup on the 
+                known schemes if the port was not explicitly specified.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="UriView.userinfo" href="htmlsrc/tango.net.model.UriView.html#L108">userinfo</a><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.net.model.UriView.html#UriView.userinfo" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the parsed userinfo, or null if userinfo was not 
+                provided.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="UriView.path" href="htmlsrc/tango.net.model.UriView.html#L117">path</a><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.net.model.UriView.html#UriView.path" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the parsed path, or null if the path was not 
+                provided.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="UriView.query" href="htmlsrc/tango.net.model.UriView.html#L126">query</a><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.net.model.UriView.html#UriView.query" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the parsed query, or null if a query was not 
+                provided.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="UriView.fragment" href="htmlsrc/tango.net.model.UriView.html#L135">fragment</a><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.net.model.UriView.html#UriView.fragment" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the parsed fragment, or null if a fragment was not 
+                provided.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="UriView.isGeneric" href="htmlsrc/tango.net.model.UriView.html#L143">isGeneric</a><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.net.model.UriView.html#UriView.isGeneric" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return whether or not the UriView scheme is considered generic.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:57 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

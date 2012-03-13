@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.stream.Lines</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.stream.Lines">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.stream.Lines"><a href="htmlsrc/tango.io.stream.Lines.html" class="symbol">tango.io.stream.Lines</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: January 2006</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Lines" href="htmlsrc/tango.io.stream.Lines.html#L36">Lines</a><span class="tparams">(<em>T</em>)</span> : <span class="bclass">Iterator!(T)</span> <a href="tango.io.stream.Lines.html#Lines" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate across a set of text patterns.</div></div>
+<div class="cmnt">Each pattern is exposed to the client as a slice of the original
+        content, where the slice is transient. If you need to retain the
+        exposed content, then you should .dup it appropriately.
+<p class="bl"></p>
+        The content exposed via an iterator is supposed to be entirely
+        read-only. All current iterators abide by this rule, but it is
+        possible a user could mutate the content through a get() slice.
+        To enforce the desired read-only aspect, the code would have to
+        introduce redundant copying or the compiler would have to support
+        read-only arrays.
+<p class="bl"></p>
+        See Delimiters, Patterns, Quotes.</div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="Lines.this" href="htmlsrc/tango.io.stream.Lines.html#L68">this</a><span class="params">(InputStream <em>stream</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.io.stream.Lines.html#Lines.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct an uninitialized iterator. For example:
+                <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">lines</span> = <span class="k">new</span> <span class="i">Lines</span>!(<span class="k">char</span>);
+
+<span class="k">void</span> <span class="i">somefunc</span> (<span class="i">InputStream</span> <span class="i">stream</span>)
+{
+        <span class="k">foreach</span> (<span class="i">line</span>; <span class="i">lines</span>.<span class="i">set</span>(<span class="i">stream</span>))
+                 <span class="i">Cout</span> (<span class="i">line</span>).<span class="i">newline</span>;
+}</pre>
+</td></tr>
+</table></div></div>
+<div class="cmnt">Construct a streaming iterator upon a stream:
+                <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+<a href="#L3_ex2" name="L3_ex2">3</a>
+<a href="#L4_ex2" name="L4_ex2">4</a>
+<a href="#L5_ex2" name="L5_ex2">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">void</span> <span class="i">somefunc</span> (<span class="i">InputStream</span> <span class="i">stream</span>)
+{
+        <span class="k">foreach</span> (<span class="i">line</span>; <span class="k">new</span> <span class="i">Lines</span>!(<span class="k">char</span>) (<span class="i">stream</span>))
+                 <span class="i">Cout</span> (<span class="i">line</span>).<span class="i">newline</span>;
+}</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+                Construct a streaming iterator upon a conduit:
+                <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">foreach</span> (<span class="i">line</span>; <span class="k">new</span> <span class="i">Lines</span>!(<span class="k">char</span>) (<span class="k">new</span> <span class="i">File</span> (<span class="sl">"myfile"</span>)))
+         <span class="i">Cout</span> (<span class="i">line</span>).<span class="i">newline</span>;</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Lines.readln" href="htmlsrc/tango.io.stream.Lines.html#L80">readln</a><span class="params">(<span class="k">ref</span> const(T)[] <em>content</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Lines.html#Lines.readln" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read a line of text, and return false when there's no
+                further content available.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Lines.scan" href="htmlsrc/tango.io.stream.Lines.html#L93">scan</a><span class="params">(const(void)[] <em>data</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">override</span>]</span> <a href="tango.io.stream.Lines.html#Lines.scan" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Scanner implementation for this iterator. Find a '\n',
+                and eat any immediately preceeding '\r'.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

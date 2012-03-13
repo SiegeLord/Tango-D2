@@ -1,0 +1,515 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.time.Time</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.time.Time">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.time.Time"><a href="htmlsrc/tango.time.Time.html" class="symbol">tango.time.Time</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">mid 2005: Initial release
+                        Apr 2007: heavily reshaped
+                        Dec 2007: moved to tango.time</div>
+<p class="sec_header">Author:</p><div class="cmnt">John Chapman, Kris, scheivguy</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="TimeSpan" href="htmlsrc/tango.time.Time.html#L46">TimeSpan</a> <a href="tango.time.Time.html#TimeSpan" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This struct represents a length of time.  The underlying representation is
+    in units of 100ns.  This allows the length of time to span to roughly
+    +/- 10000 years.
+    
+    Notably missing from this is a representation of weeks, months and years.
+    This is because weeks, months, and years vary according to local calendars.
+    Use tango.time.chrono.* to deal with these concepts.</div></div>
+<p class="sec_header">Note:</p><div class="cmnt">nobody should change this struct without really good reason as it is
+    required to be a part of some interfaces.  It should be treated as a
+    builtin type. Also note that there is deliberately no opCall constructor
+    here, since it tends to produce too much overhead.   If you wish to build
+    a TimeSpan struct from a ticks value, use D's builtin ability to create a
+    struct with given member values (See the description of ticks() for an
+    example of how to do this).</div>
+<p class="sec_header">Example:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">Time</span> <span class="i">start</span> = <span class="i">Clock</span>.<span class="i">now</span>;
+<span class="i">Thread</span>.<span class="i">sleep</span>(<span class="n">0.150</span>);
+<span class="i">Stdout</span>.<span class="i">formatln</span>(<span class="sl">"slept for {} ms"</span>, (<span class="i">Clock</span>.<span class="i">now</span>-<span class="i">start</span>).<span class="i">millis</span>);</pre>
+</td></tr>
+</table></div>
+<p class="sec_header">See Also:</p><div class="cmnt">tango.core.Thread, tango.time.Clock</div>
+<dl>
+<dt class="decl">TimeSpan <a class="symbol _variable" name="TimeSpan.min" href="htmlsrc/tango.time.Time.html#L86">min</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.time.Time.html#TimeSpan.min" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Minimum TimeSpan</div></div></dd>
+<dt class="decl">TimeSpan <a class="symbol _variable" name="TimeSpan.max" href="htmlsrc/tango.time.Time.html#L91">max</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.time.Time.html#TimeSpan.max" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Maximum TimeSpan</div></div></dd>
+<dt class="decl">TimeSpan <a class="symbol _variable" name="TimeSpan.zero" href="htmlsrc/tango.time.Time.html#L96">zero</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.time.Time.html#TimeSpan.zero" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Zero TimeSpan.  Useful for comparisons.</div></div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="TimeSpan.ticks" href="htmlsrc/tango.time.Time.html#L107">ticks</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.ticks" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the number of ticks that this timespan represents.  This can be
+ used to construct another TimeSpan:</div></div>
+<div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">long</span> <span class="i">ticks</span> = <span class="i">myTimeSpan</span>.<span class="i">ticks</span>;
+<span class="i">TimeSpan</span> <span class="i">copyOfMyTimeSpan</span> = <span class="i">TimeSpan</span>(<span class="i">ticks</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="TimeSpan.opEquals" href="htmlsrc/tango.time.Time.html#L115">opEquals</a><span class="params">(const(TimeSpan) <em>t</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.opEquals" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Determines whether two TimeSpan values are equal</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="TimeSpan.opCmp" href="htmlsrc/tango.time.Time.html#L123">opCmp</a><span class="params">(const(TimeSpan) <em>t</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.opCmp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compares this object against another TimeSpan value.</div></div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.opBinary" href="htmlsrc/tango.time.Time.html#L140">opBinary</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"+"</span></span>)</span><span class="params">(const(TimeSpan) <em>t</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.opBinary" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add the TimeSpan given to this TimeSpan returning a new TimeSpan.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>t</em></td><td>A TimeSpan value to add</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A TimeSpan value that is the sum of this instance and t.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.opOpAssign" href="htmlsrc/tango.time.Time.html#L152">opOpAssign</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"+"</span></span>)</span><span class="params">(const(TimeSpan) <em>t</em>)</span> <a href="tango.time.Time.html#TimeSpan.opOpAssign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add the specified TimeSpan to this TimeSpan, assigning the result
+ to this instance.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>t</em></td><td>A TimeSpan value to add</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">a copy of this instance after adding t.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.opBinary:2" href="htmlsrc/tango.time.Time.html#L165">opBinary</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"-"</span></span>)</span><span class="params">(const(TimeSpan) <em>t</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.opBinary:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Subtract the specified TimeSpan from this TimeSpan.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>t</em></td><td>A TimeSpan to subtract</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A new timespan which is the difference between this
+ instance and t</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.opOpAssign:2" href="htmlsrc/tango.time.Time.html#L177">opOpAssign</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"-"</span></span>)</span><span class="params">(const(TimeSpan) <em>t</em>)</span> <a href="tango.time.Time.html#TimeSpan.opOpAssign:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Subtract the specified TimeSpan from this TimeSpan and assign the</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>t</em></td><td>A TimeSpan to subtract</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A copy of this instance after subtracting t.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.opBinary:3" href="htmlsrc/tango.time.Time.html#L193">opBinary</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"*"</span></span>)</span><span class="params">(long <em>v</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.opBinary:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Scale the TimeSpan by the specified amount.  This should not be
+ used to convert to a different unit.  Use the unit accessors
+ instead.  This should only be used as a scaling mechanism.  For
+ example, if you have a timeout and you want to sleep for twice the
+ timeout, you would use timeout * 2.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>v</em></td><td>A multiplier to use for scaling this time span.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A new TimeSpan that is scaled by v</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.opOpAssign:3" href="htmlsrc/tango.time.Time.html#L204">opOpAssign</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"*"</span></span>)</span><span class="params">(long <em>v</em>)</span> <a href="tango.time.Time.html#TimeSpan.opOpAssign:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Scales this TimeSpan and assigns the result to this instance.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>v</em></td><td>A multipler to use for scaling</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A copy of this instance after scaling</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.opBinary:4" href="htmlsrc/tango.time.Time.html#L221">opBinary</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"/"</span></span>)</span><span class="params">(long <em>v</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.opBinary:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Divide the TimeSpan by the specified amount.  This should not be
+ used to convert to a different unit.  Use the unit accessors
+ instead.  This should only be used as a scaling mechanism.  For
+ example, if you have a timeout and you want to sleep for half the
+ timeout, you would use timeout / 2.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>v</em></td><td>A divisor to use for scaling this time span.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A new TimeSpan that is divided by v</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.opOpAssign:4" href="htmlsrc/tango.time.Time.html#L232">opOpAssign</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"/"</span></span>)</span><span class="params">(long <em>v</em>)</span> <a href="tango.time.Time.html#TimeSpan.opOpAssign:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Divides this TimeSpan and assigns the result to this instance.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>v</em></td><td>A multipler to use for dividing</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A copy of this instance after dividing</div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="TimeSpan.opBinary:5" href="htmlsrc/tango.time.Time.html#L245">opBinary</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"/"</span></span>)</span><span class="params">(const(TimeSpan) <em>t</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.opBinary:5" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Perform integer division with the given time span.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>t</em></td><td>A divisor used for dividing</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The result of integer division between this instance and
+ t.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.opUnary" href="htmlsrc/tango.time.Time.html#L255">opUnary</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"-"</span></span>)</span><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.opUnary" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Negate a time span</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The negative equivalent to this time span</div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="TimeSpan.nanos" href="htmlsrc/tango.time.Time.html#L268">nanos</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.nanos" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert to nanoseconds</div></div>
+<p class="sec_header">Note:</p><div class="cmnt">this may incur loss of data because nanoseconds cannot
+ represent the range of data a TimeSpan can represent.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of nanoseconds that this TimeSpan represents.</div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="TimeSpan.micros" href="htmlsrc/tango.time.Time.html#L278">micros</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.micros" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert to microseconds</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of microseconds that this TimeSpan represents.</div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="TimeSpan.millis" href="htmlsrc/tango.time.Time.html#L288">millis</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.millis" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert to milliseconds</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of milliseconds that this TimeSpan represents.</div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="TimeSpan.seconds" href="htmlsrc/tango.time.Time.html#L298">seconds</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.seconds" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert to seconds</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of seconds that this TimeSpan represents.</div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="TimeSpan.minutes" href="htmlsrc/tango.time.Time.html#L308">minutes</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.minutes" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert to minutes</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of minutes that this TimeSpan represents.</div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="TimeSpan.hours" href="htmlsrc/tango.time.Time.html#L318">hours</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.hours" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert to hours</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of hours that this TimeSpan represents.</div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="TimeSpan.days" href="htmlsrc/tango.time.Time.html#L328">days</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.days" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert to days</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of days that this TimeSpan represents.</div></dd>
+<dt class="decl"><span class="rettyp">double</span> <a class="symbol _function" name="TimeSpan.interval" href="htmlsrc/tango.time.Time.html#L342">interval</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.interval" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert to a floating point interval representing seconds.</div></div>
+<p class="sec_header">Note:</p><div class="cmnt">This may cause a loss of precision as a double cannot exactly
+ represent some fractional values.</div>
+<p class="sec_header">Returns:</p><div class="cmnt">An interval representing the seconds and fractional
+ seconds that this TimeSpan represents.</div></dd>
+<dt class="decl"><span class="rettyp">TimeOfDay</span> <a class="symbol _function" name="TimeSpan.time" href="htmlsrc/tango.time.Time.html#L352">time</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeSpan.time" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert to TimeOfDay</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the TimeOfDay this TimeSpan represents.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.fromNanos" href="htmlsrc/tango.time.Time.html#L366">fromNanos</a><span class="params">(long <em>value</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Time.html#TimeSpan.fromNanos" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a TimeSpan from the given number of nanoseconds</div></div>
+<p class="sec_header">Note:</p><div class="cmnt">This may cause a loss of data since a TimeSpan's resolution
+ is in 100ns increments.</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The number of nanoseconds.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A TimeSpan representing the given number of nanoseconds.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.fromMicros" href="htmlsrc/tango.time.Time.html#L377">fromMicros</a><span class="params">(long <em>value</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Time.html#TimeSpan.fromMicros" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a TimeSpan from the given number of microseconds</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The number of microseconds.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A TimeSpan representing the given number of microseconds.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.fromMillis" href="htmlsrc/tango.time.Time.html#L388">fromMillis</a><span class="params">(long <em>value</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Time.html#TimeSpan.fromMillis" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a TimeSpan from the given number of milliseconds</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The number of milliseconds.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A TimeSpan representing the given number of milliseconds.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.fromSeconds" href="htmlsrc/tango.time.Time.html#L399">fromSeconds</a><span class="params">(long <em>value</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Time.html#TimeSpan.fromSeconds" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a TimeSpan from the given number of seconds</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The number of seconds.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A TimeSpan representing the given number of seconds.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.fromMinutes" href="htmlsrc/tango.time.Time.html#L410">fromMinutes</a><span class="params">(long <em>value</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Time.html#TimeSpan.fromMinutes" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a TimeSpan from the given number of minutes</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The number of minutes.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A TimeSpan representing the given number of minutes.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.fromHours" href="htmlsrc/tango.time.Time.html#L421">fromHours</a><span class="params">(long <em>value</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Time.html#TimeSpan.fromHours" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a TimeSpan from the given number of hours</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The number of hours.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A TimeSpan representing the given number of hours.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.fromDays" href="htmlsrc/tango.time.Time.html#L432">fromDays</a><span class="params">(long <em>value</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Time.html#TimeSpan.fromDays" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a TimeSpan from the given number of days</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The number of days.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A TimeSpan representing the given number of days.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeSpan.fromInterval" href="htmlsrc/tango.time.Time.html#L445">fromInterval</a><span class="params">(double <em>sec</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Time.html#TimeSpan.fromInterval" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a TimeSpan from the given interval.  The interval
+ represents seconds as a double.  This allows both whole and
+ fractional seconds to be passed in.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The interval to convert in seconds.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A TimeSpan representing the given interval.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Time" href="htmlsrc/tango.time.Time.html#L472">Time</a> <a href="tango.time.Time.html#Time" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Represents a point in time.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Time represents dates and times between 12:00:00 
+        midnight on January 1, 10000 BC and 11:59:59 PM on December 31, 
+        9999 AD.
+<p class="bl"></p>
+        Time values are measured in 100-nanosecond intervals, or ticks. 
+        A date value is the number of ticks that have elapsed since 
+        12:00:00 midnight on January 1, 0001 AD in the Gregorian 
+        calendar.
+        
+        Negative Time values are offsets from that same reference point, 
+        but backwards in history.  Time values are not specific to any 
+        calendar, but for an example, the beginning of December 31, 1 BC 
+        in the Gregorian calendar is Time.epoch - TimeSpan.days(1).</div>
+<dl>
+<dt class="decl">Time <a class="symbol _variable" name="Time.min" href="htmlsrc/tango.time.Time.html#L483">min</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.time.Time.html#Time.min" class="plink">¶</a></dt>
+<dt class="decl">Time <a class="symbol _variable" name="Time.max" href="htmlsrc/tango.time.Time.html#L483">max</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.time.Time.html#Time.max" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Represents the smallest and largest Time value.</div></div></dd>
+<dt class="decl">Time <a class="symbol _variable" name="Time.epoch" href="htmlsrc/tango.time.Time.html#L487">epoch</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.time.Time.html#Time.epoch" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Represents the epoch (1/1/0001)</div></div></dd>
+<dt class="decl">Time <a class="symbol _variable" name="Time.epoch1601" href="htmlsrc/tango.time.Time.html#L490">epoch1601</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.time.Time.html#Time.epoch1601" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Represents the epoch of 1/1/1601 (Commonly used in Windows systems)</div></div></dd>
+<dt class="decl">Time <a class="symbol _variable" name="Time.epoch1970" href="htmlsrc/tango.time.Time.html#L493">epoch1970</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.time.Time.html#Time.epoch1970" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Represents the epoch of 1/1/1970 (Commonly used in Unix systems)</div></div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="Time.ticks" href="htmlsrc/tango.time.Time.html#L512">ticks</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#Time.ticks" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the number of ticks for this Time.
+                This value can be used to construct another Time struct by</div></div>
+<p class="sec_header">writing:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">long</span> <span class="i">ticks</span> = <span class="i">myTime</span>.<span class="i">ticks</span>;
+<span class="i">Time</span> <span class="i">copyOfMyTime</span> = <span class="i">Time</span>(<span class="i">ticks</span>);</pre>
+</td></tr>
+</table></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A long represented by the time of this 
+                         instance.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Time.opEquals" href="htmlsrc/tango.time.Time.html#L526">opEquals</a><span class="params">(const(Time) <em>t</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.Time.html#Time.opEquals" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Determines whether two Time values are equal.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>A Time _value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">true if both instances are equal; otherwise, false</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Time.opCmp" href="htmlsrc/tango.time.Time.html#L537">opCmp</a><span class="params">(const(Time) <em>t</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.Time.html#Time.opCmp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compares two Time values.</div></div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Time.opBinary" href="htmlsrc/tango.time.Time.html#L558">opBinary</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"+"</span></span>)</span><span class="params">(const(TimeSpan) <em>t</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.Time.html#Time.opBinary" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Adds the specified time span to the time, returning a new
+                time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>t</em></td><td>A TimeSpan value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A Time that is the sum of this instance and t.</div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Time.opOpAssign" href="htmlsrc/tango.time.Time.html#L574">opOpAssign</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"+"</span></span>)</span><span class="params">(const(TimeSpan) <em>t</em>)</span> <a href="tango.time.Time.html#Time.opOpAssign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Adds the specified time span to the time, assigning 
+                the result to this instance.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>t</em></td><td>A TimeSpan value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The current Time instance, with t added to the 
+                         time.</div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Time.opBinary:2" href="htmlsrc/tango.time.Time.html#L591">opBinary</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"-"</span></span>)</span><span class="params">(const(TimeSpan) <em>t</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.Time.html#Time.opBinary:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Subtracts the specified time span from the time, 
+                returning a new time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>t</em></td><td>A TimeSpan value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A Time whose value is the value of this instance 
+                         minus the value of t.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="Time.opBinary:3" href="htmlsrc/tango.time.Time.html#L607">opBinary</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"-"</span></span>)</span><span class="params">(const(Time) <em>t</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.Time.html#Time.opBinary:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a time span which represents the difference in time
+                between this and the given Time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>t</em></td><td>A Time value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A TimeSpan which represents the difference between
+                         this and t.</div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Time.opOpAssign:2" href="htmlsrc/tango.time.Time.html#L623">opOpAssign</a><span class="tparams">(immutable(char)[] <em>o</em> : <span class="spec"><span class="sl">"-"</span></span>)</span><span class="params">(const(TimeSpan) <em>t</em>)</span> <a href="tango.time.Time.html#Time.opOpAssign:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Subtracts the specified time span from the time, 
+                assigning the result to this instance.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>t</em></td><td>A TimeSpan value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The current Time instance, with t subtracted 
+                         from the time.</div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Time.date" href="htmlsrc/tango.time.Time.html#L638">date</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#Time.date" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the date component.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A new Time instance with the same date as 
+                         this instance, but with the time truncated.</div></dd>
+<dt class="decl"><span class="rettyp">TimeOfDay</span> <a class="symbol _function" name="Time.time" href="htmlsrc/tango.time.Time.html#L652">time</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#Time.time" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the time of day.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A TimeOfDay representing the fraction of the day 
+                         elapsed since midnight.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="Time.span" href="htmlsrc/tango.time.Time.html#L665">span</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#Time.span" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the equivalent TimeSpan.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A TimeSpan representing this Time.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="Time.unix" href="htmlsrc/tango.time.Time.html#L685">unix</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#Time.unix" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves a TimeSpan that corresponds to Unix
+                time (time since 1/1/1970).  Use the TimeSpan accessors to get
+                the time in seconds, milliseconds, etc.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A TimeSpan representing this Time as Unix time.
+<p class="bl"></p>
+                <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+<a href="#L2_ex4" name="L2_ex4">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">unixTime</span> = <span class="i">Clock</span>.<span class="i">now</span>.<span class="i">unix</span>.<span class="i">seconds</span>;
+<span class="k">auto</span> <span class="i">javaTime</span> = <span class="i">Clock</span>.<span class="i">now</span>.<span class="i">unix</span>.<span class="i">millis</span>;</pre>
+</td></tr>
+</table></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="TimeOfDay" href="htmlsrc/tango.time.Time.html#L715">TimeOfDay</a> <a href="tango.time.Time.html#TimeOfDay" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Represents a time of day. This is different from TimeSpan in that 
+        each component is represented within the limits of everyday time, 
+        rather than from the start of the Epoch. Effectively, the TimeOfDay
+        epoch is the first second of each day.</div></div>
+<div class="cmnt">This is handy for dealing strictly with a 24-hour clock instead of
+        potentially thousands of years. For example:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex5" name="L1_ex5">1</a>
+<a href="#L2_ex5" name="L2_ex5">2</a>
+<a href="#L3_ex5" name="L3_ex5">3</a>
+<a href="#L4_ex5" name="L4_ex5">4</a>
+<a href="#L5_ex5" name="L5_ex5">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">time</span> = <span class="i">Clock</span>.<span class="i">now</span>.<span class="i">time</span>;
+<span class="k">assert</span> (<span class="i">time</span>.<span class="i">millis</span> &lt; <span class="n">1000</span>);
+<span class="k">assert</span> (<span class="i">time</span>.<span class="i">seconds</span> &lt; <span class="n">60</span>);
+<span class="k">assert</span> (<span class="i">time</span>.<span class="i">minutes</span> &lt; <span class="n">60</span>);
+<span class="k">assert</span> (<span class="i">time</span>.<span class="i">hours</span> &lt; <span class="n">24</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        You can create a TimeOfDay from an existing Time or TimeSpan instance
+        via the respective time() method. To convert back to a TimeSpan, use
+        the span() method</div>
+<dl>
+<dt class="decl">uint <a class="symbol _variable" name="TimeOfDay.hours" href="htmlsrc/tango.time.Time.html#L721">hours</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.time.Time.html#TimeOfDay.hours" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">hours component of the time of day.  This should be between 0 and
+ 23, inclusive.</div></div></dd>
+<dt class="decl">uint <a class="symbol _variable" name="TimeOfDay.minutes" href="htmlsrc/tango.time.Time.html#L727">minutes</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.time.Time.html#TimeOfDay.minutes" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">minutes component of the time of day.  This should be between 0 and
+ 59, inclusive.</div></div></dd>
+<dt class="decl">uint <a class="symbol _variable" name="TimeOfDay.seconds" href="htmlsrc/tango.time.Time.html#L733">seconds</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.time.Time.html#TimeOfDay.seconds" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">seconds component of the time of day.  This should be between 0 and
+ 59, inclusive.</div></div></dd>
+<dt class="decl">uint <a class="symbol _variable" name="TimeOfDay.millis" href="htmlsrc/tango.time.Time.html#L739">millis</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.time.Time.html#TimeOfDay.millis" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">milliseconds component of the time of day.  This should be between
+ 0 and 999, inclusive.</div></div></dd>
+<dt class="decl"><span class="rettyp">TimeOfDay</span> <a class="symbol _function" name="TimeOfDay.opCall" href="htmlsrc/tango.time.Time.html#L763">opCall</a><span class="params">(uint <em>hours</em>, uint <em>minutes</em>, uint <em>seconds</em>, uint <em>millis</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Time.html#TimeOfDay.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">constructor.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>hours</em></td><td>number of hours since midnight</td></tr>
+<tr><td><em>minutes</em></td><td>number of minutes into the hour</td></tr>
+<tr><td><em>seconds</em></td><td>number of seconds into the minute</td></tr>
+<tr><td><em>millis</em></td><td>number of milliseconds into the second</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">a TimeOfDay representing the given time fields.</div>
+<p class="sec_header">Note:</p><div class="cmnt">There is no verification of the range of values, or
+ normalization made.  So if you pass in larger values than the
+ maximum value for that field, they will be stored as that value.</div>
+<p class="sec_header">example:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex6" name="L1_ex6">1</a>
+<a href="#L2_ex6" name="L2_ex6">2</a>
+<a href="#L3_ex6" name="L3_ex6">3</a>
+<a href="#L4_ex6" name="L4_ex6">4</a>
+<a href="#L5_ex6" name="L5_ex6">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">tod</span> = <span class="i">TimeOfDay</span>(<span class="n">100</span>, <span class="n">100</span>, <span class="n">100</span>, <span class="n">10000</span>);
+<span class="k">assert</span>(<span class="i">tod</span>.<span class="i">hours</span> == <span class="n">100</span>);
+<span class="k">assert</span>(<span class="i">tod</span>.<span class="i">minutes</span> == <span class="n">100</span>);
+<span class="k">assert</span>(<span class="i">tod</span>.<span class="i">seconds</span> == <span class="n">100</span>);
+<span class="k">assert</span>(<span class="i">tod</span>.<span class="i">millis</span> == <span class="n">10000</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">TimeOfDay</span> <a class="symbol _function" name="TimeOfDay.opCall:2" href="htmlsrc/tango.time.Time.html#L781">opCall</a><span class="params">(long <em>ticks</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Time.html#TimeOfDay.opCall:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">constructor.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>ticks</em></td><td>ticks representing a Time value.  This is normalized 
+ so that it represent a time of day (modulo-24 etc)</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">a TimeOfDay value that corresponds to the time of day of
+ the given number of ticks.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeOfDay.span" href="htmlsrc/tango.time.Time.html#L804">span</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.Time.html#TimeOfDay.span" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">construct a TimeSpan from the current fields</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">a TimeOfDay representing the field values.</div>
+<p class="sec_header">Note:</p><div class="cmnt">that fields are not checked against a valid range, so
+ setting 60 for minutes is allowed, and will just add 1 to the hour
+ component, and set the minute component to 0.  The result is
+ normalized, so the hours wrap.  If you pass in 25 hours, the
+ resulting TimeOfDay will have a hour component of 1.</div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="TimeOfDay.modulo24" href="htmlsrc/tango.time.Time.html#L816">modulo24</a><span class="params">(long <em>ticks</em>)</span> <span class="attrs">[<span class="prot">package</span>, <span class="stc">static</span>]</span> <a href="tango.time.Time.html#TimeOfDay.modulo24" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">internal routine to adjust ticks by one day. Also adjusts for
+ offsets in the BC era</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Date" href="htmlsrc/tango.time.Time.html#L831">Date</a> <a href="tango.time.Time.html#Date" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generic Date representation</div></div>
+<dl>
+<dt class="decl">uint <a class="symbol _variable" name="Date.era" href="htmlsrc/tango.time.Time.html#L833">era</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.time.Time.html#Date.era" class="plink">¶</a></dt>
+<dt class="decl">uint <a class="symbol _variable" name="Date.day" href="htmlsrc/tango.time.Time.html#L833">day</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.time.Time.html#Date.day" class="plink">¶</a></dt>
+<dt class="decl">uint <a class="symbol _variable" name="Date.year" href="htmlsrc/tango.time.Time.html#L833">year</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.time.Time.html#Date.year" class="plink">¶</a></dt>
+<dt class="decl">uint <a class="symbol _variable" name="Date.month" href="htmlsrc/tango.time.Time.html#L833">month</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.time.Time.html#Date.month" class="plink">¶</a></dt>
+<dt class="decl">uint <a class="symbol _variable" name="Date.dow" href="htmlsrc/tango.time.Time.html#L833">dow</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.time.Time.html#Date.dow" class="plink">¶</a></dt>
+<dt class="decl">uint <a class="symbol _variable" name="Date.doy" href="htmlsrc/tango.time.Time.html#L833">doy</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.time.Time.html#Date.doy" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">1 .. 366</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="DateTime" href="htmlsrc/tango.time.Time.html#L848">DateTime</a> <a href="tango.time.Time.html#DateTime" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Combination of a Date and a TimeOfDay</div></div>
+<dl>
+<dt class="decl">Date <a class="symbol _variable" name="DateTime.date" href="htmlsrc/tango.time.Time.html#L850">date</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.time.Time.html#DateTime.date" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">date representation</div></div></dd>
+<dt class="decl">TimeOfDay <a class="symbol _variable" name="DateTime.time" href="htmlsrc/tango.time.Time.html#L851">time</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.time.Time.html#DateTime.time" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">time representation</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2007 Tango. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:19 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

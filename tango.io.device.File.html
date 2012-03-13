@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.device.File</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.device.File">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.device.File"><a href="htmlsrc/tango.io.device.File.html" class="symbol">tango.io.device.File</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Mar 2004: Initial release<br/>
+                        Dec 2006: Outback release<br/>
+                        Nov 2008: relocated and simplified</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Kris,
+                        John Reimer,
+                        Anders F Bjorklund (Darwin patches),
+                        Chris Sauls (Win95 file support)</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="File" href="htmlsrc/tango.io.device.File.html#L134">File</a> : <span class="bclass">Device</span>, <span class="bclass">Device.Seek</span>, <span class="bclass">Device.Truncate</span> <a href="tango.io.device.File.html#File" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Implements a means of reading and writing a generic file. Conduits
+        are the primary means of accessing external data, and File
+        extends the basic pattern by providing file-specific methods to
+        set the file size, seek to a specific file position and so on.</div></div>
+<div class="cmnt">Serial input and output is straightforward. In this example we
+        copy a file directly to the console:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// open a file for reading</span>
+<span class="k">auto</span> <span class="i">from</span> = <span class="k">new</span> <span class="i">File</span> (<span class="sl">"test.txt"</span>);
+
+<span class="lc">// stream directly to console</span>
+<span class="i">Stdout</span>.<span class="i">copy</span> (<span class="i">from</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        And here we copy one file to another:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+<a href="#L3_ex2" name="L3_ex2">3</a>
+<a href="#L4_ex2" name="L4_ex2">4</a>
+<a href="#L5_ex2" name="L5_ex2">5</a>
+<a href="#L6_ex2" name="L6_ex2">6</a>
+<a href="#L7_ex2" name="L7_ex2">7</a>
+<a href="#L8_ex2" name="L8_ex2">8</a>
+<a href="#L9_ex2" name="L9_ex2">9</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// open file for reading</span>
+<span class="k">auto</span> <span class="i">from</span> = <span class="k">new</span> <span class="i">File</span> (<span class="sl">"test.txt"</span>);
+
+<span class="lc">// open another for writing</span>
+<span class="k">auto</span> <span class="i">to</span> = <span class="k">new</span> <span class="i">File</span> (<span class="sl">"copy.txt"</span>, <span class="i">File</span>.<span class="i">WriteCreate</span>);
+
+<span class="lc">// copy file and close</span>
+<span class="i">to</span>.<span class="i">copy</span>.<span class="i">close</span>;
+<span class="i">from</span>.<span class="i">close</span>;</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        You can use InputStream.load() to load a file directly into memory:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+<a href="#L3_ex3" name="L3_ex3">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">file</span> = <span class="k">new</span> <span class="i">File</span> (<span class="sl">"test.txt"</span>);
+<span class="k">auto</span> <span class="i">content</span> = <span class="i">file</span>.<span class="i">load</span>;
+<span class="i">file</span>.<span class="i">close</span>;</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Or use a convenience static function within File:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">content</span> = <span class="i">File</span>.<span class="i">get</span> (<span class="sl">"test.txt"</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        A more explicit version with a similar result would be:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex5" name="L1_ex5">1</a>
+<a href="#L2_ex5" name="L2_ex5">2</a>
+<a href="#L3_ex5" name="L3_ex5">3</a>
+<a href="#L4_ex5" name="L4_ex5">4</a>
+<a href="#L5_ex5" name="L5_ex5">5</a>
+<a href="#L6_ex5" name="L6_ex5">6</a>
+<a href="#L7_ex5" name="L7_ex5">7</a>
+<a href="#L8_ex5" name="L8_ex5">8</a>
+<a href="#L9_ex5" name="L9_ex5">9</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// open file for reading</span>
+<span class="k">auto</span> <span class="i">file</span> = <span class="k">new</span> <span class="i">File</span> (<span class="sl">"test.txt"</span>);
+
+<span class="lc">// create an array to house the entire file</span>
+<span class="k">auto</span> <span class="i">content</span> = <span class="k">new</span> <span class="k">char</span> [<span class="i">file</span>.<span class="i">length</span>];
+
+<span class="lc">// read the file content. Return value is the number of bytes read</span>
+<span class="k">auto</span> <span class="i">bytes</span> = <span class="i">file</span>.<span class="i">read</span> (<span class="i">content</span>);
+<span class="i">file</span>.<span class="i">close</span>;</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Conversely, one may write directly to a File like so:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex6" name="L1_ex6">1</a>
+<a href="#L2_ex6" name="L2_ex6">2</a>
+<a href="#L3_ex6" name="L3_ex6">3</a>
+<a href="#L4_ex6" name="L4_ex6">4</a>
+<a href="#L5_ex6" name="L5_ex6">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// open file for writing</span>
+<span class="k">auto</span> <span class="i">to</span> = <span class="k">new</span> <span class="i">File</span> (<span class="sl">"text.txt"</span>, <span class="i">File</span>.<span class="i">WriteCreate</span>);
+
+<span class="lc">// write an array of content to it</span>
+<span class="k">auto</span> <span class="i">bytes</span> = <span class="i">to</span>.<span class="i">write</span> (<span class="i">content</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        There are equivalent static functions, File.set() and
+        File.append(), which set or append file content respectively.
+<p class="bl"></p>
+        File can happily handle random I/O. Here we use seek() to
+        relocate the file pointer:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex7" name="L1_ex7">1</a>
+<a href="#L2_ex7" name="L2_ex7">2</a>
+<a href="#L3_ex7" name="L3_ex7">3</a>
+<a href="#L4_ex7" name="L4_ex7">4</a>
+<a href="#L5_ex7" name="L5_ex7">5</a>
+<a href="#L6_ex7" name="L6_ex7">6</a>
+<a href="#L7_ex7" name="L7_ex7">7</a>
+<a href="#L8_ex7" name="L8_ex7">8</a>
+<a href="#L9_ex7" name="L9_ex7">9</a>
+<a href="#L10_ex7" name="L10_ex7">10</a>
+<a href="#L11_ex7" name="L11_ex7">11</a>
+<a href="#L12_ex7" name="L12_ex7">12</a>
+<a href="#L13_ex7" name="L13_ex7">13</a>
+<a href="#L14_ex7" name="L14_ex7">14</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// open a file for reading and writing</span>
+<span class="k">auto</span> <span class="i">file</span> = <span class="k">new</span> <span class="i">File</span> (<span class="sl">"random.bin"</span>, <span class="i">File</span>.<span class="i">ReadWriteCreate</span>);
+
+<span class="lc">// write some data</span>
+<span class="i">file</span>.<span class="i">write</span> (<span class="sl">"testing"</span>);
+
+<span class="lc">// rewind to file start</span>
+<span class="i">file</span>.<span class="i">seek</span> (<span class="n">0</span>);
+
+<span class="lc">// read data back again</span>
+<span class="k">char</span>[<span class="n">10</span>] <span class="i">tmp</span>;
+<span class="k">auto</span> <span class="i">bytes</span> = <span class="i">file</span>.<span class="i">read</span> (<span class="i">tmp</span>);
+
+<span class="i">file</span>.<span class="i">close</span>;</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Note that File is unbuffered by default - wrap an instance within
+        tango.io.stream.Buffered for buffered I/O.
+<p class="bl"></p>
+        Compile with -version=Win32SansUnicode to enable Win95 &amp; Win32s file
+        support.</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="File.Style" href="htmlsrc/tango.io.device.File.html#L145">Style</a> <a href="tango.io.device.File.html#File.Style" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Fits into 32 bits ...</div></div>
+<dl>
+<dt class="decl">Access <a class="symbol _variable" name="File.Style.access" href="htmlsrc/tango.io.device.File.html#L147">access</a> <a href="tango.io.device.File.html#File.Style.access" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Access rights.</div></div></dd>
+<dt class="decl">Open <a class="symbol _variable" name="File.Style.open" href="htmlsrc/tango.io.device.File.html#L148">open</a> <a href="tango.io.device.File.html#File.Style.open" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">How to open.</div></div></dd>
+<dt class="decl">Share <a class="symbol _variable" name="File.Style.share" href="htmlsrc/tango.io.device.File.html#L149">share</a> <a href="tango.io.device.File.html#File.Style.share" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">How to share.</div></div></dd>
+<dt class="decl">Cache <a class="symbol _variable" name="File.Style.cache" href="htmlsrc/tango.io.device.File.html#L150">cache</a> <a href="tango.io.device.File.html#File.Style.cache" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">How to cache.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="File.Access" href="htmlsrc/tango.io.device.File.html#L157">Access</a> : ubyte <a href="tango.io.device.File.html#File.Access" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="File.Access.Read" href="htmlsrc/tango.io.device.File.html#L158">Read</a> <a href="tango.io.device.File.html#File.Access.Read" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is readable.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="File.Access.Write" href="htmlsrc/tango.io.device.File.html#L159">Write</a> <a href="tango.io.device.File.html#File.Access.Write" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is writable.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="File.Access.ReadWrite" href="htmlsrc/tango.io.device.File.html#L160">ReadWrite</a> <a href="tango.io.device.File.html#File.Access.ReadWrite" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Both.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="File.Open" href="htmlsrc/tango.io.device.File.html#L167">Open</a> : ubyte <a href="tango.io.device.File.html#File.Open" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="File.Open.Exists" href="htmlsrc/tango.io.device.File.html#L168">Exists</a> <a href="tango.io.device.File.html#File.Open.Exists" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Must exist.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="File.Open.Create" href="htmlsrc/tango.io.device.File.html#L169">Create</a> <a href="tango.io.device.File.html#File.Open.Create" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create or truncate.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="File.Open.Sedate" href="htmlsrc/tango.io.device.File.html#L170">Sedate</a> <a href="tango.io.device.File.html#File.Open.Sedate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create if necessary.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="File.Open.Append" href="htmlsrc/tango.io.device.File.html#L171">Append</a> <a href="tango.io.device.File.html#File.Open.Append" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create if necessary.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="File.Open.New" href="htmlsrc/tango.io.device.File.html#L172">New</a> <a href="tango.io.device.File.html#File.Open.New" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Can't exist.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="File.Share" href="htmlsrc/tango.io.device.File.html#L179">Share</a> : ubyte <a href="tango.io.device.File.html#File.Share" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="File.Share.None" href="htmlsrc/tango.io.device.File.html#L180">None</a> <a href="tango.io.device.File.html#File.Share.None" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">No sharing.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="File.Share.Read" href="htmlsrc/tango.io.device.File.html#L181">Read</a> <a href="tango.io.device.File.html#File.Share.Read" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Shared reading.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="File.Share.ReadWrite" href="htmlsrc/tango.io.device.File.html#L182">ReadWrite</a> <a href="tango.io.device.File.html#File.Share.ReadWrite" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Open for anything.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="File.Cache" href="htmlsrc/tango.io.device.File.html#L189">Cache</a> : ubyte <a href="tango.io.device.File.html#File.Cache" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="File.Cache.None" href="htmlsrc/tango.io.device.File.html#L190">None</a> <a href="tango.io.device.File.html#File.Cache.None" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Don't optimize.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="File.Cache.Random" href="htmlsrc/tango.io.device.File.html#L191">Random</a> <a href="tango.io.device.File.html#File.Cache.Random" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Optimize for random.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="File.Cache.Stream" href="htmlsrc/tango.io.device.File.html#L192">Stream</a> <a href="tango.io.device.File.html#File.Cache.Stream" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Optimize for stream.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="File.Cache.WriteThru" href="htmlsrc/tango.io.device.File.html#L193">WriteThru</a> <a href="tango.io.device.File.html#File.Cache.WriteThru" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Backing-cache flag.</div></div></dd></dl></dd>
+<dt class="decl">Style <a class="symbol _variable" name="File.ReadExisting" href="htmlsrc/tango.io.device.File.html#L202">ReadExisting</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.device.File.html#File.ReadExisting" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read an existing file.</div></div></dd>
+<dt class="decl">Style <a class="symbol _variable" name="File.ReadShared" href="htmlsrc/tango.io.device.File.html#L210">ReadShared</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.device.File.html#File.ReadShared" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read an existing file.</div></div></dd>
+<dt class="decl">Style <a class="symbol _variable" name="File.WriteExisting" href="htmlsrc/tango.io.device.File.html#L218">WriteExisting</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.device.File.html#File.WriteExisting" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write on an existing file. Do not create.</div></div></dd>
+<dt class="decl">Style <a class="symbol _variable" name="File.WriteCreate" href="htmlsrc/tango.io.device.File.html#L226">WriteCreate</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.device.File.html#File.WriteCreate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write on a clean file. Create if necessary.</div></div></dd>
+<dt class="decl">Style <a class="symbol _variable" name="File.WriteAppending" href="htmlsrc/tango.io.device.File.html#L234">WriteAppending</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.device.File.html#File.WriteAppending" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write at the end of the file.</div></div></dd>
+<dt class="decl">Style <a class="symbol _variable" name="File.ReadWriteExisting" href="htmlsrc/tango.io.device.File.html#L242">ReadWriteExisting</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.device.File.html#File.ReadWriteExisting" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read and write an existing file.</div></div></dd>
+<dt class="decl">Style <a class="symbol _variable" name="File.ReadWriteCreate" href="htmlsrc/tango.io.device.File.html#L250">ReadWriteCreate</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.device.File.html#File.ReadWriteCreate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read &amp; write on a clean file. Create if necessary.</div></div></dd>
+<dt class="decl">Style <a class="symbol _variable" name="File.ReadWriteOpen" href="htmlsrc/tango.io.device.File.html#L258">ReadWriteOpen</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.device.File.html#File.ReadWriteOpen" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read and Write. Use existing file if present.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="File.this" href="htmlsrc/tango.io.device.File.html#L276">this</a><span class="params">()</span> <a href="tango.io.device.File.html#File.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a File for use with open().</div></div>
+<div class="cmnt">Note that File is unbuffered by default - wrap an instance
+                within tango.io.stream.Buffered for buffered I/O.</div></dd>
+<dt class="decl"><a class="symbol _ctor" name="File.this:2" href="htmlsrc/tango.io.device.File.html#L289">this</a><span class="params">(const(char[]) <em>path</em>, Style <em>style</em> = <span class="defval"><span class="i">ReadExisting</span></span>)</span> <a href="tango.io.device.File.html#File.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a File with the provided path and style.</div></div>
+<div class="cmnt">Note that File is unbuffered by default - wrap an instance
+                within tango.io.stream.Buffered for buffered I/O.</div></dd>
+<dt class="decl"><span class="rettyp">Style</span> <a class="symbol _function" name="File.style" href="htmlsrc/tango.io.device.File.html#L300">style</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.io.device.File.html#File.style" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the Style used for this file.</div></div></dd>
+<dt class="decl"><span class="rettyp">immutable(char)[]</span> <a class="symbol _function" name="File.toString" href="htmlsrc/tango.io.device.File.html#L311">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.File.html#File.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the path used by this file.</div></div></dd>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="File.get" href="htmlsrc/tango.io.device.File.html#L330">get</a><span class="params">(const(char)[] <em>path</em>, void[] <em>dst</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.device.File.html#File.get" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convenience function to return the content of a file.
+                Returns a slice of the provided output buffer, where
+                that has sufficient capacity, and allocates from the
+                heap where the file content is larger.</div></div>
+<div class="cmnt">Content size is determined via the file-system, per
+                File.length, although that may be misleading for some
+nix systems. An alternative is to use File.load which
+                loads content until an Eof is encountered.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.set" href="htmlsrc/tango.io.device.File.html#L359">set</a><span class="params">(const(char)[] <em>path</em>, const(void)[] <em>content</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.device.File.html#File.set" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convenience function to set file content and length to
+                reflect the given array.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.append" href="htmlsrc/tango.io.device.File.html#L371">append</a><span class="params">(const(char)[] <em>path</em>, const(void)[] <em>content</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.device.File.html#File.append" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convenience function to append content to a file.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="File.open" href="htmlsrc/tango.io.device.File.html#L394">open</a><span class="params">(const(char)[] <em>path</em>, Style <em>style</em>, DWORD <em>addattr</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.io.device.File.html#File.open" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Low level open for sub-classes that need to apply specific
+                    attributes.</div></div>
+<p class="sec_header">Return:</p><div class="cmnt">False in case of failure.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.open:2" href="htmlsrc/tango.io.device.File.html#L497">open</a><span class="params">(const(char[]) <em>path</em>, Style <em>style</em> = <span class="defval"><span class="i">ReadExisting</span></span>)</span> <a href="tango.io.device.File.html#File.open:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Open a file with the provided style.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.truncate" href="htmlsrc/tango.io.device.File.html#L511">truncate</a><span class="params">()</span> <a href="tango.io.device.File.html#File.truncate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the file size to be that of the current seek
+                        position. The file must be writable for this to
+                        succeed.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.truncate:2" href="htmlsrc/tango.io.device.File.html#L523">truncate</a><span class="params">(long <em>size</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.File.html#File.truncate:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the file size to be the specified length. The
+                        file must be writable for this to succeed.</div></div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="File.seek" href="htmlsrc/tango.io.device.File.html#L540">seek</a><span class="params">(long <em>offset</em>, Anchor <em>anchor</em> = <span class="defval"><span class="i">Begin</span></span>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.File.html#File.seek" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the file seek position to the specified offset
+                        from the given anchor.</div></div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="File.position" href="htmlsrc/tango.io.device.File.html#L565">position</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.device.File.html#File.position" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the current file position.</div></div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="File.length" href="htmlsrc/tango.io.device.File.html#L576">length</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.device.File.html#File.length" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the total length of this file.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.sync" href="htmlsrc/tango.io.device.File.html#L598">sync</a><span class="params">()</span> <a href="tango.io.device.File.html#File.sync" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Instructs the OS to flush it's internal buffers to
+                        the disk device.</div></div>
+<p class="sec_header">NOTE:</p><div class="cmnt">Due to OS and hardware design, data flushed
+                        cannot be guaranteed to be actually on disk-platters.
+                        Actual durability of data depends on write-caches,
+                        barriers, presence of battery-backup, filesystem and
+                        OS-support.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

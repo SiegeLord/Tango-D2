@@ -1,0 +1,379 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.math.IEEE</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.math.IEEE">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.math.IEEE"><a href="htmlsrc/tango.math.IEEE.html" class="symbol">tango.math.IEEE</a></h1>
+
+<div class="summary"><div class="cmnt">Low-level Mathematical Functions which take advantage of the IEEE754 ABI.</div></div>
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a>, Digital Mars.</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Don Clugston, Walter Bright, Sean Kelly</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="IeeeFlags" href="htmlsrc/tango.math.IEEE.html#L268">IeeeFlags</a><span class="tparams">(<em>T</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#IeeeFlags" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">IEEE exception status flags</div></div>
+<div class="cmnt">These flags indicate that an exceptional floating-point condition has occured.
+ They indicate that a NaN or an infinity has been generated, that a result
+ is inexact, or that a signalling NaN has been encountered.
+ The return values of the properties should be treated as booleans, although
+ each is returned as an int, for speed.</div>
+<p class="sec_header">Example:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+<a href="#L12_ex1" name="L12_ex1">12</a>
+<a href="#L13_ex1" name="L13_ex1">13</a>
+<a href="#L14_ex1" name="L14_ex1">14</a>
+<a href="#L15_ex1" name="L15_ex1">15</a>
+<a href="#L16_ex1" name="L16_ex1">16</a>
+<a href="#L17_ex1" name="L17_ex1">17</a>
+<a href="#L18_ex1" name="L18_ex1">18</a>
+<a href="#L19_ex1" name="L19_ex1">19</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">real</span> <span class="i">a</span>=<span class="n">3.5</span>;
+<span class="lc">// Set all the flags to zero</span>
+<span class="i">resetIeeeFlags</span>();
+<span class="k">assert</span>(!<span class="i">ieeeFlags</span>.<span class="i">divByZero</span>);
+<span class="lc">// Perform a division by zero.</span>
+<span class="i">a</span>/=<span class="n">0.0L</span>;
+<span class="k">assert</span>(<span class="i">a</span>==<span class="k">real</span>.<span class="i">infinity</span>);
+<span class="k">assert</span>(<span class="i">ieeeFlags</span>.<span class="i">divByZero</span>);
+<span class="lc">// Create a NaN</span>
+<span class="i">a</span>*=<span class="n">0.0L</span>;
+<span class="k">assert</span>(<span class="i">ieeeFlags</span>.<span class="i">invalid</span>);
+<span class="k">assert</span>(<span class="i">isNaN</span>(<span class="i">a</span>));
+
+<span class="lc">// Check that calling func() has no effect on the</span>
+<span class="lc">// status flags.</span>
+<span class="i">IeeeFlags</span> <span class="i">f</span> = <span class="i">ieeeFlags</span>;
+<span class="i">func</span>();
+<span class="k">assert</span>(<span class="i">ieeeFlags</span> == <span class="i">f</span>);
+</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="IeeeFlags.inexact" href="htmlsrc/tango.math.IEEE.html#L364">inexact</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.math.IEEE.html#IeeeFlags.inexact" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The result cannot be represented exactly, so rounding occured.
+ (example: x = sin(0.1); }</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="IeeeFlags.underflow" href="htmlsrc/tango.math.IEEE.html#L366">underflow</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.math.IEEE.html#IeeeFlags.underflow" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A zero was generated by underflow (example: x = real.min*real.epsilon/2;)</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="IeeeFlags.overflow" href="htmlsrc/tango.math.IEEE.html#L368">overflow</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.math.IEEE.html#IeeeFlags.overflow" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">An infinity was generated by overflow (example: x = real.max*2;)</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="IeeeFlags.divByZero" href="htmlsrc/tango.math.IEEE.html#L370">divByZero</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.math.IEEE.html#IeeeFlags.divByZero" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">An infinity was generated by division by zero (example: x = 3/0.0; )</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="IeeeFlags.invalid" href="htmlsrc/tango.math.IEEE.html#L372">invalid</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.math.IEEE.html#IeeeFlags.invalid" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A machine NaN was generated. (example: x = real.infinity * 0.0; )</div></div></dd></dl></dd>
+<dt class="decl"><span class="rettyp">IeeeFlags</span> <a class="symbol _function" name="ieeeFlags" href="htmlsrc/tango.math.IEEE.html#L376">ieeeFlags</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.math.IEEE.html#ieeeFlags" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a snapshot of the current state of the floating-point status flags.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="resetIeeeFlags" href="htmlsrc/tango.math.IEEE.html#L379">resetIeeeFlags</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#resetIeeeFlags" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set all of the floating-point status flags to false.</div></div></dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="RoundingMode" href="htmlsrc/tango.math.IEEE.html#L384">RoundingMode</a> : short <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#RoundingMode" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">IEEE rounding modes.
+ The default mode is ROUNDTONEAREST.</div></div>
+</dd>
+<dt class="decl"><span class="rettyp">RoundingMode</span> <a class="symbol _function" name="setIeeeRounding" href="htmlsrc/tango.math.IEEE.html#L402">setIeeeRounding</a><span class="params">(RoundingMode <em>roundingmode</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#setIeeeRounding" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Change the rounding mode used for all floating-point operations.</div></div>
+<div class="cmnt">Returns the old rounding mode.
+<p class="bl"></p>
+ When changing the rounding mode, it is almost always necessary to restore it
+ at the end of the function. Typical usage:
+<table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">oldrounding</span> = <span class="i">setIeeeRounding</span>(<span class="i">RoundingMode</span>.<span class="i">ROUNDDOWN</span>);
+<span class="k">scope</span> (<span class="i">exit</span>) <span class="i">setIeeeRounding</span>(<span class="i">oldrounding</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">RoundingMode</span> <a class="symbol _function" name="getIeeeRounding" href="htmlsrc/tango.math.IEEE.html#L424">getIeeeRounding</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#getIeeeRounding" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the IEEE rounding mode which is in use.</div></div></dd>
+<dt class="decl"><span class="rettyp">PrecisionControl</span> <a class="symbol _function" name="reduceRealPrecision" href="htmlsrc/tango.math.IEEE.html#L476">reduceRealPrecision</a><span class="params">(PrecisionControl <em>prec</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#reduceRealPrecision" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the number of bits of precision used by 'real'.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the old precision.
+ This is not supported on all platforms.</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="frexp" href="htmlsrc/tango.math.IEEE.html#L512">frexp</a><span class="params">(real <em>value</em>,  <span class="k">out</span> int <em>exp</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#frexp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Separate floating point value into significand and exponent.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Calculate and return <i>x</i> and <i>exp</i> such that
+      value =<i>x</i>*2<sup>exp</sup> and
+      .5 &lt;= |<i>x</i>| &lt; 1.0
+      
+      <i>x</i> has same sign as value.
+<p class="bl"></p>
+      <table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>value</th>           <th>returns</th>         <th>exp</th></tr>
+      <tr><td>&plusmn;0.0</td>    <td>&plusmn;0.0</td>    <td>0</td></tr>
+      <tr><td>+&infin;</td>       <td>+&infin;</td>       <td>int.max</td></tr>
+      <tr><td>-&infin;</td>       <td>-&infin;</td>       <td>int.min</td></tr>
+      <tr><td>&plusmn;<span class="red">NAN</span></td> <td>&plusmn;<span class="red">NAN</span></td> <td>int.min</td></tr>
+      </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="ldexp" href="htmlsrc/tango.math.IEEE.html#L670">ldexp</a><span class="params">(real <em>n</em>, int <em>exp</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#ldexp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compute n * 2<sup>exp</sup></div></div>
+<p class="sec_header">References:</p><div class="cmnt">frexp</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="ilogb" href="htmlsrc/tango.math.IEEE.html#L705">ilogb</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#ilogb" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Extracts the exponent of x as a signed integral value.</div></div>
+<div class="cmnt">If x is not a special value, the result is the same as
+ <span class="inlcode">cast(int)logb(x)</span>.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">This function is consistent with IEEE754R, but it
+ differs from the C function of the same name
+ in the return value of infinity. (in C, ilogb(real.infinity)== int.max).
+ Note that the special return values may all be equal.
+<p class="bl"></p>
+      <table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>x</th>                <th>ilogb(x)</th>     <th>Invalid?</th></tr>
+      <tr><td>0</td>                 <td>FP_ILOGB0</td>   <td>yes</td></tr>
+      <tr><td>&plusmn;&infin;</td> <td>FP_ILOGBINFINITY</td> <td>yes</td></tr>
+      <tr><td><span class="red">NAN</span></td>            <td>FP_ILOGBNAN</td> <td>yes</td></tr>
+      </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="logb" href="htmlsrc/tango.math.IEEE.html#L785">logb</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#logb" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Extracts the exponent of x as a signed integral value.</div></div>
+<div class="cmnt">If x is subnormal, it is treated as if it were normalized.
+ For a positive, finite x:
+<p class="bl"></p>
+ 1 &lt;= <i>x</i> * FLT_RADIX<sup>-logb(x)</sup> &lt; FLT_RADIX
+<p class="bl"></p>
+      <table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>x</th>                 <th>logb(x)</th>   <th>divide by 0?</th> </tr>
+      <tr><td>&plusmn;&infin;</td> <td>+&infin;</td> <td>no</td></tr>
+      <tr><td>&plusmn;0.0</td>      <td>-&infin;</td> <td>yes</td> </tr>
+      </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="scalbn" href="htmlsrc/tango.math.IEEE.html#L822">scalbn</a><span class="params">(real <em>x</em>, int <em>n</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#scalbn" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Efficiently calculates x * 2<sup>n</sup>.</div></div>
+<div class="cmnt">scalbn handles underflow and overflow in
+ the same fashion as the basic arithmetic operators.
+<p class="bl"></p>
+  <table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>x</th>                 <th>scalb(x)</th></tr>
+      <tr><td>&plusmn;&infin;</td>      <td>&plusmn;&infin;</td> </tr>
+      <tr><td>&plusmn;0.0</td>      <td>&plusmn;0.0</td> </tr>
+  </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="fdim" href="htmlsrc/tango.math.IEEE.html#L856">fdim</a><span class="params">(real <em>x</em>, real <em>y</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#fdim" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the positive difference between x and y.</div></div>
+<div class="cmnt">If either of x or y is <span class="red">NAN</span>, it will be returned.</div>
+<p class="sec_header">Returns:</p><div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+  <tr><th>Arguments</th> <th>fdim(x, y)</th></tr>
+  <tr><td>x &gt; y</td> <td>x - y</td></tr>
+  <tr><td>x &lt;= y</td> <td>+0.0</td></tr>
+ </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="fabs" href="htmlsrc/tango.math.IEEE.html#L876">fabs</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#fabs" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns |x|</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>x</th>                 <th>fabs(x)</th></tr>
+      <tr><td>&plusmn;0.0</td>      <td>+0.0</td> </tr>
+      <tr><td>&plusmn;&infin;</td> <td>+&infin;</td> </tr>
+      </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="fma" href="htmlsrc/tango.math.IEEE.html#L901">fma</a><span class="params">(float <em>x</em>, float <em>y</em>, float <em>z</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#fma" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns (x * y) + z, rounding only once according to the
+ current rounding mode.</div></div>
+<p class="sec_header"><span class="red">Bugs:</span></p><div class="cmnt">Not currently implemented - rounds twice.</div></dd>
+<dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="expi" href="htmlsrc/tango.math.IEEE.html#L913">expi</a><span class="params">(real <em>y</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#expi" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculate cos(y) + i sin(y).</div></div>
+<div class="cmnt">On x86 CPUs, this is a very efficient operation;
+ almost twice as fast as calculating sin(y) and cos(y)
+ seperately, and is the preferred method when both are required.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="isNaN" href="htmlsrc/tango.math.IEEE.html#L941">isNaN</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#isNaN" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns !=0 if e is a NaN.</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="isNormal" href="htmlsrc/tango.math.IEEE.html#L981">isNormal</a><span class="tparams">(<em>X</em>)</span><span class="params">(X <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#isNormal" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns !=0 if x is normalized.</div></div>
+<div class="cmnt">(Need one for each format because subnormal
+  floats might be converted to normal reals)</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isIdentical" href="htmlsrc/tango.math.IEEE.html#L1022">isIdentical</a><span class="params">(real <em>x</em>, real <em>y</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#isIdentical" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isIdentical:2" href="htmlsrc/tango.math.IEEE.html#L1040">isIdentical</a><span class="params">(ireal <em>x</em>, ireal <em>y</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#isIdentical:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isIdentical:3" href="htmlsrc/tango.math.IEEE.html#L1045">isIdentical</a><span class="params">(creal <em>x</em>, creal <em>y</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#isIdentical:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is the binary representation of x identical to y?</div></div>
+<div class="cmnt">Same as ==, except that positive and negative zero are not identical,
+ and two <span class="red">NAN</span>s are identical if they have the same 'payload'.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="isSubnormal" href="htmlsrc/tango.math.IEEE.html#L1073">isSubnormal</a><span class="params">(float <em>f</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#isSubnormal" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="isSubnormal:2" href="htmlsrc/tango.math.IEEE.html#L1091">isSubnormal</a><span class="params">(double <em>d</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#isSubnormal:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="isSubnormal:3" href="htmlsrc/tango.math.IEEE.html#L1109">isSubnormal</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#isSubnormal:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is number subnormal? (Also called "denormal".)
+ Subnormals have a 0 exponent and a 0 most significant significand bit,
+ but are non-zero.</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="isZero" href="htmlsrc/tango.math.IEEE.html#L1143">isZero</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#isZero" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return !=0 if x is &plusmn;0.</div></div>
+<div class="cmnt">Does not affect any floating-point flags</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="isInfinity" href="htmlsrc/tango.math.IEEE.html#L1172">isInfinity</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#isInfinity" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return !=0 if e is &plusmn;&infin;;.</div></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="nextUp" href="htmlsrc/tango.math.IEEE.html#L1224">nextUp</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#nextUp" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">double</span> <a class="symbol _function" name="nextDoubleUp" href="htmlsrc/tango.math.IEEE.html#L1294">nextDoubleUp</a><span class="params">(double <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#nextDoubleUp" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">float</span> <a class="symbol _function" name="nextFloatUp" href="htmlsrc/tango.math.IEEE.html#L1316">nextFloatUp</a><span class="params">(float <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#nextFloatUp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculate the next largest floating point value after x.</div></div>
+<div class="cmnt">Return the least number greater than x that is representable as a real;
+ thus, it gives the next point on the IEEE number line.
+<p class="bl"></p>
+  <table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+    <tr><th>x</th> <th>nextUp(x)   </th></tr>
+    <tr><td>-&infin;</td> <td>-real.max   </td></tr>
+    <tr><td>&plusmn;0.0</td> <td>real.min*real.epsilon </td></tr>
+    <tr><td>real.max</td> <td>&infin; </td></tr>
+    <tr><td>&infin;</td> <td>&infin; </td></tr>
+    <tr><td><span class="red">NAN</span></td> <td><span class="red">NAN</span>   </td></tr>
+ </table></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">This function is included in the IEEE 754-2008 standard.
+ 
+ nextDoubleUp and nextFloatUp are the corresponding functions for
+ the IEEE double and IEEE float number lines.</div></dd>
+<dt class="decl"><span class="rettyp">X</span> <a class="symbol _function" name="splitSignificand" href="htmlsrc/tango.math.IEEE.html#L1401">splitSignificand</a><span class="tparams">(<em>X</em>)</span><span class="params">(<span class="k">ref</span> X <em>x</em>)</span> <span class="attrs">[<span class="prot">package</span>]</span> <a href="tango.math.IEEE.html#splitSignificand" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reduces the magnitude of x, so the bits in the lower half of its significand
+ are all zero. Returns the amount which needs to be added to x to restore its
+ initial value; this amount will also have zeros in all bits in the lower half
+ of its significand.</div></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="nextDown" href="htmlsrc/tango.math.IEEE.html#L1456">nextDown</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#nextDown" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">double</span> <a class="symbol _function" name="nextDoubleDown" href="htmlsrc/tango.math.IEEE.html#L1462">nextDoubleDown</a><span class="params">(double <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#nextDoubleDown" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">float</span> <a class="symbol _function" name="nextFloatDown" href="htmlsrc/tango.math.IEEE.html#L1468">nextFloatDown</a><span class="params">(float <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#nextFloatDown" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculate the next smallest floating point value before x.</div></div>
+<div class="cmnt">Return the greatest number less than x that is representable as a real;
+ thus, it gives the previous point on the IEEE number line.
+<p class="bl"></p>
+  <table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+    <tr><th>x</th> <th>nextDown(x)   </th></tr>
+    <tr><td>&infin;</td> <td>real.max  </td></tr>
+    <tr><td>&plusmn;0.0</td> <td>-real.min*real.epsilon </td></tr>
+    <tr><td>-real.max</td> <td>-&infin; </td></tr>
+    <tr><td>-&infin;</td> <td>-&infin; </td></tr>
+    <tr><td><span class="red">NAN</span></td> <td><span class="red">NAN</span>    </td></tr>
+ </table></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">This function is included in the IEEE 754-2008 standard.
+ 
+ nextDoubleDown and nextFloatDown are the corresponding functions for
+ the IEEE double and IEEE float number lines.</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="nextafter" href="htmlsrc/tango.math.IEEE.html#L1496">nextafter</a><span class="params">(real <em>x</em>, real <em>y</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#nextafter" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the next representable value after x in the direction of y.</div></div>
+<div class="cmnt">If y &gt; x, the result will be the next largest floating-point value;
+ if y &lt; x, the result will be the next smallest value.
+ If x == y, the result is y.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">This function is not generally very useful; it's almost always better to use
+ the faster functions nextUp() or nextDown() instead.
+<p class="bl"></p>
+ IEEE 754 requirements not implemented:
+ The FE_INEXACT and FE_OVERFLOW exceptions will be raised if x is finite and
+ the function result is infinite. The FE_INEXACT and FE_UNDERFLOW
+ exceptions will be raised if the function value is subnormal, and x is
+ not equal to y.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="feqrel" href="htmlsrc/tango.math.IEEE.html#L1520">feqrel</a><span class="tparams">(<em>X</em>)</span><span class="params">(X <em>x</em>, X <em>y</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#feqrel" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">To what precision is x equal to y?</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the number of significand bits which are equal in x and y.
+ eg, 0x1.F8p+60 and 0x1.F1p+60 are equal to 5 bits of precision.
+<p class="bl"></p>
+  <table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+    <tr><th>x</th> <th>y</th> <th>feqrel(x, y)  </th></tr>
+    <tr><td>x</td> <td>x</td> <td>typeof(x).mant_dig </td></tr>
+    <tr><td>x</td> <td>&gt;= 2*x</td> <td>0 </td></tr>
+    <tr><td>x</td> <td>&lt;= x/2</td> <td>0 </td></tr>
+    <tr><td><span class="red">NAN</span></td> <td>any</td> <td>0 </td></tr>
+    <tr><td>any</td> <td><span class="red">NAN</span></td> <td>0 </td></tr>
+  </table></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">This is a very fast operation, suitable for use in speed-critical code.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="signbit" href="htmlsrc/tango.math.IEEE.html#L1645">signbit</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#signbit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return 1 if sign bit of e is set, 0 if not.</div></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="copysign" href="htmlsrc/tango.math.IEEE.html#L1667">copysign</a><span class="params">(real <em>to</em>, real <em>from</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#copysign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a value composed of to with from's sign bit.</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="ieeeMean" href="htmlsrc/tango.math.IEEE.html#L1715">ieeeMean</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>x</em>, T <em>y</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#ieeeMean" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the value that lies halfway between x and y on the IEEE number line.</div></div>
+<div class="cmnt">Formally, the result is the arithmetic mean of the binary significands of x
+ and y, multiplied by the geometric mean of the binary exponents of x and y.
+ x and y must have the same sign, and must not be NaN.</div>
+<p class="sec_header">Note:</p><div class="cmnt">this function is useful for ensuring O(log n) behaviour in algorithms
+ involving a 'binary chop'.
+<p class="bl"></p>
+ Special cases:
+ If x and y are within a factor of 2, (ie, feqrel(x, y) &gt; 0), the return value
+ is the arithmetic mean (x + y) / 2.
+ If x and y are even powers of 2, the return value is the geometric mean,
+   ieeeMean(x, y) = sqrt(x * y).</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="NaN" href="htmlsrc/tango.math.IEEE.html#L1829">NaN</a><span class="params">(ulong <em>payload</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#NaN" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a <span class="red">NAN</span>, storing an integer inside the payload.</div></div>
+<div class="cmnt">For 80-bit or 128-bit reals, the largest possible payload is 0x3FFF_FFFF_FFFF_FFFF.
+ For doubles, it is 0x3_FFFF_FFFF_FFFF.
+ For floats, it is 0x3F_FFFF.</div></dd>
+<dt class="decl"><span class="rettyp">ulong</span> <a class="symbol _function" name="getNaNPayload" href="htmlsrc/tango.math.IEEE.html#L1889">getNaNPayload</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#getNaNPayload" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Extract an integral payload from a <span class="red">NAN</span>.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the integer payload as a ulong.
+<p class="bl"></p>
+ For 80-bit or 128-bit reals, the largest possible payload is 0x3FFF_FFFF_FFFF_FFFF.
+ For doubles, it is 0x3_FFFF_FFFF_FFFF.
+ For floats, it is 0x3F_FFFF.</div></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Portions Copyright (C) 2001-2005 Digital Mars.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:56 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

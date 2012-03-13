@@ -1,0 +1,532 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.math.random.Random</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.math.random.Random">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.math.random.Random"><a href="htmlsrc/tango.math.random.Random.html" class="symbol">tango.math.random.Random</a></h1>
+
+<div class="summary"><div class="cmnt">Random number generators
+    
+    This is an attempt at having a good flexible and easy to use random number
+    generator.
+    ease of use:
+    <ul>
+      <li>shared generator for quick usage available through the "rand" object
+            <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">int</span> <span class="i">i</span>=<span class="i">rand</span>.<span class="i">uniformR</span>(<span class="n">10</span>); <span class="lc">// a random number from [0;10)</span></pre>
+</td></tr>
+</table>
+      </li>
+      <li>simple Random (non threadsafe) and RandomSync (threadsafe) types to 
+            create new generators (for heavy use a good idea is one Random object per thread)
+      </li>
+      <li>several distributions can be requested like this
+            <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">rand</span>.<span class="i">distributionD</span>!(<span class="i">type</span>)(<span class="i">paramForDistribution</span>)</pre>
+</td></tr>
+</table>
+            the type can often be avoided if the parameters make it clear.
+            From it single numbers can be generated with .getRandom(), and variables
+            initialized either with call style (var) or with .randomize(var).
+            Utility functions to generate numbers directly are also available.
+            The choice to put all the distribution in a single object that caches them
+            has made (for example) the gamma distribution very easy to implement.
+      </li>
+      <li>sample usage:
+            <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+<a href="#L3_ex3" name="L3_ex3">3</a>
+<a href="#L4_ex3" name="L4_ex3">4</a>
+<a href="#L5_ex3" name="L5_ex3">5</a>
+<a href="#L6_ex3" name="L6_ex3">6</a>
+<a href="#L7_ex3" name="L7_ex3">7</a>
+<a href="#L8_ex3" name="L8_ex3">8</a>
+<a href="#L9_ex3" name="L9_ex3">9</a>
+<a href="#L10_ex3" name="L10_ex3">10</a>
+<a href="#L11_ex3" name="L11_ex3">11</a>
+<a href="#L12_ex3" name="L12_ex3">12</a>
+<a href="#L13_ex3" name="L13_ex3">13</a>
+<a href="#L14_ex3" name="L14_ex3">14</a>
+<a href="#L15_ex3" name="L15_ex3">15</a>
+<a href="#L16_ex3" name="L16_ex3">16</a>
+<a href="#L17_ex3" name="L17_ex3">17</a>
+<a href="#L18_ex3" name="L18_ex3">18</a>
+<a href="#L19_ex3" name="L19_ex3">19</a>
+<a href="#L20_ex3" name="L20_ex3">20</a>
+<a href="#L21_ex3" name="L21_ex3">21</a>
+<a href="#L22_ex3" name="L22_ex3">22</a>
+<a href="#L23_ex3" name="L23_ex3">23</a>
+<a href="#L24_ex3" name="L24_ex3">24</a>
+<a href="#L25_ex3" name="L25_ex3">25</a>
+<a href="#L26_ex3" name="L26_ex3">26</a>
+<a href="#L27_ex3" name="L27_ex3">27</a>
+<a href="#L28_ex3" name="L28_ex3">28</a>
+<a href="#L29_ex3" name="L29_ex3">29</a>
+<a href="#L30_ex3" name="L30_ex3">30</a>
+<a href="#L31_ex3" name="L31_ex3">31</a>
+<a href="#L32_ex3" name="L32_ex3">32</a>
+<a href="#L33_ex3" name="L33_ex3">33</a>
+<a href="#L34_ex3" name="L34_ex3">34</a>
+<a href="#L35_ex3" name="L35_ex3">35</a>
+<a href="#L36_ex3" name="L36_ex3">36</a>
+<a href="#L37_ex3" name="L37_ex3">37</a>
+<a href="#L38_ex3" name="L38_ex3">38</a>
+<a href="#L39_ex3" name="L39_ex3">39</a>
+<a href="#L40_ex3" name="L40_ex3">40</a>
+<a href="#L41_ex3" name="L41_ex3">41</a>
+<a href="#L42_ex3" name="L42_ex3">42</a>
+<a href="#L43_ex3" name="L43_ex3">43</a>
+<a href="#L44_ex3" name="L44_ex3">44</a>
+<a href="#L45_ex3" name="L45_ex3">45</a>
+<a href="#L46_ex3" name="L46_ex3">46</a>
+<a href="#L47_ex3" name="L47_ex3">47</a>
+<a href="#L48_ex3" name="L48_ex3">48</a>
+<a href="#L49_ex3" name="L49_ex3">49</a>
+<a href="#L50_ex3" name="L50_ex3">50</a>
+<a href="#L51_ex3" name="L51_ex3">51</a>
+<a href="#L52_ex3" name="L52_ex3">52</a>
+<a href="#L53_ex3" name="L53_ex3">53</a>
+<a href="#L54_ex3" name="L54_ex3">54</a>
+<a href="#L55_ex3" name="L55_ex3">55</a>
+<a href="#L56_ex3" name="L56_ex3">56</a>
+<a href="#L57_ex3" name="L57_ex3">57</a>
+<a href="#L58_ex3" name="L58_ex3">58</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">r</span>=<span class="k">new</span> <span class="i">Random</span>();
+<span class="k">int</span> <span class="i">i</span>; <span class="k">float</span> <span class="i">f</span>; <span class="k">real</span> <span class="i">rv</span>; <span class="k">real</span>[<span class="n">100</span>] <span class="i">ar0</span>; <span class="k">real</span>[] <span class="i">ar</span>=<span class="i">ar0</span>[];
+<span class="lc">// initialize with uniform distribution</span>
+<span class="i">i</span>=<span class="i">r</span>.<span class="i">uniform</span>!(<span class="k">int</span>);
+<span class="i">f</span>=<span class="i">r</span>.<span class="i">uniform</span>!(<span class="k">float</span>);
+<span class="i">rv</span>=<span class="i">r</span>.<span class="i">uniform</span>!(<span class="k">real</span>);
+<span class="k">foreach</span> (<span class="k">ref</span> <span class="i">el</span>;<span class="i">ar</span>)
+  <span class="i">el</span>=<span class="i">r</span>.<span class="i">uniform</span>!(<span class="k">real</span>);
+<span class="lc">// another way to do all the previous in one go:</span>
+<span class="i">r</span>(<span class="i">i</span>)(<span class="i">f</span>)(<span class="i">rv</span>)(<span class="i">ar</span>);
+<span class="lc">// unfortunetely one cannot use directly ar0...</span>
+<span class="lc">// uniform distribution 0..10</span>
+<span class="i">i</span>=<span class="i">r</span>.<span class="i">uniformR</span>(<span class="n">10</span>);
+<span class="i">f</span>=<span class="i">r</span>.<span class="i">uniformR</span>(<span class="n">10.0f</span>);
+<span class="i">rv</span>=<span class="i">r</span>.<span class="i">uniformR</span>(<span class="n">10.0L</span>);
+<span class="k">foreach</span> (<span class="k">ref</span> <span class="i">el</span>;<span class="i">ar</span>)
+  <span class="i">el</span>=<span class="i">r</span>.<span class="i">uniformR</span>(<span class="n">10.0L</span>);
+<span class="lc">// another way to do all the previous in one go:</span>
+<span class="i">r</span>.<span class="i">uniformRD</span>(<span class="n">10</span>)(<span class="i">i</span>)(<span class="i">f</span>)(<span class="i">r</span>)(<span class="i">ar</span>);
+<span class="lc">// uniform numbers in [5;10)</span>
+<span class="i">i</span>=<span class="i">r</span>.<span class="i">uniformR2</span>(<span class="n">5</span>,<span class="n">10</span>);
+<span class="lc">// uniform numbers in (5;10)</span>
+<span class="i">f</span>=<span class="i">r</span>.<span class="i">uniformR2</span>(<span class="n">5.0f</span>,<span class="n">10.0f</span>);
+<span class="i">rv</span>=<span class="i">r</span>.<span class="i">uniformR2</span>(<span class="n">5.0L</span>,<span class="n">10.0L</span>);
+<span class="k">foreach</span> (<span class="k">ref</span> <span class="i">el</span>;<span class="i">ar</span>)
+  <span class="i">el</span>=<span class="i">r</span>.<span class="i">uniformR2</span>(<span class="n">5.0L</span>,<span class="n">10.0L</span>);
+<span class="lc">// another way to do all the previous in one go:</span>
+<span class="i">r</span>.<span class="i">uniformR2D</span>(<span class="n">5.0L</span>,<span class="n">10.0L</span>)(<span class="i">i</span>)(<span class="i">f</span>)(<span class="i">r</span>)(<span class="i">ar</span>);
+<span class="lc">// uniform distribution -10..10</span>
+<span class="i">i</span>=<span class="i">r</span>.<span class="i">uniformRSymm</span>(<span class="n">10</span>);
+<span class="lc">// well you get it...</span>
+<span class="i">r</span>.<span class="i">uniformRSymmD</span>(<span class="n">10</span>)(<span class="i">i</span>)(<span class="i">f</span>)(<span class="i">r</span>)(<span class="i">ar</span>);
+<span class="lc">// any distribution can be stored</span>
+<span class="k">auto</span> <span class="i">r2</span>=<span class="i">r</span>.<span class="i">uniformRSymmD</span>(<span class="n">10</span>);
+<span class="lc">// and used later</span>
+<span class="i">r2</span>(<span class="i">ar</span>);
+<span class="lc">// complex distributions (normal,exp,gamma) are produced for the requested type</span>
+<span class="i">r</span>.<span class="i">normalSource</span>!(<span class="k">float</span>)()(<span class="i">f</span>);
+<span class="lc">// with sigma=2</span>
+<span class="i">r</span>.<span class="i">normalD</span>(<span class="n">2.0f</span>)(<span class="i">f</span>);
+<span class="lc">// and can be used also to initialize other types</span>
+<span class="i">r</span>.<span class="i">normalSource</span>!(<span class="k">float</span>)()(<span class="i">r</span>)(<span class="i">ar</span>);
+<span class="i">r</span>.<span class="i">normalD</span>(<span class="n">2.0f</span>)(<span class="i">r</span>)(<span class="i">ar</span>);
+<span class="lc">// but this is different from</span>
+<span class="i">r</span>.<span class="i">normalSource</span>!(<span class="k">real</span>)()(<span class="i">i</span>)(<span class="i">r</span>)(<span class="i">ar</span>);
+<span class="i">r</span>.<span class="i">normalD</span>(<span class="n">2.0L</span>)(<span class="i">i</span>)(<span class="i">r</span>)(<span class="i">ar</span>);
+<span class="lc">// as the source generates numbers of its type that then are simply cast to</span>
+<span class="lc">// the type needed.</span>
+<span class="lc">// Uniform distribution (as its creation for different types has no overhead)</span>
+<span class="lc">// is never cast, so that (for example) bounds exclusion for floats is really</span>
+<span class="lc">// guaranteed.</span>
+<span class="lc">// For the other distribution using a distribution of different type than</span>
+<span class="lc">// the variable should be done with care, as underflow/overflow might ensue.</span>
+<span class="lc">//</span>
+<span class="lc">// Some utility functions are also available</span>
+<span class="k">int</span> <span class="i">i2</span>=<span class="i">r</span>.<span class="i">uniform</span>!(<span class="k">int</span>)();
+<span class="k">int</span> <span class="i">i2</span>=<span class="i">r</span>.<span class="i">randomize</span>(<span class="i">i</span>); <span class="lc">// both i and i2 are initialized to the same value</span>
+<span class="k">float</span> <span class="i">f2</span>=<span class="i">r</span>.<span class="i">normalSigma</span>(<span class="n">3.0f</span>);</pre>
+</td></tr>
+</table>
+      </li>
+    </ul></div></div>
+<p class="sec_header">flexibility:</p><div class="cmnt"><ul>
+      <li>easily swappable basic source
+            <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+<a href="#L2_ex4" name="L2_ex4">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// a random generator that uses the system provided random generator:</span>
+<span class="k">auto</span> <span class="i">r</span>=<span class="i">RandomG</span>!(<span class="i">Urandom</span>)();</pre>
+</td></tr>
+</table>
+            One could also build an engine that can be changed at runtime (that calls
+            a delegate for example), but this adds a little overhead, and changing
+            engine is not something done often, so this is not part of the library.
+      </li>
+      <li>ziggurat generator can be easily adapted to any decreasing derivable
+            distribution, the hard parametrization (to find xLast) can be done
+            automatically
+      </li>
+      <li>several distributions available "out of the box"
+      </li>
+      </ul></div>
+<p class="sec_header">Quality:</p><div class="cmnt"><ul>
+      <li>the default Source combines two surces that pass all statistical tests 
+            (KISS+CMWC)
+            (P. L'Ecuyer and R. Simard, ACM Transactions on Mathematical Software (2007),
+            33, 4, Article 22, for KISS, see CMWC engine for the other)
+      </li>
+      <li>floating point uniform generator always initializes the full mantissa, the
+            only flaw is a (*very* small) predilection of 0 as least important bit 
+            (IEEE rounds to 0 in case of tie).
+            Using a method that initializes the full mantissa was shown to improve the
+            quality of subsequntly derived normal distribued numbers
+            (Thomas et al. Gaussian random number generators. Acm Comput Surv (2007)
+            vol. 39 (4) pp. 11)</li>
+      </ul>
+      <li>Ziggurat method, a very fast and accurate method was used for both Normal and
+            exp distributed numbers.
+      </li>
+      <li>gamma distribued numbers uses a method recently proposed by Marsaglia and
+            Tsang. The method is very fast, and should be good.
+            My (Fawzi's) feeling is that the transformation h(x)=(1+d*x)^3 might lose
+            a couple of bits of precision in some cases, but it is unclear if this
+            might become visible in (*very* extensive) tests or not.
+      </li>
+       the basic source can be easily be changed with something else</div>
+<p class="sec_header">Efficiency:</p><div class="cmnt"><li>very fast methods have been used, and some effort has been put into
+            optimizing some of them, but not all, but the interface has been choosen
+            so that close to optimal implementation can be provided through the same
+            interface.
+      </li>
+      <li>Normal and Exp sources allocated only upon request: no memory waste, but
+            a (*very* small) speed hit, that can be avoided by storing the source in
+            a variable and using it (not going through the RandomG)
+      </li>
+    )</div>
+<p class="sec_header">Annoyances:</p><div class="cmnt"><ul>
+      <li>I have added two "next" methods to RandomG for backward compatibility
+            reasons, and the .instance from Random has been
+            replaced by the "rand" object. The idea behind this is that RandomG is
+            a template and rand it should be shared across all templates.
+            If the name rand is considered bad one could change it. 
+            I kept .instance static method that returns rand, so this remain a dropin
+            replacement of the old random.
+      </li>
+      <li>You cannot initialize a static array directly, this because randomize is
+          declared like this:
+            <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex5" name="L1_ex5">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">U</span> <span class="i">randomize</span>(<span class="i">U</span>)(<span class="k">ref</span> <span class="i">U</span> <span class="i">a</span>) { }</pre>
+</td></tr>
+</table>
+            and a static array cannot be passed by reference. Removing the ref would
+            make arrays initialized, and scalar not, which is much worse.
+      </li>
+    </ul></div>
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: July 2008</div>
+<p class="sec_header">Author:</p><div class="cmnt">Fawzi Mohamed</div>
+<dl>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="isFloat" href="htmlsrc/tango.math.random.Random.html#L207">isFloat</a><span class="tparams">(<em>T</em>)</span> <a href="tango.math.random.Random.html#isFloat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">if T is a float</div></div>
+</dd>
+<dt class="decl"><span class="kw">alias</span> KissCmwc_32_1 <a class="symbol _alias" name="DefaultEngine" href="htmlsrc/tango.math.random.Random.html#L217">DefaultEngine</a> <a href="tango.math.random.Random.html#DefaultEngine" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The default engine, a reasonably collision free, with good statistical properties
+ not easy to invert, and with a relatively small key (but not too small)</div></div></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="RandomG" href="htmlsrc/tango.math.random.Random.html#L229">RandomG</a><span class="tparams">(<em>SourceT</em> = <span class="defval">DefaultEngine</span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.math.random.Random.html#RandomG" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Class that represents a random number generator.
+ Normally you should get random numbers either with call-like interface:
+   auto r=new Random(); r(i)(j)(k);
+ or with randomize
+   r.randomize(i); r.randomize(j); r.randomize(k);
+ if you use this you should be able to easily switch distribution later,
+ as all distributions support this interface, and can be built on the top of RandomG
+   auto r2=r.NormalSource!(float)(); r2(i)(j)(k);
+ there are utility methods within random for the cases in which you do not
+ want to build a special distribution for just a few numbers</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="RandomG.this" href="htmlsrc/tango.math.random.Random.html#L243">this</a><span class="params">(bool <em>randomInit</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.math.random.Random.html#RandomG.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Creates and seeds a new generator</div></div></dd>
+<dt class="decl"><span class="rettyp">RandomG</span> <a class="symbol _function" name="RandomG.seed" href="htmlsrc/tango.math.random.Random.html#L251">seed</a><span class="params">()</span> <a href="tango.math.random.Random.html#RandomG.seed" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">if source.canSeed seeds the generator using the shared rand generator
+ (use urandom directly if available?)</div></div></dd>
+<dt class="decl"><span class="rettyp">RandomG</span> <a class="symbol _function" name="RandomG.seed:2" href="htmlsrc/tango.math.random.Random.html#L259">seed</a><span class="params">(<span class="k">scope</span> uint delegate() <em>seedSource</em>)</span> <a href="tango.math.random.Random.html#RandomG.seed:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">if source.canSeed seeds the generator using the given source of uints</div></div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="RandomG.next" href="htmlsrc/tango.math.random.Random.html#L268">next</a><span class="params">()</span> <a href="tango.math.random.Random.html#RandomG.next" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="RandomG.next:2" href="htmlsrc/tango.math.random.Random.html#L272">next</a><span class="params">(uint <em>to</em>)</span> <a href="tango.math.random.Random.html#RandomG.next:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="RandomG.next:3" href="htmlsrc/tango.math.random.Random.html#L276">next</a><span class="params">(uint <em>from</em>, uint <em>to</em>)</span> <a href="tango.math.random.Random.html#RandomG.next:3" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">RandomG!(Sync!(DefaultEngine))</span> <a class="symbol _function" name="RandomG.instance" href="htmlsrc/tango.math.random.Random.html#L280">instance</a><span class="params">()</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.Random.html#RandomG.instance" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">compatibility with old Random, deprecate??</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.uniform" href="htmlsrc/tango.math.random.Random.html#L292">uniform</a><span class="tparams">(<em>T</em>, bool <em>boundCheck</em> = <span class="defval"><span class="k">true</span></span>)</span><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.math.random.Random.html#RandomG.uniform" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution on the whole range of integer types, and on
+ the (0;1) range for floating point types. Floating point guarantees the initialization
+ of the full mantissa, but due to rounding effects it might have *very* small
+ dependence due to rounding effects on the least significant bit (in case of tie 0 is favored).
+ if boundCheck is false in the floating point case bounds might be included (but with a
+ lower propability than other numbers)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.uniformR" href="htmlsrc/tango.math.random.Random.html#L432">uniformR</a><span class="tparams">(<em>T</em>, bool <em>boundCheck</em> = <span class="defval"><span class="k">true</span></span>)</span><span class="params">(T <em>to</em>)</span> <a href="tango.math.random.Random.html#RandomG.uniformR" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution on the range [0;to) for integer types, and on
+ the (0;to) range for floating point types. Same caveat as uniform(T) apply</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.uniformRSymm" href="htmlsrc/tango.math.random.Random.html#L480">uniformRSymm</a><span class="tparams">(<em>T</em>, bool <em>boundCheck</em> = <span class="defval"><span class="k">true</span></span>, bool <em>excludeZero</em> = <span class="defval"><span class="i">isFloat</span>!(<span class="i">T</span>)</span>)</span><span class="params">(T <em>to</em>, int <em>iter</em> = <span class="defval"><span class="n">2000</span></span>)</span> <a href="tango.math.random.Random.html#RandomG.uniformRSymm" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution on the range (-to;to) for integer types, and on
+ the (-to;0)(0;to) range for floating point types if boundCheck is true.
+ If boundCheck=false the range changes to [-to;0)u(0;to] with a slightly
+ lower propability at the bounds for floating point numbers.
+ excludeZero controls if 0 is excluded or not (by default float exclude it,
+ ints no). Please note that the probability of 0 in floats is very small due
+ Cannot be used on unsigned types.</div></div>
+<div class="cmnt">In here there is probably one of the few cases where c handling of modulo of negative
+ numbers is handy</div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.uniformR2" href="htmlsrc/tango.math.random.Random.html#L657">uniformR2</a><span class="tparams">(<em>T</em>, bool <em>boundCheck</em> = <span class="defval"><span class="k">true</span></span>)</span><span class="params">(T <em>from</em>, T <em>to</em>)</span> <a href="tango.math.random.Random.html#RandomG.uniformR2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution [from;to) for integers, and (from;to) for floating point numbers.
+ if boundCheck is false the bounds are included in the floating point number distribution.
+ the range for int and long is limited to only half the possible range
+ (it could be worked around using long aritmethic for int, and doing a carry by hand for long,
+ but I think it is seldomly needed, for int you are better off using long when needed)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.uniformEl" href="htmlsrc/tango.math.random.Random.html#L682">uniformEl</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T[]) <em>arr</em>)</span> <a href="tango.math.random.Random.html#RandomG.uniformEl" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a random element of the given array (which must be non empty)</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="RandomG.randomizeUniform" href="htmlsrc/tango.math.random.Random.html#L688">randomizeUniform</a><span class="tparams">(<em>U</em>, bool <em>boundCheck</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.Random.html#RandomG.randomizeUniform" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">randomizes the given array and returns it (for some types this is potentially
+ more efficient, both from the use of random numbers and speedwise)</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="RandomG.randomizeUniformR" href="htmlsrc/tango.math.random.Random.html#L729">randomizeUniformR</a><span class="tparams">(<em>U</em>, <em>V</em>, bool <em>boundCheck</em> = <span class="defval"><span class="k">true</span></span>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>, V <em>to</em>)</span> <a href="tango.math.random.Random.html#RandomG.randomizeUniformR" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">randomizes the given array and returns it (for some types this is potentially
+ more efficient, both from the use of random numbers and speedwise)</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="RandomG.randomizeUniformR2" href="htmlsrc/tango.math.random.Random.html#L780">randomizeUniformR2</a><span class="tparams">(<em>U</em>, <em>V</em>, <em>W</em>, bool <em>boundCheck</em> = <span class="defval"><span class="k">true</span></span>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>, V <em>from</em>, W <em>to</em>)</span> <a href="tango.math.random.Random.html#RandomG.randomizeUniformR2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">randomizes the given variable and returns it (for some types this is potentially
+ more efficient, both from the use of random numbers and speedwise)</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="RandomG.randomizeUniformRSymm" href="htmlsrc/tango.math.random.Random.html#L828">randomizeUniformRSymm</a><span class="tparams">(<em>U</em>, <em>V</em>, bool <em>boundCheck</em> = <span class="defval"><span class="k">true</span></span>, bool <em>excludeZero</em> = <span class="defval"><span class="i">isFloat</span>!(<span class="i">BaseTypeOfArrays</span>!(<span class="i">U</span>))</span>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>, V <em>to</em>)</span> <a href="tango.math.random.Random.html#RandomG.randomizeUniformRSymm" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">randomizes the given variable like uniformRSymm and returns it
+ (for some types this is potentially more efficient, both from the use of
+ random numbers and speedwise)</div></div></dd>
+<dt class="decl"><span class="rettyp">RandG</span> <a class="symbol _function" name="RandomG.spawn" href="htmlsrc/tango.math.random.Random.html#L890">spawn</a><span class="tparams">(<em>RandG</em> = <span class="defval">RandomG</span>)</span><span class="params">()</span> <a href="tango.math.random.Random.html#RandomG.spawn" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns another (mostly indipendent, depending on seed size) random generator</div></div></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="RandomG.UniformDistribution" href="htmlsrc/tango.math.random.Random.html#L901">UniformDistribution</a><span class="tparams">(<em>T</em>, bool <em>boundCheck</em>)</span> <a href="tango.math.random.Random.html#RandomG.UniformDistribution" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution on the whole range for integers, and on (0;1) for floats
+ with boundCheck=true this is equivalent to r itself, here just for completness</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">UniformDistribution</span> <a class="symbol _function" name="RandomG.UniformDistribution.opCall" href="htmlsrc/tango.math.random.Random.html#L909">opCall</a><span class="tparams">(<em>U</em>, <em>S</em>...)</span><span class="params">(<span class="k">ref</span> U <em>a</em>, S <em>args</em>)</span> <a href="tango.math.random.Random.html#RandomG.UniformDistribution.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">chainable call style initialization of variables (thorugh a call to randomize)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.UniformDistribution.getRandom" href="htmlsrc/tango.math.random.Random.html#L914">getRandom</a><span class="params">()</span> <a href="tango.math.random.Random.html#RandomG.UniformDistribution.getRandom" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a random number</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="RandomG.UniformDistribution.randomize" href="htmlsrc/tango.math.random.Random.html#L918">randomize</a><span class="tparams">(<em>U</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.Random.html#RandomG.UniformDistribution.randomize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initialize el</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="RandomG.UniformRDistribution" href="htmlsrc/tango.math.random.Random.html#L924">UniformRDistribution</a><span class="tparams">(<em>T</em>, bool <em>boundCheck</em>)</span> <a href="tango.math.random.Random.html#RandomG.UniformRDistribution" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution on the subrange [0;to) for integers, (0;to) for floats</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">UniformRDistribution</span> <a class="symbol _function" name="RandomG.UniformRDistribution.create" href="htmlsrc/tango.math.random.Random.html#L928">create</a><span class="params">(RandomG <em>r</em>, T <em>to</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.Random.html#RandomG.UniformRDistribution.create" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes the probability distribution</div></div></dd>
+<dt class="decl"><span class="rettyp">UniformRDistribution</span> <a class="symbol _function" name="RandomG.UniformRDistribution.opCall" href="htmlsrc/tango.math.random.Random.html#L935">opCall</a><span class="tparams">(<em>U</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.Random.html#RandomG.UniformRDistribution.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">chainable call style initialization of variables (thorugh a call to randomize)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.UniformRDistribution.getRandom" href="htmlsrc/tango.math.random.Random.html#L940">getRandom</a><span class="params">()</span> <a href="tango.math.random.Random.html#RandomG.UniformRDistribution.getRandom" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a random number</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="RandomG.UniformRDistribution.randomize" href="htmlsrc/tango.math.random.Random.html#L944">randomize</a><span class="tparams">(<em>U</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.Random.html#RandomG.UniformRDistribution.randomize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initialize el</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="RandomG.UniformRSymmDistribution" href="htmlsrc/tango.math.random.Random.html#L952">UniformRSymmDistribution</a><span class="tparams">(<em>T</em>, bool <em>boundCheck</em> = <span class="defval"><span class="k">true</span></span>, bool <em>excludeZero</em> = <span class="defval"><span class="i">isFloat</span>!(<span class="i">T</span>)</span>)</span> <a href="tango.math.random.Random.html#RandomG.UniformRSymmDistribution" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution on the subrange (-to;to) for integers, (-to;0)u(0;to) for floats
+ excludeZero controls if the zero should be excluded, boundCheck if the boundary should
+ be excluded for floats</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">UniformRSymmDistribution</span> <a class="symbol _function" name="RandomG.UniformRSymmDistribution.create" href="htmlsrc/tango.math.random.Random.html#L956">create</a><span class="params">(RandomG <em>r</em>, T <em>to</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.Random.html#RandomG.UniformRSymmDistribution.create" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes the probability distribution</div></div></dd>
+<dt class="decl"><span class="rettyp">UniformRSymmDistribution</span> <a class="symbol _function" name="RandomG.UniformRSymmDistribution.opCall" href="htmlsrc/tango.math.random.Random.html#L963">opCall</a><span class="tparams">(<em>U</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.Random.html#RandomG.UniformRSymmDistribution.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">chainable call style initialization of variables (thorugh a call to randomize)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.UniformRSymmDistribution.getRandom" href="htmlsrc/tango.math.random.Random.html#L968">getRandom</a><span class="params">()</span> <a href="tango.math.random.Random.html#RandomG.UniformRSymmDistribution.getRandom" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a random number</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="RandomG.UniformRSymmDistribution.randomize" href="htmlsrc/tango.math.random.Random.html#L972">randomize</a><span class="tparams">(<em>U</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.Random.html#RandomG.UniformRSymmDistribution.randomize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initialize el</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="RandomG.UniformR2Distribution" href="htmlsrc/tango.math.random.Random.html#L978">UniformR2Distribution</a><span class="tparams">(<em>T</em>, bool <em>boundCheck</em>)</span> <a href="tango.math.random.Random.html#RandomG.UniformR2Distribution" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution on the subrange (-to;to) for integers, (0;to) for floats</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">UniformR2Distribution</span> <a class="symbol _function" name="RandomG.UniformR2Distribution.create" href="htmlsrc/tango.math.random.Random.html#L982">create</a><span class="params">(RandomG <em>r</em>, T <em>from</em>, T <em>to</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.Random.html#RandomG.UniformR2Distribution.create" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes the probability distribution</div></div></dd>
+<dt class="decl"><span class="rettyp">UniformR2Distribution</span> <a class="symbol _function" name="RandomG.UniformR2Distribution.opCall" href="htmlsrc/tango.math.random.Random.html#L990">opCall</a><span class="tparams">(<em>U</em>, <em>S</em>...)</span><span class="params">(<span class="k">ref</span> U <em>a</em>, S <em>args</em>)</span> <a href="tango.math.random.Random.html#RandomG.UniformR2Distribution.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">chainable call style initialization of variables (thorugh a call to randomize)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.UniformR2Distribution.getRandom" href="htmlsrc/tango.math.random.Random.html#L995">getRandom</a><span class="params">()</span> <a href="tango.math.random.Random.html#RandomG.UniformR2Distribution.getRandom" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a random number</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="RandomG.UniformR2Distribution.randomize" href="htmlsrc/tango.math.random.Random.html#L999">randomize</a><span class="tparams">(<em>U</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.Random.html#RandomG.UniformR2Distribution.randomize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initialize a</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="RandomG.GammaDistribution" href="htmlsrc/tango.math.random.Random.html#L1009">GammaDistribution</a><span class="tparams">(<em>T</em>)</span> <a href="tango.math.random.Random.html#RandomG.GammaDistribution" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">gamma distribution f=x^(alpha-1)*exp(-x/theta)/(gamma(alpha)*theta^alpha)
+ alpha has to be bigger than 1, for alpha&lt;1 use gammaD(alpha)=gammaD(alpha+1)*pow(r.uniform!(T),1/alpha)
+ from Marsaglia and Tsang, ACM Transaction on Mathematical Software, Vol. 26, N. 3
+ 2000, p 363-372</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">GammaDistribution</span> <a class="symbol _function" name="RandomG.GammaDistribution.opCall" href="htmlsrc/tango.math.random.Random.html#L1022">opCall</a><span class="tparams">(<em>U</em>, <em>S</em>...)</span><span class="params">(<span class="k">ref</span> U <em>a</em>, S <em>args</em>)</span> <a href="tango.math.random.Random.html#RandomG.GammaDistribution.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">chainable call style initialization of variables (thorugh a call to randomize)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.GammaDistribution.getRandom" href="htmlsrc/tango.math.random.Random.html#L1027">getRandom</a><span class="params">(T <em>a</em> = <span class="defval"><span class="i">alpha</span></span>, T <em>t</em> = <span class="defval"><span class="i">theta</span></span>)</span> <a href="tango.math.random.Random.html#RandomG.GammaDistribution.getRandom" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a single random number</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="RandomG.GammaDistribution.randomize" href="htmlsrc/tango.math.random.Random.html#L1045">randomize</a><span class="tparams">(<em>U</em>)</span><span class="params">(<span class="k">ref</span> U <em>b</em>, T <em>a</em> = <span class="defval"><span class="i">alpha</span></span>, T <em>t</em> = <span class="defval"><span class="i">theta</span></span>)</span> <a href="tango.math.random.Random.html#RandomG.GammaDistribution.randomize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes b with gamma distribued random numbers</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="RandomG.GammaDistribution.randomizeOp" href="htmlsrc/tango.math.random.Random.html#L1058">randomizeOp</a><span class="tparams">(<em>U</em>, <em>S</em>)</span><span class="params">(S delegate(T) <em>op</em>,  <span class="k">ref</span> U <em>b</em>, T <em>a</em> = <span class="defval"><span class="i">alpha</span></span>, T <em>t</em> = <span class="defval"><span class="i">theta</span></span>)</span> <a href="tango.math.random.Random.html#RandomG.GammaDistribution.randomizeOp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">maps op on random numbers (of type T) and initializes b with it</div></div></dd></dl></dd>
+<dt class="decl"><span class="rettyp">NormalSource!(RandomG,T)</span> <a class="symbol _function" name="RandomG.normalSource" href="htmlsrc/tango.math.random.Random.html#L1076">normalSource</a><span class="tparams">(<em>T</em>)</span><span class="params">()</span> <a href="tango.math.random.Random.html#RandomG.normalSource" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">generators of normal numbers (sigma=1,mu=0) of the given type
+ f=exp(-x*x/(2*sigma^2))/(sqrt(2 pi)*sigma)</div></div></dd>
+<dt class="decl"><span class="rettyp">ExpSource!(RandomG,T)</span> <a class="symbol _function" name="RandomG.expSource" href="htmlsrc/tango.math.random.Random.html#L1091">expSource</a><span class="tparams">(<em>T</em>)</span><span class="params">()</span> <a href="tango.math.random.Random.html#RandomG.expSource" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">generators of exp distribued numbers (beta=1) of the given type
+ f=1/beta*exp(-x/beta)</div></div></dd>
+<dt class="decl"><span class="rettyp">NormalSource!(RandomG,T).NormalDistribution</span> <a class="symbol _function" name="RandomG.normalD" href="htmlsrc/tango.math.random.Random.html#L1106">normalD</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>sigma</em> = <span class="defval"><span class="k">cast</span>(<span class="i">T</span>)<span class="n">1</span></span>, T <em>mu</em> = <span class="defval"><span class="k">cast</span>(<span class="i">T</span>)<span class="n">0</span></span>)</span> <a href="tango.math.random.Random.html#RandomG.normalD" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">generators of normal numbers with a different default sigma/mu
+ f=exp(-x*x/(2*sigma^2))/(sqrt(2 pi)*sigma)</div></div></dd>
+<dt class="decl"><span class="rettyp">ExpSource!(RandomG,T).ExpDistribution</span> <a class="symbol _function" name="RandomG.expD" href="htmlsrc/tango.math.random.Random.html#L1111">expD</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>beta</em>)</span> <a href="tango.math.random.Random.html#RandomG.expD" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">exponential distribued numbers with a different default beta
+ f=1/beta*exp(-x/beta)</div></div></dd>
+<dt class="decl"><span class="rettyp">GammaDistribution!(T)</span> <a class="symbol _function" name="RandomG.gammaD" href="htmlsrc/tango.math.random.Random.html#L1115">gammaD</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>alpha</em> = <span class="defval"><span class="k">cast</span>(<span class="i">T</span>)<span class="n">1</span></span>, T <em>theta</em> = <span class="defval"><span class="k">cast</span>(<span class="i">T</span>)<span class="n">1</span></span>)</span> <a href="tango.math.random.Random.html#RandomG.gammaD" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">gamma distribued numbers with the given default alpha</div></div></dd>
+<dt class="decl"><span class="rettyp">UniformDistribution!(T,true)</span> <a class="symbol _function" name="RandomG.uniformD" href="htmlsrc/tango.math.random.Random.html#L1121">uniformD</a><span class="tparams">(<em>T</em>)</span><span class="params">()</span> <a href="tango.math.random.Random.html#RandomG.uniformD" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution on the whole integer range, and on (0;1) for floats
+ should return simply this??</div></div></dd>
+<dt class="decl"><span class="rettyp">UniformDistribution!(T,false)</span> <a class="symbol _function" name="RandomG.uniformBoundsD" href="htmlsrc/tango.math.random.Random.html#L1125">uniformBoundsD</a><span class="tparams">(<em>T</em>)</span><span class="params">()</span> <a href="tango.math.random.Random.html#RandomG.uniformBoundsD" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution on the whole integer range, and on [0;1] for floats</div></div></dd>
+<dt class="decl"><span class="rettyp">UniformRDistribution!(T,true)</span> <a class="symbol _function" name="RandomG.uniformRD" href="htmlsrc/tango.math.random.Random.html#L1129">uniformRD</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>to</em>)</span> <a href="tango.math.random.Random.html#RandomG.uniformRD" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution [0;to) for ints, (0:to) for reals</div></div></dd>
+<dt class="decl"><span class="rettyp">UniformRDistribution!(T,false)</span> <a class="symbol _function" name="RandomG.uniformRBoundsD" href="htmlsrc/tango.math.random.Random.html#L1133">uniformRBoundsD</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>to</em>)</span> <a href="tango.math.random.Random.html#RandomG.uniformRBoundsD" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution [0;to) for ints, [0:to] for reals</div></div></dd>
+<dt class="decl"><span class="rettyp">UniformRSymmDistribution!(T,true,isFloat!(T))</span> <a class="symbol _function" name="RandomG.uniformRSymmD" href="htmlsrc/tango.math.random.Random.html#L1137">uniformRSymmD</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>to</em>)</span> <a href="tango.math.random.Random.html#RandomG.uniformRSymmD" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution (-to;to) for ints and (-to;0)u(0;to) for reals</div></div></dd>
+<dt class="decl"><span class="rettyp">UniformRSymmDistribution!(T,false,isFloat!(T))</span> <a class="symbol _function" name="RandomG.uniformRSymmBoundsD" href="htmlsrc/tango.math.random.Random.html#L1141">uniformRSymmBoundsD</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>to</em>)</span> <a href="tango.math.random.Random.html#RandomG.uniformRSymmBoundsD" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution (-to;to) for ints and [-to;0)u(0;to] for reals</div></div></dd>
+<dt class="decl"><span class="rettyp">UniformR2Distribution!(T,true)</span> <a class="symbol _function" name="RandomG.uniformR2D" href="htmlsrc/tango.math.random.Random.html#L1145">uniformR2D</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>from</em>, T <em>to</em>)</span> <a href="tango.math.random.Random.html#RandomG.uniformR2D" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution [from;to) for ints and (from;to) for reals</div></div></dd>
+<dt class="decl"><span class="rettyp">UniformR2Distribution!(T,false)</span> <a class="symbol _function" name="RandomG.uniformR2BoundsD" href="htmlsrc/tango.math.random.Random.html#L1149">uniformR2BoundsD</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>from</em>, T <em>to</em>)</span> <a href="tango.math.random.Random.html#RandomG.uniformR2BoundsD" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">uniform distribution [from;to) for ints and [from;to] for reals</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.normal" href="htmlsrc/tango.math.random.Random.html#L1157">normal</a><span class="tparams">(<em>T</em>)</span><span class="params">()</span> <a href="tango.math.random.Random.html#RandomG.normal" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a normal distribued number</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.normalSigma" href="htmlsrc/tango.math.random.Random.html#L1161">normalSigma</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>sigma</em>)</span> <a href="tango.math.random.Random.html#RandomG.normalSigma" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a normal distribued number with the given sigma</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.normalSigmaMu" href="htmlsrc/tango.math.random.Random.html#L1165">normalSigmaMu</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>sigma</em>, T <em>mu</em>)</span> <a href="tango.math.random.Random.html#RandomG.normalSigmaMu" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a normal distribued number with the given sigma and mu</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.exp" href="htmlsrc/tango.math.random.Random.html#L1170">exp</a><span class="tparams">(<em>T</em>)</span><span class="params">()</span> <a href="tango.math.random.Random.html#RandomG.exp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns an exp distribued number</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.expBeta" href="htmlsrc/tango.math.random.Random.html#L1174">expBeta</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>beta</em>)</span> <a href="tango.math.random.Random.html#RandomG.expBeta" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns an exp distribued number with the given scale beta</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.gamma" href="htmlsrc/tango.math.random.Random.html#L1181">gamma</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>alpha</em> = <span class="defval"><span class="k">cast</span>(<span class="i">T</span>)<span class="n">1</span></span>, T <em>sigma</em> = <span class="defval"><span class="k">cast</span>(<span class="i">T</span>)<span class="n">1</span></span>)</span> <a href="tango.math.random.Random.html#RandomG.gamma" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a gamma distribued number
+ from Marsaglia and Tsang, ACM Transaction on Mathematical Software, Vol. 26, N. 3
+ 2000, p 363-372</div></div></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="RandomG.toString" href="htmlsrc/tango.math.random.Random.html#L1202">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.math.random.Random.html#RandomG.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">writes the current status in a string</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="RandomG.fromString" href="htmlsrc/tango.math.random.Random.html#L1207">fromString</a><span class="params">(const(char[]) <em>s</em>)</span> <a href="tango.math.random.Random.html#RandomG.fromString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">reads the current status from a string (that should have been trimmed)
+ returns the number of chars read</div></div></dd>
+<dt class="decl"><span class="rettyp">RandomG</span> <a class="symbol _function" name="RandomG.opCall" href="htmlsrc/tango.math.random.Random.html#L1213">opCall</a><span class="tparams">(<em>U</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.Random.html#RandomG.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">chainable call style initialization of variables (thorugh a call to randomize)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="RandomG.getRandom" href="htmlsrc/tango.math.random.Random.html#L1218">getRandom</a><span class="tparams">(<em>T</em>)</span><span class="params">()</span> <a href="tango.math.random.Random.html#RandomG.getRandom" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a random number</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="RandomG.randomize" href="htmlsrc/tango.math.random.Random.html#L1222">randomize</a><span class="tparams">(<em>U</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.Random.html#RandomG.randomize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initialize el</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">alias</span> RandomG!() <a class="symbol _alias" name="Random" href="htmlsrc/tango.math.random.Random.html#L1231">Random</a> <a href="tango.math.random.Random.html#Random" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">make the default random number generator type
+ (a non threadsafe random number generator) easily available
+ you can safely expect a new instance of this to be indipendent from all the others</div></div></dd>
+<dt class="decl"><span class="kw">alias</span> RandomG!(Sync!(DefaultEngine)) <a class="symbol _alias" name="RandomSync" href="htmlsrc/tango.math.random.Random.html#L1233">RandomSync</a> <a href="tango.math.random.Random.html#RandomSync" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">default threadsafe random number generator type</div></div></dd>
+<dt class="decl">RandomSync <a class="symbol _variable" name="rand" href="htmlsrc/tango.math.random.Random.html#L1237">rand</a> <span class="attrs">[<span class="stc">gshared</span>, <span class="stc">static</span>]</span> <a href="tango.math.random.Random.html#rand" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">shared locked (threadsafe) random number generator
+ initialized with urandom if available, with time otherwise</div></div></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008. Fawzi Mohamed</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:56 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

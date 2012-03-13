@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.convert.Integer</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.convert.Integer">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.convert.Integer"><a href="htmlsrc/tango.text.convert.Integer.html" class="symbol">tango.text.convert.Integer</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: Nov 2005</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris
+<p class="bl"></p>
+        A set of functions for converting between string and integer 
+        values. 
+<p class="bl"></p>
+        Applying the D "import alias" mechanism to this module is highly
+        recommended, in order to limit namespace pollution:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">Integer</span> = <span class="i">tango</span>.<span class="i">text</span>.<span class="i">convert</span>.<span class="i">Integer</span>;
+
+<span class="k">auto</span> <span class="i">i</span> = <span class="i">Integer</span>.<span class="i">parse</span> (<span class="sl">"32767"</span>);</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="toInt" href="htmlsrc/tango.text.convert.Integer.html#L45">toInt</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">uint</span>)</span><span class="params">(const(T[]) <em>digits</em>, U <em>radix</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.text.convert.Integer.html#toInt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse an integer value from the provided 'digits' string.</div></div>
+<div class="cmnt">The string is inspected for a sign and an optional radix 
+        prefix. A radix may be provided as an argument instead, 
+        whereupon it must match the prefix (where present). When
+        radix is set to zero, conversion will default to decimal.</div>
+<p class="sec_header">Throws:</p><div class="cmnt">IllegalArgumentException where the input text is not parsable
+        in its entirety.</div>
+<p class="sec_header">See Also:</p><div class="cmnt">the low level functions parse() and convert()</div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="toLong" href="htmlsrc/tango.text.convert.Integer.html#L72">toLong</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">uint</span>)</span><span class="params">(const(T[]) <em>digits</em>, U <em>radix</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.text.convert.Integer.html#toLong" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse an integer value from the provided 'digits' string.</div></div>
+<div class="cmnt">The string is inspected for a sign and an optional radix
+        prefix. A radix may be provided as an argument instead,
+        whereupon it must match the prefix (where present). When
+        radix is set to zero, conversion will default to decimal.</div>
+<p class="sec_header">Throws:</p><div class="cmnt">IllegalArgumentException where the input text is not parsable
+        in its entirety.</div>
+<p class="sec_header">See Also:</p><div class="cmnt">the low level functions parse() and convert()</div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="toString" href="htmlsrc/tango.text.convert.Integer.html#L94">toString</a><span class="params">(long <em>i</em>, const(char[]) <em>fmt</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.convert.Integer.html#toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Wrapper to make life simpler. Returns a text version
+        of the provided value.</div></div>
+<div class="cmnt">See format() for details</div></dd>
+<dt class="decl"><span class="rettyp">wchar[]</span> <a class="symbol _function" name="toString16" href="htmlsrc/tango.text.convert.Integer.html#L109">toString16</a><span class="params">(long <em>i</em>, const(wchar[]) <em>fmt</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.convert.Integer.html#toString16" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Wrapper to make life simpler. Returns a text version
+        of the provided value.</div></div>
+<div class="cmnt">See format() for details</div></dd>
+<dt class="decl"><span class="rettyp">dchar[]</span> <a class="symbol _function" name="toString32" href="htmlsrc/tango.text.convert.Integer.html#L124">toString32</a><span class="params">(long <em>i</em>, const(dchar[]) <em>fmt</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.convert.Integer.html#toString32" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Wrapper to make life simpler. Returns a text version
+        of the provided value.</div></div>
+<div class="cmnt">See format() for details</div></dd>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="format" href="htmlsrc/tango.text.convert.Integer.html#L168">format</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">long</span>)</span><span class="params">(T[] <em>dst</em>, U <em>i</em>, const(T[]) <em>fmt</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.convert.Integer.html#format" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Supports format specifications via an array, where format follows
+        the notation given below:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">type</span> <span class="i">width</span> <span class="i">prefix</span></pre>
+</td></tr>
+</table></div></div>
+<div class="cmnt">Type is one of [d, g, u, b, x, o] or uppercase equivalent, and
+        dictates the conversion radix or other semantics.
+<p class="bl"></p>
+        Width is optional and indicates a minimum width for zero-padding,
+        while the optional prefix is one of ['#', ' ', '+'] and indicates
+        what variety of prefix should be placed in the output. e.g.
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+<a href="#L3_ex3" name="L3_ex3">3</a>
+<a href="#L4_ex3" name="L4_ex3">4</a>
+<a href="#L5_ex3" name="L5_ex3">5</a>
+<a href="#L6_ex3" name="L6_ex3">6</a>
+<a href="#L7_ex3" name="L7_ex3">7</a>
+<a href="#L8_ex3" name="L8_ex3">8</a>
+<a href="#L9_ex3" name="L9_ex3">9</a>
+<a href="#L10_ex3" name="L10_ex3">10</a>
+<a href="#L11_ex3" name="L11_ex3">11</a>
+<a href="#L12_ex3" name="L12_ex3">12</a>
+<a href="#L13_ex3" name="L13_ex3">13</a>
+<a href="#L14_ex3" name="L14_ex3">14</a>
+<a href="#L15_ex3" name="L15_ex3">15</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="sl">"d"</span>     =&gt; <span class="i">integer</span>
+<span class="sl">"u"</span>     =&gt; <span class="i">unsigned</span>
+<span class="sl">"o"</span>     =&gt; <span class="i">octal</span>
+<span class="sl">"b"</span>     =&gt; <span class="i">binary</span>
+<span class="sl">"x"</span>     =&gt; <span class="i">hexadecimal</span>
+<span class="sl">"X"</span>     =&gt; <span class="i">hexadecimal</span> <span class="i">uppercase</span>
+
+<span class="sl">"d+"</span>    =&gt; <span class="i">integer</span> <span class="i">prefixed</span> <span class="k">with</span> <span class="sl">"+"</span>
+<span class="sl">"b#"</span>    =&gt; <span class="i">binary</span> <span class="i">prefixed</span> <span class="k">with</span> <span class="sl">"0b"</span>
+<span class="sl">"x#"</span>    =&gt; <span class="i">hexadecimal</span> <span class="i">prefixed</span> <span class="k">with</span> <span class="sl">"0x"</span>
+<span class="sl">"X#"</span>    =&gt; <span class="i">hexadecimal</span> <span class="i">prefixed</span> <span class="k">with</span> <span class="sl">"0X"</span>
+
+<span class="sl">"d8"</span>    =&gt; <span class="i">decimal</span> <span class="i">padded</span> <span class="i">to</span> <span class="n">8</span> <span class="i">places</span> <span class="i">as</span> <span class="i">required</span>
+<span class="sl">"b8"</span>    =&gt; <span class="i">binary</span> <span class="i">padded</span> <span class="i">to</span> <span class="n">8</span> <span class="i">places</span> <span class="i">as</span> <span class="i">required</span>
+<span class="sl">"b8#"</span>   =&gt; <span class="i">binary</span> <span class="i">padded</span> <span class="i">to</span> <span class="n">8</span> <span class="i">places</span> <span class="i">and</span> <span class="i">prefixed</span> <span class="k">with</span> <span class="sl">"0b"</span></pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Note that the specified width is exclusive of the prefix, though
+        the width padding will be shrunk as necessary in order to ensure
+        a requested prefix can be inserted into the provided output.</div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="parse" href="htmlsrc/tango.text.convert.Integer.html#L345">parse</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">uint</span>)</span><span class="params">(T[] <em>digits</em>, U <em>radix</em> = <span class="defval"><span class="n">0</span></span>, size_t* <em>ate</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.convert.Integer.html#parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse an integer value from the provided 'digits' string.</div></div>
+<div class="cmnt">The string is inspected for a sign and an optional radix 
+        prefix. A radix may be provided as an argument instead, 
+        whereupon it must match the prefix (where present). When
+        radix is set to zero, conversion will default to decimal.
+<p class="bl"></p>
+        A non-null 'ate' will return the number of characters used
+        to construct the returned value.</div>
+<p class="sec_header">Throws:</p><div class="cmnt">none. The 'ate' param should be checked for valid input.</div></dd>
+<dt class="decl"><span class="rettyp">ulong</span> <a class="symbol _function" name="convert" href="htmlsrc/tango.text.convert.Integer.html#L375">convert</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">uint</span>)</span><span class="params">(const(T[]) <em>digits</em>, U <em>radix</em> = <span class="defval"><span class="n">10</span></span>, size_t* <em>ate</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.convert.Integer.html#convert" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert the provided 'digits' into an integer value,
+        without checking for a sign or radix. The radix defaults
+        to decimal (10).</div></div>
+<div class="cmnt">Returns the value and updates 'ate' with the number of
+        characters consumed.</div>
+<p class="sec_header">Throws:</p><div class="cmnt">none. The 'ate' param should be checked for valid input.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="trim" href="htmlsrc/tango.text.convert.Integer.html#L425">trim</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">uint</span>)</span><span class="params">(const(T[]) <em>digits</em>,  <span class="k">ref</span> bool <em>sign</em>,  <span class="k">ref</span> U <em>radix</em>)</span> <a href="tango.text.convert.Integer.html#trim" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Strip leading whitespace, extract an optional +/- sign,
+        and an optional radix prefix. If the radix value matches
+        an optional prefix, or the radix is zero, the prefix will
+        be consumed and assigned. Where the radix is non zero and
+        does not match an explicit prefix, the latter will remain 
+        unconsumed. Otherwise, radix will default to 10.</div></div>
+<div class="cmnt">Returns the number of characters consumed.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="atoi" href="htmlsrc/tango.text.convert.Integer.html#L505">atoi</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>s</em>, int <em>radix</em> = <span class="defval"><span class="n">10</span></span>)</span> <a href="tango.text.convert.Integer.html#atoi" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">quick &amp; dirty text-to-unsigned int converter. Use only when you
+        know what the content is, or use parse() or convert() instead.</div></div>
+<div class="cmnt">Return the parsed uint</div></dd>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="itoa" href="htmlsrc/tango.text.convert.Integer.html#L528">itoa</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">uint</span>)</span><span class="params">(T[] <em>output</em>, U <em>value</em>, int <em>radix</em> = <span class="defval"><span class="n">10</span></span>)</span> <a href="tango.text.convert.Integer.html#itoa" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">quick &amp; dirty unsigned to text converter, where the provided output
+        must be large enough to house the result (10 digits in the largest
+        case). For mainstream use, consider utilizing format() instead.</div></div>
+<div class="cmnt">Returns a populated slice of the provided output</div></dd>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="consume" href="htmlsrc/tango.text.convert.Integer.html#L552">consume</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>src</em>, bool <em>fp</em> = <span class="defval"><span class="k">false</span></span>)</span> <a href="tango.text.convert.Integer.html#consume" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Consume a number from the input without converting it. Argument
+        'fp' enables floating-point consumption. Supports hex input for
+        numbers which are prefixed appropriately</div></div>
+<div class="cmnt">Since version 0.99.9</div></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:14 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

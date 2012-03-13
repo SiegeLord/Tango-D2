@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.stdc.posix.sys.utsname</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a><a id="L38" href="#L38">38</a><a id="L39" href="#L39">39</a><a id="L40" href="#L40">40</a><a id="L41" href="#L41">41</a><a id="L42" href="#L42">42</a><a id="L43" href="#L43">43</a><a id="L44" href="#L44">44</a><a id="L45" href="#L45">45</a><a id="L46" href="#L46">46</a><a id="L47" href="#L47">47</a><a id="L48" href="#L48">48</a><a id="L49" href="#L49">49</a><a id="L50" href="#L50">50</a><a id="L51" href="#L51">51</a><a id="L52" href="#L52">52</a><a id="L53" href="#L53">53</a><a id="L54" href="#L54">54</a><a id="L55" href="#L55">55</a><a id="L56" href="#L56">56</a><a id="L57" href="#L57">57</a><a id="L58" href="#L58">58</a><a id="L59" href="#L59">59</a><a id="L60" href="#L60">60</a><a id="L61" href="#L61">61</a><a id="L62" href="#L62">62</a><a id="L63" href="#L63">63</a><a id="L64" href="#L64">64</a><a id="L65" href="#L65">65</a><a id="L66" href="#L66">66</a><a id="L67" href="#L67">67</a><a id="L68" href="#L68">68</a><a id="L69" href="#L69">69</a><a id="L70" href="#L70">70</a><a id="L71" href="#L71">71</a><a id="L72" href="#L72">72</a><a id="L73" href="#L73">73</a><a id="L74" href="#L74">74</a><a id="L75" href="#L75">75</a><a id="L76" href="#L76">76</a><a id="L77" href="#L77">77</a><a id="L78" href="#L78">78</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/**
+ * D header file for POSIX.
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Jacob Carlborg
+ * Standards: The Open Group Base Specifications Issue 6, IEEE Std 1003.1, 2004 Edition
+ * References: The Open Group $(LINK2 http://www.opengroup.org/onlinepubs/009695399/functions/uname.html, sys/utsname.h) $(BR)
+ * 			   Mac OS X $(LINK2 http://developer.apple.com/documentation/Darwin/Reference/Manpages/man3/uname.3.html, sys/utsname.h) $(BR) 
+ * 			   FreeBSD $(LINK2 http://www.freebsd.org/cgi/man.cgi?query=uname&amp;sektion=3&amp;apropos=0&amp;manpath=FreeBSD+7.1-RELEASE, sys/utsname.h) $(BR)
+ * 			   Linux $(LINK2 http://www.gnu.org/software/libc/manual/html_node/Platform-Type.html, sys/utsname.h)
+ */</span>
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">stdc</span>.<span class="i">posix</span>.<span class="i">sys</span>.<span class="i">utsname</span>;</span>
+
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span>:
+
+<span class="d Compound"><span class="d Version"><span class="k">version</span> (<span class="i">darwin</span>)
+<span class="d Compound">{
+	<span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">len</span> = <span class="e Int"><span class="n">256</span></span>;</span>
+
+	<span class="d Struct"><span class="k">struct</span> <span class="i">utsname</span>
+	<span class="d Compound">{
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">sysname</span>;</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">nodename</span>;</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">release</span>;</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">version_</span>;</span> <span class="lc">// appended a _ because of the otherwise keyword conflict</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">machine</span>;</span>
+	}</span></span>
+}</span>
+
+<span class="k">else</span> <span class="d Version"><span class="k">version</span> (<span class="i">FreeBSD</span>)
+<span class="d Compound">{
+	<span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">len</span> = <span class="e Int"><span class="n">256</span></span>;</span>
+	
+	<span class="d Struct"><span class="k">struct</span> <span class="i">utsname</span>
+	<span class="d Compound">{
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">sysname</span>;</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">nodename</span>;</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">release</span>;</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">version_</span>;</span> <span class="lc">// appended a _ because of the otherwise keyword conflict</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">machine</span>;</span>
+	}</span></span>
+}</span>
+
+<span class="k">else</span> <span class="d Version"><span class="k">version</span> (<span class="i">linux</span>)
+<span class="d Compound">{
+	<span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">len</span> = <span class="e Int"><span class="n">65</span></span>;</span>
+	
+	<span class="d Struct"><span class="k">struct</span> <span class="i">utsname</span>
+	<span class="d Compound">{
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">sysname</span>;</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">nodename</span>;</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">release</span>;</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">version_</span>;</span> <span class="lc">// appended a _ because of the otherwise keyword conflict</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">machine</span>;</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">domainname</span>;</span>
+	}</span></span>
+}</span>
+
+<span class="k">else</span> <span class="d Version"><span class="k">version</span> (<span class="i">solaris</span>)
+<span class="d Compound">{
+	<span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">len</span> = <span class="e Int"><span class="n">257</span></span>;</span>
+	
+	<span class="d Struct"><span class="k">struct</span> <span class="i">utsname</span>
+	<span class="d Compound">{
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">sysname</span>;</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">nodename</span>;</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">release</span>;</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">version_</span>;</span> <span class="lc">// appended a _ because of the otherwise keyword conflict</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Identifier"><span class="i">len</span></span>]</span> <span class="i">machine</span>;</span>
+	}</span></span>
+}</span>
+
+<span class="k">else</span>
+	<span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>(<span class="e Bool"><span class="k">false</span></span>, <span class="e String"><span class="sl">"utsname is not available on this platform"</span></span>);</span></span></span></span></span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">uname</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">utsname</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span></span></span>
+
+</pre></td>
+</tr></table>
+</body>
+</html>

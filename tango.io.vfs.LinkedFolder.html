@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.vfs.LinkedFolder</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.vfs.LinkedFolder">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.vfs.LinkedFolder"><a href="htmlsrc/tango.io.vfs.LinkedFolder.html" class="symbol">tango.io.vfs.LinkedFolder</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Oct 2007: Initial version</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="LinkedFolder" href="htmlsrc/tango.io.vfs.LinkedFolder.html#L34">LinkedFolder</a> : <span class="bclass">VirtualFolder</span> <a href="tango.io.vfs.LinkedFolder.html#LinkedFolder" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">LinkedFolder is derived from VirtualFolder, and behaves exactly the 
+        same in all but one aspect: it treats mounted folders as an ordered 
+        list of alternatives to look for a file. This supports the notion of 
+        file 'overrides', whereby "customized" files can be inserted into a 
+        chain of alternatives.</div></div>
+<div class="cmnt">(overridden folders are not currently supported)</div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="LinkedFolder.this" href="htmlsrc/tango.io.vfs.LinkedFolder.html#L64">this</a><span class="params">(const(char)[] <em>name</em>)</span> <a href="tango.io.vfs.LinkedFolder.html#LinkedFolder.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">All folder must have a name. No '.' or '/' chars are 
+                permitted</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsHost</span> <a class="symbol _function" name="LinkedFolder.mount" href="htmlsrc/tango.io.vfs.LinkedFolder.html#L84">mount</a><span class="params">(VfsFolder <em>folder</em>, const(char)[] <em>name</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.LinkedFolder.html#LinkedFolder.mount" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a child folder. The child cannot 'overlap' with others
+                in the tree of the same type. Circular references across a
+                tree of virtual folders are detected and trapped.</div></div>
+<div class="cmnt">We add the new child at the end of an ordered list, which
+                we subsequently traverse when looking up a file
+<p class="bl"></p>
+                The second argument represents an optional name that the
+                mount should be known as, instead of the name exposed by 
+                the provided folder (it is not an alias).</div></dd>
+<dt class="decl"><span class="rettyp">VfsHost</span> <a class="symbol _function" name="LinkedFolder.dismount" href="htmlsrc/tango.io.vfs.LinkedFolder.html#L104">dismount</a><span class="params">(VfsFolder <em>folder</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.LinkedFolder.html#LinkedFolder.dismount" class="plink">¶</a></dt>
+<dd class="ddef">
+<p class="sec_header">TODO:</p><div class="cmnt">unhook a child folder.</div></dd>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="LinkedFolder.file" href="htmlsrc/tango.io.vfs.LinkedFolder.html#L122">file</a><span class="params">(const(char)[] <em>path</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.LinkedFolder.html#LinkedFolder.file" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a file representation of the given path. If the
+                path-head does not refer to an immediate child folder, 
+                and does not match a symbolic link, it is considered to
+                be unknown.</div></div>
+<div class="cmnt">We scan the set of mounted folders, in the order mounted,
+                looking for a match. Where one is found, we test to see
+                that it really exists before returning the reference</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2007 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:55 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

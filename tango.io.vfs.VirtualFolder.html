@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.vfs.VirtualFolder</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.vfs.VirtualFolder">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.vfs.VirtualFolder"><a href="htmlsrc/tango.io.vfs.VirtualFolder.html" class="symbol">tango.io.vfs.VirtualFolder</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Oct 2007: Initial version</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="VirtualFolder" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L37">VirtualFolder</a> : <span class="bclass">VfsHost</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Virtual folders play host to other folder types, including both
+        concrete folder instances and subordinate virtual folders. You
+        can build a (singly rooted) tree from a set of virtual and non-
+        virtual folders, and treat them as though they were a combined
+        or single entity. For example, listing the contents of such a
+        tree is no different than listing the contents of a non-virtual
+        tree - there's just potentially more nodes to traverse.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="VirtualFolder.this" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L52">this</a><span class="params">(const(char)[] <em>name</em>)</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">All folder must have a name. No '.' or '/' chars are
+                permitted</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="VirtualFolder.name" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L63">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.name" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the (short) name of this folder</div></div></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="VirtualFolder.toString" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L76">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the (long) name of this folder. Virtual folders
+                do not have long names, since they don't relate directly
+                to a concrete folder instance</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsHost</span> <a class="symbol _function" name="VirtualFolder.mount" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L93">mount</a><span class="params">(VfsFolder <em>folder</em>, const(char)[] <em>name</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.mount" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a child folder. The child cannot 'overlap' with others
+                in the tree of the same type. Circular references across a
+                tree of virtual folders are detected and trapped.</div></div>
+<div class="cmnt">The second argument represents an optional name that the
+                mount should be known as, instead of the name exposed by
+                the provided folder (it is not an alias).</div></dd>
+<dt class="decl"><span class="rettyp">VfsHost</span> <a class="symbol _function" name="VirtualFolder.mount:2" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L130">mount</a><span class="params">(VfsFolders <em>group</em>)</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.mount:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a set of child folders. The children cannot 'overlap'
+                with others in the tree of the same type. Circular references
+                are detected and trapped.</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsHost</span> <a class="symbol _function" name="VirtualFolder.dismount" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L143">dismount</a><span class="params">(VfsFolder <em>folder</em>)</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.dismount" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Unhook a child folder</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsHost</span> <a class="symbol _function" name="VirtualFolder.map" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L171">map</a><span class="params">(VfsFile <em>file</em>, const(char)[] <em>name</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.map" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a symbolic link to another file. These are referenced
+                by file() alone, and do not show up in tree traversals</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsHost</span> <a class="symbol _function" name="VirtualFolder.map:2" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L185">map</a><span class="params">(VfsFolderEntry <em>folder</em>, const(char)[] <em>name</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.map:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a symbolic link to another folder. These are referenced
+                by folder() alone, and do not show up in tree traversals</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="VirtualFolder.opApply" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L199">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref VfsFolder) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate over the set of immediate child folders. This is
+                useful for reflecting the hierarchy</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFolderEntry</span> <a class="symbol _function" name="VirtualFolder.folder" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L220">folder</a><span class="params">(const(char)[] <em>path</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.folder" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a folder representation of the given path. If the
+                path-head does not refer to an immediate child, and does
+                not match a symbolic link, it is considered unknown.</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="VirtualFolder.file" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L243">file</a><span class="params">(const(char)[] <em>path</em>)</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.file" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a file representation of the given path. If the
+                path-head does not refer to an immediate child folder,
+                and does not match a symbolic link, it is considered unknown.</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="VirtualFolder.clear" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L261">clear</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clear the entire subtree. Use with caution</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="VirtualFolder.writable" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L274">writable</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.writable" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns true if all of the children are writable</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFolders</span> <a class="symbol _function" name="VirtualFolder.self" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L290">self</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.self" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a folder set containing only this one. Statistics
+                are inclusive of entries within this folder only, which
+                should be zero since symbolic links are not included</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFolders</span> <a class="symbol _function" name="VirtualFolder.tree" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L302">tree</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.tree" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a subtree of folders. Statistics are inclusive of
+                all files and folders throughout the sub-tree</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="VirtualFolder.verify" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L316">verify</a><span class="params">(VfsFolder <em>folder</em>, bool <em>mounting</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.verify" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sweep the subtree of mountpoints, testing a new folder
+                against all others. This propogates a folder test down
+                throughout the tree, where each folder implementation
+                should take appropriate action</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="VirtualFolder.close" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L331">close</a><span class="params">(bool <em>commit</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Close and/or synchronize changes made to this folder. Each
+                driver should take advantage of this as appropriate, perhaps
+                combining multiple files together, or possibly copying to a
+                remote location</div></div></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="VirtualFolder.error" href="htmlsrc/tango.io.vfs.VirtualFolder.html#L344">error</a><span class="params">(string <em>msg</em>)</span> <span class="attrs">[<span class="prot">package</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.VirtualFolder.html#VirtualFolder.error" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Throw an exception</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2007 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:55 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.container.more.Heap</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.container.more.Heap">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.container.more.Heap"><a href="htmlsrc/tango.util.container.more.Heap.html" class="symbol">tango.util.container.more.Heap</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Oct 2008: Initial release</div>
+<p class="sec_header">Author:</p><div class="cmnt">Chris Wright, aka dhasenan</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Heap" href="htmlsrc/tango.util.container.more.Heap.html#L38">Heap</a><span class="tparams">(<em>T</em>, <span class="kw">alias</span> <em>Compare</em> = <span class="defval">minHeapCompare!(T)</span>, <span class="kw">alias</span> <em>Move</em> = <span class="defval">defaultHeapSwap!(T)</span>)</span> <a href="tango.util.container.more.Heap.html#Heap" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A heap is a data structure where you can insert items in random order and extract them in sorted order. 
+ Pushing an element into the heap takes O(lg n) and popping the top of the heap takes O(lg n). Heaps are 
+ thus popular for sorting, among other things.
+ 
+ No opApply is provided, since most people would expect this to return the contents in sorted order,
+ not do significant heap allocation, not modify the collection, and complete in linear time. This
+ combination is not possible with a heap.</div></div>
+<p class="sec_header">Note:</p><div class="cmnt">always pass by reference when modifying a heap. 
+<p class="bl"></p>
+ The template arguments to the heap are:
+     T       = the element type
+     Compare = a function called when ordering elements. Its signature should be bool(T, T).
+               see minHeapCompare() and maxHeapCompare() for examples.
+     Move    = a function called when swapping elements. Its signature should be void(T, size_t).
+               The default does nothing, and should suffice for most users. You 
+               probably want to keep this function small; it's called O(log N) 
+               times per insertion or removal.</div>
+<dl>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Heap.push" href="htmlsrc/tango.util.container.more.Heap.html#L47">push</a><span class="params">(T <em>t</em>)</span> <a href="tango.util.container.more.Heap.html#Heap.push" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Inserts the given element into the heap.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Heap.push:2" href="htmlsrc/tango.util.container.more.Heap.html#L59">push</a><span class="params">(T[] <em>array</em>)</span> <a href="tango.util.container.more.Heap.html#Heap.push:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Inserts all elements in the given array into the heap.</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="Heap.pop" href="htmlsrc/tango.util.container.more.Heap.html#L68">pop</a><span class="params">()</span> <a href="tango.util.container.more.Heap.html#Heap.pop" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Removes the top of this heap and returns it.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Heap.removeAll" href="htmlsrc/tango.util.container.more.Heap.html#L74">removeAll</a><span class="params">(T <em>t</em>)</span> <a href="tango.util.container.more.Heap.html#Heap.removeAll" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove the every instance that matches the given item.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Heap.remove" href="htmlsrc/tango.util.container.more.Heap.html#L84">remove</a><span class="params">(T <em>t</em>)</span> <a href="tango.util.container.more.Heap.html#Heap.remove" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove the first instance that matches the given item.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">true iff the item was found, otherwise false.</div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="Heap.removeAt" href="htmlsrc/tango.util.container.more.Heap.html#L101">removeAt</a><span class="params">(size_t <em>index</em>)</span> <a href="tango.util.container.more.Heap.html#Heap.removeAt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove the element at the given index from the heap.
+ The index is according to the heap's internal layout; you are 
+ responsible for making sure the index is correct.
+ The heap invariant is maintained.</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="Heap.peek" href="htmlsrc/tango.util.container.more.Heap.html#L129">peek</a><span class="params">()</span> <a href="tango.util.container.more.Heap.html#Heap.peek" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Gets the value at the top of the heap without removing it.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Heap.size" href="htmlsrc/tango.util.container.more.Heap.html#L136">size</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.util.container.more.Heap.html#Heap.size" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the number of elements in this heap.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Heap.clear" href="htmlsrc/tango.util.container.more.Heap.html#L142">clear</a><span class="params">()</span> <a href="tango.util.container.more.Heap.html#Heap.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reset this heap.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Heap.clear:2" href="htmlsrc/tango.util.container.more.Heap.html#L148">clear</a><span class="params">(T[] <em>host</em>)</span> <a href="tango.util.container.more.Heap.html#Heap.clear:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">reset this heap, and use the provided host for value elements</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Heap.capacity" href="htmlsrc/tango.util.container.more.Heap.html#L155">capacity</a><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.util.container.more.Heap.html#Heap.capacity" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the reserved capacity of this heap.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Heap.capacity:2" href="htmlsrc/tango.util.container.more.Heap.html#L161">capacity</a><span class="params">(size_t <em>value</em>)</span> <a href="tango.util.container.more.Heap.html#Heap.capacity:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reserve enough space in this heap for value elements. The reserved space is truncated or extended as necessary. If the value is less than the number of elements already in the heap, throw an exception.</div></div></dd>
+<dt class="decl"><span class="rettyp">Heap</span> <a class="symbol _function" name="Heap.clone" href="htmlsrc/tango.util.container.more.Heap.html#L172">clone</a><span class="params">()</span> <a href="tango.util.container.more.Heap.html#Heap.clone" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a shallow copy of this heap.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="MinHeap" href="htmlsrc/tango.util.container.more.Heap.html#L260">MinHeap</a><span class="tparams">(<em>T</em>)</span> <a href="tango.util.container.more.Heap.html#MinHeap" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A minheap implementation. This will have the smallest item as the top of the heap.</div></div>
+<p class="sec_header">Note:</p><div class="cmnt">always pass by reference when modifying a heap.</div>
+</dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="MaxHeap" href="htmlsrc/tango.util.container.more.Heap.html#L271">MaxHeap</a><span class="tparams">(<em>T</em>)</span> <a href="tango.util.container.more.Heap.html#MaxHeap" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A maxheap implementation. This will have the largest item as the top of the heap.</div></div>
+<p class="sec_header">Note:</p><div class="cmnt">always pass by reference when modifying a heap.</div>
+</dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (C) 2008 Chris Wright.  All rights reserved.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:24 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

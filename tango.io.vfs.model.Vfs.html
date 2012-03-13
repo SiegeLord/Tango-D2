@@ -1,0 +1,373 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.vfs.model.Vfs</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.vfs.model.Vfs">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.vfs.model.Vfs"><a href="htmlsrc/tango.io.vfs.model.Vfs.html" class="symbol">tango.io.vfs.model.Vfs</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Jul 2007: Initial version</div>
+<p class="sec_header">Author:</p><div class="cmnt">Lars Ivar, Kris</div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> FileInfo <a class="symbol _alias" name="VfsFilterInfo" href="htmlsrc/tango.io.vfs.model.Vfs.html#L29">VfsFilterInfo</a> <a href="tango.io.vfs.model.Vfs.html#VfsFilterInfo" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">alias FileInfo for filtering</div></div></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="VfsStats" href="htmlsrc/tango.io.vfs.model.Vfs.html#L40">VfsStats</a> <a href="tango.io.vfs.model.Vfs.html#VfsStats" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="VfsHost" href="htmlsrc/tango.io.vfs.model.Vfs.html#L51">VfsHost</a> : <span class="bclass">VfsFolder</span> <a href="tango.io.vfs.model.Vfs.html#VfsHost" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><span class="rettyp">VfsHost</span> <a class="symbol _function" name="VfsHost.mount" href="htmlsrc/tango.io.vfs.model.Vfs.html#L65">mount</a><span class="params">(VfsFolder <em>folder</em>, const(char)[] <em>name</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.io.vfs.model.Vfs.html#VfsHost.mount" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a child folder. The child cannot 'overlap' with others
+                in the tree of the same type. Circular references across a
+                tree of virtual folders are detected and trapped.</div></div>
+<div class="cmnt">The second argument represents an optional name that the
+                mount should be known as, instead of the name exposed by
+                the provided folder (it is not an alias).</div></dd>
+<dt class="decl"><span class="rettyp">VfsHost</span> <a class="symbol _function" name="VfsHost.mount:2" href="htmlsrc/tango.io.vfs.model.Vfs.html#L75">mount</a><span class="params">(VfsFolders <em>group</em>)</span> <a href="tango.io.vfs.model.Vfs.html#VfsHost.mount:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a set of child folders. The children cannot 'overlap'
+                with others in the tree of the same type. Circular references
+                are detected and trapped.</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsHost</span> <a class="symbol _function" name="VfsHost.dismount" href="htmlsrc/tango.io.vfs.model.Vfs.html#L83">dismount</a><span class="params">(VfsFolder <em>folder</em>)</span> <a href="tango.io.vfs.model.Vfs.html#VfsHost.dismount" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Unhook a child folder</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsHost</span> <a class="symbol _function" name="VfsHost.map" href="htmlsrc/tango.io.vfs.model.Vfs.html#L92">map</a><span class="params">(VfsFile <em>target</em>, const(char)[] <em>name</em>)</span> <a href="tango.io.vfs.model.Vfs.html#VfsHost.map" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a symbolic link to another file. These are referenced
+                by file() alone, and do not show up in tree traversals</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsHost</span> <a class="symbol _function" name="VfsHost.map:2" href="htmlsrc/tango.io.vfs.model.Vfs.html#L101">map</a><span class="params">(VfsFolderEntry <em>target</em>, const(char)[] <em>name</em>)</span> <a href="tango.io.vfs.model.Vfs.html#VfsHost.map:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a symbolic link to another folder. These are referenced
+                by folder() alone, and do not show up in tree traversals</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="VfsFolder" href="htmlsrc/tango.io.vfs.model.Vfs.html#L198">VfsFolder</a> <a href="tango.io.vfs.model.Vfs.html#VfsFolder" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Supports a model a bit like CSS selectors, where a selection
+        of operands is made before applying some operation. For example:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// count of files in this folder</span>
+<span class="k">auto</span> <span class="i">count</span> = <span class="i">folder</span>.<span class="i">self</span>.<span class="i">files</span>;
+
+<span class="lc">// accumulated file byte-count</span>
+<span class="k">auto</span> <span class="i">bytes</span> = <span class="i">folder</span>.<span class="i">self</span>.<span class="i">bytes</span>;
+
+<span class="lc">// a group of one folder (itself)</span>
+<span class="k">auto</span> <span class="i">folders</span> = <span class="i">folder</span>.<span class="i">self</span>;</pre>
+</td></tr>
+</table></div></div>
+<div class="cmnt">The same approach is used to select the subtree descending from
+        a folder:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+<a href="#L3_ex2" name="L3_ex2">3</a>
+<a href="#L4_ex2" name="L4_ex2">4</a>
+<a href="#L5_ex2" name="L5_ex2">5</a>
+<a href="#L6_ex2" name="L6_ex2">6</a>
+<a href="#L7_ex2" name="L7_ex2">7</a>
+<a href="#L8_ex2" name="L8_ex2">8</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// count of files in this tree</span>
+<span class="k">auto</span> <span class="i">count</span> = <span class="i">folder</span>.<span class="i">tree</span>.<span class="i">files</span>;
+
+<span class="lc">// accumulated file byte-count</span>
+<span class="k">auto</span> <span class="i">bytes</span> = <span class="i">folder</span>.<span class="i">tree</span>.<span class="i">bytes</span>;
+
+<span class="lc">// the group of child folders</span>
+<span class="k">auto</span> <span class="i">folders</span> = <span class="i">folder</span>.<span class="i">tree</span>;</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Filtering can be applied to the tree resulting in a sub-group.
+        Group operations remain applicable. Note that various wildcard
+        characters may be used in the filtering:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+<a href="#L3_ex3" name="L3_ex3">3</a>
+<a href="#L4_ex3" name="L4_ex3">4</a>
+<a href="#L5_ex3" name="L5_ex3">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// select a subset of the resultant tree</span>
+<span class="k">auto</span> <span class="i">folders</span> = <span class="i">folder</span>.<span class="i">tree</span>.<span class="i">subset</span>(<span class="sl">"install"</span>);
+
+<span class="lc">// get total file bytes for a tree subset, using wildcards</span>
+<span class="k">auto</span> <span class="i">bytes</span> = <span class="i">folder</span>.<span class="i">tree</span>.<span class="i">subset</span>(<span class="sl">"foo*"</span>).<span class="i">bytes</span>;</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Files are selected from a set of folders in a similar manner:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+<a href="#L2_ex4" name="L2_ex4">2</a>
+<a href="#L3_ex4" name="L3_ex4">3</a>
+<a href="#L4_ex4" name="L4_ex4">4</a>
+<a href="#L5_ex4" name="L5_ex4">5</a>
+<a href="#L6_ex4" name="L6_ex4">6</a>
+<a href="#L7_ex4" name="L7_ex4">7</a>
+<a href="#L8_ex4" name="L8_ex4">8</a>
+<a href="#L9_ex4" name="L9_ex4">9</a>
+<a href="#L10_ex4" name="L10_ex4">10</a>
+<a href="#L11_ex4" name="L11_ex4">11</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// files called "readme.txt" in this folder</span>
+<span class="k">auto</span> <span class="i">count</span> = <span class="i">folder</span>.<span class="i">self</span>.<span class="i">catalog</span>(<span class="sl">"readme.txt"</span>).<span class="i">files</span>;
+
+<span class="lc">// files called "read*.*" in this tree</span>
+<span class="k">auto</span> <span class="i">count</span> = <span class="i">folder</span>.<span class="i">tree</span>.<span class="i">catalog</span>(<span class="sl">"read*.*"</span>).<span class="i">files</span>;
+
+<span class="lc">// all txt files belonging to folders starting with "ins"</span>
+<span class="k">auto</span> <span class="i">count</span> = <span class="i">folder</span>.<span class="i">tree</span>.<span class="i">subset</span>(<span class="sl">"ins*"</span>).<span class="i">catalog</span>(<span class="sl">"*.txt"</span>).<span class="i">files</span>;
+
+<span class="lc">// custom-filtered files within a subtree</span>
+<span class="k">auto</span> <span class="i">count</span> = <span class="i">folder</span>.<span class="i">tree</span>.<span class="i">catalog</span>(&amp;<span class="i">filter</span>).<span class="i">files</span>;</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Sets of folders and files support iteration via foreach:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex5" name="L1_ex5">1</a>
+<a href="#L2_ex5" name="L2_ex5">2</a>
+<a href="#L3_ex5" name="L3_ex5">3</a>
+<a href="#L4_ex5" name="L4_ex5">4</a>
+<a href="#L5_ex5" name="L5_ex5">5</a>
+<a href="#L6_ex5" name="L6_ex5">6</a>
+<a href="#L7_ex5" name="L7_ex5">7</a>
+<a href="#L8_ex5" name="L8_ex5">8</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">foreach</span> (<span class="i">folder</span>; <span class="i">root</span>.<span class="i">tree</span>)
+         <span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"folder name:{}"</span>, <span class="i">folder</span>.<span class="i">name</span>);
+
+<span class="k">foreach</span> (<span class="i">folder</span>; <span class="i">root</span>.<span class="i">tree</span>.<span class="i">subset</span>(<span class="sl">"ins*"</span>))
+         <span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"folder name:{}"</span>, <span class="i">folder</span>.<span class="i">name</span>);
+
+<span class="k">foreach</span> (<span class="i">file</span>; <span class="i">root</span>.<span class="i">tree</span>.<span class="i">catalog</span>(<span class="sl">"*.d"</span>))
+         <span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"file name:{}"</span>, <span class="i">file</span>.<span class="i">name</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Creating and opening a sub-folder is supported in a similar
+        manner, where the single instance is 'selected' before the
+        operation is applied. Open differs from create in that the
+        folder must exist for the former:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex6" name="L1_ex6">1</a>
+<a href="#L2_ex6" name="L2_ex6">2</a>
+<a href="#L3_ex6" name="L3_ex6">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">root</span>.<span class="i">folder</span>(<span class="sl">"myNewFolder"</span>).<span class="i">create</span>;
+
+<span class="i">root</span>.<span class="i">folder</span>(<span class="sl">"myExistingFolder"</span>).<span class="i">open</span>;</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        File manipulation is handled in much the same way:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex7" name="L1_ex7">1</a>
+<a href="#L2_ex7" name="L2_ex7">2</a>
+<a href="#L3_ex7" name="L3_ex7">3</a>
+<a href="#L4_ex7" name="L4_ex7">4</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">root</span>.<span class="i">file</span>(<span class="sl">"myNewFile"</span>).<span class="i">create</span>;
+
+<span class="k">auto</span> <span class="i">source</span> = <span class="i">root</span>.<span class="i">file</span>(<span class="sl">"myExistingFile"</span>);
+<span class="i">root</span>.<span class="i">file</span>(<span class="sl">"myCopiedFile"</span>).<span class="i">copy</span>(<span class="i">source</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        The principal benefits of these approaches are twofold: 1) it
+        turns out to be notably more efficient in terms of traversal, and
+        2) there's no casting required, since there is a clean separation
+        between files and folders.
+<p class="bl"></p>
+        See VfsFile for more information on file handling</div>
+<dl>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="VfsFolder.name" href="htmlsrc/tango.io.vfs.model.Vfs.html#L206">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolder.name" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a short name</div></div></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="VfsFolder.toString" href="htmlsrc/tango.io.vfs.model.Vfs.html#L214">toString</a><span class="params">()</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolder.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a long name</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="VfsFolder.file" href="htmlsrc/tango.io.vfs.model.Vfs.html#L222">file</a><span class="params">(const(char)[] <em>path</em>)</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolder.file" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a contained file representation</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFolderEntry</span> <a class="symbol _function" name="VfsFolder.folder" href="htmlsrc/tango.io.vfs.model.Vfs.html#L230">folder</a><span class="params">(const(char)[] <em>path</em>)</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolder.folder" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a contained folder representation</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFolders</span> <a class="symbol _function" name="VfsFolder.self" href="htmlsrc/tango.io.vfs.model.Vfs.html#L239">self</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolder.self" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a folder set containing only this one. Statistics
+                are inclusive of entries within this folder only</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFolders</span> <a class="symbol _function" name="VfsFolder.tree" href="htmlsrc/tango.io.vfs.model.Vfs.html#L248">tree</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolder.tree" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a subtree of folders. Statistics are inclusive of
+                files within this folder and all others within the tree</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="VfsFolder.opApply" href="htmlsrc/tango.io.vfs.model.Vfs.html#L257">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref VfsFolder) <em>dg</em>)</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolder.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate over the set of immediate child folders. This is
+                useful for reflecting the hierarchy</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="VfsFolder.clear" href="htmlsrc/tango.io.vfs.model.Vfs.html#L265">clear</a><span class="params">()</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolder.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clear all content from this folder and subordinates</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="VfsFolder.writable" href="htmlsrc/tango.io.vfs.model.Vfs.html#L273">writable</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolder.writable" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is folder writable?</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="VfsFolder.close" href="htmlsrc/tango.io.vfs.model.Vfs.html#L284">close</a><span class="params">(bool <em>commit</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolder.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Close and/or synchronize changes made to this folder. Each
+                driver should take advantage of this as appropriate, perhaps
+                combining multiple files together, or possibly copying to a
+                remote location</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="VfsFolder.verify" href="htmlsrc/tango.io.vfs.model.Vfs.html#L294">verify</a><span class="params">(VfsFolder <em>folder</em>, bool <em>mounting</em>)</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolder.verify" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A folder is being added or removed from the hierarchy. Use
+                this to test for validity (or whatever) and throw exceptions
+                as necessary</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="VfsFolders" href="htmlsrc/tango.io.vfs.model.Vfs.html#L308">VfsFolders</a> <a href="tango.io.vfs.model.Vfs.html#VfsFolders" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Operations upon a set of folders</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="VfsFolders.opApply" href="htmlsrc/tango.io.vfs.model.Vfs.html#L316">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref VfsFolder) <em>dg</em>)</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolders.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate over the set of contained VfsFolder instances</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="VfsFolders.files" href="htmlsrc/tango.io.vfs.model.Vfs.html#L324">files</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolders.files" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the number of files</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="VfsFolders.folders" href="htmlsrc/tango.io.vfs.model.Vfs.html#L332">folders</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolders.folders" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the number of folders</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="VfsFolders.entries" href="htmlsrc/tango.io.vfs.model.Vfs.html#L340">entries</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolders.entries" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the total number of entries (files + folders)</div></div></dd>
+<dt class="decl"><span class="rettyp">ulong</span> <a class="symbol _function" name="VfsFolders.bytes" href="htmlsrc/tango.io.vfs.model.Vfs.html#L348">bytes</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolders.bytes" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the total size of contained files</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFolders</span> <a class="symbol _function" name="VfsFolders.subset" href="htmlsrc/tango.io.vfs.model.Vfs.html#L356">subset</a><span class="params">(const(char)[] <em>pattern</em>)</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolders.subset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a subset of folders matching the given pattern</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFiles</span> <a class="symbol _function" name="VfsFolders.catalog" href="htmlsrc/tango.io.vfs.model.Vfs.html#L364">catalog</a><span class="params">(const(char)[] <em>pattern</em>)</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolders.catalog" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a set of files matching the given pattern</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFiles</span> <a class="symbol _function" name="VfsFolders.catalog:2" href="htmlsrc/tango.io.vfs.model.Vfs.html#L372">catalog</a><span class="params">(VfsFilter <em>filter</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolders.catalog:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a set of files matching the given filter</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="VfsFiles" href="htmlsrc/tango.io.vfs.model.Vfs.html#L382">VfsFiles</a> <a href="tango.io.vfs.model.Vfs.html#VfsFiles" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Operations upon a set of files</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="VfsFiles.opApply" href="htmlsrc/tango.io.vfs.model.Vfs.html#L390">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref VfsFile) <em>dg</em>)</span> <a href="tango.io.vfs.model.Vfs.html#VfsFiles.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate over the set of contained VfsFile instances</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="VfsFiles.files" href="htmlsrc/tango.io.vfs.model.Vfs.html#L398">files</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFiles.files" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the total number of entries</div></div></dd>
+<dt class="decl"><span class="rettyp">ulong</span> <a class="symbol _function" name="VfsFiles.bytes" href="htmlsrc/tango.io.vfs.model.Vfs.html#L406">bytes</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFiles.bytes" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the total size of all files</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="VfsFile" href="htmlsrc/tango.io.vfs.model.Vfs.html#L416">VfsFile</a> <a href="tango.io.vfs.model.Vfs.html#VfsFile" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A specific file representation</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="VfsFile.name" href="htmlsrc/tango.io.vfs.model.Vfs.html#L424">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFile.name" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a short name</div></div></dd>
+<dt class="decl"><span class="rettyp">immutable(char)[]</span> <a class="symbol _function" name="VfsFile.toString" href="htmlsrc/tango.io.vfs.model.Vfs.html#L432">toString</a><span class="params">()</span> <a href="tango.io.vfs.model.Vfs.html#VfsFile.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a long name</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="VfsFile.exists" href="htmlsrc/tango.io.vfs.model.Vfs.html#L440">exists</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFile.exists" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Does this file exist?</div></div></dd>
+<dt class="decl"><span class="rettyp">ulong</span> <a class="symbol _function" name="VfsFile.size" href="htmlsrc/tango.io.vfs.model.Vfs.html#L448">size</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFile.size" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the file size</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="VfsFile.copy" href="htmlsrc/tango.io.vfs.model.Vfs.html#L456">copy</a><span class="params">(VfsFile <em>source</em>)</span> <a href="tango.io.vfs.model.Vfs.html#VfsFile.copy" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create and copy the given source</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="VfsFile.move" href="htmlsrc/tango.io.vfs.model.Vfs.html#L464">move</a><span class="params">(VfsFile <em>source</em>)</span> <a href="tango.io.vfs.model.Vfs.html#VfsFile.move" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create and copy the given source, and remove the source</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="VfsFile.create" href="htmlsrc/tango.io.vfs.model.Vfs.html#L472">create</a><span class="params">()</span> <a href="tango.io.vfs.model.Vfs.html#VfsFile.create" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a new file instance</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="VfsFile.create:2" href="htmlsrc/tango.io.vfs.model.Vfs.html#L480">create</a><span class="params">(InputStream <em>stream</em>)</span> <a href="tango.io.vfs.model.Vfs.html#VfsFile.create:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a new file instance and populate with stream</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="VfsFile.remove" href="htmlsrc/tango.io.vfs.model.Vfs.html#L488">remove</a><span class="params">()</span> <a href="tango.io.vfs.model.Vfs.html#VfsFile.remove" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove this file</div></div></dd>
+<dt class="decl"><span class="rettyp">InputStream</span> <a class="symbol _function" name="VfsFile.input" href="htmlsrc/tango.io.vfs.model.Vfs.html#L496">input</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFile.input" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the input stream. Don't forget to close it</div></div></dd>
+<dt class="decl"><span class="rettyp">OutputStream</span> <a class="symbol _function" name="VfsFile.output" href="htmlsrc/tango.io.vfs.model.Vfs.html#L504">output</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFile.output" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the output stream. Don't forget to close it</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="VfsFile.dup" href="htmlsrc/tango.io.vfs.model.Vfs.html#L512">dup</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFile.dup" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Duplicate this entry</div></div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="VfsFile.modified" href="htmlsrc/tango.io.vfs.model.Vfs.html#L520">modified</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFile.modified" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The modified time of the folder</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="VfsFolderEntry" href="htmlsrc/tango.io.vfs.model.Vfs.html#L530">VfsFolderEntry</a> <a href="tango.io.vfs.model.Vfs.html#VfsFolderEntry" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Handler for folder operations. Needs some work ...</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="VfsFolderEntry.open" href="htmlsrc/tango.io.vfs.model.Vfs.html#L538">open</a><span class="params">()</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolderEntry.open" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Open a folder</div></div></dd>
+<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="VfsFolderEntry.create" href="htmlsrc/tango.io.vfs.model.Vfs.html#L546">create</a><span class="params">()</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolderEntry.create" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a new folder</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="VfsFolderEntry.exists" href="htmlsrc/tango.io.vfs.model.Vfs.html#L554">exists</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.vfs.model.Vfs.html#VfsFolderEntry.exists" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Test to see if a folder exists</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="VfsSync" href="htmlsrc/tango.io.vfs.model.Vfs.html#L567">VfsSync</a> <a href="tango.io.vfs.model.Vfs.html#VfsSync" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Would be used for things like zip files, where the
+    implementation mantains the contents in memory or on disk, and where
+    the actual zip file isn't/shouldn't be written until one is finished
+    filling it up (for zip due to inefficient file format).</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="VfsSync.sync" href="htmlsrc/tango.io.vfs.model.Vfs.html#L573">sync</a><span class="params">()</span> <a href="tango.io.vfs.model.Vfs.html#VfsSync.sync" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2007 Tango. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:55 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

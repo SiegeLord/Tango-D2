@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.math.random.Ziggurat</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.math.random.Ziggurat">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.math.random.Ziggurat"><a href="htmlsrc/tango.math.random.Ziggurat.html" class="symbol">tango.math.random.Ziggurat</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: July 2008</div>
+<p class="sec_header">Author:</p><div class="cmnt">Fawzi Mohamed</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Ziggurat" href="htmlsrc/tango.math.random.Ziggurat.html#L20">Ziggurat</a><span class="tparams">(<em>RandG</em>, <em>T</em>, <span class="kw">alias</span> <em>probDensityF</em>, <span class="kw">alias</span> <em>tailGenerator</em>, bool <em>hasNegative</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.math.random.Ziggurat.html#Ziggurat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">ziggurat method for decreasing distributions.
+ Marsaglia, Tsang, Journal of Statistical Software, 2000
+ If has negative is true the distribution is assumed to be symmetric with respect to 0, 
+ otherwise it is assumed to be from 0 to infinity.
+ Struct based to avoid extra indirection when wrapped in a class (and it should be wrapped
+ in a class and not used directly).
+ Call style initialization avoided on purpose (this is a big structure, you don't want to return it)</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">Ziggurat</span> <a class="symbol _function" name="Ziggurat.create" href="htmlsrc/tango.math.random.Ziggurat.html#L28">create</a><span class="tparams">(<span class="kw">alias</span> <em>invProbDensityF</em>, <span class="kw">alias</span> <em>cumProbDensityFCompl</em>)</span><span class="params">(RandG <em>rGenerator</em>, real <em>xLast</em> = <span class="defval">-<span class="n">1.0L</span></span>, bool <em>check_error</em> = <span class="defval"><span class="k">true</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.Ziggurat.html#Ziggurat.create" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes the ziggurat</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="Ziggurat.getFastRandom" href="htmlsrc/tango.math.random.Ziggurat.html#L99">getFastRandom</a><span class="params">()</span> <a href="tango.math.random.Ziggurat.html#Ziggurat.getFastRandom" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a single value with the probability distribution of the current Ziggurat
+ and slightly worse randomness (in the normal case uses only 32 random bits).
+ Cannot be 0.</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="Ziggurat.getRandom" href="htmlsrc/tango.math.random.Ziggurat.html#L133">getRandom</a><span class="params">()</span> <a href="tango.math.random.Ziggurat.html#Ziggurat.getRandom" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a single value with the probability distribution of the current Ziggurat</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="Ziggurat.randomize" href="htmlsrc/tango.math.random.Ziggurat.html#L165">randomize</a><span class="tparams">(<em>U</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.Ziggurat.html#Ziggurat.randomize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes the argument with the probability distribution given and returns it
+ for arrays this might potentially be faster than a naive loop</div></div></dd>
+<dt class="decl"><span class="kw">template</span> <a class="symbol _template" name="Ziggurat.randomizeOp2" href="htmlsrc/tango.math.random.Ziggurat.html#L178">randomizeOp2</a><span class="tparams">(<span class="kw">alias</span> <em>op</em>)</span> <a href="tango.math.random.Ziggurat.html#Ziggurat.randomizeOp2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes the variable with the result of mapping op on the random numbers (of type T)</div></div>
+</dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="Ziggurat.randomizeOp" href="htmlsrc/tango.math.random.Ziggurat.html#L205">randomizeOp</a><span class="tparams">(<em>U</em>, <em>S</em>)</span><span class="params">(<span class="k">scope</span> S delegate(T) <em>op</em>, <span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.Ziggurat.html#Ziggurat.randomizeOp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes the variable with the result of mapping op on the random numbers (of type T)</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008. Fawzi Mohamed</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:56 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

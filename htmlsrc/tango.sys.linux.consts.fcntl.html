@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.sys.linux.consts.fcntl</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a><a id="L38" href="#L38">38</a><a id="L39" href="#L39">39</a><a id="L40" href="#L40">40</a><a id="L41" href="#L41">41</a><a id="L42" href="#L42">42</a></td>
+<td><td><pre class="sourcecode">
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">linux</span>.<span class="i">consts</span>.<span class="i">fcntl</span>;</span>
+<span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">stdc</span>.<span class="i">posix</span>.<span class="i">config</span>;</span>
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">core</span>.<span class="i">Octal</span>;</span>
+
+<span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Identifier"><span class="i">__USE_LARGEFILE64</span></span> )
+<span class="d Compound">{
+    <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_GETLK</span></span> = <span class="e Int"><span class="n">12</span></span></span> }</span>
+    <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_SETLK</span></span> = <span class="e Int"><span class="n">13</span></span></span> }</span>
+    <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_SETLKW</span></span> = <span class="e Int"><span class="n">14</span></span></span> }</span>
+}</span>
+<span class="k">else</span>
+<span class="d Compound">{
+    <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_GETLK</span></span> = <span class="e Int"><span class="n">5</span></span></span>  }</span>
+    <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_SETLK</span></span> = <span class="e Int"><span class="n">6</span></span></span>  }</span>
+    <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_SETLKW</span></span> = <span class="e Int"><span class="n">7</span></span></span> }</span>
+}</span></span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_DUPFD</span></span> = <span class="e Int"><span class="n">0</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_GETFD</span></span> = <span class="e Int"><span class="n">1</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_SETFD</span></span> = <span class="e Int"><span class="n">2</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_GETFL</span></span> = <span class="e Int"><span class="n">3</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_SETFL</span></span> = <span class="e Int"><span class="n">4</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_GETOWN</span></span> = <span class="e Int"><span class="n">9</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_SETOWN</span></span> = <span class="e Int"><span class="n">8</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">FD_CLOEXEC</span></span> = <span class="e Int"><span class="n">1</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_RDLCK</span></span> = <span class="e Int"><span class="n">0</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_UNLCK</span></span> = <span class="e Int"><span class="n">2</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">F_WRLCK</span></span> = <span class="e Int"><span class="n">1</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">O_CREAT</span></span> = <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">100</span></span>)</span></span></span>  }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">O_EXCL</span></span> = <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">200</span></span>)</span></span></span>  }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">O_NOCTTY</span></span> = <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">400</span></span>)</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">O_TRUNC</span></span> = <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">1000</span></span>)</span></span></span>  }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">O_NOFOLLOW</span></span> = <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">400000</span></span>)</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">O_APPEND</span></span> = <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">2000</span></span>)</span></span></span>  }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">O_NONBLOCK</span></span> = <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">4000</span></span>)</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">O_SYNC</span></span> = <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">10000</span></span>)</span></span></span>  }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">O_DSYNC</span></span> = <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">10000</span></span>)</span></span></span>  }</span> <span class="lc">// optional synchronized io</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">O_RSYNC</span></span> = <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">10000</span></span>)</span></span></span>  }</span> <span class="lc">// optional synchronized io</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">O_ACCMODE</span></span> = <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">3</span></span>)</span></span></span> }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">O_RDONLY</span></span> = <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">0</span></span>)</span></span></span>  }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">O_WRONLY</span></span> = <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">1</span></span>)</span></span></span>  }</span>
+<span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">O_RDWR</span></span> = <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">2</span></span>)</span></span></span>  }</span></span>
+
+</pre></td>
+</tr></table>
+</body>
+</html>

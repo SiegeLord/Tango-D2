@@ -1,0 +1,1517 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.xml.SaxParser</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.xml.SaxParser">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.xml.SaxParser"><a href="htmlsrc/tango.text.xml.SaxParser.html" class="symbol">tango.text.xml.SaxParser</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: February 2008</div>
+<p class="sec_header">Authors:</p><div class="cmnt">stonecobra, Kris</div>
+<p class="sec_header">Acknowledgements:</p><div class="cmnt">Many thanks to the entire group that came up with
+                   SAX as an API, and then had the foresight to place
+                   it into the public domain so that it can become a
+                   de-facto standard.  It may not be the best XML API, 
+                   but it sure is handy. For more information, see 
+                   <a href='http://www.saxproject.org'>http://www.saxproject.org</a>.</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Attribute" href="htmlsrc/tango.text.xml.SaxParser.html#L32">Attribute</a><span class="tparams">(<em>Ch</em> = <span class="defval">char</span>)</span> <a href="tango.text.xml.SaxParser.html#Attribute" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Single attributes are represented by this struct.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SaxHandler" href="htmlsrc/tango.text.xml.SaxParser.html#L79">SaxHandler</a><span class="tparams">(<em>Ch</em> = <span class="defval">char</span>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxHandler" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive notification of the logical content of a document.</div></div>
+<div class="cmnt"><p>This is the main interface that most SAX applications</div>
+<p class="sec_header">implement:</p><div class="cmnt">if the application needs to be informed of basic parsing 
+ events, it implements this interface and registers an instance with 
+ the SAX parser using the {@link org.xml.sax.XMLReader#setContentHandler 
+ setContentHandler} method.  The parser uses the instance to report 
+ basic document-related events like the start and end of elements 
+ and character data.</p>
+<p class="bl"></p>
+ <p>The order of events in this interface is very important, and
+ mirrors the order of information in the document itself.  For
+ example, all of an element's content (character data, processing
+ instructions, and/or subelements) will appear, in order, between
+ the startElement event and the corresponding endElement event.</p>
+<p class="bl"></p>
+ <p>This interface is similar to the now-deprecated SAX 1.0
+ DocumentHandler interface, but it adds support for Namespaces
+ and for reporting skipped entities (in non-validating XML
+ processors).</p>
+<p class="bl"></p>
+ <p>Implementors should note that there is also a 
+ <code>ContentHandler</code> class in the <code>java.net</code>
+ package; that means that it's probably a bad idea to do</p>
+<p class="bl"></p>
+ <pre>import java.net.*;
+ import org.xml.sax.*;
+ </pre>
+<p class="bl"></p>
+ <p>In fact, "import ...*" is usually a sign of sloppy programming
+ anyway, so the user should consider this a feature rather than a
+ bug.</p>
+<p class="bl"></p>
+ @since SAX 2.0
+ @author David Megginson
+ @version 2.0.1+ (sax2r3pre1)
+ @see org.xml.sax.XMLReader
+ @see org.xml.sax.ErrorHandler</div>
+<dl>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxHandler.setDocumentLocator" href="htmlsrc/tango.text.xml.SaxParser.html#L110">setDocumentLocator</a><span class="params">(Locator!(Ch) <em>locator</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxHandler.setDocumentLocator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive an object for locating the origin of SAX document events.</div></div>
+<div class="cmnt"><p>SAX parsers are strongly encouraged (though not absolutely
+ required) to supply a locator: if it does so, it must supply
+ the locator to the application by invoking this method before
+ invoking any of the other methods in the ContentHandler
+ interface.</p>
+<p class="bl"></p>
+ <p>The locator allows the application to determine the end
+ position of any document-related event, even if the parser is
+ not reporting an error.  Typically, the application will
+ use this information for reporting its own errors (such as
+ character content that does not match an application's
+ business rules).  The information returned by the locator
+ is probably not sufficient for use with a search engine.</p>
+<p class="bl"></p>
+ <p>Note that the locator will return correct information only
+ during the invocation SAX event callbacks after
+ {@link #startDocument startDocument} returns and before
+ {@link #endDocument endDocument} is called.  The
+ application should not attempt to use it at any other time.</p>
+<p class="bl"></p>
+ @param locator an object that can return the location of
+                any SAX document event
+ @see org.xml.sax.Locator</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxHandler.startDocument" href="htmlsrc/tango.text.xml.SaxParser.html#L126">startDocument</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxHandler.startDocument" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive notification of the beginning of a document.</div></div>
+<div class="cmnt"><p>The SAX parser will invoke this method only once, before any
+ other event callbacks (except for {@link #setDocumentLocator 
+ setDocumentLocator}).</p>
+<p class="bl"></p>
+ @throws org.xml.sax.SAXException any SAX exception, possibly
+            wrapping another exception
+ @see #endDocument</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxHandler.endDocument" href="htmlsrc/tango.text.xml.SaxParser.html#L152">endDocument</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxHandler.endDocument" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive notification of the end of a document.</div></div>
+<div class="cmnt"><p><strong>There is an apparent contradiction between the
+ documentation for this method and the documentation for {@link
+ org.xml.sax.ErrorHandler#fatalError}.  Until this ambiguity is
+ resolved in a future major release, clients should make no
+ assumptions about whether endDocument() will or will not be
+ invoked when the parser has reported a fatalError() or thrown
+ an exception.</strong></p>
+<p class="bl"></p>
+ <p>The SAX parser will invoke this method only once, and it will
+ be the last method invoked during the parse.  The parser shall
+ not invoke this method until it has either abandoned parsing
+ (because of an unrecoverable error) or reached the end of
+ input.</p>
+<p class="bl"></p>
+ @throws org.xml.sax.SAXException any SAX exception, possibly
+            wrapping another exception
+ @see #startDocument</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxHandler.startPrefixMapping" href="htmlsrc/tango.text.xml.SaxParser.html#L195">startPrefixMapping</a><span class="params">(const(Ch)[] <em>prefix</em>, const(Ch)[] <em>uri</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxHandler.startPrefixMapping" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Begin the scope of a prefix-URI Namespace mapping.</div></div>
+<div class="cmnt"><p>The information from this event is not necessary for
+ normal Namespace processing: the SAX XML reader will 
+ automatically replace prefixes for element and attribute
+ names when the <code>http://xml.org/sax/features/namespaces</code>
+ feature is <var>true</var> (the default).</p>
+<p class="bl"></p>
+ <p>There are cases, however, when applications need to
+ use prefixes in character data or in attribute values,
+ where they cannot safely be expanded automatically; the
+ start/endPrefixMapping event supplies the information
+ to the application to expand prefixes in those contexts
+ itself, if necessary.</p>
+<p class="bl"></p>
+ <p>Note that start/endPrefixMapping events are not
+ guaranteed to be properly nested relative to each other:
+ all startPrefixMapping events will occur immediately before the
+ corresponding {@link #startElement startElement} event, 
+ and all {@link #endPrefixMapping endPrefixMapping}
+ events will occur immediately after the corresponding
+ {@link #endElement endElement} event,
+ but their order is not otherwise 
+ guaranteed.</p>
+<p class="bl"></p>
+ <p>There should never be start/endPrefixMapping events for the
+ "xml" prefix, since it is predeclared and immutable.</p>
+<p class="bl"></p>
+ @param prefix the Namespace prefix being declared.
+ An empty string is used for the default element namespace,
+ which has no prefix.
+ @param uri the Namespace URI the prefix is mapped to
+ @throws org.xml.sax.SAXException the client may throw
+            an exception during processing
+ @see #endPrefixMapping
+ @see #startElement</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxHandler.endPrefixMapping" href="htmlsrc/tango.text.xml.SaxParser.html#L216">endPrefixMapping</a><span class="params">(const(Ch)[] <em>prefix</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxHandler.endPrefixMapping" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">End the scope of a prefix-URI mapping.</div></div>
+<div class="cmnt"><p>See {@link #startPrefixMapping startPrefixMapping} for 
+ details.  These events will always occur immediately after the
+ corresponding {@link #endElement endElement} event, but the order of 
+ {@link #endPrefixMapping endPrefixMapping} events is not otherwise
+ guaranteed.</p>
+<p class="bl"></p>
+ @param prefix the prefix that was being mapped.
+ This is the empty string when a default mapping scope ends.
+ @throws org.xml.sax.SAXException the client may throw
+            an exception during processing
+ @see #startPrefixMapping
+ @see #endElement</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxHandler.startElement" href="htmlsrc/tango.text.xml.SaxParser.html#L285">startElement</a><span class="params">(const(Ch)[] <em>uri</em>, const(Ch)[] <em>localName</em>, const(Ch)[] <em>qName</em>, Attribute!(Ch)[] <em>atts</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxHandler.startElement" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive notification of the beginning of an element.</div></div>
+<div class="cmnt"><p>The Parser will invoke this method at the beginning of every
+ element in the XML document; there will be a corresponding
+ {@link #endElement endElement} event for every startElement event
+ (even when the element is empty). All of the element's content will be
+ reported, in order, before the corresponding endElement
+ event.</p>
+<p class="bl"></p>
+ <p>This event allows up to three name components for each</div>
+<p class="sec_header">element:</p><div class="cmnt"></p>
+<p class="bl"></p>
+ <ol>
+ <li>the Namespace URI;</li>
+ <li>the local name; and</li>
+ <li>the qualified (prefixed) name.</li>
+ </ol>
+<p class="bl"></p>
+ <p>Any or all of these may be provided, depending on the
+ values of the <var>http://xml.org/sax/features/namespaces</var>
+ and the <var>http://xml.org/sax/features/namespace-prefixes</var></div>
+<p class="sec_header">properties:</p><div class="cmnt"></p>
+<p class="bl"></p>
+ <ul>
+ <li>the Namespace URI and local name are required when 
+ the namespaces property is <var>true</var> (the default), and are
+ optional when the namespaces property is <var>false</var> (if one is
+ specified, both must be);</li>
+ <li>the qualified name is required when the namespace-prefixes property
+ is <var>true</var>, and is optional when the namespace-prefixes property
+ is <var>false</var> (the default).</li>
+ </ul>
+<p class="bl"></p>
+ <p>Note that the attribute list provided will contain only
+ attributes with explicit values (specified or defaulted):
+ #IMPLIED attributes will be omitted.  The attribute list
+ will contain attributes used for Namespace declarations
+ (xmlns* attributes) only if the
+ <code>http://xml.org/sax/features/namespace-prefixes</code>
+ property is true (it is false by default, and support for a 
+ true value is optional).</p>
+<p class="bl"></p>
+ <p>Like {@link #characters characters()}, attribute values may have
+ characters that need more than one <code>char</code> value.  </p>
+<p class="bl"></p>
+ @param uri the Namespace URI, or the empty string if the
+        element has no Namespace URI or if Namespace
+        processing is not being performed
+ @param localName the local name (without prefix), or the
+        empty string if Namespace processing is not being
+        performed
+ @param qName the qualified name (with prefix), or the
+        empty string if qualified names are not available
+ @param atts the attributes attached to the element.  If
+        there are no attributes, it shall be an empty
+        Attributes object.  The value of this object after
+        startElement returns is undefined
+ @throws org.xml.sax.SAXException any SAX exception, possibly
+            wrapping another exception
+ @see #endElement
+ @see org.xml.sax.Attributes
+ @see org.xml.sax.helpers.AttributesImpl</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxHandler.endElement" href="htmlsrc/tango.text.xml.SaxParser.html#L311">endElement</a><span class="params">(const(Ch)[] <em>uri</em>, const(Ch)[] <em>localName</em>, const(Ch)[] <em>qName</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxHandler.endElement" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive notification of the end of an element.</div></div>
+<div class="cmnt"><p>The SAX parser will invoke this method at the end of every
+ element in the XML document; there will be a corresponding
+ {@link #startElement startElement} event for every endElement 
+ event (even when the element is empty).</p>
+<p class="bl"></p>
+ <p>For information on the names, see startElement.</p>
+<p class="bl"></p>
+ @param uri the Namespace URI, or the empty string if the
+        element has no Namespace URI or if Namespace
+        processing is not being performed
+ @param localName the local name (without prefix), or the
+        empty string if Namespace processing is not being
+        performed
+ @param qName the qualified XML name (with prefix), or the
+        empty string if qualified names are not available
+ @throws org.xml.sax.SAXException any SAX exception, possibly
+            wrapping another exception</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxHandler.characters" href="htmlsrc/tango.text.xml.SaxParser.html#L359">characters</a><span class="params">(const(Ch)[] <em>ch</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxHandler.characters" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive notification of character data.</div></div>
+<div class="cmnt"><p>The Parser will call this method to report each chunk of
+ character data.  SAX parsers may return all contiguous character
+ data in a single chunk, or they may split it into several
+ chunks; however, all of the characters in any single event
+ must come from the same external entity so that the Locator
+ provides useful information.</p>
+<p class="bl"></p>
+ <p>The application must not attempt to read from the array
+ outside of the specified range.</p>
+<p class="bl"></p>
+ <p>Individual characters may consist of more than one Java
+ <code>char</code> value.  There are two important cases where this
+ happens, because characters can't be represented in just sixteen bits.
+ In one case, characters are represented in a <em>Surrogate Pair</em>,
+ using two special Unicode values. Such characters are in the so-called
+ "Astral Planes", with a code point above U+FFFF.  A second case involves
+ composite characters, such as a base character combining with one or
+ more accent characters. </p>
+<p class="bl"></p>
+ <p> Your code should not assume that algorithms using
+ <code>char</code>-at-a-time idioms will be working in character
+ units; in some cases they will split characters.  This is relevant
+ wherever XML permits arbitrary characters, such as attribute values,
+ processing instruction data, and comments as well as in data reported
+ from this method.  It's also generally relevant whenever Java code
+ manipulates internationalized text; the issue isn't unique to XML.</p>
+<p class="bl"></p>
+ <p>Note that some parsers will report whitespace in element
+ content using the {@link #ignorableWhitespace ignorableWhitespace}
+ method rather than this one (validating parsers <em>must</em> 
+ do so).</p>
+<p class="bl"></p>
+ @param ch the characters from the XML document
+ @param start the start position in the array
+ @param length the number of characters to read from the array
+ @throws org.xml.sax.SAXException any SAX exception, possibly
+            wrapping another exception
+ @see #ignorableWhitespace 
+ @see org.xml.sax.Locator</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxHandler.ignorableWhitespace" href="htmlsrc/tango.text.xml.SaxParser.html#L389">ignorableWhitespace</a><span class="params">(Ch[] <em>ch</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxHandler.ignorableWhitespace" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive notification of ignorable whitespace in element content.</div></div>
+<div class="cmnt"><p>Validating Parsers must use this method to report each chunk
+ of whitespace in element content (see the W3C XML 1.0
+ recommendation, section 2.10): non-validating parsers may also
+ use this method if they are capable of parsing and using
+ content models.</p>
+<p class="bl"></p>
+ <p>SAX parsers may return all contiguous whitespace in a single
+ chunk, or they may split it into several chunks; however, all of
+ the characters in any single event must come from the same
+ external entity, so that the Locator provides useful
+ information.</p>
+<p class="bl"></p>
+ <p>The application must not attempt to read from the array
+ outside of the specified range.</p>
+<p class="bl"></p>
+ @param ch the characters from the XML document
+ @param start the start position in the array
+ @param length the number of characters to read from the array
+ @throws org.xml.sax.SAXException any SAX exception, possibly
+            wrapping another exception
+ @see #characters</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxHandler.processingInstruction" href="htmlsrc/tango.text.xml.SaxParser.html#L416">processingInstruction</a><span class="params">(const(Ch)[] <em>target</em>, const(Ch)[] <em>data</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxHandler.processingInstruction" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive notification of a processing instruction.</div></div>
+<div class="cmnt"><p>The Parser will invoke this method once for each processing
+ instruction found: note that processing instructions may occur
+ before or after the main document element.</p>
+<p class="bl"></p>
+ <p>A SAX parser must never report an XML declaration (XML 1.0,
+ section 2.8) or a text declaration (XML 1.0, section 4.3.1)
+ using this method.</p>
+<p class="bl"></p>
+ <p>Like {@link #characters characters()}, processing instruction
+ data may have characters that need more than one <code>char</code>
+ value. </p>
+<p class="bl"></p>
+ @param target the processing instruction target
+ @param data the processing instruction data, or null if
+        none was supplied.  The data does not include any
+        whitespace separating it from the target
+ @throws org.xml.sax.SAXException any SAX exception, possibly
+            wrapping another exception</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxHandler.skippedEntity" href="htmlsrc/tango.text.xml.SaxParser.html#L446">skippedEntity</a><span class="params">(const(Ch)[] <em>name</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxHandler.skippedEntity" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive notification of a skipped entity.
+ This is not called for entity references within markup constructs
+ such as element start tags or markup declarations.  (The XML
+ recommendation requires reporting skipped external entities.
+ SAX also reports internal entity expansion/non-expansion, except
+ within markup constructs.)</div></div>
+<div class="cmnt"><p>The Parser will invoke this method each time the entity is
+ skipped.  Non-validating processors may skip entities if they
+ have not seen the declarations (because, for example, the
+ entity was declared in an external DTD subset).  All processors
+ may skip external entities, depending on the values of the
+ <code>http://xml.org/sax/features/external-general-entities</code>
+ and the
+ <code>http://xml.org/sax/features/external-parameter-entities</code>
+ properties.</p>
+<p class="bl"></p>
+ @param name the name of the skipped entity.  If it is a 
+        parameter entity, the name will begin with '%', and if
+        it is the external DTD subset, it will be the string
+        "[dtd]"
+ @throws org.xml.sax.SAXException any SAX exception, possibly
+            wrapping another exception</div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="EntityResolver" href="htmlsrc/tango.text.xml.SaxParser.html#L504">EntityResolver</a><span class="tparams">(<em>Ch</em> = <span class="defval">char</span>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#EntityResolver" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Basic interface for resolving entities.</div></div>
+<div class="cmnt"><p>If a SAX application needs to implement customized handling
+ for external entities, it must implement this interface and
+ register an instance with the SAX driver using the
+ {@link org.xml.sax.XMLReader#setEntityResolver setEntityResolver}
+ method.</p>
+<p class="bl"></p>
+ <p>The XML reader will then allow the application to intercept any
+ external entities (including the external DTD subset and external
+ parameter entities, if any) before including them.</p>
+<p class="bl"></p>
+ <p>Many SAX applications will not need to implement this interface,
+ but it will be especially useful for applications that build
+ XML documents from databases or other specialised input sources,
+ or for applications that use URI types other than URLs.</p>
+<p class="bl"></p>
+ <p>The following resolver would provide the application
+ with a special character stream for the entity with the system
+ identifier "http://www.myhost.com/today":</p>
+<p class="bl"></p>
+ <pre>
+ import org.xml.sax.EntityResolver;
+ import org.xml.sax.InputSource;
+<p class="bl"></p>
+ public class MyResolver implements EntityResolver {
+   public InputSource resolveEntity (String publicId, String systemId)
+   {
+     if (systemId.equals("http://www.myhost.com/today")) {
+              // return a special input source
+       MyReader reader = new MyReader();
+       return new InputSource(reader);
+     } else {
+              // use the default behaviour
+       return null;
+     }
+   }
+ }
+ </pre>
+<p class="bl"></p>
+ <p>The application can also use this interface to redirect system
+ identifiers to local URIs or to look up replacements in a catalog
+ (possibly by using the public identifier).</p>
+<p class="bl"></p>
+ @since SAX 1.0
+ @author David Megginson
+ @version 2.0.1 (sax2r2)
+ @see org.xml.sax.XMLReader#setEntityResolver
+ @see org.xml.sax.InputSource</div>
+<dl>
+<dt class="decl"><span class="rettyp">InputStream</span> <a class="symbol _function" name="EntityResolver.resolveEntity" href="htmlsrc/tango.text.xml.SaxParser.html#L548">resolveEntity</a><span class="params">(const(Ch)[] <em>publicId</em>, const(Ch)[] <em>systemId</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#EntityResolver.resolveEntity" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Allow the application to resolve external entities.</div></div>
+<div class="cmnt"><p>The parser will call this method before opening any external
+ entity except the top-level document entity.  Such entities include
+ the external DTD subset and external parameter entities referenced
+ within the DTD (in either case, only if the parser reads external
+ parameter entities), and external general entities referenced
+ within the document element (if the parser reads external general
+ entities).  The application may request that the parser locate
+ the entity itself, that it use an alternative URI, or that it
+ use data provided by the application (as a character or byte
+ input stream).</p>
+<p class="bl"></p>
+ <p>Application writers can use this method to redirect external
+ system identifiers to secure and/or local URIs, to look up
+ public identifiers in a catalogue, or to read an entity from a
+ database or other input source (including, for example, a dialog
+ box).  Neither XML nor SAX specifies a preferred policy for using
+ public or system IDs to resolve resources.  However, SAX specifies
+ how to interpret any InputSource returned by this method, and that
+ if none is returned, then the system ID will be dereferenced as
+ a URL.  </p>
+<p class="bl"></p>
+ <p>If the system identifier is a URL, the SAX parser must
+ resolve it fully before reporting it to the application.</p>
+<p class="bl"></p>
+ @param publicId The public identifier of the external entity
+        being referenced, or null if none was supplied.
+ @param systemId The system identifier of the external entity
+        being referenced.
+ @return An InputSource object describing the new input source,
+         or null to request that the parser open a regular
+         URI connection to the system identifier.
+ @exception org.xml.sax.SAXException Any SAX exception, possibly
+            wrapping another exception.
+ @exception java.io.IOException A Java-specific IO exception,
+            possibly the result of creating a new InputStream
+            or Reader for the InputSource.
+ @see org.xml.sax.InputSource</div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="ErrorHandler" href="htmlsrc/tango.text.xml.SaxParser.html#L585">ErrorHandler</a><span class="tparams">(<em>Ch</em> = <span class="defval">char</span>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#ErrorHandler" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Basic interface for SAX error handlers.</div></div>
+<div class="cmnt"><p>If a SAX application needs to implement customized error
+ handling, it must implement this interface and then register an
+ instance with the XML reader using the
+ {@link org.xml.sax.XMLReader#setErrorHandler setErrorHandler}
+ method.  The parser will then report all errors and warnings
+ through this interface.</p>
+<p class="bl"></p>
+ <p><strong>WARNING:</strong> If an application does <em>not</em>
+ register an ErrorHandler, XML parsing errors will go unreported,
+ except that <em>SAXParseException</em>s will be thrown for fatal errors.
+ In order to detect validity errors, an ErrorHandler that does something
+ with {@link #error error()} calls must be registered.</p>
+<p class="bl"></p>
+ <p>For XML processing errors, a SAX driver must use this interface 
+ in preference to throwing an exception: it is up to the application 
+ to decide whether to throw an exception for different types of 
+ errors and warnings.  Note, however, that there is no requirement that 
+ the parser continue to report additional errors after a call to 
+ {@link #fatalError fatalError}.  In other words, a SAX driver class 
+ may throw an exception after reporting any fatalError.
+ Also parsers may throw appropriate exceptions for non-XML errors.
+ For example, {@link XMLReader#parse XMLReader.parse()} would throw
+ an IOException for errors accessing entities or the document.</p>
+<p class="bl"></p>
+ @since SAX 1.0
+ @author David Megginson
+ @version 2.0.1+ (sax2r3pre1)
+ @see org.xml.sax.XMLReader#setErrorHandler
+ @see org.xml.sax.SAXParseException</div>
+<dl>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ErrorHandler.warning" href="htmlsrc/tango.text.xml.SaxParser.html#L608">warning</a><span class="params">(SAXException <em>exception</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#ErrorHandler.warning" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive notification of a warning.</div></div>
+<div class="cmnt"><p>SAX parsers will use this method to report conditions that
+ are not errors or fatal errors as defined by the XML
+ recommendation.  The default behaviour is to take no
+ action.</p>
+<p class="bl"></p>
+ <p>The SAX parser must continue to provide normal parsing events
+ after invoking this method: it should still be possible for the
+ application to process the document through to the end.</p>
+<p class="bl"></p>
+ <p>Filters may use this method to report other, non-XML warnings
+ as well.</p>
+<p class="bl"></p>
+ @param exception The warning information encapsulated in a
+                  SAX parse exception.
+ @exception org.xml.sax.SAXException Any SAX exception, possibly
+            wrapping another exception.
+ @see org.xml.sax.SAXParseException</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ErrorHandler.error" href="htmlsrc/tango.text.xml.SaxParser.html#L635">error</a><span class="params">(SAXException <em>exception</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#ErrorHandler.error" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive notification of a recoverable error.</div></div>
+<div class="cmnt"><p>This corresponds to the definition of "error" in section 1.2
+ of the W3C XML 1.0 Recommendation.  For example, a validating
+ parser would use this callback to report the violation of a
+ validity constraint.  The default behaviour is to take no
+ action.</p>
+<p class="bl"></p>
+ <p>The SAX parser must continue to provide normal parsing
+ events after invoking this method: it should still be possible
+ for the application to process the document through to the end.
+ If the application cannot do so, then the parser should report
+ a fatal error even if the XML recommendation does not require
+ it to do so.</p>
+<p class="bl"></p>
+ <p>Filters may use this method to report other, non-XML errors
+ as well.</p>
+<p class="bl"></p>
+ @param exception The error information encapsulated in a
+                  SAX parse exception.
+ @exception org.xml.sax.SAXException Any SAX exception, possibly
+            wrapping another exception.
+ @see org.xml.sax.SAXParseException</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ErrorHandler.fatalError" href="htmlsrc/tango.text.xml.SaxParser.html#L665">fatalError</a><span class="params">(SAXException <em>exception</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#ErrorHandler.fatalError" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive notification of a non-recoverable error.</div></div>
+<div class="cmnt"><p><strong>There is an apparent contradiction between the
+ documentation for this method and the documentation for {@link
+ org.xml.sax.ContentHandler#endDocument}.  Until this ambiguity
+ is resolved in a future major release, clients should make no
+ assumptions about whether endDocument() will or will not be
+ invoked when the parser has reported a fatalError() or thrown
+ an exception.</strong></p>
+<p class="bl"></p>
+ <p>This corresponds to the definition of "fatal error" in
+ section 1.2 of the W3C XML 1.0 Recommendation.  For example, a
+ parser would use this callback to report the violation of a
+ well-formedness constraint.</p>
+<p class="bl"></p>
+ <p>The application must assume that the document is unusable
+ after the parser has invoked this method, and should continue
+ (if at all) only for the sake of collecting additional error</div>
+<p class="sec_header">messages:</p><div class="cmnt">in fact, SAX parsers are free to stop reporting any
+ other events once this method has been invoked.</p>
+<p class="bl"></p>
+ @param exception The error information encapsulated in a
+                  SAX parse exception.  
+ @exception org.xml.sax.SAXException Any SAX exception, possibly
+            wrapping another exception.
+ @see org.xml.sax.SAXParseException</div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="Locator" href="htmlsrc/tango.text.xml.SaxParser.html#L698">Locator</a><span class="tparams">(<em>Ch</em> = <span class="defval">char</span>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#Locator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Interface for associating a SAX event with a document location.</div></div>
+<div class="cmnt"><p>If a SAX parser provides location information to the SAX
+ application, it does so by implementing this interface and then
+ passing an instance to the application using the content
+ handler's {@link org.xml.sax.ContentHandler#setDocumentLocator
+ setDocumentLocator} method.  The application can use the
+ object to obtain the location of any other SAX event
+ in the XML source document.</p>
+<p class="bl"></p>
+ <p>Note that the results returned by the object will be valid only
+ during the scope of each callback method: the application
+ will receive unpredictable results if it attempts to use the
+ locator at any other time, or after parsing completes.</p>
+<p class="bl"></p>
+ <p>SAX parsers are not required to supply a locator, but they are
+ very strongly encouraged to do so.  If the parser supplies a
+ locator, it must do so before reporting any other document events.
+ If no locator has been set by the time the application receives
+ the {@link org.xml.sax.ContentHandler#startDocument startDocument}
+ event, the application should assume that a locator is not 
+ available.</p>
+<p class="bl"></p>
+ @since SAX 1.0
+ @author David Megginson
+ @version 2.0.1 (sax2r2)
+ @see org.xml.sax.ContentHandler#setDocumentLocator</div>
+<dl>
+<dt class="decl"><span class="rettyp">const(Ch)[]</span> <a class="symbol _function" name="Locator.getPublicId" href="htmlsrc/tango.text.xml.SaxParser.html#L711">getPublicId</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#Locator.getPublicId" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the public identifier for the current document event.</div></div>
+<div class="cmnt"><p>The return value is the public identifier of the document
+ entity or of the external parsed entity in which the markup
+ triggering the event appears.</p>
+<p class="bl"></p>
+ @return A string containing the public identifier, or
+         null if none is available.
+ @see #getSystemId</div></dd>
+<dt class="decl"><span class="rettyp">const(Ch)[]</span> <a class="symbol _function" name="Locator.getSystemId" href="htmlsrc/tango.text.xml.SaxParser.html#L729">getSystemId</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#Locator.getSystemId" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the system identifier for the current document event.</div></div>
+<div class="cmnt"><p>The return value is the system identifier of the document
+ entity or of the external parsed entity in which the markup
+ triggering the event appears.</p>
+<p class="bl"></p>
+ <p>If the system identifier is a URL, the parser must resolve it
+ fully before passing it to the application.  For example, a file
+ name must always be provided as a <em>file:...</em> URL, and other
+ kinds of relative URI are also resolved against their bases.</p>
+<p class="bl"></p>
+ @return A string containing the system identifier, or null
+         if none is available.
+ @see #getPublicId</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Locator.getLineNumber" href="htmlsrc/tango.text.xml.SaxParser.html#L755">getLineNumber</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#Locator.getLineNumber" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the line number where the current document event ends.
+ Lines are delimited by line ends, which are defined in
+ the XML specification.</div></div>
+<div class="cmnt"><p><strong>Warning:</strong> The return value from the method
+ is intended only as an approximation for the sake of diagnostics;
+ it is not intended to provide sufficient information
+ to edit the character content of the original XML document.
+ In some cases, these "line" numbers match what would be displayed
+ as columns, and in others they may not match the source text
+ due to internal entity expansion.  </p>
+<p class="bl"></p>
+ <p>The return value is an approximation of the line number
+ in the document entity or external parsed entity where the
+ markup triggering the event appears.</p>
+<p class="bl"></p>
+ <p>If possible, the SAX driver should provide the line position 
+ of the first character after the text associated with the document 
+ event.  The first line is line 1.</p>
+<p class="bl"></p>
+ @return The line number, or -1 if none is available.
+ @see #getColumnNumber</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Locator.getColumnNumber" href="htmlsrc/tango.text.xml.SaxParser.html#L781">getColumnNumber</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#Locator.getColumnNumber" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the column number where the current document event ends.
+ This is one-based number of Java <code>char</code> values since
+ the last line end.</div></div>
+<div class="cmnt"><p><strong>Warning:</strong> The return value from the method
+ is intended only as an approximation for the sake of diagnostics;
+ it is not intended to provide sufficient information
+ to edit the character content of the original XML document.
+ For example, when lines contain combining character sequences, wide
+ characters, surrogate pairs, or bi-directional text, the value may
+ not correspond to the column in a text editor's display. </p>
+<p class="bl"></p>
+ <p>The return value is an approximation of the column number
+ in the document entity or external parsed entity where the
+ markup triggering the event appears.</p>
+<p class="bl"></p>
+ <p>If possible, the SAX driver should provide the line position 
+ of the first character after the text associated with the document 
+ event.  The first column in each line is column 1.</p>
+<p class="bl"></p>
+ @return The column number, or -1 if none is available.
+ @see #getLineNumber</div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SAXException" href="htmlsrc/tango.text.xml.SaxParser.html#L808">SAXException</a> : <span class="bclass">Exception</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SAXException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Encapsulate a general SAX error or warning.</div></div>
+<div class="cmnt"><p>This class can contain basic error or warning information from
+ either the XML parser or the application: a parser writer or
+ application writer can subclass it to provide additional
+ functionality.  SAX handlers may throw this exception or
+ any exception subclassed from it.</p>
+<p class="bl"></p>
+ <p>If the application needs to pass through other types of
+ exceptions, it must wrap those exceptions in a SAXException
+ or an exception derived from a SAXException.</p>
+<p class="bl"></p>
+ <p>If the parser or application needs to include information about a
+ specific location in an XML document, it should use the
+ {@link org.xml.sax.SAXParseException SAXParseException} subclass.</p>
+<p class="bl"></p>
+ @since SAX 1.0
+ @author David Megginson
+ @version 2.0.1 (sax2r2)
+ @see org.xml.sax.SAXParseException</div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="SAXException.this" href="htmlsrc/tango.text.xml.SaxParser.html#L813">this</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SAXException.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a new SAXException.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="SAXException.this:2" href="htmlsrc/tango.text.xml.SaxParser.html#L822">this</a><span class="params">(immutable(char)[] <em>message</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SAXException.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a new SAXException.</div></div>
+<div class="cmnt">@param message The error or warning message.</div></dd>
+<dt class="decl"><a class="symbol _ctor" name="SAXException.this:3" href="htmlsrc/tango.text.xml.SaxParser.html#L835">this</a><span class="params">(Exception <em>e</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SAXException.this:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a new SAXException wrapping an existing exception.</div></div>
+<div class="cmnt"><p>The existing exception will be embedded in the new
+ one, and its message will become the default message for
+ the SAXException.</p>
+<p class="bl"></p>
+ @param e The exception to be wrapped in a SAXException.</div></dd>
+<dt class="decl"><a class="symbol _ctor" name="SAXException.this:4" href="htmlsrc/tango.text.xml.SaxParser.html#L848">this</a><span class="params">(immutable(char)[] <em>message</em>, Exception <em>e</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SAXException.this:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a new SAXException from an existing exception.</div></div>
+<div class="cmnt"><p>The existing exception will be embedded in the new
+ one, but the new exception will have its own message.</p>
+<p class="bl"></p>
+ @param message The detail message.
+ @param e The exception to be wrapped in a SAXException.</div></dd>
+<dt class="decl"><span class="rettyp">immutable(char)[]</span> <a class="symbol _function" name="SAXException.message" href="htmlsrc/tango.text.xml.SaxParser.html#L861">message</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SAXException.message" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a detail message for this exception.</div></div>
+<div class="cmnt"><p>If there is an embedded exception, and if the SAXException
+ has no detail message of its own, this method will return
+ the detail message from the embedded exception.</p>
+<p class="bl"></p>
+ @return The error or warning message.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SaxParser" href="htmlsrc/tango.text.xml.SaxParser.html#L874">SaxParser</a><span class="tparams">(<em>Ch</em> = <span class="defval">char</span>)</span> : <span class="bclass">XMLReader!(Ch)</span>, <span class="bclass">Locator!(Ch)</span> <a href="tango.text.xml.SaxParser.html#SaxParser" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="SaxParser.this" href="htmlsrc/tango.text.xml.SaxParser.html#L888">this</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SaxParser.getFeature" href="htmlsrc/tango.text.xml.SaxParser.html#L951">getFeature</a><span class="params">(const(Ch)[] <em>name</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.getFeature" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Look up the value of a feature flag.</div></div>
+<div class="cmnt"><p>The feature name is any fully-qualified URI.  It is
+ possible for an XMLReader to recognize a feature name but
+ temporarily be unable to return its value.
+ Some feature values may be available only in specific
+ contexts, such as before, during, or after a parse.
+ Also, some feature values may not be programmatically accessible.
+ (In the case of an adapter for SAX1 {@link Parser}, there is no
+ implementation-independent way to expose whether the underlying
+ parser is performing validation, expanding external entities,
+ and so forth.) </p>
+<p class="bl"></p>
+ <p>All XMLReaders are required to recognize the
+ http://xml.org/sax/features/namespaces and the
+ http://xml.org/sax/features/namespace-prefixes feature names.</p>
+<p class="bl"></p>
+ <p>Typical usage is something like this:</p>
+<p class="bl"></p>
+ <pre>
+ XMLReader r = new MySAXDriver();
+<p class="bl"></p>
+                         // try to activate validation
+ try {
+   r.setFeature("http://xml.org/sax/features/validation", true);
+ } catch (SAXException e) {
+   System.err.println("Cannot activate validation."); 
+ }
+<p class="bl"></p>
+                         // register event handlers
+ r.setContentHandler(new MyContentHandler());
+ r.setErrorHandler(new MyErrorHandler());
+<p class="bl"></p>
+                         // parse the first document
+ try {
+   r.parse("http://www.foo.com/mydoc.xml");
+ } catch (IOException e) {
+   System.err.println("I/O exception reading XML document");
+ } catch (SAXException e) {
+   System.err.println("XML exception reading document.");
+ }
+ </pre>
+<p class="bl"></p>
+ <p>Implementors are free (and encouraged) to invent their own features,
+ using names built on their own URIs.</p>
+<p class="bl"></p>
+ @param name The feature name, which is a fully-qualified URI.
+ @return The current value of the feature (true or false).
+ @exception org.xml.sax.SAXNotRecognizedException If the feature
+            value can't be assigned or retrieved.
+ @exception org.xml.sax.SAXNotSupportedException When the
+            XMLReader recognizes the feature name but 
+            cannot determine its value at this time.
+ @see #setFeature</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxParser.setFeature" href="htmlsrc/tango.text.xml.SaxParser.html#L978">setFeature</a><span class="params">(const(Ch)[] <em>name</em>, bool <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.setFeature" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the value of a feature flag.</div></div>
+<div class="cmnt"><p>The feature name is any fully-qualified URI.  It is
+ possible for an XMLReader to expose a feature value but
+ to be unable to change the current value.
+ Some feature values may be immutable or mutable only 
+ in specific contexts, such as before, during, or after 
+ a parse.</p>
+<p class="bl"></p>
+ <p>All XMLReaders are required to support setting
+ http://xml.org/sax/features/namespaces to true and
+ http://xml.org/sax/features/namespace-prefixes to false.</p>
+<p class="bl"></p>
+ @param name The feature name, which is a fully-qualified URI.
+ @param value The requested value of the feature (true or false).
+ @exception org.xml.sax.SAXNotRecognizedException If the feature
+            value can't be assigned or retrieved.
+ @exception org.xml.sax.SAXNotSupportedException When the
+            XMLReader recognizes the feature name but 
+            cannot set the requested value.
+ @see #getFeature</div></dd>
+<dt class="decl"><span class="rettyp">Object</span> <a class="symbol _function" name="SaxParser.getProperty" href="htmlsrc/tango.text.xml.SaxParser.html#L1007">getProperty</a><span class="params">(const(Ch)[] <em>name</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.getProperty" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Look up the value of a property.</div></div>
+<div class="cmnt"><p>The property name is any fully-qualified URI.  It is
+ possible for an XMLReader to recognize a property name but
+ temporarily be unable to return its value.
+ Some property values may be available only in specific
+ contexts, such as before, during, or after a parse.</p>
+<p class="bl"></p>
+ <p>XMLReaders are not required to recognize any specific
+ property names, though an initial core set is documented for
+ SAX2.</p>
+<p class="bl"></p>
+ <p>Implementors are free (and encouraged) to invent their own properties,
+ using names built on their own URIs.</p>
+<p class="bl"></p>
+ @param name The property name, which is a fully-qualified URI.
+ @return The current value of the property.
+ @exception org.xml.sax.SAXNotRecognizedException If the property
+            value can't be assigned or retrieved.
+ @exception org.xml.sax.SAXNotSupportedException When the
+            XMLReader recognizes the property name but 
+            cannot determine its value at this time.
+ @see #setProperty</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxParser.setProperty" href="htmlsrc/tango.text.xml.SaxParser.html#L1036">setProperty</a><span class="params">(const(Ch)[] <em>name</em>, Object <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.setProperty" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the value of a property.</div></div>
+<div class="cmnt"><p>The property name is any fully-qualified URI.  It is
+ possible for an XMLReader to recognize a property name but
+ to be unable to change the current value.
+ Some property values may be immutable or mutable only 
+ in specific contexts, such as before, during, or after 
+ a parse.</p>
+<p class="bl"></p>
+ <p>XMLReaders are not required to recognize setting
+ any specific property names, though a core set is defined by 
+ SAX2.</p>
+<p class="bl"></p>
+ <p>This method is also the standard mechanism for setting
+ extended handlers.</p>
+<p class="bl"></p>
+ @param name The property name, which is a fully-qualified URI.
+ @param value The requested value for the property.
+ @exception org.xml.sax.SAXNotRecognizedException If the property
+            value can't be assigned or retrieved.
+ @exception org.xml.sax.SAXNotSupportedException When the
+            XMLReader recognizes the property name but 
+            cannot set the requested value.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxParser.setEntityResolver" href="htmlsrc/tango.text.xml.SaxParser.html#L1056">setEntityResolver</a><span class="params">(EntityResolver!(Ch) <em>resolver</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.setEntityResolver" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Allow an application to register an entity resolver.</div></div>
+<div class="cmnt"><p>If the application does not register an entity resolver,
+ the XMLReader will perform its own default resolution.</p>
+<p class="bl"></p>
+ <p>Applications may register a new or different resolver in the
+ middle of a parse, and the SAX parser must begin using the new
+ resolver immediately.</p>
+<p class="bl"></p>
+ @param resolver The entity resolver.
+ @see #getEntityResolver</div></dd>
+<dt class="decl"><span class="rettyp">EntityResolver!(Ch)</span> <a class="symbol _function" name="SaxParser.getEntityResolver" href="htmlsrc/tango.text.xml.SaxParser.html#L1067">getEntityResolver</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.getEntityResolver" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the current entity resolver.</div></div>
+<div class="cmnt">@return The current entity resolver, or null if none
+         has been registered.
+ @see #setEntityResolver</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxParser.setSaxHandler" href="htmlsrc/tango.text.xml.SaxParser.html#L1085">setSaxHandler</a><span class="params">(SaxHandler!(Ch) <em>handler</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.setSaxHandler" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Allow an application to register a content event handler.</div></div>
+<div class="cmnt"><p>If the application does not register a content handler, all
+ content events reported by the SAX parser will be silently
+ ignored.</p>
+<p class="bl"></p>
+ <p>Applications may register a new or different handler in the
+ middle of a parse, and the SAX parser must begin using the new
+ handler immediately.</p>
+<p class="bl"></p>
+ @param handler The content handler.
+ @see #getContentHandler</div></dd>
+<dt class="decl"><span class="rettyp">SaxHandler!(Ch)</span> <a class="symbol _function" name="SaxParser.getSaxHandler" href="htmlsrc/tango.text.xml.SaxParser.html#L1096">getSaxHandler</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.getSaxHandler" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the current content handler.</div></div>
+<div class="cmnt">@return The current content handler, or null if none
+         has been registered.
+ @see #setContentHandler</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxParser.setErrorHandler" href="htmlsrc/tango.text.xml.SaxParser.html#L1116">setErrorHandler</a><span class="params">(ErrorHandler!(Ch) <em>handler</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.setErrorHandler" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Allow an application to register an error event handler.</div></div>
+<div class="cmnt"><p>If the application does not register an error handler, all
+ error events reported by the SAX parser will be silently
+ ignored; however, normal processing may not continue.  It is
+ highly recommended that all SAX applications implement an
+ error handler to avoid unexpected bugs.</p>
+<p class="bl"></p>
+ <p>Applications may register a new or different handler in the
+ middle of a parse, and the SAX parser must begin using the new
+ handler immediately.</p>
+<p class="bl"></p>
+ @param handler The error handler.
+ @see #getErrorHandler</div></dd>
+<dt class="decl"><span class="rettyp">ErrorHandler!(Ch)</span> <a class="symbol _function" name="SaxParser.getErrorHandler" href="htmlsrc/tango.text.xml.SaxParser.html#L1127">getErrorHandler</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.getErrorHandler" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the current error handler.</div></div>
+<div class="cmnt">@return The current error handler, or null if none
+         has been registered.
+ @see #setErrorHandler</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxParser.parse" href="htmlsrc/tango.text.xml.SaxParser.html#L1218">parse</a><span class="params">(const(Ch)[] <em>content</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse an XML document from a character array.</div></div>
+<div class="cmnt">@param content The actual document content.
+ @exception org.xml.sax.SAXException Any SAX exception, possibly
+            wrapping another exception.
+ @exception java.io.IOException An IO exception from the parser,
+            possibly from a byte stream or character stream
+            supplied by the application.
+ @see #parse(org.xml.sax.InputSource)</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxParser.parse:2" href="htmlsrc/tango.text.xml.SaxParser.html#L1225">parse</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.parse:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxParser.setContent" href="htmlsrc/tango.text.xml.SaxParser.html#L1231">setContent</a><span class="params">(const(Ch)[] <em>content</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.setContent" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SaxParser.reset" href="htmlsrc/tango.text.xml.SaxParser.html#L1241">reset</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">const(Ch)[]</span> <a class="symbol _function" name="SaxParser.getPublicId" href="htmlsrc/tango.text.xml.SaxParser.html#L1319">getPublicId</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.getPublicId" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the public identifier for the current document event.</div></div>
+<div class="cmnt"><p>The return value is the public identifier of the document
+ entity or of the external parsed entity in which the markup
+ triggering the event appears.</p>
+<p class="bl"></p>
+ @return A string containing the public identifier, or
+         null if none is available.
+ @see #getSystemId</div></dd>
+<dt class="decl"><span class="rettyp">const(Ch)[]</span> <a class="symbol _function" name="SaxParser.getSystemId" href="htmlsrc/tango.text.xml.SaxParser.html#L1339">getSystemId</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.getSystemId" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the system identifier for the current document event.</div></div>
+<div class="cmnt"><p>The return value is the system identifier of the document
+ entity or of the external parsed entity in which the markup
+ triggering the event appears.</p>
+<p class="bl"></p>
+ <p>If the system identifier is a URL, the parser must resolve it
+ fully before passing it to the application.  For example, a file
+ name must always be provided as a <em>file:...</em> URL, and other
+ kinds of relative URI are also resolved against their bases.</p>
+<p class="bl"></p>
+ @return A string containing the system identifier, or null
+         if none is available.
+ @see #getPublicId</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="SaxParser.getLineNumber" href="htmlsrc/tango.text.xml.SaxParser.html#L1367">getLineNumber</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.getLineNumber" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the line number where the current document event ends.
+ Lines are delimited by line ends, which are defined in
+ the XML specification.</div></div>
+<div class="cmnt"><p><strong>Warning:</strong> The return value from the method
+ is intended only as an approximation for the sake of diagnostics;
+ it is not intended to provide sufficient information
+ to edit the character content of the original XML document.
+ In some cases, these "line" numbers match what would be displayed
+ as columns, and in others they may not match the source text
+ due to internal entity expansion.  </p>
+<p class="bl"></p>
+ <p>The return value is an approximation of the line number
+ in the document entity or external parsed entity where the
+ markup triggering the event appears.</p>
+<p class="bl"></p>
+ <p>If possible, the SAX driver should provide the line position 
+ of the first character after the text associated with the document 
+ event.  The first line is line 1.</p>
+<p class="bl"></p>
+ @return The line number, or -1 if none is available.
+ @see #getColumnNumber</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="SaxParser.getColumnNumber" href="htmlsrc/tango.text.xml.SaxParser.html#L1395">getColumnNumber</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#SaxParser.getColumnNumber" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the column number where the current document event ends.
+ This is one-based number of Java <code>char</code> values since
+ the last line end.</div></div>
+<div class="cmnt"><p><strong>Warning:</strong> The return value from the method
+ is intended only as an approximation for the sake of diagnostics;
+ it is not intended to provide sufficient information
+ to edit the character content of the original XML document.
+ For example, when lines contain combining character sequences, wide
+ characters, surrogate pairs, or bi-directional text, the value may
+ not correspond to the column in a text editor's display. </p>
+<p class="bl"></p>
+ <p>The return value is an approximation of the column number
+ in the document entity or external parsed entity where the
+ markup triggering the event appears.</p>
+<p class="bl"></p>
+ <p>If possible, the SAX driver should provide the line position 
+ of the first character after the text associated with the document 
+ event.  The first column in each line is column 1.</p>
+<p class="bl"></p>
+ @return The column number, or -1 if none is available.
+ @see #getLineNumber</div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="XMLFilter" href="htmlsrc/tango.text.xml.SaxParser.html#L1422">XMLFilter</a><span class="tparams">(<em>Ch</em> = <span class="defval">char</span>)</span> : <span class="bclass">XMLReader</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilter" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Interface for an XML filter.</div></div>
+<div class="cmnt"><p>An XML filter is like an XML reader, except that it obtains its
+ events from another XML reader rather than a primary source like
+ an XML document or database.  Filters can modify a stream of
+ events as they pass on to the final application.</p>
+<p class="bl"></p>
+ <p>The XMLFilterImpl helper class provides a convenient base
+ for creating SAX2 filters, by passing on all {@link org.xml.sax.EntityResolver
+ EntityResolver}, {@link org.xml.sax.DTDHandler DTDHandler},
+ {@link org.xml.sax.ContentHandler ContentHandler} and {@link org.xml.sax.ErrorHandler
+ ErrorHandler} events automatically.</p>
+<p class="bl"></p>
+ @since SAX 2.0
+ @author David Megginson
+ @version 2.0.1 (sax2r2)
+ @see org.xml.sax.helpers.XMLFilterImpl</div>
+<dl>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilter.setParent" href="htmlsrc/tango.text.xml.SaxParser.html#L1433">setParent</a><span class="params">(XMLReader <em>parent</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilter.setParent" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the parent reader.</div></div>
+<div class="cmnt"><p>This method allows the application to link the filter to
+ a parent reader (which may be another filter).  The argument
+ may not be null.</p>
+<p class="bl"></p>
+ @param parent The parent reader.</div></dd>
+<dt class="decl"><span class="rettyp">XMLReader</span> <a class="symbol _function" name="XMLFilter.getParent" href="htmlsrc/tango.text.xml.SaxParser.html#L1447">getParent</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilter.getParent" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the parent reader.</div></div>
+<div class="cmnt"><p>This method allows the application to query the parent
+ reader (which may be another filter).  It is generally a
+ bad idea to perform any operations on the parent reader</div>
+<p class="sec_header">directly:</p><div class="cmnt">they should all pass through this filter.</p>
+<p class="bl"></p>
+ @return The parent filter, or null if none has been set.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="XMLFilterImpl" href="htmlsrc/tango.text.xml.SaxParser.html#L1472">XMLFilterImpl</a><span class="tparams">(<em>Ch</em> = <span class="defval">char</span>)</span> : <span class="bclass">SaxHandler</span>, <span class="bclass">XMLFilter</span>, <span class="bclass">EntityResolver</span>, <span class="bclass">ErrorHandler</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Base class for deriving an XML filter.</div></div>
+<div class="cmnt"><p>This class is designed to sit between an {@link org.xml.sax.XMLReader
+ XMLReader} and the client application's event handlers.  By default, it
+ does nothing but pass requests up to the reader and events
+ on to the handlers unmodified, but subclasses can override
+ specific methods to modify the event stream or the configuration
+ requests as they pass through.</p>
+<p class="bl"></p>
+ @since SAX 2.0
+ @author David Megginson
+ @version 2.0.1 (sax2r2)
+ @see org.xml.sax.XMLFilter
+ @see org.xml.sax.XMLReader
+ @see org.xml.sax.EntityResolver
+ @see org.xml.sax.ContentHandler
+ @see org.xml.sax.ErrorHandler</div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="XMLFilterImpl.this" href="htmlsrc/tango.text.xml.SaxParser.html#L1489">this</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct an empty XML filter, with no parent.</div></div>
+<div class="cmnt"><p>This filter will have no parent: you must assign a parent
+ before you start a parse or do any configuration with
+ setFeature or setProperty, unless you use this as a pure event
+ consumer rather than as an {@link XMLReader}.</p>
+<p class="bl"></p>
+ @see org.xml.sax.XMLReader#setFeature
+ @see org.xml.sax.XMLReader#setProperty
+ @see #setParent</div></dd>
+<dt class="decl"><a class="symbol _ctor" name="XMLFilterImpl.this:2" href="htmlsrc/tango.text.xml.SaxParser.html#L1499">this</a><span class="params">(XMLReader <em>parent</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct an XML filter with the specified parent.</div></div>
+<div class="cmnt">@see #setParent
+ @see #getParent</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.setParent" href="htmlsrc/tango.text.xml.SaxParser.html#L1519">setParent</a><span class="params">(XMLReader <em>parent</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.setParent" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the parent reader.</div></div>
+<div class="cmnt"><p>This is the {@link org.xml.sax.XMLReader XMLReader} from which 
+ this filter will obtain its events and to which it will pass its 
+ configuration requests.  The parent may itself be another filter.</p>
+<p class="bl"></p>
+ <p>If there is no parent reader set, any attempt to parse
+ or to set or get a feature or property will fail.</p>
+<p class="bl"></p>
+ @param parent The parent XML reader.
+ @see #getParent</div></dd>
+<dt class="decl"><span class="rettyp">XMLReader</span> <a class="symbol _function" name="XMLFilterImpl.getParent" href="htmlsrc/tango.text.xml.SaxParser.html#L1529">getParent</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.getParent" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the parent reader.</div></div>
+<div class="cmnt">@return The parent XML reader, or null if none is set.
+ @see #setParent</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.setFeature" href="htmlsrc/tango.text.xml.SaxParser.html#L1549">setFeature</a><span class="params">(const(Ch)[] <em>name</em>, bool <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.setFeature" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the value of a feature.</div></div>
+<div class="cmnt"><p>This will always fail if the parent is null.</p>
+<p class="bl"></p>
+ @param name The feature name.
+ @param value The requested feature value.
+ @exception org.xml.sax.SAXNotRecognizedException If the feature
+            value can't be assigned or retrieved from the parent.
+ @exception org.xml.sax.SAXNotSupportedException When the
+            parent recognizes the feature name but 
+            cannot set the requested value.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="XMLFilterImpl.getFeature" href="htmlsrc/tango.text.xml.SaxParser.html#L1572">getFeature</a><span class="params">(const(Ch)[] <em>name</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.getFeature" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Look up the value of a feature.</div></div>
+<div class="cmnt"><p>This will always fail if the parent is null.</p>
+<p class="bl"></p>
+ @param name The feature name.
+ @return The current value of the feature.
+ @exception org.xml.sax.SAXNotRecognizedException If the feature
+            value can't be assigned or retrieved from the parent.
+ @exception org.xml.sax.SAXNotSupportedException When the
+            parent recognizes the feature name but 
+            cannot determine its value at this time.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.setProperty" href="htmlsrc/tango.text.xml.SaxParser.html#L1595">setProperty</a><span class="params">(const(Ch)[] <em>name</em>, Object <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.setProperty" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the value of a property.</div></div>
+<div class="cmnt"><p>This will always fail if the parent is null.</p>
+<p class="bl"></p>
+ @param name The property name.
+ @param value The requested property value.
+ @exception org.xml.sax.SAXNotRecognizedException If the property
+            value can't be assigned or retrieved from the parent.
+ @exception org.xml.sax.SAXNotSupportedException When the
+            parent recognizes the property name but 
+            cannot set the requested value.</div></dd>
+<dt class="decl"><span class="rettyp">Object</span> <a class="symbol _function" name="XMLFilterImpl.getProperty" href="htmlsrc/tango.text.xml.SaxParser.html#L1616">getProperty</a><span class="params">(const(Ch)[] <em>name</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.getProperty" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Look up the value of a property.</div></div>
+<div class="cmnt">@param name The property name.
+ @return The current value of the property.
+ @exception org.xml.sax.SAXNotRecognizedException If the property
+            value can't be assigned or retrieved from the parent.
+ @exception org.xml.sax.SAXNotSupportedException When the
+            parent recognizes the property name but 
+            cannot determine its value at this time.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.setEntityResolver" href="htmlsrc/tango.text.xml.SaxParser.html#L1631">setEntityResolver</a><span class="params">(EntityResolver <em>resolver</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.setEntityResolver" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the entity resolver.</div></div>
+<div class="cmnt">@param resolver The new entity resolver.</div></dd>
+<dt class="decl"><span class="rettyp">EntityResolver</span> <a class="symbol _function" name="XMLFilterImpl.getEntityResolver" href="htmlsrc/tango.text.xml.SaxParser.html#L1640">getEntityResolver</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.getEntityResolver" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the current entity resolver.</div></div>
+<div class="cmnt">@return The current entity resolver, or null if none was set.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.setSaxHandler" href="htmlsrc/tango.text.xml.SaxParser.html#L1649">setSaxHandler</a><span class="params">(SaxHandler <em>handler</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.setSaxHandler" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the content event handler.</div></div>
+<div class="cmnt">@param handler the new content handler</div></dd>
+<dt class="decl"><span class="rettyp">SaxHandler</span> <a class="symbol _function" name="XMLFilterImpl.getSaxHandler" href="htmlsrc/tango.text.xml.SaxParser.html#L1658">getSaxHandler</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.getSaxHandler" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the content event handler.</div></div>
+<div class="cmnt">@return The current content handler, or null if none was set.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.setErrorHandler" href="htmlsrc/tango.text.xml.SaxParser.html#L1667">setErrorHandler</a><span class="params">(ErrorHandler <em>handler</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.setErrorHandler" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the error event handler.</div></div>
+<div class="cmnt">@param handler the new error handler</div></dd>
+<dt class="decl"><span class="rettyp">ErrorHandler</span> <a class="symbol _function" name="XMLFilterImpl.getErrorHandler" href="htmlsrc/tango.text.xml.SaxParser.html#L1676">getErrorHandler</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.getErrorHandler" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the current error event handler.</div></div>
+<div class="cmnt">@return The current error handler, or null if none was set.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.parse" href="htmlsrc/tango.text.xml.SaxParser.html#L1705">parse</a><span class="params">(const(Ch)[] <em>content</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse the given content.</div></div>
+<div class="cmnt">@param input The input source for the document entity.
+ @exception org.xml.sax.SAXException Any SAX exception, possibly
+            wrapping another exception.
+ @exception java.io.IOException An IO exception from the parser,
+            possibly from a byte stream or character stream
+            supplied by the application.</div></dd>
+<dt class="decl"><span class="rettyp">InputStream</span> <a class="symbol _function" name="XMLFilterImpl.resolveEntity" href="htmlsrc/tango.text.xml.SaxParser.html#L1745">resolveEntity</a><span class="params">(const(Ch)[] <em>publicId</em>, const(Ch)[] <em>systemId</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.resolveEntity" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter an external entity resolution.</div></div>
+<div class="cmnt">@param publicId The entity's public identifier, or null.
+ @param systemId The entity's system identifier.
+ @return A new InputSource or null for the default.
+ @exception org.xml.sax.SAXException The client may throw
+            an exception during processing.
+ @exception java.io.IOException The client may throw an
+            I/O-related exception while obtaining the
+            new InputSource.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.setDocumentLocator" href="htmlsrc/tango.text.xml.SaxParser.html#L1763">setDocumentLocator</a><span class="params">(Locator <em>locator</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.setDocumentLocator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter a new document locator event.</div></div>
+<div class="cmnt">@param locator The document locator.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.startDocument" href="htmlsrc/tango.text.xml.SaxParser.html#L1777">startDocument</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.startDocument" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter a start document event.</div></div>
+<div class="cmnt">@exception org.xml.sax.SAXException The client may throw
+            an exception during processing.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.endDocument" href="htmlsrc/tango.text.xml.SaxParser.html#L1790">endDocument</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.endDocument" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter an end document event.</div></div>
+<div class="cmnt">@exception org.xml.sax.SAXException The client may throw
+            an exception during processing.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.startPrefixMapping" href="htmlsrc/tango.text.xml.SaxParser.html#L1805">startPrefixMapping</a><span class="params">(const(Ch)[] <em>prefix</em>, const(Ch)[] <em>uri</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.startPrefixMapping" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter a start Namespace prefix mapping event.</div></div>
+<div class="cmnt">@param prefix The Namespace prefix.
+ @param uri The Namespace URI.
+ @exception org.xml.sax.SAXException The client may throw
+            an exception during processing.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.endPrefixMapping" href="htmlsrc/tango.text.xml.SaxParser.html#L1819">endPrefixMapping</a><span class="params">(const(Ch)[] <em>prefix</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.endPrefixMapping" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter an end Namespace prefix mapping event.</div></div>
+<div class="cmnt">@param prefix The Namespace prefix.
+ @exception org.xml.sax.SAXException The client may throw
+            an exception during processing.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.startElement" href="htmlsrc/tango.text.xml.SaxParser.html#L1837">startElement</a><span class="params">(const(Ch)[] <em>uri</em>, const(Ch)[] <em>localName</em>, const(Ch)[] <em>qName</em>, Attribute[] <em>atts</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.startElement" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter a start element event.</div></div>
+<div class="cmnt">@param uri The element's Namespace URI, or the empty string.
+ @param localName The element's local name, or the empty string.
+ @param qName The element's qualified (prefixed) name, or the empty
+        string.
+ @param atts The element's attributes.
+ @exception org.xml.sax.SAXException The client may throw
+            an exception during processing.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.endElement" href="htmlsrc/tango.text.xml.SaxParser.html#L1854">endElement</a><span class="params">(const(Ch)[] <em>uri</em>, const(Ch)[] <em>localName</em>, const(Ch)[] <em>qName</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.endElement" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter an end element event.</div></div>
+<div class="cmnt">@param uri The element's Namespace URI, or the empty string.
+ @param localName The element's local name, or the empty string.
+ @param qName The element's qualified (prefixed) name, or the empty
+        string.
+ @exception org.xml.sax.SAXException The client may throw
+            an exception during processing.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.characters" href="htmlsrc/tango.text.xml.SaxParser.html#L1868">characters</a><span class="params">(Ch[] <em>ch</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.characters" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter a character data event.</div></div>
+<div class="cmnt">@param ch An array of characters.
+ @exception org.xml.sax.SAXException The client may throw
+            an exception during processing.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.ignorableWhitespace" href="htmlsrc/tango.text.xml.SaxParser.html#L1884">ignorableWhitespace</a><span class="params">(Ch[] <em>ch</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.ignorableWhitespace" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter an ignorable whitespace event.</div></div>
+<div class="cmnt">@param ch An array of characters.
+ @param start The starting position in the array.
+ @param length The number of characters to use from the array.
+ @exception org.xml.sax.SAXException The client may throw
+            an exception during processing.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.processingInstruction" href="htmlsrc/tango.text.xml.SaxParser.html#L1899">processingInstruction</a><span class="params">(const(Ch)[] <em>target</em>, const(Ch)[] <em>data</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.processingInstruction" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter a processing instruction event.</div></div>
+<div class="cmnt">@param target The processing instruction target.
+ @param data The text following the target.
+ @exception org.xml.sax.SAXException The client may throw
+            an exception during processing.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.skippedEntity" href="htmlsrc/tango.text.xml.SaxParser.html#L1913">skippedEntity</a><span class="params">(const(Ch)[] <em>name</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.skippedEntity" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter a skipped entity event.</div></div>
+<div class="cmnt">@param name The name of the skipped entity.
+ @exception org.xml.sax.SAXException The client may throw
+            an exception during processing.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.warning" href="htmlsrc/tango.text.xml.SaxParser.html#L1930">warning</a><span class="params">(SAXException <em>e</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.warning" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter a warning event.</div></div>
+<div class="cmnt">@param e The warning as an exception.
+ @exception org.xml.sax.SAXException The client may throw
+            an exception during processing.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.error" href="htmlsrc/tango.text.xml.SaxParser.html#L1944">error</a><span class="params">(SAXException <em>e</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.error" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter an error event.</div></div>
+<div class="cmnt">@param e The error as an exception.
+ @exception org.xml.sax.SAXException The client may throw
+            an exception during processing.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLFilterImpl.fatalError" href="htmlsrc/tango.text.xml.SaxParser.html#L1958">fatalError</a><span class="params">(SAXException <em>e</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLFilterImpl.fatalError" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Filter a fatal error event.</div></div>
+<div class="cmnt">@param e The error as an exception.
+ @exception org.xml.sax.SAXException The client may throw
+            an exception during processing.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="XMLReader" href="htmlsrc/tango.text.xml.SaxParser.html#L2037">XMLReader</a><span class="tparams">(<em>Ch</em> = <span class="defval">char</span>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLReader" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Interface for reading an XML document using callbacks.</div></div>
+<div class="cmnt"><p>XMLReader is the interface that an XML parser's SAX2 driver must
+ implement.  This interface allows an application to set and
+ query features and properties in the parser, to register
+ event handlers for document processing, and to initiate
+ a document parse.</p>
+<p class="bl"></p>
+ <p>All SAX interfaces are assumed to be synchronous: the
+ {@link #parse parse} methods must not return until parsing
+ is complete, and readers must wait for an event-handler callback
+ to return before reporting the next event.</p>
+<p class="bl"></p>
+ <p>This interface replaces the (now deprecated) SAX 1.0 {@link
+ org.xml.sax.Parser Parser} interface.  The XMLReader interface
+ contains two important enhancements over the old Parser
+ interface (as well as some minor ones):</p>
+<p class="bl"></p>
+ <ol>
+ <li>it adds a standard way to query and set features and 
+  properties; and</li>
+ <li>it adds Namespace support, which is required for many
+  higher-level XML standards.</li>
+ </ol>
+<p class="bl"></p>
+ <p>There are adapters available to convert a SAX1 Parser to
+ a SAX2 XMLReader and vice-versa.</p>
+<p class="bl"></p>
+ @since SAX 2.0
+ @author David Megginson
+ @version 2.0.1+ (sax2r3pre1)
+ @see org.xml.sax.XMLFilter
+ @see org.xml.sax.helpers.ParserAdapter
+ @see org.xml.sax.helpers.XMLReaderAdapter</div>
+<dl>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="XMLReader.getFeature" href="htmlsrc/tango.text.xml.SaxParser.html#L2098">getFeature</a><span class="params">(const(Ch)[] <em>name</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLReader.getFeature" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Look up the value of a feature flag.</div></div>
+<div class="cmnt"><p>The feature name is any fully-qualified URI.  It is
+ possible for an XMLReader to recognize a feature name but
+ temporarily be unable to return its value.
+ Some feature values may be available only in specific
+ contexts, such as before, during, or after a parse.
+ Also, some feature values may not be programmatically accessible.
+ (In the case of an adapter for SAX1 {@link Parser}, there is no
+ implementation-independent way to expose whether the underlying
+ parser is performing validation, expanding external entities,
+ and so forth.) </p>
+<p class="bl"></p>
+ <p>All XMLReaders are required to recognize the
+ http://xml.org/sax/features/namespaces and the
+ http://xml.org/sax/features/namespace-prefixes feature names.</p>
+<p class="bl"></p>
+ <p>Typical usage is something like this:</p>
+<p class="bl"></p>
+ <pre>
+ XMLReader r = new MySAXDriver();
+<p class="bl"></p>
+                         // try to activate validation
+ try {
+   r.setFeature("http://xml.org/sax/features/validation", true);
+ } catch (SAXException e) {
+   System.err.println("Cannot activate validation."); 
+ }
+<p class="bl"></p>
+                         // register event handlers
+ r.setContentHandler(new MyContentHandler());
+ r.setErrorHandler(new MyErrorHandler());
+<p class="bl"></p>
+                         // parse the first document
+ try {
+   r.parse("http://www.foo.com/mydoc.xml");
+ } catch (IOException e) {
+   System.err.println("I/O exception reading XML document");
+ } catch (SAXException e) {
+   System.err.println("XML exception reading document.");
+ }
+ </pre>
+<p class="bl"></p>
+ <p>Implementors are free (and encouraged) to invent their own features,
+ using names built on their own URIs.</p>
+<p class="bl"></p>
+ @param name The feature name, which is a fully-qualified URI.
+ @return The current value of the feature (true or false).
+ @exception org.xml.sax.SAXNotRecognizedException If the feature
+            value can't be assigned or retrieved.
+ @exception org.xml.sax.SAXNotSupportedException When the
+            XMLReader recognizes the feature name but 
+            cannot determine its value at this time.
+ @see #setFeature</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLReader.setFeature" href="htmlsrc/tango.text.xml.SaxParser.html#L2123">setFeature</a><span class="params">(const(Ch)[] <em>name</em>, bool <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLReader.setFeature" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the value of a feature flag.</div></div>
+<div class="cmnt"><p>The feature name is any fully-qualified URI.  It is
+ possible for an XMLReader to expose a feature value but
+ to be unable to change the current value.
+ Some feature values may be immutable or mutable only 
+ in specific contexts, such as before, during, or after 
+ a parse.</p>
+<p class="bl"></p>
+ <p>All XMLReaders are required to support setting
+ http://xml.org/sax/features/namespaces to true and
+ http://xml.org/sax/features/namespace-prefixes to false.</p>
+<p class="bl"></p>
+ @param name The feature name, which is a fully-qualified URI.
+ @param value The requested value of the feature (true or false).
+ @exception org.xml.sax.SAXNotRecognizedException If the feature
+            value can't be assigned or retrieved.
+ @exception org.xml.sax.SAXNotSupportedException When the
+            XMLReader recognizes the feature name but 
+            cannot set the requested value.
+ @see #getFeature</div></dd>
+<dt class="decl"><span class="rettyp">Object</span> <a class="symbol _function" name="XMLReader.getProperty" href="htmlsrc/tango.text.xml.SaxParser.html#L2150">getProperty</a><span class="params">(const(Ch)[] <em>name</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLReader.getProperty" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Look up the value of a property.</div></div>
+<div class="cmnt"><p>The property name is any fully-qualified URI.  It is
+ possible for an XMLReader to recognize a property name but
+ temporarily be unable to return its value.
+ Some property values may be available only in specific
+ contexts, such as before, during, or after a parse.</p>
+<p class="bl"></p>
+ <p>XMLReaders are not required to recognize any specific
+ property names, though an initial core set is documented for
+ SAX2.</p>
+<p class="bl"></p>
+ <p>Implementors are free (and encouraged) to invent their own properties,
+ using names built on their own URIs.</p>
+<p class="bl"></p>
+ @param name The property name, which is a fully-qualified URI.
+ @return The current value of the property.
+ @exception org.xml.sax.SAXNotRecognizedException If the property
+            value can't be assigned or retrieved.
+ @exception org.xml.sax.SAXNotSupportedException When the
+            XMLReader recognizes the property name but 
+            cannot determine its value at this time.
+ @see #setProperty</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLReader.setProperty" href="htmlsrc/tango.text.xml.SaxParser.html#L2177">setProperty</a><span class="params">(const(Ch)[] <em>name</em>, Object <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLReader.setProperty" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the value of a property.</div></div>
+<div class="cmnt"><p>The property name is any fully-qualified URI.  It is
+ possible for an XMLReader to recognize a property name but
+ to be unable to change the current value.
+ Some property values may be immutable or mutable only 
+ in specific contexts, such as before, during, or after 
+ a parse.</p>
+<p class="bl"></p>
+ <p>XMLReaders are not required to recognize setting
+ any specific property names, though a core set is defined by 
+ SAX2.</p>
+<p class="bl"></p>
+ <p>This method is also the standard mechanism for setting
+ extended handlers.</p>
+<p class="bl"></p>
+ @param name The property name, which is a fully-qualified URI.
+ @param value The requested value for the property.
+ @exception org.xml.sax.SAXNotRecognizedException If the property
+            value can't be assigned or retrieved.
+ @exception org.xml.sax.SAXNotSupportedException When the
+            XMLReader recognizes the property name but 
+            cannot set the requested value.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLReader.setEntityResolver" href="htmlsrc/tango.text.xml.SaxParser.html#L2195">setEntityResolver</a><span class="params">(EntityResolver!(Ch) <em>resolver</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLReader.setEntityResolver" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Allow an application to register an entity resolver.</div></div>
+<div class="cmnt"><p>If the application does not register an entity resolver,
+ the XMLReader will perform its own default resolution.</p>
+<p class="bl"></p>
+ <p>Applications may register a new or different resolver in the
+ middle of a parse, and the SAX parser must begin using the new
+ resolver immediately.</p>
+<p class="bl"></p>
+ @param resolver The entity resolver.
+ @see #getEntityResolver</div></dd>
+<dt class="decl"><span class="rettyp">EntityResolver!(Ch)</span> <a class="symbol _function" name="XMLReader.getEntityResolver" href="htmlsrc/tango.text.xml.SaxParser.html#L2204">getEntityResolver</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLReader.getEntityResolver" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the current entity resolver.</div></div>
+<div class="cmnt">@return The current entity resolver, or null if none
+         has been registered.
+ @see #setEntityResolver</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLReader.setSaxHandler" href="htmlsrc/tango.text.xml.SaxParser.html#L2220">setSaxHandler</a><span class="params">(SaxHandler!(Ch) <em>handler</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLReader.setSaxHandler" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Allow an application to register a content event handler.</div></div>
+<div class="cmnt"><p>If the application does not register a content handler, all
+ content events reported by the SAX parser will be silently
+ ignored.</p>
+<p class="bl"></p>
+ <p>Applications may register a new or different handler in the
+ middle of a parse, and the SAX parser must begin using the new
+ handler immediately.</p>
+<p class="bl"></p>
+ @param handler The content handler.
+ @see #getContentHandler</div></dd>
+<dt class="decl"><span class="rettyp">SaxHandler!(Ch)</span> <a class="symbol _function" name="XMLReader.getSaxHandler" href="htmlsrc/tango.text.xml.SaxParser.html#L2229">getSaxHandler</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLReader.getSaxHandler" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the current content handler.</div></div>
+<div class="cmnt">@return The current content handler, or null if none
+         has been registered.
+ @see #setContentHandler</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLReader.setErrorHandler" href="htmlsrc/tango.text.xml.SaxParser.html#L2247">setErrorHandler</a><span class="params">(ErrorHandler!(Ch) <em>handler</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLReader.setErrorHandler" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Allow an application to register an error event handler.</div></div>
+<div class="cmnt"><p>If the application does not register an error handler, all
+ error events reported by the SAX parser will be silently
+ ignored; however, normal processing may not continue.  It is
+ highly recommended that all SAX applications implement an
+ error handler to avoid unexpected bugs.</p>
+<p class="bl"></p>
+ <p>Applications may register a new or different handler in the
+ middle of a parse, and the SAX parser must begin using the new
+ handler immediately.</p>
+<p class="bl"></p>
+ @param handler The error handler.
+ @see #getErrorHandler</div></dd>
+<dt class="decl"><span class="rettyp">ErrorHandler!(Ch)</span> <a class="symbol _function" name="XMLReader.getErrorHandler" href="htmlsrc/tango.text.xml.SaxParser.html#L2256">getErrorHandler</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLReader.getErrorHandler" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the current error handler.</div></div>
+<div class="cmnt">@return The current error handler, or null if none
+         has been registered.
+ @see #setErrorHandler</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLReader.parse" href="htmlsrc/tango.text.xml.SaxParser.html#L2339">parse</a><span class="params">(const(Ch)[] <em>content</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLReader.parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse an XML document from a character array.</div></div>
+<div class="cmnt">@param content The actual document content.
+ @exception org.xml.sax.SAXException Any SAX exception, possibly
+            wrapping another exception.
+ @exception java.io.IOException An IO exception from the parser,
+            possibly from a byte stream or character stream
+            supplied by the application.
+ @see #parse(org.xml.sax.InputSource)</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLReader.parse:2" href="htmlsrc/tango.text.xml.SaxParser.html#L2343">parse</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLReader.parse:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="XMLReader.setContent" href="htmlsrc/tango.text.xml.SaxParser.html#L2347">setContent</a><span class="params">(const(Ch)[] <em>content</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.xml.SaxParser.html#XMLReader.setContent" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (C) 2007-2008 Scott Sanders, Kris Bell.  
+                   All rights reserved.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:18 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

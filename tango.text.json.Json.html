@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.json.Json</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.json.Json">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.json.Json"><a href="htmlsrc/tango.text.json.Json.html" class="symbol">tango.text.json.Json</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">July 2008: Initial release</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Aaron, Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Json" href="htmlsrc/tango.text.json.Json.html#L81">Json</a><span class="tparams">(<em>T</em>)</span> : <span class="bclass">JsonParser!(T)</span> <a href="tango.text.json.Json.html#Json" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse json text into a set of inter-related structures. Typical 
+        usage is as follows:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">json</span> = <span class="k">new</span> <span class="i">Json</span>!(<span class="k">char</span>);
+<span class="i">json</span>.<span class="i">parse</span> (<span class="sl">`{"t": true, "n":null, "array":["world", [4, 5]]}`</span>);    </pre>
+</td></tr>
+</table></div></div>
+<div class="cmnt">Converting back to text format employs a delegate. This one emits 
+        document content to the console:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">json</span>.<span class="i">print</span> ((<span class="k">char</span>[] <span class="i">s</span>) {<span class="i">Stdout</span>(<span class="i">s</span>);}); </pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Constructing json within your code leverages a handful of factories 
+        within a document instance. This example creates a document from an 
+        array of values:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+<a href="#L3_ex3" name="L3_ex3">3</a>
+<a href="#L4_ex3" name="L4_ex3">4</a>
+<a href="#L5_ex3" name="L5_ex3">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">json</span> = <span class="k">new</span> <span class="i">Json</span>!(<span class="k">char</span>);
+
+<span class="lc">// [true, false, null, "text"]</span>
+<span class="k">with</span> (<span class="i">json</span>)
+      <span class="i">value</span> = <span class="i">array</span> (<span class="k">true</span>, <span class="k">false</span>, <span class="k">null</span>, <span class="sl">"text"</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Setting the document to contain a simple object instead:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+<a href="#L2_ex4" name="L2_ex4">2</a>
+<a href="#L3_ex4" name="L3_ex4">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// {"a" : 10}</span>
+<span class="k">with</span> (<span class="i">json</span>)
+      <span class="i">value</span> = <span class="i">object</span> (<span class="i">pair</span>(<span class="sl">"a"</span>, <span class="i">value</span>(<span class="n">10</span>)));</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Objects may be constructed with multiple attribute pairs like so:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex5" name="L1_ex5">1</a>
+<a href="#L2_ex5" name="L2_ex5">2</a>
+<a href="#L3_ex5" name="L3_ex5">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// {"a" : 10, "b" : true}</span>
+<span class="k">with</span> (<span class="i">json</span>)
+      <span class="i">value</span> = <span class="i">object</span> (<span class="i">pair</span>(<span class="sl">"a"</span>, <span class="i">value</span>(<span class="n">10</span>)), <span class="i">pair</span>(<span class="sl">"b"</span>, <span class="i">value</span>(<span class="k">true</span>)));</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Substitute arrays, or other objects as values where appropriate:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex6" name="L1_ex6">1</a>
+<a href="#L2_ex6" name="L2_ex6">2</a>
+<a href="#L3_ex6" name="L3_ex6">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// {"a" : [10, true, {"b" : null}]}</span>
+<span class="k">with</span> (<span class="i">json</span>)
+      <span class="i">value</span> = <span class="i">object</span> (<span class="i">pair</span>(<span class="sl">"a"</span>, <span class="i">array</span>(<span class="n">10</span>, <span class="k">true</span>, <span class="i">object</span>(<span class="i">pair</span>(<span class="sl">"b"</span>)))));</pre>
+</td></tr>
+</table></div>
+<p class="sec_header">TODO:</p><div class="cmnt">document how to extract content
+<p class="bl"></p>
+        Big thanks to dhasenan for suggesting the construction notation. We
+        can't make effective use of operator-overloading, due to the use of
+        struct pointers, so this syntax turned out to be the next best thing.</div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> JsonValue* <a class="symbol _alias" name="Json.Value" href="htmlsrc/tango.text.json.Json.html#L84">Value</a> <a href="tango.text.json.Json.html#Json.Value" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">use these types for external references</div></div></dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="Json.Type" href="htmlsrc/tango.text.json.Json.html#L89">Type</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.json.Json.html#Json.Type" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">enumerates the seven acceptable JSON value types</div></div>
+</dd>
+<dt class="decl"><a class="symbol _ctor" name="Json.this" href="htmlsrc/tango.text.json.Json.html#L99">this</a><span class="params">()</span> <a href="tango.text.json.Json.html#Json.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a json instance, with a default value of null</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.parse" href="htmlsrc/tango.text.json.Json.html#L112">parse</a><span class="params">(const(T)[] <em>json</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.json.Json.html#Json.parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse the given text and return a resultant Value type. Also
+                sets the document value.</div></div></dd>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="Json.toString" href="htmlsrc/tango.text.json.Json.html#L141">toString</a><span class="params">(const(T)[] <em>space</em> = <span class="defval"><span class="k">null</span></span>, int <em>decimals</em> = <span class="defval"><span class="n">2</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.json.Json.html#Json.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a text representation of this document</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.value" href="htmlsrc/tango.text.json.Json.html#L152">value</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.json.Json.html#Json.value" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the root value of this document</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.value:2" href="htmlsrc/tango.text.json.Json.html#L163">value</a><span class="params">(Value <em>v</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.json.Json.html#Json.value:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the root value of this document</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.value:3" href="htmlsrc/tango.text.json.Json.html#L174">value</a><span class="params">(const(T)[] <em>v</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.json.Json.html#Json.value:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a text value</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.value:4" href="htmlsrc/tango.text.json.Json.html#L185">value</a><span class="params">(bool <em>v</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.json.Json.html#Json.value:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a boolean value</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.value:5" href="htmlsrc/tango.text.json.Json.html#L196">value</a><span class="params">(double <em>v</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.json.Json.html#Json.value:5" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a numeric value</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.value:6" href="htmlsrc/tango.text.json.Json.html#L207">value</a><span class="params">(Value[] <em>vals</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.json.Json.html#Json.value:6" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a single Value from an array of Values</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.array" href="htmlsrc/tango.text.json.Json.html#L218">array</a><span class="params">(...)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.json.Json.html#Json.array" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create an array of values</div></div></dd>
+<dt class="decl"><span class="rettyp">Attribute</span> <a class="symbol _function" name="Json.pair" href="htmlsrc/tango.text.json.Json.html#L230">pair</a><span class="params">(const(T)[] <em>name</em>, Value <em>value</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.json.Json.html#Json.pair" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create an attribute/value pair, where value defaults to 
+                null</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.object" href="htmlsrc/tango.text.json.Json.html#L244">object</a><span class="params">(Attribute[] <em>set</em>...)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.json.Json.html#Json.object" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a composite from zero or more pairs, and return as 
+                a value</div></div></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Json.NameValue" href="htmlsrc/tango.text.json.Json.html#L405">NameValue</a> <a href="tango.text.json.Json.html#Json.NameValue" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Represents an attribute/value pair. Aliased as Attribute</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">Attribute</span> <a class="symbol _function" name="Json.NameValue.set" href="htmlsrc/tango.text.json.Json.html#L419">set</a><span class="params">(const(T)[] <em>key</em>, Value <em>val</em>)</span> <a href="tango.text.json.Json.html#Json.NameValue.set" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set a name and a value for this attribute</div></div>
+<div class="cmnt">Returns itself, for use with Composite.add()</div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Json.JsonObject" href="htmlsrc/tango.text.json.Json.html#L436">JsonObject</a> <a href="tango.text.json.Json.html#Json.JsonObject" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Represents a single json Object (a composite of named 
+                attribute/value pairs).</div></div>
+<div class="cmnt">This is aliased as Composite</div>
+<dl>
+<dt class="decl"><span class="rettyp">Composite</span> <a class="symbol _function" name="Json.JsonObject.reset" href="htmlsrc/tango.text.json.Json.html#L445">reset</a><span class="params">()</span> <a href="tango.text.json.Json.html#Json.JsonObject.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">Composite</span> <a class="symbol _function" name="Json.JsonObject.append" href="htmlsrc/tango.text.json.Json.html#L457">append</a><span class="params">(Attribute <em>a</em>)</span> <a href="tango.text.json.Json.html#Json.JsonObject.append" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append an attribute/value pair</div></div></dd>
+<dt class="decl"><span class="rettyp">Composite</span> <a class="symbol _function" name="Json.JsonObject.add" href="htmlsrc/tango.text.json.Json.html#L472">add</a><span class="params">(Attribute[] <em>set</em>...)</span> <a href="tango.text.json.Json.html#Json.JsonObject.add" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a set of attribute/value pairs</div></div></dd>
+<dt class="decl"><span class="rettyp">Value[T[]]</span> <a class="symbol _function" name="Json.JsonObject.hashmap" href="htmlsrc/tango.text.json.Json.html#L487">hashmap</a><span class="params">()</span> <a href="tango.text.json.Json.html#Json.JsonObject.hashmap" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct and return a hashmap of Object attributes.
+                        This will be a fairly costly operation, so consider 
+                        alternatives where appropriate</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.JsonObject.value" href="htmlsrc/tango.text.json.Json.html#L508">value</a><span class="params">(const(T)[] <em>name</em>)</span> <a href="tango.text.json.Json.html#Json.JsonObject.value" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a corresponding value for the given attribute 
+                        name. Does a linear lookup across the attribute set</div></div></dd>
+<dt class="decl"><span class="rettyp">Iterator</span> <a class="symbol _function" name="Json.JsonObject.attributes" href="htmlsrc/tango.text.json.Json.html#L526">attributes</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.text.json.Json.html#Json.JsonObject.attributes" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate over our attribute names and values</div></div></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Json.JsonObject.Iterator" href="htmlsrc/tango.text.json.Json.html#L544">Iterator</a> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.text.json.Json.html#Json.JsonObject.Iterator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate over our attribute names. Note that we 
+                        use a Fruct to handle this, since foreach does
+                        not operate cleanly with pointers (it doesn't 
+                        automatically dereference them), whereas using 
+                        x.attributes() does. 
+                        
+                        We may also use this to do some name filtering</div></div>
+</dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Json.JsonValue" href="htmlsrc/tango.text.json.Json.html#L571">JsonValue</a> <a href="tango.text.json.Json.html#Json.JsonValue" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Represents a json value that is one of the seven types 
+                specified via the Json.Type enum</div></div>
+<dl>
+<dt class="decl">Type <a class="symbol _variable" name="Json.JsonValue.type" href="htmlsrc/tango.text.json.Json.html#L581">type</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.json.Json.html#Json.JsonValue.type" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">the type of this node</div></div></dd>
+<dt class="decl"><span class="kw">alias</span> reset <a class="symbol _alias" name="Json.JsonValue.set" href="htmlsrc/tango.text.json.Json.html#L582">set</a> <a href="tango.text.json.Json.html#Json.JsonValue.set" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">alternate name for reset</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Json.JsonValue.equals" href="htmlsrc/tango.text.json.Json.html#L590">equals</a><span class="params">(Type <em>t</em>)</span> <a href="tango.text.json.Json.html#Json.JsonValue.equals" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">return true if this node is of the given type</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Json.JsonValue.toBool" href="htmlsrc/tango.text.json.Json.html#L601">toBool</a><span class="params">()</span> <a href="tango.text.json.Json.html#Json.JsonValue.toBool" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return true if this value represent True</div></div></dd>
+<dt class="decl"><span class="rettyp">const(T)[]</span> <a class="symbol _function" name="Json.JsonValue.toString" href="htmlsrc/tango.text.json.Json.html#L615">toString</a><span class="params">(T[] <em>dst</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.json.Json.html#Json.JsonValue.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the string content. Returns null if this
+                        value is not a string.</div></div>
+<div class="cmnt">Uses dst for escape conversion where possible.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Json.JsonValue.toString:2" href="htmlsrc/tango.text.json.Json.html#L635">toString</a><span class="params">(<span class="k">scope</span> void delegate(const(T)[]) <em>dg</em>)</span> <a href="tango.text.json.Json.html#Json.JsonValue.toString:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Emit the string content to the given delegate, with
+                        escape conversion as required.</div></div>
+<div class="cmnt">Returns false if this is not a String value</div></dd>
+<dt class="decl"><span class="rettyp">Composite</span> <a class="symbol _function" name="Json.JsonValue.toObject" href="htmlsrc/tango.text.json.Json.html#L654">toObject</a><span class="params">()</span> <a href="tango.text.json.Json.html#Json.JsonValue.toObject" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the content as a Composite/Object. Returns null
+                        if this value is not a Composite.</div></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="Json.JsonValue.toNumber" href="htmlsrc/tango.text.json.Json.html#L666">toNumber</a><span class="params">()</span> <a href="tango.text.json.Json.html#Json.JsonValue.toNumber" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the content as a double. Returns nan where
+                        the value is not numeric.</div></div></dd>
+<dt class="decl"><span class="rettyp">Value[]</span> <a class="symbol _function" name="Json.JsonValue.toArray" href="htmlsrc/tango.text.json.Json.html#L678">toArray</a><span class="params">()</span> <a href="tango.text.json.Json.html#Json.JsonValue.toArray" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the content as an array. Returns null where
+                        the value is not an array.</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.JsonValue.set:2" href="htmlsrc/tango.text.json.Json.html#L691">set</a><span class="params">(const(T)[] <em>str</em>, bool <em>escaped</em> = <span class="defval"><span class="k">false</span></span>)</span> <a href="tango.text.json.Json.html#Json.JsonValue.set:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set this value to represent a string. If 'escaped' 
+                        is set, the string is assumed to have pre-converted
+                        escaping of reserved characters (such as \t).</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.JsonValue.set:3" href="htmlsrc/tango.text.json.Json.html#L704">set</a><span class="params">(Composite <em>obj</em>)</span> <a href="tango.text.json.Json.html#Json.JsonValue.set:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set this value to represent an object.</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.JsonValue.set:4" href="htmlsrc/tango.text.json.Json.html#L717">set</a><span class="params">(real <em>num</em>)</span> <a href="tango.text.json.Json.html#Json.JsonValue.set:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set this value to represent a number.</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.JsonValue.set:5" href="htmlsrc/tango.text.json.Json.html#L730">set</a><span class="params">(bool <em>b</em>)</span> <a href="tango.text.json.Json.html#Json.JsonValue.set:5" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set this value to represent a boolean.</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.JsonValue.set:6" href="htmlsrc/tango.text.json.Json.html#L742">set</a><span class="params">(Value[] <em>a</em>)</span> <a href="tango.text.json.Json.html#Json.JsonValue.set:6" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set this value to represent an array of values.</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.JsonValue.reset" href="htmlsrc/tango.text.json.Json.html#L755">reset</a><span class="params">()</span> <a href="tango.text.json.Json.html#Json.JsonValue.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set this value to represent null</div></div></dd>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="Json.JsonValue.print" href="htmlsrc/tango.text.json.Json.html#L767">print</a><span class="params">(const(T)[] <em>space</em> = <span class="defval"><span class="k">null</span></span>, int <em>decimals</em> = <span class="defval"><span class="n">2</span></span>)</span> <a href="tango.text.json.Json.html#Json.JsonValue.print" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a text representation of this value</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.JsonValue.print:2" href="htmlsrc/tango.text.json.Json.html#L782">print</a><span class="params">(OutputStream <em>s</em>, const(T)[] <em>space</em> = <span class="defval"><span class="k">null</span></span>, int <em>decimals</em> = <span class="defval"><span class="n">2</span></span>)</span> <a href="tango.text.json.Json.html#Json.JsonValue.print:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Emit a text representation of this value to the 
+                        given OutputStream</div></div></dd>
+<dt class="decl"><span class="rettyp">Value</span> <a class="symbol _function" name="Json.JsonValue.print:3" href="htmlsrc/tango.text.json.Json.html#L794">print</a><span class="params">(void delegate(const(T)[]) <em>append</em>, const(T)[] <em>space</em> = <span class="defval"><span class="k">null</span></span>, int <em>decimals</em> = <span class="defval"><span class="n">2</span></span>)</span> <a href="tango.text.json.Json.html#Json.JsonValue.print:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Emit a text representation of this value to the
+                        provided delegate</div></div></dd></dl></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (C) 2008 Aaron Craelius & Kris Bell
+                   All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:15 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

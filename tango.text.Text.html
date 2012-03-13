@@ -1,0 +1,748 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.Text</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.Text">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.Text"><a href="htmlsrc/tango.text.Text.html" class="symbol">tango.text.Text</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: December 2005</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris
+<p class="bl"></p>
+
+        Text is a class for managing and manipulating Unicode character
+        arrays.
+<p class="bl"></p>
+        Text maintains a current "selection", controlled via the select()
+        and search() methods. Each of append(), prepend(), replace() and
+        remove() operate with respect to the selection.
+<p class="bl"></p>
+        The search() methods also operate with respect to the current
+        selection, providing a means of iterating across matched patterns.
+        To set a selection across the entire content, use the select()
+        method with no arguments.
+<p class="bl"></p>
+        Indexes and lengths of content always count code units, not code
+        points. This is similar to traditional ascii string handling, yet
+        indexing is rarely used in practice due to the selection idiom:
+        substring indexing is generally implied as opposed to manipulated
+        directly. This allows for a more streamlined model with regard to
+        utf-surrogates.
+<p class="bl"></p>
+        Strings support a range of functionality, from insert and removal
+        to utf encoding and decoding. There is also an immutable subset
+        called TextView, intended to simplify life in a multi-threaded
+        environment. However, TextView must expose the raw content as
+        needed and thus immutability depends to an extent upon so-called
+        "honour" of a callee. D does not enable immutability enforcement
+        at this time, but this class will be modified to support such a
+        feature when it arrives - via the slice() method.
+<p class="bl"></p>
+        The class is templated for use with char[], wchar[], and dchar[],
+        and should migrate across encodings seamlessly. In particular, all
+        functions in tango.text.Util are compatible with Text content in
+        any of the supported encodings. In future, this class will become
+        a principal gateway to the extensive ICU unicode library.
+<p class="bl"></p>
+        Note that several common text operations can be constructed through
+        combining tango.text.Text with tango.text.Util e.g. lines of text
+        can be processed thusly:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">source</span> = <span class="k">new</span> <span class="i">Text</span>!(<span class="k">char</span>)(<span class="sl">"one<span class="es">\n</span>two<span class="es">\n</span>three"</span>);
+
+<span class="k">foreach</span> (<span class="i">line</span>; <span class="i">Util</span>.<span class="i">lines</span>(<span class="i">source</span>.<span class="i">slice</span>()))
+         <span class="lc">// do something with line</span></pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Speaking a bit like Yoda might be accomplished as follows:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+<a href="#L3_ex2" name="L3_ex2">3</a>
+<a href="#L4_ex2" name="L4_ex2">4</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">dst</span> = <span class="k">new</span> <span class="i">Text</span>!(<span class="k">char</span>);
+
+<span class="k">foreach</span> (<span class="i">element</span>; <span class="i">Util</span>.<span class="i">delims</span> (<span class="sl">"all cows eat grass"</span>, <span class="sl">" "</span>))
+         <span class="i">dst</span>.<span class="i">prepend</span> (<span class="i">element</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Below is an overview of the API and class hierarchy:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+<a href="#L3_ex3" name="L3_ex3">3</a>
+<a href="#L4_ex3" name="L4_ex3">4</a>
+<a href="#L5_ex3" name="L5_ex3">5</a>
+<a href="#L6_ex3" name="L6_ex3">6</a>
+<a href="#L7_ex3" name="L7_ex3">7</a>
+<a href="#L8_ex3" name="L8_ex3">8</a>
+<a href="#L9_ex3" name="L9_ex3">9</a>
+<a href="#L10_ex3" name="L10_ex3">10</a>
+<a href="#L11_ex3" name="L11_ex3">11</a>
+<a href="#L12_ex3" name="L12_ex3">12</a>
+<a href="#L13_ex3" name="L13_ex3">13</a>
+<a href="#L14_ex3" name="L14_ex3">14</a>
+<a href="#L15_ex3" name="L15_ex3">15</a>
+<a href="#L16_ex3" name="L16_ex3">16</a>
+<a href="#L17_ex3" name="L17_ex3">17</a>
+<a href="#L18_ex3" name="L18_ex3">18</a>
+<a href="#L19_ex3" name="L19_ex3">19</a>
+<a href="#L20_ex3" name="L20_ex3">20</a>
+<a href="#L21_ex3" name="L21_ex3">21</a>
+<a href="#L22_ex3" name="L22_ex3">22</a>
+<a href="#L23_ex3" name="L23_ex3">23</a>
+<a href="#L24_ex3" name="L24_ex3">24</a>
+<a href="#L25_ex3" name="L25_ex3">25</a>
+<a href="#L26_ex3" name="L26_ex3">26</a>
+<a href="#L27_ex3" name="L27_ex3">27</a>
+<a href="#L28_ex3" name="L28_ex3">28</a>
+<a href="#L29_ex3" name="L29_ex3">29</a>
+<a href="#L30_ex3" name="L30_ex3">30</a>
+<a href="#L31_ex3" name="L31_ex3">31</a>
+<a href="#L32_ex3" name="L32_ex3">32</a>
+<a href="#L33_ex3" name="L33_ex3">33</a>
+<a href="#L34_ex3" name="L34_ex3">34</a>
+<a href="#L35_ex3" name="L35_ex3">35</a>
+<a href="#L36_ex3" name="L36_ex3">36</a>
+<a href="#L37_ex3" name="L37_ex3">37</a>
+<a href="#L38_ex3" name="L38_ex3">38</a>
+<a href="#L39_ex3" name="L39_ex3">39</a>
+<a href="#L40_ex3" name="L40_ex3">40</a>
+<a href="#L41_ex3" name="L41_ex3">41</a>
+<a href="#L42_ex3" name="L42_ex3">42</a>
+<a href="#L43_ex3" name="L43_ex3">43</a>
+<a href="#L44_ex3" name="L44_ex3">44</a>
+<a href="#L45_ex3" name="L45_ex3">45</a>
+<a href="#L46_ex3" name="L46_ex3">46</a>
+<a href="#L47_ex3" name="L47_ex3">47</a>
+<a href="#L48_ex3" name="L48_ex3">48</a>
+<a href="#L49_ex3" name="L49_ex3">49</a>
+<a href="#L50_ex3" name="L50_ex3">50</a>
+<a href="#L51_ex3" name="L51_ex3">51</a>
+<a href="#L52_ex3" name="L52_ex3">52</a>
+<a href="#L53_ex3" name="L53_ex3">53</a>
+<a href="#L54_ex3" name="L54_ex3">54</a>
+<a href="#L55_ex3" name="L55_ex3">55</a>
+<a href="#L56_ex3" name="L56_ex3">56</a>
+<a href="#L57_ex3" name="L57_ex3">57</a>
+<a href="#L58_ex3" name="L58_ex3">58</a>
+<a href="#L59_ex3" name="L59_ex3">59</a>
+<a href="#L60_ex3" name="L60_ex3">60</a>
+<a href="#L61_ex3" name="L61_ex3">61</a>
+<a href="#L62_ex3" name="L62_ex3">62</a>
+<a href="#L63_ex3" name="L63_ex3">63</a>
+<a href="#L64_ex3" name="L64_ex3">64</a>
+<a href="#L65_ex3" name="L65_ex3">65</a>
+<a href="#L66_ex3" name="L66_ex3">66</a>
+<a href="#L67_ex3" name="L67_ex3">67</a>
+<a href="#L68_ex3" name="L68_ex3">68</a>
+<a href="#L69_ex3" name="L69_ex3">69</a>
+<a href="#L70_ex3" name="L70_ex3">70</a>
+<a href="#L71_ex3" name="L71_ex3">71</a>
+<a href="#L72_ex3" name="L72_ex3">72</a>
+<a href="#L73_ex3" name="L73_ex3">73</a>
+<a href="#L74_ex3" name="L74_ex3">74</a>
+<a href="#L75_ex3" name="L75_ex3">75</a>
+<a href="#L76_ex3" name="L76_ex3">76</a>
+<a href="#L77_ex3" name="L77_ex3">77</a>
+<a href="#L78_ex3" name="L78_ex3">78</a>
+<a href="#L79_ex3" name="L79_ex3">79</a>
+<a href="#L80_ex3" name="L80_ex3">80</a>
+<a href="#L81_ex3" name="L81_ex3">81</a>
+<a href="#L82_ex3" name="L82_ex3">82</a>
+<a href="#L83_ex3" name="L83_ex3">83</a>
+<a href="#L84_ex3" name="L84_ex3">84</a>
+<a href="#L85_ex3" name="L85_ex3">85</a>
+<a href="#L86_ex3" name="L86_ex3">86</a>
+<a href="#L87_ex3" name="L87_ex3">87</a>
+<a href="#L88_ex3" name="L88_ex3">88</a>
+<a href="#L89_ex3" name="L89_ex3">89</a>
+<a href="#L90_ex3" name="L90_ex3">90</a>
+<a href="#L91_ex3" name="L91_ex3">91</a>
+<a href="#L92_ex3" name="L92_ex3">92</a>
+<a href="#L93_ex3" name="L93_ex3">93</a>
+<a href="#L94_ex3" name="L94_ex3">94</a>
+<a href="#L95_ex3" name="L95_ex3">95</a>
+<a href="#L96_ex3" name="L96_ex3">96</a>
+<a href="#L97_ex3" name="L97_ex3">97</a>
+<a href="#L98_ex3" name="L98_ex3">98</a>
+<a href="#L99_ex3" name="L99_ex3">99</a>
+<a href="#L100_ex3" name="L100_ex3">100</a>
+<a href="#L101_ex3" name="L101_ex3">101</a>
+<a href="#L102_ex3" name="L102_ex3">102</a>
+<a href="#L103_ex3" name="L103_ex3">103</a>
+<a href="#L104_ex3" name="L104_ex3">104</a>
+<a href="#L105_ex3" name="L105_ex3">105</a>
+<a href="#L106_ex3" name="L106_ex3">106</a>
+<a href="#L107_ex3" name="L107_ex3">107</a>
+<a href="#L108_ex3" name="L108_ex3">108</a>
+<a href="#L109_ex3" name="L109_ex3">109</a>
+<a href="#L110_ex3" name="L110_ex3">110</a>
+<a href="#L111_ex3" name="L111_ex3">111</a>
+<a href="#L112_ex3" name="L112_ex3">112</a>
+<a href="#L113_ex3" name="L113_ex3">113</a>
+<a href="#L114_ex3" name="L114_ex3">114</a>
+<a href="#L115_ex3" name="L115_ex3">115</a>
+<a href="#L116_ex3" name="L116_ex3">116</a>
+<a href="#L117_ex3" name="L117_ex3">117</a>
+<a href="#L118_ex3" name="L118_ex3">118</a>
+<a href="#L119_ex3" name="L119_ex3">119</a>
+<a href="#L120_ex3" name="L120_ex3">120</a>
+<a href="#L121_ex3" name="L121_ex3">121</a>
+<a href="#L122_ex3" name="L122_ex3">122</a>
+<a href="#L123_ex3" name="L123_ex3">123</a>
+<a href="#L124_ex3" name="L124_ex3">124</a>
+<a href="#L125_ex3" name="L125_ex3">125</a>
+<a href="#L126_ex3" name="L126_ex3">126</a>
+<a href="#L127_ex3" name="L127_ex3">127</a>
+<a href="#L128_ex3" name="L128_ex3">128</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">class</span> <span class="i">Text</span>(<span class="i">T</span>) : <span class="i">TextView</span>!(<span class="i">T</span>)
+{
+        <span class="lc">// set or reset the content</span>
+        <span class="i">Text</span> <span class="i">set</span> (<span class="i">T</span>[] <span class="i">chars</span>, <span class="k">bool</span> <span class="i">mutable</span>=<span class="k">true</span>);
+        <span class="i">Text</span> <span class="i">set</span> (<span class="k">const</span>(<span class="i">TextView</span>) <span class="i">other</span>, <span class="k">bool</span> <span class="i">mutable</span>=<span class="k">true</span>);
+
+        <span class="lc">// retrieve currently selected text</span>
+        <span class="i">T</span>[] <span class="i">selection</span> ();
+
+        <span class="lc">// set and retrieve current selection point</span>
+        <span class="i">Text</span> <span class="i">point</span> (<span class="i">size_t</span> <span class="i">index</span>);
+        <span class="i">size_t</span> <span class="i">point</span> ();
+
+        <span class="lc">// mark a selection</span>
+        <span class="i">Text</span> <span class="i">select</span> (<span class="k">int</span> <span class="i">start</span>=<span class="n">0</span>, <span class="k">int</span> <span class="i">length</span>=<span class="k">int</span>.<span class="i">max</span>);
+
+        <span class="lc">// return an iterator to move the selection around.</span>
+        <span class="lc">// Also exposes "replace all" functionality</span>
+        <span class="i">Search</span> <span class="i">search</span> (<span class="i">T</span> <span class="i">chr</span>);
+        <span class="i">Search</span> <span class="i">search</span> (<span class="i">T</span>[] <span class="i">pattern</span>);
+
+        <span class="lc">// format arguments behind current selection</span>
+        <span class="i">Text</span> <span class="i">format</span> (<span class="i">T</span>[] <span class="i">format</span>, ...);
+
+        <span class="lc">// append behind current selection</span>
+        <span class="i">Text</span> <span class="i">append</span> (<span class="i">T</span>[] <span class="i">text</span>);
+        <span class="i">Text</span> <span class="i">append</span> (<span class="k">const</span>(<span class="i">TextView</span>) <span class="i">other</span>);
+        <span class="i">Text</span> <span class="i">append</span> (<span class="i">T</span> <span class="i">chr</span>, <span class="k">int</span> <span class="i">count</span>=<span class="n">1</span>);
+        <span class="i">Text</span> <span class="i">append</span> (<span class="i">InputStream</span> <span class="i">source</span>);
+
+        <span class="lc">// transcode behind current selection</span>
+        <span class="i">Text</span> <span class="i">encode</span> (<span class="k">char</span>[]);
+        <span class="i">Text</span> <span class="i">encode</span> (<span class="k">wchar</span>[]);
+        <span class="i">Text</span> <span class="i">encode</span> (<span class="k">dchar</span>[]);
+
+        <span class="lc">// insert before current selection</span>
+        <span class="i">Text</span> <span class="i">prepend</span> (<span class="i">T</span>[] <span class="i">text</span>);
+        <span class="i">Text</span> <span class="i">prepend</span> (<span class="k">const</span>(<span class="i">TextView</span>) <span class="i">other</span>);
+        <span class="i">Text</span> <span class="i">prepend</span> (<span class="i">T</span> <span class="i">chr</span>, <span class="k">int</span> <span class="i">count</span>=<span class="n">1</span>);
+
+        <span class="lc">// replace current selection</span>
+        <span class="i">Text</span> <span class="i">replace</span> (<span class="i">T</span> <span class="i">chr</span>);
+        <span class="i">Text</span> <span class="i">replace</span> (<span class="i">T</span>[] <span class="i">text</span>);
+        <span class="i">Text</span> <span class="i">replace</span> (<span class="k">const</span>(<span class="i">TextView</span>) <span class="i">other</span>);
+
+        <span class="lc">// remove current selection</span>
+        <span class="i">Text</span> <span class="i">remove</span> ();
+
+        <span class="lc">// clear content</span>
+        <span class="i">Text</span> <span class="i">clear</span> ();
+
+        <span class="lc">// trim leading and trailing whitespace</span>
+        <span class="i">Text</span> <span class="i">trim</span> ();
+
+        <span class="lc">// trim leading and trailing chr instances</span>
+        <span class="i">Text</span> <span class="i">strip</span> (<span class="i">T</span> <span class="i">chr</span>);
+
+        <span class="lc">// truncate at point, or current selection</span>
+        <span class="i">Text</span> <span class="i">truncate</span> (<span class="k">int</span> <span class="i">point</span> = <span class="k">int</span>.<span class="i">max</span>);
+
+        <span class="lc">// reserve some space for inserts/additions</span>
+        <span class="i">Text</span> <span class="i">reserve</span> (<span class="k">int</span> <span class="i">extra</span>);
+
+        <span class="lc">// write content to stream</span>
+        <span class="i">Text</span> <span class="i">write</span> (<span class="i">OutputStream</span> <span class="i">sink</span>);
+}
+
+<span class="k">class</span> <span class="i">TextView</span>(<span class="i">T</span>) : <span class="i">UniText</span>
+{
+        <span class="lc">// hash content</span>
+        <span class="i">hash_t</span> <span class="i">toHash</span> ();
+
+        <span class="lc">// return length of content</span>
+        <span class="i">size_t</span> <span class="i">length</span> ();
+
+        <span class="lc">// compare content</span>
+        <span class="k">bool</span> <span class="i">equals</span>  (<span class="i">T</span>[] <span class="i">text</span>);
+        <span class="k">bool</span> <span class="i">equals</span>  (<span class="k">const</span>(<span class="i">TextView</span>) <span class="i">other</span>);
+        <span class="k">bool</span> <span class="i">ends</span>    (<span class="i">T</span>[] <span class="i">text</span>);
+        <span class="k">bool</span> <span class="i">ends</span>    (<span class="k">const</span>(<span class="i">TextView</span>) <span class="i">other</span>);
+        <span class="k">bool</span> <span class="i">starts</span>  (<span class="i">T</span>[] <span class="i">text</span>);
+        <span class="k">bool</span> <span class="i">starts</span>  (<span class="k">const</span>(<span class="i">TextView</span>) <span class="i">other</span>);
+        <span class="k">int</span> <span class="i">compare</span>  (<span class="i">T</span>[] <span class="i">text</span>);
+        <span class="k">int</span> <span class="i">compare</span>  (<span class="k">const</span>(<span class="i">TextView</span>) <span class="i">other</span>);
+        <span class="k">int</span> <span class="i">opEquals</span> (<span class="i">Object</span> <span class="i">other</span>);
+        <span class="k">int</span> <span class="i">opCmp</span>    (<span class="i">Object</span> <span class="i">other</span>);
+
+        <span class="lc">// copy content</span>
+        <span class="i">T</span>[] <span class="i">copy</span> (<span class="i">T</span>[] <span class="i">dst</span>);
+
+        <span class="lc">// return content</span>
+        <span class="i">T</span>[] <span class="i">slice</span> ();
+
+        <span class="lc">// return data type</span>
+        <span class="i">typeinfo</span> <span class="i">encoding</span> ();
+
+        <span class="lc">// replace the comparison algorithm</span>
+        <span class="i">Comparator</span> <span class="i">comparator</span> (<span class="i">Comparator</span> <span class="i">other</span>);
+}
+
+<span class="k">class</span> <span class="i">UniText</span>
+{
+        <span class="lc">// convert content</span>
+        <span class="k">abstract</span> <span class="k">char</span>[]  <span class="i">toString</span>   (<span class="k">char</span>[]  <span class="i">dst</span> = <span class="k">null</span>);
+        <span class="k">abstract</span> <span class="k">wchar</span>[] <span class="i">toString16</span> (<span class="k">wchar</span>[] <span class="i">dst</span> = <span class="k">null</span>);
+        <span class="k">abstract</span> <span class="k">dchar</span>[] <span class="i">toString32</span> (<span class="k">dchar</span>[] <span class="i">dst</span> = <span class="k">null</span>);
+}
+
+<span class="k">struct</span> <span class="i">Search</span>
+{
+        <span class="lc">// select prior instance</span>
+        <span class="k">bool</span> <span class="i">prev</span>();
+
+        <span class="lc">// select next instance</span>
+        <span class="k">bool</span> <span class="i">next</span>();
+
+        <span class="lc">// return instance count</span>
+        <span class="i">size_t</span> <span class="i">count</span>();
+
+        <span class="lc">// contains instance?</span>
+        <span class="k">bool</span> <span class="i">within</span>();
+
+        <span class="lc">// replace all with char</span>
+        <span class="k">void</span> <span class="i">replace</span>(<span class="i">T</span>);
+
+        <span class="lc">// replace all with text (null == remove all)</span>
+        <span class="k">void</span> <span class="i">replace</span>(<span class="i">T</span>[]);
+}</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Text" href="htmlsrc/tango.text.Text.html#L233">Text</a><span class="tparams">(<em>T</em>)</span> : <span class="bclass">TextView!(T)</span> <a href="tango.text.Text.html#Text" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The mutable Text class actually implements the full API, whereas
+        the superclasses are purely abstract (could be interfaces instead).</div></div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Text.Span" href="htmlsrc/tango.text.Text.html#L378">Span</a> <span class="attrs">[<span class="prot">public</span>, <span class="stc">deprecated</span>]</span> <a href="tango.text.Text.html#Text.Span" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Selection span</div></div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">use point() instead</div>
+<dl>
+<dt class="decl">size_t <a class="symbol _variable" name="Text.Span.begin" href="htmlsrc/tango.text.Text.html#L380">begin</a> <a href="tango.text.Text.html#Text.Span.begin" class="plink">¶</a></dt>
+<dt class="decl">size_t <a class="symbol _variable" name="Text.Span.length" href="htmlsrc/tango.text.Text.html#L380">length</a> <a href="tango.text.Text.html#Text.Span.length" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">length of selection</div></div></dd></dl></dd>
+<dt class="decl"><a class="symbol _ctor" name="Text.this" href="htmlsrc/tango.text.Text.html#L396">this</a><span class="params">(size_t <em>space</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.text.Text.html#Text.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create an empty Text with the specified available
+                space</div></div>
+<p class="sec_header">Note:</p><div class="cmnt">A character like 'a' will be implicitly converted to
+                uint and thus will be accepted for this constructor, making
+                it appear like you can initialize a Text instance with a
+                single character, something which is not supported.</div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Text.this:2" href="htmlsrc/tango.text.Text.html#L413">this</a><span class="params">(T[] <em>content</em>, bool <em>copy</em>)</span> <a href="tango.text.Text.html#Text.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a Text upon the provided content. If said
+                content is immutable (read-only) then you might consider
+                setting the 'copy' parameter to false. Doing so will
+                avoid allocating heap-space for the content until it is
+                modified via Text methods. This can be useful when
+                wrapping an array "temporarily" with a stack-based Text</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Text.this:3" href="htmlsrc/tango.text.Text.html#L436">this</a><span class="params">(TextViewT <em>other</em>, bool <em>copy</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.text.Text.html#Text.this:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a Text via the content of another. If said
+                content is immutable (read-only) then you might consider
+                setting the 'copy' parameter to false. Doing so will avoid
+                allocating heap-space for the content until it is modified
+                via Text methods. This can be useful when wrapping an array
+                temporarily with a stack-based Text</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.set" href="htmlsrc/tango.text.Text.html#L458">set</a><span class="params">(T[] <em>chars</em>, bool <em>copy</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.set" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the content to the provided array. Parameter 'copy'
+                specifies whether the given array is likely to change. If
+                not, the array is aliased until such time it is altered via
+                this class. This can be useful when wrapping an array
+                "temporarily" with a stack-based Text.</div></div>
+<div class="cmnt">Also resets the curent selection to null</div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.set:2" href="htmlsrc/tango.text.Text.html#L492">set</a><span class="params">(TextViewT <em>other</em>, bool <em>copy</em> = <span class="defval"><span class="k">true</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.set:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Replace the content of this Text. If the new content
+                is immutable (read-only) then you might consider setting the
+                'copy' parameter to false. Doing so will avoid allocating
+                heap-space for the content until it is modified via one of
+                these methods. This can be useful when wrapping an array
+                "temporarily" with a stack-based Text.</div></div>
+<div class="cmnt">Also resets the curent selection to null</div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.select" href="htmlsrc/tango.text.Text.html#L504">select</a><span class="params">(size_t <em>start</em> = <span class="defval"><span class="n">0</span></span>, size_t <em>length</em> = <span class="defval"><span class="k">int</span>.<span class="i">max</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.select" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Explicitly set the current selection to the given start and
+                length. values are pinned to the content extents</div></div></dd>
+<dt class="decl"><span class="rettyp">const(T)[]</span> <a class="symbol _function" name="Text.selection" href="htmlsrc/tango.text.Text.html#L518">selection</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.selection" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the currently selected content</div></div></dd>
+<dt class="decl"><span class="rettyp">Span</span> <a class="symbol _function" name="Text.span" href="htmlsrc/tango.text.Text.html#L531">span</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">deprecated</span>]</span> <a href="tango.text.Text.html#Text.span" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the index and length of the current selection</div></div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">use point() instead</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Text.point" href="htmlsrc/tango.text.Text.html#L545">point</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.point" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the current selection point</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.point:2" href="htmlsrc/tango.text.Text.html#L556">point</a><span class="params">(size_t <em>index</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.point:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the current selection point, and resets selection length</div></div></dd>
+<dt class="decl"><span class="rettyp">Search!(T)</span> <a class="symbol _function" name="Text.search" href="htmlsrc/tango.text.Text.html#L585">search</a><span class="params">(const(T)[] <em>match</em>)</span> <a href="tango.text.Text.html#Text.search" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a search iterator for a given pattern. The iterator
+                sets the current text selection as appropriate. For example:
+                <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+<a href="#L2_ex4" name="L2_ex4">2</a>
+<a href="#L3_ex4" name="L3_ex4">3</a>
+<a href="#L4_ex4" name="L4_ex4">4</a>
+<a href="#L5_ex4" name="L5_ex4">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">t</span> = <span class="k">new</span> <span class="i">Text</span> (<span class="sl">"hello world"</span>);
+<span class="k">auto</span> <span class="i">s</span> = <span class="i">t</span>.<span class="i">search</span> (<span class="sl">"world"</span>);
+
+<span class="k">assert</span> (<span class="i">s</span>.<span class="i">next</span>);
+<span class="k">assert</span> (<span class="i">t</span>.<span class="i">selection</span>() == <span class="sl">"world"</span>);</pre>
+</td></tr>
+</table></div></div>
+<div class="cmnt">Replacing patterns operates in a similar fashion:
+                <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex5" name="L1_ex5">1</a>
+<a href="#L2_ex5" name="L2_ex5">2</a>
+<a href="#L3_ex5" name="L3_ex5">3</a>
+<a href="#L4_ex5" name="L4_ex5">4</a>
+<a href="#L5_ex5" name="L5_ex5">5</a>
+<a href="#L6_ex5" name="L6_ex5">6</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">t</span> = <span class="k">new</span> <span class="i">Text</span> (<span class="sl">"hello world"</span>);
+<span class="k">auto</span> <span class="i">s</span> = <span class="i">t</span>.<span class="i">search</span> (<span class="sl">"world"</span>);
+
+<span class="lc">// replace all instances of "world" with "everyone"</span>
+<span class="k">assert</span> (<span class="i">s</span>.<span class="i">replace</span> (<span class="sl">"everyone"</span>));
+<span class="k">assert</span> (<span class="i">s</span>.<span class="i">count</span> <span class="k">is</span> <span class="n">0</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Text.select:2" href="htmlsrc/tango.text.Text.html#L604">select</a><span class="params">(T <em>c</em>)</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">deprecated</span>]</span> <a href="tango.text.Text.html#Text.select:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Find and select the next occurrence of a BMP code point
+                in a string. Returns true if found, false otherwise</div></div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">use search() instead</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Text.select:3" href="htmlsrc/tango.text.Text.html#L625">select</a><span class="params">(const(TextViewT) <em>other</em>)</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">deprecated</span>]</span> <a href="tango.text.Text.html#Text.select:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Find and select the next substring occurrence.  Returns
+                true if found, false otherwise</div></div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">use search() instead</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Text.select:4" href="htmlsrc/tango.text.Text.html#L639">select</a><span class="params">(const(T)[] <em>chars</em>)</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">deprecated</span>]</span> <a href="tango.text.Text.html#Text.select:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Find and select the next substring occurrence. Returns
+                true if found, false otherwise</div></div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">use search() instead</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Text.selectPrior" href="htmlsrc/tango.text.Text.html#L660">selectPrior</a><span class="params">(T <em>c</em>)</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">deprecated</span>]</span> <a href="tango.text.Text.html#Text.selectPrior" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Find and select a prior occurrence of a BMP code point
+                in a string. Returns true if found, false otherwise</div></div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">use search() instead</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Text.selectPrior:2" href="htmlsrc/tango.text.Text.html#L681">selectPrior</a><span class="params">(const(TextViewT) <em>other</em>)</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">deprecated</span>]</span> <a href="tango.text.Text.html#Text.selectPrior:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Find and select a prior substring occurrence. Returns
+                true if found, false otherwise</div></div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">use search() instead</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Text.selectPrior:3" href="htmlsrc/tango.text.Text.html#L695">selectPrior</a><span class="params">(const(T)[] <em>chars</em>)</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">deprecated</span>]</span> <a href="tango.text.Text.html#Text.selectPrior:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Find and select a prior substring occurrence. Returns
+                true if found, false otherwise</div></div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">use search() instead</div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.format" href="htmlsrc/tango.text.Text.html#L713">format</a><span class="params">(const(T)[] <em>format</em>, ...)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.format" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append formatted content to this Text</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.append" href="htmlsrc/tango.text.Text.html#L743">append</a><span class="params">(const(TextViewT) <em>other</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.append" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append text to this Text</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.append:2" href="htmlsrc/tango.text.Text.html#L754">append</a><span class="params">(const(T)[] <em>chars</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.append:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append text to this Text</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.append:3" href="htmlsrc/tango.text.Text.html#L765">append</a><span class="params">(T <em>chr</em>, size_t <em>count</em> = <span class="defval"><span class="n">1</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.append:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append a count of characters to this Text</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.append:4" href="htmlsrc/tango.text.Text.html#L780">append</a><span class="params">(int <em>v</em>, const(T)[] <em>fmt</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">deprecated</span>]</span> <a href="tango.text.Text.html#Text.append:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append an integer to this Text</div></div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">use format() instead</div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.append:5" href="htmlsrc/tango.text.Text.html#L793">append</a><span class="params">(long <em>v</em>, const(T)[] <em>fmt</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">deprecated</span>]</span> <a href="tango.text.Text.html#Text.append:5" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append a long to this Text</div></div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">use format() instead</div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.append:6" href="htmlsrc/tango.text.Text.html#L807">append</a><span class="params">(double <em>v</em>, int <em>decimals</em> = <span class="defval"><span class="n">2</span></span>, int <em>e</em> = <span class="defval"><span class="n">10</span></span>)</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">deprecated</span>]</span> <a href="tango.text.Text.html#Text.append:6" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append a double to this Text</div></div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">use format() instead</div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.append:7" href="htmlsrc/tango.text.Text.html#L821">append</a><span class="params">(InputStream <em>source</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.append:7" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append content from input stream at insertion point. Use
+                tango.io.stream.Utf as a wrapper to perform conversion as
+                necessary</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.prepend" href="htmlsrc/tango.text.Text.html#L843">prepend</a><span class="params">(T <em>chr</em>, int <em>count</em> = <span class="defval"><span class="n">1</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.prepend" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Insert characters into this Text</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.prepend:2" href="htmlsrc/tango.text.Text.html#L855">prepend</a><span class="params">(const(T)[] <em>other</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.prepend:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Insert text into this Text</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.prepend:3" href="htmlsrc/tango.text.Text.html#L868">prepend</a><span class="params">(const(TextViewT) <em>other</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.prepend:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Insert another Text into this Text</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.encode" href="htmlsrc/tango.text.Text.html#L880">encode</a><span class="params">(const(char)[] <em>s</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.encode" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.encode:2" href="htmlsrc/tango.text.Text.html#L895">encode</a><span class="params">(const(wchar)[] <em>s</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.encode:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.encode:3" href="htmlsrc/tango.text.Text.html#L910">encode</a><span class="params">(const(dchar)[] <em>s</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.encode:3" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.encode:4" href="htmlsrc/tango.text.Text.html#L925">encode</a><span class="params">(Object <em>o</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.encode:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append encoded text at the current selection point. The text
+                is converted as necessary to the appropritate utf encoding.</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.replace" href="htmlsrc/tango.text.Text.html#L937">replace</a><span class="params">(T <em>chr</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.replace" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Replace a section of this Text with the specified
+                character</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.replace:2" href="htmlsrc/tango.text.Text.html#L949">replace</a><span class="params">(const(T)[] <em>chars</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.replace:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Replace a section of this Text with the specified
+                array</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.replace:3" href="htmlsrc/tango.text.Text.html#L967">replace</a><span class="params">(const(TextViewT) <em>other</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.replace:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Replace a section of this Text with another</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.remove" href="htmlsrc/tango.text.Text.html#L979">remove</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.remove" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove the selection from this Text and reset the
+                selection to zero length (at the current position)</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.truncate" href="htmlsrc/tango.text.Text.html#L1014">truncate</a><span class="params">(size_t <em>index</em> = <span class="defval"><span class="i">max</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.truncate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Truncate this string at an optional index. Default behaviour
+                is to truncate at the current append point. Current selection
+                is moved to the truncation point, with length 0</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.clear" href="htmlsrc/tango.text.Text.html#L1029">clear</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clear the string content</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.trim" href="htmlsrc/tango.text.Text.html#L1041">trim</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.trim" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove leading and trailing whitespace from this Text,
+                and reset the selection to the trimmed content</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.strip" href="htmlsrc/tango.text.Text.html#L1055">strip</a><span class="params">(T <em>matches</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.strip" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove leading and trailing matches from this Text,
+                and reset the selection to the stripped content</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.reserve" href="htmlsrc/tango.text.Text.html#L1068">reserve</a><span class="params">(size_t <em>extra</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.reserve" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reserve some extra room</div></div></dd>
+<dt class="decl"><span class="rettyp">Text</span> <a class="symbol _function" name="Text.write" href="htmlsrc/tango.text.Text.html#L1080">write</a><span class="params">(OutputStream <em>sink</em>)</span> <a href="tango.text.Text.html#Text.write" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write content to output stream</div></div></dd>
+<dt class="decl"><span class="rettyp">TypeInfo</span> <a class="symbol _function" name="Text.encoding" href="htmlsrc/tango.text.Text.html#L1096">encoding</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.encoding" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the encoding type</div></div></dd>
+<dt class="decl"><span class="rettyp">Comparator</span> <a class="symbol _function" name="Text.comparator" href="htmlsrc/tango.text.Text.html#L1108">comparator</a><span class="params">(Comparator <em>other</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.comparator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the comparator delegate. Where other is null, we behave
+                as a getter only</div></div></dd>
+<dt class="decl"><span class="rettyp">hash_t</span> <a class="symbol _function" name="Text.toHash" href="htmlsrc/tango.text.Text.html#L1122">toHash</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.text.Text.html#Text.toHash" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Hash this Text</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Text.length" href="htmlsrc/tango.text.Text.html#L1133">length</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.length" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the length of the valid content</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Text.equals" href="htmlsrc/tango.text.Text.html#L1144">equals</a><span class="params">(const(TextViewT) <em>other</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.equals" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is this Text equal to another?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Text.equals:2" href="htmlsrc/tango.text.Text.html#L1157">equals</a><span class="params">(const(T)[] <em>other</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.equals:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is this Text equal to the provided text?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Text.ends" href="htmlsrc/tango.text.Text.html#L1170">ends</a><span class="params">(const(TextViewT) <em>other</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.ends" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Does this Text end with another?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Text.ends:2" href="htmlsrc/tango.text.Text.html#L1181">ends</a><span class="params">(const(T)[] <em>chars</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.ends:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Does this Text end with the specified string?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Text.starts" href="htmlsrc/tango.text.Text.html#L1194">starts</a><span class="params">(const(TextViewT) <em>other</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.starts" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Does this Text start with another?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Text.starts:2" href="htmlsrc/tango.text.Text.html#L1205">starts</a><span class="params">(const(T)[] <em>chars</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.starts:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Does this Text start with the specified string?</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Text.compare" href="htmlsrc/tango.text.Text.html#L1221">compare</a><span class="params">(const(TextViewT) <em>other</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.compare" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compare this Text start with another. Returns 0 if the
+                content matches, less than zero if this Text is "less"
+                than the other, or greater than zero where this Text
+                is "bigger".</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Text.compare:2" href="htmlsrc/tango.text.Text.html#L1238">compare</a><span class="params">(const(T)[] <em>chars</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.compare:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compare this Text start with an array. Returns 0 if the
+                content matches, less than zero if this Text is "less"
+                than the other, or greater than zero where this Text
+                is "bigger".</div></div></dd>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="Text.copy" href="htmlsrc/tango.text.Text.html#L1254">copy</a><span class="params">(T[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.copy" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return content from this Text</div></div>
+<div class="cmnt">A slice of dst is returned, representing a copy of the
+                content. The slice is clipped to the minimum of either
+                the length of the provided array, or the length of the
+                content minus the stipulated start point</div></dd>
+<dt class="decl"><span class="rettyp">const(T)[]</span> <a class="symbol _function" name="Text.slice" href="htmlsrc/tango.text.Text.html#L1272">slice</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.slice" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return an alias to the content of this TextView. Note
+                that you are bound by honour to leave this content wholly
+                unmolested. D surely needs some way to enforce immutability
+                upon array references</div></div></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="Text.toString" href="htmlsrc/tango.text.Text.html#L1302">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.toString" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">wchar[]</span> <a class="symbol _function" name="Text.toString16" href="htmlsrc/tango.text.Text.html#L1324">toString16</a><span class="params">(wchar[] <em>dst</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.toString16" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">dchar[]</span> <a class="symbol _function" name="Text.toString32" href="htmlsrc/tango.text.Text.html#L1341">toString32</a><span class="params">(dchar[] <em>dst</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.toString32" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert to the UniText types. The optional argument
+                dst will be resized as required to house the conversion.
+                To minimize heap allocation during subsequent conversions,
+                apply the following pattern:
+                <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex6" name="L1_ex6">1</a>
+<a href="#L2_ex6" name="L2_ex6">2</a>
+<a href="#L3_ex6" name="L3_ex6">3</a>
+<a href="#L4_ex6" name="L4_ex6">4</a>
+<a href="#L5_ex6" name="L5_ex6">5</a>
+<a href="#L6_ex6" name="L6_ex6">6</a>
+<a href="#L7_ex6" name="L7_ex6">7</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">Text</span>  <span class="i">string</span>;
+
+<span class="k">wchar</span>[] <span class="i">buffer</span>;
+<span class="k">wchar</span>[] <span class="i">result</span> = <span class="i">string</span>.<span class="i">utf16</span> (<span class="i">buffer</span>);
+
+<span class="k">if</span> (<span class="i">result</span>.<span class="i">length</span> &gt; <span class="i">buffer</span>.<span class="i">length</span>)
+    <span class="i">buffer</span> = <span class="i">result</span>;</pre>
+</td></tr>
+</table>
+                You can also provide a buffer from the stack, but the output
+                will be moved to the heap if said buffer is not large enough</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Text.opCmp" href="htmlsrc/tango.text.Text.html#L1364">opCmp</a><span class="params">(Object <em>o</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.text.Text.html#Text.opCmp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compare this Text to another. We compare against other
+                Strings only. Literals and other objects are not supported</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Text.opEquals" href="htmlsrc/tango.text.Text.html#L1380">opEquals</a><span class="params">(Object <em>o</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.text.Text.html#Text.opEquals" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Text.opEquals:2" href="htmlsrc/tango.text.Text.html#L1393">opEquals</a><span class="params">(const(T)[] <em>s</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.text.Text.html#Text.opEquals:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is this Text equal to the text of something else?</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="TextView" href="htmlsrc/tango.text.Text.html#L1522">TextView</a><span class="tparams">(<em>T</em>)</span> : <span class="bclass">UniText</span> <a href="tango.text.Text.html#TextView" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Immutable string</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="TextView.length" href="htmlsrc/tango.text.Text.html#L1532">length</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.length" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the length of the valid content</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="TextView.equals" href="htmlsrc/tango.text.Text.html#L1540">equals</a><span class="params">(const(TextView) <em>other</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.equals" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is this Text equal to another?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="TextView.equals:2" href="htmlsrc/tango.text.Text.html#L1548">equals</a><span class="params">(const(T)[] <em>other</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.equals:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is this Text equal to the the provided text?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="TextView.ends" href="htmlsrc/tango.text.Text.html#L1556">ends</a><span class="params">(const(TextView) <em>other</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.ends" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Does this Text end with another?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="TextView.ends:2" href="htmlsrc/tango.text.Text.html#L1564">ends</a><span class="params">(const(T)[] <em>chars</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.ends:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Does this Text end with the specified string?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="TextView.starts" href="htmlsrc/tango.text.Text.html#L1572">starts</a><span class="params">(const(TextView) <em>other</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.starts" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Does this Text start with another?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="TextView.starts:2" href="htmlsrc/tango.text.Text.html#L1580">starts</a><span class="params">(const(T)[] <em>chars</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.starts:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Does this Text start with the specified string?</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="TextView.compare" href="htmlsrc/tango.text.Text.html#L1591">compare</a><span class="params">(const(TextView) <em>other</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.compare" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compare this Text start with another. Returns 0 if the
+                content matches, less than zero if this Text is "less"
+                than the other, or greater than zero where this Text
+                is "bigger".</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="TextView.compare:2" href="htmlsrc/tango.text.Text.html#L1602">compare</a><span class="params">(const(T)[] <em>chars</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.compare:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compare this Text start with an array. Returns 0 if the
+                content matches, less than zero if this Text is "less"
+                than the other, or greater than zero where this Text
+                is "bigger".</div></div></dd>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="TextView.copy" href="htmlsrc/tango.text.Text.html#L1614">copy</a><span class="params">(T[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.copy" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return content from this Text. A slice of dst is
+                returned, representing a copy of the content. The
+                slice is clipped to the minimum of either the length
+                of the provided array, or the length of the content
+                minus the stipulated start point</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="TextView.opCmp" href="htmlsrc/tango.text.Text.html#L1622">opCmp</a><span class="params">(Object <em>o</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.opCmp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compare this Text to another</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="TextView.opEquals" href="htmlsrc/tango.text.Text.html#L1630">opEquals</a><span class="params">(Object <em>other</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.opEquals" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is this Text equal to another?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="TextView.opEquals:2" href="htmlsrc/tango.text.Text.html#L1638">opEquals</a><span class="params">(const(T)[] <em>other</em>)</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.opEquals:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is this Text equal to another?</div></div></dd>
+<dt class="decl"><span class="rettyp">TypeInfo</span> <a class="symbol _function" name="TextView.encoding" href="htmlsrc/tango.text.Text.html#L1646">encoding</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.encoding" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the encoding type</div></div></dd>
+<dt class="decl"><span class="rettyp">Comparator</span> <a class="symbol _function" name="TextView.comparator" href="htmlsrc/tango.text.Text.html#L1654">comparator</a><span class="params">(Comparator <em>other</em>)</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.comparator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the comparator delegate</div></div></dd>
+<dt class="decl"><span class="rettyp">hash_t</span> <a class="symbol _function" name="TextView.toHash" href="htmlsrc/tango.text.Text.html#L1662">toHash</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.toHash" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Hash this Text</div></div></dd>
+<dt class="decl"><span class="rettyp">const(T)[]</span> <a class="symbol _function" name="TextView.slice" href="htmlsrc/tango.text.Text.html#L1673">slice</a><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.text.Text.html#TextView.slice" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return an alias to the content of this TextView. Note
+                that you are bound by honour to leave this content wholly
+                unmolested. D surely needs some way to enforce immutability
+                upon array references</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="UniText" href="htmlsrc/tango.text.Text.html#L1684">UniText</a> <a href="tango.text.Text.html#UniText" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A string abstraction that converts to anything</div></div>
+</dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2005 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:03 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

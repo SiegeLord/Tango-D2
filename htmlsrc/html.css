@@ -1,0 +1,75 @@
+@charset "utf-8";
+.compilerinfo, .sourcecode, .linescolumn {
+  white-space: pre;
+  font-family: Monospace;
+  font-size: 0.8em;
+  margin:0;
+  padding:0;
+}
+.compilerinfo {
+  white-space: normal;
+  border: 1px solid #A22;
+  padding: 0.5em;
+  margin: 1em;
+}
+.compilerinfo .error { display: block; }
+.linescolumn {
+  text-align: right;
+  padding-right: 0.3em;
+  border-right: 1px dotted gray;
+}
+.linescolumn a {
+  display: block;
+  color: #44B;
+  text-decoration: none;
+}
+.linescolumn a:target { background-color: yellow; }
+/* Number */
+.n { color: teal; }
+/* Keyword */
+.k { color: darkblue; font-weight: bold; }
+/* Line, block and nested comments */
+.lc, .bc, .nc { color: gray; }
+/* Identifier */
+.i { color: black; }
+/* String literal */
+.sl { color: firebrick; }
+/* Character literal */
+.cl { color: purple; }
+/* All bracket types */
+.br { color: orange; }
+/* Special tokens */
+.st { color: green; font-weight: bold; }
+/* #line, hash line */
+.hl { color: green; }
+/* filespec (e.g. #line number [filespec]) */
+.fs { color: purple;}
+/* Escape sequences. */
+.es { color: teal; }
+/* When the first line starts with #! it's a "shebang" */
+.shebang { color: gray; }
+/* Operator */
+/*.op { color: royalblue; }*/
+/* Particular operators */
+/*.opaa { content: "and"; }*/ /*&& ∧*/
+/*.opoo { content: "or"; }*/ /*|| ∨*/
+/*.opn { content: "¬"; }*/ /*!*/
+/*.opne { content: "≠"; }*/ /*!=*/
+/*.ople { content: "≤"; }*/ /*<=*/
+/*.opge { content: "≥"; }*/ /*>=*/
+/*.oplg { content: "≶"; }*/ /*<>*/
+/*
+d = Declaration
+s = Statement
+e = Expression
+t = Type
+o = Other
+*/
+/* .d { background-color: #FFDDDD; } */
+/* .e { background-color: #DDDDFF; } */
+.d.Module .i, .d.Import .i { color: blue; }
+/*.t .i,*/ .t.Identifier .i, .TemplateTypeParameter .i { color: DarkRed; }
+.t .br, .t .op { color: DarkRed; }
+.t .k { color: DarkRed; font-weight: normal; }
+.d > .i { color: ForestGreen; }
+.o.Parameter > .i { color: OliveDrab; font-style: italic; }

@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.sys.consts.sysctl</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a></td>
+<td><td><pre class="sourcecode">
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">consts</span>.<span class="i">sysctl</span>;</span>
+
+<span class="d Version"><span class="k">version</span> (<span class="i">Windows</span>)
+         <span class="d Protection"><span class="k">public</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">win32</span>.<span class="i">consts</span>.<span class="i">sysctl</span>;</span>
+<span class="k">else</span>
+<span class="d Version"><span class="k">version</span> (<span class="i">linux</span>)
+         <span class="d Protection"><span class="k">public</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">linux</span>.<span class="i">consts</span>.<span class="i">sysctl</span>;</span>
+<span class="k">else</span>
+<span class="d Version"><span class="k">version</span> (<span class="i">FreeBSD</span>)
+         <span class="d Protection"><span class="k">public</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">freebsd</span>.<span class="i">consts</span>.<span class="i">sysctl</span>;</span>
+<span class="k">else</span>
+<span class="d Version"><span class="k">version</span> (<span class="i">darwin</span>)
+         <span class="d Protection"><span class="k">public</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">darwin</span>.<span class="i">consts</span>.<span class="i">sysctl</span>;</span>
+<span class="k">else</span>
+<span class="d Version"><span class="k">version</span> (<span class="i">solaris</span>)
+         <span class="d Protection"><span class="k">public</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">solaris</span>.<span class="i">consts</span>.<span class="i">sysctl</span>;</span></span></span></span></span></span></span>
+
+
+</pre></td>
+</tr></table>
+</body>
+</html>

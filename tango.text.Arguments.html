@@ -1,0 +1,530 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.Arguments</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.Arguments">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.Arguments"><a href="htmlsrc/tango.text.Arguments.html" class="symbol">tango.text.Arguments</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Oct 2009: Initial release</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Arguments" href="htmlsrc/tango.text.Arguments.html#L201">Arguments</a> <a href="tango.text.Arguments.html#Arguments" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Command-line argument parser. Simple usage is:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">args</span> = <span class="k">new</span> <span class="i">Arguments</span>;
+<span class="i">args</span>.<span class="i">parse</span> (<span class="sl">"-a -b"</span>, <span class="k">true</span>);
+<span class="k">auto</span> <span class="i">a</span> = <span class="i">args</span>(<span class="sl">"a"</span>);
+<span class="k">auto</span> <span class="i">b</span> = <span class="i">args</span>(<span class="sl">"b"</span>);
+<span class="k">if</span> (<span class="i">a</span>.<span class="i">set</span> &amp;&amp; <span class="i">b</span>.<span class="i">set</span>)
+    ...</pre>
+</td></tr>
+</table></div></div>
+<div class="cmnt">Argument parameters are assigned to the last known target, such
+        that multiple parameters accumulate:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">args</span>.<span class="i">parse</span> (<span class="sl">"-a=1 -a=2 foo"</span>, <span class="k">true</span>);
+<span class="k">assert</span> (<span class="i">args</span>(<span class="cl">'a'</span>).<span class="i">assigned</span>().<span class="i">length</span> <span class="k">is</span> <span class="n">3</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        That example results in argument 'a' assigned three parameters.
+        Two parameters are explicitly assigned using '=', while a third
+        is implicitly assigned(). Implicit parameters are often useful for
+        collecting filenames or other parameters without specifying the
+        associated argument:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">args</span>.<span class="i">parse</span> (<span class="sl">"thisfile.txt thatfile.doc -v"</span>, <span class="k">true</span>);
+<span class="k">assert</span> (<span class="i">args</span>(<span class="k">null</span>).<span class="i">assigned</span>().<span class="i">length</span> <span class="k">is</span> <span class="n">2</span>);</pre>
+</td></tr>
+</table>
+        The 'null' argument is always defined and acts as an accumulator
+        for parameters left uncaptured by other arguments. In the above
+        instance it was assigned both parameters. 
+        
+        Examples thus far have used 'sloppy' argument declaration, via
+        the second argument of parse() being set true. This allows the
+        parser to create argument declaration on-the-fly, which can be
+        handy for trivial usage. However, most features require the a-
+        priori declaration of arguments:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+<a href="#L2_ex4" name="L2_ex4">2</a>
+<a href="#L3_ex4" name="L3_ex4">3</a>
+<a href="#L4_ex4" name="L4_ex4">4</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">args</span> = <span class="k">new</span> <span class="i">Arguments</span>;
+<span class="i">args</span>(<span class="cl">'x'</span>).<span class="i">required</span>;
+<span class="k">if</span> (! <span class="i">args</span>.<span class="i">parse</span>(<span class="sl">"-x"</span>))
+      <span class="lc">// x not supplied!</span></pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Sloppy arguments are disabled in that example, and a required
+        argument 'x' is declared. The parse() method will fail if the
+        pre-conditions are not fully met. Additional qualifiers include
+        specifying how many parameters are allowed for each individual
+        argument, default parameters, whether an argument requires the 
+        presence or exclusion of another, etc. Qualifiers are typically 
+        chained together and the following example shows argument "foo"
+        being made required, with one parameter, aliased to 'f', and
+        dependent upon the presence of another argument "bar":
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex5" name="L1_ex5">1</a>
+<a href="#L2_ex5" name="L2_ex5">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">args</span>(<span class="sl">"foo"</span>).<span class="i">required</span>.<span class="i">params</span>(<span class="n">1</span>).<span class="i">aliased</span>(<span class="cl">'f'</span>).<span class="i">requires</span>(<span class="sl">"bar"</span>);
+<span class="i">args</span>(<span class="sl">"help"</span>).<span class="i">aliased</span>(<span class="cl">'?'</span>).<span class="i">aliased</span>(<span class="cl">'h'</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Parameters can be constrained to a set of matching text values,
+        and the parser will fail on mismatched input:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex6" name="L1_ex6">1</a>
+<a href="#L2_ex6" name="L2_ex6">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">args</span>(<span class="sl">"greeting"</span>).<span class="i">restrict</span>(<span class="sl">"hello"</span>, <span class="sl">"yo"</span>, <span class="sl">"gday"</span>);
+<span class="i">args</span>(<span class="sl">"enabled"</span>).<span class="i">restrict</span>(<span class="sl">"true"</span>, <span class="sl">"false"</span>, <span class="sl">"t"</span>, <span class="sl">"f"</span>, <span class="sl">"y"</span>, <span class="sl">"n"</span>);  </pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        A set of declared arguments may be configured in this manner
+        and the parser will return true only where all conditions are
+        met. Where a error condition occurs you may traverse the set
+        of arguments to find out which argument has what error. This
+        can be handled like so, where arg.error holds a defined code:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex7" name="L1_ex7">1</a>
+<a href="#L2_ex7" name="L2_ex7">2</a>
+<a href="#L3_ex7" name="L3_ex7">3</a>
+<a href="#L4_ex7" name="L4_ex7">4</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">if</span> (! <span class="i">args</span>.<span class="i">parse</span> (...))
+      <span class="k">foreach</span> (<span class="i">arg</span>; <span class="i">args</span>)
+               <span class="k">if</span> (<span class="i">arg</span>.<span class="i">error</span>)
+                   ...</pre>
+</td></tr>
+</table>
+       
+        Error codes are as follows:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex8" name="L1_ex8">1</a>
+<a href="#L2_ex8" name="L2_ex8">2</a>
+<a href="#L3_ex8" name="L3_ex8">3</a>
+<a href="#L4_ex8" name="L4_ex8">4</a>
+<a href="#L5_ex8" name="L5_ex8">5</a>
+<a href="#L6_ex8" name="L6_ex8">6</a>
+<a href="#L7_ex8" name="L7_ex8">7</a>
+<a href="#L8_ex8" name="L8_ex8">8</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">None</span>:           <span class="i">ok</span> (<span class="i">zero</span>)
+<span class="i">ParamLo</span>:        <span class="i">too</span> <span class="i">few</span> <span class="i">params</span> <span class="k">for</span> <span class="i">an</span> <span class="i">argument</span>
+<span class="i">ParamHi</span>:        <span class="i">too</span> <span class="i">many</span> <span class="i">params</span> <span class="k">for</span> <span class="i">an</span> <span class="i">argument</span>
+<span class="i">Required</span>:       <span class="i">missing</span> <span class="i">argument</span> <span class="k">is</span> <span class="i">required</span> 
+<span class="i">Requires</span>:       <span class="i">depends</span> <span class="i">on</span> <span class="i">a</span> <span class="i">missing</span> <span class="i">argument</span>
+<span class="i">Conflict</span>:       <span class="i">conflicting</span> <span class="i">argument</span> <span class="k">is</span> <span class="i">present</span>
+<span class="i">Extra</span>:          <span class="i">unexpected</span> <span class="i">argument</span> (<span class="i">see</span> <span class="i">sloppy</span>)
+<span class="i">Option</span>:         <span class="i">parameter</span> <span class="i">does</span> <span class="i">not</span> <span class="i">match</span> <span class="i">options</span></pre>
+</td></tr>
+</table>
+        
+        A simpler way to handle errors is to invoke an internal format
+        routine, which constructs error messages on your behalf:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex9" name="L1_ex9">1</a>
+<a href="#L2_ex9" name="L2_ex9">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">if</span> (! <span class="i">args</span>.<span class="i">parse</span> (...))
+      <span class="i">stderr</span> (<span class="i">args</span>.<span class="i">errors</span>(&amp;<span class="i">stderr</span>.<span class="i">layout</span>.<span class="i">sprint</span>));</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Note that messages are constructed via a layout handler and
+        the messages themselves may be customized (for i18n purposes).
+        See the two errors() methods for more information on this.
+<p class="bl"></p>
+        The parser make a distinction between a short and long prefix, 
+        in that a long prefix argument is always distinct while short
+        prefix arguments may be combined as a shortcut:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex10" name="L1_ex10">1</a>
+<a href="#L2_ex10" name="L2_ex10">2</a>
+<a href="#L3_ex10" name="L3_ex10">3</a>
+<a href="#L4_ex10" name="L4_ex10">4</a>
+<a href="#L5_ex10" name="L5_ex10">5</a>
+<a href="#L6_ex10" name="L6_ex10">6</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">args</span>.<span class="i">parse</span> (<span class="sl">"--foo --bar -abc"</span>, <span class="k">true</span>);
+<span class="k">assert</span> (<span class="i">args</span>(<span class="sl">"foo"</span>).<span class="i">set</span>);
+<span class="k">assert</span> (<span class="i">args</span>(<span class="sl">"bar"</span>).<span class="i">set</span>);
+<span class="k">assert</span> (<span class="i">args</span>(<span class="sl">"a"</span>).<span class="i">set</span>);
+<span class="k">assert</span> (<span class="i">args</span>(<span class="sl">"b"</span>).<span class="i">set</span>);
+<span class="k">assert</span> (<span class="i">args</span>(<span class="sl">"c"</span>).<span class="i">set</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        In addition, short-prefix arguments may be "smushed" with an
+        associated parameter when configured to do so:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex11" name="L1_ex11">1</a>
+<a href="#L2_ex11" name="L2_ex11">2</a>
+<a href="#L3_ex11" name="L3_ex11">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">args</span>(<span class="cl">'o'</span>).<span class="i">params</span>(<span class="n">1</span>).<span class="i">smush</span>;
+<span class="k">if</span> (<span class="i">args</span>.<span class="i">parse</span> (<span class="sl">"-ofile"</span>))
+    <span class="k">assert</span> (<span class="i">args</span>(<span class="cl">'o'</span>).<span class="i">assigned</span>()[<span class="n">0</span>] == <span class="sl">"file"</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        There are two callback varieties supports, where one is invoked
+        when an associated argument is parsed and the other is invoked
+        as parameters are assigned(). See the bind() methods for delegate
+        signature details.
+<p class="bl"></p>
+        You may change the argument prefix to be something other than 
+        "-" and "--" via the constructor. You might, for example, need 
+        to specify a "/" indicator instead, and use ':' for explicitly
+        assigning parameters:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex12" name="L1_ex12">1</a>
+<a href="#L2_ex12" name="L2_ex12">2</a>
+<a href="#L3_ex12" name="L3_ex12">3</a>
+<a href="#L4_ex12" name="L4_ex12">4</a>
+<a href="#L5_ex12" name="L5_ex12">5</a>
+<a href="#L6_ex12" name="L6_ex12">6</a>
+<a href="#L7_ex12" name="L7_ex12">7</a>
+<a href="#L8_ex12" name="L8_ex12">8</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">args</span> = <span class="k">new</span> <span class="i">Args</span> (<span class="sl">"/"</span>, <span class="sl">"-"</span>, <span class="cl">':'</span>);
+<span class="i">args</span>.<span class="i">parse</span> (<span class="sl">"-foo:param -bar /abc"</span>);
+<span class="k">assert</span> (<span class="i">args</span>(<span class="sl">"foo"</span>).<span class="i">set</span>);
+<span class="k">assert</span> (<span class="i">args</span>(<span class="sl">"bar"</span>).<span class="i">set</span>);
+<span class="k">assert</span> (<span class="i">args</span>(<span class="sl">"a"</span>).<span class="i">set</span>);
+<span class="k">assert</span> (<span class="i">args</span>(<span class="sl">"b"</span>).<span class="i">set</span>);
+<span class="k">assert</span> (<span class="i">args</span>(<span class="sl">"c"</span>).<span class="i">set</span>);
+<span class="k">assert</span> (<span class="i">args</span>(<span class="sl">"foo"</span>).<span class="i">assigned</span>().<span class="i">length</span> <span class="k">is</span> <span class="n">1</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Returning to an earlier example we can declare some specifics:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex13" name="L1_ex13">1</a>
+<a href="#L2_ex13" name="L2_ex13">2</a>
+<a href="#L3_ex13" name="L3_ex13">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">args</span>(<span class="cl">'v'</span>).<span class="i">params</span>(<span class="n">0</span>);
+<span class="k">assert</span> (<span class="i">args</span>.<span class="i">parse</span> (<span class="sl">`-v thisfile.txt thatfile.doc`</span>));
+<span class="k">assert</span> (<span class="i">args</span>(<span class="k">null</span>).<span class="i">assigned</span>().<span class="i">length</span> <span class="k">is</span> <span class="n">2</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Note that the -v flag is now in front of the implicit parameters
+        but ignores them because it is declared to consume none. That is,
+        implicit parameters are assigned to arguments from right to left,
+        according to how many parameters said arguments may consume. Each
+        sloppy argument consumes parameters by default, so those implicit
+        parameters would have been assigned to -v without the declaration 
+        shown. On the other hand, an explicit assignment (via '=') always 
+        associates the parameter with that argument even when an overflow
+        would occur (though will cause an error to be raised).
+<p class="bl"></p>
+        Certain parameters are used for capturing comments or other plain
+        text from the user, including whitespace and other special chars.
+        Such parameter values should be quoted on the commandline, and be
+        assigned explicitly rather than implicitly:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex14" name="L1_ex14">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">args</span>.<span class="i">parse</span> (<span class="sl">`--comment="-- a comment --"`</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Without the explicit assignment, the text content might otherwise 
+        be considered the start of another argument (due to how argv/argc
+        values are stripped of original quotes).
+<p class="bl"></p>
+        Lastly, all subsequent text is treated as paramter-values after a
+        "--" token is encountered. This notion is applied by unix systems 
+        to terminate argument processing in a similar manner. Such values
+        are considered to be implicit, and are assigned to preceding args
+        in the usual right to left fashion (or to the null argument):
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex15" name="L1_ex15">1</a>
+<a href="#L2_ex15" name="L2_ex15">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">args</span>.<span class="i">parse</span> (<span class="sl">`-- -thisfile --thatfile`</span>);
+<span class="k">assert</span> (<span class="i">args</span>(<span class="k">null</span>).<span class="i">assigned</span>().<span class="i">length</span> <span class="k">is</span> <span class="n">2</span>);</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="Arguments.this" href="htmlsrc/tango.text.Arguments.html#L233">this</a><span class="params">(const(char)[] <em>sp</em> = <span class="defval"><span class="sl">"-"</span></span>, const(char)[] <em>lp</em> = <span class="defval"><span class="sl">"--"</span></span>, char <em>eq</em> = <span class="defval"><span class="cl">'='</span></span>)</span> <a href="tango.text.Arguments.html#Arguments.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct with the specific short &amp; long prefixes, and the 
+              given assignment character (typically ':' on Windows but we
+              set the defaults to look like unix instead)</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Arguments.parse" href="htmlsrc/tango.text.Arguments.html#L256">parse</a><span class="params">(const(char)[] <em>input</em>, bool <em>sloppy</em> = <span class="defval"><span class="k">false</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse string[] into a set of Argument instances. The 'sloppy'
+                option allows for unexpected arguments without error.
+                
+                Returns false where an error condition occurred, whereupon the 
+                arguments should be traversed to discover said condition(s):
+                <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex16" name="L1_ex16">1</a>
+<a href="#L2_ex16" name="L2_ex16">2</a>
+<a href="#L3_ex16" name="L3_ex16">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">args</span> = <span class="k">new</span> <span class="i">Arguments</span>;
+<span class="k">if</span> (! <span class="i">args</span>.<span class="i">parse</span> (...))
+      <span class="i">stderr</span> (<span class="i">args</span>.<span class="i">errors</span>(&amp;<span class="i">stderr</span>.<span class="i">layout</span>.<span class="i">sprint</span>));</pre>
+</td></tr>
+</table></div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Arguments.parse:2" href="htmlsrc/tango.text.Arguments.html#L279">parse</a><span class="params">(const(char[])[] <em>input</em>, bool <em>sloppy</em> = <span class="defval"><span class="k">false</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.parse:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse a string into a set of Argument instances. The 'sloppy'
+                option allows for unexpected arguments without error.
+                
+                Returns false where an error condition occurred, whereupon the 
+                arguments should be traversed to discover said condition(s):
+                <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex17" name="L1_ex17">1</a>
+<a href="#L2_ex17" name="L2_ex17">2</a>
+<a href="#L3_ex17" name="L3_ex17">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">args</span> = <span class="k">new</span> <span class="i">Arguments</span>;
+<span class="k">if</span> (! <span class="i">args</span>.<span class="i">parse</span> (...))
+      <span class="i">Stderr</span> (<span class="i">args</span>.<span class="i">errors</span>(&amp;<span class="i">Stderr</span>.<span class="i">layout</span>.<span class="i">sprint</span>));</pre>
+</td></tr>
+</table></div></div></dd>
+<dt class="decl"><span class="rettyp">Arguments</span> <a class="symbol _function" name="Arguments.clear" href="htmlsrc/tango.text.Arguments.html#L312">clear</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clear parameter assignments, flags and errors. Note this 
+                does not remove any Arguments</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.get" href="htmlsrc/tango.text.Arguments.html#L331">get</a><span class="params">(char <em>name</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.get" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Obtain an argument reference, creating an new instance where
+                necessary. Use array indexing or opCall syntax if you prefer</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.get:2" href="htmlsrc/tango.text.Arguments.html#L346">get</a><span class="params">(const(char)[] <em>name</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.get:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Obtain an argument reference, creating an new instance where
+                necessary. Use array indexing or opCall syntax if you prefer.</div></div>
+<div class="cmnt">Pass null to access the 'default' argument (where unassigned
+                implicit parameters are gathered)</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Arguments.opApply" href="htmlsrc/tango.text.Arguments.html#L360">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref Argument) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Traverse the set of arguments</div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="Arguments.errors" href="htmlsrc/tango.text.Arguments.html#L383">errors</a><span class="params">(char[] delegate(char[] buf, const(char)[] fmt, ...) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.errors" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a string of error messages, using the given
+                delegate to format the output. You would typically pass
+                the system formatter here, like so:
+                <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex18" name="L1_ex18">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">msgs</span> = <span class="i">args</span>.<span class="i">errors</span> (&amp;<span class="i">stderr</span>.<span class="i">layout</span>.<span class="i">sprint</span>);</pre>
+</td></tr>
+</table></div></div>
+<div class="cmnt">The messages are replacable with custom (i18n) versions
+                instead, using the errors(char[][]) method</div></dd>
+<dt class="decl"><span class="rettyp">Arguments</span> <a class="symbol _function" name="Arguments.errors:2" href="htmlsrc/tango.text.Arguments.html#L414">errors</a><span class="params">(const(char[])[] <em>errors</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.errors:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Use this method to replace the default error messages. Note
+                that arguments are passed to the formatter in the following
+                order, and these should be indexed appropriately by each of
+                the error messages (see examples in errmsg above):
+                <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex19" name="L1_ex19">1</a>
+<a href="#L2_ex19" name="L2_ex19">2</a>
+<a href="#L3_ex19" name="L3_ex19">3</a>
+<a href="#L4_ex19" name="L4_ex19">4</a>
+<a href="#L5_ex19" name="L5_ex19">5</a>
+<a href="#L6_ex19" name="L6_ex19">6</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">index</span> <span class="n">0</span>: <span class="i">the</span> <span class="i">argument</span> <span class="i">name</span>
+<span class="i">index</span> <span class="n">1</span>: <span class="i">number</span> <span class="i">of</span> <span class="i">parameters</span>
+<span class="i">index</span> <span class="n">2</span>: <span class="i">configured</span> <span class="i">minimum</span> <span class="i">parameters</span>
+<span class="i">index</span> <span class="n">3</span>: <span class="i">configured</span> <span class="i">maximum</span> <span class="i">parameters</span>
+<span class="i">index</span> <span class="n">4</span>: <span class="i">conflicting</span>/<span class="i">dependent</span> <span class="i">argument</span> (<span class="i">or</span> <span class="i">invalid</span> <span class="i">param</span>)
+<span class="i">index</span> <span class="n">5</span>: <span class="i">array</span> <span class="i">of</span> <span class="i">configured</span> <span class="i">parameter</span> <span class="i">options</span></pre>
+</td></tr>
+</table></div></div></dd>
+<dt class="decl"><span class="rettyp">Arguments</span> <a class="symbol _function" name="Arguments.help" href="htmlsrc/tango.text.Arguments.html#L430">help</a><span class="params">(<span class="k">scope</span> void delegate(const(char)[] arg, const(char)[] help) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.help" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Expose the configured set of help text, via the given 
+                delegate</div></div></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Arguments.Argument" href="htmlsrc/tango.text.Arguments.html#L509">Argument</a> <a href="tango.text.Arguments.html#Arguments.Argument" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A specific argument instance. You get one of these from 
+                Arguments.get() and visit them via Arguments.opApply()</div></div>
+<dl>
+<dt class="decl"><a class="symbol _enum" name="Arguments.Argument.enum" href="htmlsrc/tango.text.Arguments.html#L527">enum</a> <a href="tango.text.Arguments.html#Arguments.Argument.enum" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Error identifiers:
+                        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex20" name="L1_ex20">1</a>
+<a href="#L2_ex20" name="L2_ex20">2</a>
+<a href="#L3_ex20" name="L3_ex20">3</a>
+<a href="#L4_ex20" name="L4_ex20">4</a>
+<a href="#L5_ex20" name="L5_ex20">5</a>
+<a href="#L6_ex20" name="L6_ex20">6</a>
+<a href="#L7_ex20" name="L7_ex20">7</a>
+<a href="#L8_ex20" name="L8_ex20">8</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">None</span>:           <span class="i">ok</span>
+<span class="i">ParamLo</span>:        <span class="i">too</span> <span class="i">few</span> <span class="i">params</span> <span class="k">for</span> <span class="i">an</span> <span class="i">argument</span>
+<span class="i">ParamHi</span>:        <span class="i">too</span> <span class="i">many</span> <span class="i">params</span> <span class="k">for</span> <span class="i">an</span> <span class="i">argument</span>
+<span class="i">Required</span>:       <span class="i">missing</span> <span class="i">argument</span> <span class="k">is</span> <span class="i">required</span> 
+<span class="i">Requires</span>:       <span class="i">depends</span> <span class="i">on</span> <span class="i">a</span> <span class="i">missing</span> <span class="i">argument</span>
+<span class="i">Conflict</span>:       <span class="i">conflicting</span> <span class="i">argument</span> <span class="k">is</span> <span class="i">present</span>
+<span class="i">Extra</span>:          <span class="i">unexpected</span> <span class="i">argument</span> (<span class="i">see</span> <span class="i">sloppy</span>)
+<span class="i">Option</span>:         <span class="i">parameter</span> <span class="i">does</span> <span class="i">not</span> <span class="i">match</span> <span class="i">options</span></pre>
+</td></tr>
+</table></div></div>
+</dd>
+<dt class="decl">int <a class="symbol _variable" name="Arguments.Argument.min" href="htmlsrc/tango.text.Arguments.html#L532">min</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.min" class="plink">¶</a></dt>
+<dt class="decl">int <a class="symbol _variable" name="Arguments.Argument.max" href="htmlsrc/tango.text.Arguments.html#L532">max</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.max" class="plink">¶</a></dt>
+<dt class="decl">int <a class="symbol _variable" name="Arguments.Argument.error" href="htmlsrc/tango.text.Arguments.html#L532">error</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.error" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">error condition</div></div></dd>
+<dt class="decl">bool <a class="symbol _variable" name="Arguments.Argument.set" href="htmlsrc/tango.text.Arguments.html#L535">set</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.set" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">arg is present</div></div></dd>
+<dt class="decl">char[] <a class="symbol _variable" name="Arguments.Argument.aliases" href="htmlsrc/tango.text.Arguments.html#L536">aliases</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.aliases" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Array of aliases</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Arguments.Argument.this" href="htmlsrc/tango.text.Arguments.html#L558">this</a><span class="params">(const(char)[] <em>name</em>)</span> <a href="tango.text.Arguments.html#Arguments.Argument.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create with the given name</div></div></dd>
+<dt class="decl"><span class="rettyp">immutable(char)[]</span> <a class="symbol _function" name="Arguments.Argument.toString" href="htmlsrc/tango.text.Arguments.html#L569">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the name of this argument</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char[])[]</span> <a class="symbol _function" name="Arguments.Argument.assigned" href="htmlsrc/tango.text.Arguments.html#L581">assigned</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.assigned" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">return the assigned parameters, or the defaults if
+                        no parameters were assigned</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.aliased" href="htmlsrc/tango.text.Arguments.html#L594">aliased</a><span class="params">(char <em>name</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.aliased" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Alias this argument with the given name. If you need 
+                        long-names to be aliased, create the long-name first
+                        and alias it to a short one</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.required" href="htmlsrc/tango.text.Arguments.html#L607">required</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.required" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Make this argument a requirement</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.requires" href="htmlsrc/tango.text.Arguments.html#L619">requires</a><span class="params">(Argument <em>arg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.requires" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set this argument to depend upon another</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.requires:2" href="htmlsrc/tango.text.Arguments.html#L631">requires</a><span class="params">(const(char)[] <em>other</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.requires:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set this argument to depend upon another</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.requires:3" href="htmlsrc/tango.text.Arguments.html#L642">requires</a><span class="params">(char <em>other</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.requires:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set this argument to depend upon another</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.conflicts" href="htmlsrc/tango.text.Arguments.html#L653">conflicts</a><span class="params">(Argument <em>arg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.conflicts" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set this argument to conflict with another</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.conflicts:2" href="htmlsrc/tango.text.Arguments.html#L665">conflicts</a><span class="params">(const(char)[] <em>other</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.conflicts:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set this argument to conflict with another</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.conflicts:3" href="htmlsrc/tango.text.Arguments.html#L676">conflicts</a><span class="params">(char <em>other</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.conflicts:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set this argument to conflict with another</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.params" href="htmlsrc/tango.text.Arguments.html#L687">params</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.params" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Enable parameter assignment: 0 to 42 by default</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.params:2" href="htmlsrc/tango.text.Arguments.html#L698">params</a><span class="params">(int <em>count</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.params:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set an exact number of parameters required</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.params:3" href="htmlsrc/tango.text.Arguments.html#L709">params</a><span class="params">(int <em>min</em>, int <em>max</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.params:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set both the minimum and maximum parameter counts</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.defaults" href="htmlsrc/tango.text.Arguments.html#L722">defaults</a><span class="params">(const(char)[] <em>values</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.defaults" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add another default parameter for this argument</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.bind" href="htmlsrc/tango.text.Arguments.html#L737">bind</a><span class="params">(Inspector <em>inspector</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.bind" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set an inspector for this argument, fired when a
+                        parameter is appended to an argument. Return null
+                        from the delegate when the value is ok, or a text
+                        string describing the issue to trigger an error</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.bind:2" href="htmlsrc/tango.text.Arguments.html#L750">bind</a><span class="params">(Invoker <em>invoker</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.bind:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set an invoker for this argument, fired when an
+                        argument declaration is seen</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.smush" href="htmlsrc/tango.text.Arguments.html#L764">smush</a><span class="params">(bool <em>yes</em> = <span class="defval"><span class="k">true</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.smush" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Enable smushing for this argument, where "-ofile" 
+                        would result in "file" being assigned to argument 
+                        'o'</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.explicit" href="htmlsrc/tango.text.Arguments.html#L776">explicit</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.explicit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Disable implicit arguments</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.title" href="htmlsrc/tango.text.Arguments.html#L789">title</a><span class="params">(const(char)[] <em>name</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.title" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Alter the title of this argument, which can be 
+                        useful for naming the default argument</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.help" href="htmlsrc/tango.text.Arguments.html#L801">help</a><span class="params">(const(char)[] <em>text</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.help" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the help text for this argument</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.halt" href="htmlsrc/tango.text.Arguments.html#L814">halt</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.halt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Fail the parse when this arg is encountered. You
+                        might use this for managing help text</div></div></dd>
+<dt class="decl"><span class="rettyp">Argument</span> <a class="symbol _function" name="Arguments.Argument.restrict" href="htmlsrc/tango.text.Arguments.html#L826">restrict</a><span class="params">(const(char[])[] <em>options</em>...)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.Arguments.html#Arguments.Argument.restrict" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Restrict values to one of the given set</div></div></dd></dl></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2009 Kris. All rights reserved.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:02 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.core.util.string</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a><a id="L38" href="#L38">38</a><a id="L39" href="#L39">39</a><a id="L40" href="#L40">40</a><a id="L41" href="#L41">41</a><a id="L42" href="#L42">42</a><a id="L43" href="#L43">43</a><a id="L44" href="#L44">44</a><a id="L45" href="#L45">45</a><a id="L46" href="#L46">46</a><a id="L47" href="#L47">47</a><a id="L48" href="#L48">48</a><a id="L49" href="#L49">49</a><a id="L50" href="#L50">50</a><a id="L51" href="#L51">51</a><a id="L52" href="#L52">52</a><a id="L53" href="#L53">53</a><a id="L54" href="#L54">54</a><a id="L55" href="#L55">55</a><a id="L56" href="#L56">56</a><a id="L57" href="#L57">57</a><a id="L58" href="#L58">58</a><a id="L59" href="#L59">59</a><a id="L60" href="#L60">60</a><a id="L61" href="#L61">61</a><a id="L62" href="#L62">62</a><a id="L63" href="#L63">63</a><a id="L64" href="#L64">64</a><a id="L65" href="#L65">65</a><a id="L66" href="#L66">66</a><a id="L67" href="#L67">67</a><a id="L68" href="#L68">68</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/*******************************************************************************
+
+        copyright:      Copyright (c) 2004 Tango group. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Initial release: July 2006
+
+
+        Various char[] utilities
+
+*******************************************************************************/</span>
+
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">core</span>.<span class="i">util</span>.<span class="i">string</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">stdc</span>.<span class="i">string</span> : <span class="i">memcmp</span>;</span>
+
+<span class="lc">// convert uint to char[], within the given buffer</span>
+<span class="lc">// Returns a valid slice of the populated buffer</span>
+<span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">intToUtf8</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">tmp</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">val</span></span>)</span>
+<span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
+   <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">tmp</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">9</span></span></span>, <span class="e String"><span class="sl">"atoi buffer should be more than 9 chars wide"</span></span>)</span>;</span>
+   }</span>
+<span class="k">body</span>
+<span class="s Compound">{
+    <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">p</span> = <span class="e Plus"><span class="e Identifier"><span class="i">tmp</span></span>.<span class="e Identifier"><span class="i">ptr</span></span> + <span class="e Identifier"><span class="i">tmp</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span></span>
+
+    <span class="s DoWhile"><span class="k">do</span> <span class="s Scope"><span class="s Compound">{
+       <span class="s Expression"><span class="e Assign"><span class="e Deref">*<span class="e PreDecr">--<span class="e Identifier"><span class="i">p</span></span></span></span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">char</span></span>)<span class="e Paren">(<span class="e Plus"><span class="e Paren">(<span class="e Mod"><span class="e Identifier"><span class="i">val</span></span> % <span class="e Int"><span class="n">10</span></span></span>)</span> + <span class="e Char"><span class="cl">'0'</span></span></span>)</span></span></span>;</span>
+       }</span></span> <span class="k">while</span> (<span class="e DivAssign"><span class="e Identifier"><span class="i">val</span></span> /= <span class="e Int"><span class="n">10</span></span></span>)</span><span class="s Empty">;</span>
+
+    <span class="s Return"><span class="k">return</span> <span class="e Slice"><span class="e Identifier"><span class="i">tmp</span></span> [<span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">size_t</span></span>)<span class="e Paren">(<span class="e Minus"><span class="e Identifier"><span class="i">p</span></span> - <span class="e Identifier"><span class="i">tmp</span></span>.<span class="e Identifier"><span class="i">ptr</span></span></span>)</span></span> .. <span class="e Dollar">$</span>]</span>;</span>
+}</span></span></span>
+
+<span class="lc">// convert uint to char[], within the given buffer</span>
+<span class="lc">// Returns a valid slice of the populated buffer</span>
+<span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">ulongToUtf8</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">tmp</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">val</span></span>)</span>
+<span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
+   <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">tmp</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">19</span></span></span>, <span class="e String"><span class="sl">"atoi buffer should be more than 19 chars wide"</span></span>)</span>;</span>
+   }</span>
+<span class="k">body</span>
+<span class="s Compound">{
+    <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">p</span> = <span class="e Plus"><span class="e Identifier"><span class="i">tmp</span></span>.<span class="e Identifier"><span class="i">ptr</span></span> + <span class="e Identifier"><span class="i">tmp</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span></span>
+
+    <span class="s DoWhile"><span class="k">do</span> <span class="s Scope"><span class="s Compound">{
+       <span class="s Expression"><span class="e Assign"><span class="e Deref">*<span class="e PreDecr">--<span class="e Identifier"><span class="i">p</span></span></span></span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">char</span></span>)<span class="e Paren">(<span class="e Plus"><span class="e Paren">(<span class="e Mod"><span class="e Identifier"><span class="i">val</span></span> % <span class="e Int"><span class="n">10</span></span></span>)</span> + <span class="e Char"><span class="cl">'0'</span></span></span>)</span></span></span>;</span>
+       }</span></span> <span class="k">while</span> (<span class="e DivAssign"><span class="e Identifier"><span class="i">val</span></span> /= <span class="e Int"><span class="n">10</span></span></span>)</span><span class="s Empty">;</span>
+
+    <span class="s Return"><span class="k">return</span> <span class="e Slice"><span class="e Identifier"><span class="i">tmp</span></span> [<span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">size_t</span></span>)<span class="e Paren">(<span class="e Minus"><span class="e Identifier"><span class="i">p</span></span> - <span class="e Identifier"><span class="i">tmp</span></span>.<span class="e Identifier"><span class="i">ptr</span></span></span>)</span></span> .. <span class="e Dollar">$</span>]</span>;</span>
+}</span></span></span>
+
+
+<span class="lc">// function to compare two strings</span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">stringCompare</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">s1</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">s2</span></span>)</span>
+<span class="s FuncBody"><span class="s Compound">{
+    <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">len</span> = <span class="e Identifier"><span class="i">s1</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span></span>
+
+    <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">s2</span></span>.<span class="e Identifier"><span class="i">length</span></span> &lt; <span class="e Identifier"><span class="i">len</span></span></span>)
+        <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">len</span></span> = <span class="e Identifier"><span class="i">s2</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span></span></span>
+
+    <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">result</span> = <span class="e Call"><span class="e Identifier"><span class="i">memcmp</span></span>(<span class="i">s1</span>.<span class="i">ptr</span>, <span class="i">s2</span>.<span class="i">ptr</span>, <span class="i">len</span>)</span>;</span></span>
+
+    <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">result</span></span> == <span class="e Int"><span class="n">0</span></span></span>)
+        <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">result</span></span> = <span class="e Cond"><span class="e Paren">(<span class="e Rel"><span class="e Identifier"><span class="i">s1</span></span>.<span class="e Identifier"><span class="i">length</span></span>&lt;<span class="e Identifier"><span class="i">s2</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>)</span>?<span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span>:<span class="e Paren">(<span class="e Cond"><span class="e Paren">(<span class="e Equal"><span class="e Identifier"><span class="i">s1</span></span>.<span class="e Identifier"><span class="i">length</span></span>==<span class="e Identifier"><span class="i">s2</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>)</span>?<span class="e Int"><span class="n">0</span></span>:<span class="e Int"><span class="n">1</span></span></span>)</span></span></span>;</span></span></span>
+
+    <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">result</span></span>;</span>
+}</span></span></span></span>
+
+</pre></td>
+</tr></table>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.io.vfs.LinkedFolder</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a><a id="L38" href="#L38">38</a><a id="L39" href="#L39">39</a><a id="L40" href="#L40">40</a><a id="L41" href="#L41">41</a><a id="L42" href="#L42">42</a><a id="L43" href="#L43">43</a><a id="L44" href="#L44">44</a><a id="L45" href="#L45">45</a><a id="L46" href="#L46">46</a><a id="L47" href="#L47">47</a><a id="L48" href="#L48">48</a><a id="L49" href="#L49">49</a><a id="L50" href="#L50">50</a><a id="L51" href="#L51">51</a><a id="L52" href="#L52">52</a><a id="L53" href="#L53">53</a><a id="L54" href="#L54">54</a><a id="L55" href="#L55">55</a><a id="L56" href="#L56">56</a><a id="L57" href="#L57">57</a><a id="L58" href="#L58">58</a><a id="L59" href="#L59">59</a><a id="L60" href="#L60">60</a><a id="L61" href="#L61">61</a><a id="L62" href="#L62">62</a><a id="L63" href="#L63">63</a><a id="L64" href="#L64">64</a><a id="L65" href="#L65">65</a><a id="L66" href="#L66">66</a><a id="L67" href="#L67">67</a><a id="L68" href="#L68">68</a><a id="L69" href="#L69">69</a><a id="L70" href="#L70">70</a><a id="L71" href="#L71">71</a><a id="L72" href="#L72">72</a><a id="L73" href="#L73">73</a><a id="L74" href="#L74">74</a><a id="L75" href="#L75">75</a><a id="L76" href="#L76">76</a><a id="L77" href="#L77">77</a><a id="L78" href="#L78">78</a><a id="L79" href="#L79">79</a><a id="L80" href="#L80">80</a><a id="L81" href="#L81">81</a><a id="L82" href="#L82">82</a><a id="L83" href="#L83">83</a><a id="L84" href="#L84">84</a><a id="L85" href="#L85">85</a><a id="L86" href="#L86">86</a><a id="L87" href="#L87">87</a><a id="L88" href="#L88">88</a><a id="L89" href="#L89">89</a><a id="L90" href="#L90">90</a><a id="L91" href="#L91">91</a><a id="L92" href="#L92">92</a><a id="L93" href="#L93">93</a><a id="L94" href="#L94">94</a><a id="L95" href="#L95">95</a><a id="L96" href="#L96">96</a><a id="L97" href="#L97">97</a><a id="L98" href="#L98">98</a><a id="L99" href="#L99">99</a><a id="L100" href="#L100">100</a><a id="L101" href="#L101">101</a><a id="L102" href="#L102">102</a><a id="L103" href="#L103">103</a><a id="L104" href="#L104">104</a><a id="L105" href="#L105">105</a><a id="L106" href="#L106">106</a><a id="L107" href="#L107">107</a><a id="L108" href="#L108">108</a><a id="L109" href="#L109">109</a><a id="L110" href="#L110">110</a><a id="L111" href="#L111">111</a><a id="L112" href="#L112">112</a><a id="L113" href="#L113">113</a><a id="L114" href="#L114">114</a><a id="L115" href="#L115">115</a><a id="L116" href="#L116">116</a><a id="L117" href="#L117">117</a><a id="L118" href="#L118">118</a><a id="L119" href="#L119">119</a><a id="L120" href="#L120">120</a><a id="L121" href="#L121">121</a><a id="L122" href="#L122">122</a><a id="L123" href="#L123">123</a><a id="L124" href="#L124">124</a><a id="L125" href="#L125">125</a><a id="L126" href="#L126">126</a><a id="L127" href="#L127">127</a><a id="L128" href="#L128">128</a><a id="L129" href="#L129">129</a><a id="L130" href="#L130">130</a><a id="L131" href="#L131">131</a><a id="L132" href="#L132">132</a><a id="L133" href="#L133">133</a><a id="L134" href="#L134">134</a><a id="L135" href="#L135">135</a><a id="L136" href="#L136">136</a><a id="L137" href="#L137">137</a><a id="L138" href="#L138">138</a><a id="L139" href="#L139">139</a><a id="L140" href="#L140">140</a><a id="L141" href="#L141">141</a><a id="L142" href="#L142">142</a><a id="L143" href="#L143">143</a><a id="L144" href="#L144">144</a><a id="L145" href="#L145">145</a><a id="L146" href="#L146">146</a><a id="L147" href="#L147">147</a><a id="L148" href="#L148">148</a><a id="L149" href="#L149">149</a><a id="L150" href="#L150">150</a><a id="L151" href="#L151">151</a><a id="L152" href="#L152">152</a><a id="L153" href="#L153">153</a><a id="L154" href="#L154">154</a><a id="L155" href="#L155">155</a><a id="L156" href="#L156">156</a><a id="L157" href="#L157">157</a><a id="L158" href="#L158">158</a><a id="L159" href="#L159">159</a><a id="L160" href="#L160">160</a><a id="L161" href="#L161">161</a><a id="L162" href="#L162">162</a><a id="L163" href="#L163">163</a><a id="L164" href="#L164">164</a><a id="L165" href="#L165">165</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/*******************************************************************************
+
+        copyright:      Copyright (c) 2007 Kris Bell. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Oct 2007: Initial version
+
+        author:         Kris
+
+*******************************************************************************/</span>
+
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">vfs</span>.<span class="i">LinkedFolder</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">vfs</span>.<span class="i">model</span>.<span class="i">Vfs</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">core</span>.<span class="i">Exception</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">vfs</span>.<span class="i">VirtualFolder</span>;</span>
+
+<span class="bc">/*******************************************************************************
+        
+        LinkedFolder is derived from VirtualFolder, and behaves exactly the 
+        same in all but one aspect: it treats mounted folders as an ordered 
+        list of alternatives to look for a file. This supports the notion of 
+        file 'overrides', whereby "customized" files can be inserted into a 
+        chain of alternatives.
+
+        (overridden folders are not currently supported)
+
+*******************************************************************************/</span>
+
+
+<span class="d Class"><span class="k">class</span> <span class="i">LinkedFolder</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">VirtualFolder</span></span></span>
+<span class="d Compound">{
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Link</span></span><span class="t Pointer">*</span> <span class="i">head</span>;</span>
+
+        <span class="bc">/***********************************************************************
+
+                Linked-list of folders
+
+        ***********************************************************************/</span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Struct"><span class="k">struct</span> <span class="i">Link</span>
+        <span class="d Compound">{
+                <span class="d Variables"><span class="t Identifier"><span class="i">Link</span></span><span class="t Pointer">*</span>     <span class="i">next</span>;</span>
+                <span class="d Variables"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">folder</span>;</span>
+
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Link</span></span><span class="t Pointer">*</span> <span class="i">opCall</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">folder</span></span>)</span>
+                <span class="s FuncBody"><span class="s Compound">{
+                        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Link</span></span></span>;</span></span>
+                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">folder</span></span> = <span class="e Identifier"><span class="i">folder</span></span></span>;</span>
+                        <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">p</span></span>;</span>
+                }</span></span></span>
+        }</span></span>
+
+        <span class="bc">/***********************************************************************
+
+                All folder must have a name. No '.' or '/' chars are 
+                permitted
+
+        ***********************************************************************/</span>
+
+        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span> (<span class="i">name</span>)</span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Add a child folder. The child cannot 'overlap' with others
+                in the tree of the same type. Circular references across a
+                tree of virtual folders are detected and trapped.
+
+                We add the new child at the end of an ordered list, which
+                we subsequently traverse when looking up a file
+
+                The second argument represents an optional name that the
+                mount should be known as, instead of the name exposed by 
+                the provided folder (it is not an alias).
+
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsHost</span></span> <span class="i">mount</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">folder</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span>=<span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="lc">// traverse to the end of the list</span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">link</span> = <span class="e Address">&amp;<span class="e Identifier"><span class="i">head</span></span></span>;</span></span>
+                <span class="s While"><span class="k">while</span> (<span class="e Deref">*<span class="e Identifier"><span class="i">link</span></span></span>)
+                        <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">link</span></span> = <span class="e Address">&amp;<span class="e Paren">(<span class="e Deref">*<span class="e Identifier"><span class="i">link</span></span></span>)</span></span>.<span class="e Identifier"><span class="i">next</span></span></span>;</span></span></span>
+
+                <span class="lc">// hook up the new folder</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Deref">*<span class="e Identifier"><span class="i">link</span></span></span> = <span class="e Call"><span class="e Identifier"><span class="i">Link</span></span> (<span class="i">folder</span>)</span></span>;</span>
+
+                <span class="lc">// and let superclass deal with it </span>
+                <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Super"><span class="k">super</span></span>.<span class="e Identifier"><span class="i">mount</span></span> (<span class="i">folder</span>, <span class="i">name</span>)</span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                TODO: unhook a child folder.
+
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsHost</span></span> <span class="i">dismount</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">folder</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Int"><span class="n">0</span></span>, <span class="e String"><span class="sl">"LinkedFolder.dismount not implemented"</span></span>)</span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Return a file representation of the given path. If the
+                path-head does not refer to an immediate child folder, 
+                and does not match a symbolic link, it is considered to
+                be unknown.
+
+                We scan the set of mounted folders, in the order mounted,
+                looking for a match. Where one is found, we test to see
+                that it really exists before returning the reference
+
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">file</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">link</span> = <span class="e Identifier"><span class="i">head</span></span>;</span></span>
+                <span class="s While"><span class="k">while</span> (<span class="e Identifier"><span class="i">link</span></span>)
+                      <span class="s Scope"><span class="s Compound">{
+                      <span class="lc">//Stdout.formatln ("looking in {}", link.folder.toString);</span>
+                      <span class="s Try"><span class="k">try</span> <span class="s Scope"><span class="s Compound">{
+                          <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">file</span> = <span class="e Call"><span class="e Identifier"><span class="i">link</span></span>.<span class="e Identifier"><span class="i">folder</span></span>.<span class="e Identifier"><span class="i">file</span></span> (<span class="i">path</span>)</span>;</span></span>
+                          <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">file</span></span>.<span class="e Identifier"><span class="i">exists</span></span>)
+                              <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">file</span></span>;</span></span></span>
+                          }</span></span> <span class="s Catch"><span class="k">catch</span> (<span class="o Parameter"><span class="t Identifier"><span class="i">VfsException</span></span> <span class="i">x</span></span>) <span class="s Compound">{}</span></span></span>
+                      <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">link</span></span> = <span class="e Identifier"><span class="i">link</span></span>.<span class="e Identifier"><span class="i">next</span></span></span>;</span>
+                      }</span></span></span>
+                <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>.<span class="e Identifier"><span class="i">error</span></span> (<span class="sl">"file '"</span>~<span class="i">path</span>.<span class="i">idup</span>~<span class="sl">"' not found"</span>)</span>;</span>
+                <span class="s Return"><span class="k">return</span> <span class="e Null"><span class="k">null</span></span>;</span>
+        }</span></span></span>
+}</span></span>
+
+
+<span class="d Debug"><span class="k">debug</span> (<span class="i">LinkedFolder</span>)
+<span class="d Compound">{
+<span class="bc">/*******************************************************************************
+
+*******************************************************************************/</span>
+
+<span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;</span>
+<span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">vfs</span>.<span class="i">FileFolder</span>;</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+<span class="s FuncBody"><span class="s Compound">{
+        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">root</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">LinkedFolder</span></span> (<span class="e String"><span class="sl">"root"</span></span>)</span>;</span></span>
+        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">sub</span>  = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">VirtualFolder</span></span> (<span class="e String"><span class="sl">"sub"</span></span>)</span>;</span></span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">sub</span></span>.<span class="e Identifier"><span class="i">mount</span></span> (<span class="k">new</span> <span class="i">FileFolder</span> (<span class="sl">r"d:/d/import/temp"</span>))</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">sub</span></span>.<span class="e Identifier"><span class="i">map</span></span> (<span class="i">sub</span>.<span class="i">file</span>(<span class="sl">r"temp/subtree/test.txt"</span>), <span class="sl">"wumpus"</span>)</span>;</span>
+
+        <span class="s Expression"><span class="e Call"><span class="e Call"><span class="e Identifier"><span class="i">root</span></span>.<span class="e Identifier"><span class="i">mount</span></span> (<span class="k">new</span> <span class="i">FileFolder</span> (<span class="sl">r"d:/d/import/tango"</span>))</span>
+            .<span class="e Identifier"><span class="i">mount</span></span> (<span class="k">new</span> <span class="i">FileFolder</span> (<span class="sl">r"c:/"</span>), <span class="sl">"windows"</span>)</span>;</span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">root</span></span>.<span class="t Identifier"><span class="i">mount</span></span> (<span class="i">sub</span>);</span></span>
+
+        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">file</span> = <span class="e Call"><span class="e Identifier"><span class="i">root</span></span>.<span class="e Identifier"><span class="i">file</span></span> (<span class="sl">r"wumpus"</span>)</span>;</span></span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"file = {}"</span>, <span class="i">file</span>)</span>;</span>
+}</span></span></span>
+}</span></span></span>
+
+</pre></td>
+</tr></table>
+</body>
+</html>

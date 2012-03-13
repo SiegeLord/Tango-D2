@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.digest.Sha01</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.digest.Sha01">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.digest.Sha01"><a href="htmlsrc/tango.util.digest.Sha01.html" class="symbol">tango.util.digest.Sha01</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see doc/license.txt for details</div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: Feb 2006</div>
+<p class="sec_header">Author:</p><div class="cmnt">Regan Heath, Oskar Linde
+<p class="bl"></p>
+        This module implements common parts of the SHA-0 and SHA-1 algoritms</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Sha01" href="htmlsrc/tango.util.digest.Sha01.html#L25">Sha01</a> : <span class="bclass">MerkleDamgard</span> <span class="attrs">[<span class="prot">package</span>, <span class="stc">abstract</span>]</span> <a href="tango.util.digest.Sha01.html#Sha01" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Sha01.digestSize" href="htmlsrc/tango.util.digest.Sha01.html#L37">digestSize</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.util.digest.Sha01.html#Sha01.digestSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The digest size of Sha-0 and Sha-1 is 20 bytes</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Sha01.reset" href="htmlsrc/tango.util.digest.Sha01.html#L48">reset</a><span class="params">()</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.util.digest.Sha01.html#Sha01.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Initialize the cipher</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Returns the cipher state to it's initial value</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Sha01.createDigest" href="htmlsrc/tango.util.digest.Sha01.html#L67">createDigest</a><span class="params">(ubyte[] <em>buf</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.util.digest.Sha01.html#Sha01.createDigest" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Obtain the digest</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the digest</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Returns a digest of the current cipher state, this may be the
+                final digest, or a digest of the state between calls to update()</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Sha01.blockSize" href="htmlsrc/tango.util.digest.Sha01.html#L88">blockSize</a><span class="params">()</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.util.digest.Sha01.html#Sha01.blockSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">block size</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the block size</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Specifies the size (in bytes) of the block of data to pass to
+                each call to transform(). For SHA0 the blockSize is 64.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Sha01.addSize" href="htmlsrc/tango.util.digest.Sha01.html#L104">addSize</a><span class="params">()</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.util.digest.Sha01.html#Sha01.addSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Length padding size</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the length padding size</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Specifies the size (in bytes) of the padding which uses the
+                length of the data which has been ciphered, this padding is
+                carried out by the padLength method. For SHA0 the addSize is 0.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Sha01.padMessage" href="htmlsrc/tango.util.digest.Sha01.html#L120">padMessage</a><span class="params">(ubyte[] <em>data</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.util.digest.Sha01.html#Sha01.padMessage" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Pads the cipher data</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>a slice of the cipher buffer to fill with padding</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Fills the passed buffer slice with the appropriate padding for
+                the final call to transform(). This padding will fill the cipher
+                buffer up to blockSize()-addSize().</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Sha01.padLength" href="htmlsrc/tango.util.digest.Sha01.html#L141">padLength</a><span class="params">(ubyte[] <em>data</em>, ulong <em>length</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.util.digest.Sha01.html#Sha01.padLength" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Performs the length padding</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>the slice of the cipher buffer to fill with padding</td></tr>
+<tr><td><em>length</em></td><td>the length of the data which has been ciphered</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Fills the passed buffer slice with addSize() bytes of padding
+                based on the length in bytes of the input data which has been
+                ciphered.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Sha01.f" href="htmlsrc/tango.util.digest.Sha01.html#L153">f</a><span class="params">(uint <em>t</em>, uint <em>B</em>, uint <em>C</em>, uint <em>D</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">static</span>]</span> <a href="tango.util.digest.Sha01.html#Sha01.f" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl">uint[] <a class="symbol _variable" name="Sha01.K" href="htmlsrc/tango.util.digest.Sha01.html#L165">K</a> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">manifest</span>]</span> <a href="tango.util.digest.Sha01.html#Sha01.K" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2006 Tango. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:27 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

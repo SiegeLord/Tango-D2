@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.core.ThreadPool</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.core.ThreadPool">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.core.ThreadPool"><a href="htmlsrc/tango.core.ThreadPool.html" class="symbol">tango.core.ThreadPool</a></h1>
+
+<div class="summary"><div class="cmnt">This module provides an implementation of the classical thread-pool model.</div></div>
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Author:</p><div class="cmnt">Anders Halager</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ThreadPool" href="htmlsrc/tango.core.ThreadPool.html#L60">ThreadPool</a><span class="tparams">(<em>Args</em>...)</span> <a href="tango.core.ThreadPool.html#ThreadPool" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A thread pool is a way to process multiple jobs in parallel without creating
+ a new thread for each job. This way the overhead of creating a thread is
+ only paid once, and not once for each job and you can limit the maximum
+ number of threads active at any one point.</div></div>
+<div class="cmnt">In this case a "job" is simply a delegate and some parameters the delegate
+ will be called with after having been added to the thread pool's queue.</div>
+<p class="sec_header">Example:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+<a href="#L12_ex1" name="L12_ex1">12</a>
+<a href="#L13_ex1" name="L13_ex1">13</a>
+<a href="#L14_ex1" name="L14_ex1">14</a>
+<a href="#L15_ex1" name="L15_ex1">15</a>
+<a href="#L16_ex1" name="L16_ex1">16</a>
+<a href="#L17_ex1" name="L17_ex1">17</a>
+<a href="#L18_ex1" name="L18_ex1">18</a>
+<a href="#L19_ex1" name="L19_ex1">19</a>
+<a href="#L20_ex1" name="L20_ex1">20</a>
+<a href="#L21_ex1" name="L21_ex1">21</a>
+<a href="#L22_ex1" name="L22_ex1">22</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// create a new pool with two threads</span>
+<span class="k">auto</span> <span class="i">pool</span> = <span class="k">new</span> <span class="i">ThreadPool</span>!(<span class="k">int</span>)(<span class="n">2</span>);
+<span class="k">void</span> <span class="k">delegate</span>(<span class="k">int</span>) <span class="i">f</span> = (<span class="k">int</span> <span class="i">x</span>) { <span class="i">Log</span>(<span class="i">x</span>); };
+
+<span class="lc">// Now we have three ways of telling the pool to execute our jobs</span>
+<span class="lc">// First we can say we just want it done at some later point</span>
+<span class="i">pool</span>.<span class="i">append</span>(<span class="i">f</span>, <span class="n">1</span>);
+<span class="lc">// Secondly we can ask for a job to be done as soon as possible, blocking</span>
+<span class="lc">// until it is started by some thread</span>
+<span class="i">pool</span>.<span class="i">assign</span>(<span class="i">f</span>, <span class="n">2</span>);
+<span class="lc">// Finally we can say we either want it done immediately or not at all</span>
+<span class="k">if</span> (<span class="i">pool</span>.<span class="i">tryAssign</span>(<span class="i">f</span>, <span class="n">3</span>))
+    <span class="i">Log</span>(<span class="sl">"Someone took the job!"</span>);
+<span class="k">else</span>
+    <span class="i">Log</span>(<span class="sl">"No one was available to do the job right now"</span>);
+<span class="lc">// After giving the pool some jobs to do, we need to give it a chance to</span>
+<span class="lc">// finish, so we can do one of two things.</span>
+<span class="lc">// Choice no. 1 is to finish what has already been assigned to the threads,</span>
+<span class="lc">// but ignore any remaining queued jobs</span>
+<span class="lc">//   pool.shutdown();</span>
+<span class="lc">// The other choice is to finish all jobs currently executing or in queue:</span>
+<span class="i">pool</span>.<span class="i">finish</span>();</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+ If append isn't called there should be no additional heap allocations after
+ initialization.</div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> void delegate(Args) <a class="symbol _alias" name="ThreadPool.JobD" href="htmlsrc/tango.core.ThreadPool.html#L63">JobD</a> <a href="tango.core.ThreadPool.html#ThreadPool.JobD" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">An alias for the type of delegates this thread pool considers a job</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="ThreadPool.this" href="htmlsrc/tango.core.ThreadPool.html#L73">this</a><span class="params">(size_t <em>workers</em>, size_t <em>q_size</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.core.ThreadPool.html#ThreadPool.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a new ThreadPool.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>workers</em></td><td>The amount of threads to spawn</td></tr>
+<tr><td><em>q_size</em></td><td>The expected size of the queue (how many elements are
+   preallocated)</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ThreadPool.assign" href="htmlsrc/tango.core.ThreadPool.html#L102">assign</a><span class="params">(JobD <em>job</em>, Args <em>args</em>)</span> <a href="tango.core.ThreadPool.html#ThreadPool.assign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Assign the given job to a thread immediately or block until one is
+      available</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ThreadPool.tryAssign" href="htmlsrc/tango.core.ThreadPool.html#L123">tryAssign</a><span class="params">(JobD <em>job</em>, Args <em>args</em>)</span> <a href="tango.core.ThreadPool.html#ThreadPool.tryAssign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Assign the given job to a thread immediately or return false if none is
+      available. (Returns true if one was available)</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ThreadPool.append" href="htmlsrc/tango.core.ThreadPool.html#L136">append</a><span class="params">(JobD <em>job</em>, Args <em>args</em>)</span> <a href="tango.core.ThreadPool.html#ThreadPool.append" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Put a job into the pool for eventual execution.</div></div>
+<p class="sec_header">Warning:</p><div class="cmnt">Acts as a stack, not a queue as you would expect</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="ThreadPool.pendingJobs" href="htmlsrc/tango.core.ThreadPool.html#L150">pendingJobs</a><span class="params">()</span> <a href="tango.core.ThreadPool.html#ThreadPool.pendingJobs" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the number of jobs waiting to be executed</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="ThreadPool.activeJobs" href="htmlsrc/tango.core.ThreadPool.html#L157">activeJobs</a><span class="params">()</span> <a href="tango.core.ThreadPool.html#ThreadPool.activeJobs" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the number of jobs being executed</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ThreadPool.wait" href="htmlsrc/tango.core.ThreadPool.html#L163">wait</a><span class="params">()</span> <a href="tango.core.ThreadPool.html#ThreadPool.wait" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Block until all pending jobs complete, but do not shut down.  This allows more tasks to be added later.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ThreadPool.shutdown" href="htmlsrc/tango.core.ThreadPool.html#L172">shutdown</a><span class="params">()</span> <a href="tango.core.ThreadPool.html#ThreadPool.shutdown" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Finish currently executing jobs and drop all pending.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ThreadPool.finish" href="htmlsrc/tango.core.ThreadPool.html#L189">finish</a><span class="params">()</span> <a href="tango.core.ThreadPool.html#ThreadPool.finish" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Complete all pending jobs and shutdown.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (C) 2007-2008 Anders Halager. All rights reserved.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:53 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

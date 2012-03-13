@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.math.random.engines.Twister</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.math.random.engines.Twister">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.math.random.engines.Twister"><a href="htmlsrc/tango.math.random.engines.Twister.html" class="symbol">tango.math.random.engines.Twister</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Jan 2008: Initial release</div>
+<p class="sec_header">Author:</p><div class="cmnt">KeYeR (D interface) keyer@team0xf.com
+                        fawzi (converted to engine)</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Twister" href="htmlsrc/tango.math.random.engines.Twister.html#L47">Twister</a> <a href="tango.math.random.engines.Twister.html#Twister" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Wrapper for the Mersenne twister.
+        
+        The Mersenne twister is a pseudorandom number generator linked to
+        CR developed in 1997 by Makoto Matsumoto and Takuji Nishimura that
+        is based on a matrix linear recurrence over a finite binary field
+        F2. It provides for fast generation of very high quality pseudorandom
+        numbers, having been designed specifically to rectify many of the 
+        flaws found in older algorithms.
+        
+        Mersenne Twister has the following desirable properties:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="n">1.</span> <span class="i">It</span> <span class="i">was</span> <span class="i">designed</span> <span class="i">to</span> <span class="i">have</span> <span class="i">a</span> <span class="i">period</span> <span class="i">of</span> <span class="n">2</span>^<span class="n">19937</span> - <span class="n">1</span> (<span class="i">the</span> <span class="i">creators</span>
+   <span class="i">of</span> <span class="i">the</span> <span class="i">algorithm</span> <span class="i">proved</span> <span class="k">this</span> <span class="i">property</span>).
+
+<span class="n">2.</span> <span class="i">It</span> <span class="i">has</span> <span class="i">a</span> <span class="i">very</span> <span class="i">high</span> <span class="i">order</span> <span class="i">of</span> <span class="i">dimensional</span> <span class="i">equidistribution</span>.
+   <span class="i">This</span> <span class="i">implies</span> <span class="i">that</span> <span class="i">there</span> <span class="k">is</span> <span class="i">negligible</span> <span class="i">serial</span> <span class="i">correlation</span> <span class="i">between</span>
+   <span class="i">successive</span> <span class="i">values</span> <span class="k">in</span> <span class="i">the</span> <span class="i">output</span> <span class="i">sequence</span>.
+
+<span class="n">3.</span> <span class="i">It</span> <span class="i">passes</span> <span class="i">numerous</span> <span class="i">tests</span> <span class="k">for</span> <span class="i">statistical</span> <span class="i">randomness</span>, <span class="i">including</span>
+   <span class="i">the</span> <span class="i">stringent</span> <span class="i">Diehard</span> <span class="i">tests</span>.
+
+<span class="n">4.</span> <span class="i">It</span> <span class="k">is</span> <span class="i">fast</span>.</pre>
+</td></tr>
+</table></div></div>
+<dl>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Twister.next" href="htmlsrc/tango.math.random.engines.Twister.html#L64">next</a><span class="params">()</span> <a href="tango.math.random.engines.Twister.html#Twister.next" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a random uint</div></div></dd>
+<dt class="decl"><span class="rettyp">ubyte</span> <a class="symbol _function" name="Twister.nextB" href="htmlsrc/tango.math.random.engines.Twister.html#L97">nextB</a><span class="params">()</span> <a href="tango.math.random.engines.Twister.html#Twister.nextB" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a random byte</div></div></dd>
+<dt class="decl"><span class="rettyp">ulong</span> <a class="symbol _function" name="Twister.nextL" href="htmlsrc/tango.math.random.engines.Twister.html#L101">nextL</a><span class="params">()</span> <a href="tango.math.random.engines.Twister.html#Twister.nextL" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a random long</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Twister.seed" href="htmlsrc/tango.math.random.engines.Twister.html#L106">seed</a><span class="params">(uint <em>s</em>)</span> <a href="tango.math.random.engines.Twister.html#Twister.seed" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes the generator with a uint as seed</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Twister.addEntropy" href="htmlsrc/tango.math.random.engines.Twister.html#L115">addEntropy</a><span class="params">(<span class="k">scope</span> uint delegate() <em>r</em>)</span> <a href="tango.math.random.engines.Twister.html#Twister.addEntropy" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">adds entropy to the generator</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Twister.seed:2" href="htmlsrc/tango.math.random.engines.Twister.html#L146">seed</a><span class="params">(<span class="k">scope</span> uint delegate() <em>r</em>)</span> <a href="tango.math.random.engines.Twister.html#Twister.seed:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">seeds the generator</div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="Twister.toString" href="htmlsrc/tango.math.random.engines.Twister.html#L151">toString</a><span class="params">()</span> <a href="tango.math.random.engines.Twister.html#Twister.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">writes the current status in a string</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Twister.fromString" href="htmlsrc/tango.math.random.engines.Twister.html#L171">fromString</a><span class="params">(const(char[]) <em>s</em>)</span> <a href="tango.math.random.engines.Twister.html#Twister.fromString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">reads the current status from a string (that should have been trimmed)
+ returns the number of chars read</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (C) 1997--2004, Makoto Matsumoto,
+                        Takuji Nishimura, and Eric Landry; All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:56 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

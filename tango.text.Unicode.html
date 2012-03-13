@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.Unicode</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.Unicode">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.Unicode"><a href="htmlsrc/tango.text.Unicode.html" class="symbol">tango.text.Unicode</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: Sept 2007</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Peter
+<p class="bl"></p>
+        Provides case mapping Functions for Unicode Strings. As of now it is
+        only 99 % complete, because it does not take into account Conditional
+        case mappings. This means the Greek Letter Sigma will not be correctly
+        case mapped at the end of a Word, and the Locales Lithuanian, Turkish
+        and Azeri are not taken into account during Case Mappings. This means
+        all in all around 12 Characters will not be mapped correctly under
+        some circumstances.
+<p class="bl"></p>
+        ICU4j also does not handle these cases at the moment.
+<p class="bl"></p>
+        Unittests are written against output from ICU4j
+<p class="bl"></p>
+        This Module tries to minimize Memory allocation and usage. You can
+        always pass the output buffer that should be used to the case mapping
+        function, which will be resized if necessary.</div>
+<dl>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="toUpper" href="htmlsrc/tango.text.Unicode.html#L93">toUpper</a><span class="params">(const(char)[] <em>input</em>, char[] <em>output</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Unicode.html#toUpper" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts an Utf8 String to Upper case</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>String to be case mapped</td></tr>
+<tr><td><em>output</em></td><td>this output buffer will be used unless too small</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">the case mapped string
+ 
+<p class="bl"></p>
+ Converts an Utf8 String to Upper case</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>String to be case mapped</td></tr>
+<tr><td><em>output</em></td><td>this output buffer will be used unless too small</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">the case mapped string</div></dd>
+<dt class="decl"><span class="rettyp">wchar[]</span> <a class="symbol _function" name="toUpper:2" href="htmlsrc/tango.text.Unicode.html#L149">toUpper</a><span class="params">(const(wchar)[] <em>input</em>, wchar[] <em>output</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Unicode.html#toUpper:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts an Utf16 String to Upper case</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>String to be case mapped</td></tr>
+<tr><td><em>output</em></td><td>this output buffer will be used unless too small</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">the case mapped string</div></dd>
+<dt class="decl"><span class="rettyp">dchar[]</span> <a class="symbol _function" name="toUpper:3" href="htmlsrc/tango.text.Unicode.html#L203">toUpper</a><span class="params">(const(dchar)[] <em>input</em>, dchar[] <em>output</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Unicode.html#toUpper:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts an Utf32 String to Upper case</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>String to be case mapped</td></tr>
+<tr><td><em>output</em></td><td>this output buffer will be used unless too small</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">the case mapped string</div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="toLower" href="htmlsrc/tango.text.Unicode.html#L245">toLower</a><span class="params">(const(char)[] <em>input</em>, char[] <em>output</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Unicode.html#toLower" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts an Utf8 String to Lower case</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>String to be case mapped</td></tr>
+<tr><td><em>output</em></td><td>this output buffer will be used unless too small</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">the case mapped string</div></dd>
+<dt class="decl"><span class="rettyp">wchar[]</span> <a class="symbol _function" name="toLower:2" href="htmlsrc/tango.text.Unicode.html#L301">toLower</a><span class="params">(const(wchar)[] <em>input</em>, wchar[] <em>output</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Unicode.html#toLower:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts an Utf16 String to Lower case</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>String to be case mapped</td></tr>
+<tr><td><em>output</em></td><td>this output buffer will be used unless too small</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">the case mapped string</div></dd>
+<dt class="decl"><span class="rettyp">dchar[]</span> <a class="symbol _function" name="toLower:3" href="htmlsrc/tango.text.Unicode.html#L356">toLower</a><span class="params">(const(dchar)[] <em>input</em>, dchar[] <em>output</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Unicode.html#toLower:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts an Utf32 String to Lower case</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>String to be case mapped</td></tr>
+<tr><td><em>output</em></td><td>this output buffer will be used unless too small</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">the case mapped string</div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="toFold" href="htmlsrc/tango.text.Unicode.html#L398">toFold</a><span class="params">(const(char)[] <em>input</em>, char[] <em>output</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Unicode.html#toFold" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts an Utf8 String to Folding case
+ Folding case is used for case insensitive comparsions.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>String to be case mapped</td></tr>
+<tr><td><em>output</em></td><td>this output buffer will be used unless too small</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">the case mapped string</div></dd>
+<dt class="decl"><span class="rettyp">wchar[]</span> <a class="symbol _function" name="toFold:2" href="htmlsrc/tango.text.Unicode.html#L447">toFold</a><span class="params">(const(wchar)[] <em>input</em>, wchar[] <em>output</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Unicode.html#toFold:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts an Utf16 String to Folding case
+ Folding case is used for case insensitive comparsions.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>String to be case mapped</td></tr>
+<tr><td><em>output</em></td><td>this output buffer will be used unless too small</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">the case mapped string</div></dd>
+<dt class="decl"><span class="rettyp">dchar[]</span> <a class="symbol _function" name="toFold:3" href="htmlsrc/tango.text.Unicode.html#L495">toFold</a><span class="params">(const(dchar)[] <em>input</em>, dchar[] <em>output</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Unicode.html#toFold:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts an Utf32 String to Folding case
+ Folding case is used for case insensitive comparsions.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>String to be case mapped</td></tr>
+<tr><td><em>output</em></td><td>this output buffer will be used unless too small</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">the case mapped string</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isDigit" href="htmlsrc/tango.text.Unicode.html#L529">isDigit</a><span class="params">(dchar <em>ch</em>)</span> <a href="tango.text.Unicode.html#isDigit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Determines if a character is a digit. It returns true for decimal
+ digits only.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>ch</em></td><td>the character to be inspected</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isLetter" href="htmlsrc/tango.text.Unicode.html#L541">isLetter</a><span class="params">(int <em>ch</em>)</span> <a href="tango.text.Unicode.html#isLetter" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Determines if a character is a letter.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>ch</em></td><td>the character to be inspected</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isLetterOrDigit" href="htmlsrc/tango.text.Unicode.html#L558">isLetterOrDigit</a><span class="params">(int <em>ch</em>)</span> <a href="tango.text.Unicode.html#isLetterOrDigit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Determines if a character is a letter or a
+ decimal digit.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>ch</em></td><td>the character to be inspected</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isLower" href="htmlsrc/tango.text.Unicode.html#L574">isLower</a><span class="params">(dchar <em>ch</em>)</span> <a href="tango.text.Unicode.html#isLower" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Determines if a character is a lower case letter.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>ch</em></td><td>the character to be inspected</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isTitle" href="htmlsrc/tango.text.Unicode.html#L587">isTitle</a><span class="params">(dchar <em>ch</em>)</span> <a href="tango.text.Unicode.html#isTitle" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Determines if a character is a title case letter.
+ In case of combined letters, only the first is upper and the second is lower.
+ Some of these special characters can be found in the croatian and greek language.</div></div>
+<p class="sec_header">See Also:</p><div class="cmnt">http://en.wikipedia.org/wiki/Capitalization</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>ch</em></td><td>the character to be inspected</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isUpper" href="htmlsrc/tango.text.Unicode.html#L597">isUpper</a><span class="params">(dchar <em>ch</em>)</span> <a href="tango.text.Unicode.html#isUpper" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Determines if a character is a upper case letter.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>ch</em></td><td>the character to be inspected</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isWhitespace" href="htmlsrc/tango.text.Unicode.html#L616">isWhitespace</a><span class="params">(dchar <em>ch</em>)</span> <a href="tango.text.Unicode.html#isWhitespace" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Determines if a character is a Whitespace character.
+ Whitespace characters are characters in the
+ General Catetories Zs, Zl, Zp without the No Break
+ spaces plus the control characters out of the ASCII
+ range, that are used as spaces:
+ TAB VT LF FF CR FS GS RS US NL</div></div>
+<p class="sec_header">WARNING:</p><div class="cmnt">look at isSpace, maybe that function does
+          more what you expect.</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>ch</em></td><td>the character to be inspected</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isSpace" href="htmlsrc/tango.text.Unicode.html#L639">isSpace</a><span class="params">(dchar <em>ch</em>)</span> <a href="tango.text.Unicode.html#isSpace" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Detemines if a character is a Space character as
+ specified in the Unicode Standard.</div></div>
+<p class="sec_header">WARNING:</p><div class="cmnt">look at isWhitespace, maybe that function does
+          more what you expect.</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>ch</em></td><td>the character to be inspected</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isPrintable" href="htmlsrc/tango.text.Unicode.html#L655">isPrintable</a><span class="params">(dchar <em>ch</em>)</span> <a href="tango.text.Unicode.html#isPrintable" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Detemines if a character is a printable character as
+ specified in the Unicode Standard.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>ch</em></td><td>the character to be inspected</td></tr></table></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2007 Peter Triller. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:04 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

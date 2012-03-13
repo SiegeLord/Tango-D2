@@ -1,0 +1,601 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.net.device.Berkeley</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.net.device.Berkeley">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.net.device.Berkeley"><a href="htmlsrc/tango.net.device.Berkeley.html" class="symbol">tango.net.device.Berkeley</a></h1>
+
+<dl>
+<dt class="decl"><a class="symbol _enum" name="enum" href="htmlsrc/tango.net.device.Berkeley.html#L16">enum</a> <a href="tango.net.device.Berkeley.html#enum" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="SocketOption" href="htmlsrc/tango.net.device.Berkeley.html#L22">SocketOption</a> <a href="tango.net.device.Berkeley.html#SocketOption" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="SocketOptionLevel" href="htmlsrc/tango.net.device.Berkeley.html#L62">SocketOptionLevel</a> <a href="tango.net.device.Berkeley.html#SocketOptionLevel" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="SocketType" href="htmlsrc/tango.net.device.Berkeley.html#L74">SocketType</a> <a href="tango.net.device.Berkeley.html#SocketType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="SocketType.STREAM" href="htmlsrc/tango.net.device.Berkeley.html#L76">STREAM</a> <a href="tango.net.device.Berkeley.html#SocketType.STREAM" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">sequential, reliable</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="SocketType.DGRAM" href="htmlsrc/tango.net.device.Berkeley.html#L77">DGRAM</a> <a href="tango.net.device.Berkeley.html#SocketType.DGRAM" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">connectionless unreliable, max length</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="SocketType.SEQPACKET" href="htmlsrc/tango.net.device.Berkeley.html#L78">SEQPACKET</a> <a href="tango.net.device.Berkeley.html#SocketType.SEQPACKET" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">sequential, reliable, max length</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="ProtocolType" href="htmlsrc/tango.net.device.Berkeley.html#L85">ProtocolType</a> <a href="tango.net.device.Berkeley.html#ProtocolType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="ProtocolType.IP" href="htmlsrc/tango.net.device.Berkeley.html#L87">IP</a> <a href="tango.net.device.Berkeley.html#ProtocolType.IP" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">default internet protocol (probably 4 for compatibility)</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="ProtocolType.IPV4" href="htmlsrc/tango.net.device.Berkeley.html#L88">IPV4</a> <a href="tango.net.device.Berkeley.html#ProtocolType.IPV4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">internet protocol version 4</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="ProtocolType.IPV6" href="htmlsrc/tango.net.device.Berkeley.html#L89">IPV6</a> <a href="tango.net.device.Berkeley.html#ProtocolType.IPV6" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">internet protocol version 6</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="ProtocolType.ICMP" href="htmlsrc/tango.net.device.Berkeley.html#L90">ICMP</a> <a href="tango.net.device.Berkeley.html#ProtocolType.ICMP" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">internet control message protocol</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="ProtocolType.IGMP" href="htmlsrc/tango.net.device.Berkeley.html#L91">IGMP</a> <a href="tango.net.device.Berkeley.html#ProtocolType.IGMP" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">internet group management protocol</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="ProtocolType.TCP" href="htmlsrc/tango.net.device.Berkeley.html#L92">TCP</a> <a href="tango.net.device.Berkeley.html#ProtocolType.TCP" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">transmission control protocol</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="ProtocolType.PUP" href="htmlsrc/tango.net.device.Berkeley.html#L93">PUP</a> <a href="tango.net.device.Berkeley.html#ProtocolType.PUP" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">PARC universal packet protocol</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="ProtocolType.UDP" href="htmlsrc/tango.net.device.Berkeley.html#L94">UDP</a> <a href="tango.net.device.Berkeley.html#ProtocolType.UDP" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">user datagram protocol</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="ProtocolType.IDP" href="htmlsrc/tango.net.device.Berkeley.html#L95">IDP</a> <a href="tango.net.device.Berkeley.html#ProtocolType.IDP" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Xerox NS protocol</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="AddressFamily" href="htmlsrc/tango.net.device.Berkeley.html#L102">AddressFamily</a> <a href="tango.net.device.Berkeley.html#AddressFamily" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="SocketShutdown" href="htmlsrc/tango.net.device.Berkeley.html#L116">SocketShutdown</a> <a href="tango.net.device.Berkeley.html#SocketShutdown" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="SocketFlags" href="htmlsrc/tango.net.device.Berkeley.html#L127">SocketFlags</a> <a href="tango.net.device.Berkeley.html#SocketFlags" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="SocketFlags.OOB" href="htmlsrc/tango.net.device.Berkeley.html#L130">OOB</a> <a href="tango.net.device.Berkeley.html#SocketFlags.OOB" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">out of band</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="SocketFlags.PEEK" href="htmlsrc/tango.net.device.Berkeley.html#L131">PEEK</a> <a href="tango.net.device.Berkeley.html#SocketFlags.PEEK" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">only for receiving</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="SocketFlags.DONTROUTE" href="htmlsrc/tango.net.device.Berkeley.html#L132">DONTROUTE</a> <a href="tango.net.device.Berkeley.html#SocketFlags.DONTROUTE" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">only for sending</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="SocketFlags.NOSIGNAL" href="htmlsrc/tango.net.device.Berkeley.html#L133">NOSIGNAL</a> <a href="tango.net.device.Berkeley.html#SocketFlags.NOSIGNAL" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">inhibit signals</div></div></dd></dl></dd>
+<dt class="decl">int function(const(char)* node, const(char)* service, Address.addrinfo* hints, Address.addrinfo** res) <a class="symbol _variable" name="getaddrinfo" href="htmlsrc/tango.net.device.Berkeley.html#L269">getaddrinfo</a> <span class="attrs">[<span class="prot">package</span>, <span class="linkg">extern(Windows)</span>]</span> <a href="tango.net.device.Berkeley.html#getaddrinfo" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The gai_strerror function translates error codes of getaddrinfo,
+                freeaddrinfo and getnameinfo to a human readable string, suitable
+                for error reporting. (C) MAN</div></div>
+<div class="cmnt">Given node and service, which identify an Internet host and a service,
+                getaddrinfo() returns one or more addrinfo structures, each of which
+                contains an Internet address that can be specified in a call to bind
+                or connect. The getaddrinfo() function combines the functionality
+                provided by the getservbyname and getservbyport functions into a single
+                interface, but unlike the latter functions, getaddrinfo() is reentrant
+                and allows programs to eliminate IPv4-versus-IPv6 dependencies.(C) MAN</div></dd>
+<dt class="decl">void function(Address.addrinfo* res) <a class="symbol _variable" name="freeaddrinfo" href="htmlsrc/tango.net.device.Berkeley.html#L275">freeaddrinfo</a> <span class="attrs">[<span class="prot">package</span>, <span class="linkg">extern(Windows)</span>]</span> <a href="tango.net.device.Berkeley.html#freeaddrinfo" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The freeaddrinfo() function frees the memory that was allocated for the
+                dynamically allocated linked list res.  (C) MAN</div></div></dd>
+<dt class="decl">int function(Address.sockaddr* sa, int salen, char* host, int hostlen, char* serv, int servlen, int flags) <a class="symbol _variable" name="getnameinfo" href="htmlsrc/tango.net.device.Berkeley.html#L284">getnameinfo</a> <span class="attrs">[<span class="prot">package</span>, <span class="linkg">extern(Windows)</span>]</span> <a href="tango.net.device.Berkeley.html#getnameinfo" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The getnameinfo() function is the inverse of getaddrinfo: it converts
+                a socket address to a corresponding host and service, in a protocol-
+                independent manner. It combines the functionality of gethostbyaddr and
+                getservbyport, but unlike those functions, getaddrinfo is reentrant and
+                allows programs to eliminate IPv4-versus-IPv6 dependencies. (C) MAN</div></div></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Berkeley" href="htmlsrc/tango.net.device.Berkeley.html#L422">Berkeley</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Berkeley.open" href="htmlsrc/tango.net.device.Berkeley.html#L449">open</a><span class="params">(AddressFamily <em>family</em>, SocketType <em>type</em>, ProtocolType <em>protocol</em>, bool <em>create</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.net.device.Berkeley.html#Berkeley.open" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Configure this instance</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Berkeley.reopen" href="htmlsrc/tango.net.device.Berkeley.html#L464">reopen</a><span class="params">(socket_t <em>sock</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.net.device.Berkeley.html#Berkeley.reopen" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Open/reopen a native socket for this instance</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Berkeley.detach" href="htmlsrc/tango.net.device.Berkeley.html#L486">detach</a><span class="params">()</span> <a href="tango.net.device.Berkeley.html#Berkeley.detach" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">calling shutdown() before this is recommended for connection-
+                oriented sockets</div></div></dd>
+<dt class="decl"><span class="rettyp">socket_t</span> <a class="symbol _function" name="Berkeley.handle" href="htmlsrc/tango.net.device.Berkeley.html#L499">handle</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.handle" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the underlying OS handle of this Conduit</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Berkeley.error" href="htmlsrc/tango.net.device.Berkeley.html#L510">error</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.error" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return socket error status</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Berkeley.lastError" href="htmlsrc/tango.net.device.Berkeley.html#L523">lastError</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.lastError" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the last error</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Berkeley.isAlive" href="htmlsrc/tango.net.device.Berkeley.html#L538">isAlive</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.isAlive" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is this socket still alive? A closed socket is considered to
+                be dead, but a shutdown socket is still alive.</div></div></dd>
+<dt class="decl"><span class="rettyp">AddressFamily</span> <a class="symbol _function" name="Berkeley.addressFamily" href="htmlsrc/tango.net.device.Berkeley.html#L550">addressFamily</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.addressFamily" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">Berkeley*</span> <a class="symbol _function" name="Berkeley.bind" href="htmlsrc/tango.net.device.Berkeley.html#L559">bind</a><span class="params">(Address <em>addr</em>)</span> <a href="tango.net.device.Berkeley.html#Berkeley.bind" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">Berkeley*</span> <a class="symbol _function" name="Berkeley.connect" href="htmlsrc/tango.net.device.Berkeley.html#L570">connect</a><span class="params">(Address <em>to</em>)</span> <a href="tango.net.device.Berkeley.html#Berkeley.connect" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">Berkeley*</span> <a class="symbol _function" name="Berkeley.listen" href="htmlsrc/tango.net.device.Berkeley.html#L599">listen</a><span class="params">(int <em>backlog</em>)</span> <a href="tango.net.device.Berkeley.html#Berkeley.listen" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">need to bind() first</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Berkeley.accept" href="htmlsrc/tango.net.device.Berkeley.html#L612">accept</a><span class="params">(<span class="k">ref</span> Berkeley <em>target</em>)</span> <a href="tango.net.device.Berkeley.html#Berkeley.accept" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">need to bind() first</div></div></dd>
+<dt class="decl"><span class="rettyp">Berkeley*</span> <a class="symbol _function" name="Berkeley.shutdown" href="htmlsrc/tango.net.device.Berkeley.html#L639">shutdown</a><span class="params">(SocketShutdown <em>how</em>)</span> <a href="tango.net.device.Berkeley.html#Berkeley.shutdown" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The shutdown function shuts down the connection of the socket.
+                Depending on the argument value, it will:</div></div>
+<div class="cmnt">-   stop receiving data for this socket. If further data
+                        arrives, it is rejected.
+<p class="bl"></p>
+                    -   stop trying to transmit data from this socket. Also
+                        discards any data waiting to be sent. Stop looking for
+                        acknowledgement of data already sent; don't retransmit
+                        if any data is lost.</div></dd>
+<dt class="decl"><span class="rettyp">Berkeley*</span> <a class="symbol _function" name="Berkeley.linger" href="htmlsrc/tango.net.device.Berkeley.html#L651">linger</a><span class="params">(int <em>period</em>)</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.linger" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">set linger timeout</div></div></dd>
+<dt class="decl"><span class="rettyp">Berkeley*</span> <a class="symbol _function" name="Berkeley.addressReuse" href="htmlsrc/tango.net.device.Berkeley.html#L680">addressReuse</a><span class="params">(bool <em>enabled</em>)</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.addressReuse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">enable/disable address reuse</div></div></dd>
+<dt class="decl"><span class="rettyp">Berkeley*</span> <a class="symbol _function" name="Berkeley.noDelay" href="htmlsrc/tango.net.device.Berkeley.html#L692">noDelay</a><span class="params">(bool <em>enabled</em>)</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.noDelay" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">enable/disable noDelay option (nagle)</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Berkeley.joinGroup" href="htmlsrc/tango.net.device.Berkeley.html#L705">joinGroup</a><span class="params">(IPv4Address <em>address</em>, bool <em>onOff</em>)</span> <a href="tango.net.device.Berkeley.html#Berkeley.joinGroup" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Helper function to handle the adding and dropping of group
+                membership.</div></div></dd>
+<dt class="decl"><span class="rettyp">Address</span> <a class="symbol _function" name="Berkeley.newFamilyObject" href="htmlsrc/tango.net.device.Berkeley.html#L729">newFamilyObject</a><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.newFamilyObject" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="Berkeley.hostName" href="htmlsrc/tango.net.device.Berkeley.html#L744">hostName</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.hostName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">return the hostname</div></div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Berkeley.hostAddress" href="htmlsrc/tango.net.device.Berkeley.html#L759">hostAddress</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.hostAddress" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">return the default host address (IPv4)</div></div></dd>
+<dt class="decl"><span class="rettyp">Address</span> <a class="symbol _function" name="Berkeley.remoteAddress" href="htmlsrc/tango.net.device.Berkeley.html#L773">remoteAddress</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.remoteAddress" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">return the remote address of the current connection (IPv4)</div></div></dd>
+<dt class="decl"><span class="rettyp">Address</span> <a class="symbol _function" name="Berkeley.localAddress" href="htmlsrc/tango.net.device.Berkeley.html#L789">localAddress</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.localAddress" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">return the local address of the current connection (IPv4)</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Berkeley.send" href="htmlsrc/tango.net.device.Berkeley.html#L809">send</a><span class="params">(const(void)[] <em>buf</em>, SocketFlags <em>flags</em> = <span class="defval"><span class="i">NONE</span></span>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.send" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Send data on the connection. Returns the number of bytes
+                actually sent, or ERROR on failure. If the socket is blocking
+                and there is no buffer space left, send waits.</div></div>
+<div class="cmnt">Returns number of bytes actually sent, or -1 on error</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Berkeley.sendTo" href="htmlsrc/tango.net.device.Berkeley.html#L836">sendTo</a><span class="params">(const(void)[] <em>buf</em>, SocketFlags <em>flags</em>, Address <em>to</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.sendTo" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Berkeley.sendTo:2" href="htmlsrc/tango.net.device.Berkeley.html#L847">sendTo</a><span class="params">(const(void)[] <em>buf</em>, Address <em>to</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.sendTo:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Send data to a specific destination Address. If the
+                destination address is not specified, a connection
+                must have been made and that address is used. If the
+                socket is blocking and there is no buffer space left,
+                sendTo waits.</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Berkeley.sendTo:3" href="htmlsrc/tango.net.device.Berkeley.html#L858">sendTo</a><span class="params">(const(void)[] <em>buf</em>, SocketFlags <em>flags</em> = <span class="defval"><span class="i">NONE</span></span>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.sendTo:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">ditto - assumes you connect()ed</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Berkeley.receive" href="htmlsrc/tango.net.device.Berkeley.html#L901">receive</a><span class="params">(void[] <em>buf</em>, SocketFlags <em>flags</em> = <span class="defval"><span class="i">NONE</span></span>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.receive" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive data on the connection. Returns the number of
+                bytes actually received, 0 if the remote side has closed
+                the connection, or ERROR on failure. If the socket is blocking,
+                receive waits until there is data to be received.</div></div>
+<div class="cmnt">Returns number of bytes actually received, 0 on connection
+                closure, or -1 on error</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Berkeley.receiveFrom" href="htmlsrc/tango.net.device.Berkeley.html#L919">receiveFrom</a><span class="params">(void[] <em>buf</em>, SocketFlags <em>flags</em>, Address <em>from</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.receiveFrom" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Berkeley.receiveFrom:2" href="htmlsrc/tango.net.device.Berkeley.html#L935">receiveFrom</a><span class="params">(void[] <em>buf</em>, Address <em>from</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.receiveFrom:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Receive data and get the remote endpoint Address. Returns
+                the number of bytes actually received, 0 if the remote side
+                has closed the connection, or ERROR on failure. If the socket
+                is blocking, receiveFrom waits until there is data to be
+                received.</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Berkeley.receiveFrom:3" href="htmlsrc/tango.net.device.Berkeley.html#L946">receiveFrom</a><span class="params">(void[] <em>buf</em>, SocketFlags <em>flags</em> = <span class="defval"><span class="i">NONE</span></span>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.receiveFrom:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">ditto - assumes you connect()ed</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Berkeley.getOption" href="htmlsrc/tango.net.device.Berkeley.html#L961">getOption</a><span class="params">(SocketOptionLevel <em>level</em>, SocketOption <em>option</em>, void[] <em>result</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.getOption" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns the length, in bytes, of the actual result - very
+                different from getsockopt()</div></div></dd>
+<dt class="decl"><span class="rettyp">Berkeley*</span> <a class="symbol _function" name="Berkeley.setOption" href="htmlsrc/tango.net.device.Berkeley.html#L973">setOption</a><span class="params">(SocketOptionLevel <em>level</em>, SocketOption <em>option</em>, const(void)[] <em>value</em>)</span> <a href="tango.net.device.Berkeley.html#Berkeley.setOption" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Berkeley.blocking" href="htmlsrc/tango.net.device.Berkeley.html#L986">blocking</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.blocking" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">getter</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Berkeley.blocking:2" href="htmlsrc/tango.net.device.Berkeley.html#L1000">blocking</a><span class="params">(bool <em>yes</em>)</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.blocking:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">setter</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Berkeley.exception" href="htmlsrc/tango.net.device.Berkeley.html#L1026">exception</a><span class="params">(immutable(char)[] <em>msg</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.exception" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Berkeley.badArg" href="htmlsrc/tango.net.device.Berkeley.html#L1035">badArg</a><span class="params">(immutable(char)[] <em>msg</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley.badArg" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Address" href="htmlsrc/tango.net.device.Berkeley.html#L1048">Address</a> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.net.device.Berkeley.html#Address" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Address.exception" href="htmlsrc/tango.net.device.Berkeley.html#L1140">exception</a><span class="params">(immutable(char)[] <em>msg</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#Address.exception" class="plink">¶</a></dt>
+<dd class="ddef">
+<p class="sec_header">Tango:</p><div class="cmnt">added this common function</div></dd>
+<dt class="decl"><span class="rettyp">Address</span> <a class="symbol _function" name="Address.create" href="htmlsrc/tango.net.device.Berkeley.html#L1151">create</a><span class="params">(sockaddr* <em>sa</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#Address.create" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Address factory</div></div></dd>
+<dt class="decl"><span class="rettyp">Address</span> <a class="symbol _function" name="Address.resolve" href="htmlsrc/tango.net.device.Berkeley.html#L1168">resolve</a><span class="params">(const(char)[] <em>host</em>, const(char)[] <em>service</em> = <span class="defval"><span class="k">null</span></span>, AddressFamily <em>af</em> = <span class="defval"><span class="i">UNSPEC</span></span>, AIFlags <em>flags</em> = <span class="defval"><span class="k">cast</span>(<span class="i">AIFlags</span>)<span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#Address.resolve" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">Address</span> <a class="symbol _function" name="Address.resolve:2" href="htmlsrc/tango.net.device.Berkeley.html#L1179">resolve</a><span class="params">(const(char)[] <em>host</em>, ushort <em>port</em>, AddressFamily <em>af</em> = <span class="defval"><span class="i">UNSPEC</span></span>, AIFlags <em>flags</em> = <span class="defval"><span class="k">cast</span>(<span class="i">AIFlags</span>)<span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#Address.resolve:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">Address[]</span> <a class="symbol _function" name="Address.resolveAll" href="htmlsrc/tango.net.device.Berkeley.html#L1190">resolveAll</a><span class="params">(const(char)[] <em>host</em>, const(char)[] <em>service</em> = <span class="defval"><span class="k">null</span></span>, AddressFamily <em>af</em> = <span class="defval"><span class="i">UNSPEC</span></span>, AIFlags <em>flags</em> = <span class="defval"><span class="k">cast</span>(<span class="i">AIFlags</span>)<span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#Address.resolveAll" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">Address[]</span> <a class="symbol _function" name="Address.resolveAll:2" href="htmlsrc/tango.net.device.Berkeley.html#L1239">resolveAll</a><span class="params">(const(char)[] <em>host</em>, ushort <em>port</em>, AddressFamily <em>af</em> = <span class="defval"><span class="i">UNSPEC</span></span>, AIFlags <em>flags</em> = <span class="defval"><span class="k">cast</span>(<span class="i">AIFlags</span>)<span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#Address.resolveAll:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">Address</span> <a class="symbol _function" name="Address.passive" href="htmlsrc/tango.net.device.Berkeley.html#L1251">passive</a><span class="params">(const(char)[] <em>service</em>, AddressFamily <em>af</em> = <span class="defval"><span class="i">UNSPEC</span></span>, AIFlags <em>flags</em> = <span class="defval"><span class="k">cast</span>(<span class="i">AIFlags</span>)<span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#Address.passive" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">Address</span> <a class="symbol _function" name="Address.passive:2" href="htmlsrc/tango.net.device.Berkeley.html#L1262">passive</a><span class="params">(ushort <em>port</em>, AddressFamily <em>af</em> = <span class="defval"><span class="i">UNSPEC</span></span>, AIFlags <em>flags</em> = <span class="defval"><span class="k">cast</span>(<span class="i">AIFlags</span>)<span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#Address.passive:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="Address.toAddrString" href="htmlsrc/tango.net.device.Berkeley.html#L1272">toAddrString</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.net.device.Berkeley.html#Address.toAddrString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="Address.toPortString" href="htmlsrc/tango.net.device.Berkeley.html#L1285">toPortString</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.net.device.Berkeley.html#Address.toPortString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="Address.toString" href="htmlsrc/tango.net.device.Berkeley.html#L1301">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.Berkeley.html#Address.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">AddressFamily</span> <a class="symbol _function" name="Address.addressFamily" href="htmlsrc/tango.net.device.Berkeley.html#L1310">addressFamily</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.net.device.Berkeley.html#Address.addressFamily" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="UnknownAddress" href="htmlsrc/tango.net.device.Berkeley.html#L1321">UnknownAddress</a> : <span class="bclass">Address</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.device.Berkeley.html#UnknownAddress" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><span class="rettyp">sockaddr*</span> <a class="symbol _function" name="UnknownAddress.name" href="htmlsrc/tango.net.device.Berkeley.html#L1329">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>]</span> <a href="tango.net.device.Berkeley.html#UnknownAddress.name" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="UnknownAddress.nameLen" href="htmlsrc/tango.net.device.Berkeley.html#L1338">nameLen</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#UnknownAddress.nameLen" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">AddressFamily</span> <a class="symbol _function" name="UnknownAddress.addressFamily" href="htmlsrc/tango.net.device.Berkeley.html#L1347">addressFamily</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>]</span> <a href="tango.net.device.Berkeley.html#UnknownAddress.addressFamily" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="UnknownAddress.toString" href="htmlsrc/tango.net.device.Berkeley.html#L1356">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.Berkeley.html#UnknownAddress.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="IPv4Address" href="htmlsrc/tango.net.device.Berkeley.html#L1368">IPv4Address</a> : <span class="bclass">Address</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.device.Berkeley.html#IPv4Address" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><a class="symbol _enum" name="IPv4Address.enum" href="htmlsrc/tango.net.device.Berkeley.html#L1374">enum</a> <a href="tango.net.device.Berkeley.html#IPv4Address.enum" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="IPv4Address.sockaddr_in" href="htmlsrc/tango.net.device.Berkeley.html#L1385">sockaddr_in</a> <a href="tango.net.device.Berkeley.html#IPv4Address.sockaddr_in" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><a class="symbol _ctor" name="IPv4Address.this" href="htmlsrc/tango.net.device.Berkeley.html#L1409">this</a><span class="params">()</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.device.Berkeley.html#IPv4Address.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="IPv4Address.this:2" href="htmlsrc/tango.net.device.Berkeley.html#L1417">this</a><span class="params">(ushort <em>port</em>)</span> <a href="tango.net.device.Berkeley.html#IPv4Address.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="IPv4Address.this:3" href="htmlsrc/tango.net.device.Berkeley.html#L1427">this</a><span class="params">(uint <em>addr</em>, ushort <em>port</em>)</span> <a href="tango.net.device.Berkeley.html#IPv4Address.this:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="IPv4Address.this:4" href="htmlsrc/tango.net.device.Berkeley.html#L1440">this</a><span class="params">(const(char)[] <em>addr</em>, ushort <em>port</em> = <span class="defval"><span class="i">PORT_ANY</span></span>)</span> <a href="tango.net.device.Berkeley.html#IPv4Address.this:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">-port- can be PORT_ANY
+                -addr- is an IP address or host name</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="IPv4Address.this:5" href="htmlsrc/tango.net.device.Berkeley.html#L1461">this</a><span class="params">(sockaddr* <em>addr</em>)</span> <a href="tango.net.device.Berkeley.html#IPv4Address.this:5" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">sockaddr*</span> <a class="symbol _function" name="IPv4Address.name" href="htmlsrc/tango.net.device.Berkeley.html#L1470">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>]</span> <a href="tango.net.device.Berkeley.html#IPv4Address.name" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="IPv4Address.nameLen" href="htmlsrc/tango.net.device.Berkeley.html#L1479">nameLen</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#IPv4Address.nameLen" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">AddressFamily</span> <a class="symbol _function" name="IPv4Address.addressFamily" href="htmlsrc/tango.net.device.Berkeley.html#L1488">addressFamily</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>]</span> <a href="tango.net.device.Berkeley.html#IPv4Address.addressFamily" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">ushort</span> <a class="symbol _function" name="IPv4Address.port" href="htmlsrc/tango.net.device.Berkeley.html#L1497">port</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#IPv4Address.port" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="IPv4Address.addr" href="htmlsrc/tango.net.device.Berkeley.html#L1506">addr</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#IPv4Address.addr" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="IPv4Address.toAddrString" href="htmlsrc/tango.net.device.Berkeley.html#L1515">toAddrString</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#IPv4Address.toAddrString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="IPv4Address.toPortString" href="htmlsrc/tango.net.device.Berkeley.html#L1528">toPortString</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#IPv4Address.toPortString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="IPv4Address.toString" href="htmlsrc/tango.net.device.Berkeley.html#L1538">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.Berkeley.html#IPv4Address.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="IPv4Address.parse" href="htmlsrc/tango.net.device.Berkeley.html#L1550">parse</a><span class="params">(const(char)[] <em>addr</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#IPv4Address.parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">-addr- is an IP address in the format "a.b.c.d"
+                returns ADDR_NONE on failure</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="IPv6Address" href="htmlsrc/tango.net.device.Berkeley.html#L1651">IPv6Address</a> : <span class="bclass">Address</span> <a href="tango.net.device.Berkeley.html#IPv6Address" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">IPv6 is the next-generation Internet Protocol version
+        designated as the successor to IPv4, the first
+        implementation used in the Internet that is still in
+        dominant use currently.</div></div>
+<div class="cmnt">More information: http://ipv6.com/
+<p class="bl"></p>
+        IPv6 supports 128-bit address space as opposed to 32-bit
+        address space of IPv4.
+<p class="bl"></p>
+        IPv6 is written as 8 blocks of 4 octal digits (16 bit)
+        separated by a colon (":"). Zero block can be replaced by "::".
+<p class="bl"></p>
+        For example:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+<a href="#L12_ex1" name="L12_ex1">12</a>
+<a href="#L13_ex1" name="L13_ex1">13</a>
+<a href="#L14_ex1" name="L14_ex1">14</a>
+<a href="#L15_ex1" name="L15_ex1">15</a>
+<a href="#L16_ex1" name="L16_ex1">16</a>
+<a href="#L17_ex1" name="L17_ex1">17</a>
+<a href="#L18_ex1" name="L18_ex1">18</a>
+<a href="#L19_ex1" name="L19_ex1">19</a>
+<a href="#L20_ex1" name="L20_ex1">20</a>
+<a href="#L21_ex1" name="L21_ex1">21</a>
+<a href="#L22_ex1" name="L22_ex1">22</a>
+<a href="#L23_ex1" name="L23_ex1">23</a>
+<a href="#L24_ex1" name="L24_ex1">24</a>
+<a href="#L25_ex1" name="L25_ex1">25</a>
+<a href="#L26_ex1" name="L26_ex1">26</a>
+<a href="#L27_ex1" name="L27_ex1">27</a>
+<a href="#L28_ex1" name="L28_ex1">28</a>
+<a href="#L29_ex1" name="L29_ex1">29</a>
+<a href="#L30_ex1" name="L30_ex1">30</a>
+<a href="#L31_ex1" name="L31_ex1">31</a>
+<a href="#L32_ex1" name="L32_ex1">32</a>
+<a href="#L33_ex1" name="L33_ex1">33</a>
+<a href="#L34_ex1" name="L34_ex1">34</a>
+<a href="#L35_ex1" name="L35_ex1">35</a>
+<a href="#L36_ex1" name="L36_ex1">36</a>
+<a href="#L37_ex1" name="L37_ex1">37</a>
+<a href="#L38_ex1" name="L38_ex1">38</a>
+<a href="#L39_ex1" name="L39_ex1">39</a>
+<a href="#L40_ex1" name="L40_ex1">40</a>
+<a href="#L41_ex1" name="L41_ex1">41</a>
+<a href="#L42_ex1" name="L42_ex1">42</a>
+<a href="#L43_ex1" name="L43_ex1">43</a>
+<a href="#L44_ex1" name="L44_ex1">44</a>
+<a href="#L45_ex1" name="L45_ex1">45</a>
+<a href="#L46_ex1" name="L46_ex1">46</a>
+<a href="#L47_ex1" name="L47_ex1">47</a>
+<a href="#L48_ex1" name="L48_ex1">48</a>
+<a href="#L49_ex1" name="L49_ex1">49</a>
+<a href="#L50_ex1" name="L50_ex1">50</a>
+<a href="#L51_ex1" name="L51_ex1">51</a>
+<a href="#L52_ex1" name="L52_ex1">52</a>
+<a href="#L53_ex1" name="L53_ex1">53</a>
+<a href="#L54_ex1" name="L54_ex1">54</a>
+<a href="#L55_ex1" name="L55_ex1">55</a>
+<a href="#L56_ex1" name="L56_ex1">56</a>
+<a href="#L57_ex1" name="L57_ex1">57</a>
+<a href="#L58_ex1" name="L58_ex1">58</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">0001</span>
+<span class="k">is</span> <span class="i">equal</span>
+::<span class="n">0001</span>
+<span class="k">is</span> <span class="i">equal</span>
+::<span class="n">1</span>
+<span class="k">is</span> <span class="i">analogue</span> <span class="i">IPv4</span> <span class="n">127.0</span><span class="n">.0</span><span class="n">.1</span>
+
+<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">0000</span>
+<span class="k">is</span> <span class="i">equal</span>
+::
+<span class="k">is</span> <span class="i">analogue</span> <span class="i">IPv4</span> <span class="n">0.0</span><span class="n">.0</span><span class="n">.0</span>
+
+<span class="n">2001</span>:<span class="i">cdba</span>:<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">0000</span>:<span class="n">3257</span>:<span class="n">9652</span>
+<span class="k">is</span> <span class="i">equal</span>
+<span class="n">2001</span>:<span class="i">cdba</span>::<span class="n">3257</span>:<span class="n">9652</span>
+
+<span class="i">IPv4</span> <span class="i">address</span> <span class="i">can</span> <span class="i">be</span> <span class="i">submitted</span> <span class="i">through</span> <span class="i">IPv6</span> <span class="i">as</span> ::<span class="i">ffff</span>:<span class="i">xx</span>.<span class="i">xx</span>.<span class="i">xx</span>.<span class="i">xx</span>,
+<span class="i">where</span> <span class="i">xx</span>.<span class="i">xx</span>.<span class="i">xx</span>.<span class="i">xx</span> <span class="n">32</span>-<span class="i">bit</span> <span class="i">IPv4</span> <span class="i">addresses</span>.
+
+::<span class="i">ffff</span>:<span class="n">51</span><span class="i">b0</span>:<span class="i">ec6d</span>
+<span class="k">is</span> <span class="i">equal</span>
+::<span class="i">ffff</span>:<span class="n">81.176</span><span class="n">.236</span><span class="n">.109</span>
+<span class="k">is</span> <span class="i">analogue</span> <span class="i">IPv4</span> <span class="n">81.176</span><span class="n">.236</span><span class="n">.109</span>
+
+<span class="i">The</span> <span class="i">URL</span> <span class="k">for</span> <span class="i">the</span> <span class="i">IPv6</span> <span class="i">address</span> <span class="i">will</span> <span class="i">be</span> <span class="i">of</span> <span class="i">the</span> <span class="i">form</span>:
+<span class="i">http</span>:<span class="lc">//[2001:cdba:0000:0000:0000:0000:3257:9652]/</span>
+
+<span class="i">If</span> <span class="i">needed</span> <span class="i">to</span> <span class="i">specify</span> <span class="i">a</span> <span class="i">port</span>, <span class="i">it</span> <span class="i">will</span> <span class="i">be</span> <span class="i">listed</span> <span class="i">after</span> <span class="i">the</span>
+<span class="i">closing</span> <span class="i">square</span> <span class="i">bracket</span> <span class="i">followed</span> <span class="i">by</span> <span class="i">a</span> <span class="i">colon</span>.
+
+<span class="i">http</span>:<span class="lc">//[2001:cdba:0000:0000:0000:0000:3257:9652]:8080/</span>
+<span class="i">address</span>: <span class="sl">"2001:cdba:0000:0000:0000:0000:3257:9652"</span>
+<span class="i">port</span>: <span class="n">8080</span>
+
+<span class="i">IPv6Address</span> <span class="i">can</span> <span class="i">be</span> <span class="i">used</span> <span class="i">as</span> <span class="i">well</span> <span class="i">as</span> <span class="i">IPv4Address</span>.
+
+<span class="k">scope</span> <span class="i">addr</span> = <span class="k">new</span> <span class="i">IPv6Address</span>(<span class="n">8080</span>);
+<span class="i">address</span>: <span class="sl">"::"</span>
+<span class="i">port</span>: <span class="n">8080</span>
+
+<span class="k">scope</span> <span class="i">addr_2</span> = <span class="k">new</span> <span class="i">IPv6Address</span>(<span class="sl">"::1"</span>, <span class="n">8081</span>);
+<span class="i">address</span>: <span class="sl">"::1"</span>
+<span class="i">port</span>: <span class="n">8081</span>
+
+<span class="k">scope</span> <span class="i">addr_3</span> = <span class="k">new</span> <span class="i">IPv6Address</span>(<span class="sl">"::1"</span>);
+<span class="i">address</span>: <span class="sl">"::1"</span>
+<span class="i">port</span>: <span class="i">PORT_ANY</span>
+
+<span class="i">Also</span> <span class="k">in</span> <span class="i">the</span> <span class="i">IPv6Address</span> <span class="i">constructor</span> <span class="i">can</span> <span class="i">specify</span> <span class="i">the</span> <span class="i">service</span> <span class="i">name</span>
+<span class="i">or</span> <span class="i">port</span> <span class="i">as</span> <span class="i">string</span>
+
+<span class="k">scope</span> <span class="i">addr_3</span> = <span class="k">new</span> <span class="i">IPv6Address</span>(<span class="sl">"::"</span>, <span class="sl">"ssh"</span>);
+<span class="i">address</span>: <span class="sl">"::"</span>
+<span class="i">port</span>: <span class="n">22</span> (<span class="i">ssh</span> <span class="i">service</span> <span class="i">port</span>)
+
+<span class="k">scope</span> <span class="i">addr_4</span> = <span class="k">new</span> <span class="i">IPv6Address</span>(<span class="sl">"::"</span>, <span class="sl">"8080"</span>);
+<span class="i">address</span>: <span class="sl">"::"</span>
+<span class="i">port</span>: <span class="n">8080</span></pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="IPv6Address.sockaddr_in6" href="htmlsrc/tango.net.device.Berkeley.html#L1658">sockaddr_in6</a> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.sockaddr_in6" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><a class="symbol _ctor" name="IPv6Address.this" href="htmlsrc/tango.net.device.Berkeley.html#L1674">this</a><span class="params">()</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="IPv6Address.this:2" href="htmlsrc/tango.net.device.Berkeley.html#L1682">this</a><span class="params">(sockaddr* <em>sa</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">sockaddr*</span> <a class="symbol _function" name="IPv6Address.name" href="htmlsrc/tango.net.device.Berkeley.html#L1691">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.name" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="IPv6Address.nameLen" href="htmlsrc/tango.net.device.Berkeley.html#L1700">nameLen</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.nameLen" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">AddressFamily</span> <a class="symbol _function" name="IPv6Address.addressFamily" href="htmlsrc/tango.net.device.Berkeley.html#L1711">addressFamily</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.addressFamily" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">ushort</span> <a class="symbol _function" name="IPv6Address.port" href="htmlsrc/tango.net.device.Berkeley.html#L1723">port</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.port" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="IPv6Address.this:3" href="htmlsrc/tango.net.device.Berkeley.html#L1734">this</a><span class="params">(int <em>port</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.this:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create IPv6Address with zero address</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="IPv6Address.this:4" href="htmlsrc/tango.net.device.Berkeley.html#L1746">this</a><span class="params">(const(char)[] <em>addr</em>, int <em>port</em> = <span class="defval"><span class="i">PORT_ANY</span></span>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.this:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">-port- can be PORT_ANY
+                -addr- is an IP address or host name</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="IPv6Address.this:5" href="htmlsrc/tango.net.device.Berkeley.html#L1771">this</a><span class="params">(const(char)[] <em>addr</em>, const(char)[] <em>service</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.this:5" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">-service- can be a port number or service name
+                -addr- is an IP address or host name</div></div></dd>
+<dt class="decl"><span class="rettyp">ubyte[]</span> <a class="symbol _function" name="IPv6Address.addr" href="htmlsrc/tango.net.device.Berkeley.html#L1791">addr</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.addr" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="IPv6Address.toPortString" href="htmlsrc/tango.net.device.Berkeley.html#L1812">toPortString</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.toPortString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="IPv6Address.toString" href="htmlsrc/tango.net.device.Berkeley.html#L1822">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="NetHost" href="htmlsrc/tango.net.device.Berkeley.html#L1848">NetHost</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.device.Berkeley.html#NetHost" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="NetHost.hostent" href="htmlsrc/tango.net.device.Berkeley.html#L1858">hostent</a> <a href="tango.net.device.Berkeley.html#NetHost.hostent" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+</dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NetHost.validHostent" href="htmlsrc/tango.net.device.Berkeley.html#L1884">validHostent</a><span class="params">(hostent* <em>he</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.device.Berkeley.html#NetHost.validHostent" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NetHost.populate" href="htmlsrc/tango.net.device.Berkeley.html#L1894">populate</a><span class="params">(hostent* <em>he</em>)</span> <a href="tango.net.device.Berkeley.html#NetHost.populate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="NetHost.getHostByName" href="htmlsrc/tango.net.device.Berkeley.html#L1938">getHostByName</a><span class="params">(const(char)[] <em>name</em>)</span> <a href="tango.net.device.Berkeley.html#NetHost.getHostByName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="NetHost.getHostByAddr" href="htmlsrc/tango.net.device.Berkeley.html#L1957">getHostByAddr</a><span class="params">(uint <em>addr</em>)</span> <a href="tango.net.device.Berkeley.html#NetHost.getHostByAddr" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="NetHost.getHostByAddr:2" href="htmlsrc/tango.net.device.Berkeley.html#L1976">getHostByAddr</a><span class="params">(const(char)[] <em>addr</em>)</span> <a href="tango.net.device.Berkeley.html#NetHost.getHostByAddr:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SocketSet" href="htmlsrc/tango.net.device.Berkeley.html#L2032">SocketSet</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.device.Berkeley.html#SocketSet" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">a set of sockets for Berkeley.select()</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="SocketSet.select" href="htmlsrc/tango.net.device.Berkeley.html#L2320">select</a><span class="params">(SocketSet <em>checkRead</em>, SocketSet <em>checkWrite</em>, SocketSet <em>checkError</em>, timeval* <em>tv</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#SocketSet.select" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">SocketSet's are updated to include only those sockets which an
+                event occured.</div></div>
+<div class="cmnt">Returns the number of events, 0 on timeout, or -1 on error
+<p class="bl"></p>
+                for a connect()ing socket, writeability means connected
+                for a listen()ing socket, readability means listening</div>
+<p class="sec_header">Winsock:</p><div class="cmnt">possibly internally limited to 64 sockets per set</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="SocketSet.select:2" href="htmlsrc/tango.net.device.Berkeley.html#L2391">select</a><span class="params">(SocketSet <em>checkRead</em>, SocketSet <em>checkWrite</em>, SocketSet <em>checkError</em>, long <em>microseconds</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#SocketSet.select:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">select with specified timeout</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="SocketSet.select:3" href="htmlsrc/tango.net.device.Berkeley.html#L2406">select</a><span class="params">(SocketSet <em>checkRead</em>, SocketSet <em>checkWrite</em>, SocketSet <em>checkError</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.device.Berkeley.html#SocketSet.select:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">select with maximum timeout</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p></p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:57 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

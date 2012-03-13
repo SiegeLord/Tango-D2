@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.container.more.StackMap</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.container.more.StackMap">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.container.more.StackMap"><a href="htmlsrc/tango.util.container.more.StackMap.html" class="symbol">tango.util.container.more.StackMap</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: April 2008</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<p class="sec_header">Since:</p><div class="cmnt">0.99.7</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="StackMap" href="htmlsrc/tango.util.container.more.StackMap.html#L40">StackMap</a><span class="tparams">(<em>K</em>, <em>V</em>, <span class="kw">alias</span> <em>Hash</em> = <span class="defval">Container.hash</span>, <span class="kw">alias</span> <em>Reap</em> = <span class="defval">Container.reap</span>, <span class="kw">alias</span> <em>Heap</em> = <span class="defval">Container.Collect</span>)</span> <a href="tango.util.container.more.StackMap.html#StackMap" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">StackMap extends the basic hashmap type by adding a limit to 
+        the number of items contained at any given time. In addition, 
+        StackMap retains the order in which elements were added, and
+        employs that during foreach() traversal. Additions to the map
+        beyond the capacity will result in an exception being thrown.</div></div>
+<div class="cmnt">You can push and pop things just like an typical stack, and/or
+        traverse the entries in the order they were added, though with 
+        the additional capability of retrieving and/or removing by key.
+<p class="bl"></p>
+        Note also that a push/add operation will replace an existing 
+        entry with the same key, exposing a twist on the stack notion.</div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="StackMap.this" href="htmlsrc/tango.util.container.more.StackMap.html#L65">this</a><span class="params">(size_t <em>capacity</em>)</span> <a href="tango.util.container.more.StackMap.html#StackMap.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a cache with the specified maximum number of 
+                entries. Additions to the cache beyond this number will
+                throw an exception</div></div></dd>
+<dt class="decl"><a class="symbol _dtor" name="StackMap.~this" href="htmlsrc/tango.util.container.more.StackMap.html#L89">~this</a>() <a href="tango.util.container.more.StackMap.html#StackMap.~this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">clean up when done</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="StackMap.reaper" href="htmlsrc/tango.util.container.more.StackMap.html#L100">reaper</a><span class="tparams">(<em>K</em>, <em>R</em>)</span><span class="params">(K <em>k</em>, R <em>r</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.util.container.more.StackMap.html#StackMap.reaper" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reaping callback for the hashmap, acting as a trampoline</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="StackMap.size" href="htmlsrc/tango.util.container.more.StackMap.html#L110">size</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.util.container.more.StackMap.html#StackMap.size" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="StackMap.clear" href="htmlsrc/tango.util.container.more.StackMap.html#L120">clear</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.more.StackMap.html#StackMap.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="StackMap.push" href="htmlsrc/tango.util.container.more.StackMap.html#L140">push</a><span class="params">(K <em>key</em>, V <em>value</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.more.StackMap.html#StackMap.push" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Place an entry into the cache and associate it with the
+                provided key. Note that there can be only one entry for
+                any particular key. If two entries are added with the 
+                same key, the second effectively overwrites the first.</div></div>
+<div class="cmnt">Returns true if we added a new entry; false if we just
+                replaced an existing one. A replacement does not change
+                the order of the keys, and thus does not change stack
+                ordering.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="StackMap.popHead" href="htmlsrc/tango.util.container.more.StackMap.html#L151">popHead</a><span class="params">(<span class="k">ref</span> K <em>key</em>,  <span class="k">ref</span> V <em>value</em>)</span> <a href="tango.util.container.more.StackMap.html#StackMap.popHead" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove and return the more recent addition to the stack</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="StackMap.popTail" href="htmlsrc/tango.util.container.more.StackMap.html#L167">popTail</a><span class="params">(<span class="k">ref</span> K <em>key</em>,  <span class="k">ref</span> V <em>value</em>)</span> <a href="tango.util.container.more.StackMap.html#StackMap.popTail" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove and return the oldest addition to the stack</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="StackMap.opApply" href="htmlsrc/tango.util.container.more.StackMap.html#L183">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref K key, ref V value) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.more.StackMap.html#StackMap.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate from the oldest to the most recent additions</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="StackMap.add" href="htmlsrc/tango.util.container.more.StackMap.html#L215">add</a><span class="params">(K <em>key</em>, V <em>value</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.more.StackMap.html#StackMap.add" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Place an entry into the cache and associate it with the
+                provided key. Note that there can be only one entry for
+                any particular key. If two entries are added with the 
+                same key, the second effectively overwrites the first.</div></div>
+<div class="cmnt">Returns true if we added a new entry; false if we just
+                replaced an existing one. A replacement does not change
+                the order of the keys, and thus does not change stack
+                ordering.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="StackMap.get" href="htmlsrc/tango.util.container.more.StackMap.html#L239">get</a><span class="params">(K <em>key</em>,  <span class="k">ref</span> V <em>value</em>)</span> <a href="tango.util.container.more.StackMap.html#StackMap.get" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the cache entry identified by the given key</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="StackMap.take" href="htmlsrc/tango.util.container.more.StackMap.html#L258">take</a><span class="params">(K <em>key</em>,  <span class="k">ref</span> V <em>value</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.more.StackMap.html#StackMap.take" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove (and return) the cache entry associated with the 
+                provided key. Returns false if there is no such entry.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:24 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

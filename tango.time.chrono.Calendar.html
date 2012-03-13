@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.time.chrono.Calendar</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.time.chrono.Calendar">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.time.chrono.Calendar"><a href="htmlsrc/tango.time.chrono.Calendar.html" class="symbol">tango.time.chrono.Calendar</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Mid 2005: Initial release
+                        Apr 2007: reshaped</div>
+<p class="sec_header">Author:</p><div class="cmnt">John Chapman, Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Calendar" href="htmlsrc/tango.time.chrono.Calendar.html#L30">Calendar</a> <span class="attrs">[<span class="prot">public</span>, <span class="stc">abstract</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="_Calendar"></a>
+ Represents time in week, month and year divisions.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Calendar is the abstract base class for the following Calendar implementations: 
+   <a href="#Gregorian">Gregorian</a>, <a href="#Hebrew">Hebrew</a>, <a href="#Hijri">Hijri</a>,
+   <a href="#Japanese">Japanese</a>, <a href="#Korean">Korean</a>, <a href="#Taiwan">Taiwan</a> and
+   <a href="#ThaiBuddhist">ThaiBuddhist</a>.</div>
+<dl>
+<dt class="decl"><a class="symbol _enum" name="Calendar.enum" href="htmlsrc/tango.time.chrono.Calendar.html#L35">enum</a> <span class="attrs">[<span class="prot">package</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.enum" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Indicates the current era of the calendar.</div></div>
+</dd>
+<dt class="decl"><span class="rettyp">Date</span> <a class="symbol _function" name="Calendar.toDate" href="htmlsrc/tango.time.chrono.Calendar.html#L91">toDate</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.toDate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the components of a Time structure using the rules of the
+ calendar.  This is useful if you want more than one of the given
+ components.  Note that this doesn't handle the time of day, as that
+ is calculated directly from the Time struct.</div></div>
+<div class="cmnt">The default implemenation is to call all the other accessors
+ directly, a derived class may override if it has a more efficient
+ method.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Calendar.split" href="htmlsrc/tango.time.chrono.Calendar.html#L108">split</a><span class="params">(const(Time) <em>time</em>,  <span class="k">ref</span> uint <em>year</em>,  <span class="k">ref</span> uint <em>month</em>,  <span class="k">ref</span> uint <em>day</em>,  <span class="k">ref</span> uint <em>doy</em>,  <span class="k">ref</span> uint <em>dow</em>,  <span class="k">ref</span> uint <em>era</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.split" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the components of a Time structure using the rules of the
+ calendar.  This is useful if you want more than one of the given
+ components.  Note that this doesn't handle the time of day, as that
+ is calculated directly from the Time struct.</div></div>
+<div class="cmnt">The default implemenation is to call all the other accessors
+ directly, a derived class may override if it has a more efficient
+ method.</div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Calendar.toTime" href="htmlsrc/tango.time.chrono.Calendar.html#L130">toTime</a><span class="params">(uint <em>year</em>, uint <em>month</em>, uint <em>day</em>, uint <em>hour</em>, uint <em>minute</em>, uint <em>second</em>, uint <em>millisecond</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.toTime" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a Time value set to the specified date and time in the current era.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr>
+<tr><td><em>month</em></td><td>An integer representing the _month.</td></tr>
+<tr><td><em>day</em></td><td>An integer representing the _day.</td></tr>
+<tr><td><em>hour</em></td><td>An integer representing the _hour.</td></tr>
+<tr><td><em>minute</em></td><td>An integer representing the _minute.</td></tr>
+<tr><td><em>second</em></td><td>An integer representing the _second.</td></tr>
+<tr><td><em>millisecond</em></td><td>An integer representing the _millisecond.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The Time set to the specified date and time.</div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Calendar.toTime:2" href="htmlsrc/tango.time.chrono.Calendar.html#L141">toTime</a><span class="params">(const(Date) <em>d</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.toTime:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a Time value for the given Date, in the current era</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>date</em></td><td>a representation of the Date</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The Time set to the specified date.</div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Calendar.toTime:3" href="htmlsrc/tango.time.chrono.Calendar.html#L152">toTime</a><span class="params">(const(DateTime) <em>dt</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.toTime:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a Time value for the given DateTime, in the current era</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>dt</em></td><td>a representation of the date and time</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The Time set to the specified date and time.</div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Calendar.toTime:4" href="htmlsrc/tango.time.chrono.Calendar.html#L164">toTime</a><span class="params">(const(Date) <em>d</em>, const(TimeOfDay) <em>t</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.toTime:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a Time value for the given Date and TimeOfDay, in the current era</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>d</em></td><td>a representation of the date</td></tr>
+<tr><td><em>t</em></td><td>a representation of the day time</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The Time set to the specified date and time.</div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Calendar.toTime:5" href="htmlsrc/tango.time.chrono.Calendar.html#L182">toTime</a><span class="params">(uint <em>year</em>, uint <em>month</em>, uint <em>day</em>, uint <em>hour</em>, uint <em>minute</em>, uint <em>second</em>, uint <em>millisecond</em>, uint <em>era</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.toTime:5" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">When overridden, returns a Time value set to the specified date and time in the specified _era.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr>
+<tr><td><em>month</em></td><td>An integer representing the _month.</td></tr>
+<tr><td><em>day</em></td><td>An integer representing the _day.</td></tr>
+<tr><td><em>hour</em></td><td>An integer representing the _hour.</td></tr>
+<tr><td><em>minute</em></td><td>An integer representing the _minute.</td></tr>
+<tr><td><em>second</em></td><td>An integer representing the _second.</td></tr>
+<tr><td><em>millisecond</em></td><td>An integer representing the _millisecond.</td></tr>
+<tr><td><em>era</em></td><td>An integer representing the _era.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A Time set to the specified date and time.</div></dd>
+<dt class="decl"><span class="rettyp">DayOfWeek</span> <a class="symbol _function" name="Calendar.getDayOfWeek" href="htmlsrc/tango.time.chrono.Calendar.html#L189">getDayOfWeek</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.getDayOfWeek" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">When overridden, returns the day of the week in the specified Time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>time</em></td><td>A Time value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A DayOfWeek value representing the day of the week of time.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Calendar.getDayOfMonth" href="htmlsrc/tango.time.chrono.Calendar.html#L196">getDayOfMonth</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.getDayOfMonth" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">When overridden, returns the day of the month in the specified Time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>time</em></td><td>A Time value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer representing the day of the month of time.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Calendar.getDayOfYear" href="htmlsrc/tango.time.chrono.Calendar.html#L203">getDayOfYear</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.getDayOfYear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">When overridden, returns the day of the year in the specified Time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>time</em></td><td>A Time value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer representing the day of the year of time.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Calendar.getMonth" href="htmlsrc/tango.time.chrono.Calendar.html#L210">getMonth</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.getMonth" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">When overridden, returns the month in the specified Time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>time</em></td><td>A Time value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer representing the month in time.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Calendar.getYear" href="htmlsrc/tango.time.chrono.Calendar.html#L217">getYear</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.getYear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">When overridden, returns the year in the specified Time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>time</em></td><td>A Time value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer representing the year in time.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Calendar.getEra" href="htmlsrc/tango.time.chrono.Calendar.html#L224">getEra</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.getEra" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">When overridden, returns the era in the specified Time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>time</em></td><td>A Time value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer representing the ear in time.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Calendar.getDaysInMonth" href="htmlsrc/tango.time.chrono.Calendar.html#L233">getDaysInMonth</a><span class="params">(uint <em>year</em>, uint <em>month</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.getDaysInMonth" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the number of days in the specified _year and _month of the current era.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr>
+<tr><td><em>month</em></td><td>An integer representing the _month.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of days in the specified _year and _month of the current era.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Calendar.getDaysInMonth:2" href="htmlsrc/tango.time.chrono.Calendar.html#L246">getDaysInMonth</a><span class="params">(uint <em>year</em>, uint <em>month</em>, uint <em>era</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.getDaysInMonth:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">When overridden, returns the number of days in the specified _year and _month of the specified _era.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr>
+<tr><td><em>month</em></td><td>An integer representing the _month.</td></tr>
+<tr><td><em>era</em></td><td>An integer representing the _era.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of days in the specified _year and _month of the specified _era.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Calendar.getDaysInYear" href="htmlsrc/tango.time.chrono.Calendar.html#L253">getDaysInYear</a><span class="params">(uint <em>year</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.getDaysInYear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the number of days in the specified _year of the current era.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of days in the specified _year in the current era.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Calendar.getDaysInYear:2" href="htmlsrc/tango.time.chrono.Calendar.html#L265">getDaysInYear</a><span class="params">(uint <em>year</em>, uint <em>era</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.getDaysInYear:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">When overridden, returns the number of days in the specified _year of the specified _era.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr>
+<tr><td><em>era</em></td><td>An integer representing the _era.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of days in the specified _year in the specified _era.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Calendar.getMonthsInYear" href="htmlsrc/tango.time.chrono.Calendar.html#L272">getMonthsInYear</a><span class="params">(uint <em>year</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.getMonthsInYear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the number of months in the specified _year of the current era.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of months in the specified _year in the current era.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Calendar.getMonthsInYear:2" href="htmlsrc/tango.time.chrono.Calendar.html#L284">getMonthsInYear</a><span class="params">(uint <em>year</em>, uint <em>era</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.getMonthsInYear:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">When overridden, returns the number of months in the specified _year of the specified _era.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr>
+<tr><td><em>era</em></td><td>An integer representing the _era.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of months in the specified _year in the specified _era.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Calendar.getWeekOfYear" href="htmlsrc/tango.time.chrono.Calendar.html#L294">getWeekOfYear</a><span class="params">(const(Time) <em>time</em>, WeekRule <em>rule</em>, DayOfWeek <em>firstDayOfWeek</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.getWeekOfYear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the week of the year that includes the specified Time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>time</em></td><td>A Time value.</td></tr>
+<tr><td><em>rule</em></td><td>A WeekRule value defining a calendar week.</td></tr>
+<tr><td><em>firstDayOfWeek</em></td><td>A DayOfWeek value representing the first day of the week.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer representing the week of the year that includes the date in time.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Calendar.isLeapYear" href="htmlsrc/tango.time.chrono.Calendar.html#L339">isLeapYear</a><span class="params">(uint <em>year</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.isLeapYear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Indicates whether the specified _year in the current era is a leap _year.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">true is the specified _year is a leap _year; otherwise, false.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Calendar.isLeapYear:2" href="htmlsrc/tango.time.chrono.Calendar.html#L350">isLeapYear</a><span class="params">(uint <em>year</em>, uint <em>era</em>)</span> <span class="attrs">[<span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.isLeapYear:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">When overridden, indicates whether the specified _year in the specified _era is a leap _year.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>year</em></td><td>An integer representing the _year.</td></tr></table>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>era</em></td><td>An integer representing the _era.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">true is the specified _year is a leap _year; otherwise, false.</div></dd>
+<dt class="decl"><span class="rettyp">uint[]</span> <a class="symbol _function" name="Calendar.eras" href="htmlsrc/tango.time.chrono.Calendar.html#L356">eras</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.eras" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> When overridden, retrieves the list of eras in the current calendar.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer array representing the eras in the current calendar.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Calendar.id" href="htmlsrc/tango.time.chrono.Calendar.html#L362">id</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.id" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the identifier associated with the current calendar.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">An integer representing the identifier of the current calendar.</div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Calendar.addMonths" href="htmlsrc/tango.time.chrono.Calendar.html#L395">addMonths</a><span class="params">(const(Time) <em>t</em>, int <em>nMonths</em>, bool <em>truncateDay</em> = <span class="defval"><span class="k">false</span></span>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.addMonths" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a new Time with the specified number of months added.  If
+ the months are negative, the months are subtracted.</div></div>
+<div class="cmnt">If the target month does not support the day component of the input
+ time, then an error will be thrown, unless truncateDay is set to
+ true.  If truncateDay is set to true, then the day is reduced to
+ the maximum day of that month.
+<p class="bl"></p>
+ For example, adding one month to 1/31/2000 with truncateDay set to
+ true results in 2/28/2000.
+<p class="bl"></p>
+ The default implementation uses information provided by the
+ calendar to calculate the correct time to add.  Derived classes may
+ override if there is a more optimized method.
+<p class="bl"></p>
+ Note that the generic method does not take into account crossing
+ era boundaries.  Derived classes may support this.</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>t</em></td><td>A time to add the months to</td></tr></table>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>nMonths</em></td><td>The number of months to add.  This can be
+ negative.</td></tr></table>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>truncateDay</em></td><td>Round the day down to the maximum day of the
+ target month if necessary.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A Time that represents the provided time with the number
+ of months added.</div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Calendar.addYears" href="htmlsrc/tango.time.chrono.Calendar.html#L482">addYears</a><span class="params">(const(Time) <em>t</em>, int <em>nYears</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.time.chrono.Calendar.html#Calendar.addYears" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add the specified number of years to the given Time.</div></div>
+<div class="cmnt">The generic algorithm uses information provided by the abstract
+ methods.  Derived classes may re-implement this in order to
+ optimize the algorithm
+<p class="bl"></p>
+ Note that the generic algorithm does not take into account crossing
+ era boundaries.  Derived classes may support this.</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>t</em></td><td>A time to add the years to</td></tr></table>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>nYears</em></td><td>The number of years to add.  This can be negative.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A Time that represents the provided time with the number
+ of years added.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2005 John Chapman. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:19 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

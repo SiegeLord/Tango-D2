@@ -1,0 +1,600 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.math.Math</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.math.Math">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.math.Math"><a href="htmlsrc/tango.math.Math.html" class="symbol">tango.math.Math</a></h1>
+
+<div class="summary"><div class="cmnt">Elementary Mathematical Functions</div></div>
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a>, Digital Mars.</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Walter Bright, Don Clugston, Sean Kelly</div>
+<dl>
+<dt class="decl">real <a class="symbol _variable" name="E" href="htmlsrc/tango.math.Math.html#L92">E</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#E" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">e</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="LOG2T" href="htmlsrc/tango.math.Math.html#L93">LOG2T</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#LOG2T" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">log<sub>2</sub>10</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="LOG2E" href="htmlsrc/tango.math.Math.html#L94">LOG2E</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#LOG2E" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">log<sub>2</sub>e</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="LOG2" href="htmlsrc/tango.math.Math.html#L95">LOG2</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#LOG2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">log<sub>10</sub>2</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="LOG10E" href="htmlsrc/tango.math.Math.html#L96">LOG10E</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#LOG10E" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">log<sub>10</sub>e</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="LN2" href="htmlsrc/tango.math.Math.html#L97">LN2</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#LN2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">ln 2</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="LN10" href="htmlsrc/tango.math.Math.html#L98">LN10</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#LN10" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">ln 10</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="PI" href="htmlsrc/tango.math.Math.html#L99">PI</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#PI" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">&pi;</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="PI_2" href="htmlsrc/tango.math.Math.html#L100">PI_2</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#PI_2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">&pi; / 2</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="PI_4" href="htmlsrc/tango.math.Math.html#L101">PI_4</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#PI_4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">&pi; / 4</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="M_1_PI" href="htmlsrc/tango.math.Math.html#L102">M_1_PI</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#M_1_PI" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">1 / &pi;</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="M_2_PI" href="htmlsrc/tango.math.Math.html#L103">M_2_PI</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#M_2_PI" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">2 / &pi;</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="M_2_SQRTPI" href="htmlsrc/tango.math.Math.html#L104">M_2_SQRTPI</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#M_2_SQRTPI" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">2 / &radix;&pi;</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="SQRT2" href="htmlsrc/tango.math.Math.html#L105">SQRT2</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#SQRT2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">&radix;2</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="SQRT1_2" href="htmlsrc/tango.math.Math.html#L106">SQRT1_2</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#SQRT1_2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">&radix;&frac12;</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="MAXLOG" href="htmlsrc/tango.math.Math.html#L112">MAXLOG</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#MAXLOG" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">log(real.max)</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="MINLOG" href="htmlsrc/tango.math.Math.html#L113">MINLOG</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#MINLOG" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">log(real.min*real.epsilon)</div></div></dd>
+<dt class="decl">real <a class="symbol _variable" name="EULERGAMMA" href="htmlsrc/tango.math.Math.html#L114">EULERGAMMA</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.math.Math.html#EULERGAMMA" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Euler-Mascheroni enumant 0.57721566..</div></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="abs" href="htmlsrc/tango.math.Math.html#L126">abs</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#abs" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="abs:2" href="htmlsrc/tango.math.Math.html#L132">abs</a><span class="params">(long <em>x</em>)</span> <a href="tango.math.Math.html#abs:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="abs:3" href="htmlsrc/tango.math.Math.html#L138">abs</a><span class="params">(int <em>x</em>)</span> <a href="tango.math.Math.html#abs:3" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="abs:4" href="htmlsrc/tango.math.Math.html#L144">abs</a><span class="params">(creal <em>z</em>)</span> <a href="tango.math.Math.html#abs:4" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="abs:5" href="htmlsrc/tango.math.Math.html#L150">abs</a><span class="params">(ireal <em>y</em>)</span> <a href="tango.math.Math.html#abs:5" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the absolute value</div></div>
+<div class="cmnt">For complex numbers, abs(z) = sqrt( z.re<sup>2</sup> + z.im<sup>2</sup> )
+ = hypot(z.re, z.im).</div></dd>
+<dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="conj" href="htmlsrc/tango.math.Math.html#L177">conj</a><span class="params">(creal <em>z</em>)</span> <a href="tango.math.Math.html#conj" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">ireal</span> <a class="symbol _function" name="conj:2" href="htmlsrc/tango.math.Math.html#L183">conj</a><span class="params">(ireal <em>y</em>)</span> <a href="tango.math.Math.html#conj:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Complex conjugate</div></div>
+<div class="cmnt">conj(x + iy) = x - iy
+<p class="bl"></p>
+ Note that z * conj(z) = z.re<sup>2</sup> + z.im<sup>2</sup>
+ is always a real number</div></dd>
+<dt class="decl"><span class="rettyp">minmaxtype!(T)</span> <a class="symbol _function" name="min" href="htmlsrc/tango.math.Math.html#L212">min</a><span class="tparams">(<em>T</em>...)</span><span class="params">(T <em>arg</em>)</span> <a href="tango.math.Math.html#min" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the minimum of the supplied arguments.</div></div>
+<p class="sec_header">Note:</p><div class="cmnt">If the arguments are floating-point numbers, and at least one is a NaN,
+ the result is undefined.</div></dd>
+<dt class="decl"><span class="rettyp">minmaxtype!(T)</span> <a class="symbol _function" name="max" href="htmlsrc/tango.math.Math.html#L223">max</a><span class="tparams">(<em>T</em>...)</span><span class="params">(T <em>arg</em>)</span> <a href="tango.math.Math.html#max" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the maximum of the supplied arguments.</div></div>
+<p class="sec_header">Note:</p><div class="cmnt">If the arguments are floating-point numbers, and at least one is a NaN,
+ the result is undefined.</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="minNum" href="htmlsrc/tango.math.Math.html#L247">minNum</a><span class="params">(real <em>x</em>, real <em>y</em>)</span> <a href="tango.math.Math.html#minNum" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the minimum number of x and y, favouring numbers over NaNs.</div></div>
+<div class="cmnt">If both x and y are numbers, the minimum is returned.
+ If both parameters are NaN, either will be returned.
+ If one parameter is a NaN and the other is a number, the number is
+ returned (this behaviour is mandated by IEEE 754R, and is useful
+ for determining the range of a function).</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="maxNum" href="htmlsrc/tango.math.Math.html#L259">maxNum</a><span class="params">(real <em>x</em>, real <em>y</em>)</span> <a href="tango.math.Math.html#maxNum" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the maximum number of x and y, favouring numbers over NaNs.</div></div>
+<div class="cmnt">If both x and y are numbers, the maximum is returned.
+ If both parameters are NaN, either will be returned.
+ If one parameter is a NaN and the other is a number, the number is
+ returned (this behaviour is mandated by IEEE 754-2008, and is useful
+ for determining the range of a function).</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="minNaN" href="htmlsrc/tango.math.Math.html#L269">minNaN</a><span class="params">(real <em>x</em>, real <em>y</em>)</span> <a href="tango.math.Math.html#minNaN" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the minimum of x and y, favouring NaNs over numbers</div></div>
+<div class="cmnt">If both x and y are numbers, the minimum is returned.
+ If both parameters are NaN, either will be returned.
+ If one parameter is a NaN and the other is a number, the NaN is returned.</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="maxNaN" href="htmlsrc/tango.math.Math.html#L279">maxNaN</a><span class="params">(real <em>x</em>, real <em>y</em>)</span> <a href="tango.math.Math.html#maxNaN" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the maximum of x and y, favouring NaNs over numbers</div></div>
+<div class="cmnt">If both x and y are numbers, the maximum is returned.
+ If both parameters are NaN, either will be returned.
+ If one parameter is a NaN and the other is a number, the NaN is returned.</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="cos" href="htmlsrc/tango.math.Math.html#L311">cos</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#cos" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns cosine of x. x is in radians.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>x</th>                 <th>cos(x)</th> <th>invalid?</th></tr>
+      <tr><td><span class="red">NAN</span></td>            <td><span class="red">NAN</span></td> <td>yes</td>     </tr>
+      <tr><td>&plusmn;&infin;</td> <td><span class="red">NAN</span></td> <td>yes</td>     </tr>
+      </table></div>
+<p class="sec_header"><span class="red">Bugs:</span></p><div class="cmnt">Results are undefined if |x| &gt;= 2<sup>64</sup>.</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="sin" href="htmlsrc/tango.math.Math.html#L350">sin</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#sin" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns sine of x. x is in radians.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>x</th>               <th>sin(x)</th>      <th>invalid?</th></tr>
+      <tr><td><span class="red">NAN</span></td>          <td><span class="red">NAN</span></td>      <td>yes</td></tr>
+      <tr><td>&plusmn;0.0</td>    <td>&plusmn;0.0</td> <td>no</td></tr>
+      <tr><td>&plusmn;&infin;</td>    <td><span class="red">NAN</span></td>      <td>yes</td></tr>
+      </table></div>
+<p class="sec_header"><span class="red">Bugs:</span></p><div class="cmnt">Results are undefined if |x| &gt;= 2<sup>64</sup>.</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="tan" href="htmlsrc/tango.math.Math.html#L391">tan</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#tan" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns tangent of x. x is in radians.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+	<tr><th>x</th>               <th>tan(x)</th>       <th>invalid?</th></tr>
+	<tr><td><span class="red">NAN</span></td>          <td><span class="red">NAN</span></td>       <td>yes</td></tr>
+	<tr><td>&plusmn;0.0</td>    <td>&plusmn;0.0</td> <td>no</td></tr>
+	<tr><td>&plusmn;&infin;</td> <td><span class="red">NAN</span></td>     <td>yes</td></tr>
+	</table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="cosPi" href="htmlsrc/tango.math.Math.html#L495">cosPi</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#cosPi" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="sinPi" href="htmlsrc/tango.math.Math.html#L501">sinPi</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#sinPi" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="atanPi" href="htmlsrc/tango.math.Math.html#L507">atanPi</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#atanPi" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Sine, cosine, and arctangent of multiple of &pi;</div></div>
+<div class="cmnt">Accuracy is preserved for large values of x.</div></dd>
+<dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="sin:2" href="htmlsrc/tango.math.Math.html#L529">sin</a><span class="params">(creal <em>z</em>)</span> <a href="tango.math.Math.html#sin:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">ireal</span> <a class="symbol _function" name="sin:3" href="htmlsrc/tango.math.Math.html#L536">sin</a><span class="params">(ireal <em>y</em>)</span> <a href="tango.math.Math.html#sin:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">sine, complex and imaginary</div></div>
+<div class="cmnt">sin(z) = sin(z.re)*cosh(z.im) + cos(z.re)*sinh(z.im)i
+<p class="bl"></p>
+ If both sin(&theta;) and cos(&theta;) are required,
+ it is most efficient to use expi(&amp;theta).</div></dd>
+<dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="cos:2" href="htmlsrc/tango.math.Math.html#L553">cos</a><span class="params">(creal <em>z</em>)</span> <a href="tango.math.Math.html#cos:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="cos:3" href="htmlsrc/tango.math.Math.html#L560">cos</a><span class="params">(ireal <em>y</em>)</span> <a href="tango.math.Math.html#cos:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">cosine, complex and imaginary</div></div>
+<div class="cmnt">cos(z) = cos(z.re)*cosh(z.im) + sin(z.re)*sinh(z.im)i</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="acos" href="htmlsrc/tango.math.Math.html#L584">acos</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#acos" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the arc cosine of x,
+ returning a value ranging from 0 to &pi;.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>x</th>         <th>acos(x)</th> <th>invalid?</th></tr>
+      <tr><td>&gt;1.0</td>  <td><span class="red">NAN</span></td>  <td>yes</td></tr>
+      <tr><td>&lt;-1.0</td> <td><span class="red">NAN</span></td>  <td>yes</td></tr>
+      <tr><td><span class="red">NAN</span></td>    <td><span class="red">NAN</span></td>  <td>yes</td></tr>
+      </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="asin" href="htmlsrc/tango.math.Math.html#L610">asin</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#asin" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the arc sine of x,
+ returning a value ranging from -&pi;/2 to &pi;/2.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>x</th>            <th>asin(x)</th>      <th>invalid?</th></tr>
+      <tr><td>&plusmn;0.0</td> <td>&plusmn;0.0</td> <td>no</td></tr>
+      <tr><td>&gt;1.0</td>     <td><span class="red">NAN</span></td>       <td>yes</td></tr>
+      <tr><td>&lt;-1.0</td>    <td><span class="red">NAN</span></td>       <td>yes</td></tr>
+      </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="atan" href="htmlsrc/tango.math.Math.html#L635">atan</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#atan" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the arc tangent of x,
+ returning a value ranging from -&pi;/2 to &pi;/2.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>x</th>                 <th>atan(x)</th>      <th>invalid?</th></tr>
+      <tr><td>&plusmn;0.0</td>      <td>&plusmn;0.0</td> <td>no</td></tr>
+      <tr><td>&plusmn;&infin;</td> <td><span class="red">NAN</span></td>       <td>yes</td></tr>
+      </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="atan2" href="htmlsrc/tango.math.Math.html#L668">atan2</a><span class="params">(real <em>y</em>, real <em>x</em>)</span> <a href="tango.math.Math.html#atan2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the arc tangent of y / x,
+ returning a value ranging from -&pi; to &pi;.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>y</th>                 <th>x</th>            <th>atan(y, x)</th></tr>
+      <tr><td><span class="red">NAN</span></td>            <td>anything</td>     <td><span class="red">NAN</span></td> </tr>
+      <tr><td>anything</td>          <td><span class="red">NAN</span></td>       <td><span class="red">NAN</span></td> </tr>
+      <tr><td>&plusmn;0.0</td>      <td>&gt;0.0</td>     <td>&plusmn;0.0</td> </tr>
+      <tr><td>&plusmn;0.0</td>      <td>+0.0</td>         <td>&plusmn;0.0</td> </tr>
+      <tr><td>&plusmn;0.0</td>      <td>&lt;0.0</td>     <td>&plusmn;&pi;</td></tr>
+      <tr><td>&plusmn;0.0</td>      <td>-0.0</td>         <td>&plusmn;&pi;</td></tr>
+      <tr><td>&gt;0.0</td>          <td>&plusmn;0.0</td> <td>&pi;/2</td> </tr>
+      <tr><td>&lt;0.0</td>          <td>&plusmn;0.0</td> <td>-&pi;/2</td> </tr>
+      <tr><td>&gt;0.0</td>          <td>&infin;</td>     <td>&plusmn;0.0</td> </tr>
+      <tr><td>&plusmn;&infin;</td> <td>anything</td>     <td>&plusmn;&pi;/2</td></tr>
+      <tr><td>&gt;0.0</td>          <td>-&infin;</td>    <td>&plusmn;&pi;</td> </tr>
+      <tr><td>&plusmn;&infin;</td> <td>&infin;</td>     <td>&plusmn;&pi;/4</td></tr>
+      <tr><td>&plusmn;&infin;</td> <td>-&infin;</td>    <td>&plusmn;3&pi;/4</td></tr>
+      </table></div></dd>
+<dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="asin:2" href="htmlsrc/tango.math.Math.html#L687">asin</a><span class="params">(creal <em>z</em>)</span> <a href="tango.math.Math.html#asin:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Complex inverse sine</div></div>
+<div class="cmnt">asin(z) = -i log( sqrt(1-z<sup>2</sup>) + iz)
+ where both log and sqrt are complex.</div></dd>
+<dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="acos:2" href="htmlsrc/tango.math.Math.html#L703">acos</a><span class="params">(creal <em>z</em>)</span> <a href="tango.math.Math.html#acos:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Complex inverse cosine</div></div>
+<div class="cmnt">acos(z) = &pi;/2 - asin(z)</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="cosh" href="htmlsrc/tango.math.Math.html#L717">cosh</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#cosh" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the hyperbolic cosine of x.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>x</th>                 <th>cosh(x)</th>      <th>invalid?</th></tr>
+      <tr><td>&plusmn;&infin;</td> <td>&plusmn;0.0</td> <td>no</td> </tr>
+      </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="sinh" href="htmlsrc/tango.math.Math.html#L741">sinh</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#sinh" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the hyperbolic sine of x.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>x</th>                 <th>sinh(x)</th>           <th>invalid?</th></tr>
+      <tr><td>&plusmn;0.0</td>      <td>&plusmn;0.0</td>      <td>no</td></tr>
+      <tr><td>&plusmn;&infin;</td> <td>&plusmn;&infin;</td> <td>no</td></tr>
+      </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="tanh" href="htmlsrc/tango.math.Math.html#L770">tanh</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#tanh" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the hyperbolic tangent of x.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>x</th>                 <th>tanh(x)</th>      <th>invalid?</th></tr>
+      <tr><td>&plusmn;0.0</td>      <td>&plusmn;0.0</td> <td>no</td> </tr>
+      <tr><td>&plusmn;&infin;</td> <td>&plusmn;1.0</td> <td>no</td></tr>
+      </table></div></dd>
+<dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="sinh:2" href="htmlsrc/tango.math.Math.html#L792">sinh</a><span class="params">(creal <em>z</em>)</span> <a href="tango.math.Math.html#sinh:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">ireal</span> <a class="symbol _function" name="sinh:3" href="htmlsrc/tango.math.Math.html#L799">sinh</a><span class="params">(ireal <em>y</em>)</span> <a href="tango.math.Math.html#sinh:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">hyperbolic sine, complex and imaginary</div></div>
+<div class="cmnt">sinh(z) = cos(z.im)*sinh(z.re) + sin(z.im)*cosh(z.re)i</div></dd>
+<dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="cosh:2" href="htmlsrc/tango.math.Math.html#L815">cosh</a><span class="params">(creal <em>z</em>)</span> <a href="tango.math.Math.html#cosh:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="cosh:3" href="htmlsrc/tango.math.Math.html#L822">cosh</a><span class="params">(ireal <em>y</em>)</span> <a href="tango.math.Math.html#cosh:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">hyperbolic cosine, complex and imaginary</div></div>
+<div class="cmnt">cosh(z) = cos(z.im)*cosh(z.re) + sin(z.im)*sinh(z.re)i</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="acosh" href="htmlsrc/tango.math.Math.html#L847">acosh</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#acosh" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the inverse hyperbolic cosine of x.</div></div>
+<div class="cmnt">Mathematically, acosh(x) = log(x + sqrt( x*x - 1))
+<p class="bl"></p>
+    <table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+    <tr><th>x</th> <th>acosh(x) </th></tr>
+    <tr><td><span class="red">NAN</span></td> <td><span class="red">NAN</span> </td></tr>
+    <tr><td>&lt;1</td> <td><span class="red">NAN</span> </td></tr>
+    <tr><td>1</td> <td>0       </td></tr>
+    <tr><td>+&infin;</td> <td>+&infin;</td></tr>
+  </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="asinh" href="htmlsrc/tango.math.Math.html#L883">asinh</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#asinh" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the inverse hyperbolic sine of x.</div></div>
+<div class="cmnt">Mathematically,
+  <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">asinh</span>(<span class="i">x</span>) =  <span class="i">log</span>( <span class="i">x</span> + <span class="i">sqrt</span>( <span class="i">x</span>*<span class="i">x</span> + <span class="n">1</span> )) <span class="lc">// if x &gt;= +0</span>
+<span class="i">asinh</span>(<span class="i">x</span>) = -<span class="i">log</span>(-<span class="i">x</span> + <span class="i">sqrt</span>( <span class="i">x</span>*<span class="i">x</span> + <span class="n">1</span> )) <span class="lc">// if x &lt;= -0</span></pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+    <table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+    <tr><th>x</th> <th>asinh(x)       </th></tr>
+    <tr><td><span class="red">NAN</span></td> <td><span class="red">NAN</span>         </td></tr>
+    <tr><td>&plusmn;0</td> <td>&plusmn;0      </td></tr>
+    <tr><td>&plusmn;&infin;</td> <td>&plusmn;&infin;</td></tr>
+    </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="atanh" href="htmlsrc/tango.math.Math.html#L921">atanh</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#atanh" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="atanh:2" href="htmlsrc/tango.math.Math.html#L941">atanh</a><span class="params">(ireal <em>y</em>)</span> <a href="tango.math.Math.html#atanh:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="atanh:3" href="htmlsrc/tango.math.Math.html#L948">atanh</a><span class="params">(creal <em>z</em>)</span> <a href="tango.math.Math.html#atanh:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the inverse hyperbolic tangent of x,
+ returning a value from ranging from -1 to 1.</div></div>
+<div class="cmnt">Mathematically, atanh(x) = log( (1+x)/(1-x) ) / 2
+<p class="bl"></p>
+
+    <table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+    <tr><th>x</th> <th>acosh(x) </th></tr>
+    <tr><td><span class="red">NAN</span></td> <td><span class="red">NAN</span> </td></tr>
+    <tr><td>&plusmn;0</td> <td>&plusmn;0</td></tr>
+    <tr><td>-&infin;</td> <td>-0</td></tr>
+    </table></div></dd>
+<dt class="decl"><span class="rettyp">float</span> <a class="symbol _function" name="sqrt" href="htmlsrc/tango.math.Math.html#L968">sqrt</a><span class="params">(float <em>x</em>)</span> <a href="tango.math.Math.html#sqrt" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="sqrt:2" href="htmlsrc/tango.math.Math.html#L1029">sqrt</a><span class="params">(creal <em>z</em>)</span> <a href="tango.math.Math.html#sqrt:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compute square root of x.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>x</th>         <th>sqrt(x)</th>   <th>invalid?</th></tr>
+      <tr><td>-0.0</td>      <td>-0.0</td>      <td>no</td></tr>
+      <tr><td>&lt;0.0</td>  <td><span class="red">NAN</span></td>    <td>yes</td></tr>
+      <tr><td>+&infin;</td> <td>+&infin;</td> <td>no</td></tr>
+      </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="cbrt" href="htmlsrc/tango.math.Math.html#L1075">cbrt</a><span class="params">(real <em>x</em>)</span> <a href="tango.math.Math.html#cbrt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the cube root of x.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th><i>x</i></th>            <th>cbrt(x)</th>           <th>invalid?</th></tr>
+      <tr><td>&plusmn;0.0</td>      <td>&plusmn;0.0</td>      <td>no</td> </tr>
+      <tr><td><span class="red">NAN</span></td>            <td><span class="red">NAN</span></td>            <td>yes</td> </tr>
+      <tr><td>&plusmn;&infin;</td> <td>&plusmn;&infin;</td> <td>no</td> </tr>
+      </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="exp" href="htmlsrc/tango.math.Math.html#L1100">exp</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#exp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates e<span style="vertical-align:super;font-size:smaller">x</span>.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+    <tr><th>x</th>             <th>e<span style="vertical-align:super;font-size:smaller">x</span></th> </tr>
+    <td>+&infin;</td>          <td>+&infin;</td> </table>
+    <td>-&infin;</td>          <td>+0.0</td>      )
+    <tr><td><span class="red">NAN</span></td>        <td><span class="red">NAN</span></td>    </tr>
+  )</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="expm1" href="htmlsrc/tango.math.Math.html#L1126">expm1</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#expm1" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the value of the natural logarithm base (e)
+ raised to the power of x, minus 1.</div></div>
+<div class="cmnt">For very small x, expm1(x) is more accurate
+ than exp(x)-1.
+<p class="bl"></p>
+  <table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+    <tr><th>x</th>             <th>e<span style="vertical-align:super;font-size:smaller">x</span>-1</th>  </tr>
+    <tr><td>&plusmn;0.0</td>  <td>&plusmn;0.0</td> </tr>
+    <td>+&infin;</td>          <td>+&infin;</td>    </table>
+    <td>-&infin;</td>          <td>-1.0</td>         )
+    <tr><td><span class="red">NAN</span></td>        <td><span class="red">NAN</span></td>       </tr>
+  )</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="exp2" href="htmlsrc/tango.math.Math.html#L1212">exp2</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#exp2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates 2<span style="vertical-align:super;font-size:smaller">x</span>.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+    <tr><th>x</th>             <th>exp2(x)    </th>
+    <td>+&infin;</td>          <td>+&infin;</td> </tr>
+    <td>-&infin;</td>          <td>+0.0</td>      </table>
+    <tr><td><span class="red">NAN</span></td>        <td><span class="red">NAN</span></td>    </tr>
+  )</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="log" href="htmlsrc/tango.math.Math.html#L1336">log</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#log" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculate the natural logarithm of x.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+    <tr><th>x</th>            <th>log(x)</th>    <th>divide by 0?</th> <th>invalid?</th></tr>
+    <tr><td>&plusmn;0.0</td> <td>-&infin;</td> <td>yes</td>          <td>no</td></tr>
+    <tr><td>&lt;0.0</td>     <td><span class="red">NAN</span></td>    <td>no</td>           <td>yes</td></tr>
+    <tr><td>+&infin;</td>    <td>+&infin;</td> <td>no</td>           <td>no</td></tr>
+    </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="log1p" href="htmlsrc/tango.math.Math.html#L1362">log1p</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#log1p" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the natural logarithm of 1 + x.</div></div>
+<div class="cmnt">For very small x, log1p(x) will be more accurate than
+      log(1 + x).
+<p class="bl"></p>
+  <table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+  <tr><th>x</th>            <th>log1p(x)</th>     <th>divide by 0?</th> <th>invalid?</th></tr>
+  <tr><td>&plusmn;0.0</td> <td>&plusmn;0.0</td> <td>no</td>           <td>no</td></tr>
+  <tr><td>-1.0</td>         <td>-&infin;</td>    <td>yes</td>          <td>no</td></tr>
+  <tr><td>&lt;-1.0</td>    <td><span class="red">NAN</span></td>       <td>no</td>           <td>yes</td></tr>
+  <tr><td>+&infin;</td>    <td>-&infin;</td>    <td>no</td>           <td>no</td></tr>
+  </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="log2" href="htmlsrc/tango.math.Math.html#L1385">log2</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#log2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the base-2 logarithm of x:
+ log<sub>2</sub>x</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+  <tr><th>x</th>            <th>log2(x)</th>   <th>divide by 0?</th> <th>invalid?</th></tr>
+  <tr><td>&plusmn;0.0</td> <td>-&infin;</td> <td>yes</td>          <td>no</td> </tr>
+  <tr><td>&lt;0.0</td>     <td><span class="red">NAN</span></td>    <td>no</td>           <td>yes</td> </tr>
+  <tr><td>+&infin;</td>    <td>+&infin;</td> <td>no</td>           <td>no</td> </tr>
+  </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="log10" href="htmlsrc/tango.math.Math.html#L1407">log10</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#log10" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculate the base-10 logarithm of x.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+      <tr><th>x</th>            <th>log10(x)</th>  <th>divide by 0?</th> <th>invalid?</th></tr>
+      <tr><td>&plusmn;0.0</td> <td>-&infin;</td> <td>yes</td>          <td>no</td></tr>
+      <tr><td>&lt;0.0</td>     <td><span class="red">NAN</span></td>    <td>no</td>           <td>yes</td></tr>
+      <tr><td>+&infin;</td>    <td>+&infin;</td> <td>no</td>           <td>no</td></tr>
+      </table></div></dd>
+<dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="exp:2" href="htmlsrc/tango.math.Math.html#L1430">exp</a><span class="params">(ireal <em>y</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#exp:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="exp:3" href="htmlsrc/tango.math.Math.html#L1436">exp</a><span class="params">(creal <em>z</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#exp:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Exponential, complex and imaginary</div></div>
+<div class="cmnt">For complex numbers, the exponential function is defined as
+<p class="bl"></p>
+  exp(z) = exp(z.re)cos(z.im) + exp(z.re)sin(z.im)i.
+<p class="bl"></p>
+  For a pure imaginary argument,
+  exp(&theta;i)  = cos(&theta;) + sin(&theta;)i.</div></dd>
+<dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="log:2" href="htmlsrc/tango.math.Math.html#L1471">log</a><span class="params">(creal <em>z</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#log:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Natural logarithm, complex</div></div>
+<div class="cmnt">Returns complex logarithm to the base e (2.718...) of
+ the complex argument x.
+<p class="bl"></p>
+ If z = x + iy, then
+       log(z) = log(abs(z)) + i arctan(y/x).
+<p class="bl"></p>
+ The arctangent ranges from -PI to +PI.
+ There are branch cuts along both the negative real and negative
+ imaginary axes. For pure imaginary arguments, use one of the
+ following forms, depending on which branch is required.
+ <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">log</span>( <span class="n">0.0</span> + <span class="i">yi</span>) = <span class="i">log</span>(-<span class="i">y</span>) + <span class="i">PI_2i</span>  <span class="lc">// y&lt;=-0.0</span>
+<span class="i">log</span>(-<span class="n">0.0</span> + <span class="i">yi</span>) = <span class="i">log</span>(-<span class="i">y</span>) - <span class="i">PI_2i</span>  <span class="lc">// y&lt;=-0.0</span></pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="pow" href="htmlsrc/tango.math.Math.html#L1499">pow</a><span class="params">(real <em>x</em>, uint <em>n</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#pow" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="pow:2" href="htmlsrc/tango.math.Math.html#L1533">pow</a><span class="params">(real <em>x</em>, int <em>n</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#pow:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Fast integral powers.</div></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="pow:3" href="htmlsrc/tango.math.Math.html#L1581">pow</a><span class="params">(real <em>x</em>, real <em>y</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#pow:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates x<span style="vertical-align:super;font-size:smaller">y</span>.</div></div>
+<div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+ <tr><th>x</th> <th>y</th> <th>pow(x, y)</th>
+      <th>div 0</th> <th>invalid?</th></tr>
+ <tr><td>anything</td>      <td>&plusmn;0.0</td>                <td>1.0</td>
+      <td>no</td>        <td>no</td> </tr>
+ <tr><td>|x| &gt; 1</td>    <td>+&infin;</td>                  <td>+&infin;</td>
+      <td>no</td>        <td>no</td> </tr>
+ <tr><td>|x| &lt; 1</td>    <td>+&infin;</td>                  <td>+0.0</td>
+      <td>no</td>        <td>no</td> </tr>
+ <tr><td>|x| &gt; 1</td>    <td>-&infin;</td>                  <td>+0.0</td>
+      <td>no</td>        <td>no</td> </tr>
+ <tr><td>|x| &lt; 1</td>    <td>-&infin;</td>                  <td>+&infin;</td>
+      <td>no</td>        <td>no</td> </tr>
+ <tr><td>+&infin;</td>      <td>&gt; 0.0</td>                  <td>+&infin;</td>
+      <td>no</td>        <td>no</td> </tr>
+ <tr><td>+&infin;</td>      <td>&lt; 0.0</td>                  <td>+0.0</td>
+      <td>no</td>        <td>no</td> </tr>
+ <tr><td>-&infin;</td>      <td>odd integer &gt; 0.0</td>      <td>-&infin;</td>
+      <td>no</td>        <td>no</td> </tr>
+ <tr><td>-&infin;</td>      <td>&gt; 0.0, not odd integer</td> <td>+&infin;</td>
+      <td>no</td>        <td>no</td></tr>
+ <tr><td>-&infin;</td>      <td>odd integer &lt; 0.0</td>      <td>-0.0</td>
+      <td>no</td>        <td>no</td> </tr>
+ <tr><td>-&infin;</td>      <td>&lt; 0.0, not odd integer</td> <td>+0.0</td>
+      <td>no</td>        <td>no</td> </tr>
+ <tr><td>&plusmn;1.0</td>   <td>&plusmn;&infin;</td>          <td><span class="red">NAN</span></td>
+      <td>no</td>        <td>yes</td> </tr>
+ <tr><td>&lt; 0.0</td>      <td>finite, nonintegral</td>        <td><span class="red">NAN</span></td>
+      <td>no</td>        <td>yes</td></tr>
+ <tr><td>&plusmn;0.0</td>   <td>odd integer &lt; 0.0</td>      <td>&plusmn;&infin;</td>
+      <td>yes</td>       <td>no</td> </tr>
+ <tr><td>&plusmn;0.0</td>   <td>&lt; 0.0, not odd integer</td> <td>+&infin;</td>
+      <td>yes</td>       <td>no</td></tr>
+ <tr><td>&plusmn;0.0</td>   <td>odd integer &gt; 0.0</td>      <td>&plusmn;0.0</td>
+      <td>no</td>        <td>no</td> </tr>
+ <tr><td>&plusmn;0.0</td>   <td>&gt; 0.0, not odd integer</td> <td>+0.0</td>
+      <td>no</td>        <td>no</td> </tr>
+ </table></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="hypot" href="htmlsrc/tango.math.Math.html#L1717">hypot</a><span class="params">(real <em>x</em>, real <em>y</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#hypot" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Calculates the length of the
+ hypotenuse of a right-angled triangle with sides of length x and y.
+ The hypotenuse is the value of the square root of
+ the sums of the squares of x and y:</div></div>
+<div class="cmnt">sqrt(x<sup>2</sup> + y<sup>2</sup>)
+<p class="bl"></p>
+ Note that hypot(x, y), hypot(y, x) and
+ hypot(x, -y) are equivalent.
+<p class="bl"></p>
+  <table border=1 cellpadding=4 cellspacing=0>
+      <caption>Special Values</caption>
+      
+  <tr><th>x</th>            <th>y</th>            <th>hypot(x, y)</th> <th>invalid?</th></tr>
+  <tr><td>x</td>            <td>&plusmn;0.0</td> <td>|x|</td>         <td>no</td></tr>
+  <tr><td>&plusmn;&infin;</td> <td>y</td>            <td>+&infin;</td>   <td>no</td></tr>
+  <tr><td>&plusmn;&infin;</td> <td><span class="red">NAN</span></td>       <td>+&infin;</td>   <td>no</td></tr>
+  </table></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="poly" href="htmlsrc/tango.math.Math.html#L1825">poly</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>x</em>, const(T[]) <em>A</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#poly" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Evaluate polynomial A(x) = a<sub>0</sub> + a<sub>1</sub>x + a<sub>2</sub>x<sup>2</sup>
+                          + a<sub>3</sub>x<sup>3</sup>; ...</div></div>
+<div class="cmnt">Uses Horner's rule A(x) = a<sub>0</sub> + x(a<sub>1</sub> + x(a<sub>2</sub> 
+                         + x(a<sub>3</sub> + ...)))</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>A</em></td><td>array of coefficients a<sub>0</sub>, a<sub>1</sub>, etc.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="feq" href="htmlsrc/tango.math.Math.html#L1929">feq</a><span class="tparams">(int <em>precision</em> = <span class="defval"><span class="i">MANTDIG_2</span></span>, <em>XReal</em> = <span class="defval">real</span>, <em>YReal</em> = <span class="defval">real</span>)</span><span class="params">(XReal <em>x</em>, YReal <em>y</em>)</span> <span class="attrs">[<span class="stc">deprecated</span>]</span> <a href="tango.math.Math.html#feq" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Floating point "approximate equality".</div></div>
+<div class="cmnt">Return true if x is equal to y, to within the specified precision
+ If roundoffbits is not specified, a reasonable default is used.</div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="floor" href="htmlsrc/tango.math.Math.html#L1950">floor</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#floor" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the value of x rounded downward to the next integer
+ (toward negative infinity).</div></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="ceil" href="htmlsrc/tango.math.Math.html#L1965">ceil</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#ceil" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the value of x rounded upward to the next integer
+ (toward positive infinity).</div></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="round" href="htmlsrc/tango.math.Math.html#L1979">round</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#round" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the value of x rounded to the nearest integer.
+ If the fractional part of x is exactly 0.5, the return value is rounded to
+ the even integer.</div></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="trunc" href="htmlsrc/tango.math.Math.html#L1995">trunc</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#trunc" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the integer portion of x, dropping the fractional portion.</div></div>
+<div class="cmnt">This is also known as "chop" rounding.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="rndint" href="htmlsrc/tango.math.Math.html#L2015">rndint</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#rndint" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="rndlong" href="htmlsrc/tango.math.Math.html#L2034">rndlong</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.Math.html#rndlong" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Rounds x to the nearest int or long.</div></div>
+<div class="cmnt">This is generally the fastest method to convert a floating-point number
+ to an integer. Note that the results from this function
+ depend on the rounding mode, if the fractional part of x is exactly 0.5.
+ If using the default rounding mode (ties round to even integers)
+ rndint(4.5) == 4, rndint(5.5)==6.</div></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Portions Copyright (C) 2001-2005 Digital Mars.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:56 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

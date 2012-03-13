@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.time.chrono.Taiwan</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/*******************************************************************************
+
+        copyright:      Copyright (c) 2005 John Chapman. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Mid 2005: Initial release
+                        Apr 2007: reshaped                        
+
+        author:         John Chapman, Kris
+
+******************************************************************************/</span>
+
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">time</span>.<span class="i">chrono</span>.<span class="i">Taiwan</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">time</span>.<span class="i">chrono</span>.<span class="i">GregorianBased</span>;</span>
+
+<span class="bc">/**
+ * $(ANCHOR _Taiwan)
+ * Represents the Taiwan calendar.
+ */</span>
+<span class="d Protection"><span class="k">public</span></span> <span class="d Class"><span class="k">class</span> <span class="i">Taiwan</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">GregorianBased</span></span></span> 
+<span class="d Compound">{
+  <span class="bc">/**
+   * $(I Property.) Overridden. Retrieves the identifier associated with the current calendar.
+   * Returns: An integer representing the identifier of the current calendar.
+   */</span>
+  <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">id</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">TAIWAN</span></span>;</span>
+  }</span></span></span>
+
+}</span></span></span>
+
+
+</pre></td>
+</tr></table>
+</body>
+</html>

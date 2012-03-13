@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.net.Uri</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.net.Uri">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.net.Uri"><a href="htmlsrc/tango.net.Uri.html" class="symbol">tango.net.Uri</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: April 2004</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="rettyp">void*</span> <a class="symbol _function" name="memchr" href="htmlsrc/tango.net.Uri.html#L29">memchr</a><span class="params">(<span class="k">in</span> void* <em>s</em>, int <em>c</em>, size_t <em>n</em>)</span> <span class="attrs">[<span class="linkg">extern(C)</span>]</span> <a href="tango.net.Uri.html#memchr" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">external links</div></div></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Uri" href="htmlsrc/tango.net.Uri.html#L49">Uri</a> : <span class="bclass">UriView</span> <a href="tango.net.Uri.html#Uri" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Implements an RFC 2396 compliant URI specification. See 
+        <A HREF="http://ftp.ics.uci.edu/pub/ietf/uri/rfc2396.txt">this page</A>
+        for more information.</div></div>
+<div class="cmnt">The implementation fails the spec on two counts: it doesn't insist
+        on a scheme being present in the Uri, and it doesn't implement the
+        "Relative References" support noted in section 5.2. The latter can
+        be found in tango.util.PathUtil instead.
+        
+        Note that IRI support can be implied by assuming each of userinfo,
+        path, query, and fragment are UTF-8 encoded 
+        (see <A HREF="http://www.w3.org/2001/Talks/0912-IUC-IRI/paper.html">
+        this page</A> for further details).</div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> port <a class="symbol _alias" name="Uri.getPort" href="htmlsrc/tango.net.Uri.html#L55">getPort</a> <a href="tango.net.Uri.html#Uri.getPort" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">old method names</div></div></dd>
+<dt class="decl"><span class="kw">static</span> <a class="symbol _sctor" name="Uri.this" href="htmlsrc/tango.net.Uri.html#L146">this</a>() <span class="attrs">[<span class="stc">shared</span>]</span> <a href="tango.net.Uri.html#Uri.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Initialize the Uri character maps and so on</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Uri.this:2" href="htmlsrc/tango.net.Uri.html#L230">this</a><span class="params">()</span> <a href="tango.net.Uri.html#Uri.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create an empty Uri</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Uri.this:3" href="htmlsrc/tango.net.Uri.html#L242">this</a><span class="params">(const(char)[] <em>uri</em>)</span> <a href="tango.net.Uri.html#Uri.this:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a Uri from the provided character string</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Uri.this:4" href="htmlsrc/tango.net.Uri.html#L255">this</a><span class="params">(const(char)[] <em>scheme</em>, const(char)[] <em>host</em>, const(char)[] <em>path</em>, const(char)[] <em>query</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.net.Uri.html#Uri.this:4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a Uri from the given components. The query is
+                optional.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Uri.this:5" href="htmlsrc/tango.net.Uri.html#L272">this</a><span class="params">(UriView <em>other</em>)</span> <a href="tango.net.Uri.html#Uri.this:5" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clone another Uri. This can be used to make a mutable Uri
+                from an immutable UriView.</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Uri.defaultPort" href="htmlsrc/tango.net.Uri.html#L291">defaultPort</a><span class="params">(const(char)[] <em>scheme</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.net.Uri.html#Uri.defaultPort" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the default port for the given scheme. InvalidPort
+                is returned if the scheme is unknown, or does not accept
+                a port.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Uri.scheme" href="htmlsrc/tango.net.Uri.html#L306">scheme</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.net.Uri.html#Uri.scheme" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the parsed scheme, or null if the scheme was not
+                specified</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Uri.host" href="htmlsrc/tango.net.Uri.html#L318">host</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.net.Uri.html#Uri.host" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the parsed host, or null if the host was not
+                specified</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Uri.port" href="htmlsrc/tango.net.Uri.html#L330">port</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.net.Uri.html#Uri.port" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the parsed port number, or InvalidPort if the port
+                was not provided.</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Uri.validPort" href="htmlsrc/tango.net.Uri.html#L342">validPort</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.net.Uri.html#Uri.validPort" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a valid port number by performing a lookup on the 
+                known schemes if the port was not explicitly specified.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Uri.userinfo" href="htmlsrc/tango.net.Uri.html#L356">userinfo</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.net.Uri.html#Uri.userinfo" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the parsed userinfo, or null if userinfo was not 
+                provided.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Uri.path" href="htmlsrc/tango.net.Uri.html#L368">path</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.net.Uri.html#Uri.path" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the parsed path, or null if the path was not 
+                provided.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Uri.query" href="htmlsrc/tango.net.Uri.html#L380">query</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.net.Uri.html#Uri.query" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the parsed query, or null if a query was not 
+                provided.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Uri.fragment" href="htmlsrc/tango.net.Uri.html#L392">fragment</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.net.Uri.html#Uri.fragment" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the parsed fragment, or null if a fragment was not 
+                provided.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Uri.isGeneric" href="htmlsrc/tango.net.Uri.html#L403">isGeneric</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.net.Uri.html#Uri.isGeneric" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return whether or not the Uri scheme is considered generic.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Uri.produce" href="htmlsrc/tango.net.Uri.html#L415">produce</a><span class="params">(Consumer <em>consume</em>)</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.net.Uri.html#Uri.produce" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Emit the content of this Uri via the provided Consumer. The
+                output is constructed per RFC 2396.</div></div></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="Uri.toString" href="htmlsrc/tango.net.Uri.html#L465">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.net.Uri.html#Uri.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Emit the content of this Uri via the provided Consumer. The
+                output is constructed per RFC 2396.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Uri.encode" href="htmlsrc/tango.net.Uri.html#L481">encode</a><span class="params">(Consumer <em>consume</em>, const(char)[] <em>s</em>, int <em>flags</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.Uri.html#Uri.encode" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Encode uri characters into a Consumer, such that
+                reserved chars are converted into their %hex version.</div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="Uri.encode:2" href="htmlsrc/tango.net.Uri.html#L517">encode</a><span class="params">(const(char)[] <em>text</em>, int <em>flags</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.Uri.html#Uri.encode:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Encode uri characters into a string, such that reserved 
+                chars are converted into their %hex version.</div></div>
+<div class="cmnt">Returns a dup'd string</div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="Uri.decode" href="htmlsrc/tango.net.Uri.html#L593">decode</a><span class="params">(const(char)[] <em>s</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.Uri.html#Uri.decode" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Decode a duplicated string with potential %hex values in it</div></div></dd>
+<dt class="decl"><span class="rettyp">Uri</span> <a class="symbol _function" name="Uri.parse" href="htmlsrc/tango.net.Uri.html#L618">parse</a><span class="params">(const(char)[] <em>uri</em>, bool <em>relative</em> = <span class="defval"><span class="k">false</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.Uri.html#Uri.parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parsing is performed according to RFC 2396
+                
+                <pre>
+                  ^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?
+                   12            3  4          5       6  7        8 9
+                    
+                2 isolates scheme
+                4 isolates authority
+                5 isolates path
+                7 isolates query
+                9 isolates fragment
+                </pre></div></div>
+<div class="cmnt">This was originally a state-machine; it turned out to be a 
+                lot faster (~40%) when unwound like this instead.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Uri.reset" href="htmlsrc/tango.net.Uri.html#L683">reset</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.Uri.html#Uri.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clear everything to null.</div></div></dd>
+<dt class="decl"><span class="rettyp">Uri</span> <a class="symbol _function" name="Uri.relParse" href="htmlsrc/tango.net.Uri.html#L696">relParse</a><span class="params">(const(char)[] <em>uri</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.Uri.html#Uri.relParse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse the given uri, with support for relative URLs</div></div></dd>
+<dt class="decl"><span class="rettyp">Uri</span> <a class="symbol _function" name="Uri.scheme:2" href="htmlsrc/tango.net.Uri.html#L707">scheme</a><span class="params">(const(char)[] <em>scheme</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.net.Uri.html#Uri.scheme:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the Uri scheme</div></div></dd>
+<dt class="decl"><span class="rettyp">Uri</span> <a class="symbol _function" name="Uri.host:2" href="htmlsrc/tango.net.Uri.html#L719">host</a><span class="params">(const(char)[] <em>host</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.net.Uri.html#Uri.host:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the Uri host</div></div></dd>
+<dt class="decl"><span class="rettyp">Uri</span> <a class="symbol _function" name="Uri.port:2" href="htmlsrc/tango.net.Uri.html#L731">port</a><span class="params">(int <em>port</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.net.Uri.html#Uri.port:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the Uri port</div></div></dd>
+<dt class="decl"><span class="rettyp">Uri</span> <a class="symbol _function" name="Uri.userinfo:2" href="htmlsrc/tango.net.Uri.html#L743">userinfo</a><span class="params">(const(char)[] <em>userinfo</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.net.Uri.html#Uri.userinfo:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the Uri userinfo</div></div></dd>
+<dt class="decl"><span class="rettyp">Uri</span> <a class="symbol _function" name="Uri.query:2" href="htmlsrc/tango.net.Uri.html#L755">query</a><span class="params">(const(char)[] <em>query</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.net.Uri.html#Uri.query:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the Uri query</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Uri.extendQuery" href="htmlsrc/tango.net.Uri.html#L767">extendQuery</a><span class="params">(const(char)[] <em>tail</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.Uri.html#Uri.extendQuery" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Extend the Uri query</div></div></dd>
+<dt class="decl"><span class="rettyp">Uri</span> <a class="symbol _function" name="Uri.path:2" href="htmlsrc/tango.net.Uri.html#L785">path</a><span class="params">(const(char)[] <em>path</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.net.Uri.html#Uri.path:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the Uri path</div></div></dd>
+<dt class="decl"><span class="rettyp">Uri</span> <a class="symbol _function" name="Uri.fragment:2" href="htmlsrc/tango.net.Uri.html#L797">fragment</a><span class="params">(const(char)[] <em>fragment</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.net.Uri.html#Uri.fragment:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the Uri fragment</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:57 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

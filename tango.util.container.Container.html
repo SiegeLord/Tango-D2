@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.container.Container</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.container.Container">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.container.Container"><a href="htmlsrc/tango.util.container.Container.html" class="symbol">tango.util.container.Container</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Apr 2008: Initial release
+                        Jan 2009: Added GCChunk allocator</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Kris, schveiguy</div>
+<p class="sec_header">Since:</p><div class="cmnt">0.99.7</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Container" href="htmlsrc/tango.util.container.Container.html#L29">Container</a> <a href="tango.util.container.Container.html#Container" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Utility functions and constants</div></div>
+<dl>
+<dt class="decl">size_t <a class="symbol _variable" name="Container.defaultInitialBuckets" href="htmlsrc/tango.util.container.Container.html#L37">defaultInitialBuckets</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.util.container.Container.html#Container.defaultInitialBuckets" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">default initial number of buckets of a non-empty hashmap</div></div></dd>
+<dt class="decl">float <a class="symbol _variable" name="Container.defaultLoadFactor" href="htmlsrc/tango.util.container.Container.html#L47">defaultLoadFactor</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.util.container.Container.html#Container.defaultLoadFactor" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">default load factor for a non-empty hashmap. The hash 
+                table is resized when the proportion of elements per 
+                buckets exceeds this limit</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Container.reap" href="htmlsrc/tango.util.container.Container.html#L55">reap</a><span class="tparams">(<em>V</em>)</span><span class="params">(V <em>v</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.util.container.Container.html#Container.reap" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">generic value reaper, which does nothing</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Container.reap:2" href="htmlsrc/tango.util.container.Container.html#L63">reap</a><span class="tparams">(<em>K</em>, <em>V</em>)</span><span class="params">(K <em>k</em>, V <em>v</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.util.container.Container.html#Container.reap:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">generic key/value reaper, which does nothing</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Container.hash" href="htmlsrc/tango.util.container.Container.html#L72">hash</a><span class="tparams">(<em>K</em>)</span><span class="params">(K <em>k</em>, size_t <em>length</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.util.container.Container.html#Container.hash" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">generic hash function, using the default hashing. Thanks
+                to 'mwarning' for the optimization suggestion</div></div></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Container.ChunkGC" href="htmlsrc/tango.util.container.Container.html#L98">ChunkGC</a><span class="tparams">(<em>T</em>)</span> <a href="tango.util.container.Container.html#Container.ChunkGC" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">GC Chunk allocator</div></div>
+<div class="cmnt">Can save approximately 30% memory for small elements (tested 
+                with integer elements and a chunk size of 1000), and is at 
+                least twice as fast at adding elements when compared to the 
+                generic allocator (approximately 50x faster with LinkedList)
+        
+                Operates safely with GC managed entities</div>
+<dl>
+<dt class="decl"><span class="rettyp">T*</span> <a class="symbol _function" name="Container.ChunkGC.allocate" href="htmlsrc/tango.util.container.Container.html#L114">allocate</a><span class="params">()</span> <a href="tango.util.container.Container.html#Container.ChunkGC.allocate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">allocate a T-sized memory chunk</div></div></dd>
+<dt class="decl"><span class="rettyp">T*[]</span> <a class="symbol _function" name="Container.ChunkGC.allocate:2" href="htmlsrc/tango.util.container.Container.html#L129">allocate</a><span class="params">(size_t <em>count</em>)</span> <a href="tango.util.container.Container.html#Container.ChunkGC.allocate:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">allocate an array of T* sized memory chunks</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Container.ChunkGC.collect" href="htmlsrc/tango.util.container.Container.html#L142">collect</a><span class="params">(T*[] <em>t</em>)</span> <a href="tango.util.container.Container.html#Container.ChunkGC.collect" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Invoked when a specific T*[] is discarded</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Container.ChunkGC.collect:2" href="htmlsrc/tango.util.container.Container.html#L157">collect</a><span class="params">(T* <em>p</em>)</span> <a href="tango.util.container.Container.html#Container.ChunkGC.collect:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Invoked when a specific T is discarded</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Container.ChunkGC.collect:3" href="htmlsrc/tango.util.container.Container.html#L177">collect</a><span class="params">(bool <em>all</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.util.container.Container.html#Container.ChunkGC.collect:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Invoked when clear/reset is called on the host. 
+                        This is a shortcut to clear everything allocated.
+        
+                        Should return true if supported, or false otherwise. 
+                        False return will cause a series of discrete collect
+                        calls</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Container.ChunkGC.config" href="htmlsrc/tango.util.container.Container.html#L200">config</a><span class="params">(size_t <em>chunks</em>, size_t <em>allocate</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.util.container.Container.html#Container.ChunkGC.config" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">set the chunk size and prepopulate with nodes</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Container.Chunk" href="htmlsrc/tango.util.container.Container.html#L263">Chunk</a><span class="tparams">(<em>T</em>)</span> <a href="tango.util.container.Container.html#Container.Chunk" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Chunk allocator (non GC)</div></div>
+<div class="cmnt">Can save approximately 30% memory for small elements (tested 
+                with integer elements and a chunk size of 1000), and is at 
+                least twice as fast at adding elements when compared to the 
+                default allocator (approximately 50x faster with LinkedList)
+        
+                Note that, due to GC behaviour, you should not configure
+                a custom allocator for containers holding anything managed
+                by the GC. For example, you cannot use a MallocAllocator
+                to manage a container of classes or strings where those 
+                were allocated by the GC. Once something is owned by a GC
+                then it's lifetime must be managed by GC-managed entities
+                (otherwise the GC may think there are no live references
+                and prematurely collect container contents).
+        
+                You can explicity manage the collection of keys and values
+                yourself by providing a reaper delegate. For example, if 
+                you use a MallocAllocator to manage key/value pairs which
+                are themselves allocated via malloc, then you should also
+                provide a reaper delegate to collect those as required.
+<p class="bl"></p>
+                The primary benefit of this allocator is to avoid the GC
+                scanning the date-structures involved. Use ChunkGC where
+                that option is unwarranted, or if you have GC-managed data
+                instead</div>
+<dl>
+<dt class="decl"><span class="rettyp">T*</span> <a class="symbol _function" name="Container.Chunk.allocate" href="htmlsrc/tango.util.container.Container.html#L279">allocate</a><span class="params">()</span> <a href="tango.util.container.Container.html#Container.Chunk.allocate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">allocate a T-sized memory chunk</div></div></dd>
+<dt class="decl"><span class="rettyp">T*[]</span> <a class="symbol _function" name="Container.Chunk.allocate:2" href="htmlsrc/tango.util.container.Container.html#L294">allocate</a><span class="params">(size_t <em>count</em>)</span> <a href="tango.util.container.Container.html#Container.Chunk.allocate:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">allocate an array of T* sized memory chunks</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Container.Chunk.collect" href="htmlsrc/tango.util.container.Container.html#L305">collect</a><span class="params">(T*[] <em>t</em>)</span> <a href="tango.util.container.Container.html#Container.Chunk.collect" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Invoked when a specific T*[] is discarded</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Container.Chunk.collect:2" href="htmlsrc/tango.util.container.Container.html#L317">collect</a><span class="params">(T* <em>p</em>)</span> <a href="tango.util.container.Container.html#Container.Chunk.collect:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Invoked when a specific T is discarded</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Container.Chunk.collect:3" href="htmlsrc/tango.util.container.Container.html#L336">collect</a><span class="params">(bool <em>all</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.util.container.Container.html#Container.Chunk.collect:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Invoked when clear/reset is called on the host. 
+                        This is a shortcut to clear everything allocated.
+        
+                        Should return true if supported, or false otherwise. 
+                        False return will cause a series of discrete collect
+                        calls</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Container.Chunk.config" href="htmlsrc/tango.util.container.Container.html#L358">config</a><span class="params">(size_t <em>chunks</em>, int <em>allocate</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.util.container.Container.html#Container.Chunk.config" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">set the chunk size and prepopulate with nodes</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Container.Collect" href="htmlsrc/tango.util.container.Container.html#L397">Collect</a><span class="tparams">(<em>T</em>)</span> <a href="tango.util.container.Container.html#Container.Collect" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">generic GC allocation manager</div></div>
+<div class="cmnt">Slow and expensive in memory costs</div>
+<dl>
+<dt class="decl"><span class="rettyp">T*</span> <a class="symbol _function" name="Container.Collect.allocate" href="htmlsrc/tango.util.container.Container.html#L405">allocate</a><span class="params">()</span> <a href="tango.util.container.Container.html#Container.Collect.allocate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">allocate a T sized memory chunk</div></div></dd>
+<dt class="decl"><span class="rettyp">T*[]</span> <a class="symbol _function" name="Container.Collect.allocate:2" href="htmlsrc/tango.util.container.Container.html#L416">allocate</a><span class="params">(size_t <em>count</em>)</span> <a href="tango.util.container.Container.html#Container.Collect.allocate:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">allocate an array of T sized memory chunks</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Container.Collect.collect" href="htmlsrc/tango.util.container.Container.html#L427">collect</a><span class="params">(T* <em>p</em>)</span> <a href="tango.util.container.Container.html#Container.Collect.collect" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Invoked when a specific T[] is discarded</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Container.Collect.collect:2" href="htmlsrc/tango.util.container.Container.html#L439">collect</a><span class="params">(T*[] <em>t</em>)</span> <a href="tango.util.container.Container.html#Container.Collect.collect:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Invoked when a specific T[] is discarded</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Container.Collect.collect:3" href="htmlsrc/tango.util.container.Container.html#L456">collect</a><span class="params">(bool <em>all</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.util.container.Container.html#Container.Collect.collect:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Invoked when clear/reset is called on the host. 
+                        This is a shortcut to clear everything allocated.
+        
+                        Should return true if supported, or false otherwise. 
+                        False return will cause a series of discrete collect
+                        calls</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Container.Collect.config" href="htmlsrc/tango.util.container.Container.html#L467">config</a><span class="params">(size_t <em>chunks</em>, int <em>allocate</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.util.container.Container.html#Container.Collect.config" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">set the chunk size and prepopulate with nodes</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Container.Malloc" href="htmlsrc/tango.util.container.Container.html#L494">Malloc</a><span class="tparams">(<em>T</em>)</span> <a href="tango.util.container.Container.html#Container.Malloc" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Malloc allocation manager.</div></div>
+<div class="cmnt">Note that, due to GC behaviour, you should not configure
+                a custom allocator for containers holding anything managed
+                by the GC. For example, you cannot use a MallocAllocator
+                to manage a container of classes or strings where those 
+                were allocated by the GC. Once something is owned by a GC
+                then it's lifetime must be managed by GC-managed entities
+                (otherwise the GC may think there are no live references
+                and prematurely collect container contents).
+        
+                You can explicity manage the collection of keys and values
+                yourself by providing a reaper delegate. For example, if 
+                you use a MallocAllocator to manage key/value pairs which
+                are themselves allocated via malloc, then you should also
+                provide a reaper delegate to collect those as required.</div>
+<dl>
+<dt class="decl"><span class="rettyp">T*</span> <a class="symbol _function" name="Container.Malloc.allocate" href="htmlsrc/tango.util.container.Container.html#L502">allocate</a><span class="params">()</span> <a href="tango.util.container.Container.html#Container.Malloc.allocate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">allocate an array of T sized memory chunks</div></div></dd>
+<dt class="decl"><span class="rettyp">T*[]</span> <a class="symbol _function" name="Container.Malloc.allocate:2" href="htmlsrc/tango.util.container.Container.html#L513">allocate</a><span class="params">(size_t <em>count</em>)</span> <a href="tango.util.container.Container.html#Container.Malloc.allocate:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">allocate an array of T sized memory chunks</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Container.Malloc.collect" href="htmlsrc/tango.util.container.Container.html#L524">collect</a><span class="params">(T*[] <em>t</em>)</span> <a href="tango.util.container.Container.html#Container.Malloc.collect" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Invoked when a specific T[] is discarded</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Container.Malloc.collect:2" href="htmlsrc/tango.util.container.Container.html#L536">collect</a><span class="params">(T* <em>p</em>)</span> <a href="tango.util.container.Container.html#Container.Malloc.collect:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Invoked when a specific T[] is discarded</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Container.Malloc.collect:3" href="htmlsrc/tango.util.container.Container.html#L553">collect</a><span class="params">(bool <em>all</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.util.container.Container.html#Container.Malloc.collect:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Invoked when clear/reset is called on the host. 
+                        This is a shortcut to clear everything allocated.
+        
+                        Should return true if supported, or false otherwise. 
+                        False return will cause a series of discrete collect
+                        calls</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Container.Malloc.config" href="htmlsrc/tango.util.container.Container.html#L564">config</a><span class="params">(size_t <em>chunks</em>, int <em>allocate</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.util.container.Container.html#Container.Malloc.config" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">set the chunk size and prepopulate with nodes</div></div></dd></dl></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:24 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

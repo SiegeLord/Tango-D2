@@ -1,0 +1,635 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.io.stream.Bzip</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a><a id="L38" href="#L38">38</a><a id="L39" href="#L39">39</a><a id="L40" href="#L40">40</a><a id="L41" href="#L41">41</a><a id="L42" href="#L42">42</a><a id="L43" href="#L43">43</a><a id="L44" href="#L44">44</a><a id="L45" href="#L45">45</a><a id="L46" href="#L46">46</a><a id="L47" href="#L47">47</a><a id="L48" href="#L48">48</a><a id="L49" href="#L49">49</a><a id="L50" href="#L50">50</a><a id="L51" href="#L51">51</a><a id="L52" href="#L52">52</a><a id="L53" href="#L53">53</a><a id="L54" href="#L54">54</a><a id="L55" href="#L55">55</a><a id="L56" href="#L56">56</a><a id="L57" href="#L57">57</a><a id="L58" href="#L58">58</a><a id="L59" href="#L59">59</a><a id="L60" href="#L60">60</a><a id="L61" href="#L61">61</a><a id="L62" href="#L62">62</a><a id="L63" href="#L63">63</a><a id="L64" href="#L64">64</a><a id="L65" href="#L65">65</a><a id="L66" href="#L66">66</a><a id="L67" href="#L67">67</a><a id="L68" href="#L68">68</a><a id="L69" href="#L69">69</a><a id="L70" href="#L70">70</a><a id="L71" href="#L71">71</a><a id="L72" href="#L72">72</a><a id="L73" href="#L73">73</a><a id="L74" href="#L74">74</a><a id="L75" href="#L75">75</a><a id="L76" href="#L76">76</a><a id="L77" href="#L77">77</a><a id="L78" href="#L78">78</a><a id="L79" href="#L79">79</a><a id="L80" href="#L80">80</a><a id="L81" href="#L81">81</a><a id="L82" href="#L82">82</a><a id="L83" href="#L83">83</a><a id="L84" href="#L84">84</a><a id="L85" href="#L85">85</a><a id="L86" href="#L86">86</a><a id="L87" href="#L87">87</a><a id="L88" href="#L88">88</a><a id="L89" href="#L89">89</a><a id="L90" href="#L90">90</a><a id="L91" href="#L91">91</a><a id="L92" href="#L92">92</a><a id="L93" href="#L93">93</a><a id="L94" href="#L94">94</a><a id="L95" href="#L95">95</a><a id="L96" href="#L96">96</a><a id="L97" href="#L97">97</a><a id="L98" href="#L98">98</a><a id="L99" href="#L99">99</a><a id="L100" href="#L100">100</a><a id="L101" href="#L101">101</a><a id="L102" href="#L102">102</a><a id="L103" href="#L103">103</a><a id="L104" href="#L104">104</a><a id="L105" href="#L105">105</a><a id="L106" href="#L106">106</a><a id="L107" href="#L107">107</a><a id="L108" href="#L108">108</a><a id="L109" href="#L109">109</a><a id="L110" href="#L110">110</a><a id="L111" href="#L111">111</a><a id="L112" href="#L112">112</a><a id="L113" href="#L113">113</a><a id="L114" href="#L114">114</a><a id="L115" href="#L115">115</a><a id="L116" href="#L116">116</a><a id="L117" href="#L117">117</a><a id="L118" href="#L118">118</a><a id="L119" href="#L119">119</a><a id="L120" href="#L120">120</a><a id="L121" href="#L121">121</a><a id="L122" href="#L122">122</a><a id="L123" href="#L123">123</a><a id="L124" href="#L124">124</a><a id="L125" href="#L125">125</a><a id="L126" href="#L126">126</a><a id="L127" href="#L127">127</a><a id="L128" href="#L128">128</a><a id="L129" href="#L129">129</a><a id="L130" href="#L130">130</a><a id="L131" href="#L131">131</a><a id="L132" href="#L132">132</a><a id="L133" href="#L133">133</a><a id="L134" href="#L134">134</a><a id="L135" href="#L135">135</a><a id="L136" href="#L136">136</a><a id="L137" href="#L137">137</a><a id="L138" href="#L138">138</a><a id="L139" href="#L139">139</a><a id="L140" href="#L140">140</a><a id="L141" href="#L141">141</a><a id="L142" href="#L142">142</a><a id="L143" href="#L143">143</a><a id="L144" href="#L144">144</a><a id="L145" href="#L145">145</a><a id="L146" href="#L146">146</a><a id="L147" href="#L147">147</a><a id="L148" href="#L148">148</a><a id="L149" href="#L149">149</a><a id="L150" href="#L150">150</a><a id="L151" href="#L151">151</a><a id="L152" href="#L152">152</a><a id="L153" href="#L153">153</a><a id="L154" href="#L154">154</a><a id="L155" href="#L155">155</a><a id="L156" href="#L156">156</a><a id="L157" href="#L157">157</a><a id="L158" href="#L158">158</a><a id="L159" href="#L159">159</a><a id="L160" href="#L160">160</a><a id="L161" href="#L161">161</a><a id="L162" href="#L162">162</a><a id="L163" href="#L163">163</a><a id="L164" href="#L164">164</a><a id="L165" href="#L165">165</a><a id="L166" href="#L166">166</a><a id="L167" href="#L167">167</a><a id="L168" href="#L168">168</a><a id="L169" href="#L169">169</a><a id="L170" href="#L170">170</a><a id="L171" href="#L171">171</a><a id="L172" href="#L172">172</a><a id="L173" href="#L173">173</a><a id="L174" href="#L174">174</a><a id="L175" href="#L175">175</a><a id="L176" href="#L176">176</a><a id="L177" href="#L177">177</a><a id="L178" href="#L178">178</a><a id="L179" href="#L179">179</a><a id="L180" href="#L180">180</a><a id="L181" href="#L181">181</a><a id="L182" href="#L182">182</a><a id="L183" href="#L183">183</a><a id="L184" href="#L184">184</a><a id="L185" href="#L185">185</a><a id="L186" href="#L186">186</a><a id="L187" href="#L187">187</a><a id="L188" href="#L188">188</a><a id="L189" href="#L189">189</a><a id="L190" href="#L190">190</a><a id="L191" href="#L191">191</a><a id="L192" href="#L192">192</a><a id="L193" href="#L193">193</a><a id="L194" href="#L194">194</a><a id="L195" href="#L195">195</a><a id="L196" href="#L196">196</a><a id="L197" href="#L197">197</a><a id="L198" href="#L198">198</a><a id="L199" href="#L199">199</a><a id="L200" href="#L200">200</a><a id="L201" href="#L201">201</a><a id="L202" href="#L202">202</a><a id="L203" href="#L203">203</a><a id="L204" href="#L204">204</a><a id="L205" href="#L205">205</a><a id="L206" href="#L206">206</a><a id="L207" href="#L207">207</a><a id="L208" href="#L208">208</a><a id="L209" href="#L209">209</a><a id="L210" href="#L210">210</a><a id="L211" href="#L211">211</a><a id="L212" href="#L212">212</a><a id="L213" href="#L213">213</a><a id="L214" href="#L214">214</a><a id="L215" href="#L215">215</a><a id="L216" href="#L216">216</a><a id="L217" href="#L217">217</a><a id="L218" href="#L218">218</a><a id="L219" href="#L219">219</a><a id="L220" href="#L220">220</a><a id="L221" href="#L221">221</a><a id="L222" href="#L222">222</a><a id="L223" href="#L223">223</a><a id="L224" href="#L224">224</a><a id="L225" href="#L225">225</a><a id="L226" href="#L226">226</a><a id="L227" href="#L227">227</a><a id="L228" href="#L228">228</a><a id="L229" href="#L229">229</a><a id="L230" href="#L230">230</a><a id="L231" href="#L231">231</a><a id="L232" href="#L232">232</a><a id="L233" href="#L233">233</a><a id="L234" href="#L234">234</a><a id="L235" href="#L235">235</a><a id="L236" href="#L236">236</a><a id="L237" href="#L237">237</a><a id="L238" href="#L238">238</a><a id="L239" href="#L239">239</a><a id="L240" href="#L240">240</a><a id="L241" href="#L241">241</a><a id="L242" href="#L242">242</a><a id="L243" href="#L243">243</a><a id="L244" href="#L244">244</a><a id="L245" href="#L245">245</a><a id="L246" href="#L246">246</a><a id="L247" href="#L247">247</a><a id="L248" href="#L248">248</a><a id="L249" href="#L249">249</a><a id="L250" href="#L250">250</a><a id="L251" href="#L251">251</a><a id="L252" href="#L252">252</a><a id="L253" href="#L253">253</a><a id="L254" href="#L254">254</a><a id="L255" href="#L255">255</a><a id="L256" href="#L256">256</a><a id="L257" href="#L257">257</a><a id="L258" href="#L258">258</a><a id="L259" href="#L259">259</a><a id="L260" href="#L260">260</a><a id="L261" href="#L261">261</a><a id="L262" href="#L262">262</a><a id="L263" href="#L263">263</a><a id="L264" href="#L264">264</a><a id="L265" href="#L265">265</a><a id="L266" href="#L266">266</a><a id="L267" href="#L267">267</a><a id="L268" href="#L268">268</a><a id="L269" href="#L269">269</a><a id="L270" href="#L270">270</a><a id="L271" href="#L271">271</a><a id="L272" href="#L272">272</a><a id="L273" href="#L273">273</a><a id="L274" href="#L274">274</a><a id="L275" href="#L275">275</a><a id="L276" href="#L276">276</a><a id="L277" href="#L277">277</a><a id="L278" href="#L278">278</a><a id="L279" href="#L279">279</a><a id="L280" href="#L280">280</a><a id="L281" href="#L281">281</a><a id="L282" href="#L282">282</a><a id="L283" href="#L283">283</a><a id="L284" href="#L284">284</a><a id="L285" href="#L285">285</a><a id="L286" href="#L286">286</a><a id="L287" href="#L287">287</a><a id="L288" href="#L288">288</a><a id="L289" href="#L289">289</a><a id="L290" href="#L290">290</a><a id="L291" href="#L291">291</a><a id="L292" href="#L292">292</a><a id="L293" href="#L293">293</a><a id="L294" href="#L294">294</a><a id="L295" href="#L295">295</a><a id="L296" href="#L296">296</a><a id="L297" href="#L297">297</a><a id="L298" href="#L298">298</a><a id="L299" href="#L299">299</a><a id="L300" href="#L300">300</a><a id="L301" href="#L301">301</a><a id="L302" href="#L302">302</a><a id="L303" href="#L303">303</a><a id="L304" href="#L304">304</a><a id="L305" href="#L305">305</a><a id="L306" href="#L306">306</a><a id="L307" href="#L307">307</a><a id="L308" href="#L308">308</a><a id="L309" href="#L309">309</a><a id="L310" href="#L310">310</a><a id="L311" href="#L311">311</a><a id="L312" href="#L312">312</a><a id="L313" href="#L313">313</a><a id="L314" href="#L314">314</a><a id="L315" href="#L315">315</a><a id="L316" href="#L316">316</a><a id="L317" href="#L317">317</a><a id="L318" href="#L318">318</a><a id="L319" href="#L319">319</a><a id="L320" href="#L320">320</a><a id="L321" href="#L321">321</a><a id="L322" href="#L322">322</a><a id="L323" href="#L323">323</a><a id="L324" href="#L324">324</a><a id="L325" href="#L325">325</a><a id="L326" href="#L326">326</a><a id="L327" href="#L327">327</a><a id="L328" href="#L328">328</a><a id="L329" href="#L329">329</a><a id="L330" href="#L330">330</a><a id="L331" href="#L331">331</a><a id="L332" href="#L332">332</a><a id="L333" href="#L333">333</a><a id="L334" href="#L334">334</a><a id="L335" href="#L335">335</a><a id="L336" href="#L336">336</a><a id="L337" href="#L337">337</a><a id="L338" href="#L338">338</a><a id="L339" href="#L339">339</a><a id="L340" href="#L340">340</a><a id="L341" href="#L341">341</a><a id="L342" href="#L342">342</a><a id="L343" href="#L343">343</a><a id="L344" href="#L344">344</a><a id="L345" href="#L345">345</a><a id="L346" href="#L346">346</a><a id="L347" href="#L347">347</a><a id="L348" href="#L348">348</a><a id="L349" href="#L349">349</a><a id="L350" href="#L350">350</a><a id="L351" href="#L351">351</a><a id="L352" href="#L352">352</a><a id="L353" href="#L353">353</a><a id="L354" href="#L354">354</a><a id="L355" href="#L355">355</a><a id="L356" href="#L356">356</a><a id="L357" href="#L357">357</a><a id="L358" href="#L358">358</a><a id="L359" href="#L359">359</a><a id="L360" href="#L360">360</a><a id="L361" href="#L361">361</a><a id="L362" href="#L362">362</a><a id="L363" href="#L363">363</a><a id="L364" href="#L364">364</a><a id="L365" href="#L365">365</a><a id="L366" href="#L366">366</a><a id="L367" href="#L367">367</a><a id="L368" href="#L368">368</a><a id="L369" href="#L369">369</a><a id="L370" href="#L370">370</a><a id="L371" href="#L371">371</a><a id="L372" href="#L372">372</a><a id="L373" href="#L373">373</a><a id="L374" href="#L374">374</a><a id="L375" href="#L375">375</a><a id="L376" href="#L376">376</a><a id="L377" href="#L377">377</a><a id="L378" href="#L378">378</a><a id="L379" href="#L379">379</a><a id="L380" href="#L380">380</a><a id="L381" href="#L381">381</a><a id="L382" href="#L382">382</a><a id="L383" href="#L383">383</a><a id="L384" href="#L384">384</a><a id="L385" href="#L385">385</a><a id="L386" href="#L386">386</a><a id="L387" href="#L387">387</a><a id="L388" href="#L388">388</a><a id="L389" href="#L389">389</a><a id="L390" href="#L390">390</a><a id="L391" href="#L391">391</a><a id="L392" href="#L392">392</a><a id="L393" href="#L393">393</a><a id="L394" href="#L394">394</a><a id="L395" href="#L395">395</a><a id="L396" href="#L396">396</a><a id="L397" href="#L397">397</a><a id="L398" href="#L398">398</a><a id="L399" href="#L399">399</a><a id="L400" href="#L400">400</a><a id="L401" href="#L401">401</a><a id="L402" href="#L402">402</a><a id="L403" href="#L403">403</a><a id="L404" href="#L404">404</a><a id="L405" href="#L405">405</a><a id="L406" href="#L406">406</a><a id="L407" href="#L407">407</a><a id="L408" href="#L408">408</a><a id="L409" href="#L409">409</a><a id="L410" href="#L410">410</a><a id="L411" href="#L411">411</a><a id="L412" href="#L412">412</a><a id="L413" href="#L413">413</a><a id="L414" href="#L414">414</a><a id="L415" href="#L415">415</a><a id="L416" href="#L416">416</a><a id="L417" href="#L417">417</a><a id="L418" href="#L418">418</a><a id="L419" href="#L419">419</a><a id="L420" href="#L420">420</a><a id="L421" href="#L421">421</a><a id="L422" href="#L422">422</a><a id="L423" href="#L423">423</a><a id="L424" href="#L424">424</a><a id="L425" href="#L425">425</a><a id="L426" href="#L426">426</a><a id="L427" href="#L427">427</a><a id="L428" href="#L428">428</a><a id="L429" href="#L429">429</a><a id="L430" href="#L430">430</a><a id="L431" href="#L431">431</a><a id="L432" href="#L432">432</a><a id="L433" href="#L433">433</a><a id="L434" href="#L434">434</a><a id="L435" href="#L435">435</a><a id="L436" href="#L436">436</a><a id="L437" href="#L437">437</a><a id="L438" href="#L438">438</a><a id="L439" href="#L439">439</a><a id="L440" href="#L440">440</a><a id="L441" href="#L441">441</a><a id="L442" href="#L442">442</a><a id="L443" href="#L443">443</a><a id="L444" href="#L444">444</a><a id="L445" href="#L445">445</a><a id="L446" href="#L446">446</a><a id="L447" href="#L447">447</a><a id="L448" href="#L448">448</a><a id="L449" href="#L449">449</a><a id="L450" href="#L450">450</a><a id="L451" href="#L451">451</a><a id="L452" href="#L452">452</a><a id="L453" href="#L453">453</a><a id="L454" href="#L454">454</a><a id="L455" href="#L455">455</a><a id="L456" href="#L456">456</a><a id="L457" href="#L457">457</a><a id="L458" href="#L458">458</a><a id="L459" href="#L459">459</a><a id="L460" href="#L460">460</a><a id="L461" href="#L461">461</a><a id="L462" href="#L462">462</a><a id="L463" href="#L463">463</a><a id="L464" href="#L464">464</a><a id="L465" href="#L465">465</a><a id="L466" href="#L466">466</a><a id="L467" href="#L467">467</a><a id="L468" href="#L468">468</a><a id="L469" href="#L469">469</a><a id="L470" href="#L470">470</a><a id="L471" href="#L471">471</a><a id="L472" href="#L472">472</a><a id="L473" href="#L473">473</a><a id="L474" href="#L474">474</a><a id="L475" href="#L475">475</a><a id="L476" href="#L476">476</a><a id="L477" href="#L477">477</a><a id="L478" href="#L478">478</a><a id="L479" href="#L479">479</a><a id="L480" href="#L480">480</a><a id="L481" href="#L481">481</a><a id="L482" href="#L482">482</a><a id="L483" href="#L483">483</a><a id="L484" href="#L484">484</a><a id="L485" href="#L485">485</a><a id="L486" href="#L486">486</a><a id="L487" href="#L487">487</a><a id="L488" href="#L488">488</a><a id="L489" href="#L489">489</a><a id="L490" href="#L490">490</a><a id="L491" href="#L491">491</a><a id="L492" href="#L492">492</a><a id="L493" href="#L493">493</a><a id="L494" href="#L494">494</a><a id="L495" href="#L495">495</a><a id="L496" href="#L496">496</a><a id="L497" href="#L497">497</a><a id="L498" href="#L498">498</a><a id="L499" href="#L499">499</a><a id="L500" href="#L500">500</a><a id="L501" href="#L501">501</a><a id="L502" href="#L502">502</a><a id="L503" href="#L503">503</a><a id="L504" href="#L504">504</a><a id="L505" href="#L505">505</a><a id="L506" href="#L506">506</a><a id="L507" href="#L507">507</a><a id="L508" href="#L508">508</a><a id="L509" href="#L509">509</a><a id="L510" href="#L510">510</a><a id="L511" href="#L511">511</a><a id="L512" href="#L512">512</a><a id="L513" href="#L513">513</a><a id="L514" href="#L514">514</a><a id="L515" href="#L515">515</a><a id="L516" href="#L516">516</a><a id="L517" href="#L517">517</a><a id="L518" href="#L518">518</a><a id="L519" href="#L519">519</a><a id="L520" href="#L520">520</a><a id="L521" href="#L521">521</a><a id="L522" href="#L522">522</a><a id="L523" href="#L523">523</a><a id="L524" href="#L524">524</a><a id="L525" href="#L525">525</a><a id="L526" href="#L526">526</a><a id="L527" href="#L527">527</a><a id="L528" href="#L528">528</a><a id="L529" href="#L529">529</a><a id="L530" href="#L530">530</a><a id="L531" href="#L531">531</a><a id="L532" href="#L532">532</a><a id="L533" href="#L533">533</a><a id="L534" href="#L534">534</a><a id="L535" href="#L535">535</a><a id="L536" href="#L536">536</a><a id="L537" href="#L537">537</a><a id="L538" href="#L538">538</a><a id="L539" href="#L539">539</a><a id="L540" href="#L540">540</a><a id="L541" href="#L541">541</a><a id="L542" href="#L542">542</a><a id="L543" href="#L543">543</a><a id="L544" href="#L544">544</a><a id="L545" href="#L545">545</a><a id="L546" href="#L546">546</a><a id="L547" href="#L547">547</a><a id="L548" href="#L548">548</a><a id="L549" href="#L549">549</a><a id="L550" href="#L550">550</a><a id="L551" href="#L551">551</a><a id="L552" href="#L552">552</a><a id="L553" href="#L553">553</a><a id="L554" href="#L554">554</a><a id="L555" href="#L555">555</a><a id="L556" href="#L556">556</a><a id="L557" href="#L557">557</a><a id="L558" href="#L558">558</a><a id="L559" href="#L559">559</a><a id="L560" href="#L560">560</a><a id="L561" href="#L561">561</a><a id="L562" href="#L562">562</a><a id="L563" href="#L563">563</a><a id="L564" href="#L564">564</a><a id="L565" href="#L565">565</a><a id="L566" href="#L566">566</a><a id="L567" href="#L567">567</a><a id="L568" href="#L568">568</a><a id="L569" href="#L569">569</a><a id="L570" href="#L570">570</a><a id="L571" href="#L571">571</a><a id="L572" href="#L572">572</a><a id="L573" href="#L573">573</a><a id="L574" href="#L574">574</a><a id="L575" href="#L575">575</a><a id="L576" href="#L576">576</a><a id="L577" href="#L577">577</a><a id="L578" href="#L578">578</a><a id="L579" href="#L579">579</a><a id="L580" href="#L580">580</a><a id="L581" href="#L581">581</a><a id="L582" href="#L582">582</a><a id="L583" href="#L583">583</a><a id="L584" href="#L584">584</a><a id="L585" href="#L585">585</a><a id="L586" href="#L586">586</a><a id="L587" href="#L587">587</a><a id="L588" href="#L588">588</a><a id="L589" href="#L589">589</a><a id="L590" href="#L590">590</a><a id="L591" href="#L591">591</a><a id="L592" href="#L592">592</a><a id="L593" href="#L593">593</a><a id="L594" href="#L594">594</a><a id="L595" href="#L595">595</a><a id="L596" href="#L596">596</a><a id="L597" href="#L597">597</a><a id="L598" href="#L598">598</a><a id="L599" href="#L599">599</a><a id="L600" href="#L600">600</a><a id="L601" href="#L601">601</a><a id="L602" href="#L602">602</a><a id="L603" href="#L603">603</a><a id="L604" href="#L604">604</a><a id="L605" href="#L605">605</a><a id="L606" href="#L606">606</a><a id="L607" href="#L607">607</a><a id="L608" href="#L608">608</a><a id="L609" href="#L609">609</a><a id="L610" href="#L610">610</a><a id="L611" href="#L611">611</a><a id="L612" href="#L612">612</a><a id="L613" href="#L613">613</a><a id="L614" href="#L614">614</a><a id="L615" href="#L615">615</a><a id="L616" href="#L616">616</a><a id="L617" href="#L617">617</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/*******************************************************************************
+
+    copyright:  Copyright (C) 2007 Daniel Keep.  All rights reserved.
+
+    license:    BSD style: $(LICENSE)
+
+    version:    Initial release: July 2007
+
+    author:     Daniel Keep
+
+*******************************************************************************/</span>
+
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">stream</span>.<span class="i">Bzip</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">util</span>.<span class="i">compress</span>.<span class="i">c</span>.<span class="i">bzlib</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">core</span>.<span class="i">Exception</span> : <span class="i">IOException</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">device</span>.<span class="i">Conduit</span> : <span class="i">InputFilter</span>, <span class="i">OutputFilter</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">model</span>.<span class="i">IConduit</span> : <span class="i">InputStream</span>, <span class="i">OutputStream</span>, <span class="i">IConduit</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span>
+<span class="d Compound">{
+    <span class="bc">/* This constant controls the size of the input/output buffers we use
+     * internally.  There's no particular reason to pick this size.  It might
+     * be an idea to run some benchmarks to work out what a good number is.
+     */</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">BUFFER_SIZE</span></span> = <span class="e Mul"><span class="e Int"><span class="n">4</span></span>*<span class="e Int"><span class="n">1024</span></span></span></span> }</span><span class="d Empty">;</span>
+
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">DEFAULT_BLOCKSIZE</span></span> = <span class="e Int"><span class="n">9</span></span></span> }</span><span class="d Empty">;</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">DEFAULT_WORKFACTOR</span></span> = <span class="e Int"><span class="n">0</span></span></span> }</span><span class="d Empty">;</span>
+}</span>
+
+<span class="bc">/*******************************************************************************
+  
+    This output filter can be used to perform compression of data into a bzip2
+    stream.
+
+*******************************************************************************/</span>
+
+<span class="d Class"><span class="k">class</span> <span class="i">BzipOutput</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">OutputFilter</span></span></span>
+<span class="d Compound">{
+    <span class="bc">/***************************************************************************
+
+        This enumeration represents several pre-defined compression block
+        sizes, measured in hundreds of kilobytes.  See the documentation for
+        the BzipOutput class' constructor for more details.
+
+    ***************************************************************************/</span>
+
+    <span class="d Enum"><span class="k">enum</span> <span class="i">BlockSize</span> : <span class="t Integral"><span class="k">int</span></span>
+    {
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">Normal</span></span> = <span class="e Int"><span class="n">9</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">Fast</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">Best</span></span> = <span class="e Int"><span class="n">9</span></span></span>,
+    }</span>
+
+    <span class="d Protection"><span class="k">private</span></span>
+    <span class="d Compound">{
+        <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">bzs_valid</span> = <span class="e Bool"><span class="k">false</span></span>;</span>
+        <span class="d Variables"><span class="t Identifier"><span class="i">bz_stream</span></span> <span class="i">bzs</span>;</span>
+        <span class="d Variables"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">out_chunk</span>;</span>
+        <span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">_written</span> = <span class="e Int"><span class="n">0</span></span>;</span>
+    }</span>
+
+    <span class="bc">/***************************************************************************
+
+        Constructs a new bzip2 compression filter.  You need to pass in the
+        stream that the compression filter will write to.  If you are using
+        this filter with a conduit, the idiom to use is:
+
+        ---
+        auto output = new BzipOutput(myConduit.output);
+        output.write(myContent);
+        ---
+
+        blockSize relates to the size of the window bzip2 uses when
+        compressing data and determines how much memory is required to
+        decompress a stream.  It is measured in hundreds of kilobytes.
+        
+        ccording to the bzip2 documentation, there is no dramatic difference
+        between the various block sizes, so the default should suffice in most
+        cases.
+
+        BlockSize.Normal (the default) is the same as BlockSize.Best
+        (or 9).  The blockSize may be any integer between 1 and 9 inclusive.
+
+    ***************************************************************************/</span>
+
+    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">blockSize</span> = <span class="e Identifier"><span class="i">BlockSize</span></span>.<span class="e Identifier"><span class="i">Normal</span></span></span>)</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">init</span></span>(<span class="i">stream</span>, <span class="i">blockSize</span>)</span>;</span>
+        <span class="s ScopeGuard"><span class="k">scope</span>(<span class="i">failure</span>) <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span></span>
+
+        <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="i">stream</span>)</span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">out_chunk</span></span> = <span class="e New"><span class="k">new</span> <span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[<span class="e Identifier"><span class="i">BUFFER_SIZE</span></span></span>]</span></span>;</span>
+    }</span></span></span>
+
+    <span class="bc">/*
+     * This method performs initialisation for the stream.  Note that this may
+     * be called more than once for an instance, provided the instance is
+     * either new or as part of a call to reset.
+     */</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">init</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">blockSize</span></span>)</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s If"><span class="k">if</span>( <span class="e OrOr"><span class="e Rel"><span class="e Identifier"><span class="i">blockSize</span></span> &lt; <span class="e Int"><span class="n">1</span></span></span> || <span class="e Rel"><span class="e Identifier"><span class="i">blockSize</span></span> &gt; <span class="e Int"><span class="n">9</span></span></span></span> )
+            <span class="s Scope"><span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipException</span></span>(<span class="e String"><span class="sl">"bzip2 block size must be between"</span>
+                    <span class="sl">" 1 and 9"</span></span>)</span>;</span></span></span>
+
+        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">ret</span> = <span class="e Call"><span class="e Identifier"><span class="i">BZ2_bzCompressInit</span></span>(&amp;<span class="i">bzs</span>, <span class="i">blockSize</span>, <span class="n">0</span>, <span class="i">DEFAULT_WORKFACTOR</span>)</span>;</span></span>
+        <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">ret</span></span> != <span class="e Identifier"><span class="i">BZ_OK</span></span></span> )
+            <span class="s Scope"><span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipException</span></span>(<span class="e Identifier"><span class="i">ret</span></span>)</span>;</span></span></span>
+
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs_valid</span></span> = <span class="e Bool"><span class="k">true</span></span></span>;</span>
+    }</span></span></span>
+
+    <span class="d Destructor">~<span class="k">this</span>()
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s If"><span class="k">if</span>( <span class="e Identifier"><span class="i">bzs_valid</span></span> )
+            <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span></span></span>
+    }</span></span></span>
+
+    <span class="bc">/***************************************************************************
+        
+        Resets and re-initialises this instance.
+
+        If you are creating compression streams inside a loop, you may wish to
+        use this method to re-use a single instance.  This prevents the
+        potentially costly re-allocation of internal buffers.
+
+        The stream must have already been closed before calling reset.
+
+    ***************************************************************************/</span> 
+
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">reset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">blockSize</span> = <span class="e Identifier"><span class="i">BlockSize</span></span>.<span class="e Identifier"><span class="i">Normal</span></span></span>)</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="lc">// If the stream is still valid, bail.</span>
+        <span class="s If"><span class="k">if</span>( <span class="e Identifier"><span class="i">bzs_valid</span></span> )
+            <span class="s Scope"><span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipStillOpenException</span></span></span>;</span></span></span>
+
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">init</span></span>(<span class="i">stream</span>, <span class="i">blockSize</span>)</span>;</span>
+    }</span></span></span>
+
+    <span class="bc">/***************************************************************************
+
+        Compresses the given data to the underlying conduit.
+
+        Returns the number of bytes from src that were compressed, which may
+        be less than given.
+
+    ***************************************************************************/</span>
+
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">check_valid</span></span>()</span>;</span>
+        <span class="s ScopeGuard"><span class="k">scope</span>(<span class="i">failure</span>) <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span></span>
+
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">avail_in</span></span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">uint</span></span>)<span class="e Identifier"><span class="i">src</span></span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">next_in</span></span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span>)<span class="e Identifier"><span class="i">src</span></span></span>.<span class="e Identifier"><span class="i">ptr</span></span></span>;</span>
+
+        <span class="s DoWhile"><span class="k">do</span>
+        <span class="s Scope"><span class="s Compound">{
+            <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">avail_out</span></span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">uint</span></span>)<span class="e Identifier"><span class="i">out_chunk</span></span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span>
+            <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">next_out</span></span> = <span class="e Identifier"><span class="i">out_chunk</span></span>.<span class="e Identifier"><span class="i">ptr</span></span></span>;</span>
+
+            <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">ret</span> = <span class="e Call"><span class="e Identifier"><span class="i">BZ2_bzCompress</span></span>(&amp;<span class="i">bzs</span>, <span class="i">BZ_RUN</span>)</span>;</span></span>
+            <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">ret</span></span> != <span class="e Identifier"><span class="i">BZ_RUN_OK</span></span></span> )
+                <span class="s Scope"><span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipException</span></span>(<span class="e Identifier"><span class="i">ret</span></span>)</span>;</span></span></span>
+
+            <span class="lc">// Push the compressed bytes out to the stream, until it's either</span>
+            <span class="lc">// written them all, or choked.</span>
+            <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">have</span> = <span class="e Minus"><span class="e Identifier"><span class="i">out_chunk</span></span>.<span class="e Identifier"><span class="i">length</span></span>-<span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">avail_out</span></span></span>;</span></span>
+            <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">out_buffer</span> = <span class="e Slice"><span class="e Identifier"><span class="i">out_chunk</span></span>[<span class="e Int"><span class="n">0</span></span>..<span class="e Identifier"><span class="i">have</span></span>]</span>;</span></span>
+            <span class="s DoWhile"><span class="k">do</span>
+            <span class="s Scope"><span class="s Compound">{
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">w</span> = <span class="e Call"><span class="e Identifier"><span class="i">sink</span></span>.<span class="e Identifier"><span class="i">write</span></span>(<span class="i">out_buffer</span>)</span>;</span></span>
+                <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">w</span></span> == <span class="e Identifier"><span class="i">IConduit</span></span>.<span class="e Identifier"><span class="i">Eof</span></span></span> )
+                    <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">w</span></span>;</span></span></span>
+
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">out_buffer</span></span> = <span class="e Slice"><span class="e Identifier"><span class="i">out_buffer</span></span>[<span class="e Identifier"><span class="i">w</span></span>..<span class="e Dollar">$</span>]</span></span>;</span>
+                <span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">_written</span></span> += <span class="e Identifier"><span class="i">w</span></span></span>;</span>
+            }</span></span>
+            <span class="k">while</span>( <span class="e Rel"><span class="e Identifier"><span class="i">out_buffer</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span> )</span><span class="s Empty">;</span>
+        }</span></span>
+        <span class="lc">// Loop while we are still using up the whole output buffer</span>
+        <span class="k">while</span>( <span class="e Equal"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">avail_out</span></span> == <span class="e Int"><span class="n">0</span></span></span> )</span><span class="s Empty">;</span>
+
+        <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">avail_in</span></span> == <span class="e Int"><span class="n">0</span></span></span>, <span class="e String"><span class="sl">"failed to compress all provided data"</span></span> )</span>;</span>
+
+        <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">src</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span>
+    }</span></span></span>
+
+    <span class="bc">/***************************************************************************
+
+        This read-only property returns the number of compressed bytes that
+        have been written to the underlying stream.  Following a call to
+        either close or commit, this will contain the total compressed size of
+        the input data stream.
+
+    ***************************************************************************/</span>
+
+    <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">written</span><span class="o Parameters">()</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">_written</span></span>;</span>
+    }</span></span></span>
+
+    <span class="bc">/***************************************************************************
+
+        Close the compression stream.  This will cause any buffered content to
+        be committed to the underlying stream.
+
+    ***************************************************************************/</span>
+
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span><span class="o Parameters">()</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s If"><span class="k">if</span>( <span class="e Identifier"><span class="i">bzs_valid</span></span> ) <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">commit</span></span>()</span>;</span></span></span>
+        <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>.<span class="e Identifier"><span class="i">close</span></span>()</span>;</span>
+    }</span></span></span>
+
+    <span class="bc">/***************************************************************************
+
+        Purge any buffered content.  Calling this will implicitly end the
+        bzip2 stream, so it should not be called until you are finished
+        compressing data.  Any calls to either write or commit after a
+        compression filter has been committed will throw an exception.
+
+        The only difference between calling this method and calling close is
+        that the underlying stream will not be closed.
+
+    ***************************************************************************/</span>
+
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">commit</span><span class="o Parameters">()</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">check_valid</span></span>()</span>;</span>
+        <span class="s ScopeGuard"><span class="k">scope</span>(<span class="i">failure</span>) <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span></span>
+
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">avail_in</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">next_in</span></span> = <span class="e Null"><span class="k">null</span></span></span>;</span>
+
+        <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">finished</span> = <span class="e Bool"><span class="k">false</span></span>;</span></span>
+
+        <span class="s DoWhile"><span class="k">do</span>
+        <span class="s Scope"><span class="s Compound">{
+            <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">avail_out</span></span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">uint</span></span>)<span class="e Identifier"><span class="i">out_chunk</span></span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span>
+            <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">next_out</span></span> = <span class="e Identifier"><span class="i">out_chunk</span></span>.<span class="e Identifier"><span class="i">ptr</span></span></span>;</span>
+
+            <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">ret</span> = <span class="e Call"><span class="e Identifier"><span class="i">BZ2_bzCompress</span></span>(&amp;<span class="i">bzs</span>, <span class="i">BZ_FINISH</span>)</span>;</span></span>
+            <span class="s Switch"><span class="k">switch</span>( <span class="e Identifier"><span class="i">ret</span></span> )
+            <span class="s Scope"><span class="s Compound">{
+                <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_FINISH_OK</span></span>:
+                    <span class="s Scope"><span class="s Compound"><span class="s Break"><span class="k">break</span>;</span></span></span></span>
+
+                <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_STREAM_END</span></span>:
+                    <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">finished</span></span> = <span class="e Bool"><span class="k">true</span></span></span>;</span>
+                    <span class="s Break"><span class="k">break</span>;</span></span></span></span>
+
+                <span class="s Default"><span class="k">default</span>:
+                    <span class="s Scope"><span class="s Compound"><span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipException</span></span>(<span class="e Identifier"><span class="i">ret</span></span>)</span>;</span></span></span></span>
+            }</span></span></span>
+
+            <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">have</span> = <span class="e Minus"><span class="e Identifier"><span class="i">out_chunk</span></span>.<span class="e Identifier"><span class="i">length</span></span> - <span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">avail_out</span></span></span>;</span></span>
+            <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">out_buffer</span> = <span class="e Slice"><span class="e Identifier"><span class="i">out_chunk</span></span>[<span class="e Int"><span class="n">0</span></span>..<span class="e Identifier"><span class="i">have</span></span>]</span>;</span></span>
+            <span class="s If"><span class="k">if</span>( <span class="e Rel"><span class="e Identifier"><span class="i">have</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span> )
+            <span class="s Scope"><span class="s Compound">{
+                <span class="s DoWhile"><span class="k">do</span>
+                <span class="s Scope"><span class="s Compound">{
+                    <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">w</span> = <span class="e Call"><span class="e Identifier"><span class="i">sink</span></span>.<span class="e Identifier"><span class="i">write</span></span>(<span class="i">out_buffer</span>)</span>;</span></span>
+                    <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">w</span></span> == <span class="e Identifier"><span class="i">IConduit</span></span>.<span class="e Identifier"><span class="i">Eof</span></span></span> )
+                        <span class="s Scope"><span class="s Return"><span class="k">return</span>;</span></span></span>
+
+                    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">out_buffer</span></span> = <span class="e Slice"><span class="e Identifier"><span class="i">out_buffer</span></span>[<span class="e Identifier"><span class="i">w</span></span>..<span class="e Dollar">$</span>]</span></span>;</span>
+                    <span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">_written</span></span> += <span class="e Identifier"><span class="i">w</span></span></span>;</span>
+                }</span></span>
+                <span class="k">while</span>( <span class="e Rel"><span class="e Identifier"><span class="i">out_buffer</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span> )</span><span class="s Empty">;</span>
+            }</span></span></span>
+        }</span></span>
+        <span class="k">while</span>( <span class="e Not">!<span class="e Identifier"><span class="i">finished</span></span></span> )</span><span class="s Empty">;</span>
+
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span>
+    }</span></span></span>
+
+    <span class="lc">// Disable seeking</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">seek</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">offset</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Anchor</span></span> <span class="i">anchor</span> = <span class="e Identifier"><span class="i">Anchor</span></span>.<span class="e Identifier"><span class="i">Begin</span></span></span>)</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">IOException</span></span>(<span class="e String"><span class="sl">"BzipOutput does not support seek requests"</span></span>)</span>;</span>
+    }</span></span></span>
+
+    <span class="lc">// This function kills the stream: it deallocates the internal state, and</span>
+    <span class="lc">// unsets the bzs_valid flag.</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">kill_bzs</span><span class="o Parameters">()</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">check_valid</span></span>()</span>;</span>
+
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">BZ2_bzCompressEnd</span></span>(&amp;<span class="i">bzs</span>)</span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs_valid</span></span> = <span class="e Bool"><span class="k">false</span></span></span>;</span>
+    }</span></span></span>
+
+    <span class="lc">// Asserts that the stream is still valid and usable (except that this</span>
+    <span class="lc">// check doesn't get elided with -release).</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">check_valid</span><span class="o Parameters">()</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s If"><span class="k">if</span>( <span class="e Not">!<span class="e Identifier"><span class="i">bzs_valid</span></span></span> )
+            <span class="s Scope"><span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipClosedException</span></span></span>;</span></span></span>
+    }</span></span></span>
+}</span></span>
+
+<span class="bc">/*******************************************************************************
+  
+    This input filter can be used to perform decompression of bzip2 streams.
+
+*******************************************************************************/</span>
+
+<span class="d Class"><span class="k">class</span> <span class="i">BzipInput</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">InputFilter</span></span></span>
+<span class="d Compound">{
+    <span class="d Protection"><span class="k">private</span></span>
+    <span class="d Compound">{
+        <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">bzs_valid</span> = <span class="e Bool"><span class="k">false</span></span>;</span>
+        <span class="d Variables"><span class="t Identifier"><span class="i">bz_stream</span></span> <span class="i">bzs</span>;</span>
+        <span class="d Variables"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">in_chunk</span>;</span>
+    }</span>
+
+    <span class="bc">/***************************************************************************
+
+        Constructs a new bzip2 decompression filter.  You need to pass in the
+        stream that the decompression filter will read from.  If you are using
+        this filter with a conduit, the idiom to use is:
+
+        ---
+        auto input = new BzipInput(myConduit.input);
+        input.read(myContent);
+        ---
+
+        The small argument, if set to true, instructs bzip2 to perform
+        decompression using half the regular amount of memory, at the cost of
+        running at half speed.
+
+    ***************************************************************************/</span>
+
+    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">small</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">init</span></span>(<span class="i">stream</span>, <span class="i">small</span>)</span>;</span>
+        <span class="s ScopeGuard"><span class="k">scope</span>(<span class="i">failure</span>) <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span></span>
+
+        <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="i">stream</span>)</span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">in_chunk</span></span> = <span class="e New"><span class="k">new</span> <span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[<span class="e Identifier"><span class="i">BUFFER_SIZE</span></span></span>]</span></span>;</span>
+    }</span></span></span>
+
+    <span class="bc">/*
+     * This method performs initialisation for the stream.  Note that this may
+     * be called more than once for an instance, provided the instance is
+     * either new or as part of a call to reset.
+     */</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">init</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">small</span></span>)</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">ret</span> = <span class="e Call"><span class="e Identifier"><span class="i">BZ2_bzDecompressInit</span></span>(&amp;<span class="i">bzs</span>, <span class="n">0</span>, <span class="i">small</span>?<span class="n">1</span>:<span class="n">0</span>)</span>;</span></span>
+        <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">ret</span></span> != <span class="e Identifier"><span class="i">BZ_OK</span></span></span> )
+            <span class="s Scope"><span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipException</span></span>(<span class="e Identifier"><span class="i">ret</span></span>)</span>;</span></span></span>
+
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs_valid</span></span> = <span class="e Bool"><span class="k">true</span></span></span>;</span>
+    }</span></span></span>
+
+    <span class="d Destructor">~<span class="k">this</span>()
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s If"><span class="k">if</span>( <span class="e Identifier"><span class="i">bzs_valid</span></span> )
+            <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span></span></span>
+    }</span></span></span>
+
+    <span class="bc">/***************************************************************************
+        
+        Resets and re-initialises this instance.
+
+        If you are creating compression streams inside a loop, you may wish to
+        use this method to re-use a single instance.  This prevents the
+        potentially costly re-allocation of internal buffers.
+
+        The stream must have already been closed before calling reset.
+
+    ***************************************************************************/</span> 
+
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">reset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">small</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="lc">// If the stream is still valid, bail.</span>
+        <span class="s If"><span class="k">if</span>( <span class="e Identifier"><span class="i">bzs_valid</span></span> )
+            <span class="s Scope"><span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipStillOpenException</span></span></span>;</span></span></span>
+
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">init</span></span>(<span class="i">stream</span>, <span class="i">small</span>)</span>;</span>
+    }</span></span></span>
+
+    <span class="bc">/***************************************************************************
+
+        Decompresses data from the underlying conduit into a target array.
+
+        Returns the number of bytes stored into dst, which may be less than
+        requested.
+
+    ***************************************************************************/</span> 
+
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span></span>)</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s If"><span class="k">if</span>( <span class="e Not">!<span class="e Identifier"><span class="i">bzs_valid</span></span></span> )
+            <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">IConduit</span></span>.<span class="e Identifier"><span class="i">Eof</span></span>;</span></span></span>
+
+        <span class="s ScopeGuard"><span class="k">scope</span>(<span class="i">failure</span>) <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span></span>
+
+        <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">finished</span> = <span class="e Bool"><span class="k">false</span></span>;</span></span>
+
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">avail_out</span></span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">uint</span></span>)<span class="e Identifier"><span class="i">dst</span></span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">next_out</span></span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span>)<span class="e Identifier"><span class="i">dst</span></span></span>.<span class="e Identifier"><span class="i">ptr</span></span></span>;</span>
+
+        <span class="s DoWhile"><span class="k">do</span>
+        <span class="s Scope"><span class="s Compound">{
+            <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">avail_in</span></span> == <span class="e Int"><span class="n">0</span></span></span> )
+            <span class="s Scope"><span class="s Compound">{
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">len</span> = <span class="e Call"><span class="e Identifier"><span class="i">source</span></span>.<span class="e Identifier"><span class="i">read</span></span>(<span class="i">in_chunk</span>)</span>;</span></span>
+                <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">len</span></span> == <span class="e Identifier"><span class="i">IConduit</span></span>.<span class="e Identifier"><span class="i">Eof</span></span></span> )
+                    <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">IConduit</span></span>.<span class="e Identifier"><span class="i">Eof</span></span>;</span></span></span>
+
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">avail_in</span></span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">uint</span></span>)<span class="e Identifier"><span class="i">len</span></span></span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">next_in</span></span> = <span class="e Identifier"><span class="i">in_chunk</span></span>.<span class="e Identifier"><span class="i">ptr</span></span></span>;</span>
+            }</span></span></span>
+
+            <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">ret</span> = <span class="e Call"><span class="e Identifier"><span class="i">BZ2_bzDecompress</span></span>(&amp;<span class="i">bzs</span>)</span>;</span></span>
+            <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">ret</span></span> == <span class="e Identifier"><span class="i">BZ_STREAM_END</span></span></span> )
+            <span class="s Scope"><span class="s Compound">{
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">finished</span></span> = <span class="e Bool"><span class="k">true</span></span></span>;</span>
+            }</span></span>
+            <span class="k">else</span> <span class="s Scope"><span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">ret</span></span> != <span class="e Identifier"><span class="i">BZ_OK</span></span></span> )
+                <span class="s Scope"><span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipException</span></span>(<span class="e Identifier"><span class="i">ret</span></span>)</span>;</span></span></span></span></span>
+        }</span></span>
+        <span class="k">while</span>( <span class="e AndAnd"><span class="e Not">!<span class="e Identifier"><span class="i">finished</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">avail_out</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span></span> )</span><span class="s Empty">;</span>
+
+        <span class="s Return"><span class="k">return</span> <span class="e Minus"><span class="e Identifier"><span class="i">dst</span></span>.<span class="e Identifier"><span class="i">length</span></span> - <span class="e Identifier"><span class="i">bzs</span></span>.<span class="e Identifier"><span class="i">avail_out</span></span></span>;</span>
+    }</span></span></span>
+
+    <span class="bc">/***************************************************************************
+
+        Closes the compression stream.
+
+    ***************************************************************************/</span> 
+
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span><span class="o Parameters">()</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">check_valid</span></span>()</span>;</span>
+
+        <span class="lc">// Kill the stream.  Don't deallocate the buffer since the user may</span>
+        <span class="lc">// yet reset the stream.</span>
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span>
+        <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>.<span class="e Identifier"><span class="i">close</span></span>()</span>;</span>
+    }</span></span></span>
+
+    <span class="lc">// Disable seeking</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">seek</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">offset</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Anchor</span></span> <span class="i">anchor</span> = <span class="e Identifier"><span class="i">Anchor</span></span>.<span class="e Identifier"><span class="i">Begin</span></span></span>)</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">IOException</span></span>(<span class="e String"><span class="sl">"BzipOutput does not support seek requests"</span></span>)</span>;</span>
+    }</span></span></span>
+
+    <span class="lc">// This function kills the stream: it deallocates the internal state, and</span>
+    <span class="lc">// unsets the bzs_valid flag.</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">kill_bzs</span><span class="o Parameters">()</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">check_valid</span></span>()</span>;</span>
+
+        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">BZ2_bzDecompressEnd</span></span>(&amp;<span class="i">bzs</span>)</span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bzs_valid</span></span> = <span class="e Bool"><span class="k">false</span></span></span>;</span>
+    }</span></span></span>
+
+    <span class="lc">// Asserts that the stream is still valid and usable (except that this</span>
+    <span class="lc">// check doesn't get elided with -release).</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">check_valid</span><span class="o Parameters">()</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s If"><span class="k">if</span>( <span class="e Not">!<span class="e Identifier"><span class="i">bzs_valid</span></span></span> )
+            <span class="s Scope"><span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipClosedException</span></span></span>;</span></span></span>
+    }</span></span></span>
+}</span></span>
+
+<span class="bc">/*******************************************************************************
+  
+    This exception is thrown when an error occurs in the underlying bzip2
+    library.
+
+*******************************************************************************/</span>
+
+<span class="d Class"><span class="k">class</span> <span class="i">BzipException</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">IOException</span></span></span>
+<span class="d Compound">{
+    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">int</span></span> <span class="i">code</span></span>)</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="i">codeName</span>(<span class="i">code</span>))</span>;</span>
+    }</span></span></span>
+
+    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">string</span></span> <span class="i">msg</span></span>)</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="i">msg</span>)</span>;</span>
+    }</span></span></span>
+
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">string</span></span> <span class="i">codeName</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">int</span></span> <span class="i">code</span></span>)</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">string</span></span> <span class="i">name</span>;</span></span>
+
+        <span class="s Switch"><span class="k">switch</span>( <span class="e Identifier"><span class="i">code</span></span> )
+        <span class="s Scope"><span class="s Compound">{
+            <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_OK</span></span>:                 <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name</span></span> = <span class="e String"><span class="sl">"BZ_OK"</span></span></span>;</span>                 <span class="s Break"><span class="k">break</span>;</span></span></span></span>
+            <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_RUN_OK</span></span>:             <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name</span></span> = <span class="e String"><span class="sl">"BZ_RUN_OK"</span></span></span>;</span>             <span class="s Break"><span class="k">break</span>;</span></span></span></span>
+            <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_FLUSH_OK</span></span>:           <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name</span></span> = <span class="e String"><span class="sl">"BZ_FLUSH_OK"</span></span></span>;</span>           <span class="s Break"><span class="k">break</span>;</span></span></span></span>
+            <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_STREAM_END</span></span>:         <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name</span></span> = <span class="e String"><span class="sl">"BZ_STREAM_END"</span></span></span>;</span>         <span class="s Break"><span class="k">break</span>;</span></span></span></span>
+            <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_SEQUENCE_ERROR</span></span>:     <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name</span></span> = <span class="e String"><span class="sl">"BZ_SEQUENCE_ERROR"</span></span></span>;</span>     <span class="s Break"><span class="k">break</span>;</span></span></span></span>
+            <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_PARAM_ERROR</span></span>:        <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name</span></span> = <span class="e String"><span class="sl">"BZ_PARAM_ERROR"</span></span></span>;</span>        <span class="s Break"><span class="k">break</span>;</span></span></span></span>
+            <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_MEM_ERROR</span></span>:          <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name</span></span> = <span class="e String"><span class="sl">"BZ_MEM_ERROR"</span></span></span>;</span>          <span class="s Break"><span class="k">break</span>;</span></span></span></span>
+            <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_DATA_ERROR</span></span>:         <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name</span></span> = <span class="e String"><span class="sl">"BZ_DATA_ERROR"</span></span></span>;</span>         <span class="s Break"><span class="k">break</span>;</span></span></span></span>
+            <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_DATA_ERROR_MAGIC</span></span>:   <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name</span></span> = <span class="e String"><span class="sl">"BZ_DATA_ERROR_MAGIC"</span></span></span>;</span>   <span class="s Break"><span class="k">break</span>;</span></span></span></span>
+            <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_IO_ERROR</span></span>:           <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name</span></span> = <span class="e String"><span class="sl">"BZ_IO_ERROR"</span></span></span>;</span>           <span class="s Break"><span class="k">break</span>;</span></span></span></span>
+            <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_UNEXPECTED_EOF</span></span>:     <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name</span></span> = <span class="e String"><span class="sl">"BZ_UNEXPECTED_EOF"</span></span></span>;</span>     <span class="s Break"><span class="k">break</span>;</span></span></span></span>
+            <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_OUTBUFF_FULL</span></span>:       <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name</span></span> = <span class="e String"><span class="sl">"BZ_OUTBUFF_FULL"</span></span></span>;</span>       <span class="s Break"><span class="k">break</span>;</span></span></span></span>
+            <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">BZ_CONFIG_ERROR</span></span>:       <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name</span></span> = <span class="e String"><span class="sl">"BZ_CONFIG_ERROR"</span></span></span>;</span>       <span class="s Break"><span class="k">break</span>;</span></span></span></span>
+            <span class="s Default"><span class="k">default</span>:                    <span class="s Scope"><span class="s Compound"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name</span></span> = <span class="e String"><span class="sl">"BZ_UNKNOWN"</span></span></span>;</span></span></span></span>
+        }</span></span></span>
+
+        <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">name</span></span>;</span>
+    }</span></span></span>
+}</span></span>
+
+<span class="bc">/*******************************************************************************
+  
+    This exception is thrown if you attempt to perform a read, write or flush
+    operation on a closed bzip2 filter stream.  This can occur if the input
+    stream has finished, or an output stream was flushed.
+
+*******************************************************************************/</span>
+
+<span class="d Class"><span class="k">class</span> <span class="i">BzipClosedException</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">IOException</span></span></span>
+<span class="d Compound">{
+    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">()</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="sl">"cannot operate on closed bzip2 stream"</span>)</span>;</span>
+    }</span></span></span>
+}</span></span>
+
+<span class="bc">/*******************************************************************************
+  
+    This exception is thrown if you attempt to reset a compression stream that
+    is still open.  You must either close or commit a stream before it can be
+    reset.
+
+*******************************************************************************/</span>
+
+<span class="d Class"><span class="k">class</span> <span class="i">BzipStillOpenException</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">IOException</span></span></span>
+<span class="d Compound">{
+    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">()</span>
+    <span class="s FuncBody"><span class="s Compound">{
+        <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="sl">"cannot reset an open bzip2 stream"</span>)</span>;</span>
+    }</span></span></span>
+}</span></span>
+
+<span class="bc">/* *****************************************************************************
+
+    This section contains a simple unit test for this module.  It is hidden
+    behind a version statement because it introduces additional dependencies.
+
+***************************************************************************** */</span>
+
+<span class="d Debug"><span class="k">debug</span>(<span class="i">UnitTest</span>):
+
+<span class="d Compound"><span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">device</span>.<span class="i">Array</span> : <span class="i">Array</span>;</span>
+
+<span class="d Unittest"><span class="k">unittest</span>
+<span class="s FuncBody"><span class="s Compound">{
+    <span class="s Declaration"><span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">message</span> =
+        <span class="e String"><span class="sl">"All dwarfs are by nature dutiful, serious, literate, obedient "</span>
+        <span class="sl">"and thoughtful people whose only minor failing is a tendency, "</span>
+        <span class="sl">"after one drink, to rush at enemies screaming <span class="es">\"</span>Arrrrrrgh!<span class="es">\"</span> and "</span>
+        <span class="sl">"axing their legs off at the knee."</span></span>;</span></span>
+
+    <span class="s Declaration"><span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">message_z</span> = <span class="e ArrayInit">[
+        <span class="e Int"><span class="n">0x42</span></span>, <span class="e Int"><span class="n">0x5a</span></span>, <span class="e Int"><span class="n">0x68</span></span>, <span class="e Int"><span class="n">0x39</span></span>, <span class="e Int"><span class="n">0x31</span></span>, <span class="e Int"><span class="n">0x41</span></span>, <span class="e Int"><span class="n">0x59</span></span>, <span class="e Int"><span class="n">0x26</span></span>,
+        <span class="e Int"><span class="n">0x53</span></span>, <span class="e Int"><span class="n">0x59</span></span>, <span class="e Int"><span class="n">0x40</span></span>, <span class="e Int"><span class="n">0x98</span></span>, <span class="e Int"><span class="n">0xbe</span></span>, <span class="e Int"><span class="n">0xaa</span></span>, <span class="e Int"><span class="n">0x00</span></span>, <span class="e Int"><span class="n">0x00</span></span>,
+        <span class="e Int"><span class="n">0x16</span></span>, <span class="e Int"><span class="n">0xd5</span></span>, <span class="e Int"><span class="n">0x80</span></span>, <span class="e Int"><span class="n">0x10</span></span>, <span class="e Int"><span class="n">0x00</span></span>, <span class="e Int"><span class="n">0x70</span></span>, <span class="e Int"><span class="n">0x05</span></span>, <span class="e Int"><span class="n">0x20</span></span>,
+        <span class="e Int"><span class="n">0x00</span></span>, <span class="e Int"><span class="n">0x3f</span></span>, <span class="e Int"><span class="n">0xef</span></span>, <span class="e Int"><span class="n">0xde</span></span>, <span class="e Int"><span class="n">0xe0</span></span>, <span class="e Int"><span class="n">0x30</span></span>, <span class="e Int"><span class="n">0x00</span></span>, <span class="e Int"><span class="n">0xac</span></span>,
+        <span class="e Int"><span class="n">0xd8</span></span>, <span class="e Int"><span class="n">0x8a</span></span>, <span class="e Int"><span class="n">0x3d</span></span>, <span class="e Int"><span class="n">0x34</span></span>, <span class="e Int"><span class="n">0x6a</span></span>, <span class="e Int"><span class="n">0x6d</span></span>, <span class="e Int"><span class="n">0x4c</span></span>, <span class="e Int"><span class="n">0x4f</span></span>,
+        <span class="e Int"><span class="n">0x24</span></span>, <span class="e Int"><span class="n">0x31</span></span>, <span class="e Int"><span class="n">0x0d</span></span>, <span class="e Int"><span class="n">0x08</span></span>, <span class="e Int"><span class="n">0x98</span></span>, <span class="e Int"><span class="n">0x9b</span></span>, <span class="e Int"><span class="n">0x48</span></span>, <span class="e Int"><span class="n">0x9a</span></span>,
+        <span class="e Int"><span class="n">0x7a</span></span>, <span class="e Int"><span class="n">0x80</span></span>, <span class="e Int"><span class="n">0x00</span></span>, <span class="e Int"><span class="n">0x06</span></span>, <span class="e Int"><span class="n">0xa6</span></span>, <span class="e Int"><span class="n">0xd2</span></span>, <span class="e Int"><span class="n">0xa7</span></span>, <span class="e Int"><span class="n">0xe9</span></span>,
+        <span class="e Int"><span class="n">0xaa</span></span>, <span class="e Int"><span class="n">0x37</span></span>, <span class="e Int"><span class="n">0xa8</span></span>, <span class="e Int"><span class="n">0xd4</span></span>, <span class="e Int"><span class="n">0xf5</span></span>, <span class="e Int"><span class="n">0x3f</span></span>, <span class="e Int"><span class="n">0x54</span></span>, <span class="e Int"><span class="n">0x63</span></span>,
+        <span class="e Int"><span class="n">0x51</span></span>, <span class="e Int"><span class="n">0xe9</span></span>, <span class="e Int"><span class="n">0x2d</span></span>, <span class="e Int"><span class="n">0x4b</span></span>, <span class="e Int"><span class="n">0x99</span></span>, <span class="e Int"><span class="n">0xe1</span></span>, <span class="e Int"><span class="n">0xcc</span></span>, <span class="e Int"><span class="n">0xca</span></span>,
+        <span class="e Int"><span class="n">0xda</span></span>, <span class="e Int"><span class="n">0x75</span></span>, <span class="e Int"><span class="n">0x04</span></span>, <span class="e Int"><span class="n">0x42</span></span>, <span class="e Int"><span class="n">0x14</span></span>, <span class="e Int"><span class="n">0xc8</span></span>, <span class="e Int"><span class="n">0x6a</span></span>, <span class="e Int"><span class="n">0x8e</span></span>,
+        <span class="e Int"><span class="n">0x23</span></span>, <span class="e Int"><span class="n">0xc1</span></span>, <span class="e Int"><span class="n">0x3e</span></span>, <span class="e Int"><span class="n">0xb1</span></span>, <span class="e Int"><span class="n">0x8a</span></span>, <span class="e Int"><span class="n">0x16</span></span>, <span class="e Int"><span class="n">0xd2</span></span>, <span class="e Int"><span class="n">0x55</span></span>,
+        <span class="e Int"><span class="n">0x9a</span></span>, <span class="e Int"><span class="n">0x3e</span></span>, <span class="e Int"><span class="n">0x56</span></span>, <span class="e Int"><span class="n">0x1a</span></span>, <span class="e Int"><span class="n">0xb1</span></span>, <span class="e Int"><span class="n">0x83</span></span>, <span class="e Int"><span class="n">0x11</span></span>, <span class="e Int"><span class="n">0xa6</span></span>,
+        <span class="e Int"><span class="n">0x50</span></span>, <span class="e Int"><span class="n">0x4f</span></span>, <span class="e Int"><span class="n">0xd3</span></span>, <span class="e Int"><span class="n">0xed</span></span>, <span class="e Int"><span class="n">0x21</span></span>, <span class="e Int"><span class="n">0x40</span></span>, <span class="e Int"><span class="n">0xaa</span></span>, <span class="e Int"><span class="n">0xd1</span></span>,
+        <span class="e Int"><span class="n">0x95</span></span>, <span class="e Int"><span class="n">0x2c</span></span>, <span class="e Int"><span class="n">0xda</span></span>, <span class="e Int"><span class="n">0xcb</span></span>, <span class="e Int"><span class="n">0xb7</span></span>, <span class="e Int"><span class="n">0x0e</span></span>, <span class="e Int"><span class="n">0xce</span></span>, <span class="e Int"><span class="n">0x65</span></span>,
+        <span class="e Int"><span class="n">0xfc</span></span>, <span class="e Int"><span class="n">0x63</span></span>, <span class="e Int"><span class="n">0xf2</span></span>, <span class="e Int"><span class="n">0x88</span></span>, <span class="e Int"><span class="n">0x5b</span></span>, <span class="e Int"><span class="n">0x36</span></span>, <span class="e Int"><span class="n">0xda</span></span>, <span class="e Int"><span class="n">0xf0</span></span>,
+        <span class="e Int"><span class="n">0xf5</span></span>, <span class="e Int"><span class="n">0xd2</span></span>, <span class="e Int"><span class="n">0x9c</span></span>, <span class="e Int"><span class="n">0xe6</span></span>, <span class="e Int"><span class="n">0xf1</span></span>, <span class="e Int"><span class="n">0x87</span></span>, <span class="e Int"><span class="n">0x12</span></span>, <span class="e Int"><span class="n">0x87</span></span>,
+        <span class="e Int"><span class="n">0xce</span></span>, <span class="e Int"><span class="n">0x56</span></span>, <span class="e Int"><span class="n">0x0c</span></span>, <span class="e Int"><span class="n">0xf5</span></span>, <span class="e Int"><span class="n">0x65</span></span>, <span class="e Int"><span class="n">0x4d</span></span>, <span class="e Int"><span class="n">0x2e</span></span>, <span class="e Int"><span class="n">0xd6</span></span>,
+        <span class="e Int"><span class="n">0x27</span></span>, <span class="e Int"><span class="n">0x61</span></span>, <span class="e Int"><span class="n">0x2b</span></span>, <span class="e Int"><span class="n">0x74</span></span>, <span class="e Int"><span class="n">0xcd</span></span>, <span class="e Int"><span class="n">0x5e</span></span>, <span class="e Int"><span class="n">0x3b</span></span>, <span class="e Int"><span class="n">0x02</span></span>,
+        <span class="e Int"><span class="n">0x42</span></span>, <span class="e Int"><span class="n">0x4e</span></span>, <span class="e Int"><span class="n">0x0b</span></span>, <span class="e Int"><span class="n">0x80</span></span>, <span class="e Int"><span class="n">0xa8</span></span>, <span class="e Int"><span class="n">0x70</span></span>, <span class="e Int"><span class="n">0x04</span></span>, <span class="e Int"><span class="n">0x48</span></span>,
+        <span class="e Int"><span class="n">0xfb</span></span>, <span class="e Int"><span class="n">0x93</span></span>, <span class="e Int"><span class="n">0x4c</span></span>, <span class="e Int"><span class="n">0x41</span></span>, <span class="e Int"><span class="n">0xa8</span></span>, <span class="e Int"><span class="n">0x2a</span></span>, <span class="e Int"><span class="n">0xdf</span></span>, <span class="e Int"><span class="n">0xf2</span></span>,
+        <span class="e Int"><span class="n">0x67</span></span>, <span class="e Int"><span class="n">0x37</span></span>, <span class="e Int"><span class="n">0x28</span></span>, <span class="e Int"><span class="n">0xad</span></span>, <span class="e Int"><span class="n">0x38</span></span>, <span class="e Int"><span class="n">0xd4</span></span>, <span class="e Int"><span class="n">0x5c</span></span>, <span class="e Int"><span class="n">0xd6</span></span>,
+        <span class="e Int"><span class="n">0x34</span></span>, <span class="e Int"><span class="n">0x8b</span></span>, <span class="e Int"><span class="n">0x49</span></span>, <span class="e Int"><span class="n">0x5e</span></span>, <span class="e Int"><span class="n">0x90</span></span>, <span class="e Int"><span class="n">0xb2</span></span>, <span class="e Int"><span class="n">0x06</span></span>, <span class="e Int"><span class="n">0xce</span></span>,
+        <span class="e Int"><span class="n">0x0a</span></span>, <span class="e Int"><span class="n">0x83</span></span>, <span class="e Int"><span class="n">0x29</span></span>, <span class="e Int"><span class="n">0x84</span></span>, <span class="e Int"><span class="n">0x20</span></span>, <span class="e Int"><span class="n">0xd7</span></span>, <span class="e Int"><span class="n">0x5f</span></span>, <span class="e Int"><span class="n">0xc5</span></span>,
+        <span class="e Int"><span class="n">0xdc</span></span>, <span class="e Int"><span class="n">0x91</span></span>, <span class="e Int"><span class="n">0x4e</span></span>, <span class="e Int"><span class="n">0x14</span></span>, <span class="e Int"><span class="n">0x24</span></span>, <span class="e Int"><span class="n">0x10</span></span>, <span class="e Int"><span class="n">0x26</span></span>, <span class="e Int"><span class="n">0x2f</span></span>,
+        <span class="e Int"><span class="n">0xaa</span></span>, <span class="e Int"><span class="n">0x80</span></span>]</span>;</span></span>
+
+    <span class="s Declaration"><span class="d StorageClass"><span class="k">scope</span></span> <span class="d Variables"><span class="i">cond</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Array</span></span>(<span class="e Int"><span class="n">1024</span></span>, <span class="e Int"><span class="n">1024</span></span>)</span>;</span></span>
+    <span class="s Declaration"><span class="d StorageClass"><span class="k">scope</span></span> <span class="d Variables"><span class="i">comp</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipOutput</span></span>(<span class="e Identifier"><span class="i">cond</span></span>)</span>;</span></span>
+    <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">comp</span></span>.<span class="t Identifier"><span class="i">write</span></span>(<span class="i">message</span>);</span></span>
+    <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">comp</span></span>.<span class="e Identifier"><span class="i">close</span></span>()</span>;</span>
+
+    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Call"><span class="e Identifier"><span class="i">comp</span></span>.<span class="e Identifier"><span class="i">written</span></span>()</span> == <span class="e Identifier"><span class="i">message_z</span></span>.<span class="e Identifier"><span class="i">length</span></span></span> )</span>;</span>
+
+    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Identifier"><span class="i">message_z</span></span> == <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span>)<span class="e Paren">(<span class="e Call"><span class="e Identifier"><span class="i">cond</span></span>.<span class="e Identifier"><span class="i">slice</span></span>()</span>)</span></span></span> )</span>;</span>
+
+    <span class="s Declaration"><span class="d StorageClass"><span class="k">scope</span></span> <span class="d Variables"><span class="i">decomp</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipInput</span></span>(<span class="e Identifier"><span class="i">cond</span></span>)</span>;</span></span>
+    <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">buffer</span> = <span class="e New"><span class="k">new</span> <span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[<span class="e Int"><span class="n">256</span></span>]</span></span>;</span></span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">buffer</span></span> = <span class="e Slice"><span class="e Identifier"><span class="i">buffer</span></span>[<span class="e Int"><span class="n">0</span></span> .. <span class="e Call"><span class="e Identifier"><span class="i">decomp</span></span>.<span class="e Identifier"><span class="i">read</span></span>(<span class="i">buffer</span>)</span>]</span></span>;</span>
+
+    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span>)<span class="e Identifier"><span class="i">message</span></span></span> == <span class="e Identifier"><span class="i">buffer</span></span></span> )</span>;</span>
+}</span></span></span></span></span></span>
+
+
+</pre></td>
+</tr></table>
+</body>
+</html>

@@ -1,0 +1,904 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.util.container.HashSet</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a><a id="L38" href="#L38">38</a><a id="L39" href="#L39">39</a><a id="L40" href="#L40">40</a><a id="L41" href="#L41">41</a><a id="L42" href="#L42">42</a><a id="L43" href="#L43">43</a><a id="L44" href="#L44">44</a><a id="L45" href="#L45">45</a><a id="L46" href="#L46">46</a><a id="L47" href="#L47">47</a><a id="L48" href="#L48">48</a><a id="L49" href="#L49">49</a><a id="L50" href="#L50">50</a><a id="L51" href="#L51">51</a><a id="L52" href="#L52">52</a><a id="L53" href="#L53">53</a><a id="L54" href="#L54">54</a><a id="L55" href="#L55">55</a><a id="L56" href="#L56">56</a><a id="L57" href="#L57">57</a><a id="L58" href="#L58">58</a><a id="L59" href="#L59">59</a><a id="L60" href="#L60">60</a><a id="L61" href="#L61">61</a><a id="L62" href="#L62">62</a><a id="L63" href="#L63">63</a><a id="L64" href="#L64">64</a><a id="L65" href="#L65">65</a><a id="L66" href="#L66">66</a><a id="L67" href="#L67">67</a><a id="L68" href="#L68">68</a><a id="L69" href="#L69">69</a><a id="L70" href="#L70">70</a><a id="L71" href="#L71">71</a><a id="L72" href="#L72">72</a><a id="L73" href="#L73">73</a><a id="L74" href="#L74">74</a><a id="L75" href="#L75">75</a><a id="L76" href="#L76">76</a><a id="L77" href="#L77">77</a><a id="L78" href="#L78">78</a><a id="L79" href="#L79">79</a><a id="L80" href="#L80">80</a><a id="L81" href="#L81">81</a><a id="L82" href="#L82">82</a><a id="L83" href="#L83">83</a><a id="L84" href="#L84">84</a><a id="L85" href="#L85">85</a><a id="L86" href="#L86">86</a><a id="L87" href="#L87">87</a><a id="L88" href="#L88">88</a><a id="L89" href="#L89">89</a><a id="L90" href="#L90">90</a><a id="L91" href="#L91">91</a><a id="L92" href="#L92">92</a><a id="L93" href="#L93">93</a><a id="L94" href="#L94">94</a><a id="L95" href="#L95">95</a><a id="L96" href="#L96">96</a><a id="L97" href="#L97">97</a><a id="L98" href="#L98">98</a><a id="L99" href="#L99">99</a><a id="L100" href="#L100">100</a><a id="L101" href="#L101">101</a><a id="L102" href="#L102">102</a><a id="L103" href="#L103">103</a><a id="L104" href="#L104">104</a><a id="L105" href="#L105">105</a><a id="L106" href="#L106">106</a><a id="L107" href="#L107">107</a><a id="L108" href="#L108">108</a><a id="L109" href="#L109">109</a><a id="L110" href="#L110">110</a><a id="L111" href="#L111">111</a><a id="L112" href="#L112">112</a><a id="L113" href="#L113">113</a><a id="L114" href="#L114">114</a><a id="L115" href="#L115">115</a><a id="L116" href="#L116">116</a><a id="L117" href="#L117">117</a><a id="L118" href="#L118">118</a><a id="L119" href="#L119">119</a><a id="L120" href="#L120">120</a><a id="L121" href="#L121">121</a><a id="L122" href="#L122">122</a><a id="L123" href="#L123">123</a><a id="L124" href="#L124">124</a><a id="L125" href="#L125">125</a><a id="L126" href="#L126">126</a><a id="L127" href="#L127">127</a><a id="L128" href="#L128">128</a><a id="L129" href="#L129">129</a><a id="L130" href="#L130">130</a><a id="L131" href="#L131">131</a><a id="L132" href="#L132">132</a><a id="L133" href="#L133">133</a><a id="L134" href="#L134">134</a><a id="L135" href="#L135">135</a><a id="L136" href="#L136">136</a><a id="L137" href="#L137">137</a><a id="L138" href="#L138">138</a><a id="L139" href="#L139">139</a><a id="L140" href="#L140">140</a><a id="L141" href="#L141">141</a><a id="L142" href="#L142">142</a><a id="L143" href="#L143">143</a><a id="L144" href="#L144">144</a><a id="L145" href="#L145">145</a><a id="L146" href="#L146">146</a><a id="L147" href="#L147">147</a><a id="L148" href="#L148">148</a><a id="L149" href="#L149">149</a><a id="L150" href="#L150">150</a><a id="L151" href="#L151">151</a><a id="L152" href="#L152">152</a><a id="L153" href="#L153">153</a><a id="L154" href="#L154">154</a><a id="L155" href="#L155">155</a><a id="L156" href="#L156">156</a><a id="L157" href="#L157">157</a><a id="L158" href="#L158">158</a><a id="L159" href="#L159">159</a><a id="L160" href="#L160">160</a><a id="L161" href="#L161">161</a><a id="L162" href="#L162">162</a><a id="L163" href="#L163">163</a><a id="L164" href="#L164">164</a><a id="L165" href="#L165">165</a><a id="L166" href="#L166">166</a><a id="L167" href="#L167">167</a><a id="L168" href="#L168">168</a><a id="L169" href="#L169">169</a><a id="L170" href="#L170">170</a><a id="L171" href="#L171">171</a><a id="L172" href="#L172">172</a><a id="L173" href="#L173">173</a><a id="L174" href="#L174">174</a><a id="L175" href="#L175">175</a><a id="L176" href="#L176">176</a><a id="L177" href="#L177">177</a><a id="L178" href="#L178">178</a><a id="L179" href="#L179">179</a><a id="L180" href="#L180">180</a><a id="L181" href="#L181">181</a><a id="L182" href="#L182">182</a><a id="L183" href="#L183">183</a><a id="L184" href="#L184">184</a><a id="L185" href="#L185">185</a><a id="L186" href="#L186">186</a><a id="L187" href="#L187">187</a><a id="L188" href="#L188">188</a><a id="L189" href="#L189">189</a><a id="L190" href="#L190">190</a><a id="L191" href="#L191">191</a><a id="L192" href="#L192">192</a><a id="L193" href="#L193">193</a><a id="L194" href="#L194">194</a><a id="L195" href="#L195">195</a><a id="L196" href="#L196">196</a><a id="L197" href="#L197">197</a><a id="L198" href="#L198">198</a><a id="L199" href="#L199">199</a><a id="L200" href="#L200">200</a><a id="L201" href="#L201">201</a><a id="L202" href="#L202">202</a><a id="L203" href="#L203">203</a><a id="L204" href="#L204">204</a><a id="L205" href="#L205">205</a><a id="L206" href="#L206">206</a><a id="L207" href="#L207">207</a><a id="L208" href="#L208">208</a><a id="L209" href="#L209">209</a><a id="L210" href="#L210">210</a><a id="L211" href="#L211">211</a><a id="L212" href="#L212">212</a><a id="L213" href="#L213">213</a><a id="L214" href="#L214">214</a><a id="L215" href="#L215">215</a><a id="L216" href="#L216">216</a><a id="L217" href="#L217">217</a><a id="L218" href="#L218">218</a><a id="L219" href="#L219">219</a><a id="L220" href="#L220">220</a><a id="L221" href="#L221">221</a><a id="L222" href="#L222">222</a><a id="L223" href="#L223">223</a><a id="L224" href="#L224">224</a><a id="L225" href="#L225">225</a><a id="L226" href="#L226">226</a><a id="L227" href="#L227">227</a><a id="L228" href="#L228">228</a><a id="L229" href="#L229">229</a><a id="L230" href="#L230">230</a><a id="L231" href="#L231">231</a><a id="L232" href="#L232">232</a><a id="L233" href="#L233">233</a><a id="L234" href="#L234">234</a><a id="L235" href="#L235">235</a><a id="L236" href="#L236">236</a><a id="L237" href="#L237">237</a><a id="L238" href="#L238">238</a><a id="L239" href="#L239">239</a><a id="L240" href="#L240">240</a><a id="L241" href="#L241">241</a><a id="L242" href="#L242">242</a><a id="L243" href="#L243">243</a><a id="L244" href="#L244">244</a><a id="L245" href="#L245">245</a><a id="L246" href="#L246">246</a><a id="L247" href="#L247">247</a><a id="L248" href="#L248">248</a><a id="L249" href="#L249">249</a><a id="L250" href="#L250">250</a><a id="L251" href="#L251">251</a><a id="L252" href="#L252">252</a><a id="L253" href="#L253">253</a><a id="L254" href="#L254">254</a><a id="L255" href="#L255">255</a><a id="L256" href="#L256">256</a><a id="L257" href="#L257">257</a><a id="L258" href="#L258">258</a><a id="L259" href="#L259">259</a><a id="L260" href="#L260">260</a><a id="L261" href="#L261">261</a><a id="L262" href="#L262">262</a><a id="L263" href="#L263">263</a><a id="L264" href="#L264">264</a><a id="L265" href="#L265">265</a><a id="L266" href="#L266">266</a><a id="L267" href="#L267">267</a><a id="L268" href="#L268">268</a><a id="L269" href="#L269">269</a><a id="L270" href="#L270">270</a><a id="L271" href="#L271">271</a><a id="L272" href="#L272">272</a><a id="L273" href="#L273">273</a><a id="L274" href="#L274">274</a><a id="L275" href="#L275">275</a><a id="L276" href="#L276">276</a><a id="L277" href="#L277">277</a><a id="L278" href="#L278">278</a><a id="L279" href="#L279">279</a><a id="L280" href="#L280">280</a><a id="L281" href="#L281">281</a><a id="L282" href="#L282">282</a><a id="L283" href="#L283">283</a><a id="L284" href="#L284">284</a><a id="L285" href="#L285">285</a><a id="L286" href="#L286">286</a><a id="L287" href="#L287">287</a><a id="L288" href="#L288">288</a><a id="L289" href="#L289">289</a><a id="L290" href="#L290">290</a><a id="L291" href="#L291">291</a><a id="L292" href="#L292">292</a><a id="L293" href="#L293">293</a><a id="L294" href="#L294">294</a><a id="L295" href="#L295">295</a><a id="L296" href="#L296">296</a><a id="L297" href="#L297">297</a><a id="L298" href="#L298">298</a><a id="L299" href="#L299">299</a><a id="L300" href="#L300">300</a><a id="L301" href="#L301">301</a><a id="L302" href="#L302">302</a><a id="L303" href="#L303">303</a><a id="L304" href="#L304">304</a><a id="L305" href="#L305">305</a><a id="L306" href="#L306">306</a><a id="L307" href="#L307">307</a><a id="L308" href="#L308">308</a><a id="L309" href="#L309">309</a><a id="L310" href="#L310">310</a><a id="L311" href="#L311">311</a><a id="L312" href="#L312">312</a><a id="L313" href="#L313">313</a><a id="L314" href="#L314">314</a><a id="L315" href="#L315">315</a><a id="L316" href="#L316">316</a><a id="L317" href="#L317">317</a><a id="L318" href="#L318">318</a><a id="L319" href="#L319">319</a><a id="L320" href="#L320">320</a><a id="L321" href="#L321">321</a><a id="L322" href="#L322">322</a><a id="L323" href="#L323">323</a><a id="L324" href="#L324">324</a><a id="L325" href="#L325">325</a><a id="L326" href="#L326">326</a><a id="L327" href="#L327">327</a><a id="L328" href="#L328">328</a><a id="L329" href="#L329">329</a><a id="L330" href="#L330">330</a><a id="L331" href="#L331">331</a><a id="L332" href="#L332">332</a><a id="L333" href="#L333">333</a><a id="L334" href="#L334">334</a><a id="L335" href="#L335">335</a><a id="L336" href="#L336">336</a><a id="L337" href="#L337">337</a><a id="L338" href="#L338">338</a><a id="L339" href="#L339">339</a><a id="L340" href="#L340">340</a><a id="L341" href="#L341">341</a><a id="L342" href="#L342">342</a><a id="L343" href="#L343">343</a><a id="L344" href="#L344">344</a><a id="L345" href="#L345">345</a><a id="L346" href="#L346">346</a><a id="L347" href="#L347">347</a><a id="L348" href="#L348">348</a><a id="L349" href="#L349">349</a><a id="L350" href="#L350">350</a><a id="L351" href="#L351">351</a><a id="L352" href="#L352">352</a><a id="L353" href="#L353">353</a><a id="L354" href="#L354">354</a><a id="L355" href="#L355">355</a><a id="L356" href="#L356">356</a><a id="L357" href="#L357">357</a><a id="L358" href="#L358">358</a><a id="L359" href="#L359">359</a><a id="L360" href="#L360">360</a><a id="L361" href="#L361">361</a><a id="L362" href="#L362">362</a><a id="L363" href="#L363">363</a><a id="L364" href="#L364">364</a><a id="L365" href="#L365">365</a><a id="L366" href="#L366">366</a><a id="L367" href="#L367">367</a><a id="L368" href="#L368">368</a><a id="L369" href="#L369">369</a><a id="L370" href="#L370">370</a><a id="L371" href="#L371">371</a><a id="L372" href="#L372">372</a><a id="L373" href="#L373">373</a><a id="L374" href="#L374">374</a><a id="L375" href="#L375">375</a><a id="L376" href="#L376">376</a><a id="L377" href="#L377">377</a><a id="L378" href="#L378">378</a><a id="L379" href="#L379">379</a><a id="L380" href="#L380">380</a><a id="L381" href="#L381">381</a><a id="L382" href="#L382">382</a><a id="L383" href="#L383">383</a><a id="L384" href="#L384">384</a><a id="L385" href="#L385">385</a><a id="L386" href="#L386">386</a><a id="L387" href="#L387">387</a><a id="L388" href="#L388">388</a><a id="L389" href="#L389">389</a><a id="L390" href="#L390">390</a><a id="L391" href="#L391">391</a><a id="L392" href="#L392">392</a><a id="L393" href="#L393">393</a><a id="L394" href="#L394">394</a><a id="L395" href="#L395">395</a><a id="L396" href="#L396">396</a><a id="L397" href="#L397">397</a><a id="L398" href="#L398">398</a><a id="L399" href="#L399">399</a><a id="L400" href="#L400">400</a><a id="L401" href="#L401">401</a><a id="L402" href="#L402">402</a><a id="L403" href="#L403">403</a><a id="L404" href="#L404">404</a><a id="L405" href="#L405">405</a><a id="L406" href="#L406">406</a><a id="L407" href="#L407">407</a><a id="L408" href="#L408">408</a><a id="L409" href="#L409">409</a><a id="L410" href="#L410">410</a><a id="L411" href="#L411">411</a><a id="L412" href="#L412">412</a><a id="L413" href="#L413">413</a><a id="L414" href="#L414">414</a><a id="L415" href="#L415">415</a><a id="L416" href="#L416">416</a><a id="L417" href="#L417">417</a><a id="L418" href="#L418">418</a><a id="L419" href="#L419">419</a><a id="L420" href="#L420">420</a><a id="L421" href="#L421">421</a><a id="L422" href="#L422">422</a><a id="L423" href="#L423">423</a><a id="L424" href="#L424">424</a><a id="L425" href="#L425">425</a><a id="L426" href="#L426">426</a><a id="L427" href="#L427">427</a><a id="L428" href="#L428">428</a><a id="L429" href="#L429">429</a><a id="L430" href="#L430">430</a><a id="L431" href="#L431">431</a><a id="L432" href="#L432">432</a><a id="L433" href="#L433">433</a><a id="L434" href="#L434">434</a><a id="L435" href="#L435">435</a><a id="L436" href="#L436">436</a><a id="L437" href="#L437">437</a><a id="L438" href="#L438">438</a><a id="L439" href="#L439">439</a><a id="L440" href="#L440">440</a><a id="L441" href="#L441">441</a><a id="L442" href="#L442">442</a><a id="L443" href="#L443">443</a><a id="L444" href="#L444">444</a><a id="L445" href="#L445">445</a><a id="L446" href="#L446">446</a><a id="L447" href="#L447">447</a><a id="L448" href="#L448">448</a><a id="L449" href="#L449">449</a><a id="L450" href="#L450">450</a><a id="L451" href="#L451">451</a><a id="L452" href="#L452">452</a><a id="L453" href="#L453">453</a><a id="L454" href="#L454">454</a><a id="L455" href="#L455">455</a><a id="L456" href="#L456">456</a><a id="L457" href="#L457">457</a><a id="L458" href="#L458">458</a><a id="L459" href="#L459">459</a><a id="L460" href="#L460">460</a><a id="L461" href="#L461">461</a><a id="L462" href="#L462">462</a><a id="L463" href="#L463">463</a><a id="L464" href="#L464">464</a><a id="L465" href="#L465">465</a><a id="L466" href="#L466">466</a><a id="L467" href="#L467">467</a><a id="L468" href="#L468">468</a><a id="L469" href="#L469">469</a><a id="L470" href="#L470">470</a><a id="L471" href="#L471">471</a><a id="L472" href="#L472">472</a><a id="L473" href="#L473">473</a><a id="L474" href="#L474">474</a><a id="L475" href="#L475">475</a><a id="L476" href="#L476">476</a><a id="L477" href="#L477">477</a><a id="L478" href="#L478">478</a><a id="L479" href="#L479">479</a><a id="L480" href="#L480">480</a><a id="L481" href="#L481">481</a><a id="L482" href="#L482">482</a><a id="L483" href="#L483">483</a><a id="L484" href="#L484">484</a><a id="L485" href="#L485">485</a><a id="L486" href="#L486">486</a><a id="L487" href="#L487">487</a><a id="L488" href="#L488">488</a><a id="L489" href="#L489">489</a><a id="L490" href="#L490">490</a><a id="L491" href="#L491">491</a><a id="L492" href="#L492">492</a><a id="L493" href="#L493">493</a><a id="L494" href="#L494">494</a><a id="L495" href="#L495">495</a><a id="L496" href="#L496">496</a><a id="L497" href="#L497">497</a><a id="L498" href="#L498">498</a><a id="L499" href="#L499">499</a><a id="L500" href="#L500">500</a><a id="L501" href="#L501">501</a><a id="L502" href="#L502">502</a><a id="L503" href="#L503">503</a><a id="L504" href="#L504">504</a><a id="L505" href="#L505">505</a><a id="L506" href="#L506">506</a><a id="L507" href="#L507">507</a><a id="L508" href="#L508">508</a><a id="L509" href="#L509">509</a><a id="L510" href="#L510">510</a><a id="L511" href="#L511">511</a><a id="L512" href="#L512">512</a><a id="L513" href="#L513">513</a><a id="L514" href="#L514">514</a><a id="L515" href="#L515">515</a><a id="L516" href="#L516">516</a><a id="L517" href="#L517">517</a><a id="L518" href="#L518">518</a><a id="L519" href="#L519">519</a><a id="L520" href="#L520">520</a><a id="L521" href="#L521">521</a><a id="L522" href="#L522">522</a><a id="L523" href="#L523">523</a><a id="L524" href="#L524">524</a><a id="L525" href="#L525">525</a><a id="L526" href="#L526">526</a><a id="L527" href="#L527">527</a><a id="L528" href="#L528">528</a><a id="L529" href="#L529">529</a><a id="L530" href="#L530">530</a><a id="L531" href="#L531">531</a><a id="L532" href="#L532">532</a><a id="L533" href="#L533">533</a><a id="L534" href="#L534">534</a><a id="L535" href="#L535">535</a><a id="L536" href="#L536">536</a><a id="L537" href="#L537">537</a><a id="L538" href="#L538">538</a><a id="L539" href="#L539">539</a><a id="L540" href="#L540">540</a><a id="L541" href="#L541">541</a><a id="L542" href="#L542">542</a><a id="L543" href="#L543">543</a><a id="L544" href="#L544">544</a><a id="L545" href="#L545">545</a><a id="L546" href="#L546">546</a><a id="L547" href="#L547">547</a><a id="L548" href="#L548">548</a><a id="L549" href="#L549">549</a><a id="L550" href="#L550">550</a><a id="L551" href="#L551">551</a><a id="L552" href="#L552">552</a><a id="L553" href="#L553">553</a><a id="L554" href="#L554">554</a><a id="L555" href="#L555">555</a><a id="L556" href="#L556">556</a><a id="L557" href="#L557">557</a><a id="L558" href="#L558">558</a><a id="L559" href="#L559">559</a><a id="L560" href="#L560">560</a><a id="L561" href="#L561">561</a><a id="L562" href="#L562">562</a><a id="L563" href="#L563">563</a><a id="L564" href="#L564">564</a><a id="L565" href="#L565">565</a><a id="L566" href="#L566">566</a><a id="L567" href="#L567">567</a><a id="L568" href="#L568">568</a><a id="L569" href="#L569">569</a><a id="L570" href="#L570">570</a><a id="L571" href="#L571">571</a><a id="L572" href="#L572">572</a><a id="L573" href="#L573">573</a><a id="L574" href="#L574">574</a><a id="L575" href="#L575">575</a><a id="L576" href="#L576">576</a><a id="L577" href="#L577">577</a><a id="L578" href="#L578">578</a><a id="L579" href="#L579">579</a><a id="L580" href="#L580">580</a><a id="L581" href="#L581">581</a><a id="L582" href="#L582">582</a><a id="L583" href="#L583">583</a><a id="L584" href="#L584">584</a><a id="L585" href="#L585">585</a><a id="L586" href="#L586">586</a><a id="L587" href="#L587">587</a><a id="L588" href="#L588">588</a><a id="L589" href="#L589">589</a><a id="L590" href="#L590">590</a><a id="L591" href="#L591">591</a><a id="L592" href="#L592">592</a><a id="L593" href="#L593">593</a><a id="L594" href="#L594">594</a><a id="L595" href="#L595">595</a><a id="L596" href="#L596">596</a><a id="L597" href="#L597">597</a><a id="L598" href="#L598">598</a><a id="L599" href="#L599">599</a><a id="L600" href="#L600">600</a><a id="L601" href="#L601">601</a><a id="L602" href="#L602">602</a><a id="L603" href="#L603">603</a><a id="L604" href="#L604">604</a><a id="L605" href="#L605">605</a><a id="L606" href="#L606">606</a><a id="L607" href="#L607">607</a><a id="L608" href="#L608">608</a><a id="L609" href="#L609">609</a><a id="L610" href="#L610">610</a><a id="L611" href="#L611">611</a><a id="L612" href="#L612">612</a><a id="L613" href="#L613">613</a><a id="L614" href="#L614">614</a><a id="L615" href="#L615">615</a><a id="L616" href="#L616">616</a><a id="L617" href="#L617">617</a><a id="L618" href="#L618">618</a><a id="L619" href="#L619">619</a><a id="L620" href="#L620">620</a><a id="L621" href="#L621">621</a><a id="L622" href="#L622">622</a><a id="L623" href="#L623">623</a><a id="L624" href="#L624">624</a><a id="L625" href="#L625">625</a><a id="L626" href="#L626">626</a><a id="L627" href="#L627">627</a><a id="L628" href="#L628">628</a><a id="L629" href="#L629">629</a><a id="L630" href="#L630">630</a><a id="L631" href="#L631">631</a><a id="L632" href="#L632">632</a><a id="L633" href="#L633">633</a><a id="L634" href="#L634">634</a><a id="L635" href="#L635">635</a><a id="L636" href="#L636">636</a><a id="L637" href="#L637">637</a><a id="L638" href="#L638">638</a><a id="L639" href="#L639">639</a><a id="L640" href="#L640">640</a><a id="L641" href="#L641">641</a><a id="L642" href="#L642">642</a><a id="L643" href="#L643">643</a><a id="L644" href="#L644">644</a><a id="L645" href="#L645">645</a><a id="L646" href="#L646">646</a><a id="L647" href="#L647">647</a><a id="L648" href="#L648">648</a><a id="L649" href="#L649">649</a><a id="L650" href="#L650">650</a><a id="L651" href="#L651">651</a><a id="L652" href="#L652">652</a><a id="L653" href="#L653">653</a><a id="L654" href="#L654">654</a><a id="L655" href="#L655">655</a><a id="L656" href="#L656">656</a><a id="L657" href="#L657">657</a><a id="L658" href="#L658">658</a><a id="L659" href="#L659">659</a><a id="L660" href="#L660">660</a><a id="L661" href="#L661">661</a><a id="L662" href="#L662">662</a><a id="L663" href="#L663">663</a><a id="L664" href="#L664">664</a><a id="L665" href="#L665">665</a><a id="L666" href="#L666">666</a><a id="L667" href="#L667">667</a><a id="L668" href="#L668">668</a><a id="L669" href="#L669">669</a><a id="L670" href="#L670">670</a><a id="L671" href="#L671">671</a><a id="L672" href="#L672">672</a><a id="L673" href="#L673">673</a><a id="L674" href="#L674">674</a><a id="L675" href="#L675">675</a><a id="L676" href="#L676">676</a><a id="L677" href="#L677">677</a><a id="L678" href="#L678">678</a><a id="L679" href="#L679">679</a><a id="L680" href="#L680">680</a><a id="L681" href="#L681">681</a><a id="L682" href="#L682">682</a><a id="L683" href="#L683">683</a><a id="L684" href="#L684">684</a><a id="L685" href="#L685">685</a><a id="L686" href="#L686">686</a><a id="L687" href="#L687">687</a><a id="L688" href="#L688">688</a><a id="L689" href="#L689">689</a><a id="L690" href="#L690">690</a><a id="L691" href="#L691">691</a><a id="L692" href="#L692">692</a><a id="L693" href="#L693">693</a><a id="L694" href="#L694">694</a><a id="L695" href="#L695">695</a><a id="L696" href="#L696">696</a><a id="L697" href="#L697">697</a><a id="L698" href="#L698">698</a><a id="L699" href="#L699">699</a><a id="L700" href="#L700">700</a><a id="L701" href="#L701">701</a><a id="L702" href="#L702">702</a><a id="L703" href="#L703">703</a><a id="L704" href="#L704">704</a><a id="L705" href="#L705">705</a><a id="L706" href="#L706">706</a><a id="L707" href="#L707">707</a><a id="L708" href="#L708">708</a><a id="L709" href="#L709">709</a><a id="L710" href="#L710">710</a><a id="L711" href="#L711">711</a><a id="L712" href="#L712">712</a><a id="L713" href="#L713">713</a><a id="L714" href="#L714">714</a><a id="L715" href="#L715">715</a><a id="L716" href="#L716">716</a><a id="L717" href="#L717">717</a><a id="L718" href="#L718">718</a><a id="L719" href="#L719">719</a><a id="L720" href="#L720">720</a><a id="L721" href="#L721">721</a><a id="L722" href="#L722">722</a><a id="L723" href="#L723">723</a><a id="L724" href="#L724">724</a><a id="L725" href="#L725">725</a><a id="L726" href="#L726">726</a><a id="L727" href="#L727">727</a><a id="L728" href="#L728">728</a><a id="L729" href="#L729">729</a><a id="L730" href="#L730">730</a><a id="L731" href="#L731">731</a><a id="L732" href="#L732">732</a><a id="L733" href="#L733">733</a><a id="L734" href="#L734">734</a><a id="L735" href="#L735">735</a><a id="L736" href="#L736">736</a><a id="L737" href="#L737">737</a><a id="L738" href="#L738">738</a><a id="L739" href="#L739">739</a><a id="L740" href="#L740">740</a><a id="L741" href="#L741">741</a><a id="L742" href="#L742">742</a><a id="L743" href="#L743">743</a><a id="L744" href="#L744">744</a><a id="L745" href="#L745">745</a><a id="L746" href="#L746">746</a><a id="L747" href="#L747">747</a><a id="L748" href="#L748">748</a><a id="L749" href="#L749">749</a><a id="L750" href="#L750">750</a><a id="L751" href="#L751">751</a><a id="L752" href="#L752">752</a><a id="L753" href="#L753">753</a><a id="L754" href="#L754">754</a><a id="L755" href="#L755">755</a><a id="L756" href="#L756">756</a><a id="L757" href="#L757">757</a><a id="L758" href="#L758">758</a><a id="L759" href="#L759">759</a><a id="L760" href="#L760">760</a><a id="L761" href="#L761">761</a><a id="L762" href="#L762">762</a><a id="L763" href="#L763">763</a><a id="L764" href="#L764">764</a><a id="L765" href="#L765">765</a><a id="L766" href="#L766">766</a><a id="L767" href="#L767">767</a><a id="L768" href="#L768">768</a><a id="L769" href="#L769">769</a><a id="L770" href="#L770">770</a><a id="L771" href="#L771">771</a><a id="L772" href="#L772">772</a><a id="L773" href="#L773">773</a><a id="L774" href="#L774">774</a><a id="L775" href="#L775">775</a><a id="L776" href="#L776">776</a><a id="L777" href="#L777">777</a><a id="L778" href="#L778">778</a><a id="L779" href="#L779">779</a><a id="L780" href="#L780">780</a><a id="L781" href="#L781">781</a><a id="L782" href="#L782">782</a><a id="L783" href="#L783">783</a><a id="L784" href="#L784">784</a><a id="L785" href="#L785">785</a><a id="L786" href="#L786">786</a><a id="L787" href="#L787">787</a><a id="L788" href="#L788">788</a><a id="L789" href="#L789">789</a><a id="L790" href="#L790">790</a><a id="L791" href="#L791">791</a><a id="L792" href="#L792">792</a><a id="L793" href="#L793">793</a><a id="L794" href="#L794">794</a><a id="L795" href="#L795">795</a><a id="L796" href="#L796">796</a><a id="L797" href="#L797">797</a><a id="L798" href="#L798">798</a><a id="L799" href="#L799">799</a><a id="L800" href="#L800">800</a><a id="L801" href="#L801">801</a><a id="L802" href="#L802">802</a><a id="L803" href="#L803">803</a><a id="L804" href="#L804">804</a><a id="L805" href="#L805">805</a><a id="L806" href="#L806">806</a><a id="L807" href="#L807">807</a><a id="L808" href="#L808">808</a><a id="L809" href="#L809">809</a><a id="L810" href="#L810">810</a><a id="L811" href="#L811">811</a><a id="L812" href="#L812">812</a><a id="L813" href="#L813">813</a><a id="L814" href="#L814">814</a><a id="L815" href="#L815">815</a><a id="L816" href="#L816">816</a><a id="L817" href="#L817">817</a><a id="L818" href="#L818">818</a><a id="L819" href="#L819">819</a><a id="L820" href="#L820">820</a><a id="L821" href="#L821">821</a><a id="L822" href="#L822">822</a><a id="L823" href="#L823">823</a><a id="L824" href="#L824">824</a><a id="L825" href="#L825">825</a><a id="L826" href="#L826">826</a><a id="L827" href="#L827">827</a><a id="L828" href="#L828">828</a><a id="L829" href="#L829">829</a><a id="L830" href="#L830">830</a><a id="L831" href="#L831">831</a><a id="L832" href="#L832">832</a><a id="L833" href="#L833">833</a><a id="L834" href="#L834">834</a><a id="L835" href="#L835">835</a><a id="L836" href="#L836">836</a><a id="L837" href="#L837">837</a><a id="L838" href="#L838">838</a><a id="L839" href="#L839">839</a><a id="L840" href="#L840">840</a><a id="L841" href="#L841">841</a><a id="L842" href="#L842">842</a><a id="L843" href="#L843">843</a><a id="L844" href="#L844">844</a><a id="L845" href="#L845">845</a><a id="L846" href="#L846">846</a><a id="L847" href="#L847">847</a><a id="L848" href="#L848">848</a><a id="L849" href="#L849">849</a><a id="L850" href="#L850">850</a><a id="L851" href="#L851">851</a><a id="L852" href="#L852">852</a><a id="L853" href="#L853">853</a><a id="L854" href="#L854">854</a><a id="L855" href="#L855">855</a><a id="L856" href="#L856">856</a><a id="L857" href="#L857">857</a><a id="L858" href="#L858">858</a><a id="L859" href="#L859">859</a><a id="L860" href="#L860">860</a><a id="L861" href="#L861">861</a><a id="L862" href="#L862">862</a><a id="L863" href="#L863">863</a><a id="L864" href="#L864">864</a><a id="L865" href="#L865">865</a><a id="L866" href="#L866">866</a><a id="L867" href="#L867">867</a><a id="L868" href="#L868">868</a><a id="L869" href="#L869">869</a><a id="L870" href="#L870">870</a><a id="L871" href="#L871">871</a><a id="L872" href="#L872">872</a><a id="L873" href="#L873">873</a><a id="L874" href="#L874">874</a><a id="L875" href="#L875">875</a><a id="L876" href="#L876">876</a><a id="L877" href="#L877">877</a><a id="L878" href="#L878">878</a><a id="L879" href="#L879">879</a><a id="L880" href="#L880">880</a><a id="L881" href="#L881">881</a><a id="L882" href="#L882">882</a><a id="L883" href="#L883">883</a><a id="L884" href="#L884">884</a><a id="L885" href="#L885">885</a><a id="L886" href="#L886">886</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/*******************************************************************************
+
+        copyright:      Copyright (c) 2008 Kris Bell. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Apr 2008: Initial release
+
+        authors:        Kris
+
+        Since:          0.99.7
+
+        Based upon Doug Lea's Java collection package
+
+*******************************************************************************/</span>
+
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">util</span>.<span class="i">container</span>.<span class="i">HashSet</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span>  <span class="i">tango</span>.<span class="i">util</span>.<span class="i">container</span>.<span class="i">Slink</span>;</span>
+
+<span class="d Protection"><span class="k">public</span></span>  <span class="d Import"><span class="k">import</span>  <span class="i">tango</span>.<span class="i">util</span>.<span class="i">container</span>.<span class="i">Container</span>;</span>
+
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">util</span>.<span class="i">container</span>.<span class="i">model</span>.<span class="i">IContainer</span>;</span>
+
+<span class="bc">/*******************************************************************************
+
+        Hash table implementation of a Set
+
+        ---
+        Iterator iterator ()
+        int opApply (scope int delegate(ref V value) dg)
+
+        bool add (V element)
+        bool contains (V element)
+        bool take (ref V element)
+        bool remove (V element)
+        size_t remove (IContainer!(V) e)
+        bool replace (V oldElement, V newElement)
+
+        size_t size ()
+        bool isEmpty ()
+        V[] toArray (V[] dst)
+        HashSet dup ()
+        HashSet clear ()
+        HashSet reset ()
+
+        size_t buckets ()
+        void buckets (size_t cap)
+        float threshold ()
+        void threshold (float desired)
+        ---
+
+*******************************************************************************/</span>
+
+<span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">HashSet</span> <span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">V</span></span>, <span class="o TemplateAliasParam"><span class="k">alias</span> <span class="i">Hash</span> = <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">hash</span></span></span>, 
+                  <span class="o TemplateAliasParam"><span class="k">alias</span> <span class="i">Reap</span> = <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">reap</span></span></span>, 
+                  <span class="o TemplateAliasParam"><span class="k">alias</span> <span class="i">Heap</span> = <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">DefaultCollect</span></span></span>)</span> 
+                  : <span class="t BaseClass"><span class="t TemplateInstance"><span class="i">IContainer</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">V</span></span>)</span></span></span>
+<span class="d Compound">{
+        <span class="lc">// use this type for Allocator configuration</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">Slink</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">V</span></span>)</span></span>  <span class="i">Type</span>;</span></span>
+        
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">Type</span></span>      <span class="t Pointer">*</span><span class="i">Ref</span>;</span></span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">Heap</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Type</span></span>)</span></span> <span class="i">Alloc</span>;</span></span>
+
+        <span class="lc">// Each table entry is a list - null if no table allocated</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Ref</span></span>             <span class="i">table</span><span class="t Array">[]</span>;</span>
+        
+        <span class="lc">// number of elements contained</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span>          <span class="i">count</span>;</span>
+
+        <span class="lc">// the threshold load factor</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">float</span></span>           <span class="i">loadFactor</span>;</span>
+
+        <span class="lc">// configured heap manager</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Alloc</span></span>           <span class="i">heap</span>;</span>
+        
+        <span class="lc">// mutation tag updates on each change</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span>            <span class="i">mutation</span>;</span>
+
+        <span class="bc">/***********************************************************************
+
+                Construct a HashSet instance
+
+        ***********************************************************************/</span>
+
+        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">float</span></span> <span class="i">f</span> = <span class="e Identifier"><span class="i">Container</span></span>.<span class="e Identifier"><span class="i">defaultLoadFactor</span></span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">loadFactor</span></span> = <span class="e Identifier"><span class="i">f</span></span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Clean up when deleted
+
+        ***********************************************************************/</span>
+
+        <span class="d Destructor">~<span class="k">this</span> ()
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e Identifier"><span class="i">reset</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Return a generic iterator for contained elements
+                
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Iterator</span></span> <span class="i">iterator</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">Iterator</span></span> <span class="i">i</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">i</span></span>.<span class="e Identifier"><span class="i">mutation</span></span> = <span class="e Identifier"><span class="i">mutation</span></span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">i</span></span>.<span class="e Identifier"><span class="i">table</span></span> = <span class="e Identifier"><span class="i">table</span></span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">i</span></span>.<span class="e Identifier"><span class="i">owner</span></span> = <span class="e This"><span class="k">this</span></span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">i</span></span>.<span class="e Identifier"><span class="i">cell</span></span> = <span class="e Null"><span class="k">null</span></span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">i</span></span>.<span class="e Identifier"><span class="i">row</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span>
+                <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">i</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span></span> <span class="i">dg</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">iterator</span></span>.<span class="e Identifier"><span class="i">opApply</span></span> (<span class="i">dg</span>)</span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Return the number of elements contained
+                
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">size</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">count</span></span>;</span>
+        }</span></span></span>
+        
+        <span class="bc">/***********************************************************************
+
+                Add a new element to the set. Does not add if there is an
+                equivalent already present. Returns true where an element
+                is added, false where it already exists
+                
+                Time complexity: O(1) average; O(n) worst.
+                
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">add</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">element</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">table</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
+                    <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">resize</span></span> (<span class="i">Container</span>.<span class="i">defaultInitialBuckets</span>)</span>;</span></span></span>
+
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">h</span> = <span class="e Call"><span class="e Identifier"><span class="i">Hash</span></span>  (<span class="i">element</span>, <span class="i">table</span>.<span class="i">length</span>)</span>;</span></span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">hd</span> = <span class="e Index"><span class="e Identifier"><span class="i">table</span></span>[<span class="e Identifier"><span class="i">h</span></span>]</span>;</span></span>
+
+                <span class="s If"><span class="k">if</span> (<span class="e AndAnd"><span class="e Identifier"><span class="i">hd</span></span> &amp;&amp; <span class="e Call"><span class="e Identifier"><span class="i">hd</span></span>.<span class="e Identifier"><span class="i">find</span></span> (<span class="i">element</span>)</span></span>)
+                    <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">false</span></span>;</span></span></span>
+
+                <span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Identifier"><span class="i">table</span></span>[<span class="e Identifier"><span class="i">h</span></span>]</span> = <span class="e Call"><span class="e Identifier"><span class="i">allocate</span></span>.<span class="e Identifier"><span class="i">set</span></span> (<span class="i">element</span>, <span class="i">hd</span>)</span></span>;</span>
+                <span class="s Expression"><span class="e Identifier"><span class="i">increment</span></span>;</span>
+
+                <span class="lc">// only check if bin was nonempty                    </span>
+                <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">hd</span></span>)
+                    <span class="s Scope"><span class="s Expression"><span class="e Identifier"><span class="i">checkLoad</span></span>;</span></span></span> 
+                <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Does this set contain the given element?
+        
+                Time complexity: O(1) average; O(n) worst
+                
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">contains</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">element</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">count</span></span>)
+                   <span class="s Scope"><span class="s Compound">{
+                   <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Index"><span class="e Identifier"><span class="i">table</span></span>[<span class="e Call"><span class="e Identifier"><span class="i">Hash</span></span> (<span class="i">element</span>, <span class="i">table</span>.<span class="i">length</span>)</span>]</span>;</span></span>
+                   <span class="s If"><span class="k">if</span> (<span class="e AndAnd"><span class="e Identifier"><span class="i">p</span></span> &amp;&amp; <span class="e Call"><span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">find</span></span> (<span class="i">element</span>)</span></span>)
+                       <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span></span></span>
+                   }</span></span></span>
+                <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">false</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Make an independent copy of the container. Does not clone
+                elements
+                
+                Time complexity: O(n)
+                
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">HashSet</span></span> <span class="i">dup</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">clone</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">HashSet</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">V</span></span>, <span class="t Identifier"><span class="i">Hash</span></span>, <span class="t Identifier"><span class="i">Reap</span></span>, <span class="t Identifier"><span class="i">Heap</span></span>)</span></span> (<span class="e Identifier"><span class="i">loadFactor</span></span>)</span>;</span></span>
+                
+                <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">count</span></span>)
+                   <span class="s Scope"><span class="s Compound">{
+                   <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">clone</span></span>.<span class="t Identifier"><span class="i">buckets</span></span> (<span class="i">buckets</span>);</span></span>
+
+                   <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">value</span></span></span>; <span class="e Identifier"><span class="i">iterator</span></span>)
+                            <span class="s Scope"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">clone</span></span>.<span class="t Identifier"><span class="i">add</span></span> (<span class="i">value</span>);</span></span></span></span>
+                   }</span></span></span>
+                <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">clone</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Remove the provided element. Returns true if found, false
+                otherwise
+                
+                Time complexity: O(1) average; O(n) worst
+
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">remove</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">element</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">all</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Call"><span class="e Identifier"><span class="i">remove</span></span>(<span class="i">element</span>)</span> ? <span class="e Int"><span class="n">1</span></span> : <span class="e Int"><span class="n">0</span></span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Remove the provided element. Returns true if found, false
+                otherwise
+                
+                Time complexity: O(1) average; O(n) worst
+
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">remove</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">element</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">count</span></span>)
+                   <span class="s Scope"><span class="s Compound">{
+                   <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">h</span> = <span class="e Call"><span class="e Identifier"><span class="i">Hash</span></span> (<span class="i">element</span>, <span class="i">table</span>.<span class="i">length</span>)</span>;</span></span>
+                   <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">hd</span> = <span class="e Index"><span class="e Identifier"><span class="i">table</span></span>[<span class="e Identifier"><span class="i">h</span></span>]</span>;</span></span>
+                   <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">trail</span> = <span class="e Identifier"><span class="i">hd</span></span>;</span></span>
+                   <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Identifier"><span class="i">hd</span></span>;</span></span>
+
+                   <span class="s While"><span class="k">while</span> (<span class="e Identifier"><span class="i">p</span></span>)
+                         <span class="s Scope"><span class="s Compound">{
+                         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">n</span> = <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">next</span></span>;</span></span>
+                         <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">element</span></span> == <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">value</span></span></span>)
+                            <span class="s Scope"><span class="s Compound">{
+                            <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">decrement</span></span> (<span class="i">p</span>);</span></span>
+                            <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">p</span></span> <span class="k">is</span> <span class="e Index"><span class="e Identifier"><span class="i">table</span></span>[<span class="e Identifier"><span class="i">h</span></span>]</span></span>)
+                               <span class="s Scope"><span class="s Compound">{
+                               <span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Identifier"><span class="i">table</span></span>[<span class="e Identifier"><span class="i">h</span></span>]</span> = <span class="e Identifier"><span class="i">n</span></span></span>;</span>
+                               <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">trail</span></span> = <span class="e Identifier"><span class="i">n</span></span></span>;</span>
+                               }</span></span>
+                            <span class="k">else</span>
+                               <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">trail</span></span>.<span class="e Identifier"><span class="i">next</span></span> = <span class="e Identifier"><span class="i">n</span></span></span>;</span></span></span>
+                            <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
+                            }</span></span> 
+                         <span class="k">else</span>
+                            <span class="s Scope"><span class="s Compound">{
+                            <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">trail</span></span> = <span class="e Identifier"><span class="i">p</span></span></span>;</span>
+                            <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">p</span></span> = <span class="e Identifier"><span class="i">n</span></span></span>;</span>
+                            }</span></span></span>
+                         }</span></span></span>
+                   }</span></span></span>
+                <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">false</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Replace the first instance of oldElement with newElement.
+                Returns true if oldElement was found and replaced, false
+                otherwise.
+                
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">replace</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">oldElement</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">newElement</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">all</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Call"><span class="e Identifier"><span class="i">replace</span></span> (<span class="i">oldElement</span>, <span class="i">newElement</span>)</span> ? <span class="e Int"><span class="n">1</span></span> : <span class="e Int"><span class="n">0</span></span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Replace the first instance of oldElement with newElement.
+                Returns true if oldElement was found and replaced, false
+                otherwise.
+                
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">replace</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">oldElement</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">newElement</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+
+                <span class="s If"><span class="k">if</span> (<span class="e AndAnd"><span class="e Identifier"><span class="i">count</span></span> &amp;&amp; <span class="e Equal"><span class="e Identifier"><span class="i">oldElement</span></span> != <span class="e Identifier"><span class="i">newElement</span></span></span></span>)
+                   <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">contains</span></span> (<span class="i">oldElement</span>)</span>)
+                      <span class="s Scope"><span class="s Compound">{
+                      <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">remove</span></span> (<span class="i">oldElement</span>);</span></span>
+                      <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">add</span></span> (<span class="i">newElement</span>);</span></span>
+                      <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
+                      }</span></span></span></span></span>
+                <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">false</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Remove and expose the first element. Returns false when no
+                more elements are contained
+        
+                Time complexity: O(n)
+
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">take</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">element</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">count</span></span>)
+                    <span class="s Scope"><span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="k">ref</span> <span class="i">list</span></span></span>; <span class="e Identifier"><span class="i">table</span></span>)
+                             <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">list</span></span>)
+                                <span class="s Scope"><span class="s Compound">{
+                                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Identifier"><span class="i">list</span></span>;</span></span>
+                                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">element</span></span> = <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">value</span></span></span>;</span>
+                                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">list</span></span> = <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">next</span></span></span>;</span>
+                                <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">decrement</span></span> (<span class="i">p</span>);</span></span>
+                                <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
+                                }</span></span></span></span></span></span></span>
+                <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">false</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+        ************************************************************************/</span>
+
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">add</span> <span class="o Parameters">(<span class="o Parameter"><span class="t TemplateInstance"><span class="i">IContainer</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">V</span></span>)</span></span> <span class="i">e</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">value</span></span></span>; <span class="e Identifier"><span class="i">e</span></span>)
+                         <span class="s Scope"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">add</span></span> (<span class="i">value</span>);</span></span></span></span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+        ************************************************************************/</span>
+
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">remove</span> <span class="o Parameters">(<span class="o Parameter"><span class="t TemplateInstance"><span class="i">IContainer</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">V</span></span>)</span></span> <span class="i">e</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">c</span>;</span></span>
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">value</span></span></span>; <span class="e Identifier"><span class="i">e</span></span>)
+                         <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">remove</span></span> (<span class="i">value</span>)</span>)
+                             <span class="s Scope"><span class="s Expression"><span class="e PreIncr">++<span class="e Identifier"><span class="i">c</span></span></span>;</span></span></span></span></span>
+                <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">c</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Clears the HashMap contents. Various attributes are
+                retained, such as the internal table itself. Invoke
+                reset() to drop everything.
+
+                Time complexity: O(n)
+                
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">HashSet</span></span> <span class="i">clear</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">clear</span></span> (<span class="k">false</span>)</span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Reset the HashSet contents and optionally configure a new
+                heap manager. This releases more memory than clear() does
+
+                Time complexity: O(1)
+                
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">HashSet</span></span> <span class="i">reset</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">clear</span></span> (<span class="k">true</span>)</span>;</span>
+                <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">heap</span></span>.<span class="t Identifier"><span class="i">collect</span></span> (<span class="i">table</span>);</span></span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">table</span></span> = <span class="e Null"><span class="k">null</span></span></span>;</span>
+                <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Return the number of buckets
+
+                Time complexity: O(1)
+
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">buckets</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Identifier"><span class="i">table</span></span> ? <span class="e Identifier"><span class="i">table</span></span>.<span class="e Identifier"><span class="i">length</span></span> : <span class="e Int"><span class="n">0</span></span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Set the number of buckets and resize as required
+                
+                Time complexity: O(n)
+
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">HashSet</span></span> <span class="i">buckets</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">cap</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">cap</span></span> &lt; <span class="e Identifier"><span class="i">Container</span></span>.<span class="e Identifier"><span class="i">defaultInitialBuckets</span></span></span>)
+                    <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">cap</span></span> = <span class="e Identifier"><span class="i">Container</span></span>.<span class="e Identifier"><span class="i">defaultInitialBuckets</span></span></span>;</span></span></span>
+
+                <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">cap</span></span> !<span class="k">is</span> <span class="e Identifier"><span class="i">buckets</span></span></span>)
+                    <span class="s Scope"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">resize</span></span> (<span class="i">cap</span>);</span></span></span></span>
+                <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Return the resize threshold
+                
+                Time complexity: O(1)
+
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">float</span></span> <span class="i">threshold</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">loadFactor</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Set the resize threshold, and resize as required
+                
+                Time complexity: O(n)
+                
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">threshold</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">float</span></span> <span class="i">desired</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">desired</span></span> &gt; <span class="e Float"><span class="n">0.0</span></span></span>)</span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">loadFactor</span></span> = <span class="e Identifier"><span class="i">desired</span></span></span>;</span>
+                <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">table</span></span>)
+                    <span class="s Scope"><span class="s Expression"><span class="e Identifier"><span class="i">checkLoad</span></span>;</span></span></span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Configure the assigned allocator with the size of each
+                allocation block (number of nodes allocated at one time)
+                and the number of nodes to pre-populate the cache with.
+                
+                Time complexity: O(n)
+
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">HashSet</span></span> <span class="i">cache</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">chunk</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">count</span>=<span class="e Int"><span class="n">0</span></span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">heap</span></span>.<span class="e Identifier"><span class="i">config</span></span> (<span class="i">chunk</span>, <span class="i">count</span>)</span>;</span>
+                <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Copy and return the contained set of values in an array, 
+                using the optional dst as a recipient (which is resized 
+                as necessary).
+
+                Returns a slice of dst representing the container values.
+                
+                Time complexity: O(n)
+                
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">V</span></span><span class="t Array">[]</span> <span class="i">toArray</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span><span class="t Array">[]</span> <span class="i">dst</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">dst</span></span>.<span class="e Identifier"><span class="i">length</span></span> &lt; <span class="e Identifier"><span class="i">count</span></span></span>)
+                    <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">dst</span></span>.<span class="e Identifier"><span class="i">length</span></span> = <span class="e Identifier"><span class="i">count</span></span></span>;</span></span></span>
+
+                <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">i</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">v</span></span></span>; <span class="e This"><span class="k">this</span></span>)
+                         <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Identifier"><span class="i">dst</span></span>[<span class="e PostIncr"><span class="e Identifier"><span class="i">i</span></span>++</span>]</span> = <span class="e Identifier"><span class="i">v</span></span></span>;</span></span></span>
+                <span class="s Return"><span class="k">return</span> <span class="e Slice"><span class="e Identifier"><span class="i">dst</span></span> [<span class="e Int"><span class="n">0</span></span> .. <span class="e Identifier"><span class="i">count</span></span>]</span>;</span>                        
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Is this container empty?
+                
+                Time complexity: O(1)
+                
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isEmpty</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Return"><span class="k">return</span> <span class="e Identity"><span class="e Identifier"><span class="i">count</span></span> <span class="k">is</span> <span class="e Int"><span class="n">0</span></span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Sanity check
+                 
+        ***********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">HashSet</span></span> <span class="i">check</span><span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Not">!<span class="e Paren">(<span class="e AndAnd"><span class="e Identity"><span class="e Identifier"><span class="i">table</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span> &amp;&amp; <span class="e Identity"><span class="e Identifier"><span class="i">count</span></span> !<span class="k">is</span> <span class="e Int"><span class="n">0</span></span></span></span>)</span></span>)</span>;</span>
+                <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Paren">(<span class="e OrOr"><span class="e Identity"><span class="e Identifier"><span class="i">table</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span> || <span class="e Rel"><span class="e Identifier"><span class="i">table</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span></span>)</span>)</span>;</span>
+                <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">loadFactor</span></span> &gt; <span class="e Float"><span class="n">0.0f</span></span></span>)</span>;</span>
+
+                <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">table</span></span>)
+                   <span class="s Scope"><span class="s Compound">{
+                   <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">c</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
+                   <span class="s For"><span class="k">for</span> (<span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">i</span> = <span class="e Int"><span class="n">0</span></span>;</span></span> <span class="e Rel"><span class="e Identifier"><span class="i">i</span></span> &lt; <span class="e Identifier"><span class="i">table</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>; <span class="e PreIncr">++<span class="e Identifier"><span class="i">i</span></span></span>)
+                       <span class="s Scope"><span class="s Compound">{
+                       <span class="s For"><span class="k">for</span> (<span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Index"><span class="e Identifier"><span class="i">table</span></span>[<span class="e Identifier"><span class="i">i</span></span>]</span>;</span></span> <span class="e Identifier"><span class="i">p</span></span>; <span class="e Assign"><span class="e Identifier"><span class="i">p</span></span> = <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">next</span></span></span>)
+                           <span class="s Scope"><span class="s Compound">{
+                           <span class="s Expression"><span class="e PreIncr">++<span class="e Identifier"><span class="i">c</span></span></span>;</span>
+                           <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Call"><span class="e Identifier"><span class="i">contains</span></span>(<span class="i">p</span>.<span class="i">value</span>)</span>)</span>;</span>
+                           <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Identity"><span class="e Call"><span class="e Identifier"><span class="i">Hash</span></span> (<span class="i">p</span>.<span class="i">value</span>, <span class="i">table</span>.<span class="i">length</span>)</span> <span class="k">is</span> <span class="e Identifier"><span class="i">i</span></span></span>)</span>;</span>
+                           }</span></span></span>
+                       }</span></span></span>
+                   <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Identity"><span class="e Identifier"><span class="i">c</span></span> <span class="k">is</span> <span class="e Identifier"><span class="i">count</span></span></span>)</span>;</span>
+                   }</span></span></span>
+                <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Allocate a node instance. This is used as the default allocator
+                 
+        ***********************************************************************/</span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">allocate</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">heap</span></span>.<span class="e Identifier"><span class="i">allocate</span></span>;</span>
+        }</span></span></span>
+        
+        <span class="bc">/***********************************************************************
+
+                 Check to see if we are past load factor threshold. If so,
+                 resize so that we are at half of the desired threshold.
+                 
+        ***********************************************************************/</span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">checkLoad</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">float</span></span> <span class="i">fc</span> = <span class="e Identifier"><span class="i">count</span></span>;</span></span>
+                <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">float</span></span> <span class="i">ft</span> = <span class="e Identifier"><span class="i">table</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span></span>
+                <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Div"><span class="e Identifier"><span class="i">fc</span></span> / <span class="e Identifier"><span class="i">ft</span></span></span> &gt; <span class="e Identifier"><span class="i">loadFactor</span></span></span>)
+                    <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">resize</span></span> (<span class="n">2</span> * <span class="k">cast</span>(<span class="i">size_t</span>)(<span class="i">fc</span> / <span class="i">loadFactor</span>) + <span class="n">1</span>)</span>;</span></span></span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                resize table to new capacity, rehashing all elements
+                
+        ***********************************************************************/</span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">resize</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">newCap</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="lc">//Stdout.formatln ("resize {}", newCap);</span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">newtab</span> = <span class="e Call"><span class="e Identifier"><span class="i">heap</span></span>.<span class="e Identifier"><span class="i">allocate</span></span> (<span class="i">newCap</span>)</span>;</span></span>
+                <span class="s Expression"><span class="e Identifier"><span class="i">mutate</span></span>;</span>
+
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">bucket</span></span></span>; <span class="e Identifier"><span class="i">table</span></span>)
+                         <span class="s Scope"><span class="s While"><span class="k">while</span> (<span class="e Identifier"><span class="i">bucket</span></span>)
+                               <span class="s Scope"><span class="s Compound">{
+                               <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">n</span> = <span class="e Identifier"><span class="i">bucket</span></span>.<span class="e Identifier"><span class="i">next</span></span>;</span></span>
+                               <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">h</span> = <span class="e Call"><span class="e Identifier"><span class="i">Hash</span></span> (<span class="i">bucket</span>.<span class="i">value</span>, <span class="i">newCap</span>)</span>;</span></span>
+                               <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bucket</span></span>.<span class="e Identifier"><span class="i">next</span></span> = <span class="e Index"><span class="e Identifier"><span class="i">newtab</span></span>[<span class="e Identifier"><span class="i">h</span></span>]</span></span>;</span>
+                               <span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Identifier"><span class="i">newtab</span></span>[<span class="e Identifier"><span class="i">h</span></span>]</span> = <span class="e Identifier"><span class="i">bucket</span></span></span>;</span>
+                               <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bucket</span></span> = <span class="e Identifier"><span class="i">n</span></span></span>;</span>
+                               }</span></span></span></span></span>
+
+                <span class="lc">// release the prior table and assign new one</span>
+                <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">heap</span></span>.<span class="t Identifier"><span class="i">collect</span></span> (<span class="i">table</span>);</span></span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">table</span></span> = <span class="e Identifier"><span class="i">newtab</span></span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Remove the indicated node. We need to traverse buckets
+                for this, since we're singly-linked only. Better to save
+                the per-node memory than to gain a little on each remove
+
+                Used by iterators only
+                 
+        ***********************************************************************/</span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">remove</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">node</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">row</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">hd</span> = <span class="e Index"><span class="e Identifier"><span class="i">table</span></span>[<span class="e Identifier"><span class="i">row</span></span>]</span>;</span></span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">trail</span> = <span class="e Identifier"><span class="i">hd</span></span>;</span></span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Identifier"><span class="i">hd</span></span>;</span></span>
+
+                <span class="s While"><span class="k">while</span> (<span class="e Identifier"><span class="i">p</span></span>)
+                      <span class="s Scope"><span class="s Compound">{
+                      <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">n</span> = <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">next</span></span>;</span></span>
+                      <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">p</span></span> <span class="k">is</span> <span class="e Identifier"><span class="i">node</span></span></span>)
+                         <span class="s Scope"><span class="s Compound">{
+                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">decrement</span></span> (<span class="i">p</span>);</span></span>
+                         <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">p</span></span> <span class="k">is</span> <span class="e Identifier"><span class="i">hd</span></span></span>)
+                             <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Identifier"><span class="i">table</span></span>[<span class="e Identifier"><span class="i">row</span></span>]</span> = <span class="e Identifier"><span class="i">n</span></span></span>;</span></span>
+                         <span class="k">else</span>
+                            <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">trail</span></span>.<span class="e Identifier"><span class="i">next</span></span> = <span class="e Identifier"><span class="i">n</span></span></span>;</span></span></span>
+                         <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
+                         }</span></span> 
+                      <span class="k">else</span>
+                         <span class="s Scope"><span class="s Compound">{
+                         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">trail</span></span> = <span class="e Identifier"><span class="i">p</span></span></span>;</span>
+                         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">p</span></span> = <span class="e Identifier"><span class="i">n</span></span></span>;</span>
+                         }</span></span></span>
+                      }</span></span></span>
+                <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">false</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Clears the HashSet contents. Various attributes are
+                retained, such as the internal table itself. Invoke
+                reset() to drop everything.
+
+                Time complexity: O(n)
+                
+        ***********************************************************************/</span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">HashSet</span></span> <span class="i">clear</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">all</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e Identifier"><span class="i">mutate</span></span>;</span>
+
+                <span class="lc">// collect each node if we can't collect all at once</span>
+                <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Call"><span class="e Identifier"><span class="i">heap</span></span>.<span class="e Identifier"><span class="i">collect</span></span>(<span class="i">all</span>)</span> <span class="k">is</span> <span class="e Bool"><span class="k">false</span></span></span>)
+                    <span class="s Scope"><span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="k">ref</span> <span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">table</span></span>)
+                             <span class="s Scope"><span class="s While"><span class="k">while</span> (<span class="e Identifier"><span class="i">v</span></span>)
+                                   <span class="s Scope"><span class="s Compound">{
+                                   <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">n</span> = <span class="e Identifier"><span class="i">v</span></span>.<span class="e Identifier"><span class="i">next</span></span>;</span></span>
+                                   <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">decrement</span></span> (<span class="i">v</span>);</span></span>
+                                   <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">v</span></span> = <span class="e Identifier"><span class="i">n</span></span></span>;</span>
+                                   }</span></span></span></span></span></span></span>
+
+                <span class="lc">// retain table, but remove bucket chains</span>
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="k">ref</span> <span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">table</span></span>)
+                         <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">v</span></span> = <span class="e Null"><span class="k">null</span></span></span>;</span></span></span>
+
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">count</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span>
+                <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                new element was added
+                
+        ***********************************************************************/</span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">increment</span><span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e PreIncr">++<span class="e Identifier"><span class="i">mutation</span></span></span>;</span>
+                <span class="s Expression"><span class="e PreIncr">++<span class="e Identifier"><span class="i">count</span></span></span>;</span>
+        }</span></span></span>
+        
+        <span class="bc">/***********************************************************************
+
+                element was removed
+                
+        ***********************************************************************/</span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">decrement</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Reap</span></span> (<span class="i">p</span>.<span class="i">value</span>)</span>;</span>
+                <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">heap</span></span>.<span class="t Identifier"><span class="i">collect</span></span> (<span class="i">p</span>);</span></span>
+                <span class="s Expression"><span class="e PreIncr">++<span class="e Identifier"><span class="i">mutation</span></span></span>;</span>
+                <span class="s Expression"><span class="e PreDecr">--<span class="e Identifier"><span class="i">count</span></span></span>;</span>
+        }</span></span></span>
+        
+        <span class="bc">/***********************************************************************
+
+                set was changed
+                
+        ***********************************************************************/</span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">mutate</span><span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e PreIncr">++<span class="e Identifier"><span class="i">mutation</span></span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/***********************************************************************
+
+                Iterator with no filtering
+
+        ***********************************************************************/</span>
+
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Struct"><span class="k">struct</span> <span class="i">Iterator</span>
+        <span class="d Compound">{
+                <span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span>  <span class="i">row</span>;</span>
+                <span class="d Variables"><span class="t Identifier"><span class="i">Ref</span></span>     <span class="i">cell</span>,
+                        <span class="i">prior</span>;</span>
+                <span class="d Variables"><span class="t Identifier"><span class="i">Ref</span></span><span class="t Array">[]</span>   <span class="i">table</span>;</span>
+                <span class="d Variables"><span class="t Identifier"><span class="i">HashSet</span></span> <span class="i">owner</span>;</span>
+                <span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span>  <span class="i">mutation</span>;</span>
+
+                <span class="bc">/***************************************************************
+
+                        Did the container change underneath us?
+
+                ***************************************************************/</span>
+
+                <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">valid</span> <span class="o Parameters">()</span>
+                <span class="s FuncBody"><span class="s Compound">{
+                        <span class="s Return"><span class="k">return</span> <span class="e Identity"><span class="e Identifier"><span class="i">owner</span></span>.<span class="e Identifier"><span class="i">mutation</span></span> <span class="k">is</span> <span class="e Identifier"><span class="i">mutation</span></span></span>;</span>
+                }</span></span></span>               
+
+                <span class="bc">/***************************************************************
+
+                        Accesses the next value, and returns false when
+                        there are no further values to traverse
+
+                ***************************************************************/</span>
+
+                <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">next</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">v</span></span>)</span>
+                <span class="s FuncBody"><span class="s Compound">{
+                        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">n</span> = <span class="e Identifier"><span class="i">next</span></span>;</span></span>
+                        <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Paren">(<span class="e Identifier"><span class="i">n</span></span>)</span> ? <span class="e Comma"><span class="e Assign"><span class="e Identifier"><span class="i">v</span></span> = <span class="e Deref">*<span class="e Identifier"><span class="i">n</span></span></span></span>, <span class="e Bool"><span class="k">true</span></span></span> : <span class="e Bool"><span class="k">false</span></span></span>;</span>
+                }</span></span></span>
+                
+                <span class="bc">/***************************************************************
+
+                        Return a pointer to the next value, or null when
+                        there are no further values to traverse
+
+                ***************************************************************/</span>
+
+                <span class="d Function"><span class="t Identifier"><span class="i">V</span></span><span class="t Pointer">*</span> <span class="i">next</span> <span class="o Parameters">()</span>
+                <span class="s FuncBody"><span class="s Compound">{
+                        <span class="s While"><span class="k">while</span> (<span class="e Identity"><span class="e Identifier"><span class="i">cell</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
+                               <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">row</span></span> &lt; <span class="e Identifier"><span class="i">table</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>)
+                                   <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">cell</span></span> = <span class="e Index"><span class="e Identifier"><span class="i">table</span></span> [<span class="e PostIncr"><span class="e Identifier"><span class="i">row</span></span>++</span>]</span></span>;</span></span>
+                               <span class="k">else</span>
+                                  <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Null"><span class="k">null</span></span>;</span></span></span></span></span>
+  
+                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">prior</span></span> = <span class="e Identifier"><span class="i">cell</span></span></span>;</span>
+                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">cell</span></span> = <span class="e Identifier"><span class="i">cell</span></span>.<span class="e Identifier"><span class="i">next</span></span></span>;</span>
+                        <span class="s Return"><span class="k">return</span> <span class="e Address">&amp;<span class="e Identifier"><span class="i">prior</span></span></span>.<span class="e Identifier"><span class="i">value</span></span>;</span>
+                }</span></span></span>
+
+                <span class="bc">/***************************************************************
+
+                        Foreach support
+
+                ***************************************************************/</span>
+
+                <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span></span> <span class="i">dg</span></span>)</span>
+                <span class="s FuncBody"><span class="s Compound">{
+                        <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">result</span>;</span></span>
+
+                        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">c</span> = <span class="e Identifier"><span class="i">cell</span></span>;</span></span>
+                        <span class="s Labeled"><span class="i">loop</span>: <span class="s While"><span class="k">while</span> (<span class="e Bool"><span class="k">true</span></span>)
+                              <span class="s Scope"><span class="s Compound">{
+                              <span class="s While"><span class="k">while</span> (<span class="e Identity"><span class="e Identifier"><span class="i">c</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
+                                     <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">row</span></span> &lt; <span class="e Identifier"><span class="i">table</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>)
+                                         <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">c</span></span> = <span class="e Index"><span class="e Identifier"><span class="i">table</span></span> [<span class="e PostIncr"><span class="e Identifier"><span class="i">row</span></span>++</span>]</span></span>;</span></span>
+                                     <span class="k">else</span>
+                                        <span class="s Scope"><span class="s Break"><span class="k">break</span> <span class="i">loop</span>;</span></span></span></span></span>
+  
+                              <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">prior</span></span> = <span class="e Identifier"><span class="i">c</span></span></span>;</span>
+                              <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">c</span></span> = <span class="e Identifier"><span class="i">c</span></span>.<span class="e Identifier"><span class="i">next</span></span></span>;</span>
+                              <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Paren">(<span class="e Assign"><span class="e Identifier"><span class="i">result</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">dg</span></span>(<span class="i">prior</span>.<span class="i">value</span>)</span></span>)</span> != <span class="e Int"><span class="n">0</span></span></span>)
+                                   <span class="s Scope"><span class="s Break"><span class="k">break</span> <span class="i">loop</span>;</span></span></span>
+                              }</span></span></span></span>
+
+                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">cell</span></span> = <span class="e Identifier"><span class="i">c</span></span></span>;</span>
+                        <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">result</span></span>;</span>
+                }</span></span></span>                               
+
+                <span class="bc">/***************************************************************
+
+                        Remove value at the current iterator location
+
+                ***************************************************************/</span>
+
+                <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">remove</span> <span class="o Parameters">()</span>
+                <span class="s FuncBody"><span class="s Compound">{
+                        <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">prior</span></span>)
+                            <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">owner</span></span>.<span class="e Identifier"><span class="i">remove</span></span> (<span class="i">prior</span>, <span class="i">row</span>-<span class="n">1</span>)</span>)
+                               <span class="s Scope"><span class="s Compound">{
+                               <span class="lc">// ignore this change</span>
+                               <span class="s Expression"><span class="e PreIncr">++<span class="e Identifier"><span class="i">mutation</span></span></span>;</span>
+                               <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
+                               }</span></span></span></span></span>
+
+                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">prior</span></span> = <span class="e Null"><span class="k">null</span></span></span>;</span>
+                        <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">false</span></span>;</span>
+                }</span></span></span>
+        }</span></span>
+}</span></span></span></span>
+
+
+
+<span class="bc">/*******************************************************************************
+
+*******************************************************************************/</span>
+
+<span class="d Debug"><span class="k">debug</span> (<span class="i">HashSet</span>)
+<span class="d Compound">{
+        <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;</span>
+        <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">core</span>.<span class="i">Thread</span>;</span>
+        <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">time</span>.<span class="i">StopWatch</span>;</span>
+       
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="lc">// usage examples ...</span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">set</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">HashSet</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span></span>;</span></span>
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">set</span></span>.<span class="e Identifier"><span class="i">add</span></span> (<span class="sl">"foo"</span>)</span>;</span>
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">set</span></span>.<span class="e Identifier"><span class="i">add</span></span> (<span class="sl">"bar"</span>)</span>;</span>
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">set</span></span>.<span class="e Identifier"><span class="i">add</span></span> (<span class="sl">"wumpus"</span>)</span>;</span>
+
+                <span class="lc">// implicit generic iteration</span>
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">value</span></span></span>; <span class="e Identifier"><span class="i">set</span></span>)
+                         <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span> (<span class="i">value</span>)</span>.<span class="e Identifier"><span class="i">newline</span></span>;</span></span></span>
+
+                <span class="lc">// explicit generic iteration</span>
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">value</span></span></span>; <span class="e Identifier"><span class="i">set</span></span>.<span class="e Identifier"><span class="i">iterator</span></span>)
+                         <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span> (<span class="i">value</span>)</span>.<span class="e Identifier"><span class="i">newline</span></span>;</span></span></span>
+
+                <span class="lc">// generic iteration with optional remove</span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">s</span> = <span class="e Identifier"><span class="i">set</span></span>.<span class="e Identifier"><span class="i">iterator</span></span>;</span></span>
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">value</span></span></span>; <span class="e Identifier"><span class="i">s</span></span>)
+                        <span class="s Scope"><span class="s Compound">{}</span></span></span> <span class="lc">// s.remove;</span>
+
+                <span class="lc">// incremental iteration, with optional remove</span>
+                <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">v</span>;</span></span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">iterator</span> = <span class="e Identifier"><span class="i">set</span></span>.<span class="e Identifier"><span class="i">iterator</span></span>;</span></span>
+                <span class="s While"><span class="k">while</span> (<span class="e Call"><span class="e Identifier"><span class="i">iterator</span></span>.<span class="e Identifier"><span class="i">next</span></span>(<span class="i">v</span>)</span>)
+                      <span class="s Scope"><span class="s Compound">{}</span></span></span> <span class="lc">//iterator.remove;</span>
+                
+                <span class="lc">// incremental iteration, with optional failfast</span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">it</span> = <span class="e Identifier"><span class="i">set</span></span>.<span class="e Identifier"><span class="i">iterator</span></span>;</span></span>
+                <span class="s While"><span class="k">while</span> (<span class="e AndAnd"><span class="e Identifier"><span class="i">it</span></span>.<span class="e Identifier"><span class="i">valid</span></span> &amp;&amp; <span class="e Call"><span class="e Identifier"><span class="i">it</span></span>.<span class="e Identifier"><span class="i">next</span></span>(<span class="i">v</span>)</span></span>)
+                      <span class="s Scope"><span class="s Compound">{}</span></span></span>
+
+                <span class="lc">// remove specific element</span>
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">set</span></span>.<span class="e Identifier"><span class="i">remove</span></span> (<span class="sl">"wumpus"</span>)</span>;</span>
+
+                <span class="lc">// remove first element ...</span>
+                <span class="s While"><span class="k">while</span> (<span class="e Call"><span class="e Identifier"><span class="i">set</span></span>.<span class="e Identifier"><span class="i">take</span></span>(<span class="i">v</span>)</span>)
+                       <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"taking {}, {} left"</span>, <span class="i">v</span>, <span class="i">set</span>.<span class="i">size</span>)</span>;</span></span></span>
+                
+                
+                <span class="lc">// setup for benchmark, with a set of integers. We</span>
+                <span class="lc">// use a chunk allocator, and presize the bucket[]</span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">test</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">HashSet</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">int</span></span>, <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">hash</span></span>, <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">reap</span></span>, <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">Chunk</span></span>)</span></span></span>;</span></span>
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">test</span></span>.<span class="e Identifier"><span class="i">cache</span></span> (<span class="n">1000</span>, <span class="n">1_000_000</span>)</span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">test</span></span>.<span class="e Identifier"><span class="i">buckets</span></span> = <span class="e Int"><span class="n">1_500_000</span></span></span>;</span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">count</span> = <span class="e Int"><span class="n">1_000_000</span></span>;</span></span>
+                <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">StopWatch</span></span> <span class="i">w</span>;</span></span>
+
+                <span class="lc">// benchmark adding</span>
+                <span class="s Expression"><span class="e Identifier"><span class="i">w</span></span>.<span class="e Identifier"><span class="i">start</span></span>;</span>
+                <span class="s For"><span class="k">for</span> (<span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>=<span class="e Identifier"><span class="i">count</span></span>;</span></span> <span class="e PostDecr"><span class="e Identifier"><span class="i">i</span></span>--</span>;)
+                     <span class="s Scope"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">test</span></span>.<span class="t Identifier"><span class="i">add</span></span>(<span class="i">i</span>);</span></span></span></span>
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"{} adds: {}/s"</span>, <span class="i">test</span>.<span class="i">size</span>, <span class="i">test</span>.<span class="i">size</span>/<span class="i">w</span>.<span class="i">stop</span>)</span>;</span>
+
+                <span class="lc">// benchmark reading</span>
+                <span class="s Expression"><span class="e Identifier"><span class="i">w</span></span>.<span class="e Identifier"><span class="i">start</span></span>;</span>
+                <span class="s For"><span class="k">for</span> (<span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>=<span class="e Identifier"><span class="i">count</span></span>;</span></span> <span class="e PostDecr"><span class="e Identifier"><span class="i">i</span></span>--</span>;)
+                     <span class="s Scope"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">test</span></span>.<span class="t Identifier"><span class="i">contains</span></span>(<span class="i">i</span>);</span></span></span></span>
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"{} lookups: {}/s"</span>, <span class="i">test</span>.<span class="i">size</span>, <span class="i">test</span>.<span class="i">size</span>/<span class="i">w</span>.<span class="i">stop</span>)</span>;</span>
+
+                <span class="lc">// benchmark adding without allocation overhead</span>
+                <span class="s Expression"><span class="e Identifier"><span class="i">test</span></span>.<span class="e Identifier"><span class="i">clear</span></span>;</span>
+                <span class="s Expression"><span class="e Identifier"><span class="i">w</span></span>.<span class="e Identifier"><span class="i">start</span></span>;</span>
+                <span class="s For"><span class="k">for</span> (<span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>=<span class="e Identifier"><span class="i">count</span></span>;</span></span> <span class="e PostDecr"><span class="e Identifier"><span class="i">i</span></span>--</span>;)
+                     <span class="s Scope"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">test</span></span>.<span class="t Identifier"><span class="i">add</span></span>(<span class="i">i</span>);</span></span></span></span>
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"{} adds (after clear): {}/s"</span>, <span class="i">test</span>.<span class="i">size</span>, <span class="i">test</span>.<span class="i">size</span>/<span class="i">w</span>.<span class="i">stop</span>)</span>;</span>
+
+                <span class="lc">// benchmark duplication</span>
+                <span class="s Expression"><span class="e Identifier"><span class="i">w</span></span>.<span class="e Identifier"><span class="i">start</span></span>;</span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">dup</span> = <span class="e Identifier"><span class="i">test</span></span>.<span class="e Identifier"><span class="i">dup</span></span>;</span></span>
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"{} element dup: {}/s"</span>, <span class="i">dup</span>.<span class="i">size</span>, <span class="i">dup</span>.<span class="i">size</span>/<span class="i">w</span>.<span class="i">stop</span>)</span>;</span>
+
+                <span class="lc">// benchmark iteration</span>
+                <span class="s Expression"><span class="e Identifier"><span class="i">w</span></span>.<span class="e Identifier"><span class="i">start</span></span>;</span>
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">value</span></span></span>; <span class="e Identifier"><span class="i">test</span></span>) <span class="s Scope"><span class="s Compound">{}</span></span></span>
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"{} element iteration: {}/s"</span>, <span class="i">test</span>.<span class="i">size</span>, <span class="i">test</span>.<span class="i">size</span>/<span class="i">w</span>.<span class="i">stop</span>)</span>;</span>
+
+                <span class="s Expression"><span class="e Identifier"><span class="i">test</span></span>.<span class="e Identifier"><span class="i">check</span></span>;</span>
+        }</span></span></span>
+}</span></span></span>
+
+</pre></td>
+</tr></table>
+</body>
+</html>

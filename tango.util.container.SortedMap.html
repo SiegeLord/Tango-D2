@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.container.SortedMap</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.container.SortedMap">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.container.SortedMap"><a href="htmlsrc/tango.util.container.SortedMap.html" class="symbol">tango.util.container.SortedMap</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Apr 2008: Initial release</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Kris</div>
+<p class="sec_header">Since:</p><div class="cmnt">0.99.7
+<p class="bl"></p>
+        Based upon Doug Lea's Java collection package</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SortedMap" href="htmlsrc/tango.util.container.SortedMap.html#L68">SortedMap</a><span class="tparams">(<em>K</em>, <em>V</em>, <span class="kw">alias</span> <em>Reap</em> = <span class="defval">Container.reap</span>, <span class="kw">alias</span> <em>Heap</em> = <span class="defval">Container.DefaultCollect</span>)</span> : <span class="bclass">IContainer!(V)</span> <a href="tango.util.container.SortedMap.html#SortedMap" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">RedBlack trees of (key, value) pairs</div></div>
+<div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+<a href="#L12_ex1" name="L12_ex1">12</a>
+<a href="#L13_ex1" name="L13_ex1">13</a>
+<a href="#L14_ex1" name="L14_ex1">14</a>
+<a href="#L15_ex1" name="L15_ex1">15</a>
+<a href="#L16_ex1" name="L16_ex1">16</a>
+<a href="#L17_ex1" name="L17_ex1">17</a>
+<a href="#L18_ex1" name="L18_ex1">18</a>
+<a href="#L19_ex1" name="L19_ex1">19</a>
+<a href="#L20_ex1" name="L20_ex1">20</a>
+<a href="#L21_ex1" name="L21_ex1">21</a>
+<a href="#L22_ex1" name="L22_ex1">22</a>
+<a href="#L23_ex1" name="L23_ex1">23</a>
+<a href="#L24_ex1" name="L24_ex1">24</a>
+<a href="#L25_ex1" name="L25_ex1">25</a>
+<a href="#L26_ex1" name="L26_ex1">26</a>
+<a href="#L27_ex1" name="L27_ex1">27</a>
+<a href="#L28_ex1" name="L28_ex1">28</a>
+<a href="#L29_ex1" name="L29_ex1">29</a>
+<a href="#L30_ex1" name="L30_ex1">30</a>
+<a href="#L31_ex1" name="L31_ex1">31</a>
+<a href="#L32_ex1" name="L32_ex1">32</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">Iterator</span> <span class="i">iterator</span> (<span class="k">bool</span> <span class="i">forward</span>)
+<span class="i">Iterator</span> <span class="i">iterator</span> (<span class="i">K</span> <span class="i">key</span>, <span class="k">bool</span> <span class="i">forward</span>)
+<span class="k">int</span> <span class="i">opApply</span> (<span class="k">scope</span> <span class="k">int</span> <span class="k">delegate</span> (<span class="k">ref</span> <span class="i">V</span> <span class="i">value</span>) <span class="i">dg</span>)
+<span class="k">int</span> <span class="i">opApply</span> (<span class="k">scope</span> <span class="k">int</span> <span class="k">delegate</span> (<span class="k">ref</span> <span class="i">K</span> <span class="i">key</span>, <span class="k">ref</span> <span class="i">V</span> <span class="i">value</span>) <span class="i">dg</span>)
+
+<span class="k">bool</span> <span class="i">contains</span> (<span class="i">V</span> <span class="i">value</span>)
+<span class="k">bool</span> <span class="i">containsKey</span> (<span class="i">K</span> <span class="i">key</span>)
+<span class="k">bool</span> <span class="i">containsPair</span> (<span class="i">K</span> <span class="i">key</span>, <span class="i">V</span> <span class="i">value</span>)
+<span class="k">bool</span> <span class="i">keyOf</span> (<span class="i">V</span> <span class="i">value</span>, <span class="k">ref</span> <span class="i">K</span> <span class="i">key</span>)
+<span class="k">bool</span> <span class="i">get</span> (<span class="i">K</span> <span class="i">key</span>, <span class="k">ref</span> <span class="i">V</span> <span class="i">value</span>)
+
+<span class="k">bool</span> <span class="i">take</span> (<span class="k">ref</span> <span class="i">V</span> <span class="i">v</span>)
+<span class="k">bool</span> <span class="i">take</span> (<span class="i">K</span> <span class="i">key</span>, <span class="k">ref</span> <span class="i">V</span> <span class="i">v</span>)
+<span class="k">bool</span> <span class="i">removeKey</span> (<span class="i">K</span> <span class="i">key</span>)
+<span class="i">size_t</span> <span class="i">remove</span> (<span class="i">V</span> <span class="i">value</span>, <span class="k">bool</span> <span class="i">all</span>)
+<span class="i">size_t</span> <span class="i">remove</span> (<span class="i">IContainer</span>!(<span class="i">V</span>) <span class="i">e</span>, <span class="k">bool</span> <span class="i">all</span>)
+
+<span class="k">bool</span> <span class="i">add</span> (<span class="i">K</span> <span class="i">key</span>, <span class="i">V</span> <span class="i">value</span>)
+<span class="i">size_t</span> <span class="i">replace</span> (<span class="i">V</span> <span class="i">oldElement</span>, <span class="i">V</span> <span class="i">newElement</span>, <span class="k">bool</span> <span class="i">all</span>)
+<span class="k">bool</span> <span class="i">replacePair</span> (<span class="i">K</span> <span class="i">key</span>, <span class="i">V</span> <span class="i">oldElement</span>, <span class="i">V</span> <span class="i">newElement</span>)
+<span class="k">bool</span> <span class="i">opIndexAssign</span> (<span class="i">V</span> <span class="i">element</span>, <span class="i">K</span> <span class="i">key</span>)
+<span class="i">K</span>    <span class="i">nearbyKey</span> (<span class="i">K</span> <span class="i">key</span>, <span class="k">bool</span> <span class="i">greater</span>)
+<span class="i">V</span>    <span class="i">opIndex</span> (<span class="i">K</span> <span class="i">key</span>)
+<span class="i">V</span>*   <span class="i">opIn_r</span> (<span class="i">K</span> <span class="i">key</span>)
+
+<span class="i">size_t</span> <span class="i">size</span> ()
+<span class="k">bool</span> <span class="i">isEmpty</span> ()
+<span class="i">V</span>[] <span class="i">toArray</span> (<span class="i">V</span>[] <span class="i">dst</span>)
+<span class="i">SortedMap</span> <span class="i">dup</span> ()
+<span class="i">SortedMap</span> <span class="i">clear</span> ()
+<span class="i">SortedMap</span> <span class="i">reset</span> ()
+<span class="i">SortedMap</span> <span class="i">comparator</span> (<span class="i">Comparator</span> <span class="i">c</span>)</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="SortedMap.this" href="htmlsrc/tango.util.container.SortedMap.html#L99">this</a><span class="params">(Comparator <em>c</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Make an empty tree, using given Comparator for ordering</div></div></dd>
+<dt class="decl"><a class="symbol _dtor" name="SortedMap.~this" href="htmlsrc/tango.util.container.SortedMap.html#L123">~this</a>() <a href="tango.util.container.SortedMap.html#SortedMap.~this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clean up when deleted</div></div></dd>
+<dt class="decl"><span class="rettyp">Iterator</span> <a class="symbol _function" name="SortedMap.iterator" href="htmlsrc/tango.util.container.SortedMap.html#L134">iterator</a><span class="params">(bool <em>forward</em> = <span class="defval"><span class="k">true</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.iterator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a generic iterator for contained elements</div></div></dd>
+<dt class="decl"><span class="rettyp">Iterator</span> <a class="symbol _function" name="SortedMap.iterator:2" href="htmlsrc/tango.util.container.SortedMap.html#L155">iterator</a><span class="params">(K <em>key</em>, bool <em>forward</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.iterator:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return an iterator which return all elements matching 
+                or greater/lesser than the key in argument. The second
+                argument dictates traversal direction.</div></div>
+<div class="cmnt">Return a generic iterator for contained elements</div></dd>
+<dt class="decl"><span class="rettyp">SortedMap</span> <a class="symbol _function" name="SortedMap.cache" href="htmlsrc/tango.util.container.SortedMap.html#L172">cache</a><span class="params">(size_t <em>chunk</em>, size_t <em>count</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.cache" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Configure the assigned allocator with the size of each
+                allocation block (number of nodes allocated at one time)
+                and the number of nodes to pre-populate the cache with.
+                
+                Time complexity: O(n)</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="SortedMap.size" href="htmlsrc/tango.util.container.SortedMap.html#L184">size</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.size" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the number of elements contained</div></div></dd>
+<dt class="decl"><span class="rettyp">SortedMap</span> <a class="symbol _function" name="SortedMap.dup" href="htmlsrc/tango.util.container.SortedMap.html#L195">dup</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.dup" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create an independent copy. Does not clone elements</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SortedMap.contains" href="htmlsrc/tango.util.container.SortedMap.html#L210">contains</a><span class="params">(V <em>value</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.contains" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(log n)</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="SortedMap.opApply" href="htmlsrc/tango.util.container.SortedMap.html#L221">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref V value) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="SortedMap.opApply:2" href="htmlsrc/tango.util.container.SortedMap.html#L231">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref K key, ref V value) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.opApply:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">SortedMap</span> <a class="symbol _function" name="SortedMap.comparator" href="htmlsrc/tango.util.container.SortedMap.html#L242">comparator</a><span class="params">(Comparator <em>c</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.comparator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Use a new Comparator. Causes a reorganization</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SortedMap.containsKey" href="htmlsrc/tango.util.container.SortedMap.html#L272">containsKey</a><span class="params">(K <em>key</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.containsKey" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(log n)</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SortedMap.containsPair" href="htmlsrc/tango.util.container.SortedMap.html#L286">containsPair</a><span class="params">(K <em>key</em>, V <em>value</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.containsPair" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SortedMap.get" href="htmlsrc/tango.util.container.SortedMap.html#L303">get</a><span class="params">(K <em>key</em>,  <span class="k">ref</span> V <em>value</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.get" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the value associated with Key key.</div></div>
+<p class="sec_header">param:</p><div class="cmnt">key a key</div>
+<p class="sec_header">Returns:</p><div class="cmnt">whether the key is contained or not</div></dd>
+<dt class="decl"><span class="rettyp">K</span> <a class="symbol _function" name="SortedMap.nearbyKey" href="htmlsrc/tango.util.container.SortedMap.html#L331">nearbyKey</a><span class="params">(K <em>key</em>, bool <em>after</em>)</span> <a href="tango.util.container.SortedMap.html#SortedMap.nearbyKey" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the value of the key exactly matching the provided
+                key or, if none, the key just after/before it based on the
+                setting of the second argument</div></div>
+<p class="sec_header">param:</p><div class="cmnt">key a key</div>
+<p class="sec_header">param:</p><div class="cmnt">after indicates whether to look beyond or before
+                       the given key, where there is no exact match</div>
+<p class="sec_header">Throws:</p><div class="cmnt">NoSuchElementException if none found</div>
+<p class="sec_header">Returns:</p><div class="cmnt">a pointer to the value, or null if not present</div></dd>
+<dt class="decl"><span class="rettyp">K</span> <a class="symbol _function" name="SortedMap.firstKey" href="htmlsrc/tango.util.container.SortedMap.html#L352">firstKey</a><span class="params">()</span> <a href="tango.util.container.SortedMap.html#SortedMap.firstKey" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the first key of the map</div></div>
+<p class="sec_header">Throws:</p><div class="cmnt">NoSuchElementException where the map is empty</div></dd>
+<dt class="decl"><span class="rettyp">K</span> <a class="symbol _function" name="SortedMap.lastKey" href="htmlsrc/tango.util.container.SortedMap.html#L369">lastKey</a><span class="params">()</span> <a href="tango.util.container.SortedMap.html#SortedMap.lastKey" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the last key of the map</div></div>
+<p class="sec_header">Throws:</p><div class="cmnt">NoSuchElementException where the map is empty</div></dd>
+<dt class="decl"><span class="rettyp">V*</span> <a class="symbol _function" name="SortedMap.opIn_r" href="htmlsrc/tango.util.container.SortedMap.html#L387">opIn_r</a><span class="params">(K <em>key</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.opIn_r" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the value associated with Key key.</div></div>
+<p class="sec_header">param:</p><div class="cmnt">key a key</div>
+<p class="sec_header">Returns:</p><div class="cmnt">a pointer to the value, or null if not present</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SortedMap.keyOf" href="htmlsrc/tango.util.container.SortedMap.html#L404">keyOf</a><span class="params">(V <em>value</em>,  <span class="k">ref</span> K <em>key</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.keyOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)</div></div></dd>
+<dt class="decl"><span class="rettyp">SortedMap</span> <a class="symbol _function" name="SortedMap.clear" href="htmlsrc/tango.util.container.SortedMap.html#L423">clear</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)</div></div></dd>
+<dt class="decl"><span class="rettyp">SortedMap</span> <a class="symbol _function" name="SortedMap.reset" href="htmlsrc/tango.util.container.SortedMap.html#L437">reset</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reset the SortedMap contents. This releases more memory 
+                than clear() does</div></div>
+<div class="cmnt">Time complexity: O(n)</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="SortedMap.remove" href="htmlsrc/tango.util.container.SortedMap.html#L446">remove</a><span class="params">(IContainer!(V) <em>e</em>, bool <em>all</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.remove" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="SortedMap.remove:2" href="htmlsrc/tango.util.container.SortedMap.html#L460">remove</a><span class="params">(V <em>value</em>, bool <em>all</em> = <span class="defval"><span class="k">false</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.remove:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="SortedMap.replace" href="htmlsrc/tango.util.container.SortedMap.html#L484">replace</a><span class="params">(V <em>oldElement</em>, V <em>newElement</em>, bool <em>all</em> = <span class="defval"><span class="k">false</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.replace" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(n)</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SortedMap.take" href="htmlsrc/tango.util.container.SortedMap.html#L512">take</a><span class="params">(<span class="k">ref</span> V <em>v</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.take" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(log n)</div></div>
+<div class="cmnt">Takes the value associated with the least key.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SortedMap.take:2" href="htmlsrc/tango.util.container.SortedMap.html#L531">take</a><span class="params">(K <em>key</em>,  <span class="k">ref</span> V <em>value</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.take:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(log n)</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SortedMap.add" href="htmlsrc/tango.util.container.SortedMap.html#L556">add</a><span class="params">(K <em>key</em>, V <em>value</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.add" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(log n)</div></div>
+<div class="cmnt">Returns true if inserted, false where an existing key 
+                exists and was updated instead</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SortedMap.opIndexAssign" href="htmlsrc/tango.util.container.SortedMap.html#L570">opIndexAssign</a><span class="params">(V <em>element</em>, K <em>key</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.opIndexAssign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(log n)</div></div>
+<div class="cmnt">Returns true if inserted, false where an existing key 
+                exists and was updated instead</div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="SortedMap.opIndex" href="htmlsrc/tango.util.container.SortedMap.html#L583">opIndex</a><span class="params">(K <em>key</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.opIndex" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Operator retreival function</div></div>
+<div class="cmnt">Throws NoSuchElementException where key is missing</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SortedMap.removeKey" href="htmlsrc/tango.util.container.SortedMap.html#L599">removeKey</a><span class="params">(K <em>key</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.removeKey" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(log n)</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SortedMap.replacePair" href="htmlsrc/tango.util.container.SortedMap.html#L612">replacePair</a><span class="params">(K <em>key</em>, V <em>oldElement</em>, V <em>newElement</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.replacePair" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Time complexity: O(log n)</div></div></dd>
+<dt class="decl"><span class="rettyp">V[]</span> <a class="symbol _function" name="SortedMap.toArray" href="htmlsrc/tango.util.container.SortedMap.html#L639">toArray</a><span class="params">(V[] <em>dst</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.toArray" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Copy and return the contained set of values in an array, 
+                using the optional dst as a recipient (which is resized 
+                as necessary).</div></div>
+<div class="cmnt">Returns a slice of dst representing the container values.
+                
+                Time complexity: O(n)</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="SortedMap.isEmpty" href="htmlsrc/tango.util.container.SortedMap.html#L658">isEmpty</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.isEmpty" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is this container empty?
+                
+                Time complexity: O(1)</div></div></dd>
+<dt class="decl"><span class="rettyp">SortedMap</span> <a class="symbol _function" name="SortedMap.check" href="htmlsrc/tango.util.container.SortedMap.html#L668">check</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.SortedMap.html#SortedMap.check" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:24 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

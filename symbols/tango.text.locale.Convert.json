@@ -1,0 +1,14 @@
+["Convert",1,[],[1,1565],[
+["formatDateTime",12,[3],[172,175],[]],
+["positiveNumberFormat",11,[2,21],[497,497],[]],
+["charTerm",2,[2],[523,532],[]],
+["longToString",12,[],[538,572],[]],
+["longToHexString",12,[],[578,592],[]],
+["longToBinString",12,[],[598,611],[]],
+["parseFormatSpecifier",12,[],[617,648],[]],
+["formatInteger",12,[],[654,689],[]],
+["formatGeneral",12,[],[762,790],[]],
+["formatNumber",12,[],[796,820],[]],
+["formatCurrency",12,[],[826,854],[]],
+["formatFixed",12,[],[860,952],[]],
+["toString",12,[],[958,1012],[]]]]

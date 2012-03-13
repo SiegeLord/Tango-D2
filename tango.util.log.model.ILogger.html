@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.log.model.ILogger</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.log.model.ILogger">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.log.model.ILogger"><a href="htmlsrc/tango.util.log.model.ILogger.html" class="symbol">tango.util.log.model.ILogger</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: May 2004</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="ILogger" href="htmlsrc/tango.util.log.model.ILogger.html#L19">ILogger</a> <a href="tango.util.log.model.ILogger.html#ILogger" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ILogger.enabled" href="htmlsrc/tango.util.log.model.ILogger.html#L29">enabled</a><span class="params">(Level <em>level</em> = <span class="defval"><span class="i">Fatal</span></span>)</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.util.log.model.ILogger.html#ILogger.enabled" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is this logger enabed for the specified Level?</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ILogger.trace" href="htmlsrc/tango.util.log.model.ILogger.html#L37">trace</a><span class="params">(const(char[]) <em>fmt</em>, ...)</span> <a href="tango.util.log.model.ILogger.html#ILogger.trace" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append a trace message</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ILogger.info" href="htmlsrc/tango.util.log.model.ILogger.html#L45">info</a><span class="params">(const(char[]) <em>fmt</em>, ...)</span> <a href="tango.util.log.model.ILogger.html#ILogger.info" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append an info message</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ILogger.warn" href="htmlsrc/tango.util.log.model.ILogger.html#L53">warn</a><span class="params">(const(char[]) <em>fmt</em>, ...)</span> <a href="tango.util.log.model.ILogger.html#ILogger.warn" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append a warning message</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ILogger.error" href="htmlsrc/tango.util.log.model.ILogger.html#L61">error</a><span class="params">(const(char[]) <em>fmt</em>, ...)</span> <a href="tango.util.log.model.ILogger.html#ILogger.error" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append an error message</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ILogger.fatal" href="htmlsrc/tango.util.log.model.ILogger.html#L69">fatal</a><span class="params">(const(char[]) <em>fmt</em>, ...)</span> <a href="tango.util.log.model.ILogger.html#ILogger.fatal" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append a fatal message</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="ILogger.name" href="htmlsrc/tango.util.log.model.ILogger.html#L77">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.util.log.model.ILogger.html#ILogger.name" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the name of this ILogger (sans the appended dot).</div></div></dd>
+<dt class="decl"><span class="rettyp">Level</span> <a class="symbol _function" name="ILogger.level" href="htmlsrc/tango.util.log.model.ILogger.html#L85">level</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.util.log.model.ILogger.html#ILogger.level" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the Level this logger is set to</div></div></dd>
+<dt class="decl"><span class="rettyp">ILogger</span> <a class="symbol _function" name="ILogger.level:2" href="htmlsrc/tango.util.log.model.ILogger.html#L93">level</a><span class="params">(Level <em>l</em>)</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.util.log.model.ILogger.html#ILogger.level:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the current level for this logger (and only this logger).</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ILogger.additive" href="htmlsrc/tango.util.log.model.ILogger.html#L102">additive</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.util.log.model.ILogger.html#ILogger.additive" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is this logger additive? That is, should we walk ancestors
+                looking for more appenders?</div></div></dd>
+<dt class="decl"><span class="rettyp">ILogger</span> <a class="symbol _function" name="ILogger.additive:2" href="htmlsrc/tango.util.log.model.ILogger.html#L110">additive</a><span class="params">(bool <em>enabled</em>)</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.util.log.model.ILogger.html#ILogger.additive:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the additive status of this logger. See isAdditive().</div></div></dd>
+<dt class="decl"><span class="rettyp">ILogger</span> <a class="symbol _function" name="ILogger.append" href="htmlsrc/tango.util.log.model.ILogger.html#L118">append</a><span class="params">(Level <em>level</em>,  <span class="k">lazy</span> const(char[]) <em>exp</em>)</span> <a href="tango.util.log.model.ILogger.html#ILogger.append" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Send a message to this logger via its appender list.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:27 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

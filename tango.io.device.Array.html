@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.device.Array</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.device.Array">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.device.Array"><a href="htmlsrc/tango.io.device.Array.html" class="symbol">tango.io.device.Array</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Mar 2004: Initial release<br/>
+                        Dec 2006: Outback release</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Array" href="htmlsrc/tango.io.device.Array.html#L53">Array</a> : <span class="bclass">Conduit</span>, <span class="bclass">InputBuffer</span>, <span class="bclass">OutputBuffer</span>, <span class="bclass">Conduit.Seek</span> <a href="tango.io.device.Array.html#Array" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Array manipulation typically involves appending, as in the
+        following example:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// create a small buffer</span>
+<span class="k">auto</span> <span class="i">buf</span> = <span class="k">new</span> <span class="i">Array</span> (<span class="n">256</span>);
+
+<span class="k">auto</span> <span class="i">foo</span> = <span class="sl">"to write some D"</span>;
+
+<span class="lc">// append some text directly to it</span>
+<span class="i">buf</span>.<span class="i">append</span> (<span class="sl">"now is the time for all good men "</span>).<span class="i">append</span>(<span class="i">foo</span>);</pre>
+</td></tr>
+</table></div></div>
+<div class="cmnt">Alternatively, one might use a formatter to append content:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">output</span> = <span class="k">new</span> <span class="i">TextOutput</span> (<span class="k">new</span> <span class="i">Array</span>(<span class="n">256</span>));
+<span class="i">output</span>.<span class="i">format</span> (<span class="sl">"now is the time for {} good men {}"</span>, <span class="n">3</span>, <span class="i">foo</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        A slice() method returns all valid content within the array.</div>
+<dl>
+<dt class="decl"><a class="symbol _invariant" name="Array.invariant" href="htmlsrc/tango.io.device.Array.html#L72">invariant</a> <a href="tango.io.device.Array.html#Array.invariant" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Ensure the buffer remains valid between method calls.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Array.this" href="htmlsrc/tango.io.device.Array.html#L93">this</a><span class="params">(size_t <em>capacity</em>, size_t <em>growing</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.io.device.Array.html#Array.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a buffer.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>capacity</em></td><td>The number of bytes to make available.</td></tr>
+<tr><td><em>growing</em></td><td>Chunk size of a growable instance, or zero
+                           to prohibit expansion.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Construct a Buffer with the specified number of bytes
+                and expansion policy.</div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Array.this:2" href="htmlsrc/tango.io.device.Array.html#L113">this</a><span class="params">(void[] <em>data</em>)</span> <a href="tango.io.device.Array.html#Array.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a buffer.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>The backing array to buffer within.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Prime a buffer with an application-supplied array. All content
+                is considered valid for reading, and thus there is no writable
+                space initially available.</div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Array.this:3" href="htmlsrc/tango.io.device.Array.html#L138">this</a><span class="params">(void[] <em>data</em>, size_t <em>readable</em>)</span> <a href="tango.io.device.Array.html#Array.this:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a buffer.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>The backing array to buffer within.</td></tr>
+<tr><td><em>readable</em></td><td>The number of bytes initially made
+                           readable.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Prime buffer with an application-supplied array, and
+                indicate how much readable data is already there. A
+                write operation will begin writing immediately after
+                the existing readable content.
+<p class="bl"></p>
+                This is commonly used to attach a Buffer instance to
+                a local array.</div></dd>
+<dt class="decl"><span class="rettyp">immutable(char)[]</span> <a class="symbol _function" name="Array.toString" href="htmlsrc/tango.io.device.Array.html#L149">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.device.Array.html#Array.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the name of this conduit.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Array.read" href="htmlsrc/tango.io.device.Array.html#L174">read</a><span class="params">(void[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.device.Array.html#Array.read" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Transfer content into the provided dst.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>dst</em></td><td>Destination of the content.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">Return the number of bytes read, which may be less than
+                dst.length. Eof is returned when no further content is
+                available.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Populates the provided array with content. We try to
+                satisfy the request from the buffer content, and read
+                directly from an attached conduit when the buffer is
+                empty.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Array.write" href="htmlsrc/tango.io.device.Array.html#L209">write</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.device.Array.html#Array.write" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Emulate OutputStream.write().</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>src</em></td><td>The content to write.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">Return the number of bytes written, which may be less than
+                provided (conceptually). Returns Eof when the buffer becomes
+                full.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Appends src content to the buffer, expanding as required if
+                configured to do so (via the ctor).</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Array.bufferSize" href="htmlsrc/tango.io.device.Array.html#L231">bufferSize</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.device.Array.html#Array.bufferSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a preferred size for buffering conduit I/O.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Array.detach" href="htmlsrc/tango.io.device.Array.html#L242">detach</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.Array.html#Array.detach" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Release external resources.</div></div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="Array.seek" href="htmlsrc/tango.io.device.Array.html#L252">seek</a><span class="params">(long <em>offset</em>, Anchor <em>anchor</em> = <span class="defval"><span class="i">Begin</span></span>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.Array.html#Array.seek" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Seek within the constraints of assigned content.</div></div></dd>
+<dt class="decl"><span class="rettyp">Array</span> <a class="symbol _function" name="Array.assign" href="htmlsrc/tango.io.device.Array.html#L297">assign</a><span class="params">(void[] <em>data</em>)</span> <a href="tango.io.device.Array.html#Array.assign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reset the buffer content.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>The backing array to buffer within. All content
+                        is considered valid.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The buffer instance.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Set the backing array with all content readable.</div></dd>
+<dt class="decl"><span class="rettyp">Array</span> <a class="symbol _function" name="Array.assign:2" href="htmlsrc/tango.io.device.Array.html#L320">assign</a><span class="params">(void[] <em>data</em>, size_t <em>readable</em>)</span> <a href="tango.io.device.Array.html#Array.assign:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reset the buffer content</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>The backing array to buffer within.</td></tr>
+<tr><td><em>readable</em></td><td>The number of bytes within data considered
+                           valid.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The buffer instance.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Set the backing array with some content readable. Use clear()
+                to reset the content (make it all writable).</div></dd>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="Array.assign:3" href="htmlsrc/tango.io.device.Array.html#L341">assign</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.device.Array.html#Array.assign:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Access buffer content.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Return the entire backing array.</div></dd>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="Array.opSlice" href="htmlsrc/tango.io.device.Array.html#L353">opSlice</a><span class="params">(size_t <em>start</em>, size_t <em>end</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.device.Array.html#Array.opSlice" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a void[] read of the buffer from start to end, where
+                end is exclusive.</div></div></dd>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="Array.slice" href="htmlsrc/tango.io.device.Array.html#L373">slice</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.device.Array.html#Array.slice" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Retrieve all readable content.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A void[] read of the buffer.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Return a void[] read of the buffer, from the current position
+                up to the limit of valid content. The content remains in the
+                buffer for future extraction.</div></dd>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="Array.slice:2" href="htmlsrc/tango.io.device.Array.html#L414">slice</a><span class="params">(size_t <em>size</em>, bool <em>eat</em> = <span class="defval"><span class="k">true</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.device.Array.html#Array.slice:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Access buffer content.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>size</em></td><td>Number of bytes to access.</td></tr>
+<tr><td><em>eat</em></td><td>Whether to consume the content or not.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The corresponding buffer slice when successful, or
+                null if there's not enough data available (Eof; Eob).</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Slices readable data. The specified number of bytes is
+                readd from the buffer, and marked as having been read
+                when the 'eat' parameter is set true. When 'eat' is set
+                false, the read position is not adjusted.
+<p class="bl"></p>
+                Note that the slice cannot be larger than the size of
+                the buffer ~ use method read(void[]) instead where you
+                simply want the content copied.
+<p class="bl"></p>
+                Note also that the slice should be .dup'd if you wish to
+                retain it.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+<a href="#L3_ex3" name="L3_ex3">3</a>
+<a href="#L4_ex3" name="L4_ex3">4</a>
+<a href="#L5_ex3" name="L5_ex3">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// create a buffer with some content</span>
+<span class="k">auto</span> <span class="i">buffer</span> = <span class="k">new</span> <span class="i">Buffer</span> (<span class="sl">"hello world"</span>);
+
+<span class="lc">// consume everything unread</span>
+<span class="k">auto</span> <span class="i">slice</span> = <span class="i">buffer</span>.<span class="i">slice</span> (<span class="i">buffer</span>.<span class="i">readable</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">Array</span> <a class="symbol _function" name="Array.append" href="htmlsrc/tango.io.device.Array.html#L442">append</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.device.Array.html#Array.append" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append content.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>src</em></td><td>The content to _append.</td></tr>
+<tr><td><em>length</em></td><td>The number of bytes in src.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A chaining reference if all content was written.
+                Throws an IOException indicating eof or eob if not.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Append an array to this buffer.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Array.next" href="htmlsrc/tango.io.device.Array.html#L470">next</a><span class="params">(<span class="k">scope</span> size_t delegate(const(void)[]) <em>scan</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.device.Array.html#Array.next" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterator support.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>scan</em></td><td>The delagate to invoke with the current content</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns true if a token was isolated, false otherwise.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Upon success, the delegate should return the byte-based
+                index of the consumed pattern (tail end of it). Failure
+                to match a pattern should be indicated by returning an
+                IConduit.Eof.
+<p class="bl"></p>
+                Note that additional iterator and/or reader instances
+                will operate in lockstep when bound to a common buffer.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Array.readable" href="htmlsrc/tango.io.device.Array.html#L485">readable</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.device.Array.html#Array.readable" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Available content.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Return count of _readable bytes remaining in buffer. This is
+                calculated simply as limit() - position().</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Array.writable" href="htmlsrc/tango.io.device.Array.html#L500">writable</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.device.Array.html#Array.writable" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Available space.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Return count of _writable bytes available in buffer. This is
+                calculated simply as capacity() - limit().</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Array.limit" href="htmlsrc/tango.io.device.Array.html#L520">limit</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.device.Array.html#Array.limit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Access buffer limit.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns the limit of readable content within this buffer.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Each buffer has a capacity, a limit, and a position. The
+                capacity is the maximum content a buffer can contain, limit
+                represents the extent of valid content, and position marks
+                the current read location.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Array.capacity" href="htmlsrc/tango.io.device.Array.html#L540">capacity</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.device.Array.html#Array.capacity" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Access buffer capacity.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns the maximum capacity of this buffer.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Each buffer has a capacity, a limit, and a position. The
+                capacity is the maximum content a buffer can contain, limit
+                represents the extent of valid content, and position marks
+                the current read location.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Array.position" href="htmlsrc/tango.io.device.Array.html#L560">position</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.device.Array.html#Array.position" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Access buffer read position.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns the current read-position within this buffer</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Each buffer has a capacity, a limit, and a position. The
+                capacity is the maximum content a buffer can contain, limit
+                represents the extent of valid content, and position marks
+                the current read location.</div></dd>
+<dt class="decl"><span class="rettyp">Array</span> <a class="symbol _function" name="Array.clear" href="htmlsrc/tango.io.device.Array.html#L575">clear</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.device.Array.html#Array.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clear array content.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Reset 'position' and 'limit' to zero. This effectively
+                clears all content from the array.</div></dd>
+<dt class="decl"><span class="rettyp">Array</span> <a class="symbol _function" name="Array.flush" href="htmlsrc/tango.io.device.Array.html#L587">flush</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.device.Array.html#Array.flush" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Emit/purge buffered content.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Array.writer" href="htmlsrc/tango.io.device.Array.html#L612">writer</a><span class="params">(<span class="k">scope</span> size_t delegate(void[]) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.device.Array.html#Array.writer" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write into this buffer.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>dg</em></td><td>The callback to provide buffer access to.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns whatever the delegate returns.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Exposes the raw data buffer at the current _write position,
+                The delegate is provided with a void[] representing space
+                available within the buffer at the current _write position.
+<p class="bl"></p>
+                The delegate should return the appropriate number of bytes
+                if it writes valid content, or IConduit.Eof on error.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Array.reader" href="htmlsrc/tango.io.device.Array.html#L645">reader</a><span class="params">(<span class="k">scope</span> size_t delegate(const(void)[]) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.device.Array.html#Array.reader" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read directly from this buffer.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>dg</em></td><td>Callback to provide buffer access to.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">Returns whatever the delegate returns.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Exposes the raw data buffer at the current _read position. The
+                delegate is provided with a void[] representing the available
+                data, and should return zero to leave the current _read position
+                intact.
+<p class="bl"></p>
+                If the delegate consumes data, it should return the number of
+                bytes consumed; or IConduit.Eof to indicate an error.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

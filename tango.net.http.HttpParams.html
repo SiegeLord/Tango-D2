@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.net.http.HttpParams</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.net.http.HttpParams">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.net.http.HttpParams"><a href="htmlsrc/tango.net.http.HttpParams.html" class="symbol">tango.net.http.HttpParams</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: April 2004</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="HttpParams" href="htmlsrc/tango.net.http.HttpParams.html#L38">HttpParams</a> : <span class="bclass">HttpTokens</span>, <span class="bclass">HttpParamsView</span> <a href="tango.net.http.HttpParams.html#HttpParams" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Maintains a set of query parameters, parsed from an HTTP request.
+        Use HttpParams instead for output parameters.</div></div>
+<div class="cmnt">Note that these input params may have been encoded by the user-
+        agent. Unfortunately there has been little consensus on what that
+        encoding should be (especially regarding GET query-params). With
+        luck, that will change to a consistent usage of UTF-8 within the 
+        near future.</div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="HttpParams.this" href="htmlsrc/tango.net.http.HttpParams.html#L53">this</a><span class="params">()</span> <a href="tango.net.http.HttpParams.html#HttpParams.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct parameters by telling the HttpStack that
+                name/value pairs are seperated by a '=' character.</div></div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="HttpParams.size" href="htmlsrc/tango.net.http.HttpParams.html#L67">size</a><span class="params">()</span> <a href="tango.net.http.HttpParams.html#HttpParams.size" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the number of headers</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpParams.parse" href="htmlsrc/tango.net.http.HttpParams.html#L79">parse</a><span class="params">(InputBuffer <em>input</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.http.HttpParams.html#HttpParams.parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read all query parameters. Everything is mapped rather 
+                than being allocated &amp; copied</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpParams.add" href="htmlsrc/tango.net.http.HttpParams.html#L94">add</a><span class="params">(const(char)[] <em>name</em>, const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.http.HttpParams.html#HttpParams.add" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a name/value pair to the query list</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpParams.addInt" href="htmlsrc/tango.net.http.HttpParams.html#L105">addInt</a><span class="params">(const(char)[] <em>name</em>, int <em>value</em>)</span> <a href="tango.net.http.HttpParams.html#HttpParams.addInt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a name/integer pair to the query list</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpParams.addDate" href="htmlsrc/tango.net.http.HttpParams.html#L117">addDate</a><span class="params">(const(char)[] <em>name</em>, Time <em>value</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.http.HttpParams.html#HttpParams.addDate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a name/date(long) pair to the query list</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="HttpParams.get" href="htmlsrc/tango.net.http.HttpParams.html#L129">get</a><span class="params">(const(char)[] <em>name</em>, const(char)[] <em>ret</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.http.HttpParams.html#HttpParams.get" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the value of the provided header, or null if the
+                header does not exist</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="HttpParams.getInt" href="htmlsrc/tango.net.http.HttpParams.html#L141">getInt</a><span class="params">(const(char)[] <em>name</em>, int <em>ret</em> = <span class="defval">-<span class="n">1</span></span>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.http.HttpParams.html#HttpParams.getInt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the integer value of the provided header, or the 
+                provided default-value if the header does not exist</div></div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="HttpParams.getDate" href="htmlsrc/tango.net.http.HttpParams.html#L153">getDate</a><span class="params">(const(char)[] <em>name</em>, Time <em>ret</em> = <span class="defval"><span class="i">epoch</span></span>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.http.HttpParams.html#HttpParams.getDate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the date value of the provided header, or the 
+                provided default-value if the header does not exist</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HttpParams.produce" href="htmlsrc/tango.net.http.HttpParams.html#L165">produce</a><span class="params">(<span class="k">scope</span> size_t delegate(const(void)[]) <em>consume</em>, const(char)[] <em>eol</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.http.HttpParams.html#HttpParams.produce" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Output the param list to the provided consumer</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:57 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

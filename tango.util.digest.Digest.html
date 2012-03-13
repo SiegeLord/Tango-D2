@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.digest.Digest</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.digest.Digest">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.digest.Digest"><a href="htmlsrc/tango.util.digest.Digest.html" class="symbol">tango.util.digest.Digest</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see doc/license.txt for details</div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: Feb 2006</div>
+<p class="sec_header">Author:</p><div class="cmnt">Regan Heath, Oskar Linde
+<p class="bl"></p>
+        This module defines the Digest interface.</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Digest" href="htmlsrc/tango.util.digest.Digest.html#L55">Digest</a> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.util.digest.Digest.html#Digest" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The DigestTransform interface defines the interface of message
+        digest algorithms, such as MD5 and SHA. Message digests are
+        secure hash functions that take a message of arbitrary length
+        and produce a fix length digest as output.</div></div>
+<div class="cmnt">A object implementing the DigestTransform should start out initialized.
+        The data is processed though calls to the update method. Once all data
+        has been sent to the algorithm, the digest is finalized and computed
+        with the digest method.
+<p class="bl"></p>
+        The digest method may only be called once. After the digest
+        method has been called, the algorithm is reset to its initial
+        state.
+<p class="bl"></p>
+        Using the update method, data may be processed piece by piece, 
+        which is useful for cases involving streams of data.
+<p class="bl"></p>
+        For example:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="lc">// create an MD5 hash algorithm</span>
+<span class="i">Md5</span> <span class="i">hash</span> = <span class="k">new</span> <span class="i">Md5</span>();
+
+<span class="lc">// process some data</span>
+<span class="i">hash</span>.<span class="i">update</span>(<span class="sl">"The quick brown fox"</span>);
+
+<span class="lc">// process some more data</span>
+<span class="i">hash</span>.<span class="i">update</span>(<span class="sl">" jumps over the lazy dog"</span>);
+
+<span class="lc">// conclude algorithm and produce digest</span>
+<span class="k">ubyte</span>[] <span class="i">digest</span> = <span class="i">hash</span>.<span class="i">binaryDigest</span>();</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><span class="rettyp">Digest</span> <a class="symbol _function" name="Digest.update" href="htmlsrc/tango.util.digest.Digest.html#L66">update</a><span class="params">(const(void[]) <em>data</em>)</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.util.digest.Digest.html#Digest.update" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Processes data</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Updates the hash algorithm state with new data</div></dd>
+<dt class="decl"><span class="rettyp">ubyte[]</span> <a class="symbol _function" name="Digest.binaryDigest" href="htmlsrc/tango.util.digest.Digest.html#L85">binaryDigest</a><span class="params">(ubyte[] <em>buffer</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.util.digest.Digest.html#Digest.binaryDigest" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Computes the digest and resets the state</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>buffer</em></td><td>a buffer can be supplied for the digest to be
+                            written to</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">If the buffer is not large enough to hold the
+                   digest, a new buffer is allocated and returned.
+                   The algorithm state is always reset after a call to
+                   binaryDigest. Use the digestSize method to find out how
+                   large the buffer has to be.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Digest.digestSize" href="htmlsrc/tango.util.digest.Digest.html#L99">digestSize</a><span class="params">()</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.util.digest.Digest.html#Digest.digestSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the size in bytes of the digest</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the size of the digest in bytes</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Returns the size of the digest.</div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="Digest.hexDigest" href="htmlsrc/tango.util.digest.Digest.html#L117">hexDigest</a><span class="params">(char[] <em>buffer</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.util.digest.Digest.html#Digest.hexDigest" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Computes the digest as a hex string and resets the state</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>buffer</em></td><td>a buffer can be supplied in which the digest
+                            will be written. It needs to be able to hold
+                            2 * digestSize chars</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">If the buffer is not large enough to hold the hex digest,
+                    a new buffer is allocated and returned. The algorithm
+                    state is always reset after a call to hexDigest.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2006 Tango. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:24 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.locale.Core</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.locale.Core">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.locale.Core"><a href="htmlsrc/tango.text.locale.Core.html" class="symbol">tango.text.locale.Core</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: 2005</div>
+<p class="sec_header">Author:</p><div class="cmnt">John Chapman
+<p class="bl"></p>
+        Contains classes that provide information about locales, such as 
+        the language and calendars, as well as cultural conventions used 
+        for formatting dates, currency and numbers. Use these classes when 
+        writing applications for an international audience.
+<p class="bl"></p>
+
+<p class="bl"></p>
+ <table>
+ <tr>
+ <th>Interface</th>
+ <th>Description</th>
+ </tr>
+ <tr>
+ <td><a href="#IFormatService">IFormatService</a></td>
+ <td>Retrieves an object to control formatting.</td>
+ </tr>
+ </table>
+<p class="bl"></p>
+ <table>
+ <tr>
+ <th>Class</th>
+ <th>Description</th>
+ </tr>
+ <tr>
+ <td><a href="#Calendar">Calendar</a></td>
+ <td>Represents time in week, month and year divisions.</td>
+ </tr>
+ <tr>
+ <td><a href="#Culture">Culture</a></td>
+ <td>Provides information about a culture, such as its name, calendar and date and number format patterns.</td>
+ </tr>
+ <tr>
+ <td><a href="#DateTimeFormat">DateTimeFormat</a></td>
+ <td>Determines how <a href="#Time">Time</a> values are formatted, depending on the culture.</td>
+ </tr>
+ <tr>
+ <td><a href="#DaylightSavingTime">DaylightSavingTime</a></td>
+ <td>Represents a period of daylight-saving time.</td>
+ </tr>
+ <tr>
+ <td><a href="#Gregorian">Gregorian</a></td>
+ <td>Represents the Gregorian calendar.</td>
+ </tr>
+ <tr>
+ <td><a href="#Hebrew">Hebrew</a></td>
+ <td>Represents the Hebrew calendar.</td>
+ </tr>
+ <tr>
+ <td><a href="#Hijri">Hijri</a></td>
+ <td>Represents the Hijri calendar.</td>
+ </tr>
+ <tr>
+ <td><a href="#Japanese">Japanese</a></td>
+ <td>Represents the Japanese calendar.</td>
+ </tr>
+ <tr>
+ <td><a href="#Korean">Korean</a></td>
+ <td>Represents the Korean calendar.</td>
+ </tr>
+ <tr>
+ <td><a href="#NumberFormat">NumberFormat</a></td>
+ <td>Determines how numbers are formatted, according to the current culture.</td>
+ </tr>
+ <tr>
+ <td><a href="#Region">Region</a></td>
+ <td>Provides information about a region.</td>
+ </tr>
+ <tr>
+ <td><a href="#Taiwan">Taiwan</a></td>
+ <td>Represents the Taiwan calendar.</td>
+ </tr>
+ <tr>
+ <td><a href="#ThaiBuddhist">ThaiBuddhist</a></td>
+ <td>Represents the Thai Buddhist calendar.</td>
+ </tr>
+ </table>
+<p class="bl"></p>
+ <table>
+ <tr>
+ <th>Struct</th>
+ <th>Description</th>
+ </tr>
+ <tr>
+ <td><a href="#Time">Time</a></td>
+ <td>Represents time expressed as a date and time of day.</td>
+ </tr>
+ <tr>
+ <td><a href="#TimeSpan">TimeSpan</a></td>
+ <td>Represents a time interval.</td>
+ </tr>
+ </table></div>
+<dl>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="CultureTypes" href="htmlsrc/tango.text.locale.Core.html#L140">CultureTypes</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Core.html#CultureTypes" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Defines the types of cultures that can be retrieved from Culture.getCultures.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="CultureTypes.Neutral" href="htmlsrc/tango.text.locale.Core.html#L141">Neutral</a> <a href="tango.text.locale.Core.html#CultureTypes.Neutral" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Refers to cultures that are associated with a language but not specific to a country or region.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="CultureTypes.Specific" href="htmlsrc/tango.text.locale.Core.html#L142">Specific</a> <a href="tango.text.locale.Core.html#CultureTypes.Specific" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Refers to cultures that are specific to a country or region.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="CultureTypes.All" href="htmlsrc/tango.text.locale.Core.html#L143">All</a> <a href="tango.text.locale.Core.html#CultureTypes.All" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Refers to all cultures.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="IFormatService" href="htmlsrc/tango.text.locale.Core.html#L155">IFormatService</a><span class="tparams">(<em>T</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Core.html#IFormatService" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="_IFormatService"></a>
+ Retrieves an object to control formatting.
+ 
+ A class implements <a href="#IFormatService_getFormat">getFormat</a> to retrieve an object that provides format information for the implementing type.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">IFormatService is implemented by <a href="#Culture">Culture</a>, <a href="#NumberFormat">NumberFormat</a> and <a href="#DateTimeFormat">DateTimeFormat</a> to provide locale-specific formatting of
+ numbers and date and time values.</div>
+<dl>
+<dt class="decl"><span class="rettyp">Object</span> <a class="symbol _function" name="IFormatService.getFormat" href="htmlsrc/tango.text.locale.Core.html#L163">getFormat</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.text.locale.Core.html#IFormatService.getFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="IFormatService_getFormat"></a>
+ Retrieves an object that supports formatting for the specified _type.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The current instance if type is the same _type as the current instance; otherwise, null.</div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>type</em></td><td>An object that specifies the _type of formatting to retrieve.</td></tr></table></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Culture" href="htmlsrc/tango.text.locale.Core.html#L200">Culture</a> : <span class="bclass">IFormatService</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Core.html#Culture" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="_Culture"></a>
+ Provides information about a culture, such as its name, calendar and date and number format patterns.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">tango.text.locale adopts the RFC 1766 standard for culture names in the format &lt;language&gt;"-"&lt;region&gt;. 
+ &lt;language&gt; is a lower-case two-letter code defined by ISO 639-1. &lt;region&gt; is an upper-case 
+ two-letter code defined by ISO 3166. For example, "en-GB" is UK English.
+ <br/><br/>There are three types of culture: invariant, neutral and specific. The invariant culture is not tied to
+ any specific region, although it is associated with the English language. A neutral culture is associated with
+ a language, but not with a region. A specific culture is associated with a language and a region. "es" is a neutral 
+ culture. "es-MX" is a specific culture.
+ <br/><br/>Instances of <a href="#DateTimeFormat">DateTimeFormat</a> and <a href="#NumberFormat">NumberFormat</a> cannot be created for neutral cultures.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+<a href="#L12_ex1" name="L12_ex1">12</a>
+<a href="#L13_ex1" name="L13_ex1">13</a>
+<a href="#L14_ex1" name="L14_ex1">14</a>
+<a href="#L15_ex1" name="L15_ex1">15</a>
+<a href="#L16_ex1" name="L16_ex1">16</a>
+<a href="#L17_ex1" name="L17_ex1">17</a>
+<a href="#L18_ex1" name="L18_ex1">18</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>, <span class="i">tango</span>.<span class="i">text</span>.<span class="i">locale</span>.<span class="i">Core</span>;
+
+<span class="k">void</span> <span class="i">main</span>() {
+  <span class="i">Culture</span> <span class="i">culture</span> = <span class="k">new</span> <span class="i">Culture</span>(<span class="sl">"it-IT"</span>);
+
+  <span class="i">Stdout</span>.<span class="i">formatln</span>(<span class="sl">"englishName: {}"</span>, <span class="i">culture</span>.<span class="i">englishName</span>);
+  <span class="i">Stdout</span>.<span class="i">formatln</span>(<span class="sl">"nativeName: {}"</span>, <span class="i">culture</span>.<span class="i">nativeName</span>);
+  <span class="i">Stdout</span>.<span class="i">formatln</span>(<span class="sl">"name: {}"</span>, <span class="i">culture</span>.<span class="i">name</span>);
+  <span class="i">Stdout</span>.<span class="i">formatln</span>(<span class="sl">"parent: {}"</span>, <span class="i">culture</span>.<span class="i">parent</span>.<span class="i">name</span>);
+  <span class="i">Stdout</span>.<span class="i">formatln</span>(<span class="sl">"isNeutral: {}"</span>, <span class="i">culture</span>.<span class="i">isNeutral</span>);
+}
+
+<span class="lc">// Produces the following output:</span>
+<span class="lc">// englishName: Italian (Italy)</span>
+<span class="lc">// nativeName: italiano (Italia)</span>
+<span class="lc">// name: it-IT</span>
+<span class="lc">// parent: it</span>
+<span class="lc">// isNeutral: false</span></pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="Culture.this" href="htmlsrc/tango.text.locale.Core.html#L240">this</a><span class="params">(const(char)[] <em>cultureName</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Core.html#Culture.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Initializes a new Culture instance from the supplied name.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>cultureName</em></td><td>The name of the Culture.</td></tr></table></dd>
+<dt class="decl"><a class="symbol _ctor" name="Culture.this:2" href="htmlsrc/tango.text.locale.Core.html#L249">this</a><span class="params">(int <em>cultureID</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Core.html#Culture.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Initializes a new Culture instance from the supplied culture identifier.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>cultureID</em></td><td>The identifer (LCID) of the Culture.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Culture identifiers correspond to a Windows LCID.</div></dd>
+<dt class="decl"><span class="rettyp">Object</span> <a class="symbol _function" name="Culture.getFormat" href="htmlsrc/tango.text.locale.Core.html#L260">getFormat</a><span class="params">(TypeInfo <em>type</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Core.html#Culture.getFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Retrieves an object defining how to format the specified type.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>type</em></td><td>The TypeInfo of the resulting formatting object.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">If type is typeid(<a href="#NumberFormat">NumberFormat</a>), the value of the <a href="#Culture_numberFormat">numberFormat</a> property. If type is typeid(<a href="#DateTimeFormat">DateTimeFormat</a>), the
+ value of the <a href="#Culture_dateTimeFormat">dateTimeFormat</a> property. Otherwise, null.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Implements <a href="#IFormatService_getFormat">IFormatService.getFormat</a>.</div></dd>
+<dt class="decl"><span class="rettyp">Culture</span> <a class="symbol _function" name="Culture.getCulture" href="htmlsrc/tango.text.locale.Core.html#L295">getCulture</a><span class="params">(int <em>cultureID</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Core.html#Culture.getCulture" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a read-only instance of a culture using the specified culture identifier.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>cultureID</em></td><td>The identifier of the culture.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A read-only culture instance.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Instances returned by this method are cached.</div></dd>
+<dt class="decl"><span class="rettyp">Culture</span> <a class="symbol _function" name="Culture.getCulture:2" href="htmlsrc/tango.text.locale.Core.html#L313">getCulture</a><span class="params">(const(char)[] <em>cultureName</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Core.html#Culture.getCulture:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a read-only instance of a culture using the specified culture name.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>cultureName</em></td><td>The name of the culture.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A read-only culture instance.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Instances returned by this method are cached.</div></dd>
+<dt class="decl"><span class="rettyp">Culture</span> <a class="symbol _function" name="Culture.getCultureFromIetfLanguageTag" href="htmlsrc/tango.text.locale.Core.html#L327">getCultureFromIetfLanguageTag</a><span class="params">(const(char)[] <em>name</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Core.html#Culture.getCultureFromIetfLanguageTag" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a read-only instance using the specified name, as defined by the RFC 3066 standard and maintained by the IETF.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>name</em></td><td>The name of the language.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">A read-only culture instance.</div></dd>
+<dt class="decl"><span class="rettyp">Culture[]</span> <a class="symbol _function" name="Culture.getCultures" href="htmlsrc/tango.text.locale.Core.html#L398">getCultures</a><span class="params">(CultureTypes <em>types</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Core.html#Culture.getCultures" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a list of cultures filtered by the specified <a href="constants.html#CultureTypes">CultureTypes</a>.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>types</em></td><td>A combination of CultureTypes.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">An array of Culture instances containing cultures specified by types.</div></dd>
+<dt class="decl"><span class="rettyp">immutable(char)[]</span> <a class="symbol _function" name="Culture.toString" href="htmlsrc/tango.text.locale.Core.html#L418">toString</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.text.locale.Core.html#Culture.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns the name of the Culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A string containing the name of the Culture in the format &lt;language&gt;"-"&lt;region&gt;.</div></dd>
+<dt class="decl"><span class="rettyp">Culture</span> <a class="symbol _function" name="Culture.current" href="htmlsrc/tango.text.locale.Core.html#L436">current</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Core.html#Culture.current" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="Culture_current"></a>
+ <i>Property.</i> Retrieves the culture of the current user.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The Culture instance representing the user's current culture.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Culture.current:2" href="htmlsrc/tango.text.locale.Core.html#L477">current</a><span class="params">(Culture <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Core.html#Culture.current:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the culture of the _current user.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The Culture instance representing the user's _current culture.</td></tr></table>
+<p class="sec_header">Examples:</p><div class="cmnt">The following examples shows how to change the _current culture.
+ <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+<a href="#L3_ex2" name="L3_ex2">3</a>
+<a href="#L4_ex2" name="L4_ex2">4</a>
+<a href="#L5_ex2" name="L5_ex2">5</a>
+<a href="#L6_ex2" name="L6_ex2">6</a>
+<a href="#L7_ex2" name="L7_ex2">7</a>
+<a href="#L8_ex2" name="L8_ex2">8</a>
+<a href="#L9_ex2" name="L9_ex2">9</a>
+<a href="#L10_ex2" name="L10_ex2">10</a>
+<a href="#L11_ex2" name="L11_ex2">11</a>
+<a href="#L12_ex2" name="L12_ex2">12</a>
+<a href="#L13_ex2" name="L13_ex2">13</a>
+<a href="#L14_ex2" name="L14_ex2">14</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Print</span>, <span class="i">tango</span>.<span class="i">text</span>.<span class="i">locale</span>.<span class="i">Common</span>;
+
+<span class="k">void</span> <span class="i">main</span>() {
+  <span class="lc">// Displays the name of the current culture.</span>
+  <span class="i">Println</span>(<span class="sl">"The current culture is %s."</span>, <span class="i">Culture</span>.<span class="i">current</span>.<span class="i">englishName</span>);
+
+  <span class="lc">// Changes the current culture to el-GR.</span>
+  <span class="i">Culture</span>.<span class="i">current</span> = <span class="k">new</span> <span class="i">Culture</span>(<span class="sl">"el-GR"</span>);
+  <span class="i">Println</span>(<span class="sl">"The current culture is now %s."</span>, <span class="i">Culture</span>.<span class="i">current</span>.<span class="i">englishName</span>);
+}
+
+<span class="lc">// Produces the following output:</span>
+<span class="lc">// The current culture is English (United Kingdom).</span>
+<span class="lc">// The current culture is now Greek (Greece).</span></pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">Culture</span> <a class="symbol _function" name="Culture.invariantCulture" href="htmlsrc/tango.text.locale.Core.html#L489">invariantCulture</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Core.html#Culture.invariantCulture" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the invariant Culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The Culture instance that is invariant.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The invariant culture is culture-independent. It is not tied to any specific region, but is associated
+ with the English language.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Culture.id" href="htmlsrc/tango.text.locale.Core.html#L499">id</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Culture.id" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the identifier of the Culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The culture identifier of the current instance.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The culture identifier corresponds to the Windows locale identifier (LCID). It can therefore be used when 
+ interfacing with the Windows NLS functions.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Culture.name" href="htmlsrc/tango.text.locale.Core.html#L508">name</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Culture.name" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="Culture_name"></a>
+ <i>Property.</i> Retrieves the name of the Culture in the format &lt;language&gt;"-"&lt;region&gt;.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The name of the current instance. For example, the name of the UK English culture is "en-GB".</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Culture.englishName" href="htmlsrc/tango.text.locale.Core.html#L517">englishName</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Culture.englishName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the name of the Culture in the format &lt;languagename&gt; (&lt;regionname&gt;) in English.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The name of the current instance in English. For example, the englishName of the UK English culture 
+ is "English (United Kingdom)".</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Culture.nativeName" href="htmlsrc/tango.text.locale.Core.html#L526">nativeName</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Culture.nativeName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the name of the Culture in the format &lt;languagename&gt; (&lt;regionname&gt;) in its native language.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The name of the current instance in its native language. For example, if Culture.name is "de-DE", nativeName is 
+ "Deutsch (Deutschland)".</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Culture.twoLetterLanguageName" href="htmlsrc/tango.text.locale.Core.html#L534">twoLetterLanguageName</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Culture.twoLetterLanguageName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the two-letter language code of the culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The two-letter language code of the Culture instance. For example, the twoLetterLanguageName for English is "en".</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Culture.threeLetterLanguageName" href="htmlsrc/tango.text.locale.Core.html#L542">threeLetterLanguageName</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Culture.threeLetterLanguageName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the three-letter language code of the culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The three-letter language code of the Culture instance. For example, the threeLetterLanguageName for English is "eng".</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Culture.ietfLanguageTag" href="htmlsrc/tango.text.locale.Core.html#L550">ietfLanguageTag</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Culture.ietfLanguageTag" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the RFC 3066 identification for a language.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A string representing the RFC 3066 language identification.</div></dd>
+<dt class="decl"><span class="rettyp">Culture</span> <a class="symbol _function" name="Culture.parent" href="htmlsrc/tango.text.locale.Core.html#L558">parent</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.text.locale.Core.html#Culture.parent" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the Culture representing the parent of the current instance.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The Culture representing the parent of the current instance.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Culture.isNeutral" href="htmlsrc/tango.text.locale.Core.html#L604">isNeutral</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Culture.isNeutral" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves a value indicating whether the current instance is a neutral culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">true is the current Culture represents a neutral culture; otherwise, false.</div>
+<p class="sec_header">Examples:</p><div class="cmnt">The following example displays which cultures using Chinese are neutral.
+ <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+<a href="#L3_ex3" name="L3_ex3">3</a>
+<a href="#L4_ex3" name="L4_ex3">4</a>
+<a href="#L5_ex3" name="L5_ex3">5</a>
+<a href="#L6_ex3" name="L6_ex3">6</a>
+<a href="#L7_ex3" name="L7_ex3">7</a>
+<a href="#L8_ex3" name="L8_ex3">8</a>
+<a href="#L9_ex3" name="L9_ex3">9</a>
+<a href="#L10_ex3" name="L10_ex3">10</a>
+<a href="#L11_ex3" name="L11_ex3">11</a>
+<a href="#L12_ex3" name="L12_ex3">12</a>
+<a href="#L13_ex3" name="L13_ex3">13</a>
+<a href="#L14_ex3" name="L14_ex3">14</a>
+<a href="#L15_ex3" name="L15_ex3">15</a>
+<a href="#L16_ex3" name="L16_ex3">16</a>
+<a href="#L17_ex3" name="L17_ex3">17</a>
+<a href="#L18_ex3" name="L18_ex3">18</a>
+<a href="#L19_ex3" name="L19_ex3">19</a>
+<a href="#L20_ex3" name="L20_ex3">20</a>
+<a href="#L21_ex3" name="L21_ex3">21</a>
+<a href="#L22_ex3" name="L22_ex3">22</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Print</span>, <span class="i">tango</span>.<span class="i">text</span>.<span class="i">locale</span>.<span class="i">Common</span>;
+
+<span class="k">void</span> <span class="i">main</span>() {
+  <span class="k">foreach</span> (<span class="i">c</span>; <span class="i">Culture</span>.<span class="i">getCultures</span>(<span class="i">CultureTypes</span>.<span class="i">All</span>)) {
+    <span class="k">if</span> (<span class="i">c</span>.<span class="i">twoLetterLanguageName</span> == <span class="sl">"zh"</span>) {
+      <span class="i">Print</span>(<span class="i">c</span>.<span class="i">englishName</span>);
+      <span class="k">if</span> (<span class="i">c</span>.<span class="i">isNeutral</span>)
+        <span class="i">Println</span>(<span class="sl">"neutral"</span>);
+      <span class="k">else</span>
+        <span class="i">Println</span>(<span class="sl">"specific"</span>);
+    }
+  }
+}
+
+<span class="lc">// Produces the following output:</span>
+<span class="lc">// Chinese (Simplified) - neutral</span>
+<span class="lc">// Chinese (Taiwan) - specific</span>
+<span class="lc">// Chinese (People's Republic of China) - specific</span>
+<span class="lc">// Chinese (Hong Kong S.A.R.) - specific</span>
+<span class="lc">// Chinese (Singapore) - specific</span>
+<span class="lc">// Chinese (Macao S.A.R.) - specific</span>
+<span class="lc">// Chinese (Traditional) - neutral</span></pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Culture.isReadOnly" href="htmlsrc/tango.text.locale.Core.html#L614">isReadOnly</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Culture.isReadOnly" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves a value indicating whether the instance is read-only.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">true if the instance is read-only; otherwise, false.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">If the culture is read-only, the <a href="#Culture_dateTimeFormat">dateTimeFormat</a> and <a href="#Culture_numberFormat">numberFormat</a> properties return 
+ read-only instances.</div></dd>
+<dt class="decl"><span class="rettyp">Calendar</span> <a class="symbol _function" name="Culture.calendar" href="htmlsrc/tango.text.locale.Core.html#L623">calendar</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.text.locale.Core.html#Culture.calendar" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="Culture_calendar"></a>
+ <i>Property.</i> Retrieves the calendar used by the culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A Calendar instance respresenting the calendar used by the culture.</div></dd>
+<dt class="decl"><span class="rettyp">Calendar[]</span> <a class="symbol _function" name="Culture.optionalCalendars" href="htmlsrc/tango.text.locale.Core.html#L634">optionalCalendars</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.text.locale.Core.html#Culture.optionalCalendars" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the list of calendars that can be used by the culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">An array of type Calendar representing the calendars that can be used by the culture.</div></dd>
+<dt class="decl"><span class="rettyp">NumberFormat</span> <a class="symbol _function" name="Culture.numberFormat" href="htmlsrc/tango.text.locale.Core.html#L646">numberFormat</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.text.locale.Core.html#Culture.numberFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="Culture_numberFormat"></a>
+ <i>Property.</i> Retrieves a NumberFormat defining the culturally appropriate format for displaying numbers and currency.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A NumberFormat defining the culturally appropriate format for displaying numbers and currency.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Culture.numberFormat:2" href="htmlsrc/tango.text.locale.Core.html#L658">numberFormat</a><span class="params">(NumberFormat <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.text.locale.Core.html#Culture.numberFormat:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns a NumberFormat defining the culturally appropriate format for displaying numbers and currency.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>values</em></td><td>A NumberFormat defining the culturally appropriate format for displaying numbers and currency.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">DateTimeFormat</span> <a class="symbol _function" name="Culture.dateTimeFormat" href="htmlsrc/tango.text.locale.Core.html#L668">dateTimeFormat</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.text.locale.Core.html#Culture.dateTimeFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="Culture_dateTimeFormat"></a>
+ <i>Property.</i> Retrieves a DateTimeFormat defining the culturally appropriate format for displaying dates and times.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A DateTimeFormat defining the culturally appropriate format for displaying dates and times.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Culture.dateTimeFormat:2" href="htmlsrc/tango.text.locale.Core.html#L680">dateTimeFormat</a><span class="params">(DateTimeFormat <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.text.locale.Core.html#Culture.dateTimeFormat:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns a DateTimeFormat defining the culturally appropriate format for displaying dates and times.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>values</em></td><td>A DateTimeFormat defining the culturally appropriate format for displaying dates and times.</td></tr></table></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Region" href="htmlsrc/tango.text.locale.Core.html#L749">Region</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Core.html#Region" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="_Region"></a>
+ Provides information about a region.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Region does not represent user preferences. It does not depend on the user's language or culture.</div>
+<p class="sec_header">Examples:</p><div class="cmnt">The following example displays some of the properties of the Region class:
+ <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+<a href="#L2_ex4" name="L2_ex4">2</a>
+<a href="#L3_ex4" name="L3_ex4">3</a>
+<a href="#L4_ex4" name="L4_ex4">4</a>
+<a href="#L5_ex4" name="L5_ex4">5</a>
+<a href="#L6_ex4" name="L6_ex4">6</a>
+<a href="#L7_ex4" name="L7_ex4">7</a>
+<a href="#L8_ex4" name="L8_ex4">8</a>
+<a href="#L9_ex4" name="L9_ex4">9</a>
+<a href="#L10_ex4" name="L10_ex4">10</a>
+<a href="#L11_ex4" name="L11_ex4">11</a>
+<a href="#L12_ex4" name="L12_ex4">12</a>
+<a href="#L13_ex4" name="L13_ex4">13</a>
+<a href="#L14_ex4" name="L14_ex4">14</a>
+<a href="#L15_ex4" name="L15_ex4">15</a>
+<a href="#L16_ex4" name="L16_ex4">16</a>
+<a href="#L17_ex4" name="L17_ex4">17</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Print</span>, <span class="i">tango</span>.<span class="i">text</span>.<span class="i">locale</span>.<span class="i">Common</span>;
+
+<span class="k">void</span> <span class="i">main</span>() {
+  <span class="i">Region</span> <span class="i">region</span> = <span class="k">new</span> <span class="i">Region</span>(<span class="sl">"en-GB"</span>);
+  <span class="i">Println</span>(<span class="sl">"name:              %s"</span>, <span class="i">region</span>.<span class="i">name</span>);
+  <span class="i">Println</span>(<span class="sl">"englishName:       %s"</span>, <span class="i">region</span>.<span class="i">englishName</span>);
+  <span class="i">Println</span>(<span class="sl">"isMetric:          %s"</span>, <span class="i">region</span>.<span class="i">isMetric</span>);
+  <span class="i">Println</span>(<span class="sl">"currencySymbol:    %s"</span>, <span class="i">region</span>.<span class="i">currencySymbol</span>);
+  <span class="i">Println</span>(<span class="sl">"isoCurrencySymbol: %s"</span>, <span class="i">region</span>.<span class="i">isoCurrencySymbol</span>);
+}
+
+<span class="lc">// Produces the following output.</span>
+<span class="lc">// name:              en-GB</span>
+<span class="lc">// englishName:       United Kingdom</span>
+<span class="lc">// isMetric:          true</span>
+<span class="lc">// currencySymbol:    £</span>
+<span class="lc">// isoCurrencySymbol: GBP</span></pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="Region.this" href="htmlsrc/tango.text.locale.Core.html#L760">this</a><span class="params">(int <em>cultureID</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Core.html#Region.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Initializes a new Region instance based on the region associated with the specified culture identifier.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>cultureID</em></td><td>A culture indentifier.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">The name of the Region instance is set to the ISO 3166 two-letter code for that region.</div></dd>
+<dt class="decl"><a class="symbol _ctor" name="Region.this:2" href="htmlsrc/tango.text.locale.Core.html#L772">this</a><span class="params">(const(char)[] <em>name</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Core.html#Region.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="Region_ctor_name"></a>
+ Initializes a new Region instance based on the region specified by name.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>name</em></td><td>A two-letter ISO 3166 code for the region. Or, a culture <a href="#Culture_name">_name</a> consisting of the language and region.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">Region</span> <a class="symbol _function" name="Region.current" href="htmlsrc/tango.text.locale.Core.html#L788">current</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Core.html#Region.current" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the Region used by the current <a href="#Culture">Culture</a>.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The Region instance associated with the current Culture.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Region.geoID" href="htmlsrc/tango.text.locale.Core.html#L798">geoID</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Region.geoID" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves a unique identifier for the geographical location of the region.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">An <b>int</b> uniquely identifying the geographical location.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Region.name" href="htmlsrc/tango.text.locale.Core.html#L807">name</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Region.name" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="Region_name"></a>
+ <i>Property.</i> Retrieves the ISO 3166 code, or the name, of the current Region.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The value specified by the name parameter of the <a href="#Region_ctor_name">Region(char[])</a> constructor.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Region.englishName" href="htmlsrc/tango.text.locale.Core.html#L815">englishName</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Region.englishName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the full name of the region in English.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The full name of the region in English.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Region.nativeName" href="htmlsrc/tango.text.locale.Core.html#L823">nativeName</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Region.nativeName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the full name of the region in its native language.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The full name of the region in the language associated with the region code.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Region.twoLetterRegionName" href="htmlsrc/tango.text.locale.Core.html#L831">twoLetterRegionName</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Region.twoLetterRegionName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the two-letter ISO 3166 code of the region.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The two-letter ISO 3166 code of the region.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Region.threeLetterRegionName" href="htmlsrc/tango.text.locale.Core.html#L839">threeLetterRegionName</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Region.threeLetterRegionName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the three-letter ISO 3166 code of the region.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The three-letter ISO 3166 code of the region.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Region.currencySymbol" href="htmlsrc/tango.text.locale.Core.html#L847">currencySymbol</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Region.currencySymbol" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the currency symbol of the region.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The currency symbol of the region.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Region.isoCurrencySymbol" href="htmlsrc/tango.text.locale.Core.html#L855">isoCurrencySymbol</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Region.isoCurrencySymbol" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the three-character currency symbol of the region.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The three-character currency symbol of the region.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Region.currencyEnglishName" href="htmlsrc/tango.text.locale.Core.html#L863">currencyEnglishName</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Region.currencyEnglishName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the name in English of the currency used in the region.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The name in English of the currency used in the region.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="Region.currencyNativeName" href="htmlsrc/tango.text.locale.Core.html#L871">currencyNativeName</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Region.currencyNativeName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the name in the native language of the region of the currency used in the region.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The name in the native language of the region of the currency used in the region.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Region.isMetric" href="htmlsrc/tango.text.locale.Core.html#L879">isMetric</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#Region.isMetric" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves a value indicating whether the region uses the metric system for measurements.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">true is the region uses the metric system; otherwise, false.</div></dd>
+<dt class="decl"><span class="rettyp">immutable(char)[]</span> <a class="symbol _function" name="Region.toString" href="htmlsrc/tango.text.locale.Core.html#L887">toString</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.text.locale.Core.html#Region.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a string containing the ISO 3166 code, or the <a href="#Region_name">name</a>, of the current Region.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A string containing the ISO 3166 code, or the name, of the current Region.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="NumberFormat" href="htmlsrc/tango.text.locale.Core.html#L931">NumberFormat</a> : <span class="bclass">IFormatService</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="_NumberFormat"></a>
+ Determines how numbers are formatted, according to the current culture.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Numbers are formatted using format patterns retrieved from a NumberFormat instance.
+ This class implements <a href="#IFormatService_getFormat">IFormatService.getFormat</a>.</div>
+<p class="sec_header">Examples:</p><div class="cmnt">The following example shows how to retrieve an instance of NumberFormat for a Culture
+ and use it to display number formatting information.
+ <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex5" name="L1_ex5">1</a>
+<a href="#L2_ex5" name="L2_ex5">2</a>
+<a href="#L3_ex5" name="L3_ex5">3</a>
+<a href="#L4_ex5" name="L4_ex5">4</a>
+<a href="#L5_ex5" name="L5_ex5">5</a>
+<a href="#L6_ex5" name="L6_ex5">6</a>
+<a href="#L7_ex5" name="L7_ex5">7</a>
+<a href="#L8_ex5" name="L8_ex5">8</a>
+<a href="#L9_ex5" name="L9_ex5">9</a>
+<a href="#L10_ex5" name="L10_ex5">10</a>
+<a href="#L11_ex5" name="L11_ex5">11</a>
+<a href="#L12_ex5" name="L12_ex5">12</a>
+<a href="#L13_ex5" name="L13_ex5">13</a>
+<a href="#L14_ex5" name="L14_ex5">14</a>
+<a href="#L15_ex5" name="L15_ex5">15</a>
+<a href="#L16_ex5" name="L16_ex5">16</a>
+<a href="#L17_ex5" name="L17_ex5">17</a>
+<a href="#L18_ex5" name="L18_ex5">18</a>
+<a href="#L19_ex5" name="L19_ex5">19</a>
+<a href="#L20_ex5" name="L20_ex5">20</a>
+<a href="#L21_ex5" name="L21_ex5">21</a>
+<a href="#L22_ex5" name="L22_ex5">22</a>
+<a href="#L23_ex5" name="L23_ex5">23</a>
+<a href="#L24_ex5" name="L24_ex5">24</a>
+<a href="#L25_ex5" name="L25_ex5">25</a>
+<a href="#L26_ex5" name="L26_ex5">26</a>
+<a href="#L27_ex5" name="L27_ex5">27</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Print</span>, <span class="i">tango</span>.<span class="i">text</span>.<span class="i">locale</span>.<span class="i">Common</span>;
+
+<span class="k">void</span> <span class="i">main</span>(<span class="k">char</span>[][] <span class="i">args</span>) {
+  <span class="k">foreach</span> (<span class="i">c</span>; <span class="i">Culture</span>.<span class="i">getCultures</span>(<span class="i">CultureTypes</span>.<span class="i">Specific</span>)) {
+    <span class="k">if</span> (<span class="i">c</span>.<span class="i">twoLetterLanguageName</span> == <span class="sl">"en"</span>) {
+      <span class="i">NumberFormat</span> <span class="i">fmt</span> = <span class="i">c</span>.<span class="i">numberFormat</span>;
+      <span class="i">Println</span>(<span class="sl">"The currency symbol for %s is '%s'"</span>, 
+        <span class="i">c</span>.<span class="i">englishName</span>, 
+        <span class="i">fmt</span>.<span class="i">currencySymbol</span>);
+    }
+  }
+}
+
+<span class="lc">// Produces the following output:</span>
+<span class="lc">// The currency symbol for English (United States) is '$'</span>
+<span class="lc">// The currency symbol for English (United Kingdom) is '£'</span>
+<span class="lc">// The currency symbol for English (Australia) is '$'</span>
+<span class="lc">// The currency symbol for English (Canada) is '$'</span>
+<span class="lc">// The currency symbol for English (New Zealand) is '$'</span>
+<span class="lc">// The currency symbol for English (Ireland) is '€'</span>
+<span class="lc">// The currency symbol for English (South Africa) is 'R'</span>
+<span class="lc">// The currency symbol for English (Jamaica) is 'J$'</span>
+<span class="lc">// The currency symbol for English (Caribbean) is '$'</span>
+<span class="lc">// The currency symbol for English (Belize) is 'BZ$'</span>
+<span class="lc">// The currency symbol for English (Trinidad and Tobago) is 'TT$'</span>
+<span class="lc">// The currency symbol for English (Zimbabwe) is 'Z$'</span>
+<span class="lc">// The currency symbol for English (Republic of the Philippines) is 'Php'</span></pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="NumberFormat.this" href="htmlsrc/tango.text.locale.Core.html#L960">this</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Initializes a new, culturally independent instance.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Modify the properties of the new instance to define custom formatting.</div></dd>
+<dt class="decl"><span class="rettyp">Object</span> <a class="symbol _function" name="NumberFormat.getFormat" href="htmlsrc/tango.text.locale.Core.html#L1012">getFormat</a><span class="params">(TypeInfo <em>type</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.getFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Retrieves an object defining how to format the specified type.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>type</em></td><td>The TypeInfo of the resulting formatting object.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">If type is typeid(<a href="#NumberFormat">NumberFormat</a>), the current NumberFormat instance. Otherwise, null.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Implements <a href="#IFormatService_getFormat">IFormatService.getFormat</a>.</div></dd>
+<dt class="decl"><span class="rettyp">NumberFormat</span> <a class="symbol _function" name="NumberFormat.getInstance" href="htmlsrc/tango.text.locale.Core.html#L1035">getInstance</a><span class="params">(IFormatService <em>formatService</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.getInstance" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Retrieves the NumberFormat for the specified <a href="#IFormatService">IFormatService</a>.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>formatService</em></td><td>The IFormatService used to retrieve NumberFormat.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The NumberFormat for the specified IFormatService.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The method calls <a href="#IFormatService_getFormat">IFormatService.getFormat</a> with typeof(NumberFormat). If formatService is null,
+ then the value of the current property is returned.</div></dd>
+<dt class="decl"><span class="rettyp">NumberFormat</span> <a class="symbol _function" name="NumberFormat.current" href="htmlsrc/tango.text.locale.Core.html#L1055">current</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.current" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves a read-only NumberFormat instance from the current culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A read-only NumberFormat instance from the current culture.</div></dd>
+<dt class="decl"><span class="rettyp">NumberFormat</span> <a class="symbol _function" name="NumberFormat.invariantFormat" href="htmlsrc/tango.text.locale.Core.html#L1064">invariantFormat</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.invariantFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="NumberFormat_invariantFormat"></a>
+ <i>Property.</i> Retrieves the read-only, culturally independent NumberFormat instance.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The read-only, culturally independent NumberFormat instance.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="NumberFormat.isReadOnly" href="htmlsrc/tango.text.locale.Core.html#L1076">isReadOnly</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.isReadOnly" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves a value indicating whether the instance is read-only.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">true if the instance is read-only; otherwise, false.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="NumberFormat.numberDecimalDigits" href="htmlsrc/tango.text.locale.Core.html#L1084">numberDecimalDigits</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.numberDecimalDigits" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the number of decimal places used for numbers.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of decimal places used for numbers. For <a href="#NumberFormat_invariantFormat">invariantFormat</a>, the default is 2.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.numberDecimalDigits:2" href="htmlsrc/tango.text.locale.Core.html#L1114">numberDecimalDigits</a><span class="params">(int <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.numberDecimalDigits:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Assigns the number of decimal digits used for numbers.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The number of decimal places used for numbers.</td></tr></table>
+<p class="sec_header">Throws:</p><div class="cmnt">Exception if the property is being set and the instance is read-only.</div>
+<p class="sec_header">Examples:</p><div class="cmnt">The following example shows the effect of changing numberDecimalDigits.
+ <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex6" name="L1_ex6">1</a>
+<a href="#L2_ex6" name="L2_ex6">2</a>
+<a href="#L3_ex6" name="L3_ex6">3</a>
+<a href="#L4_ex6" name="L4_ex6">4</a>
+<a href="#L5_ex6" name="L5_ex6">5</a>
+<a href="#L6_ex6" name="L6_ex6">6</a>
+<a href="#L7_ex6" name="L7_ex6">7</a>
+<a href="#L8_ex6" name="L8_ex6">8</a>
+<a href="#L9_ex6" name="L9_ex6">9</a>
+<a href="#L10_ex6" name="L10_ex6">10</a>
+<a href="#L11_ex6" name="L11_ex6">11</a>
+<a href="#L12_ex6" name="L12_ex6">12</a>
+<a href="#L13_ex6" name="L13_ex6">13</a>
+<a href="#L14_ex6" name="L14_ex6">14</a>
+<a href="#L15_ex6" name="L15_ex6">15</a>
+<a href="#L16_ex6" name="L16_ex6">16</a>
+<a href="#L17_ex6" name="L17_ex6">17</a>
+<a href="#L18_ex6" name="L18_ex6">18</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Print</span>, <span class="i">tango</span>.<span class="i">text</span>.<span class="i">locale</span>.<span class="i">Common</span>;
+
+<span class="k">void</span> <span class="i">main</span>() {
+  <span class="lc">// Get the NumberFormat from the en-GB culture.</span>
+  <span class="i">NumberFormat</span> <span class="i">fmt</span> = (<span class="k">new</span> <span class="i">Culture</span>(<span class="sl">"en-GB"</span>)).<span class="i">numberFormat</span>;
+
+  <span class="lc">// Display a value with the default number of decimal digits.</span>
+  <span class="k">int</span> <span class="i">n</span> = <span class="n">5678</span>;
+  <span class="i">Println</span>(<span class="i">Formatter</span>.<span class="i">format</span>(<span class="i">fmt</span>, <span class="sl">"{0:N}"</span>, <span class="i">n</span>));
+
+  <span class="lc">// Display the value with six decimal digits.</span>
+  <span class="i">fmt</span>.<span class="i">numberDecimalDigits</span> = <span class="n">6</span>;
+  <span class="i">Println</span>(<span class="i">Formatter</span>.<span class="i">format</span>(<span class="i">fmt</span>, <span class="sl">"{0:N}"</span>, <span class="i">n</span>));
+}
+
+<span class="lc">// Produces the following output:</span>
+<span class="lc">// 5,678.00</span>
+<span class="lc">// 5,678.000000</span></pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="NumberFormat.numberNegativePattern" href="htmlsrc/tango.text.locale.Core.html#L1133">numberNegativePattern</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.numberNegativePattern" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the format pattern for negative numbers.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The format pattern for negative numbers. For invariantFormat, the default is 1 (representing "-n").</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The following table shows valid values for this property.
+<p class="bl"></p>
+ <table class="definitionTable">
+ <tr><th>Value</th><th>Pattern</th></tr>
+ <tr><td>0</td><td>(n)</td></tr>
+ <tr><td>1</td><td>-n</td></tr>
+ <tr><td>2</td><td>- n</td></tr>
+ <tr><td>3</td><td>n-</td></tr>
+ <tr><td>4</td><td>n -</td></tr>
+ </table></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.numberNegativePattern:2" href="htmlsrc/tango.text.locale.Core.html#L1167">numberNegativePattern</a><span class="params">(int <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.numberNegativePattern:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the format pattern for negative numbers.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The format pattern for negative numbers.</td></tr></table>
+<p class="sec_header">Examples:</p><div class="cmnt">The following example shows the effect of the different patterns.
+ <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex7" name="L1_ex7">1</a>
+<a href="#L2_ex7" name="L2_ex7">2</a>
+<a href="#L3_ex7" name="L3_ex7">3</a>
+<a href="#L4_ex7" name="L4_ex7">4</a>
+<a href="#L5_ex7" name="L5_ex7">5</a>
+<a href="#L6_ex7" name="L6_ex7">6</a>
+<a href="#L7_ex7" name="L7_ex7">7</a>
+<a href="#L8_ex7" name="L8_ex7">8</a>
+<a href="#L9_ex7" name="L9_ex7">9</a>
+<a href="#L10_ex7" name="L10_ex7">10</a>
+<a href="#L11_ex7" name="L11_ex7">11</a>
+<a href="#L12_ex7" name="L12_ex7">12</a>
+<a href="#L13_ex7" name="L13_ex7">13</a>
+<a href="#L14_ex7" name="L14_ex7">14</a>
+<a href="#L15_ex7" name="L15_ex7">15</a>
+<a href="#L16_ex7" name="L16_ex7">16</a>
+<a href="#L17_ex7" name="L17_ex7">17</a>
+<a href="#L18_ex7" name="L18_ex7">18</a>
+<a href="#L19_ex7" name="L19_ex7">19</a>
+<a href="#L20_ex7" name="L20_ex7">20</a>
+<a href="#L21_ex7" name="L21_ex7">21</a>
+<a href="#L22_ex7" name="L22_ex7">22</a>
+<a href="#L23_ex7" name="L23_ex7">23</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Print</span>, <span class="i">tango</span>.<span class="i">text</span>.<span class="i">locale</span>.<span class="i">Common</span>;
+
+<span class="k">void</span> <span class="i">main</span>() {
+  <span class="i">NumberFormat</span> <span class="i">fmt</span> = <span class="k">new</span> <span class="i">NumberFormat</span>;
+  <span class="k">int</span> <span class="i">n</span> = -<span class="n">5678</span>;
+
+  <span class="lc">// Display the default pattern.</span>
+  <span class="i">Println</span>(<span class="i">Formatter</span>.<span class="i">format</span>(<span class="i">fmt</span>, <span class="sl">"{0:N}"</span>, <span class="i">n</span>));
+
+  <span class="lc">// Display all patterns.</span>
+  <span class="k">for</span> (<span class="k">int</span> <span class="i">i</span> = <span class="n">0</span>; <span class="i">i</span> &lt;= <span class="n">4</span>; <span class="i">i</span>++) {
+    <span class="i">fmt</span>.<span class="i">numberNegativePattern</span> = <span class="i">i</span>;
+    <span class="i">Println</span>(<span class="i">Formatter</span>.<span class="i">format</span>(<span class="i">fmt</span>, <span class="sl">"{0:N}"</span>, <span class="i">n</span>));
+  }
+}
+
+<span class="lc">// Produces the following output:</span>
+<span class="lc">// (5,678.00)</span>
+<span class="lc">// (5,678.00)</span>
+<span class="lc">// -5,678.00</span>
+<span class="lc">// - 5,678.00</span>
+<span class="lc">// 5,678.00-</span>
+<span class="lc">// 5,678.00 -</span></pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="NumberFormat.currencyDecimalDigits" href="htmlsrc/tango.text.locale.Core.html#L1176">currencyDecimalDigits</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.currencyDecimalDigits" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the number of decimal places to use in currency values.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of decimal digits to use in currency values.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.currencyDecimalDigits:2" href="htmlsrc/tango.text.locale.Core.html#L1183">currencyDecimalDigits</a><span class="params">(int <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.currencyDecimalDigits:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the number of decimal places to use in currency values.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The number of decimal digits to use in currency values.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="NumberFormat.currencyNegativePattern" href="htmlsrc/tango.text.locale.Core.html#L1192">currencyNegativePattern</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.currencyNegativePattern" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the formal pattern to use for negative currency values.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The format pattern to use for negative currency values.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.currencyNegativePattern:2" href="htmlsrc/tango.text.locale.Core.html#L1199">currencyNegativePattern</a><span class="params">(int <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.currencyNegativePattern:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the formal pattern to use for negative currency values.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The format pattern to use for negative currency values.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="NumberFormat.currencyPositivePattern" href="htmlsrc/tango.text.locale.Core.html#L1208">currencyPositivePattern</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.currencyPositivePattern" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the formal pattern to use for positive currency values.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The format pattern to use for positive currency values.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.currencyPositivePattern:2" href="htmlsrc/tango.text.locale.Core.html#L1215">currencyPositivePattern</a><span class="params">(int <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.currencyPositivePattern:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the formal pattern to use for positive currency values.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The format pattern to use for positive currency values.</div></dd>
+<dt class="decl"><span class="rettyp">const(int)[]</span> <a class="symbol _function" name="NumberFormat.numberGroupSizes" href="htmlsrc/tango.text.locale.Core.html#L1224">numberGroupSizes</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.numberGroupSizes" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the number of digits int each group to the left of the decimal place in numbers.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of digits int each group to the left of the decimal place in numbers.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.numberGroupSizes:2" href="htmlsrc/tango.text.locale.Core.html#L1231">numberGroupSizes</a><span class="params">(const(int)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.numberGroupSizes:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the number of digits int each group to the left of the decimal place in numbers.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The number of digits int each group to the left of the decimal place in numbers.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(int)[]</span> <a class="symbol _function" name="NumberFormat.currencyGroupSizes" href="htmlsrc/tango.text.locale.Core.html#L1240">currencyGroupSizes</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.currencyGroupSizes" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the number of digits int each group to the left of the decimal place in currency values.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The number of digits int each group to the left of the decimal place in currency values.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.currencyGroupSizes:2" href="htmlsrc/tango.text.locale.Core.html#L1247">currencyGroupSizes</a><span class="params">(const(int)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.currencyGroupSizes:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the number of digits int each group to the left of the decimal place in currency values.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The number of digits int each group to the left of the decimal place in currency values.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="NumberFormat.numberGroupSeparator" href="htmlsrc/tango.text.locale.Core.html#L1256">numberGroupSeparator</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.numberGroupSeparator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the string separating groups of digits to the left of the decimal place in numbers.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string separating groups of digits to the left of the decimal place in numbers. For example, ",".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.numberGroupSeparator:2" href="htmlsrc/tango.text.locale.Core.html#L1263">numberGroupSeparator</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.numberGroupSeparator:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the string separating groups of digits to the left of the decimal place in numbers.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The string separating groups of digits to the left of the decimal place in numbers.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="NumberFormat.numberDecimalSeparator" href="htmlsrc/tango.text.locale.Core.html#L1272">numberDecimalSeparator</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.numberDecimalSeparator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the string used as the decimal separator in numbers.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string used as the decimal separator in numbers. For example, ".".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.numberDecimalSeparator:2" href="htmlsrc/tango.text.locale.Core.html#L1279">numberDecimalSeparator</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.numberDecimalSeparator:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the string used as the decimal separator in numbers.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The string used as the decimal separator in numbers.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="NumberFormat.currencyGroupSeparator" href="htmlsrc/tango.text.locale.Core.html#L1288">currencyGroupSeparator</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.currencyGroupSeparator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the string separating groups of digits to the left of the decimal place in currency values.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string separating groups of digits to the left of the decimal place in currency values. For example, ",".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.currencyGroupSeparator:2" href="htmlsrc/tango.text.locale.Core.html#L1295">currencyGroupSeparator</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.currencyGroupSeparator:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the string separating groups of digits to the left of the decimal place in currency values.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The string separating groups of digits to the left of the decimal place in currency values.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="NumberFormat.currencyDecimalSeparator" href="htmlsrc/tango.text.locale.Core.html#L1304">currencyDecimalSeparator</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.currencyDecimalSeparator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the string used as the decimal separator in currency values.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string used as the decimal separator in currency values. For example, ".".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.currencyDecimalSeparator:2" href="htmlsrc/tango.text.locale.Core.html#L1311">currencyDecimalSeparator</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.currencyDecimalSeparator:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the string used as the decimal separator in currency values.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The string used as the decimal separator in currency values.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="NumberFormat.currencySymbol" href="htmlsrc/tango.text.locale.Core.html#L1320">currencySymbol</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.currencySymbol" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the string used as the currency symbol.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string used as the currency symbol. For example, "£".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.currencySymbol:2" href="htmlsrc/tango.text.locale.Core.html#L1327">currencySymbol</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.currencySymbol:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the string used as the currency symbol.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The string used as the currency symbol.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="NumberFormat.negativeSign" href="htmlsrc/tango.text.locale.Core.html#L1336">negativeSign</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.negativeSign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the string denoting that a number is negative.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string denoting that a number is negative. For example, "-".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.negativeSign:2" href="htmlsrc/tango.text.locale.Core.html#L1343">negativeSign</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.negativeSign:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the string denoting that a number is negative.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The string denoting that a number is negative.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="NumberFormat.positiveSign" href="htmlsrc/tango.text.locale.Core.html#L1352">positiveSign</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.positiveSign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the string denoting that a number is positive.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string denoting that a number is positive. For example, "+".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.positiveSign:2" href="htmlsrc/tango.text.locale.Core.html#L1359">positiveSign</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.positiveSign:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the string denoting that a number is positive.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The string denoting that a number is positive.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="NumberFormat.nanSymbol" href="htmlsrc/tango.text.locale.Core.html#L1368">nanSymbol</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.nanSymbol" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the string representing the NaN (not a number) value.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string representing the NaN value. For example, "NaN".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.nanSymbol:2" href="htmlsrc/tango.text.locale.Core.html#L1375">nanSymbol</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.nanSymbol:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the string representing the NaN (not a number) value.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The string representing the NaN value.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="NumberFormat.negativeInfinitySymbol" href="htmlsrc/tango.text.locale.Core.html#L1384">negativeInfinitySymbol</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.negativeInfinitySymbol" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the string representing negative infinity.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string representing negative infinity. For example, "-Infinity".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.negativeInfinitySymbol:2" href="htmlsrc/tango.text.locale.Core.html#L1391">negativeInfinitySymbol</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.negativeInfinitySymbol:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the string representing negative infinity.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The string representing negative infinity.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="NumberFormat.positiveInfinitySymbol" href="htmlsrc/tango.text.locale.Core.html#L1400">positiveInfinitySymbol</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.positiveInfinitySymbol" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the string representing positive infinity.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string representing positive infinity. For example, "Infinity".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.positiveInfinitySymbol:2" href="htmlsrc/tango.text.locale.Core.html#L1407">positiveInfinitySymbol</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.positiveInfinitySymbol:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the string representing positive infinity.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The string representing positive infinity.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char[])[]</span> <a class="symbol _function" name="NumberFormat.nativeDigits" href="htmlsrc/tango.text.locale.Core.html#L1416">nativeDigits</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.nativeDigits" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves a string array of native equivalents of the digits 0 to 9.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A string array of native equivalents of the digits 0 to 9.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="NumberFormat.nativeDigits:2" href="htmlsrc/tango.text.locale.Core.html#L1423">nativeDigits</a><span class="params">(const(char[])[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#NumberFormat.nativeDigits:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns a string array of native equivalents of the digits 0 to 9.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>A string array of native equivalents of the digits 0 to 9.</td></tr></table></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="DateTimeFormat" href="htmlsrc/tango.text.locale.Core.html#L1442">DateTimeFormat</a> : <span class="bclass">IFormatService</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="_DateTimeFormat"></a>
+ Determines how <a href="#Time">Time</a> values are formatted, depending on the culture.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">To create a DateTimeFormat for a specific culture, create a <a href="#Culture">Culture</a> for that culture and
+ retrieve its <a href="#Culture_dateTimeFormat">dateTimeFormat</a> property. To create a DateTimeFormat for the user's current 
+ culture, use the <a href="#Culture_current">current</a> property.</div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="DateTimeFormat.this" href="htmlsrc/tango.text.locale.Core.html#L1487">this</a><span class="params">()</span> <span class="attrs">[<span class="prot">package</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_ctor"></a>
+ Initializes an instance that is writable and culture-independent.</div></div></dd>
+<dt class="decl"><span class="rettyp">Object</span> <a class="symbol _function" name="DateTimeFormat.getFormat" href="htmlsrc/tango.text.locale.Core.html#L1506">getFormat</a><span class="params">(TypeInfo <em>type</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.getFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_getFormat"></a>
+ Retrieves an object defining how to format the specified type.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>type</em></td><td>The TypeInfo of the resulting formatting object.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">If type is typeid(DateTimeFormat), the current DateTimeFormat instance. Otherwise, null.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Implements <a href="#IFormatService_getFormat">IFormatService.getFormat</a>.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[][]</span> <a class="symbol _function" name="DateTimeFormat.getAllDateTimePatterns" href="htmlsrc/tango.text.locale.Core.html#L1557">getAllDateTimePatterns</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.getAllDateTimePatterns" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_getAllDateTimePatterns"></a>
+ Retrieves the standard patterns in which Time values can be formatted.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">An array of strings containing the standard patterns in which Time values can be formatted.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[][]</span> <a class="symbol _function" name="DateTimeFormat.getAllDateTimePatterns:2" href="htmlsrc/tango.text.locale.Core.html#L1569">getAllDateTimePatterns</a><span class="params">(char <em>format</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.getAllDateTimePatterns:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_getAllDateTimePatterns_char"></a>
+ Retrieves the standard patterns in which Time values can be formatted using the specified format character.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">An array of strings containing the standard patterns in which Time values can be formatted using the specified format character.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.getAbbreviatedDayName" href="htmlsrc/tango.text.locale.Core.html#L1640">getAbbreviatedDayName</a><span class="params">(Calendar.DayOfWeek <em>dayOfWeek</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.getAbbreviatedDayName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_getAbbreviatedDayName"></a>
+ Retrieves the abbreviated name of the specified day of the week based on the culture of the instance.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>dayOfWeek</em></td><td>A DayOfWeek value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The abbreviated name of the day of the week represented by dayOfWeek.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.getDayName" href="htmlsrc/tango.text.locale.Core.html#L1650">getDayName</a><span class="params">(Calendar.DayOfWeek <em>dayOfWeek</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.getDayName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_getDayName"></a>
+ Retrieves the full name of the specified day of the week based on the culture of the instance.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>dayOfWeek</em></td><td>A DayOfWeek value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The full name of the day of the week represented by dayOfWeek.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.getAbbreviatedMonthName" href="htmlsrc/tango.text.locale.Core.html#L1660">getAbbreviatedMonthName</a><span class="params">(int <em>month</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.getAbbreviatedMonthName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_getAbbreviatedMonthName"></a>
+ Retrieves the abbreviated name of the specified month based on the culture of the instance.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>month</em></td><td>An integer between 1 and 13 indicating the name of the _month to return.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The abbreviated name of the _month represented by month.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.getMonthName" href="htmlsrc/tango.text.locale.Core.html#L1670">getMonthName</a><span class="params">(int <em>month</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.getMonthName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_getMonthName"></a>
+ Retrieves the full name of the specified month based on the culture of the instance.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>month</em></td><td>An integer between 1 and 13 indicating the name of the _month to return.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The full name of the _month represented by month.</div></dd>
+<dt class="decl"><span class="rettyp">DateTimeFormat</span> <a class="symbol _function" name="DateTimeFormat.getInstance" href="htmlsrc/tango.text.locale.Core.html#L1682">getInstance</a><span class="params">(IFormatService <em>formatService</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.getInstance" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_getInstance"></a>
+ Retrieves the DateTimeFormat for the specified IFormatService.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>formatService</em></td><td>The IFormatService used to retrieve DateTimeFormat.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The DateTimeFormat for the specified IFormatService.</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The method calls <a href="#IFormatService_getFormat">IFormatService.getFormat</a> with typeof(DateTimeFormat). If formatService is null,
+ then the value of the current property is returned.</div></dd>
+<dt class="decl"><span class="rettyp">DateTimeFormat</span> <a class="symbol _function" name="DateTimeFormat.current" href="htmlsrc/tango.text.locale.Core.html#L1703">current</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.current" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_current"></a>
+ <i>Property.</i> Retrieves a read-only DateTimeFormat instance from the current culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A read-only DateTimeFormat instance from the current culture.</div></dd>
+<dt class="decl"><span class="rettyp">DateTimeFormat</span> <a class="symbol _function" name="DateTimeFormat.invariantFormat" href="htmlsrc/tango.text.locale.Core.html#L1712">invariantFormat</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">static</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.invariantFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_invariantFormat"></a>
+ <i>Property.</i> Retrieves a read-only DateTimeFormat instance that is culturally independent.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A read-only DateTimeFormat instance that is culturally independent.</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="DateTimeFormat.isReadOnly" href="htmlsrc/tango.text.locale.Core.html#L1726">isReadOnly</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.isReadOnly" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_isReadOnly"></a>
+ <i>Property.</i> Retrieves a value indicating whether the instance is read-only.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">true is the instance is read-only; otherwise, false.</div></dd>
+<dt class="decl"><span class="rettyp">Calendar</span> <a class="symbol _function" name="DateTimeFormat.calendar" href="htmlsrc/tango.text.locale.Core.html#L1734">calendar</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.calendar" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Retrieves the calendar used by the current culture.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The Calendar determining the calendar used by the current culture. For example, the Gregorian.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.calendar:2" href="htmlsrc/tango.text.locale.Core.html#L1744">calendar</a><span class="params">(Calendar <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.calendar:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_calendar"></a>
+ <i>Property.</i> Assigns the calendar to be used by the current culture.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The Calendar determining the calendar to be used by the current culture.</td></tr></table>
+<p class="sec_header">Exceptions:</p><div class="cmnt">If value is not valid for the current culture, an Exception is thrown.</div></dd>
+<dt class="decl"><span class="rettyp">Calendar.DayOfWeek</span> <a class="symbol _function" name="DateTimeFormat.firstDayOfWeek" href="htmlsrc/tango.text.locale.Core.html#L1781">firstDayOfWeek</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.firstDayOfWeek" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_firstDayOfWeek"></a>
+ <i>Property.</i> Retrieves the first day of the week.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A DayOfWeek value indicating the first day of the week.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.firstDayOfWeek:2" href="htmlsrc/tango.text.locale.Core.html#L1788">firstDayOfWeek</a><span class="params">(Calendar.DayOfWeek <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.firstDayOfWeek:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the first day of the week.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>valie</em></td><td>A DayOfWeek value indicating the first day of the week.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">Calendar.WeekRule</span> <a class="symbol _function" name="DateTimeFormat.calendarWeekRule" href="htmlsrc/tango.text.locale.Core.html#L1798">calendarWeekRule</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.calendarWeekRule" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_calendarWeekRule"></a>
+ <i>Property.</i> Retrieves the _value indicating the rule used to determine the first week of the year.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A CalendarWeekRule _value determining the first week of the year.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.calendarWeekRule:2" href="htmlsrc/tango.text.locale.Core.html#L1805">calendarWeekRule</a><span class="params">(Calendar.WeekRule <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.calendarWeekRule:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the _value indicating the rule used to determine the first week of the year.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>A CalendarWeekRule _value determining the first week of the year.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.nativeCalendarName" href="htmlsrc/tango.text.locale.Core.html#L1815">nativeCalendarName</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.nativeCalendarName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_nativeCalendarName"></a>
+ <i>Property.</i> Retrieves the native name of the calendar associated with the current instance.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The native name of the calendar associated with the current instance.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.dateSeparator" href="htmlsrc/tango.text.locale.Core.html#L1824">dateSeparator</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.dateSeparator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_dateSeparator"></a>
+ <i>Property.</i> Retrieves the string separating date components.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string separating date components.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.dateSeparator:2" href="htmlsrc/tango.text.locale.Core.html#L1833">dateSeparator</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.dateSeparator:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the string separating date components.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The string separating date components.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.timeSeparator" href="htmlsrc/tango.text.locale.Core.html#L1843">timeSeparator</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.timeSeparator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_timeSeparator"></a>
+ <i>Property.</i> Retrieves the string separating time components.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string separating time components.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.timeSeparator:2" href="htmlsrc/tango.text.locale.Core.html#L1852">timeSeparator</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.timeSeparator:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the string separating time components.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The string separating time components.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.amDesignator" href="htmlsrc/tango.text.locale.Core.html#L1862">amDesignator</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.amDesignator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_amDesignator"></a>
+ <i>Property.</i> Retrieves the string designator for hours before noon.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string designator for hours before noon. For example, "AM".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.amDesignator:2" href="htmlsrc/tango.text.locale.Core.html#L1870">amDesignator</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.amDesignator:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the string designator for hours before noon.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The string designator for hours before noon.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.pmDesignator" href="htmlsrc/tango.text.locale.Core.html#L1880">pmDesignator</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.pmDesignator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_pmDesignator"></a>
+ <i>Property.</i> Retrieves the string designator for hours after noon.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string designator for hours after noon. For example, "PM".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.pmDesignator:2" href="htmlsrc/tango.text.locale.Core.html#L1888">pmDesignator</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.pmDesignator:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the string designator for hours after noon.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The string designator for hours after noon.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.shortDatePattern" href="htmlsrc/tango.text.locale.Core.html#L1898">shortDatePattern</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.shortDatePattern" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_shortDatePattern"></a>
+ <i>Property.</i> Retrieves the format pattern for a short date value.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The format pattern for a short date value.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.shortDatePattern:2" href="htmlsrc/tango.text.locale.Core.html#L1906">shortDatePattern</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.shortDatePattern:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the format pattern for a short date _value.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The format pattern for a short date _value.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.shortTimePattern" href="htmlsrc/tango.text.locale.Core.html#L1920">shortTimePattern</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.shortTimePattern" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_shortTimePattern"></a>
+ <i>Property.</i> Retrieves the format pattern for a short time value.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The format pattern for a short time value.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.shortTimePattern:2" href="htmlsrc/tango.text.locale.Core.html#L1929">shortTimePattern</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.shortTimePattern:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the format pattern for a short time _value.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The format pattern for a short time _value.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.longDatePattern" href="htmlsrc/tango.text.locale.Core.html#L1940">longDatePattern</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.longDatePattern" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_longDatePattern"></a>
+ <i>Property.</i> Retrieves the format pattern for a long date value.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The format pattern for a long date value.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.longDatePattern:2" href="htmlsrc/tango.text.locale.Core.html#L1948">longDatePattern</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.longDatePattern:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the format pattern for a long date _value.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The format pattern for a long date _value.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.longTimePattern" href="htmlsrc/tango.text.locale.Core.html#L1961">longTimePattern</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.longTimePattern" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_longTimePattern"></a>
+ <i>Property.</i> Retrieves the format pattern for a long time value.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The format pattern for a long time value.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.longTimePattern:2" href="htmlsrc/tango.text.locale.Core.html#L1969">longTimePattern</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.longTimePattern:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the format pattern for a long time _value.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The format pattern for a long time _value.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.monthDayPattern" href="htmlsrc/tango.text.locale.Core.html#L1980">monthDayPattern</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.monthDayPattern" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_monthDayPattern"></a>
+ <i>Property.</i> Retrieves the format pattern for a month and day value.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The format pattern for a month and day value.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.monthDayPattern:2" href="htmlsrc/tango.text.locale.Core.html#L1989">monthDayPattern</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.monthDayPattern:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the format pattern for a month and day _value.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The format pattern for a month and day _value.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.yearMonthPattern" href="htmlsrc/tango.text.locale.Core.html#L1999">yearMonthPattern</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.yearMonthPattern" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_yearMonthPattern"></a>
+ <i>Property.</i> Retrieves the format pattern for a year and month value.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The format pattern for a year and month value.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.yearMonthPattern:2" href="htmlsrc/tango.text.locale.Core.html#L2007">yearMonthPattern</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.yearMonthPattern:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the format pattern for a year and month _value.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The format pattern for a year and month _value.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[][]</span> <a class="symbol _function" name="DateTimeFormat.abbreviatedDayNames" href="htmlsrc/tango.text.locale.Core.html#L2018">abbreviatedDayNames</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.abbreviatedDayNames" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_abbreviatedDayNames"></a>
+ <i>Property.</i> Retrieves a string array containing the abbreviated names of the days of the week.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A string array containing the abbreviated names of the days of the week. For <a href="#DateTimeFormat_invariantFormat">invariantFormat</a>,
+   this contains "Sun", "Mon", "Tue", "Wed", "Thu", "Fri" and "Sat".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.abbreviatedDayNames:2" href="htmlsrc/tango.text.locale.Core.html#L2027">abbreviatedDayNames</a><span class="params">(const(char)[][] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.abbreviatedDayNames:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns a string array containing the abbreviated names of the days of the week.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>A string array containing the abbreviated names of the days of the week.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[][]</span> <a class="symbol _function" name="DateTimeFormat.dayNames" href="htmlsrc/tango.text.locale.Core.html#L2038">dayNames</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.dayNames" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_dayNames"></a>
+ <i>Property.</i> Retrieves a string array containing the full names of the days of the week.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A string array containing the full names of the days of the week. For <a href="#DateTimeFormat_invariantFormat">invariantFormat</a>,
+   this contains "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" and "Saturday".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.dayNames:2" href="htmlsrc/tango.text.locale.Core.html#L2047">dayNames</a><span class="params">(const(char)[][] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.dayNames:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns a string array containing the full names of the days of the week.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>A string array containing the full names of the days of the week.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[][]</span> <a class="symbol _function" name="DateTimeFormat.abbreviatedMonthNames" href="htmlsrc/tango.text.locale.Core.html#L2058">abbreviatedMonthNames</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.abbreviatedMonthNames" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_abbreviatedMonthNames"></a>
+ <i>Property.</i> Retrieves a string array containing the abbreviated names of the months.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A string array containing the abbreviated names of the months. For <a href="#DateTimeFormat_invariantFormat">invariantFormat</a>,
+   this contains "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" and "".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.abbreviatedMonthNames:2" href="htmlsrc/tango.text.locale.Core.html#L2067">abbreviatedMonthNames</a><span class="params">(const(char)[][] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.abbreviatedMonthNames:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns a string array containing the abbreviated names of the months.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>A string array containing the abbreviated names of the months.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[][]</span> <a class="symbol _function" name="DateTimeFormat.monthNames" href="htmlsrc/tango.text.locale.Core.html#L2078">monthNames</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.monthNames" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_monthNames"></a>
+ <i>Property.</i> Retrieves a string array containing the full names of the months.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">A string array containing the full names of the months. For <a href="#DateTimeFormat_invariantFormat">invariantFormat</a>,
+   this contains "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" and "".</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.monthNames:2" href="htmlsrc/tango.text.locale.Core.html#L2087">monthNames</a><span class="params">(const(char)[][] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.monthNames:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns a string array containing the full names of the months.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>A string array containing the full names of the months.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.fullDateTimePattern" href="htmlsrc/tango.text.locale.Core.html#L2097">fullDateTimePattern</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.fullDateTimePattern" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_fullDateTimePattern"></a>
+ <i>Property.</i> Retrieves the format pattern for a long date and a long time value.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The format pattern for a long date and a long time value.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DateTimeFormat.fullDateTimePattern:2" href="htmlsrc/tango.text.locale.Core.html#L2106">fullDateTimePattern</a><span class="params">(const(char)[] <em>value</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.fullDateTimePattern:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><i>Property.</i> Assigns the format pattern for a long date and a long time _value.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The format pattern for a long date and a long time _value.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.rfc1123Pattern" href="htmlsrc/tango.text.locale.Core.html#L2116">rfc1123Pattern</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.rfc1123Pattern" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_rfc1123Pattern"></a>
+ <i>Property.</i> Retrieves the format pattern based on the IETF RFC 1123 specification, for a time value.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The format pattern based on the IETF RFC 1123 specification, for a time value.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.sortableDateTimePattern" href="htmlsrc/tango.text.locale.Core.html#L2125">sortableDateTimePattern</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.sortableDateTimePattern" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_sortableDateTimePattern"></a>
+ <i>Property.</i> Retrieves the format pattern for a sortable date and time value.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The format pattern for a sortable date and time value.</div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeFormat.universalSortableDateTimePattern" href="htmlsrc/tango.text.locale.Core.html#L2134">universalSortableDateTimePattern</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.text.locale.Core.html#DateTimeFormat.universalSortableDateTimePattern" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"><a name="DateTimeFormat_universalSortableDateTimePattern"></a>
+ <i>Property.</i> Retrieves the format pattern for a universal date and time value.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The format pattern for a universal date and time value.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2005 John Chapman. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:15 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

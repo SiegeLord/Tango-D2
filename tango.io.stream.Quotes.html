@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.stream.Quotes</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.stream.Quotes">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.stream.Quotes"><a href="htmlsrc/tango.io.stream.Quotes.html" class="symbol">tango.io.stream.Quotes</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Jan 2006: initial release</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris, Nthalk</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Quotes" href="htmlsrc/tango.io.stream.Quotes.html#L52">Quotes</a><span class="tparams">(<em>T</em>)</span> : <span class="bclass">Iterator!(T)</span> <a href="tango.io.stream.Quotes.html#Quotes" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate over a set of delimited, optionally-quoted, text fields.</div></div>
+<div class="cmnt">Each field is exposed to the client as a slice of the original
+        content, where the slice is transient. If you need to retain the
+        exposed content, then you should .dup it appropriately.
+<p class="bl"></p>
+        The content exposed via an iterator is supposed to be entirely
+        read-only. All current iterators abide by this rule, but it is
+        possible a user could mutate the content through a get() slice.
+        To enforce the desired read-only aspect, the code would have to
+        introduce redundant copying or the compiler would have to support
+        read-only arrays.</div>
+<p class="sec_header">Usage:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+<a href="#L12_ex1" name="L12_ex1">12</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">f</span> = <span class="k">new</span> <span class="i">File</span> (<span class="sl">"my.csv"</span>);
+<span class="k">auto</span> <span class="i">l</span> = <span class="k">new</span> <span class="i">Lines</span> (<span class="i">f</span>);
+<span class="k">auto</span> <span class="i">b</span> = <span class="k">new</span> <span class="i">Array</span> (<span class="n">0</span>);
+<span class="k">auto</span> <span class="i">q</span> = <span class="k">new</span> <span class="i">Quotes</span>!(<span class="k">char</span>)(<span class="sl">","</span>, <span class="i">b</span>);
+
+<span class="k">foreach</span> (<span class="i">line</span>; <span class="i">l</span>)
+        {
+        <span class="i">b</span>.<span class="i">assign</span> (<span class="i">line</span>);
+        <span class="k">foreach</span> (<span class="i">field</span>, <span class="i">index</span>; <span class="i">q</span>)
+                 <span class="i">Stdout</span> (<span class="i">index</span>, <span class="i">field</span>);
+        <span class="i">Stdout</span>.<span class="i">newline</span>;
+        }</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        See Iterator, Lines, Patterns, Delimiters.</div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="Quotes.this" href="htmlsrc/tango.io.stream.Quotes.html#L63">this</a><span class="params">(const(T)[] <em>delim</em>, InputStream <em>stream</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.io.stream.Quotes.html#Quotes.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This splits on delimiters only. If there is a quote, it
+                suspends delimiter splitting until the quote is finished.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Quotes.scan" href="htmlsrc/tango.io.stream.Quotes.html#L76">scan</a><span class="params">(const(void)[] <em>data</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">override</span>]</span> <a href="tango.io.stream.Quotes.html#Quotes.scan" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This splits on delimiters only. If there is a quote, it
+                suspends delimiter splitting until the quote is finished.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2006 Tango. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.xml.DocTester</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.xml.DocTester">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.xml.DocTester"><a href="htmlsrc/tango.text.xml.DocTester.html" class="symbol">tango.text.xml.DocTester</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: March 2008</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="DocTester" href="htmlsrc/tango.text.xml.DocTester.html#L31">DocTester</a><span class="tparams">(<em>T</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.text.xml.DocTester.html#DocTester" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Validate a document</div></div>
+<p class="sec_header">TODO:</p><div class="cmnt">add various tests here, or in subclasses, as required</div>
+<dl>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DocTester.validate" href="htmlsrc/tango.text.xml.DocTester.html#L42">validate</a><span class="params">(Doc <em>doc</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.xml.DocTester.html#DocTester.validate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generate a text representation of the document tree</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DocTester.validate:2" href="htmlsrc/tango.text.xml.DocTester.html#L53">validate</a><span class="params">(Node <em>node</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.xml.DocTester.html#DocTester.validate:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Generate a representation of the given node-subtree</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DocTester.element" href="htmlsrc/tango.text.xml.DocTester.html#L104">element</a><span class="params">(Node <em>node</em>)</span> <a href="tango.text.xml.DocTester.html#DocTester.element" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">validate an element</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DocTester.attribute" href="htmlsrc/tango.text.xml.DocTester.html#L115">attribute</a><span class="params">(Node <em>node</em>)</span> <a href="tango.text.xml.DocTester.html#DocTester.attribute" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">validate an attribute</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DocTester.data" href="htmlsrc/tango.text.xml.DocTester.html#L125">data</a><span class="params">(Node <em>node</em>)</span> <a href="tango.text.xml.DocTester.html#DocTester.data" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">validate a data node</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DocTester.comment" href="htmlsrc/tango.text.xml.DocTester.html#L135">comment</a><span class="params">(Node <em>node</em>)</span> <a href="tango.text.xml.DocTester.html#DocTester.comment" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">validate a comment node</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DocTester.pi" href="htmlsrc/tango.text.xml.DocTester.html#L145">pi</a><span class="params">(Node <em>node</em>)</span> <a href="tango.text.xml.DocTester.html#DocTester.pi" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">validate a pi node</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DocTester.cdata" href="htmlsrc/tango.text.xml.DocTester.html#L155">cdata</a><span class="params">(Node <em>node</em>)</span> <a href="tango.text.xml.DocTester.html#DocTester.cdata" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">validate a cdata node</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DocTester.doctype" href="htmlsrc/tango.text.xml.DocTester.html#L165">doctype</a><span class="params">(Node <em>node</em>)</span> <a href="tango.text.xml.DocTester.html#DocTester.doctype" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">validate a doctype node</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DocTester.uniqueAttrNames" href="htmlsrc/tango.text.xml.DocTester.html#L175">uniqueAttrNames</a><span class="params">(Node <em>node</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.text.xml.DocTester.html#DocTester.uniqueAttrNames" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Ensure attribute names are unique within the element</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DocTester.error" href="htmlsrc/tango.text.xml.DocTester.html#L201">error</a><span class="params">(const(char)[] <em>format</em>, ...)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.text.xml.DocTester.html#DocTester.error" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">halt validation</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (C) 2008 Kris Bell.  All rights reserved.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:17 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

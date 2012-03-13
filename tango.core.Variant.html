@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.core.Variant</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.core.Variant">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.core.Variant"><a href="htmlsrc/tango.core.Variant.html" class="symbol">tango.core.Variant</a></h1>
+
+<div class="summary"><div class="cmnt">The variant module contains a variant, or polymorphic type.</div></div>
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Authors:</p><div class="cmnt">Daniel Keep, Sean Kelly</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="VariantTypeMismatchException" href="htmlsrc/tango.core.Variant.html#L315">VariantTypeMismatchException</a><span class="tparams">(<em>T</em>)</span> : <span class="bclass">Exception</span> <a href="tango.core.Variant.html#VariantTypeMismatchException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This exception is thrown whenever you attempt to get the value of a Variant
+ without using a compatible type.</div></div>
+</dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="VariantVoidVarargException" href="htmlsrc/tango.core.Variant.html#L328">VariantVoidVarargException</a> : <span class="bclass">Exception</span> <a href="tango.core.Variant.html#VariantVoidVarargException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This exception is thrown when you attempt to use an empty Variant with
+ varargs.</div></div>
+</dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Variant" href="htmlsrc/tango.core.Variant.html#L348">Variant</a> <a href="tango.core.Variant.html#Variant" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The Variant type is used to dynamically store values of different types at
+ runtime.</div></div>
+<div class="cmnt">You can create a Variant using either the pseudo-constructor or direct
+ assignment.
+<p class="bl"></p>
+ <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">Variant</span> <span class="i">v</span> = <span class="i">Variant</span>(<span class="n">42</span>);
+<span class="i">v</span> = <span class="sl">"abc"</span>;</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><span class="rettyp">Variant</span> <a class="symbol _function" name="Variant.opCall" href="htmlsrc/tango.core.Variant.html#L364">opCall</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>value</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.core.Variant.html#Variant.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This pseudo-constructor is used to place a value into a new Variant.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The value you wish to put in the Variant.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The new Variant.</div>
+<p class="sec_header">Example:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">v</span> = <span class="i">Variant</span>(<span class="n">42</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">Variant</span> <a class="symbol _function" name="Variant.opCall:2" href="htmlsrc/tango.core.Variant.html#L394">opCall</a><span class="tparams">()</span><span class="params">(TypeInfo <em>type</em>, void* <em>ptr</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.core.Variant.html#Variant.opCall:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This pseudo-constructor creates a new Variant using a specified
+ TypeInfo and raw pointer to the value.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>type</em></td><td>Type of the value.</td></tr>
+<tr><td><em>ptr</em></td><td>Pointer to the value.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The new Variant.</div>
+<p class="sec_header">Example:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">int</span> <span class="i">life</span> = <span class="n">42</span>;
+<span class="k">auto</span> <span class="i">v</span> = <span class="i">Variant</span>(<span class="k">typeid</span>(<span class="k">typeof</span>(<span class="i">life</span>)), &amp;<span class="i">life</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">Variant</span> <a class="symbol _function" name="Variant.opAssign" href="htmlsrc/tango.core.Variant.html#L417">opAssign</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>value</em>)</span> <a href="tango.core.Variant.html#Variant.opAssign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This operator allows you to assign arbitrary values directly into an
+ existing Variant.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>value</em></td><td>The value you wish to put in the Variant.</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The new value of the assigned-to variant.</div>
+<p class="sec_header">Example:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+<a href="#L2_ex4" name="L2_ex4">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">Variant</span> <span class="i">v</span>;
+<span class="i">v</span> = <span class="n">42</span>;</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Variant.isA" href="htmlsrc/tango.core.Variant.html#L481">isA</a><span class="tparams">(<em>T</em>)</span><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.Variant.html#Variant.isA" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This member can be used to determine if the value stored in the Variant
+ is of the specified type.  Note that this comparison is exact: it does
+ not take implicit casting rules into account.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">true if the Variant contains a value of type T, false otherwise.</div>
+<p class="sec_header">Example:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex5" name="L1_ex5">1</a>
+<a href="#L2_ex5" name="L2_ex5">2</a>
+<a href="#L3_ex5" name="L3_ex5">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">v</span> = <span class="i">Variant</span>(<span class="k">cast</span>(<span class="k">int</span>) <span class="n">42</span>);
+<span class="k">assert</span>(   <span class="i">v</span>.<span class="i">isA</span>!(<span class="k">int</span>) );
+<span class="k">assert</span>( ! <span class="i">v</span>.<span class="i">isA</span>!(<span class="k">short</span>) ); <span class="lc">// note no implicit conversion</span></pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Variant.isImplicitly" href="htmlsrc/tango.core.Variant.html#L503">isImplicitly</a><span class="tparams">(<em>T</em>)</span><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.Variant.html#Variant.isImplicitly" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This member can be used to determine if the value stored in the Variant
+ is of the specified type.  This comparison attempts to take implicit
+ conversion rules into account.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">true if the Variant contains a value of type T, or if the Variant
+  contains a value that can be implicitly cast to type T; false
+  otherwise.</div>
+<p class="sec_header">Example:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex6" name="L1_ex6">1</a>
+<a href="#L2_ex6" name="L2_ex6">2</a>
+<a href="#L3_ex6" name="L3_ex6">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">v</span> = <span class="i">Variant</span>(<span class="k">cast</span>(<span class="k">int</span>) <span class="n">42</span>);
+<span class="k">assert</span>( <span class="i">v</span>.<span class="i">isA</span>!(<span class="k">int</span>) );
+<span class="k">assert</span>( <span class="i">v</span>.<span class="i">isA</span>!(<span class="k">short</span>) ); <span class="lc">// note implicit conversion</span></pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Variant.isEmpty" href="htmlsrc/tango.core.Variant.html#L532">isEmpty</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.Variant.html#Variant.isEmpty" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This determines whether the Variant has an assigned value or not.  It
+ is simply short-hand for calling the isA member with a type of void.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">true if the Variant does not contain a value, false otherwise.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Variant.clear" href="htmlsrc/tango.core.Variant.html#L540">clear</a><span class="params">()</span> <a href="tango.core.Variant.html#Variant.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This member will clear the Variant, returning it to an empty state.</div></div></dd>
+<dt class="decl"><span class="kw">auto</span> <a class="symbol _function" name="Variant.opBinary" href="htmlsrc/tango.core.Variant.html#L663">opBinary</a><span class="tparams">(immutable(char)[] <em>op</em>, <em>T</em>)</span><span class="params">(T <em>rhs</em>)</span> <a href="tango.core.Variant.html#Variant.opBinary" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The following operator overloads are defined for the sake of
+ convenience.  It is important to understand that they do not allow you
+ to use a Variant as both the left-hand and right-hand sides of an
+ expression.  One side of the operator must be a concrete type in order
+ for the Variant to know what code to generate.</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Variant.opEquals" href="htmlsrc/tango.core.Variant.html#L683">opEquals</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>rhs</em>)</span> <a href="tango.core.Variant.html#Variant.opEquals" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Variant.opCmp" href="htmlsrc/tango.core.Variant.html#L693">opCmp</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>rhs</em>)</span> <a href="tango.core.Variant.html#Variant.opCmp" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">hash_t</span> <a class="symbol _function" name="Variant.toHash" href="htmlsrc/tango.core.Variant.html#L705">toHash</a><span class="params">()</span> <a href="tango.core.Variant.html#Variant.toHash" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The following operators can be used with Variants on both sides.  Note
+ that these operators do not follow the standard rules of
+ implicit conversions.</div></div></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="Variant.toString" href="htmlsrc/tango.core.Variant.html#L717">toString</a><span class="params">()</span> <a href="tango.core.Variant.html#Variant.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a string representation of the type being stored in this
+ Variant.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">The string representation of the type contained within the Variant.</div></dd>
+<dt class="decl"><span class="rettyp">TypeInfo</span> <a class="symbol _function" name="Variant.type" href="htmlsrc/tango.core.Variant.html#L726">type</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.Variant.html#Variant.type" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This can be used to retrieve the TypeInfo for the currently stored
+ value.</div></div></dd>
+<dt class="decl"><span class="rettyp">void*</span> <a class="symbol _function" name="Variant.ptr" href="htmlsrc/tango.core.Variant.html#L735">ptr</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.Variant.html#Variant.ptr" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This can be used to retrieve a pointer to the value stored in the
+ variant.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (C) 2005-2009 The Tango Team.  All rights reserved.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:53 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

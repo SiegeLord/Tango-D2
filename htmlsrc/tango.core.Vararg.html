@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.core.Vararg</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a><a id="L38" href="#L38">38</a><a id="L39" href="#L39">39</a><a id="L40" href="#L40">40</a><a id="L41" href="#L41">41</a><a id="L42" href="#L42">42</a><a id="L43" href="#L43">43</a><a id="L44" href="#L44">44</a><a id="L45" href="#L45">45</a><a id="L46" href="#L46">46</a><a id="L47" href="#L47">47</a><a id="L48" href="#L48">48</a><a id="L49" href="#L49">49</a><a id="L50" href="#L50">50</a><a id="L51" href="#L51">51</a><a id="L52" href="#L52">52</a><a id="L53" href="#L53">53</a><a id="L54" href="#L54">54</a><a id="L55" href="#L55">55</a><a id="L56" href="#L56">56</a><a id="L57" href="#L57">57</a><a id="L58" href="#L58">58</a><a id="L59" href="#L59">59</a><a id="L60" href="#L60">60</a><a id="L61" href="#L61">61</a><a id="L62" href="#L62">62</a><a id="L63" href="#L63">63</a><a id="L64" href="#L64">64</a><a id="L65" href="#L65">65</a><a id="L66" href="#L66">66</a><a id="L67" href="#L67">67</a><a id="L68" href="#L68">68</a><a id="L69" href="#L69">69</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/**
+ * The vararg module is intended to facilitate vararg manipulation in D.
+ * It should be interface compatible with the C module "stdarg," and the
+ * two modules may share a common implementation if possible (as is done
+ * here).
+ *
+ * Copyright: Public Domain
+ * License:   Public Domain
+ * Authors:   Hauke Duden, Walter Bright
+ */</span>
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">core</span>.<span class="i">Vararg</span>;</span>
+
+<span class="d Protection"><span class="k">public</span></span> <span class="d Import"><span class="k">import</span> <span class="i">core</span>.<span class="i">vararg</span>;</span></span>
+
+<span class="nc">/+
+/**
+
+  Gdc 
+
+
+**/
+
+
+version( GNU )
+{
+    // GDC doesn't need va_start/va_end
+    // If the va_arg template version is used,  
+
+    public import std.stdarg;
+
+    version( X86_64 )
+    {
+        alias va_list __va_argsave_t;
+         //__va_argsave_t __va_argsave;
+    }
+
+    // va_start and va_end is not needed for gdc, stubs only exist for eased
+    // cross-compiler programming
+    void va_start(T)( va_list ap, T parmn)   {   }
+    void va_end(va_list ap)    {    }
+}
+else version( LDC )
+{
+    public import ldc.vararg;
+}
+else
+{
+    version (DigitalMars) version (X86_64) version = DigitalMarsX64;
+    version (X86)
+    {
+        alias void* va_list;
+
+        template va_arg(T)
+        {
+            T va_arg(ref va_list _argptr)
+            {
+                T arg = *cast(T*)_argptr;
+                _argptr = _argptr + ((T.sizeof + int.sizeof - 1) &amp; ~(int.sizeof - 1));
+                return arg;
+            }
+        }
+    }
+    else
+    {
+        public import tango.stdc.stdarg;
+    }
+}
++/</span>
+
+</pre></td>
+</tr></table>
+</body>
+</html>

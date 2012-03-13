@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.xml.Document</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.xml.Document">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.xml.Document"><a href="htmlsrc/tango.text.xml.Document.html" class="symbol">tango.text.xml.Document</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: February 2008</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Aaron, Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Document" href="htmlsrc/tango.text.xml.Document.html#L145">Document</a><span class="tparams">(<em>T</em>)</span> : <span class="bclass">PullParser!(T)</span> <a href="tango.text.xml.Document.html#Document" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Implements a DOM atop the XML parser, supporting document 
+        parsing, tree traversal and ad-hoc tree manipulation.</div></div>
+<div class="cmnt">The DOM API is non-conformant, yet simple and functional in 
+        style - locate a tree node of interest and operate upon or 
+        around it. In all cases you will need a document instance to 
+        begin, whereupon it may be populated either by parsing an 
+        existing document or via API manipulation.
+<p class="bl"></p>
+        This particular DOM employs a simple free-list to allocate
+        each of the tree nodes, making it quite efficient at parsing
+        XML documents. The tradeoff with such a scheme is that copying
+        nodes from one document to another requires a little more care
+        than otherwise. We felt this was a reasonable tradeoff, given
+        the throughput gains vs the relative infrequency of grafting
+        operations. For grafting within or across documents, please
+        use the move() and copy() methods.
+<p class="bl"></p>
+        Another simplification is related to entity transcoding. This
+        is not performed internally, and becomes the responsibility
+        of the client. That is, the client should perform appropriate
+        entity transcoding as necessary. Paying the (high) transcoding 
+        cost for all documents doesn't seem appropriate.
+<p class="bl"></p>
+        Parse example
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">doc</span> = <span class="k">new</span> <span class="i">Document</span>!(<span class="k">char</span>);
+<span class="i">doc</span>.<span class="i">parse</span> (<span class="i">content</span>);
+
+<span class="k">auto</span> <span class="i">print</span> = <span class="k">new</span> <span class="i">DocPrinter</span>!(<span class="k">char</span>);
+<span class="i">Stdout</span>(<span class="i">print</span>(<span class="i">doc</span>)).<span class="i">newline</span>;</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        API example
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+<a href="#L3_ex2" name="L3_ex2">3</a>
+<a href="#L4_ex2" name="L4_ex2">4</a>
+<a href="#L5_ex2" name="L5_ex2">5</a>
+<a href="#L6_ex2" name="L6_ex2">6</a>
+<a href="#L7_ex2" name="L7_ex2">7</a>
+<a href="#L8_ex2" name="L8_ex2">8</a>
+<a href="#L9_ex2" name="L9_ex2">9</a>
+<a href="#L10_ex2" name="L10_ex2">10</a>
+<a href="#L11_ex2" name="L11_ex2">11</a>
+<a href="#L12_ex2" name="L12_ex2">12</a>
+<a href="#L13_ex2" name="L13_ex2">13</a>
+<a href="#L14_ex2" name="L14_ex2">14</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">doc</span> = <span class="k">new</span> <span class="i">Document</span>!(<span class="k">char</span>);
+
+<span class="lc">// attach an xml header</span>
+<span class="i">doc</span>.<span class="i">header</span>;
+
+<span class="lc">// attach an element with some attributes, plus </span>
+<span class="lc">// a child element with an attached data value</span>
+<span class="i">doc</span>.<span class="i">tree</span>.<span class="i">element</span>   (<span class="k">null</span>, <span class="sl">"element"</span>)
+        .<span class="i">attribute</span> (<span class="k">null</span>, <span class="sl">"attrib1"</span>, <span class="sl">"value"</span>)
+        .<span class="i">attribute</span> (<span class="k">null</span>, <span class="sl">"attrib2"</span>)
+        .<span class="i">element</span>   (<span class="k">null</span>, <span class="sl">"child"</span>, <span class="sl">"value"</span>);
+
+<span class="k">auto</span> <span class="i">print</span> = <span class="k">new</span> <span class="i">DocPrinter</span>!(<span class="k">char</span>);
+<span class="i">Stdout</span>(<span class="i">print</span>(<span class="i">doc</span>)).<span class="i">newline</span>;</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Note that the document tree() includes all nodes in the tree,
+        and not just elements. Use doc.elements to address the topmost
+        element instead. For example, adding an interior sibling to
+        the prior illustration
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">doc</span>.<span class="i">elements</span>.<span class="i">element</span> (<span class="k">null</span>, <span class="sl">"sibling"</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Printing the name of the topmost (root) element:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"first element is '{}'"</span>, <span class="i">doc</span>.<span class="i">elements</span>.<span class="i">name</span>);</pre>
+</td></tr>
+</table>
+        
+        XPath examples:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex5" name="L1_ex5">1</a>
+<a href="#L2_ex5" name="L2_ex5">2</a>
+<a href="#L3_ex5" name="L3_ex5">3</a>
+<a href="#L4_ex5" name="L4_ex5">4</a>
+<a href="#L5_ex5" name="L5_ex5">5</a>
+<a href="#L6_ex5" name="L6_ex5">6</a>
+<a href="#L7_ex5" name="L7_ex5">7</a>
+<a href="#L8_ex5" name="L8_ex5">8</a>
+<a href="#L9_ex5" name="L9_ex5">9</a>
+<a href="#L10_ex5" name="L10_ex5">10</a>
+<a href="#L11_ex5" name="L11_ex5">11</a>
+<a href="#L12_ex5" name="L12_ex5">12</a>
+<a href="#L13_ex5" name="L13_ex5">13</a>
+<a href="#L14_ex5" name="L14_ex5">14</a>
+<a href="#L15_ex5" name="L15_ex5">15</a>
+<a href="#L16_ex5" name="L16_ex5">16</a>
+<a href="#L17_ex5" name="L17_ex5">17</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">doc</span> = <span class="k">new</span> <span class="i">Document</span>!(<span class="k">char</span>);
+
+<span class="lc">// attach an element with some attributes, plus </span>
+<span class="lc">// a child element with an attached data value</span>
+<span class="i">doc</span>.<span class="i">tree</span>.<span class="i">element</span>   (<span class="k">null</span>, <span class="sl">"element"</span>)
+        .<span class="i">attribute</span> (<span class="k">null</span>, <span class="sl">"attrib1"</span>, <span class="sl">"value"</span>)
+        .<span class="i">attribute</span> (<span class="k">null</span>, <span class="sl">"attrib2"</span>)
+        .<span class="i">element</span>   (<span class="k">null</span>, <span class="sl">"child"</span>, <span class="sl">"value"</span>);
+
+<span class="lc">// select named-elements</span>
+<span class="k">auto</span> <span class="i">set</span> = <span class="i">doc</span>.<span class="i">query</span>[<span class="sl">"element"</span>][<span class="sl">"child"</span>];
+
+<span class="lc">// select all attributes named "attrib1"</span>
+<span class="i">set</span> = <span class="i">doc</span>.<span class="i">query</span>.<span class="i">descendant</span>.<span class="i">attribute</span>(<span class="sl">"attrib1"</span>);
+
+<span class="lc">// select elements with one parent and a matching text value</span>
+<span class="i">set</span> = <span class="i">doc</span>.<span class="i">query</span>[].<span class="i">filter</span>((<span class="i">doc</span>.<span class="i">Node</span> <span class="i">n</span>) {<span class="k">return</span> <span class="i">n</span>.<span class="i">children</span>.<span class="i">hasData</span>(<span class="sl">"value"</span>);});</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Note that path queries are temporal - they do not retain content
+        across mulitple queries. That is, the lifetime of a query result
+        is limited unless you explicitly copy it. For example, this will 
+        fail
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex6" name="L1_ex6">1</a>
+<a href="#L2_ex6" name="L2_ex6">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">elements</span> = <span class="i">doc</span>.<span class="i">query</span>[<span class="sl">"element"</span>];
+<span class="k">auto</span> <span class="i">children</span> = <span class="i">elements</span>[<span class="sl">"child"</span>];</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        The above will lose elements because the associated document reuses 
+        node space for subsequent queries. In order to retain results, do this
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex7" name="L1_ex7">1</a>
+<a href="#L2_ex7" name="L2_ex7">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">elements</span> = <span class="i">doc</span>.<span class="i">query</span>[<span class="sl">"element"</span>].<span class="i">dup</span>;
+<span class="k">auto</span> <span class="i">children</span> = <span class="i">elements</span>[<span class="sl">"child"</span>];</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        The above .dup is generally very small (a set of pointers only). On
+        the other hand, recursive queries are fully supported
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex8" name="L1_ex8">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">set</span> = <span class="i">doc</span>.<span class="i">query</span>[].<span class="i">filter</span>((<span class="i">doc</span>.<span class="i">Node</span> <span class="i">n</span>) {<span class="k">return</span> <span class="i">n</span>.<span class="i">query</span>[].<span class="i">count</span> &gt; <span class="n">1</span>;});</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Typical usage tends to follow the following pattern, Where each query 
+        result is processed before another is initiated
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex9" name="L1_ex9">1</a>
+<a href="#L2_ex9" name="L2_ex9">2</a>
+<a href="#L3_ex9" name="L3_ex9">3</a>
+<a href="#L4_ex9" name="L4_ex9">4</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">foreach</span> (<span class="i">node</span>; <span class="i">doc</span>.<span class="i">query</span>.<span class="i">child</span>(<span class="sl">"element"</span>))
+        {
+        <span class="lc">// do something with each node</span>
+        }</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        Note that the parser is templated for char, wchar or dchar.</div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="Document.this" href="htmlsrc/tango.text.xml.Document.html#L164">this</a><span class="params">(size_t <em>nodes</em> = <span class="defval"><span class="n">1000</span></span>)</span> <a href="tango.text.xml.Document.html#Document.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a DOM instance. The optional parameter indicates
+                the initial number of nodes assigned to the freelist</div></div></dd>
+<dt class="decl"><span class="rettyp">XmlPath!(T).NodeSet</span> <a class="symbol _function" name="Document.query" href="htmlsrc/tango.text.xml.Document.html#L185">query</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.xml.Document.html#Document.query" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return an xpath handle to query this document. This starts
+                at the document root.</div></div>
+<div class="cmnt">See also Node.query</div></dd>
+<dt class="decl"><span class="rettyp">Node</span> <a class="symbol _function" name="Document.tree" href="htmlsrc/tango.text.xml.Document.html#L199">tree</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.xml.Document.html#Document.tree" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the root document node, from which all other nodes
+                are descended.</div></div>
+<div class="cmnt">Returns null where there are no nodes in the document</div></dd>
+<dt class="decl"><span class="rettyp">Node</span> <a class="symbol _function" name="Document.elements" href="htmlsrc/tango.text.xml.Document.html#L213">elements</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.text.xml.Document.html#Document.elements" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the topmost element node, which is generally the
+                root of the element tree.</div></div>
+<div class="cmnt">Returns null where there are no top-level element nodes</div></dd>
+<dt class="decl"><span class="rettyp">Document</span> <a class="symbol _function" name="Document.reset" href="htmlsrc/tango.text.xml.Document.html#L234">reset</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.xml.Document.html#Document.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Reset the freelist. Subsequent allocation of document nodes 
+                will overwrite prior instances.</div></div></dd>
+<dt class="decl"><span class="rettyp">Document</span> <a class="symbol _function" name="Document.header" href="htmlsrc/tango.text.xml.Document.html#L264">header</a><span class="params">(const(T)[] <em>encoding</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.xml.Document.html#Document.header" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Prepend an XML header to the document tree</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Document.parse" href="htmlsrc/tango.text.xml.Document.html#L283">parse</a><span class="params">(const(T[]) <em>xml</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.text.xml.Document.html#Document.parse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parse the given xml content, which will reuse any existing 
+                node within this document. The resultant tree is retrieved
+                via the document 'tree' attribute</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (C) 2007 Aaron Craelius and Kris Bell  
+                   All rights reserved.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:18 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

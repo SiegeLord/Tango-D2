@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.sys.win32.consts.socket</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a><a id="L38" href="#L38">38</a><a id="L39" href="#L39">39</a><a id="L40" href="#L40">40</a><a id="L41" href="#L41">41</a><a id="L42" href="#L42">42</a><a id="L43" href="#L43">43</a><a id="L44" href="#L44">44</a><a id="L45" href="#L45">45</a><a id="L46" href="#L46">46</a><a id="L47" href="#L47">47</a><a id="L48" href="#L48">48</a><a id="L49" href="#L49">49</a><a id="L50" href="#L50">50</a><a id="L51" href="#L51">51</a><a id="L52" href="#L52">52</a><a id="L53" href="#L53">53</a><a id="L54" href="#L54">54</a><a id="L55" href="#L55">55</a><a id="L56" href="#L56">56</a><a id="L57" href="#L57">57</a><a id="L58" href="#L58">58</a><a id="L59" href="#L59">59</a><a id="L60" href="#L60">60</a><a id="L61" href="#L61">61</a><a id="L62" href="#L62">62</a><a id="L63" href="#L63">63</a><a id="L64" href="#L64">64</a><a id="L65" href="#L65">65</a><a id="L66" href="#L66">66</a><a id="L67" href="#L67">67</a><a id="L68" href="#L68">68</a><a id="L69" href="#L69">69</a><a id="L70" href="#L70">70</a><a id="L71" href="#L71">71</a><a id="L72" href="#L72">72</a><a id="L73" href="#L73">73</a><a id="L74" href="#L74">74</a><a id="L75" href="#L75">75</a><a id="L76" href="#L76">76</a><a id="L77" href="#L77">77</a><a id="L78" href="#L78">78</a><a id="L79" href="#L79">79</a><a id="L80" href="#L80">80</a><a id="L81" href="#L81">81</a><a id="L82" href="#L82">82</a><a id="L83" href="#L83">83</a><a id="L84" href="#L84">84</a><a id="L85" href="#L85">85</a><a id="L86" href="#L86">86</a><a id="L87" href="#L87">87</a><a id="L88" href="#L88">88</a><a id="L89" href="#L89">89</a><a id="L90" href="#L90">90</a><a id="L91" href="#L91">91</a><a id="L92" href="#L92">92</a><a id="L93" href="#L93">93</a><a id="L94" href="#L94">94</a><a id="L95" href="#L95">95</a><a id="L96" href="#L96">96</a><a id="L97" href="#L97">97</a><a id="L98" href="#L98">98</a><a id="L99" href="#L99">99</a><a id="L100" href="#L100">100</a><a id="L101" href="#L101">101</a><a id="L102" href="#L102">102</a><a id="L103" href="#L103">103</a><a id="L104" href="#L104">104</a><a id="L105" href="#L105">105</a><a id="L106" href="#L106">106</a><a id="L107" href="#L107">107</a><a id="L108" href="#L108">108</a><a id="L109" href="#L109">109</a><a id="L110" href="#L110">110</a><a id="L111" href="#L111">111</a><a id="L112" href="#L112">112</a><a id="L113" href="#L113">113</a><a id="L114" href="#L114">114</a><a id="L115" href="#L115">115</a><a id="L116" href="#L116">116</a><a id="L117" href="#L117">117</a><a id="L118" href="#L118">118</a><a id="L119" href="#L119">119</a><a id="L120" href="#L120">120</a><a id="L121" href="#L121">121</a><a id="L122" href="#L122">122</a><a id="L123" href="#L123">123</a><a id="L124" href="#L124">124</a><a id="L125" href="#L125">125</a><a id="L126" href="#L126">126</a><a id="L127" href="#L127">127</a><a id="L128" href="#L128">128</a><a id="L129" href="#L129">129</a><a id="L130" href="#L130">130</a><a id="L131" href="#L131">131</a><a id="L132" href="#L132">132</a><a id="L133" href="#L133">133</a><a id="L134" href="#L134">134</a><a id="L135" href="#L135">135</a><a id="L136" href="#L136">136</a><a id="L137" href="#L137">137</a><a id="L138" href="#L138">138</a><a id="L139" href="#L139">139</a><a id="L140" href="#L140">140</a><a id="L141" href="#L141">141</a><a id="L142" href="#L142">142</a><a id="L143" href="#L143">143</a><a id="L144" href="#L144">144</a><a id="L145" href="#L145">145</a><a id="L146" href="#L146">146</a><a id="L147" href="#L147">147</a><a id="L148" href="#L148">148</a><a id="L149" href="#L149">149</a><a id="L150" href="#L150">150</a><a id="L151" href="#L151">151</a><a id="L152" href="#L152">152</a><a id="L153" href="#L153">153</a><a id="L154" href="#L154">154</a><a id="L155" href="#L155">155</a><a id="L156" href="#L156">156</a><a id="L157" href="#L157">157</a><a id="L158" href="#L158">158</a><a id="L159" href="#L159">159</a><a id="L160" href="#L160">160</a><a id="L161" href="#L161">161</a><a id="L162" href="#L162">162</a><a id="L163" href="#L163">163</a><a id="L164" href="#L164">164</a><a id="L165" href="#L165">165</a><a id="L166" href="#L166">166</a><a id="L167" href="#L167">167</a><a id="L168" href="#L168">168</a><a id="L169" href="#L169">169</a><a id="L170" href="#L170">170</a><a id="L171" href="#L171">171</a><a id="L172" href="#L172">172</a><a id="L173" href="#L173">173</a><a id="L174" href="#L174">174</a><a id="L175" href="#L175">175</a></td>
+<td><td><pre class="sourcecode">
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">win32</span>.<span class="i">consts</span>.<span class="i">socket</span>;</span>
+
+<span class="bc">/***************************************************************
+
+
+***************************************************************/</span>
+
+<span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">int</span></span>
+{
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IOCPARM_MASK</span></span> =  <span class="e Int"><span class="n">0x7f</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IOC_IN</span></span> =        <span class="e Int"><span class="n">0x80000000</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">FIONBIO</span></span> =       <span class="e Paren">(<span class="e Or"><span class="e Or"><span class="e Or"><span class="e Identifier"><span class="i">IOC_IN</span></span> | <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e And"><span class="e TypeDotId"><span class="t Integral"><span class="k">int</span></span>.<span class="i">sizeof</span></span> &amp; <span class="e Identifier"><span class="i">IOCPARM_MASK</span></span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">16</span></span></span>)</span></span> | <span class="e Paren">(<span class="e LShift"><span class="e Int"><span class="n">102</span></span> &lt;&lt; <span class="e Int"><span class="n">8</span></span></span>)</span></span> | <span class="e Int"><span class="n">126</span></span></span>)</span></span>,
+}</span>
+
+<span class="bc">/***************************************************************
+
+
+***************************************************************/</span>
+<span class="d Enum"><span class="k">enum</span> {<span class="d EnumMember"><span class="t Identifier"><span class="i">SOCKET_ERROR</span></span> = <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>}</span>
+
+<span class="d Enum"><span class="k">enum</span>
+{
+        <span class="lc">//consistent</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SO_DEBUG</span></span> =              <span class="e Int"><span class="n">0x1</span></span></span>,
+
+        <span class="lc">//possibly Winsock-only values</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SO_BROADCAST</span></span> =          <span class="e Int"><span class="n">0x20</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SO_REUSEADDR</span></span> =          <span class="e Int"><span class="n">0x4</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SO_LINGER</span></span> =             <span class="e Int"><span class="n">0x80</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SO_DONTLINGER</span></span> =         <span class="e Comp">~<span class="e Paren">(<span class="e Identifier"><span class="i">SO_LINGER</span></span>)</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SO_OOBINLINE</span></span> =          <span class="e Int"><span class="n">0x100</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SO_SNDBUF</span></span> =             <span class="e Int"><span class="n">0x1001</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SO_RCVBUF</span></span> =             <span class="e Int"><span class="n">0x1002</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SO_ERROR</span></span> =              <span class="e Int"><span class="n">0x1007</span></span></span>,
+
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SO_ACCEPTCONN</span></span> =         <span class="e Int"><span class="n">0x2</span></span></span>, <span class="lc">// ?</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SO_KEEPALIVE</span></span> =          <span class="e Int"><span class="n">0x8</span></span></span>, <span class="lc">// ?</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SO_DONTROUTE</span></span> =          <span class="e Int"><span class="n">0x10</span></span></span>, <span class="lc">// ?</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SO_TYPE</span></span> =               <span class="e Int"><span class="n">0x1008</span></span></span>, <span class="lc">// ?</span>
+
+        <span class="lc">// OptionLevel.IP settings</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IP_MULTICAST_TTL</span></span> =      <span class="e Int"><span class="n">10</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IP_MULTICAST_LOOP</span></span> =     <span class="e Int"><span class="n">11</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IP_ADD_MEMBERSHIP</span></span> =     <span class="e Int"><span class="n">12</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IP_DROP_MEMBERSHIP</span></span> =    <span class="e Int"><span class="n">13</span></span></span>,
+
+        <span class="lc">// OptionLevel.TCP settings</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">TCP_NODELAY</span></span> =           <span class="e Int"><span class="n">0x0001</span></span></span>,
+}</span>
+
+<span class="bc">/***************************************************************
+
+
+***************************************************************/</span>
+
+<span class="d Enum"><span class="k">enum</span>
+{
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SOL_SOCKET</span></span> =  <span class="e Int"><span class="n">0xFFFF</span></span></span>,
+}</span>
+
+<span class="bc">/***************************************************************
+
+
+***************************************************************/</span>
+
+<span class="d Enum"><span class="k">enum</span>
+{
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">AF_UNSPEC</span></span> =     <span class="e Int"><span class="n">0</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">AF_UNIX</span></span> =       <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">AF_INET</span></span> =       <span class="e Int"><span class="n">2</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">AF_INET6</span></span> =      <span class="e Int"><span class="n">23</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">AF_IPX</span></span> =        <span class="e Int"><span class="n">6</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">AF_APPLETALK</span></span> =  <span class="e Int"><span class="n">16</span></span></span>,
+}</span>
+
+<span class="bc">/***********************************************************************
+
+        Protocol
+
+***********************************************************************/</span>
+
+<span class="d Enum"><span class="k">enum</span>
+{
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IPPROTO_IP</span></span> =    <span class="e Int"><span class="n">0</span></span></span>,      <span class="lc">/// internet protocol version 4</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IPPROTO_IPV4</span></span> =  <span class="e Int"><span class="n">4</span></span></span>,      <span class="lc">/// internet protocol version 4</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IPPROTO_IPV6</span></span> =  <span class="e Int"><span class="n">41</span></span></span>,     <span class="lc">/// internet protocol version 6</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IPPROTO_ICMP</span></span> =  <span class="e Int"><span class="n">1</span></span></span>,      <span class="lc">/// internet control message protocol</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IPPROTO_IGMP</span></span> =  <span class="e Int"><span class="n">2</span></span></span>,      <span class="lc">/// internet group management protocol</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IPPROTO_GGP</span></span> =   <span class="e Int"><span class="n">3</span></span></span>,      <span class="lc">/// gateway to gateway protocol</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IPPROTO_TCP</span></span> =   <span class="e Int"><span class="n">6</span></span></span>,      <span class="lc">/// transmission control protocol</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IPPROTO_PUP</span></span> =   <span class="e Int"><span class="n">12</span></span></span>,     <span class="lc">/// PARC universal packet protocol</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IPPROTO_UDP</span></span> =   <span class="e Int"><span class="n">17</span></span></span>,     <span class="lc">/// user datagram protocol</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">IPPROTO_IDP</span></span> =   <span class="e Int"><span class="n">22</span></span></span>,     <span class="lc">/// Xerox NS protocol</span>
+}</span>
+
+<span class="bc">/***********************************************************************
+
+         Communication semantics
+
+***********************************************************************/</span>
+
+<span class="d Enum"><span class="k">enum</span>
+{
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SOCK_STREAM</span></span> =     <span class="e Int"><span class="n">1</span></span></span>, <span class="lc">/// sequenced, reliable, two-way communication-based byte streams</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SOCK_DGRAM</span></span> =      <span class="e Int"><span class="n">2</span></span></span>, <span class="lc">/// connectionless, unreliable datagrams with a fixed maximum length; data may be lost or arrive out of order</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SOCK_RAW</span></span> =        <span class="e Int"><span class="n">3</span></span></span>, <span class="lc">/// raw protocol access</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SOCK_RDM</span></span> =        <span class="e Int"><span class="n">4</span></span></span>, <span class="lc">/// reliably-delivered message datagrams</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SOCK_SEQPACKET</span></span> =  <span class="e Int"><span class="n">5</span></span></span>, <span class="lc">/// sequenced, reliable, two-way connection-based datagrams with a fixed maximum length</span>
+}</span>
+<span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">uint</span></span>
+{
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SCM_RIGHTS</span></span> = <span class="e Int"><span class="n">0x01</span></span></span>
+}</span>
+<span class="d Enum"><span class="k">enum</span>
+{
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SOMAXCONN</span></span>       = <span class="e Int"><span class="n">128</span></span></span>,
+}</span>
+
+<span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">uint</span></span>
+{
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">MSG_DONTROUTE</span></span>   = <span class="e Int"><span class="n">0x4</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">MSG_OOB</span></span>         = <span class="e Int"><span class="n">0x1</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">MSG_PEEK</span></span>        = <span class="e Int"><span class="n">0x2</span></span></span>,
+}</span>
+
+<span class="d Enum"><span class="k">enum</span>
+{
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SHUT_RD</span></span> = <span class="e Int"><span class="n">0</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SHUT_WR</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">SHUT_RDWR</span></span> = <span class="e Int"><span class="n">2</span></span></span>
+}</span>
+
+<span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">int</span></span>
+{
+         <span class="d EnumMember"><span class="t Identifier"><span class="i">AI_PASSIVE</span></span> = <span class="e Int"><span class="n">0x00000001</span></span></span>,               <span class="lc">/// Socket address will be used in bind() call</span>
+         <span class="d EnumMember"><span class="t Identifier"><span class="i">AI_CANONNAME</span></span> = <span class="e Int"><span class="n">0x00000002</span></span></span>,             <span class="lc">/// Return canonical name in first ai_canonname</span>
+         <span class="d EnumMember"><span class="t Identifier"><span class="i">AI_NUMERICHOST</span></span> = <span class="e Int"><span class="n">0x00000004</span></span></span> ,          <span class="lc">/// Nodename must be a numeric address string</span>
+         <span class="d EnumMember"><span class="t Identifier"><span class="i">AI_NUMERICSERV</span></span> = <span class="e Int"><span class="n">0x00000008</span></span></span>,           <span class="lc">/// Servicename must be a numeric port number</span>
+         <span class="d EnumMember"><span class="t Identifier"><span class="i">AI_ALL</span></span> = <span class="e Int"><span class="n">0x00000100</span></span></span>,                   <span class="lc">/// Query both IP6 and IP4 with AI_V4MAPPED</span>
+         <span class="d EnumMember"><span class="t Identifier"><span class="i">AI_ADDRCONFIG</span></span> = <span class="e Int"><span class="n">0x00000400</span></span></span>,            <span class="lc">/// Resolution only if global address configured</span>
+         <span class="d EnumMember"><span class="t Identifier"><span class="i">AI_V4MAPPED</span></span> = <span class="e Int"><span class="n">0x00000800</span></span></span>,              <span class="lc">/// On v6 failure, query v4 and convert to V4MAPPED format</span>
+         <span class="d EnumMember"><span class="t Identifier"><span class="i">AI_NON_AUTHORITATIVE</span></span> = <span class="e Int"><span class="n">0x00004000</span></span></span>,     <span class="lc">/// LUP_NON_AUTHORITATIVE</span>
+         <span class="d EnumMember"><span class="t Identifier"><span class="i">AI_SECURE</span></span> = <span class="e Int"><span class="n">0x00008000</span></span></span>,                <span class="lc">/// LUP_SECURE</span>
+         <span class="d EnumMember"><span class="t Identifier"><span class="i">AI_RETURN_PREFERRED_NAMES</span></span> = <span class="e Int"><span class="n">0x00010000</span></span></span>,<span class="lc">/// LUP_RETURN_PREFERRED_NAMES</span>
+         <span class="d EnumMember"><span class="t Identifier"><span class="i">AI_FQDN</span></span> = <span class="e Int"><span class="n">0x00020000</span></span></span>,                  <span class="lc">/// Return the FQDN in ai_canonname</span>
+         <span class="d EnumMember"><span class="t Identifier"><span class="i">AI_FILESERVER</span></span> = <span class="e Int"><span class="n">0x00040000</span></span></span>,            <span class="lc">/// Resolving fileserver name resolution </span>
+         <span class="d EnumMember"><span class="t Identifier"><span class="i">AI_MASK</span></span> = <span class="e Paren">(<span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Identifier"><span class="i">AI_PASSIVE</span></span> | <span class="e Identifier"><span class="i">AI_CANONNAME</span></span></span> | <span class="e Identifier"><span class="i">AI_NUMERICHOST</span></span></span> | <span class="e Identifier"><span class="i">AI_NUMERICSERV</span></span></span> | <span class="e Identifier"><span class="i">AI_ADDRCONFIG</span></span></span>)</span></span>,
+         <span class="d EnumMember"><span class="t Identifier"><span class="i">AI_DEFAULT</span></span> = <span class="e Paren">(<span class="e Or"><span class="e Identifier"><span class="i">AI_V4MAPPED</span></span> | <span class="e Identifier"><span class="i">AI_ADDRCONFIG</span></span></span>)</span></span>,
+}</span>
+
+<span class="d Enum"><span class="k">enum</span>
+{
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">EAI_BADFLAGS</span></span> = <span class="e Int"><span class="n">10022</span></span></span>,                   <span class="lc">/// Invalid value for `ai_flags' field.</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">EAI_NONAME</span></span> = <span class="e Int"><span class="n">11001</span></span></span>,                     <span class="lc">/// NAME or SERVICE is unknown.</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">EAI_AGAIN</span></span> = <span class="e Int"><span class="n">11002</span></span></span>,                      <span class="lc">/// Temporary failure in name resolution.</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">EAI_FAIL</span></span> = <span class="e Int"><span class="n">11003</span></span></span>,                       <span class="lc">/// Non-recoverable failure in name res.</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">EAI_NODATA</span></span> = <span class="e Int"><span class="n">11001</span></span></span>,                     <span class="lc">/// No address associated with NAME.</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">EAI_FAMILY</span></span> = <span class="e Int"><span class="n">10047</span></span></span>,                     <span class="lc">/// `ai_family' not supported.</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">EAI_SOCKTYPE</span></span> = <span class="e Int"><span class="n">10044</span></span></span>,                   <span class="lc">/// `ai_socktype' not supported.</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">EAI_SERVICE</span></span> = <span class="e Int"><span class="n">10109</span></span></span>,                    <span class="lc">/// SERVICE not supported for `ai_socktype'.</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">EAI_MEMORY</span></span> = <span class="e Int"><span class="n">8</span></span></span>,                         <span class="lc">/// Memory allocation failure.</span>
+}</span>       
+
+<span class="d Enum"><span class="k">enum</span>
+{
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">NI_MAXHOST</span></span> = <span class="e Int"><span class="n">1025</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">NI_MAXSERV</span></span> = <span class="e Int"><span class="n">32</span></span></span>,
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">NI_NUMERICHOST</span></span> = <span class="e Int"><span class="n">0x01</span></span></span>,                  <span class="lc">/// Don't try to look up hostname.</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">NI_NUMERICSERV</span></span> = <span class="e Int"><span class="n">0x02</span></span></span>,                  <span class="lc">/// Don't convert port number to name.</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">NI_NOFQDN</span></span> = <span class="e Int"><span class="n">0x04</span></span></span>,                       <span class="lc">/// Only return nodename portion.</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">NI_NAMEREQD</span></span> = <span class="e Int"><span class="n">0x08</span></span></span>,                     <span class="lc">/// Don't return numeric addresses.</span>
+        <span class="d EnumMember"><span class="t Identifier"><span class="i">NI_DGRAM</span></span> = <span class="e Int"><span class="n">0x10</span></span></span>,                        <span class="lc">/// Look up UDP service rather than TCP.</span>
+}</span></span>       
+
+
+</pre></td>
+</tr></table>
+</body>
+</html>

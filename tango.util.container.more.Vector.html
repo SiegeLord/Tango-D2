@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.container.more.Vector</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.container.more.Vector">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.container.more.Vector"><a href="htmlsrc/tango.util.container.more.Vector.html" class="symbol">tango.util.container.more.Vector</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: April 2008</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<p class="sec_header">Since:</p><div class="cmnt">0.99.7</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Vector" href="htmlsrc/tango.util.container.more.Vector.html#L29">Vector</a><span class="tparams">(<em>V</em>, int <em>Size</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.util.container.more.Vector.html#Vector" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A vector of the given value-type V, with maximum depth Size. Note
+        that this does no memory allocation of its own when Size != 0, and
+        does heap allocation when Size == 0. Thus you can have a fixed-size
+        low-overhead instance, or a heap oriented instance.</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">Vector*</span> <a class="symbol _function" name="Vector.clear" href="htmlsrc/tango.util.container.more.Vector.html#L56">clear</a><span class="params">()</span> <a href="tango.util.container.more.Vector.html#Vector.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clear the vector</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Vector.size" href="htmlsrc/tango.util.container.more.Vector.html#L68">size</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.util.container.more.Vector.html#Vector.size" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return depth of the vector</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Vector.unused" href="htmlsrc/tango.util.container.more.Vector.html#L79">unused</a><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.util.container.more.Vector.html#Vector.unused" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return remaining unused slots</div></div></dd>
+<dt class="decl"><span class="rettyp">Vector</span> <a class="symbol _function" name="Vector.clone" href="htmlsrc/tango.util.container.more.Vector.html#L90">clone</a><span class="params">()</span> <a href="tango.util.container.more.Vector.html#Vector.clone" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a (shallow) clone of this vector</div></div></dd>
+<dt class="decl"><span class="rettyp">V*</span> <a class="symbol _function" name="Vector.add" href="htmlsrc/tango.util.container.more.Vector.html#L109">add</a><span class="params">(V <em>value</em>)</span> <a href="tango.util.container.more.Vector.html#Vector.add" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a value to the vector.</div></div>
+<div class="cmnt">Throws an exception when the vector is full</div></dd>
+<dt class="decl"><span class="rettyp">V*</span> <a class="symbol _function" name="Vector.add:2" href="htmlsrc/tango.util.container.more.Vector.html#L135">add</a><span class="params">()</span> <a href="tango.util.container.more.Vector.html#Vector.add:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a value to the vector.</div></div>
+<div class="cmnt">Throws an exception when the vector is full</div></dd>
+<dt class="decl"><span class="rettyp">Vector*</span> <a class="symbol _function" name="Vector.append" href="htmlsrc/tango.util.container.more.Vector.html#L159">append</a><span class="params">(V[] <em>value</em>...)</span> <a href="tango.util.container.more.Vector.html#Vector.append" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Add a series of values to the vector.</div></div>
+<div class="cmnt">Throws an exception when the vector is full</div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="Vector.remove" href="htmlsrc/tango.util.container.more.Vector.html#L174">remove</a><span class="params">()</span> <a href="tango.util.container.more.Vector.html#Vector.remove" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove and return the most recent addition to the vector.</div></div>
+<div class="cmnt">Throws an exception when the vector is empty</div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="Vector.remove:2" href="htmlsrc/tango.util.container.more.Vector.html#L191">remove</a><span class="params">(size_t <em>i</em>)</span> <a href="tango.util.container.more.Vector.html#Vector.remove:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Index vector entries, where a zero index represents the
+                oldest vector entry.</div></div>
+<div class="cmnt">Throws an exception when the given index is out of range</div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="Vector.opIndex" href="htmlsrc/tango.util.container.more.Vector.html#L214">opIndex</a><span class="params">(size_t <em>i</em>)</span> <a href="tango.util.container.more.Vector.html#Vector.opIndex" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Index vector entries, as though it were an array</div></div>
+<div class="cmnt">Throws an exception when the given index is out of range</div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="Vector.opIndexAssign" href="htmlsrc/tango.util.container.more.Vector.html#L230">opIndexAssign</a><span class="params">(V <em>value</em>, size_t <em>i</em>)</span> <a href="tango.util.container.more.Vector.html#Vector.opIndexAssign" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Assign vector entries as though it were an array.</div></div>
+<div class="cmnt">Throws an exception when the given index is out of range</div></dd>
+<dt class="decl"><span class="rettyp">V[]</span> <a class="symbol _function" name="Vector.slice" href="htmlsrc/tango.util.container.more.Vector.html#L251">slice</a><span class="params">()</span> <a href="tango.util.container.more.Vector.html#Vector.slice" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the vector as an array of values, where the first
+                array entry represents the oldest value. 
+                
+                Doing a foreach() on the returned array will traverse in
+                the opposite direction of foreach() upon a vector</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Vector.opApply" href="htmlsrc/tango.util.container.more.Vector.html#L273">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref V value) <em>dg</em>)</span> <a href="tango.util.container.more.Vector.html#Vector.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate from the most recent to the oldest vector entries</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Vector.opApply:2" href="htmlsrc/tango.util.container.more.Vector.html#L288">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref V value, ref bool kill) <em>dg</em>)</span> <a href="tango.util.container.more.Vector.html#Vector.opApply:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate from the most recent to the oldest vector entries</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:24 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

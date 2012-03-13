@@ -1,0 +1,276 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.math.random.Kiss</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a><a id="L38" href="#L38">38</a><a id="L39" href="#L39">39</a><a id="L40" href="#L40">40</a><a id="L41" href="#L41">41</a><a id="L42" href="#L42">42</a><a id="L43" href="#L43">43</a><a id="L44" href="#L44">44</a><a id="L45" href="#L45">45</a><a id="L46" href="#L46">46</a><a id="L47" href="#L47">47</a><a id="L48" href="#L48">48</a><a id="L49" href="#L49">49</a><a id="L50" href="#L50">50</a><a id="L51" href="#L51">51</a><a id="L52" href="#L52">52</a><a id="L53" href="#L53">53</a><a id="L54" href="#L54">54</a><a id="L55" href="#L55">55</a><a id="L56" href="#L56">56</a><a id="L57" href="#L57">57</a><a id="L58" href="#L58">58</a><a id="L59" href="#L59">59</a><a id="L60" href="#L60">60</a><a id="L61" href="#L61">61</a><a id="L62" href="#L62">62</a><a id="L63" href="#L63">63</a><a id="L64" href="#L64">64</a><a id="L65" href="#L65">65</a><a id="L66" href="#L66">66</a><a id="L67" href="#L67">67</a><a id="L68" href="#L68">68</a><a id="L69" href="#L69">69</a><a id="L70" href="#L70">70</a><a id="L71" href="#L71">71</a><a id="L72" href="#L72">72</a><a id="L73" href="#L73">73</a><a id="L74" href="#L74">74</a><a id="L75" href="#L75">75</a><a id="L76" href="#L76">76</a><a id="L77" href="#L77">77</a><a id="L78" href="#L78">78</a><a id="L79" href="#L79">79</a><a id="L80" href="#L80">80</a><a id="L81" href="#L81">81</a><a id="L82" href="#L82">82</a><a id="L83" href="#L83">83</a><a id="L84" href="#L84">84</a><a id="L85" href="#L85">85</a><a id="L86" href="#L86">86</a><a id="L87" href="#L87">87</a><a id="L88" href="#L88">88</a><a id="L89" href="#L89">89</a><a id="L90" href="#L90">90</a><a id="L91" href="#L91">91</a><a id="L92" href="#L92">92</a><a id="L93" href="#L93">93</a><a id="L94" href="#L94">94</a><a id="L95" href="#L95">95</a><a id="L96" href="#L96">96</a><a id="L97" href="#L97">97</a><a id="L98" href="#L98">98</a><a id="L99" href="#L99">99</a><a id="L100" href="#L100">100</a><a id="L101" href="#L101">101</a><a id="L102" href="#L102">102</a><a id="L103" href="#L103">103</a><a id="L104" href="#L104">104</a><a id="L105" href="#L105">105</a><a id="L106" href="#L106">106</a><a id="L107" href="#L107">107</a><a id="L108" href="#L108">108</a><a id="L109" href="#L109">109</a><a id="L110" href="#L110">110</a><a id="L111" href="#L111">111</a><a id="L112" href="#L112">112</a><a id="L113" href="#L113">113</a><a id="L114" href="#L114">114</a><a id="L115" href="#L115">115</a><a id="L116" href="#L116">116</a><a id="L117" href="#L117">117</a><a id="L118" href="#L118">118</a><a id="L119" href="#L119">119</a><a id="L120" href="#L120">120</a><a id="L121" href="#L121">121</a><a id="L122" href="#L122">122</a><a id="L123" href="#L123">123</a><a id="L124" href="#L124">124</a><a id="L125" href="#L125">125</a><a id="L126" href="#L126">126</a><a id="L127" href="#L127">127</a><a id="L128" href="#L128">128</a><a id="L129" href="#L129">129</a><a id="L130" href="#L130">130</a><a id="L131" href="#L131">131</a><a id="L132" href="#L132">132</a><a id="L133" href="#L133">133</a><a id="L134" href="#L134">134</a><a id="L135" href="#L135">135</a><a id="L136" href="#L136">136</a><a id="L137" href="#L137">137</a><a id="L138" href="#L138">138</a><a id="L139" href="#L139">139</a><a id="L140" href="#L140">140</a><a id="L141" href="#L141">141</a><a id="L142" href="#L142">142</a><a id="L143" href="#L143">143</a><a id="L144" href="#L144">144</a><a id="L145" href="#L145">145</a><a id="L146" href="#L146">146</a><a id="L147" href="#L147">147</a><a id="L148" href="#L148">148</a><a id="L149" href="#L149">149</a><a id="L150" href="#L150">150</a><a id="L151" href="#L151">151</a><a id="L152" href="#L152">152</a><a id="L153" href="#L153">153</a><a id="L154" href="#L154">154</a><a id="L155" href="#L155">155</a><a id="L156" href="#L156">156</a><a id="L157" href="#L157">157</a><a id="L158" href="#L158">158</a><a id="L159" href="#L159">159</a><a id="L160" href="#L160">160</a><a id="L161" href="#L161">161</a><a id="L162" href="#L162">162</a><a id="L163" href="#L163">163</a><a id="L164" href="#L164">164</a><a id="L165" href="#L165">165</a><a id="L166" href="#L166">166</a><a id="L167" href="#L167">167</a><a id="L168" href="#L168">168</a><a id="L169" href="#L169">169</a><a id="L170" href="#L170">170</a><a id="L171" href="#L171">171</a><a id="L172" href="#L172">172</a><a id="L173" href="#L173">173</a><a id="L174" href="#L174">174</a><a id="L175" href="#L175">175</a><a id="L176" href="#L176">176</a><a id="L177" href="#L177">177</a><a id="L178" href="#L178">178</a><a id="L179" href="#L179">179</a><a id="L180" href="#L180">180</a><a id="L181" href="#L181">181</a><a id="L182" href="#L182">182</a><a id="L183" href="#L183">183</a><a id="L184" href="#L184">184</a><a id="L185" href="#L185">185</a><a id="L186" href="#L186">186</a><a id="L187" href="#L187">187</a><a id="L188" href="#L188">188</a><a id="L189" href="#L189">189</a><a id="L190" href="#L190">190</a><a id="L191" href="#L191">191</a><a id="L192" href="#L192">192</a><a id="L193" href="#L193">193</a><a id="L194" href="#L194">194</a><a id="L195" href="#L195">195</a><a id="L196" href="#L196">196</a><a id="L197" href="#L197">197</a><a id="L198" href="#L198">198</a><a id="L199" href="#L199">199</a><a id="L200" href="#L200">200</a><a id="L201" href="#L201">201</a><a id="L202" href="#L202">202</a><a id="L203" href="#L203">203</a><a id="L204" href="#L204">204</a><a id="L205" href="#L205">205</a><a id="L206" href="#L206">206</a><a id="L207" href="#L207">207</a><a id="L208" href="#L208">208</a><a id="L209" href="#L209">209</a><a id="L210" href="#L210">210</a><a id="L211" href="#L211">211</a><a id="L212" href="#L212">212</a><a id="L213" href="#L213">213</a><a id="L214" href="#L214">214</a><a id="L215" href="#L215">215</a><a id="L216" href="#L216">216</a><a id="L217" href="#L217">217</a><a id="L218" href="#L218">218</a><a id="L219" href="#L219">219</a><a id="L220" href="#L220">220</a><a id="L221" href="#L221">221</a><a id="L222" href="#L222">222</a><a id="L223" href="#L223">223</a><a id="L224" href="#L224">224</a><a id="L225" href="#L225">225</a><a id="L226" href="#L226">226</a><a id="L227" href="#L227">227</a><a id="L228" href="#L228">228</a><a id="L229" href="#L229">229</a><a id="L230" href="#L230">230</a><a id="L231" href="#L231">231</a><a id="L232" href="#L232">232</a><a id="L233" href="#L233">233</a><a id="L234" href="#L234">234</a><a id="L235" href="#L235">235</a><a id="L236" href="#L236">236</a><a id="L237" href="#L237">237</a><a id="L238" href="#L238">238</a><a id="L239" href="#L239">239</a><a id="L240" href="#L240">240</a><a id="L241" href="#L241">241</a><a id="L242" href="#L242">242</a><a id="L243" href="#L243">243</a><a id="L244" href="#L244">244</a><a id="L245" href="#L245">245</a><a id="L246" href="#L246">246</a><a id="L247" href="#L247">247</a><a id="L248" href="#L248">248</a><a id="L249" href="#L249">249</a><a id="L250" href="#L250">250</a><a id="L251" href="#L251">251</a><a id="L252" href="#L252">252</a><a id="L253" href="#L253">253</a><a id="L254" href="#L254">254</a><a id="L255" href="#L255">255</a><a id="L256" href="#L256">256</a><a id="L257" href="#L257">257</a><a id="L258" href="#L258">258</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/*******************************************************************************
+
+        copyright:      Copyright (c) 2008. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Initial release: May 2008
+
+        author:         Various
+
+        Since:          0.99.7
+
+        With gratitude to Dr Jurgen A Doornik. See his paper entitled
+        "Conversion of high-period random numbers to floating point"
+        
+*******************************************************************************/</span>
+
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">math</span>.<span class="i">random</span>.<span class="i">Kiss</span>;</span>
+
+
+<span class="d Version"><span class="k">version</span> (<span class="i">Win32</span>)
+         <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span>(<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">QueryPerformanceCounter</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span></span>
+
+<span class="d Version"><span class="k">version</span> (<span class="i">Posix</span>)
+        <span class="d Compound">{
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">stdc</span>.<span class="i">posix</span>.<span class="i">sys</span>.<span class="i">time</span>;</span>
+        }</span></span>
+
+
+<span class="bc">/******************************************************************************
+
+        KISS (from George Marsaglia)
+
+        The idea is to use simple, fast, individually promising
+        generators to get a composite that will be fast, easy to code
+        have a very long period and pass all the tests put to it.
+        The three components of KISS are
+        ---
+                x(n)=a*x(n-1)+1 mod 2^32
+                y(n)=y(n-1)(I+L^13)(I+R^17)(I+L^5),
+                z(n)=2*z(n-1)+z(n-2) +carry mod 2^32
+        ---
+
+        The y's are a shift register sequence on 32bit binary vectors
+        period 2^32-1; The z's are a simple multiply-with-carry sequence
+        with period 2^63+2^32-1. The period of KISS is thus
+        ---
+                2^32*(2^32-1)*(2^63+2^32-1) &gt; 2^127
+        ---
+
+        Note that this should be passed by reference, unless you really
+        intend to provide a local copy to a callee
+        
+******************************************************************************/</span>
+
+<span class="d Struct"><span class="k">struct</span> <span class="i">Kiss</span>
+<span class="d Compound">{
+        <span class="lc">///</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">natural</span></span>  <span class="i">toInt</span>;</span></span>
+        <span class="lc">///</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">fraction</span></span> <span class="i">toReal</span>;</span></span>
+        
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">kiss_k</span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">kiss_m</span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">kiss_x</span> = <span class="e Int"><span class="n">1</span></span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">kiss_y</span> = <span class="e Int"><span class="n">2</span></span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">kiss_z</span> = <span class="e Int"><span class="n">4</span></span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">kiss_w</span> = <span class="e Int"><span class="n">8</span></span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">kiss_carry</span> = <span class="e Int"><span class="n">0</span></span>;</span>
+        
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">double</span></span> <span class="i">M_RAN_INVM32</span> = <span class="e Float"><span class="n">2.32830643653869628906e-010</span></span>,
+                            <span class="i">M_RAN_INVM52</span> = <span class="e Float"><span class="n">2.22044604925031308085e-016</span></span>;</span>
+      
+        <span class="bc">/**********************************************************************
+
+                A global, shared instance, seeded via startup time
+
+        **********************************************************************/</span>
+
+        <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d StorageClass"><span class="k">__gshared</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Kiss</span></span> <span class="i">instance</span>;</span> 
+
+        <span class="d StorageClass"><span class="k">shared</span></span> <span class="d StaticCtor"><span class="k">static</span> <span class="k">this</span> ()
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">instance</span></span>.<span class="e Identifier"><span class="i">seed</span></span>()</span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/**********************************************************************
+
+                Creates and seeds a new generator with the current time
+
+        **********************************************************************/</span>
+
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Kiss</span></span> <span class="i">opCall</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">Kiss</span></span> <span class="i">rand</span>;</span></span>
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">rand</span></span>.<span class="e Identifier"><span class="i">seed</span></span>()</span>;</span>
+                <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">rand</span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/**********************************************************************
+
+                Seed the generator with current time
+
+        **********************************************************************/</span>
+
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">seed</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">s</span>;</span></span>
+
+                <span class="s Version"><span class="k">version</span> (<span class="i">Posix</span>)
+                        <span class="s Compound">{
+                        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">timeval</span></span> <span class="i">tv</span>;</span></span>
+
+                        <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">gettimeofday</span></span> (&amp;<span class="i">tv</span>, <span class="k">null</span>)</span>;</span>
+                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">s</span></span> = <span class="e Identifier"><span class="i">tv</span></span>.<span class="e Identifier"><span class="i">tv_usec</span></span></span>;</span>
+                        }</span></span>
+                <span class="s Version"><span class="k">version</span> (<span class="i">Win32</span>)
+                         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">QueryPerformanceCounter</span></span> (&amp;<span class="i">s</span>)</span>;</span></span>
+
+                <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">seed</span></span> (<span class="k">cast</span>(<span class="k">uint</span>) <span class="i">s</span>)</span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/**********************************************************************
+
+                Seed the generator with a provided value
+
+        **********************************************************************/</span>
+
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">seed</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">seed</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">kiss_x</span></span> = <span class="e Or"><span class="e Identifier"><span class="i">seed</span></span> | <span class="e Int"><span class="n">1</span></span></span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">kiss_y</span></span> = <span class="e Or"><span class="e Identifier"><span class="i">seed</span></span> | <span class="e Int"><span class="n">2</span></span></span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">kiss_z</span></span> = <span class="e Or"><span class="e Identifier"><span class="i">seed</span></span> | <span class="e Int"><span class="n">4</span></span></span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">kiss_w</span></span> = <span class="e Or"><span class="e Identifier"><span class="i">seed</span></span> | <span class="e Int"><span class="n">8</span></span></span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">kiss_carry</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/**********************************************************************
+
+                Returns X such that 0 &lt;= X &lt;= uint.max
+
+        **********************************************************************/</span>
+
+        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">natural</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">kiss_x</span></span> = <span class="e Plus"><span class="e Mul"><span class="e Identifier"><span class="i">kiss_x</span></span> * <span class="e Int"><span class="n">69069</span></span></span> + <span class="e Int"><span class="n">1</span></span></span></span>;</span>
+                <span class="s Expression"><span class="e XorAssign"><span class="e Identifier"><span class="i">kiss_y</span></span> ^= <span class="e LShift"><span class="e Identifier"><span class="i">kiss_y</span></span> &lt;&lt; <span class="e Int"><span class="n">13</span></span></span></span>;</span>
+                <span class="s Expression"><span class="e XorAssign"><span class="e Identifier"><span class="i">kiss_y</span></span> ^= <span class="e RShift"><span class="e Identifier"><span class="i">kiss_y</span></span> &gt;&gt; <span class="e Int"><span class="n">17</span></span></span></span>;</span>
+                <span class="s Expression"><span class="e XorAssign"><span class="e Identifier"><span class="i">kiss_y</span></span> ^= <span class="e LShift"><span class="e Identifier"><span class="i">kiss_y</span></span> &lt;&lt; <span class="e Int"><span class="n">5</span></span></span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">kiss_k</span></span> = <span class="e Plus"><span class="e Plus"><span class="e Paren">(<span class="e RShift"><span class="e Identifier"><span class="i">kiss_z</span></span> &gt;&gt; <span class="e Int"><span class="n">2</span></span></span>)</span> + <span class="e Paren">(<span class="e RShift"><span class="e Identifier"><span class="i">kiss_w</span></span> &gt;&gt; <span class="e Int"><span class="n">3</span></span></span>)</span></span> + <span class="e Paren">(<span class="e RShift"><span class="e Identifier"><span class="i">kiss_carry</span></span> &gt;&gt; <span class="e Int"><span class="n">2</span></span></span>)</span></span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">kiss_m</span></span> = <span class="e Plus"><span class="e Plus"><span class="e Plus"><span class="e Identifier"><span class="i">kiss_w</span></span> + <span class="e Identifier"><span class="i">kiss_w</span></span></span> + <span class="e Identifier"><span class="i">kiss_z</span></span></span> + <span class="e Identifier"><span class="i">kiss_carry</span></span></span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">kiss_z</span></span> = <span class="e Identifier"><span class="i">kiss_w</span></span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">kiss_w</span></span> = <span class="e Identifier"><span class="i">kiss_m</span></span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">kiss_carry</span></span> = <span class="e RShift"><span class="e Identifier"><span class="i">kiss_k</span></span> &gt;&gt; <span class="e Int"><span class="n">30</span></span></span></span>;</span>
+                <span class="s Return"><span class="k">return</span> <span class="e Plus"><span class="e Plus"><span class="e Identifier"><span class="i">kiss_x</span></span> + <span class="e Identifier"><span class="i">kiss_y</span></span></span> + <span class="e Identifier"><span class="i">kiss_w</span></span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/**********************************************************************
+
+                Returns X such that 0 &lt;= X &lt; max
+
+                Note that max is exclusive, making it compatible with
+                array indexing
+
+        **********************************************************************/</span>
+
+        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">natural</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">max</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Return"><span class="k">return</span> <span class="e Mod"><span class="e Call"><span class="e Identifier"><span class="i">natural</span></span>()</span> % <span class="e Identifier"><span class="i">max</span></span></span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/**********************************************************************
+
+                Returns X such that min &lt;= X &lt; max
+
+                Note that max is exclusive, making it compatible with
+                array indexing
+
+        **********************************************************************/</span>
+
+        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">natural</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">min</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">max</span></span>)</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Return"><span class="k">return</span> <span class="e Plus"><span class="e Paren">(<span class="e Mod"><span class="e Call"><span class="e Identifier"><span class="i">natural</span></span>()</span> % <span class="e Paren">(<span class="e Minus"><span class="e Identifier"><span class="i">max</span></span>-<span class="e Identifier"><span class="i">min</span></span></span>)</span></span>)</span> + <span class="e Identifier"><span class="i">min</span></span></span>;</span>
+        }</span></span></span>
+        
+        <span class="bc">/**********************************************************************
+        
+                Returns a value in the range [0, 1) using 32 bits
+                of precision (with thanks to Dr Jurgen A Doornik)
+
+        **********************************************************************/</span>
+
+        <span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">fraction</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e Plus"><span class="e Mul"><span class="e Paren">(<span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">int</span></span>) <span class="e Identifier"><span class="i">natural</span></span></span>()</span>)</span> * <span class="e Identifier"><span class="i">M_RAN_INVM32</span></span></span> + <span class="e Paren">(<span class="e Plus"><span class="e Float"><span class="n">0.5</span></span> + <span class="e Div"><span class="e Identifier"><span class="i">M_RAN_INVM32</span></span> / <span class="e Int"><span class="n">2</span></span></span></span>)</span></span>)</span>;</span>
+        }</span></span></span>
+
+        <span class="bc">/**********************************************************************
+
+                Returns a value in the range [0, 1) using 52 bits
+                of precision (with thanks to Dr Jurgen A Doornik)
+
+        **********************************************************************/</span>
+
+        <span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">fractionEx</span> <span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e Plus"><span class="e Plus"><span class="e Mul"><span class="e Paren">(<span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">int</span></span>) <span class="e Identifier"><span class="i">natural</span></span></span>()</span>)</span> * <span class="e Identifier"><span class="i">M_RAN_INVM32</span></span></span> + <span class="e Paren">(<span class="e Plus"><span class="e Float"><span class="n">0.5</span></span> + <span class="e Div"><span class="e Identifier"><span class="i">M_RAN_INVM52</span></span> / <span class="e Int"><span class="n">2</span></span></span></span>)</span></span> + 
+                       <span class="e Mul"><span class="e Paren">(<span class="e And"><span class="e Paren">(<span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">int</span></span>) <span class="e Identifier"><span class="i">natural</span></span></span>()</span>)</span> &amp; <span class="e Int"><span class="n">0x000FFFFF</span></span></span>)</span> * <span class="e Identifier"><span class="i">M_RAN_INVM52</span></span></span></span>)</span>;</span>
+        }</span></span></span>
+}</span></span>
+
+
+
+<span class="bc">/******************************************************************************
+
+
+******************************************************************************/</span>
+
+<span class="d Debug"><span class="k">debug</span> (<span class="i">Kiss</span>)
+<span class="d Compound">{
+        <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;</span>
+        <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">time</span>.<span class="i">StopWatch</span>;</span>
+
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">dbl</span> = <span class="e Call"><span class="e Identifier"><span class="i">Kiss</span></span>()</span>;</span></span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">count</span> = <span class="e Int"><span class="n">100_000_000</span></span>;</span></span>
+                <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">StopWatch</span></span> <span class="i">w</span>;</span></span>
+
+                <span class="s Expression"><span class="e Identifier"><span class="i">w</span></span>.<span class="e Identifier"><span class="i">start</span></span>;</span>
+                <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">double</span></span> <span class="i">v1</span>;</span></span>
+                <span class="s For"><span class="k">for</span> (<span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>=<span class="e Identifier"><span class="i">count</span></span>;</span></span> <span class="e PreDecr">--<span class="e Identifier"><span class="i">i</span></span></span>;)
+                     <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">v1</span></span> = <span class="e Identifier"><span class="i">dbl</span></span>.<span class="e Identifier"><span class="i">fraction</span></span></span>;</span></span></span>
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"{} fraction, {}/s, {:f10}"</span>, <span class="i">count</span>, <span class="i">count</span>/<span class="i">w</span>.<span class="i">stop</span>, <span class="i">v1</span>)</span>;</span>
+
+                <span class="s Expression"><span class="e Identifier"><span class="i">w</span></span>.<span class="e Identifier"><span class="i">start</span></span>;</span>
+                <span class="s For"><span class="k">for</span> (<span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>=<span class="e Identifier"><span class="i">count</span></span>;</span></span> <span class="e PreDecr">--<span class="e Identifier"><span class="i">i</span></span></span>;)
+                     <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">v1</span></span> = <span class="e Identifier"><span class="i">dbl</span></span>.<span class="e Identifier"><span class="i">fractionEx</span></span></span>;</span></span></span>
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"{} fractionEx, {}/s, {:f10}"</span>, <span class="i">count</span>, <span class="i">count</span>/<span class="i">w</span>.<span class="i">stop</span>, <span class="i">v1</span>)</span>;</span>
+
+                <span class="s For"><span class="k">for</span> (<span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>=<span class="e Identifier"><span class="i">count</span></span>;</span></span> <span class="e PreDecr">--<span class="e Identifier"><span class="i">i</span></span></span>;)
+                    <span class="s Scope"><span class="s Compound">{
+                    <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">v</span> = <span class="e Identifier"><span class="i">dbl</span></span>.<span class="e Identifier"><span class="i">fraction</span></span>;</span></span>
+                    <span class="s If"><span class="k">if</span> (<span class="e OrOr"><span class="e Rel"><span class="e Identifier"><span class="i">v</span></span> &lt;= <span class="e Float"><span class="n">0.0</span></span></span> || <span class="e Rel"><span class="e Identifier"><span class="i">v</span></span> &gt;= <span class="e Float"><span class="n">1.0</span></span></span></span>)
+                       <span class="s Scope"><span class="s Compound">{
+                       <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"fraction {:f10}"</span>, <span class="i">v</span>)</span>;</span>
+                       <span class="s Break"><span class="k">break</span>;</span>
+                       }</span></span></span>
+                    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">v</span></span> = <span class="e Identifier"><span class="i">dbl</span></span>.<span class="e Identifier"><span class="i">fractionEx</span></span></span>;</span>
+                    <span class="s If"><span class="k">if</span> (<span class="e OrOr"><span class="e Rel"><span class="e Identifier"><span class="i">v</span></span> &lt;= <span class="e Float"><span class="n">0.0</span></span></span> || <span class="e Rel"><span class="e Identifier"><span class="i">v</span></span> &gt;= <span class="e Float"><span class="n">1.0</span></span></span></span>)
+                       <span class="s Scope"><span class="s Compound">{
+                       <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"fractionEx {:f10}"</span>, <span class="i">v</span>)</span>;</span>
+                       <span class="s Break"><span class="k">break</span>;</span>
+                       }</span></span></span>
+                    }</span></span></span>
+        }</span></span></span>
+}</span></span></span>
+
+</pre></td>
+</tr></table>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.container.Clink</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.container.Clink">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.container.Clink"><a href="htmlsrc/tango.util.container.Clink.html" class="symbol">tango.util.container.Clink</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Apr 2008: Initial release</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Kris</div>
+<p class="sec_header">Since:</p><div class="cmnt">0.99.7
+<p class="bl"></p>
+        Based upon Doug Lea's Java collection package</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Clink" href="htmlsrc/tango.util.container.Clink.html#L25">Clink</a><span class="tparams">(<em>V</em>)</span> <a href="tango.util.container.Clink.html#Clink" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clinks are links that are always arranged in circular lists.</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="Clink.set" href="htmlsrc/tango.util.container.Clink.html#L40">set</a><span class="params">(V <em>v</em>)</span> <a href="tango.util.container.Clink.html#Clink.set" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set to point to ourselves</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="Clink.set:2" href="htmlsrc/tango.util.container.Clink.html#L54">set</a><span class="params">(V <em>v</em>, Ref <em>p</em>, Ref <em>n</em>)</span> <a href="tango.util.container.Clink.html#Clink.set:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set to point to n as next cell and p as the prior cell</div></div>
+<p class="sec_header">param:</p><div class="cmnt">n, the new next cell</div>
+<p class="sec_header">param:</p><div class="cmnt">p, the new prior cell</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Clink.singleton" href="htmlsrc/tango.util.container.Clink.html#L66">singleton</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.util.container.Clink.html#Clink.singleton" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return true if current cell is the only one on the list</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Clink.addNext" href="htmlsrc/tango.util.container.Clink.html#L86">addNext</a><span class="params">(V <em>v</em>,  <span class="k">scope</span> Ref delegate() <em>alloc</em>)</span> <a href="tango.util.container.Clink.html#Clink.addNext" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Make a cell holding v and link it immediately after current cell</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="Clink.addPrev" href="htmlsrc/tango.util.container.Clink.html#L97">addPrev</a><span class="params">(V <em>v</em>,  <span class="k">scope</span> Ref delegate() <em>alloc</em>)</span> <a href="tango.util.container.Clink.html#Clink.addPrev" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">make a node holding v, link it before the current cell, and return it</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Clink.linkPrev" href="htmlsrc/tango.util.container.Clink.html#L110">linkPrev</a><span class="params">(Ref <em>p</em>)</span> <a href="tango.util.container.Clink.html#Clink.linkPrev" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">link p before current cell</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Clink.size" href="htmlsrc/tango.util.container.Clink.html#L125">size</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.util.container.Clink.html#Clink.size" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">return the number of cells in the list</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="Clink.find" href="htmlsrc/tango.util.container.Clink.html#L141">find</a><span class="params">(V <em>element</em>)</span> <a href="tango.util.container.Clink.html#Clink.find" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">return the first cell holding element found in a circular traversal starting
+ at current cell, or null if no such</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Clink.count" href="htmlsrc/tango.util.container.Clink.html#L157">count</a><span class="params">(V <em>element</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.util.container.Clink.html#Clink.count" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">return the number of cells holding element found in a circular
+ traversal</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="Clink.nth" href="htmlsrc/tango.util.container.Clink.html#L173">nth</a><span class="params">(size_t <em>n</em>)</span> <a href="tango.util.container.Clink.html#Clink.nth" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">return the nth cell traversed from here. It may wrap around.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Clink.unlinkNext" href="htmlsrc/tango.util.container.Clink.html#L187">unlinkNext</a><span class="params">()</span> <a href="tango.util.container.Clink.html#Clink.unlinkNext" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Unlink the next cell.
+ This has no effect on the list if isSingleton()</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Clink.unlinkPrev" href="htmlsrc/tango.util.container.Clink.html#L199">unlinkPrev</a><span class="params">()</span> <a href="tango.util.container.Clink.html#Clink.unlinkPrev" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Unlink the previous cell.
+ This has no effect on the list if isSingleton()</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Clink.unlink" href="htmlsrc/tango.util.container.Clink.html#L212">unlink</a><span class="params">()</span> <a href="tango.util.container.Clink.html#Clink.unlink" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Unlink self from list it is in.
+ Causes it to be a singleton</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="Clink.copyList" href="htmlsrc/tango.util.container.Clink.html#L226">copyList</a><span class="params">(<span class="k">scope</span> Ref delegate() <em>alloc</em>)</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.util.container.Clink.html#Clink.copyList" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Make a copy of the list and return new head.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:22 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

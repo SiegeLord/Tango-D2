@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.text.convert.DateTime</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.text.convert.DateTime">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.text.convert.DateTime"><a href="htmlsrc/tango.text.convert.DateTime.html" class="symbol">tango.text.convert.DateTime</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Jan 2005: initial release
+                        Mar 2009: extracted from locale, and
+                                  converted to a struct</div>
+<p class="sec_header">Author:</p><div class="cmnt">John Chapman, Kris, mwarning
+<p class="bl"></p>
+        Support for formatting date/time values, in a locale-specific
+        manner. See DateTimeLocale.format() for a description on how
+        formatting is performed (below).
+<p class="bl"></p>
+        Reference links:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">http</span>:<span class="lc">//www.opengroup.org/onlinepubs/007908799/xsh/strftime.html</span>
+<span class="i">http</span>:<span class="lc">//msdn.microsoft.com/en-us/library/system.globalization.datetimeformatinfo(VS.71).aspx</span></pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl">DateTimeLocale <a class="symbol _variable" name="DateTimeDefault" href="htmlsrc/tango.text.convert.DateTime.html#L61">DateTimeDefault</a> <span class="attrs">[<span class="prot">public</span>, <span class="stc">gshared</span>]</span> <a href="tango.text.convert.DateTime.html#DateTimeDefault" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The default DateTimeLocale instance</div></div></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="DateTimeLocale" href="htmlsrc/tango.text.convert.DateTime.html#L80">DateTimeLocale</a> <a href="tango.text.convert.DateTime.html#DateTimeLocale" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">How to format locale-specific date/time output</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="DateTimeLocale.format" href="htmlsrc/tango.text.convert.DateTime.html#L180">format</a><span class="params">(char[] <em>output</em>, Time <em>dateTime</em>, const(char)[] <em>layout</em>)</span> <a href="tango.text.convert.DateTime.html#DateTimeLocale.format" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Format the given Time value into the provided output,
+                using the specified layout. The layout can be a generic
+                variant or a custom one, where generics are indicated
+                via a single character:</div></div>
+<div class="cmnt"><pre>
+                "t" = 7:04
+                "T" = 7:04:02 PM
+                "d" = 3/30/2009
+                "D" = Monday, March 30, 2009
+                "f" = Monday, March 30, 2009 7:04 PM
+                "F" = Monday, March 30, 2009 7:04:02 PM
+                "g" = 3/30/2009 7:04 PM
+                "G" = 3/30/2009 7:04:02 PM
+                "y"
+                "Y" = March, 2009
+                "r"
+                "R" = Mon, 30 Mar 2009 19:04:02 GMT
+                "s" = 2009-03-30T19:04:02
+                "u" = 2009-03-30 19:04:02Z
+                </pre>
+<p class="bl"></p>
+                For the US locale, these generic layouts are expanded in the
+                following manner:
+<p class="bl"></p>
+                <pre>
+                "t" = "h:mm"
+                "T" = "h:mm:ss tt"
+                "d" = "M/d/yyyy"
+                "D" = "dddd, MMMM d, yyyy"
+                "f" = "dddd, MMMM d, yyyy h:mm tt"
+                "F" = "dddd, MMMM d, yyyy h:mm:ss tt"
+                "g" = "M/d/yyyy h:mm tt"
+                "G" = "M/d/yyyy h:mm:ss tt"
+                "y"
+                "Y" = "MMMM, yyyy"
+                "r"
+                "R" = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'"
+                "s" = "yyyy'-'MM'-'dd'T'HH':'mm':'ss"
+                "u" = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'"
+                </pre>
+<p class="bl"></p>
+                Custom layouts are constructed using a combination of the
+                character codes indicated on the right, above. For example,
+                a layout of "dddd, dd MMM yyyy HH':'mm':'ss zzzz" will emit
+                something like this:
+                <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">Monday</span>, <span class="n">30</span> <span class="i">Mar</span> <span class="n">2009</span> <span class="n">19</span>:<span class="n">04</span>:<span class="n">02</span> -<span class="n">08</span>:<span class="n">00</span></pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+                Using these format indicators with Layout (Stdout etc) is
+                straightforward. Formatting integers, for example, is done
+                like so:
+                <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+<a href="#L3_ex3" name="L3_ex3">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"{:u}"</span>, <span class="n">5</span>);
+<span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"{:b}"</span>, <span class="n">5</span>);
+<span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"{:x}"</span>, <span class="n">5</span>);</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+                Formatting date/time values is similar, where the format
+                indicators are provided after the colon:
+                <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex4" name="L1_ex4">1</a>
+<a href="#L2_ex4" name="L2_ex4">2</a>
+<a href="#L3_ex4" name="L3_ex4">3</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"{:t}"</span>, <span class="i">Clock</span>.<span class="i">now</span>);
+<span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"{:D}"</span>, <span class="i">Clock</span>.<span class="i">now</span>);
+<span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"{:dddd, dd MMMM yyyy HH:mm}"</span>, <span class="i">Clock</span>.<span class="i">now</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="DateTimeLocale.formatWide" href="htmlsrc/tango.text.convert.DateTime.html#L198">formatWide</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>output</em>, Time <em>dateTime</em>, const(T)[] <em>fmt</em>)</span> <a href="tango.text.convert.DateTime.html#DateTimeLocale.formatWide" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">DateTimeLocale*</span> <a class="symbol _function" name="DateTimeLocale.generic" href="htmlsrc/tango.text.convert.DateTime.html#L216">generic</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.text.convert.DateTime.html#DateTimeLocale.generic" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a generic English/US instance</div></div></dd>
+<dt class="decl"><span class="rettyp">Calendar</span> <a class="symbol _function" name="DateTimeLocale.calendar" href="htmlsrc/tango.text.convert.DateTime.html#L228">calendar</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.text.convert.DateTime.html#DateTimeLocale.calendar" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the assigned Calendar instance, using Gregorian
+                as the default</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeLocale.abbreviatedDayName" href="htmlsrc/tango.text.convert.DateTime.html#L241">abbreviatedDayName</a><span class="params">(Calendar.DayOfWeek <em>dayOfWeek</em>)</span> <a href="tango.text.convert.DateTime.html#DateTimeLocale.abbreviatedDayName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a short day name</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeLocale.dayName" href="htmlsrc/tango.text.convert.DateTime.html#L252">dayName</a><span class="params">(Calendar.DayOfWeek <em>dayOfWeek</em>)</span> <a href="tango.text.convert.DateTime.html#DateTimeLocale.dayName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a long day name</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeLocale.abbreviatedMonthName" href="htmlsrc/tango.text.convert.DateTime.html#L263">abbreviatedMonthName</a><span class="params">(int <em>month</em>)</span> <a href="tango.text.convert.DateTime.html#DateTimeLocale.abbreviatedMonthName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a short month name</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="DateTimeLocale.monthName" href="htmlsrc/tango.text.convert.DateTime.html#L275">monthName</a><span class="params">(int <em>month</em>)</span> <a href="tango.text.convert.DateTime.html#DateTimeLocale.monthName" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a long month name</div></div></dd>
+<dt class="decl"><span class="rettyp">DateTimeLocale</span> <a class="symbol _function" name="DateTimeLocale.create" href="htmlsrc/tango.text.convert.DateTime.html#L290">create</a><span class="params">()</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.text.convert.DateTime.html#DateTimeLocale.create" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">create and populate an instance via O/S configuration
+                for the current user</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2005 John Chapman. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:14 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.container.RedBlack</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.container.RedBlack">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.container.RedBlack"><a href="htmlsrc/tango.util.container.RedBlack.html" class="symbol">tango.util.container.RedBlack</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Apr 2008: Initial release</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Kris, tsalm</div>
+<p class="sec_header">Since:</p><div class="cmnt">0.99.7
+<p class="bl"></p>
+        Based upon Doug Lea's Java collection package</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="RedBlack" href="htmlsrc/tango.util.container.RedBlack.html#L39">RedBlack</a><span class="tparams">(<em>V</em>, <em>A</em> = <span class="defval">AttributeDummy</span>)</span> <a href="tango.util.container.RedBlack.html#RedBlack" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">RedBlack implements basic capabilities of Red-Black trees,
+        an efficient kind of balanced binary tree. The particular
+        algorithms used are adaptations of those in Corman,
+        Lieserson, and Rivest's <EM>Introduction to Algorithms</EM>.
+        This class was inspired by (and code cross-checked with) a 
+        similar class by Chuck McManis. The implementations of
+        rebalancings during insertion and deletion are
+        a little trickier than those versions since they
+        don't swap Cell contents or use special dummy nilnodes.</div></div>
+<div class="cmnt">Doug Lea</div>
+<dl>
+<dt class="decl">Ref <a class="symbol _variable" name="RedBlack.left" href="htmlsrc/tango.util.container.RedBlack.html#L50">left</a> <span class="attrs">[<span class="prot">package</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.left" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Pointer to left child</div></div></dd>
+<dt class="decl">Ref <a class="symbol _variable" name="RedBlack.right" href="htmlsrc/tango.util.container.RedBlack.html#L56">right</a> <span class="attrs">[<span class="prot">package</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.right" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Pointer to right child</div></div></dd>
+<dt class="decl">Ref <a class="symbol _variable" name="RedBlack.parent" href="htmlsrc/tango.util.container.RedBlack.html#L62">parent</a> <span class="attrs">[<span class="prot">package</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.parent" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Pointer to parent (null if root)</div></div></dd>
+<dt class="decl">bool <a class="symbol _variable" name="RedBlack.color" href="htmlsrc/tango.util.container.RedBlack.html#L75">color</a> <span class="attrs">[<span class="prot">package</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.color" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The node color (RED, BLACK)</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.set" href="htmlsrc/tango.util.container.RedBlack.html#L91">set</a><span class="params">(V <em>v</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.set" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Make a new Cell with given value, null links, and BLACK color.
+ Normally only called to establish a new root.</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.dup" href="htmlsrc/tango.util.container.RedBlack.html#L107">dup</a><span class="params">(<span class="k">scope</span> Ref delegate() <em>alloc</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.dup" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a new Ref with same value and color as self,
+ but with null links. (Since it is never OK to have
+ multiple identical links in a RB tree.)</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="RedBlack.checkImplementation" href="htmlsrc/tango.util.container.RedBlack.html#L122">checkImplementation</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.checkImplementation" class="plink">¶</a></dt>
+<dd class="ddef">
+<p class="sec_header">See Also:</p><div class="cmnt">tango.util.collection.model.View.View.checkImplementation.</div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.leftmost" href="htmlsrc/tango.util.container.RedBlack.html#L152">leftmost</a><span class="params">()</span> <a href="tango.util.container.RedBlack.html#RedBlack.leftmost" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the minimum value of the current (sub)tree</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.rightmost" href="htmlsrc/tango.util.container.RedBlack.html#L162">rightmost</a><span class="params">()</span> <a href="tango.util.container.RedBlack.html#RedBlack.rightmost" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the maximum value of the current (sub)tree</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.root" href="htmlsrc/tango.util.container.RedBlack.html#L172">root</a><span class="params">()</span> <a href="tango.util.container.RedBlack.html#RedBlack.root" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the root (parentless node) of the tree</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="RedBlack.isRoot" href="htmlsrc/tango.util.container.RedBlack.html#L183">isRoot</a><span class="params">()</span> <a href="tango.util.container.RedBlack.html#RedBlack.isRoot" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return true if node is a root (i.e., has a null parent)</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.successor" href="htmlsrc/tango.util.container.RedBlack.html#L193">successor</a><span class="params">()</span> <a href="tango.util.container.RedBlack.html#RedBlack.successor" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the inorder successor, or null if no such</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.predecessor" href="htmlsrc/tango.util.container.RedBlack.html#L212">predecessor</a><span class="params">()</span> <a href="tango.util.container.RedBlack.html#RedBlack.predecessor" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the inorder predecessor, or null if no such</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="RedBlack.size" href="htmlsrc/tango.util.container.RedBlack.html#L230">size</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.size" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the number of nodes in the subtree</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.find" href="htmlsrc/tango.util.container.RedBlack.html#L247">find</a><span class="params">(V <em>value</em>, Compare!(V) <em>cmp</em>)</span> <a href="tango.util.container.RedBlack.html#RedBlack.find" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return node of current subtree containing value as value(), 
+ if it exists, else null. 
+ Uses Comparator cmp to find and to check equality.</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.findFirst" href="htmlsrc/tango.util.container.RedBlack.html#L273">findFirst</a><span class="params">(V <em>value</em>, Compare!(V) <em>cmp</em>, bool <em>after</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.util.container.RedBlack.html#RedBlack.findFirst" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return node of subtree matching "value" 
+ or, if none found, the one just after or before  
+ if it doesn't exist, return null
+ Uses Comparator cmp to find and to check equality.</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="RedBlack.count" href="htmlsrc/tango.util.container.RedBlack.html#L319">count</a><span class="params">(V <em>value</em>, Compare!(V) <em>cmp</em>)</span> <a href="tango.util.container.RedBlack.html#RedBlack.count" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return number of nodes of current subtree containing value.
+ Uses Comparator cmp to find and to check equality.</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.find:2" href="htmlsrc/tango.util.container.RedBlack.html#L405">find</a><span class="params">(V <em>value</em>, A <em>attribute</em>, Compare!(V) <em>cmp</em>)</span> <a href="tango.util.container.RedBlack.html#RedBlack.find:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">find and return a cell holding (key, element), or null if no such</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.copyTree" href="htmlsrc/tango.util.container.RedBlack.html#L434">copyTree</a><span class="params">(<span class="k">scope</span> Ref delegate() <em>alloc</em>)</span> <a href="tango.util.container.RedBlack.html#RedBlack.copyTree" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a new subtree containing each value of current subtree</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.insertLeft" href="htmlsrc/tango.util.container.RedBlack.html#L468">insertLeft</a><span class="params">(Ref <em>cell</em>, Ref <em>root</em>)</span> <a href="tango.util.container.RedBlack.html#RedBlack.insertLeft" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">There's no generic value insertion. Instead find the
+ place you want to add a node and then invoke insertLeft
+ or insertRight.
+ <P>
+ Insert Cell as the left child of current node, and then
+ rebalance the tree it is in.
+ @param Cell the Cell to add
+ @param root, the root of the current tree</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the new root of the current tree. (Rebalancing
+ can change the root!)</div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.insertRight" href="htmlsrc/tango.util.container.RedBlack.html#L484">insertRight</a><span class="params">(Ref <em>cell</em>, Ref <em>root</em>)</span> <a href="tango.util.container.RedBlack.html#RedBlack.insertRight" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Insert Cell as the right child of current node, and then
+ rebalance the tree it is in.
+ @param Cell the Cell to add
+ @param root, the root of the current tree</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the new root of the current tree. (Rebalancing
+ can change the root!)</div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.remove" href="htmlsrc/tango.util.container.RedBlack.html#L500">remove</a><span class="params">(Ref <em>root</em>)</span> <a href="tango.util.container.RedBlack.html#RedBlack.remove" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Delete the current node, and then rebalance the tree it is in
+ @param root the root of the current tree</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the new root of the current tree. (Rebalancing
+ can change the root!)</div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.swapPosition" href="htmlsrc/tango.util.container.RedBlack.html#L569">swapPosition</a><span class="params">(Ref <em>x</em>, Ref <em>y</em>, Ref <em>root</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.swapPosition" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Swap the linkages of two nodes in a tree.
+ Return new root, in case it changed.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="RedBlack.colorOf" href="htmlsrc/tango.util.container.RedBlack.html#L711">colorOf</a><span class="params">(Ref <em>p</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.colorOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return color of node p, or BLACK if p is null
+ (In the CLR version, they use
+ a special dummy `nil' node for such purposes, but that doesn't
+ work well here, since it could lead to creating one such special
+ node per real node.)</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.parentOf" href="htmlsrc/tango.util.container.RedBlack.html#L719">parentOf</a><span class="params">(Ref <em>p</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.parentOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">return parent of node p, or null if p is null</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="RedBlack.setColor" href="htmlsrc/tango.util.container.RedBlack.html#L728">setColor</a><span class="params">(Ref <em>p</em>, bool <em>c</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.setColor" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the color of node p, or do nothing if p is null</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.leftOf" href="htmlsrc/tango.util.container.RedBlack.html#L738">leftOf</a><span class="params">(Ref <em>p</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.leftOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">return left child of node p, or null if p is null</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.rightOf" href="htmlsrc/tango.util.container.RedBlack.html#L747">rightOf</a><span class="params">(Ref <em>p</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.rightOf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">return right child of node p, or null if p is null</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.rotateLeft" href="htmlsrc/tango.util.container.RedBlack.html#L754">rotateLeft</a><span class="params">(Ref <em>root</em>)</span> <span class="attrs">[<span class="prot">package</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.rotateLeft" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">From CLR</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.rotateRight" href="htmlsrc/tango.util.container.RedBlack.html#L777">rotateRight</a><span class="params">(Ref <em>root</em>)</span> <span class="attrs">[<span class="prot">package</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.rotateRight" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">From CLR</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.fixAfterInsertion" href="htmlsrc/tango.util.container.RedBlack.html#L801">fixAfterInsertion</a><span class="params">(Ref <em>root</em>)</span> <span class="attrs">[<span class="prot">package</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.fixAfterInsertion" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">From CLR</div></div></dd>
+<dt class="decl"><span class="rettyp">Ref</span> <a class="symbol _function" name="RedBlack.fixAfterDeletion" href="htmlsrc/tango.util.container.RedBlack.html#L864">fixAfterDeletion</a><span class="params">(Ref <em>root</em>)</span> <span class="attrs">[<span class="prot">package</span>]</span> <a href="tango.util.container.RedBlack.html#RedBlack.fixAfterDeletion" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">From CLR</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:24 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

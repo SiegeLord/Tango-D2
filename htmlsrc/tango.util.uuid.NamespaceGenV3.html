@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.util.uuid.NamespaceGenV3</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/** Generate a UUID according to version 3 of RFC 4122.
+  *
+  * These UUIDs are generated in a consistent, repeatable fashion. If you
+  * generate a version 3 UUID once, it will be the same as the next time you
+  * generate it.
+  *
+  * To create a version 3 UUID, you need a namespace UUID, generated in some
+  * reasonable fashion. This is hashed with a name that you provide to generate
+  * the UUID. So while you can easily map names to UUIDs, the reverse mapping
+  * will require a lookup of some sort.
+  *
+  * This module publicly imports Uuid, so you don't have to import both if you
+  * are generating version 3 UUIDs. Also, this module is just provided for
+  * convenience -- you can use the method Uuid.byName if you already have an
+  * appropriate digest.
+  *
+  * Version 3 UUIDs use MD5 as the hash function. You may prefer to use version
+  * 5 UUIDs instead, which use SHA-1.
+  *
+  * To use this module:
+  * ---
+  * import tango.util.uuid.NamespaceGenV3;
+  * auto dnsNamespace = Uuid.parse("6ba7b810-9dad-11d1-80b4-00c04fd430c8");
+  * auto uuid = newUuid(namespace, "rainbow.flotilla.example.org");
+  * ---
+  */</span>
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">util</span>.<span class="i">uuid</span>.<span class="i">NamespaceGenV3</span>;</span>
+
+<span class="d Protection"><span class="k">public</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">util</span>.<span class="i">uuid</span>.<span class="i">Uuid</span>;</span>
+<span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">util</span>.<span class="i">digest</span>.<span class="i">Md5</span>;</span>
+
+<span class="bc">/** Generates a UUID as described above. */</span>
+<span class="d Function"><span class="t Identifier"><span class="i">Uuid</span></span> <span class="i">newUuid</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Uuid</span></span> <span class="i">namespace</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">name</span></span>)</span>
+<span class="s FuncBody"><span class="s Compound">{
+        <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">Uuid</span></span>.<span class="e Identifier"><span class="i">byName</span></span>(<span class="i">namespace</span>, <span class="i">name</span>, <span class="k">new</span> <span class="i">Md5</span>, <span class="k">cast</span>(<span class="k">ubyte</span>)<span class="n">3</span>)</span>;</span>
+}</span></span></span></span>
+
+</pre></td>
+</tr></table>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.stream.Snoop</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.stream.Snoop">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.stream.Snoop"><a href="htmlsrc/tango.io.stream.Snoop.html" class="symbol">tango.io.stream.Snoop</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: Oct 2007</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SnoopInput" href="htmlsrc/tango.io.stream.Snoop.html#L35">SnoopInput</a> : <span class="bclass">InputStream</span> <a href="tango.io.stream.Snoop.html#SnoopInput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Stream to expose call behaviour. By default, activity trace is
+        sent to Cerr.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="SnoopInput.this" href="htmlsrc/tango.io.stream.Snoop.html#L46">this</a><span class="params">(InputStream <em>host</em>, Snoop <em>snoop</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.io.stream.Snoop.html#SnoopInput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Attach to the provided stream.</div></div></dd>
+<dt class="decl"><span class="rettyp">InputStream</span> <a class="symbol _function" name="SnoopInput.input" href="htmlsrc/tango.io.stream.Snoop.html#L59">input</a><span class="params">()</span> <a href="tango.io.stream.Snoop.html#SnoopInput.input" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the upstream host of this filter.</div></div></dd>
+<dt class="decl"><span class="rettyp">IConduit</span> <a class="symbol _function" name="SnoopInput.conduit" href="htmlsrc/tango.io.stream.Snoop.html#L70">conduit</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Snoop.html#SnoopInput.conduit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the hosting conduit.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="SnoopInput.read" href="htmlsrc/tango.io.stream.Snoop.html#L85">read</a><span class="params">(void[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Snoop.html#SnoopInput.read" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read from conduit into a target array. The provided dst
+                will be populated with content from the conduit.</div></div>
+<div class="cmnt">Returns the number of bytes read, which may be less than
+                requested in dst.</div></dd>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="SnoopInput.load" href="htmlsrc/tango.io.stream.Snoop.html#L103">load</a><span class="params">(size_t <em>max</em> = <span class="defval">-<span class="n">1</span></span>)</span> <a href="tango.io.stream.Snoop.html#SnoopInput.load" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Load the bits from a stream, and return them all in an
+                array. The dst array can be provided as an option, which
+                will be expanded as necessary to consume the input.</div></div>
+<div class="cmnt">Returns an array representing the content, and throws
+                IOException on error.</div></dd>
+<dt class="decl"><span class="rettyp">InputStream</span> <a class="symbol _function" name="SnoopInput.flush" href="htmlsrc/tango.io.stream.Snoop.html#L116">flush</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Snoop.html#SnoopInput.flush" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clear any buffered content.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SnoopInput.close" href="htmlsrc/tango.io.stream.Snoop.html#L129">close</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Snoop.html#SnoopInput.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Close the input.</div></div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="SnoopInput.seek" href="htmlsrc/tango.io.stream.Snoop.html#L142">seek</a><span class="params">(long <em>offset</em>, Anchor <em>anchor</em> = <span class="defval"><span class="i">Begin</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Snoop.html#SnoopInput.seek" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Seek on this stream. Target conduits that don't support
+                seeking will throw an IOException.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SnoopOutput" href="htmlsrc/tango.io.stream.Snoop.html#L181">SnoopOutput</a> : <span class="bclass">OutputStream</span> <a href="tango.io.stream.Snoop.html#SnoopOutput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Stream to expose call behaviour. By default, activity trace is
+        sent to Cerr.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="SnoopOutput.this" href="htmlsrc/tango.io.stream.Snoop.html#L192">this</a><span class="params">(OutputStream <em>host</em>, Snoop <em>snoop</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.io.stream.Snoop.html#SnoopOutput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Attach to the provided stream.</div></div></dd>
+<dt class="decl"><span class="rettyp">OutputStream</span> <a class="symbol _function" name="SnoopOutput.output" href="htmlsrc/tango.io.stream.Snoop.html#L205">output</a><span class="params">()</span> <a href="tango.io.stream.Snoop.html#SnoopOutput.output" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the upstream host of this filter.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="SnoopOutput.write" href="htmlsrc/tango.io.stream.Snoop.html#L220">write</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Snoop.html#SnoopOutput.write" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write to conduit from a source array. The provided src
+                content will be written to the conduit.</div></div>
+<div class="cmnt">Returns the number of bytes written from src, which may
+                be less than the quantity provided.</div></dd>
+<dt class="decl"><span class="rettyp">IConduit</span> <a class="symbol _function" name="SnoopOutput.conduit" href="htmlsrc/tango.io.stream.Snoop.html#L233">conduit</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Snoop.html#SnoopOutput.conduit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the hosting conduit.</div></div></dd>
+<dt class="decl"><span class="rettyp">OutputStream</span> <a class="symbol _function" name="SnoopOutput.flush" href="htmlsrc/tango.io.stream.Snoop.html#L244">flush</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Snoop.html#SnoopOutput.flush" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Emit/purge buffered content.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SnoopOutput.close" href="htmlsrc/tango.io.stream.Snoop.html#L257">close</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Snoop.html#SnoopOutput.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Close the output.</div></div></dd>
+<dt class="decl"><span class="rettyp">OutputStream</span> <a class="symbol _function" name="SnoopOutput.copy" href="htmlsrc/tango.io.stream.Snoop.html#L270">copy</a><span class="params">(InputStream <em>src</em>, size_t <em>max</em> = <span class="defval">-<span class="n">1</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Snoop.html#SnoopOutput.copy" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Transfer the content of another conduit to this one. Returns
+                a reference to this class, or throws IOException on failure.</div></div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="SnoopOutput.seek" href="htmlsrc/tango.io.stream.Snoop.html#L284">seek</a><span class="params">(long <em>offset</em>, Anchor <em>anchor</em> = <span class="defval"><span class="i">Begin</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Snoop.html#SnoopOutput.seek" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Seek on this stream. Target conduits that don't support
+                seeking will throw an IOException.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2007 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:55 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

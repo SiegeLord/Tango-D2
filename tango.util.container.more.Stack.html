@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.container.more.Stack</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.container.more.Stack">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.container.more.Stack"><a href="htmlsrc/tango.util.container.more.Stack.html" class="symbol">tango.util.container.more.Stack</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: April 2008</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<p class="sec_header">Since:</p><div class="cmnt">0.99.7</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Stack" href="htmlsrc/tango.util.container.more.Stack.html#L28">Stack</a><span class="tparams">(<em>V</em>, int <em>Size</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.util.container.more.Stack.html#Stack" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A stack of the given value-type V, with maximum depth Size. Note
+        that this does no memory allocation of its own when Size != 0, and
+        does heap allocation when Size == 0. Thus you can have a fixed-size
+        low-overhead instance, or a heap oriented instance.</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">Stack*</span> <a class="symbol _function" name="Stack.clear" href="htmlsrc/tango.util.container.more.Stack.html#L65">clear</a><span class="params">()</span> <a href="tango.util.container.more.Stack.html#Stack.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Clear the stack</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Stack.size" href="htmlsrc/tango.util.container.more.Stack.html#L77">size</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.util.container.more.Stack.html#Stack.size" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return depth of the stack</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Stack.unused" href="htmlsrc/tango.util.container.more.Stack.html#L88">unused</a><span class="params">()</span> <a href="tango.util.container.more.Stack.html#Stack.unused" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return remaining unused slots</div></div></dd>
+<dt class="decl"><span class="rettyp">Stack</span> <a class="symbol _function" name="Stack.clone" href="htmlsrc/tango.util.container.more.Stack.html#L99">clone</a><span class="params">()</span> <a href="tango.util.container.more.Stack.html#Stack.clone" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns a (shallow) clone of this stack, on the stack</div></div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="Stack.dup" href="htmlsrc/tango.util.container.more.Stack.html#L115">dup</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.util.container.more.Stack.html#Stack.dup" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Push and return a (shallow) copy of the topmost element</div></div></dd>
+<dt class="decl"><span class="rettyp">Stack*</span> <a class="symbol _function" name="Stack.push" href="htmlsrc/tango.util.container.more.Stack.html#L130">push</a><span class="params">(V <em>value</em>)</span> <a href="tango.util.container.more.Stack.html#Stack.push" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Push a value onto the stack.</div></div>
+<div class="cmnt">Throws an exception when the stack is full</div></dd>
+<dt class="decl"><span class="rettyp">Stack*</span> <a class="symbol _function" name="Stack.append" href="htmlsrc/tango.util.container.more.Stack.html#L156">append</a><span class="params">(V[] <em>value</em>...)</span> <a href="tango.util.container.more.Stack.html#Stack.append" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Push a series of values onto the stack.</div></div>
+<div class="cmnt">Throws an exception when the stack is full</div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="Stack.pop" href="htmlsrc/tango.util.container.more.Stack.html#L171">pop</a><span class="params">()</span> <a href="tango.util.container.more.Stack.html#Stack.pop" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove and return the most recent addition to the stack.</div></div>
+<div class="cmnt">Throws an exception when the stack is empty</div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="Stack.top" href="htmlsrc/tango.util.container.more.Stack.html#L187">top</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.util.container.more.Stack.html#Stack.top" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the most recent addition to the stack.</div></div>
+<div class="cmnt">Throws an exception when the stack is empty</div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="Stack.swap" href="htmlsrc/tango.util.container.more.Stack.html#L203">swap</a><span class="params">()</span> <a href="tango.util.container.more.Stack.html#Stack.swap" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Swaps the top two entries, and return the top</div></div>
+<div class="cmnt">Throws an exception when the stack has insufficient entries</div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="Stack.nth" href="htmlsrc/tango.util.container.more.Stack.html#L225">nth</a><span class="params">(size_t <em>i</em>)</span> <a href="tango.util.container.more.Stack.html#Stack.nth" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Index stack entries, where a zero index represents the
+                newest stack entry (the top).</div></div>
+<div class="cmnt">Throws an exception when the given index is out of range</div></dd>
+<dt class="decl"><span class="rettyp">Stack*</span> <a class="symbol _function" name="Stack.rotateLeft" href="htmlsrc/tango.util.container.more.Stack.html#L241">rotateLeft</a><span class="params">(size_t <em>d</em>)</span> <a href="tango.util.container.more.Stack.html#Stack.rotateLeft" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Rotate the given number of stack entries</div></div>
+<div class="cmnt">Throws an exception when the number is out of range</div></dd>
+<dt class="decl"><span class="rettyp">Stack*</span> <a class="symbol _function" name="Stack.rotateRight" href="htmlsrc/tango.util.container.more.Stack.html#L264">rotateRight</a><span class="params">(size_t <em>d</em>)</span> <a href="tango.util.container.more.Stack.html#Stack.rotateRight" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Rotate the given number of stack entries</div></div>
+<div class="cmnt">Throws an exception when the number is out of range</div></dd>
+<dt class="decl"><span class="rettyp">V[]</span> <a class="symbol _function" name="Stack.slice" href="htmlsrc/tango.util.container.more.Stack.html#L289">slice</a><span class="params">()</span> <a href="tango.util.container.more.Stack.html#Stack.slice" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the stack as an array of values, where the first
+                array entry represents the oldest value. 
+                
+                Doing a foreach() on the returned array will traverse in
+                the opposite direction of foreach() upon a stack</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Stack.opApply" href="htmlsrc/tango.util.container.more.Stack.html#L311">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref V value) <em>dg</em>)</span> <a href="tango.util.container.more.Stack.html#Stack.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate from the most recent to the oldest stack entries</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:24 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.core.tools.Cpuid</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.core.tools.Cpuid">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.core.tools.Cpuid"><a href="htmlsrc/tango.core.tools.Cpuid.html" class="symbol">tango.core.tools.Cpuid</a></h1>
+
+<div class="summary"><div class="cmnt">Identify the characteristics of the host CPU, providing information
+ about cache sizes and assembly optimisation hints.</div></div>
+<div class="cmnt">Some of this information was extremely difficult to track down. Some of the
+ documents below were found only in cached versions stored by search engines!
+  This code relies on information found in:
+<p class="bl"></p>
+<ul>
+  <li>"Intel(R) 64 and IA-32 Architectures Software Developers Manual,
+      Volume 2A: Instruction Set Reference, A-M" (2007).</li>
+  <li>"AMD CPUID Specification", Advanced Micro Devices, Rev 2.28 (2008).</li>
+  <li>"AMD Processor Recognition Application Note For Processors Prior to AMD
+      Family 0Fh Processors", Advanced Micro Devices, Rev 3.13 (2005).</li>
+  <li>"AMD Geode(TM) GX Processors Data Book",
+      Advanced Micro Devices, Publication ID 31505E, (2005).</li>
+  <li>"AMD K6 Processor Code Optimisation", Advanced Micro Devices, Rev D (2000).</li>
+  <li>"Application note 106: Software Customization for the 6x86 Family",
+      Cyrix Corporation, Rev 1.5 (1998)</li>
+  <li><a href="http://ftp.intron.ac/pub/document/cpu/cpuid.htm">http://ftp.intron.ac/pub/document/cpu/cpuid.htm</a></li>
+  <li>"Geode(TM) GX1 Processor Series Low Power Integrated X86 Solution",
+      National Semiconductor, (2002)</li>
+  <li>"The VIA Isaiah Architecture", G. Glenn Henry, Centaur Technology, Inc (2008).</li>
+  <li><a href="http://www.sandpile.org/ia32/cpuid.htm">http://www.sandpile.org/ia32/cpuid.htm</a></li>
+  <li><a href="http://grafi.ii.pw.edu.pl/gbm/x86/cpuid.html">http://grafi.ii.pw.edu.pl/gbm/x86/cpuid.html</a></li>
+  <li>"What every programmer should know about memory",
+     Ulrich Depper, Red Hat, Inc., (2007).</li>
+  <li>"CPU Identification by the Windows Kernel", G. Chappell (2009).
+    <a href="http://www.geoffchappell.com/viewer.htm?doc=studies/windows/km/cpu/cx8.htm">http://www.geoffchappell.com/viewer.htm?doc=studies/windows/km/cpu/cx8.htm</a></li>
+  <li>"Intel(R) Processor Identification and the CPUID Instruction, Application
+     Note 485" (2009).</li>
+</ul></div>
+<p class="sec_header">Authors:</p><div class="cmnt">Don Clugston,
+          Tomas Lindquist Olsen &lt;<a href="mailto:tomas@famolsen.dk">tomas@famolsen.dk</a>&gt;</div>
+<p class="sec_header"><span class="red">Bugs:</span></p><div class="cmnt">Currently only works on x86 CPUs.
+        Many processors have bugs in their microcode for the CPUID instruction,
+        so sometimes the cache information may be incorrect.</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="CacheInfo" href="htmlsrc/tango.core.tools.Cpuid.html#L70">CacheInfo</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.core.tools.Cpuid.html#CacheInfo" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Cache size and behaviour.</div></div>
+<dl>
+<dt class="decl">uint <a class="symbol _variable" name="CacheInfo.size" href="htmlsrc/tango.core.tools.Cpuid.html#L76">size</a> <a href="tango.core.tools.Cpuid.html#CacheInfo.size" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Size of the cache, in kilobytes, per CPU.
+ For L1 unified (data + code) caches, this size is half the physical size.
+ (we don't halve it for larger sizes, since normally
+ data size is much greater than code size for critical loops).</div></div></dd>
+<dt class="decl">ubyte <a class="symbol _variable" name="CacheInfo.associativity" href="htmlsrc/tango.core.tools.Cpuid.html#L82">associativity</a> <a href="tango.core.tools.Cpuid.html#CacheInfo.associativity" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Number of ways of associativity, eg:<br/>
+ 1 = direct mapped<br/>
+ 2 = 2-way set associative<br/>
+ 3 = 3-way set associative<br/>
+ ubyte.max = fully associative</div></div></dd>
+<dt class="decl">uint <a class="symbol _variable" name="CacheInfo.lineSize" href="htmlsrc/tango.core.tools.Cpuid.html#L84">lineSize</a> <a href="tango.core.tools.Cpuid.html#CacheInfo.lineSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Number of bytes read into the cache when a cache miss occurs.</div></div></dd></dl></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="vendor" href="htmlsrc/tango.core.tools.Cpuid.html#L91">vendor</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.core.tools.Cpuid.html#vendor" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns vendor string, for display purposes only.
+ Do NOT use this to determine features!
+ Note that some CPUs have programmable vendorIDs.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="processor" href="htmlsrc/tango.core.tools.Cpuid.html#L93">processor</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.core.tools.Cpuid.html#processor" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns processor string, for display purposes only</div></div></dd>
+<dt class="decl">CacheInfo[5] <a class="symbol _variable" name="datacache" href="htmlsrc/tango.core.tools.Cpuid.html#L97">datacache</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.core.tools.Cpuid.html#datacache" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The data caches. If there are fewer than 5 physical caches levels,
+ the remaining levels are set to uint.max (== entire memory space)</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="x87onChip" href="htmlsrc/tango.core.tools.Cpuid.html#L99">x87onChip</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#x87onChip" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Does it have an x87 FPU on-chip?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="mmx" href="htmlsrc/tango.core.tools.Cpuid.html#L101">mmx</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#mmx" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is MMX supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="sse" href="htmlsrc/tango.core.tools.Cpuid.html#L103">sse</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#sse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is SSE supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="sse2" href="htmlsrc/tango.core.tools.Cpuid.html#L105">sse2</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#sse2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is SSE2 supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="sse3" href="htmlsrc/tango.core.tools.Cpuid.html#L107">sse3</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#sse3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is SSE3 supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ssse3" href="htmlsrc/tango.core.tools.Cpuid.html#L109">ssse3</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#ssse3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is SSSE3 supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="sse41" href="htmlsrc/tango.core.tools.Cpuid.html#L111">sse41</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#sse41" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is SSE4.1 supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="sse42" href="htmlsrc/tango.core.tools.Cpuid.html#L113">sse42</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#sse42" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is SSE4.2 supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="sse4a" href="htmlsrc/tango.core.tools.Cpuid.html#L115">sse4a</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#sse4a" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is SSE4a supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="amd3dnow" href="htmlsrc/tango.core.tools.Cpuid.html#L117">amd3dnow</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#amd3dnow" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is AMD 3DNOW supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="amd3dnowExt" href="htmlsrc/tango.core.tools.Cpuid.html#L119">amd3dnowExt</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#amd3dnowExt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is AMD 3DNOW Ext supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="amdMmx" href="htmlsrc/tango.core.tools.Cpuid.html#L121">amdMmx</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#amdMmx" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Are AMD extensions to MMX supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="hasFxsr" href="htmlsrc/tango.core.tools.Cpuid.html#L123">hasFxsr</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#hasFxsr" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is fxsave/fxrstor supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="hasCmov" href="htmlsrc/tango.core.tools.Cpuid.html#L125">hasCmov</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#hasCmov" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is cmov supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="hasRdtsc" href="htmlsrc/tango.core.tools.Cpuid.html#L127">hasRdtsc</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#hasRdtsc" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is rdtsc supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="hasCmpxchg8b" href="htmlsrc/tango.core.tools.Cpuid.html#L129">hasCmpxchg8b</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#hasCmpxchg8b" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is cmpxchg8b supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="hasCmpxchg16b" href="htmlsrc/tango.core.tools.Cpuid.html#L131">hasCmpxchg16b</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#hasCmpxchg16b" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is cmpxchg8b supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="hasSysEnterSysExit" href="htmlsrc/tango.core.tools.Cpuid.html#L133">hasSysEnterSysExit</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#hasSysEnterSysExit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is SYSENTER/SYSEXIT supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="has3dnowPrefetch" href="htmlsrc/tango.core.tools.Cpuid.html#L142">has3dnowPrefetch</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#has3dnowPrefetch" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is 3DNow prefetch supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="hasLahfSahf" href="htmlsrc/tango.core.tools.Cpuid.html#L145">hasLahfSahf</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#hasLahfSahf" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Are LAHF and SAHF supported in 64-bit mode?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="hasPopcnt" href="htmlsrc/tango.core.tools.Cpuid.html#L147">hasPopcnt</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#hasPopcnt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is POPCNT supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="hasLzcnt" href="htmlsrc/tango.core.tools.Cpuid.html#L149">hasLzcnt</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#hasLzcnt" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is LZCNT supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isX86_64" href="htmlsrc/tango.core.tools.Cpuid.html#L151">isX86_64</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#isX86_64" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is this an Intel64 or AMD 64?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isItanium" href="htmlsrc/tango.core.tools.Cpuid.html#L154">isItanium</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#isItanium" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is this an IA64 (Itanium) processor?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="hyperThreading" href="htmlsrc/tango.core.tools.Cpuid.html#L157">hyperThreading</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#hyperThreading" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is hyperthreading supported?</div></div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="threadsPerCPU" href="htmlsrc/tango.core.tools.Cpuid.html#L159">threadsPerCPU</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#threadsPerCPU" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns number of threads per CPU</div></div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="coresPerCPU" href="htmlsrc/tango.core.tools.Cpuid.html#L161">coresPerCPU</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#coresPerCPU" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns number of cores in CPU</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="preferAthlon" href="htmlsrc/tango.core.tools.Cpuid.html#L184">preferAthlon</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#preferAthlon" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Optimisation hints for assembly code.
+ For forward compatibility, the CPU is compared against different
+ microarchitectures. For 32-bit X86, comparisons are made against
+ the Intel PPro/PII/PIII/PM family.</div></div>
+<div class="cmnt">The major 32-bit x86 microarchitecture 'dynasties' have been:
+ (1) Intel P6 (PentiumPro, PII, PIII, PM, Core, Core2).
+ (2) AMD Athlon (K7, K8, K10).
+ (3) Intel NetBurst (Pentium 4, Pentium D).
+ (4) In-order Pentium (Pentium1, PMMX, Atom)
+ Other early CPUs (Nx586, AMD K5, K6, Centaur C3, Transmeta,
+   Cyrix, Rise) were mostly in-order.
+ Some new processors do not fit into the existing categories:
+ Intel Atom 230/330 (family 6, model 0x1C) is an in-order core.
+ Centaur Isiah = VIA Nano (family 6, model F) is an out-of-order core.
+<p class="bl"></p>
+ Within each dynasty, the optimisation techniques are largely
+ identical (eg, use instruction pairing for group 4). Major
+ instruction set improvements occur within each dynasty.
+ Does this CPU perform better on AMD K7 code than PentiumPro..Core2 code?</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="preferPentium4" href="htmlsrc/tango.core.tools.Cpuid.html#L186">preferPentium4</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#preferPentium4" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Does this CPU perform better on Pentium4 code than PentiumPro..Core2 code?</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="preferPentium1" href="htmlsrc/tango.core.tools.Cpuid.html#L188">preferPentium1</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.tools.Cpuid.html#preferPentium1" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Does this CPU perform better on Pentium I code than Pentium Pro code?</div></div></dd>
+<dt class="decl">uint <a class="symbol _variable" name="stepping" href="htmlsrc/tango.core.tools.Cpuid.html#L193">stepping</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.core.tools.Cpuid.html#stepping" class="plink">¶</a></dt>
+<dt class="decl">uint <a class="symbol _variable" name="model" href="htmlsrc/tango.core.tools.Cpuid.html#L193">model</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.core.tools.Cpuid.html#model" class="plink">¶</a></dt>
+<dt class="decl">uint <a class="symbol _variable" name="family" href="htmlsrc/tango.core.tools.Cpuid.html#L193">family</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.core.tools.Cpuid.html#family" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Processor type (vendor-dependent).
+ This should be visible ONLY for display purposes.</div></div></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Public Domain</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:53 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1465 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.util.compress.c.zlib</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a><a id="L38" href="#L38">38</a><a id="L39" href="#L39">39</a><a id="L40" href="#L40">40</a><a id="L41" href="#L41">41</a><a id="L42" href="#L42">42</a><a id="L43" href="#L43">43</a><a id="L44" href="#L44">44</a><a id="L45" href="#L45">45</a><a id="L46" href="#L46">46</a><a id="L47" href="#L47">47</a><a id="L48" href="#L48">48</a><a id="L49" href="#L49">49</a><a id="L50" href="#L50">50</a><a id="L51" href="#L51">51</a><a id="L52" href="#L52">52</a><a id="L53" href="#L53">53</a><a id="L54" href="#L54">54</a><a id="L55" href="#L55">55</a><a id="L56" href="#L56">56</a><a id="L57" href="#L57">57</a><a id="L58" href="#L58">58</a><a id="L59" href="#L59">59</a><a id="L60" href="#L60">60</a><a id="L61" href="#L61">61</a><a id="L62" href="#L62">62</a><a id="L63" href="#L63">63</a><a id="L64" href="#L64">64</a><a id="L65" href="#L65">65</a><a id="L66" href="#L66">66</a><a id="L67" href="#L67">67</a><a id="L68" href="#L68">68</a><a id="L69" href="#L69">69</a><a id="L70" href="#L70">70</a><a id="L71" href="#L71">71</a><a id="L72" href="#L72">72</a><a id="L73" href="#L73">73</a><a id="L74" href="#L74">74</a><a id="L75" href="#L75">75</a><a id="L76" href="#L76">76</a><a id="L77" href="#L77">77</a><a id="L78" href="#L78">78</a><a id="L79" href="#L79">79</a><a id="L80" href="#L80">80</a><a id="L81" href="#L81">81</a><a id="L82" href="#L82">82</a><a id="L83" href="#L83">83</a><a id="L84" href="#L84">84</a><a id="L85" href="#L85">85</a><a id="L86" href="#L86">86</a><a id="L87" href="#L87">87</a><a id="L88" href="#L88">88</a><a id="L89" href="#L89">89</a><a id="L90" href="#L90">90</a><a id="L91" href="#L91">91</a><a id="L92" href="#L92">92</a><a id="L93" href="#L93">93</a><a id="L94" href="#L94">94</a><a id="L95" href="#L95">95</a><a id="L96" href="#L96">96</a><a id="L97" href="#L97">97</a><a id="L98" href="#L98">98</a><a id="L99" href="#L99">99</a><a id="L100" href="#L100">100</a><a id="L101" href="#L101">101</a><a id="L102" href="#L102">102</a><a id="L103" href="#L103">103</a><a id="L104" href="#L104">104</a><a id="L105" href="#L105">105</a><a id="L106" href="#L106">106</a><a id="L107" href="#L107">107</a><a id="L108" href="#L108">108</a><a id="L109" href="#L109">109</a><a id="L110" href="#L110">110</a><a id="L111" href="#L111">111</a><a id="L112" href="#L112">112</a><a id="L113" href="#L113">113</a><a id="L114" href="#L114">114</a><a id="L115" href="#L115">115</a><a id="L116" href="#L116">116</a><a id="L117" href="#L117">117</a><a id="L118" href="#L118">118</a><a id="L119" href="#L119">119</a><a id="L120" href="#L120">120</a><a id="L121" href="#L121">121</a><a id="L122" href="#L122">122</a><a id="L123" href="#L123">123</a><a id="L124" href="#L124">124</a><a id="L125" href="#L125">125</a><a id="L126" href="#L126">126</a><a id="L127" href="#L127">127</a><a id="L128" href="#L128">128</a><a id="L129" href="#L129">129</a><a id="L130" href="#L130">130</a><a id="L131" href="#L131">131</a><a id="L132" href="#L132">132</a><a id="L133" href="#L133">133</a><a id="L134" href="#L134">134</a><a id="L135" href="#L135">135</a><a id="L136" href="#L136">136</a><a id="L137" href="#L137">137</a><a id="L138" href="#L138">138</a><a id="L139" href="#L139">139</a><a id="L140" href="#L140">140</a><a id="L141" href="#L141">141</a><a id="L142" href="#L142">142</a><a id="L143" href="#L143">143</a><a id="L144" href="#L144">144</a><a id="L145" href="#L145">145</a><a id="L146" href="#L146">146</a><a id="L147" href="#L147">147</a><a id="L148" href="#L148">148</a><a id="L149" href="#L149">149</a><a id="L150" href="#L150">150</a><a id="L151" href="#L151">151</a><a id="L152" href="#L152">152</a><a id="L153" href="#L153">153</a><a id="L154" href="#L154">154</a><a id="L155" href="#L155">155</a><a id="L156" href="#L156">156</a><a id="L157" href="#L157">157</a><a id="L158" href="#L158">158</a><a id="L159" href="#L159">159</a><a id="L160" href="#L160">160</a><a id="L161" href="#L161">161</a><a id="L162" href="#L162">162</a><a id="L163" href="#L163">163</a><a id="L164" href="#L164">164</a><a id="L165" href="#L165">165</a><a id="L166" href="#L166">166</a><a id="L167" href="#L167">167</a><a id="L168" href="#L168">168</a><a id="L169" href="#L169">169</a><a id="L170" href="#L170">170</a><a id="L171" href="#L171">171</a><a id="L172" href="#L172">172</a><a id="L173" href="#L173">173</a><a id="L174" href="#L174">174</a><a id="L175" href="#L175">175</a><a id="L176" href="#L176">176</a><a id="L177" href="#L177">177</a><a id="L178" href="#L178">178</a><a id="L179" href="#L179">179</a><a id="L180" href="#L180">180</a><a id="L181" href="#L181">181</a><a id="L182" href="#L182">182</a><a id="L183" href="#L183">183</a><a id="L184" href="#L184">184</a><a id="L185" href="#L185">185</a><a id="L186" href="#L186">186</a><a id="L187" href="#L187">187</a><a id="L188" href="#L188">188</a><a id="L189" href="#L189">189</a><a id="L190" href="#L190">190</a><a id="L191" href="#L191">191</a><a id="L192" href="#L192">192</a><a id="L193" href="#L193">193</a><a id="L194" href="#L194">194</a><a id="L195" href="#L195">195</a><a id="L196" href="#L196">196</a><a id="L197" href="#L197">197</a><a id="L198" href="#L198">198</a><a id="L199" href="#L199">199</a><a id="L200" href="#L200">200</a><a id="L201" href="#L201">201</a><a id="L202" href="#L202">202</a><a id="L203" href="#L203">203</a><a id="L204" href="#L204">204</a><a id="L205" href="#L205">205</a><a id="L206" href="#L206">206</a><a id="L207" href="#L207">207</a><a id="L208" href="#L208">208</a><a id="L209" href="#L209">209</a><a id="L210" href="#L210">210</a><a id="L211" href="#L211">211</a><a id="L212" href="#L212">212</a><a id="L213" href="#L213">213</a><a id="L214" href="#L214">214</a><a id="L215" href="#L215">215</a><a id="L216" href="#L216">216</a><a id="L217" href="#L217">217</a><a id="L218" href="#L218">218</a><a id="L219" href="#L219">219</a><a id="L220" href="#L220">220</a><a id="L221" href="#L221">221</a><a id="L222" href="#L222">222</a><a id="L223" href="#L223">223</a><a id="L224" href="#L224">224</a><a id="L225" href="#L225">225</a><a id="L226" href="#L226">226</a><a id="L227" href="#L227">227</a><a id="L228" href="#L228">228</a><a id="L229" href="#L229">229</a><a id="L230" href="#L230">230</a><a id="L231" href="#L231">231</a><a id="L232" href="#L232">232</a><a id="L233" href="#L233">233</a><a id="L234" href="#L234">234</a><a id="L235" href="#L235">235</a><a id="L236" href="#L236">236</a><a id="L237" href="#L237">237</a><a id="L238" href="#L238">238</a><a id="L239" href="#L239">239</a><a id="L240" href="#L240">240</a><a id="L241" href="#L241">241</a><a id="L242" href="#L242">242</a><a id="L243" href="#L243">243</a><a id="L244" href="#L244">244</a><a id="L245" href="#L245">245</a><a id="L246" href="#L246">246</a><a id="L247" href="#L247">247</a><a id="L248" href="#L248">248</a><a id="L249" href="#L249">249</a><a id="L250" href="#L250">250</a><a id="L251" href="#L251">251</a><a id="L252" href="#L252">252</a><a id="L253" href="#L253">253</a><a id="L254" href="#L254">254</a><a id="L255" href="#L255">255</a><a id="L256" href="#L256">256</a><a id="L257" href="#L257">257</a><a id="L258" href="#L258">258</a><a id="L259" href="#L259">259</a><a id="L260" href="#L260">260</a><a id="L261" href="#L261">261</a><a id="L262" href="#L262">262</a><a id="L263" href="#L263">263</a><a id="L264" href="#L264">264</a><a id="L265" href="#L265">265</a><a id="L266" href="#L266">266</a><a id="L267" href="#L267">267</a><a id="L268" href="#L268">268</a><a id="L269" href="#L269">269</a><a id="L270" href="#L270">270</a><a id="L271" href="#L271">271</a><a id="L272" href="#L272">272</a><a id="L273" href="#L273">273</a><a id="L274" href="#L274">274</a><a id="L275" href="#L275">275</a><a id="L276" href="#L276">276</a><a id="L277" href="#L277">277</a><a id="L278" href="#L278">278</a><a id="L279" href="#L279">279</a><a id="L280" href="#L280">280</a><a id="L281" href="#L281">281</a><a id="L282" href="#L282">282</a><a id="L283" href="#L283">283</a><a id="L284" href="#L284">284</a><a id="L285" href="#L285">285</a><a id="L286" href="#L286">286</a><a id="L287" href="#L287">287</a><a id="L288" href="#L288">288</a><a id="L289" href="#L289">289</a><a id="L290" href="#L290">290</a><a id="L291" href="#L291">291</a><a id="L292" href="#L292">292</a><a id="L293" href="#L293">293</a><a id="L294" href="#L294">294</a><a id="L295" href="#L295">295</a><a id="L296" href="#L296">296</a><a id="L297" href="#L297">297</a><a id="L298" href="#L298">298</a><a id="L299" href="#L299">299</a><a id="L300" href="#L300">300</a><a id="L301" href="#L301">301</a><a id="L302" href="#L302">302</a><a id="L303" href="#L303">303</a><a id="L304" href="#L304">304</a><a id="L305" href="#L305">305</a><a id="L306" href="#L306">306</a><a id="L307" href="#L307">307</a><a id="L308" href="#L308">308</a><a id="L309" href="#L309">309</a><a id="L310" href="#L310">310</a><a id="L311" href="#L311">311</a><a id="L312" href="#L312">312</a><a id="L313" href="#L313">313</a><a id="L314" href="#L314">314</a><a id="L315" href="#L315">315</a><a id="L316" href="#L316">316</a><a id="L317" href="#L317">317</a><a id="L318" href="#L318">318</a><a id="L319" href="#L319">319</a><a id="L320" href="#L320">320</a><a id="L321" href="#L321">321</a><a id="L322" href="#L322">322</a><a id="L323" href="#L323">323</a><a id="L324" href="#L324">324</a><a id="L325" href="#L325">325</a><a id="L326" href="#L326">326</a><a id="L327" href="#L327">327</a><a id="L328" href="#L328">328</a><a id="L329" href="#L329">329</a><a id="L330" href="#L330">330</a><a id="L331" href="#L331">331</a><a id="L332" href="#L332">332</a><a id="L333" href="#L333">333</a><a id="L334" href="#L334">334</a><a id="L335" href="#L335">335</a><a id="L336" href="#L336">336</a><a id="L337" href="#L337">337</a><a id="L338" href="#L338">338</a><a id="L339" href="#L339">339</a><a id="L340" href="#L340">340</a><a id="L341" href="#L341">341</a><a id="L342" href="#L342">342</a><a id="L343" href="#L343">343</a><a id="L344" href="#L344">344</a><a id="L345" href="#L345">345</a><a id="L346" href="#L346">346</a><a id="L347" href="#L347">347</a><a id="L348" href="#L348">348</a><a id="L349" href="#L349">349</a><a id="L350" href="#L350">350</a><a id="L351" href="#L351">351</a><a id="L352" href="#L352">352</a><a id="L353" href="#L353">353</a><a id="L354" href="#L354">354</a><a id="L355" href="#L355">355</a><a id="L356" href="#L356">356</a><a id="L357" href="#L357">357</a><a id="L358" href="#L358">358</a><a id="L359" href="#L359">359</a><a id="L360" href="#L360">360</a><a id="L361" href="#L361">361</a><a id="L362" href="#L362">362</a><a id="L363" href="#L363">363</a><a id="L364" href="#L364">364</a><a id="L365" href="#L365">365</a><a id="L366" href="#L366">366</a><a id="L367" href="#L367">367</a><a id="L368" href="#L368">368</a><a id="L369" href="#L369">369</a><a id="L370" href="#L370">370</a><a id="L371" href="#L371">371</a><a id="L372" href="#L372">372</a><a id="L373" href="#L373">373</a><a id="L374" href="#L374">374</a><a id="L375" href="#L375">375</a><a id="L376" href="#L376">376</a><a id="L377" href="#L377">377</a><a id="L378" href="#L378">378</a><a id="L379" href="#L379">379</a><a id="L380" href="#L380">380</a><a id="L381" href="#L381">381</a><a id="L382" href="#L382">382</a><a id="L383" href="#L383">383</a><a id="L384" href="#L384">384</a><a id="L385" href="#L385">385</a><a id="L386" href="#L386">386</a><a id="L387" href="#L387">387</a><a id="L388" href="#L388">388</a><a id="L389" href="#L389">389</a><a id="L390" href="#L390">390</a><a id="L391" href="#L391">391</a><a id="L392" href="#L392">392</a><a id="L393" href="#L393">393</a><a id="L394" href="#L394">394</a><a id="L395" href="#L395">395</a><a id="L396" href="#L396">396</a><a id="L397" href="#L397">397</a><a id="L398" href="#L398">398</a><a id="L399" href="#L399">399</a><a id="L400" href="#L400">400</a><a id="L401" href="#L401">401</a><a id="L402" href="#L402">402</a><a id="L403" href="#L403">403</a><a id="L404" href="#L404">404</a><a id="L405" href="#L405">405</a><a id="L406" href="#L406">406</a><a id="L407" href="#L407">407</a><a id="L408" href="#L408">408</a><a id="L409" href="#L409">409</a><a id="L410" href="#L410">410</a><a id="L411" href="#L411">411</a><a id="L412" href="#L412">412</a><a id="L413" href="#L413">413</a><a id="L414" href="#L414">414</a><a id="L415" href="#L415">415</a><a id="L416" href="#L416">416</a><a id="L417" href="#L417">417</a><a id="L418" href="#L418">418</a><a id="L419" href="#L419">419</a><a id="L420" href="#L420">420</a><a id="L421" href="#L421">421</a><a id="L422" href="#L422">422</a><a id="L423" href="#L423">423</a><a id="L424" href="#L424">424</a><a id="L425" href="#L425">425</a><a id="L426" href="#L426">426</a><a id="L427" href="#L427">427</a><a id="L428" href="#L428">428</a><a id="L429" href="#L429">429</a><a id="L430" href="#L430">430</a><a id="L431" href="#L431">431</a><a id="L432" href="#L432">432</a><a id="L433" href="#L433">433</a><a id="L434" href="#L434">434</a><a id="L435" href="#L435">435</a><a id="L436" href="#L436">436</a><a id="L437" href="#L437">437</a><a id="L438" href="#L438">438</a><a id="L439" href="#L439">439</a><a id="L440" href="#L440">440</a><a id="L441" href="#L441">441</a><a id="L442" href="#L442">442</a><a id="L443" href="#L443">443</a><a id="L444" href="#L444">444</a><a id="L445" href="#L445">445</a><a id="L446" href="#L446">446</a><a id="L447" href="#L447">447</a><a id="L448" href="#L448">448</a><a id="L449" href="#L449">449</a><a id="L450" href="#L450">450</a><a id="L451" href="#L451">451</a><a id="L452" href="#L452">452</a><a id="L453" href="#L453">453</a><a id="L454" href="#L454">454</a><a id="L455" href="#L455">455</a><a id="L456" href="#L456">456</a><a id="L457" href="#L457">457</a><a id="L458" href="#L458">458</a><a id="L459" href="#L459">459</a><a id="L460" href="#L460">460</a><a id="L461" href="#L461">461</a><a id="L462" href="#L462">462</a><a id="L463" href="#L463">463</a><a id="L464" href="#L464">464</a><a id="L465" href="#L465">465</a><a id="L466" href="#L466">466</a><a id="L467" href="#L467">467</a><a id="L468" href="#L468">468</a><a id="L469" href="#L469">469</a><a id="L470" href="#L470">470</a><a id="L471" href="#L471">471</a><a id="L472" href="#L472">472</a><a id="L473" href="#L473">473</a><a id="L474" href="#L474">474</a><a id="L475" href="#L475">475</a><a id="L476" href="#L476">476</a><a id="L477" href="#L477">477</a><a id="L478" href="#L478">478</a><a id="L479" href="#L479">479</a><a id="L480" href="#L480">480</a><a id="L481" href="#L481">481</a><a id="L482" href="#L482">482</a><a id="L483" href="#L483">483</a><a id="L484" href="#L484">484</a><a id="L485" href="#L485">485</a><a id="L486" href="#L486">486</a><a id="L487" href="#L487">487</a><a id="L488" href="#L488">488</a><a id="L489" href="#L489">489</a><a id="L490" href="#L490">490</a><a id="L491" href="#L491">491</a><a id="L492" href="#L492">492</a><a id="L493" href="#L493">493</a><a id="L494" href="#L494">494</a><a id="L495" href="#L495">495</a><a id="L496" href="#L496">496</a><a id="L497" href="#L497">497</a><a id="L498" href="#L498">498</a><a id="L499" href="#L499">499</a><a id="L500" href="#L500">500</a><a id="L501" href="#L501">501</a><a id="L502" href="#L502">502</a><a id="L503" href="#L503">503</a><a id="L504" href="#L504">504</a><a id="L505" href="#L505">505</a><a id="L506" href="#L506">506</a><a id="L507" href="#L507">507</a><a id="L508" href="#L508">508</a><a id="L509" href="#L509">509</a><a id="L510" href="#L510">510</a><a id="L511" href="#L511">511</a><a id="L512" href="#L512">512</a><a id="L513" href="#L513">513</a><a id="L514" href="#L514">514</a><a id="L515" href="#L515">515</a><a id="L516" href="#L516">516</a><a id="L517" href="#L517">517</a><a id="L518" href="#L518">518</a><a id="L519" href="#L519">519</a><a id="L520" href="#L520">520</a><a id="L521" href="#L521">521</a><a id="L522" href="#L522">522</a><a id="L523" href="#L523">523</a><a id="L524" href="#L524">524</a><a id="L525" href="#L525">525</a><a id="L526" href="#L526">526</a><a id="L527" href="#L527">527</a><a id="L528" href="#L528">528</a><a id="L529" href="#L529">529</a><a id="L530" href="#L530">530</a><a id="L531" href="#L531">531</a><a id="L532" href="#L532">532</a><a id="L533" href="#L533">533</a><a id="L534" href="#L534">534</a><a id="L535" href="#L535">535</a><a id="L536" href="#L536">536</a><a id="L537" href="#L537">537</a><a id="L538" href="#L538">538</a><a id="L539" href="#L539">539</a><a id="L540" href="#L540">540</a><a id="L541" href="#L541">541</a><a id="L542" href="#L542">542</a><a id="L543" href="#L543">543</a><a id="L544" href="#L544">544</a><a id="L545" href="#L545">545</a><a id="L546" href="#L546">546</a><a id="L547" href="#L547">547</a><a id="L548" href="#L548">548</a><a id="L549" href="#L549">549</a><a id="L550" href="#L550">550</a><a id="L551" href="#L551">551</a><a id="L552" href="#L552">552</a><a id="L553" href="#L553">553</a><a id="L554" href="#L554">554</a><a id="L555" href="#L555">555</a><a id="L556" href="#L556">556</a><a id="L557" href="#L557">557</a><a id="L558" href="#L558">558</a><a id="L559" href="#L559">559</a><a id="L560" href="#L560">560</a><a id="L561" href="#L561">561</a><a id="L562" href="#L562">562</a><a id="L563" href="#L563">563</a><a id="L564" href="#L564">564</a><a id="L565" href="#L565">565</a><a id="L566" href="#L566">566</a><a id="L567" href="#L567">567</a><a id="L568" href="#L568">568</a><a id="L569" href="#L569">569</a><a id="L570" href="#L570">570</a><a id="L571" href="#L571">571</a><a id="L572" href="#L572">572</a><a id="L573" href="#L573">573</a><a id="L574" href="#L574">574</a><a id="L575" href="#L575">575</a><a id="L576" href="#L576">576</a><a id="L577" href="#L577">577</a><a id="L578" href="#L578">578</a><a id="L579" href="#L579">579</a><a id="L580" href="#L580">580</a><a id="L581" href="#L581">581</a><a id="L582" href="#L582">582</a><a id="L583" href="#L583">583</a><a id="L584" href="#L584">584</a><a id="L585" href="#L585">585</a><a id="L586" href="#L586">586</a><a id="L587" href="#L587">587</a><a id="L588" href="#L588">588</a><a id="L589" href="#L589">589</a><a id="L590" href="#L590">590</a><a id="L591" href="#L591">591</a><a id="L592" href="#L592">592</a><a id="L593" href="#L593">593</a><a id="L594" href="#L594">594</a><a id="L595" href="#L595">595</a><a id="L596" href="#L596">596</a><a id="L597" href="#L597">597</a><a id="L598" href="#L598">598</a><a id="L599" href="#L599">599</a><a id="L600" href="#L600">600</a><a id="L601" href="#L601">601</a><a id="L602" href="#L602">602</a><a id="L603" href="#L603">603</a><a id="L604" href="#L604">604</a><a id="L605" href="#L605">605</a><a id="L606" href="#L606">606</a><a id="L607" href="#L607">607</a><a id="L608" href="#L608">608</a><a id="L609" href="#L609">609</a><a id="L610" href="#L610">610</a><a id="L611" href="#L611">611</a><a id="L612" href="#L612">612</a><a id="L613" href="#L613">613</a><a id="L614" href="#L614">614</a><a id="L615" href="#L615">615</a><a id="L616" href="#L616">616</a><a id="L617" href="#L617">617</a><a id="L618" href="#L618">618</a><a id="L619" href="#L619">619</a><a id="L620" href="#L620">620</a><a id="L621" href="#L621">621</a><a id="L622" href="#L622">622</a><a id="L623" href="#L623">623</a><a id="L624" href="#L624">624</a><a id="L625" href="#L625">625</a><a id="L626" href="#L626">626</a><a id="L627" href="#L627">627</a><a id="L628" href="#L628">628</a><a id="L629" href="#L629">629</a><a id="L630" href="#L630">630</a><a id="L631" href="#L631">631</a><a id="L632" href="#L632">632</a><a id="L633" href="#L633">633</a><a id="L634" href="#L634">634</a><a id="L635" href="#L635">635</a><a id="L636" href="#L636">636</a><a id="L637" href="#L637">637</a><a id="L638" href="#L638">638</a><a id="L639" href="#L639">639</a><a id="L640" href="#L640">640</a><a id="L641" href="#L641">641</a><a id="L642" href="#L642">642</a><a id="L643" href="#L643">643</a><a id="L644" href="#L644">644</a><a id="L645" href="#L645">645</a><a id="L646" href="#L646">646</a><a id="L647" href="#L647">647</a><a id="L648" href="#L648">648</a><a id="L649" href="#L649">649</a><a id="L650" href="#L650">650</a><a id="L651" href="#L651">651</a><a id="L652" href="#L652">652</a><a id="L653" href="#L653">653</a><a id="L654" href="#L654">654</a><a id="L655" href="#L655">655</a><a id="L656" href="#L656">656</a><a id="L657" href="#L657">657</a><a id="L658" href="#L658">658</a><a id="L659" href="#L659">659</a><a id="L660" href="#L660">660</a><a id="L661" href="#L661">661</a><a id="L662" href="#L662">662</a><a id="L663" href="#L663">663</a><a id="L664" href="#L664">664</a><a id="L665" href="#L665">665</a><a id="L666" href="#L666">666</a><a id="L667" href="#L667">667</a><a id="L668" href="#L668">668</a><a id="L669" href="#L669">669</a><a id="L670" href="#L670">670</a><a id="L671" href="#L671">671</a><a id="L672" href="#L672">672</a><a id="L673" href="#L673">673</a><a id="L674" href="#L674">674</a><a id="L675" href="#L675">675</a><a id="L676" href="#L676">676</a><a id="L677" href="#L677">677</a><a id="L678" href="#L678">678</a><a id="L679" href="#L679">679</a><a id="L680" href="#L680">680</a><a id="L681" href="#L681">681</a><a id="L682" href="#L682">682</a><a id="L683" href="#L683">683</a><a id="L684" href="#L684">684</a><a id="L685" href="#L685">685</a><a id="L686" href="#L686">686</a><a id="L687" href="#L687">687</a><a id="L688" href="#L688">688</a><a id="L689" href="#L689">689</a><a id="L690" href="#L690">690</a><a id="L691" href="#L691">691</a><a id="L692" href="#L692">692</a><a id="L693" href="#L693">693</a><a id="L694" href="#L694">694</a><a id="L695" href="#L695">695</a><a id="L696" href="#L696">696</a><a id="L697" href="#L697">697</a><a id="L698" href="#L698">698</a><a id="L699" href="#L699">699</a><a id="L700" href="#L700">700</a><a id="L701" href="#L701">701</a><a id="L702" href="#L702">702</a><a id="L703" href="#L703">703</a><a id="L704" href="#L704">704</a><a id="L705" href="#L705">705</a><a id="L706" href="#L706">706</a><a id="L707" href="#L707">707</a><a id="L708" href="#L708">708</a><a id="L709" href="#L709">709</a><a id="L710" href="#L710">710</a><a id="L711" href="#L711">711</a><a id="L712" href="#L712">712</a><a id="L713" href="#L713">713</a><a id="L714" href="#L714">714</a><a id="L715" href="#L715">715</a><a id="L716" href="#L716">716</a><a id="L717" href="#L717">717</a><a id="L718" href="#L718">718</a><a id="L719" href="#L719">719</a><a id="L720" href="#L720">720</a><a id="L721" href="#L721">721</a><a id="L722" href="#L722">722</a><a id="L723" href="#L723">723</a><a id="L724" href="#L724">724</a><a id="L725" href="#L725">725</a><a id="L726" href="#L726">726</a><a id="L727" href="#L727">727</a><a id="L728" href="#L728">728</a><a id="L729" href="#L729">729</a><a id="L730" href="#L730">730</a><a id="L731" href="#L731">731</a><a id="L732" href="#L732">732</a><a id="L733" href="#L733">733</a><a id="L734" href="#L734">734</a><a id="L735" href="#L735">735</a><a id="L736" href="#L736">736</a><a id="L737" href="#L737">737</a><a id="L738" href="#L738">738</a><a id="L739" href="#L739">739</a><a id="L740" href="#L740">740</a><a id="L741" href="#L741">741</a><a id="L742" href="#L742">742</a><a id="L743" href="#L743">743</a><a id="L744" href="#L744">744</a><a id="L745" href="#L745">745</a><a id="L746" href="#L746">746</a><a id="L747" href="#L747">747</a><a id="L748" href="#L748">748</a><a id="L749" href="#L749">749</a><a id="L750" href="#L750">750</a><a id="L751" href="#L751">751</a><a id="L752" href="#L752">752</a><a id="L753" href="#L753">753</a><a id="L754" href="#L754">754</a><a id="L755" href="#L755">755</a><a id="L756" href="#L756">756</a><a id="L757" href="#L757">757</a><a id="L758" href="#L758">758</a><a id="L759" href="#L759">759</a><a id="L760" href="#L760">760</a><a id="L761" href="#L761">761</a><a id="L762" href="#L762">762</a><a id="L763" href="#L763">763</a><a id="L764" href="#L764">764</a><a id="L765" href="#L765">765</a><a id="L766" href="#L766">766</a><a id="L767" href="#L767">767</a><a id="L768" href="#L768">768</a><a id="L769" href="#L769">769</a><a id="L770" href="#L770">770</a><a id="L771" href="#L771">771</a><a id="L772" href="#L772">772</a><a id="L773" href="#L773">773</a><a id="L774" href="#L774">774</a><a id="L775" href="#L775">775</a><a id="L776" href="#L776">776</a><a id="L777" href="#L777">777</a><a id="L778" href="#L778">778</a><a id="L779" href="#L779">779</a><a id="L780" href="#L780">780</a><a id="L781" href="#L781">781</a><a id="L782" href="#L782">782</a><a id="L783" href="#L783">783</a><a id="L784" href="#L784">784</a><a id="L785" href="#L785">785</a><a id="L786" href="#L786">786</a><a id="L787" href="#L787">787</a><a id="L788" href="#L788">788</a><a id="L789" href="#L789">789</a><a id="L790" href="#L790">790</a><a id="L791" href="#L791">791</a><a id="L792" href="#L792">792</a><a id="L793" href="#L793">793</a><a id="L794" href="#L794">794</a><a id="L795" href="#L795">795</a><a id="L796" href="#L796">796</a><a id="L797" href="#L797">797</a><a id="L798" href="#L798">798</a><a id="L799" href="#L799">799</a><a id="L800" href="#L800">800</a><a id="L801" href="#L801">801</a><a id="L802" href="#L802">802</a><a id="L803" href="#L803">803</a><a id="L804" href="#L804">804</a><a id="L805" href="#L805">805</a><a id="L806" href="#L806">806</a><a id="L807" href="#L807">807</a><a id="L808" href="#L808">808</a><a id="L809" href="#L809">809</a><a id="L810" href="#L810">810</a><a id="L811" href="#L811">811</a><a id="L812" href="#L812">812</a><a id="L813" href="#L813">813</a><a id="L814" href="#L814">814</a><a id="L815" href="#L815">815</a><a id="L816" href="#L816">816</a><a id="L817" href="#L817">817</a><a id="L818" href="#L818">818</a><a id="L819" href="#L819">819</a><a id="L820" href="#L820">820</a><a id="L821" href="#L821">821</a><a id="L822" href="#L822">822</a><a id="L823" href="#L823">823</a><a id="L824" href="#L824">824</a><a id="L825" href="#L825">825</a><a id="L826" href="#L826">826</a><a id="L827" href="#L827">827</a><a id="L828" href="#L828">828</a><a id="L829" href="#L829">829</a><a id="L830" href="#L830">830</a><a id="L831" href="#L831">831</a><a id="L832" href="#L832">832</a><a id="L833" href="#L833">833</a><a id="L834" href="#L834">834</a><a id="L835" href="#L835">835</a><a id="L836" href="#L836">836</a><a id="L837" href="#L837">837</a><a id="L838" href="#L838">838</a><a id="L839" href="#L839">839</a><a id="L840" href="#L840">840</a><a id="L841" href="#L841">841</a><a id="L842" href="#L842">842</a><a id="L843" href="#L843">843</a><a id="L844" href="#L844">844</a><a id="L845" href="#L845">845</a><a id="L846" href="#L846">846</a><a id="L847" href="#L847">847</a><a id="L848" href="#L848">848</a><a id="L849" href="#L849">849</a><a id="L850" href="#L850">850</a><a id="L851" href="#L851">851</a><a id="L852" href="#L852">852</a><a id="L853" href="#L853">853</a><a id="L854" href="#L854">854</a><a id="L855" href="#L855">855</a><a id="L856" href="#L856">856</a><a id="L857" href="#L857">857</a><a id="L858" href="#L858">858</a><a id="L859" href="#L859">859</a><a id="L860" href="#L860">860</a><a id="L861" href="#L861">861</a><a id="L862" href="#L862">862</a><a id="L863" href="#L863">863</a><a id="L864" href="#L864">864</a><a id="L865" href="#L865">865</a><a id="L866" href="#L866">866</a><a id="L867" href="#L867">867</a><a id="L868" href="#L868">868</a><a id="L869" href="#L869">869</a><a id="L870" href="#L870">870</a><a id="L871" href="#L871">871</a><a id="L872" href="#L872">872</a><a id="L873" href="#L873">873</a><a id="L874" href="#L874">874</a><a id="L875" href="#L875">875</a><a id="L876" href="#L876">876</a><a id="L877" href="#L877">877</a><a id="L878" href="#L878">878</a><a id="L879" href="#L879">879</a><a id="L880" href="#L880">880</a><a id="L881" href="#L881">881</a><a id="L882" href="#L882">882</a><a id="L883" href="#L883">883</a><a id="L884" href="#L884">884</a><a id="L885" href="#L885">885</a><a id="L886" href="#L886">886</a><a id="L887" href="#L887">887</a><a id="L888" href="#L888">888</a><a id="L889" href="#L889">889</a><a id="L890" href="#L890">890</a><a id="L891" href="#L891">891</a><a id="L892" href="#L892">892</a><a id="L893" href="#L893">893</a><a id="L894" href="#L894">894</a><a id="L895" href="#L895">895</a><a id="L896" href="#L896">896</a><a id="L897" href="#L897">897</a><a id="L898" href="#L898">898</a><a id="L899" href="#L899">899</a><a id="L900" href="#L900">900</a><a id="L901" href="#L901">901</a><a id="L902" href="#L902">902</a><a id="L903" href="#L903">903</a><a id="L904" href="#L904">904</a><a id="L905" href="#L905">905</a><a id="L906" href="#L906">906</a><a id="L907" href="#L907">907</a><a id="L908" href="#L908">908</a><a id="L909" href="#L909">909</a><a id="L910" href="#L910">910</a><a id="L911" href="#L911">911</a><a id="L912" href="#L912">912</a><a id="L913" href="#L913">913</a><a id="L914" href="#L914">914</a><a id="L915" href="#L915">915</a><a id="L916" href="#L916">916</a><a id="L917" href="#L917">917</a><a id="L918" href="#L918">918</a><a id="L919" href="#L919">919</a><a id="L920" href="#L920">920</a><a id="L921" href="#L921">921</a><a id="L922" href="#L922">922</a><a id="L923" href="#L923">923</a><a id="L924" href="#L924">924</a><a id="L925" href="#L925">925</a><a id="L926" href="#L926">926</a><a id="L927" href="#L927">927</a><a id="L928" href="#L928">928</a><a id="L929" href="#L929">929</a><a id="L930" href="#L930">930</a><a id="L931" href="#L931">931</a><a id="L932" href="#L932">932</a><a id="L933" href="#L933">933</a><a id="L934" href="#L934">934</a><a id="L935" href="#L935">935</a><a id="L936" href="#L936">936</a><a id="L937" href="#L937">937</a><a id="L938" href="#L938">938</a><a id="L939" href="#L939">939</a><a id="L940" href="#L940">940</a><a id="L941" href="#L941">941</a><a id="L942" href="#L942">942</a><a id="L943" href="#L943">943</a><a id="L944" href="#L944">944</a><a id="L945" href="#L945">945</a><a id="L946" href="#L946">946</a><a id="L947" href="#L947">947</a><a id="L948" href="#L948">948</a><a id="L949" href="#L949">949</a><a id="L950" href="#L950">950</a><a id="L951" href="#L951">951</a><a id="L952" href="#L952">952</a><a id="L953" href="#L953">953</a><a id="L954" href="#L954">954</a><a id="L955" href="#L955">955</a><a id="L956" href="#L956">956</a><a id="L957" href="#L957">957</a><a id="L958" href="#L958">958</a><a id="L959" href="#L959">959</a><a id="L960" href="#L960">960</a><a id="L961" href="#L961">961</a><a id="L962" href="#L962">962</a><a id="L963" href="#L963">963</a><a id="L964" href="#L964">964</a><a id="L965" href="#L965">965</a><a id="L966" href="#L966">966</a><a id="L967" href="#L967">967</a><a id="L968" href="#L968">968</a><a id="L969" href="#L969">969</a><a id="L970" href="#L970">970</a><a id="L971" href="#L971">971</a><a id="L972" href="#L972">972</a><a id="L973" href="#L973">973</a><a id="L974" href="#L974">974</a><a id="L975" href="#L975">975</a><a id="L976" href="#L976">976</a><a id="L977" href="#L977">977</a><a id="L978" href="#L978">978</a><a id="L979" href="#L979">979</a><a id="L980" href="#L980">980</a><a id="L981" href="#L981">981</a><a id="L982" href="#L982">982</a><a id="L983" href="#L983">983</a><a id="L984" href="#L984">984</a><a id="L985" href="#L985">985</a><a id="L986" href="#L986">986</a><a id="L987" href="#L987">987</a><a id="L988" href="#L988">988</a><a id="L989" href="#L989">989</a><a id="L990" href="#L990">990</a><a id="L991" href="#L991">991</a><a id="L992" href="#L992">992</a><a id="L993" href="#L993">993</a><a id="L994" href="#L994">994</a><a id="L995" href="#L995">995</a><a id="L996" href="#L996">996</a><a id="L997" href="#L997">997</a><a id="L998" href="#L998">998</a><a id="L999" href="#L999">999</a><a id="L1000" href="#L1000">1000</a><a id="L1001" href="#L1001">1001</a><a id="L1002" href="#L1002">1002</a><a id="L1003" href="#L1003">1003</a><a id="L1004" href="#L1004">1004</a><a id="L1005" href="#L1005">1005</a><a id="L1006" href="#L1006">1006</a><a id="L1007" href="#L1007">1007</a><a id="L1008" href="#L1008">1008</a><a id="L1009" href="#L1009">1009</a><a id="L1010" href="#L1010">1010</a><a id="L1011" href="#L1011">1011</a><a id="L1012" href="#L1012">1012</a><a id="L1013" href="#L1013">1013</a><a id="L1014" href="#L1014">1014</a><a id="L1015" href="#L1015">1015</a><a id="L1016" href="#L1016">1016</a><a id="L1017" href="#L1017">1017</a><a id="L1018" href="#L1018">1018</a><a id="L1019" href="#L1019">1019</a><a id="L1020" href="#L1020">1020</a><a id="L1021" href="#L1021">1021</a><a id="L1022" href="#L1022">1022</a><a id="L1023" href="#L1023">1023</a><a id="L1024" href="#L1024">1024</a><a id="L1025" href="#L1025">1025</a><a id="L1026" href="#L1026">1026</a><a id="L1027" href="#L1027">1027</a><a id="L1028" href="#L1028">1028</a><a id="L1029" href="#L1029">1029</a><a id="L1030" href="#L1030">1030</a><a id="L1031" href="#L1031">1031</a><a id="L1032" href="#L1032">1032</a><a id="L1033" href="#L1033">1033</a><a id="L1034" href="#L1034">1034</a><a id="L1035" href="#L1035">1035</a><a id="L1036" href="#L1036">1036</a><a id="L1037" href="#L1037">1037</a><a id="L1038" href="#L1038">1038</a><a id="L1039" href="#L1039">1039</a><a id="L1040" href="#L1040">1040</a><a id="L1041" href="#L1041">1041</a><a id="L1042" href="#L1042">1042</a><a id="L1043" href="#L1043">1043</a><a id="L1044" href="#L1044">1044</a><a id="L1045" href="#L1045">1045</a><a id="L1046" href="#L1046">1046</a><a id="L1047" href="#L1047">1047</a><a id="L1048" href="#L1048">1048</a><a id="L1049" href="#L1049">1049</a><a id="L1050" href="#L1050">1050</a><a id="L1051" href="#L1051">1051</a><a id="L1052" href="#L1052">1052</a><a id="L1053" href="#L1053">1053</a><a id="L1054" href="#L1054">1054</a><a id="L1055" href="#L1055">1055</a><a id="L1056" href="#L1056">1056</a><a id="L1057" href="#L1057">1057</a><a id="L1058" href="#L1058">1058</a><a id="L1059" href="#L1059">1059</a><a id="L1060" href="#L1060">1060</a><a id="L1061" href="#L1061">1061</a><a id="L1062" href="#L1062">1062</a><a id="L1063" href="#L1063">1063</a><a id="L1064" href="#L1064">1064</a><a id="L1065" href="#L1065">1065</a><a id="L1066" href="#L1066">1066</a><a id="L1067" href="#L1067">1067</a><a id="L1068" href="#L1068">1068</a><a id="L1069" href="#L1069">1069</a><a id="L1070" href="#L1070">1070</a><a id="L1071" href="#L1071">1071</a><a id="L1072" href="#L1072">1072</a><a id="L1073" href="#L1073">1073</a><a id="L1074" href="#L1074">1074</a><a id="L1075" href="#L1075">1075</a><a id="L1076" href="#L1076">1076</a><a id="L1077" href="#L1077">1077</a><a id="L1078" href="#L1078">1078</a><a id="L1079" href="#L1079">1079</a><a id="L1080" href="#L1080">1080</a><a id="L1081" href="#L1081">1081</a><a id="L1082" href="#L1082">1082</a><a id="L1083" href="#L1083">1083</a><a id="L1084" href="#L1084">1084</a><a id="L1085" href="#L1085">1085</a><a id="L1086" href="#L1086">1086</a><a id="L1087" href="#L1087">1087</a><a id="L1088" href="#L1088">1088</a><a id="L1089" href="#L1089">1089</a><a id="L1090" href="#L1090">1090</a><a id="L1091" href="#L1091">1091</a><a id="L1092" href="#L1092">1092</a><a id="L1093" href="#L1093">1093</a><a id="L1094" href="#L1094">1094</a><a id="L1095" href="#L1095">1095</a><a id="L1096" href="#L1096">1096</a><a id="L1097" href="#L1097">1097</a><a id="L1098" href="#L1098">1098</a><a id="L1099" href="#L1099">1099</a><a id="L1100" href="#L1100">1100</a><a id="L1101" href="#L1101">1101</a><a id="L1102" href="#L1102">1102</a><a id="L1103" href="#L1103">1103</a><a id="L1104" href="#L1104">1104</a><a id="L1105" href="#L1105">1105</a><a id="L1106" href="#L1106">1106</a><a id="L1107" href="#L1107">1107</a><a id="L1108" href="#L1108">1108</a><a id="L1109" href="#L1109">1109</a><a id="L1110" href="#L1110">1110</a><a id="L1111" href="#L1111">1111</a><a id="L1112" href="#L1112">1112</a><a id="L1113" href="#L1113">1113</a><a id="L1114" href="#L1114">1114</a><a id="L1115" href="#L1115">1115</a><a id="L1116" href="#L1116">1116</a><a id="L1117" href="#L1117">1117</a><a id="L1118" href="#L1118">1118</a><a id="L1119" href="#L1119">1119</a><a id="L1120" href="#L1120">1120</a><a id="L1121" href="#L1121">1121</a><a id="L1122" href="#L1122">1122</a><a id="L1123" href="#L1123">1123</a><a id="L1124" href="#L1124">1124</a><a id="L1125" href="#L1125">1125</a><a id="L1126" href="#L1126">1126</a><a id="L1127" href="#L1127">1127</a><a id="L1128" href="#L1128">1128</a><a id="L1129" href="#L1129">1129</a><a id="L1130" href="#L1130">1130</a><a id="L1131" href="#L1131">1131</a><a id="L1132" href="#L1132">1132</a><a id="L1133" href="#L1133">1133</a><a id="L1134" href="#L1134">1134</a><a id="L1135" href="#L1135">1135</a><a id="L1136" href="#L1136">1136</a><a id="L1137" href="#L1137">1137</a><a id="L1138" href="#L1138">1138</a><a id="L1139" href="#L1139">1139</a><a id="L1140" href="#L1140">1140</a><a id="L1141" href="#L1141">1141</a><a id="L1142" href="#L1142">1142</a><a id="L1143" href="#L1143">1143</a><a id="L1144" href="#L1144">1144</a><a id="L1145" href="#L1145">1145</a><a id="L1146" href="#L1146">1146</a><a id="L1147" href="#L1147">1147</a><a id="L1148" href="#L1148">1148</a><a id="L1149" href="#L1149">1149</a><a id="L1150" href="#L1150">1150</a><a id="L1151" href="#L1151">1151</a><a id="L1152" href="#L1152">1152</a><a id="L1153" href="#L1153">1153</a><a id="L1154" href="#L1154">1154</a><a id="L1155" href="#L1155">1155</a><a id="L1156" href="#L1156">1156</a><a id="L1157" href="#L1157">1157</a><a id="L1158" href="#L1158">1158</a><a id="L1159" href="#L1159">1159</a><a id="L1160" href="#L1160">1160</a><a id="L1161" href="#L1161">1161</a><a id="L1162" href="#L1162">1162</a><a id="L1163" href="#L1163">1163</a><a id="L1164" href="#L1164">1164</a><a id="L1165" href="#L1165">1165</a><a id="L1166" href="#L1166">1166</a><a id="L1167" href="#L1167">1167</a><a id="L1168" href="#L1168">1168</a><a id="L1169" href="#L1169">1169</a><a id="L1170" href="#L1170">1170</a><a id="L1171" href="#L1171">1171</a><a id="L1172" href="#L1172">1172</a><a id="L1173" href="#L1173">1173</a><a id="L1174" href="#L1174">1174</a><a id="L1175" href="#L1175">1175</a><a id="L1176" href="#L1176">1176</a><a id="L1177" href="#L1177">1177</a><a id="L1178" href="#L1178">1178</a><a id="L1179" href="#L1179">1179</a><a id="L1180" href="#L1180">1180</a><a id="L1181" href="#L1181">1181</a><a id="L1182" href="#L1182">1182</a><a id="L1183" href="#L1183">1183</a><a id="L1184" href="#L1184">1184</a><a id="L1185" href="#L1185">1185</a><a id="L1186" href="#L1186">1186</a><a id="L1187" href="#L1187">1187</a><a id="L1188" href="#L1188">1188</a><a id="L1189" href="#L1189">1189</a><a id="L1190" href="#L1190">1190</a><a id="L1191" href="#L1191">1191</a><a id="L1192" href="#L1192">1192</a><a id="L1193" href="#L1193">1193</a><a id="L1194" href="#L1194">1194</a><a id="L1195" href="#L1195">1195</a><a id="L1196" href="#L1196">1196</a><a id="L1197" href="#L1197">1197</a><a id="L1198" href="#L1198">1198</a><a id="L1199" href="#L1199">1199</a><a id="L1200" href="#L1200">1200</a><a id="L1201" href="#L1201">1201</a><a id="L1202" href="#L1202">1202</a><a id="L1203" href="#L1203">1203</a><a id="L1204" href="#L1204">1204</a><a id="L1205" href="#L1205">1205</a><a id="L1206" href="#L1206">1206</a><a id="L1207" href="#L1207">1207</a><a id="L1208" href="#L1208">1208</a><a id="L1209" href="#L1209">1209</a><a id="L1210" href="#L1210">1210</a><a id="L1211" href="#L1211">1211</a><a id="L1212" href="#L1212">1212</a><a id="L1213" href="#L1213">1213</a><a id="L1214" href="#L1214">1214</a><a id="L1215" href="#L1215">1215</a><a id="L1216" href="#L1216">1216</a><a id="L1217" href="#L1217">1217</a><a id="L1218" href="#L1218">1218</a><a id="L1219" href="#L1219">1219</a><a id="L1220" href="#L1220">1220</a><a id="L1221" href="#L1221">1221</a><a id="L1222" href="#L1222">1222</a><a id="L1223" href="#L1223">1223</a><a id="L1224" href="#L1224">1224</a><a id="L1225" href="#L1225">1225</a><a id="L1226" href="#L1226">1226</a><a id="L1227" href="#L1227">1227</a><a id="L1228" href="#L1228">1228</a><a id="L1229" href="#L1229">1229</a><a id="L1230" href="#L1230">1230</a><a id="L1231" href="#L1231">1231</a><a id="L1232" href="#L1232">1232</a><a id="L1233" href="#L1233">1233</a><a id="L1234" href="#L1234">1234</a><a id="L1235" href="#L1235">1235</a><a id="L1236" href="#L1236">1236</a><a id="L1237" href="#L1237">1237</a><a id="L1238" href="#L1238">1238</a><a id="L1239" href="#L1239">1239</a><a id="L1240" href="#L1240">1240</a><a id="L1241" href="#L1241">1241</a><a id="L1242" href="#L1242">1242</a><a id="L1243" href="#L1243">1243</a><a id="L1244" href="#L1244">1244</a><a id="L1245" href="#L1245">1245</a><a id="L1246" href="#L1246">1246</a><a id="L1247" href="#L1247">1247</a><a id="L1248" href="#L1248">1248</a><a id="L1249" href="#L1249">1249</a><a id="L1250" href="#L1250">1250</a><a id="L1251" href="#L1251">1251</a><a id="L1252" href="#L1252">1252</a><a id="L1253" href="#L1253">1253</a><a id="L1254" href="#L1254">1254</a><a id="L1255" href="#L1255">1255</a><a id="L1256" href="#L1256">1256</a><a id="L1257" href="#L1257">1257</a><a id="L1258" href="#L1258">1258</a><a id="L1259" href="#L1259">1259</a><a id="L1260" href="#L1260">1260</a><a id="L1261" href="#L1261">1261</a><a id="L1262" href="#L1262">1262</a><a id="L1263" href="#L1263">1263</a><a id="L1264" href="#L1264">1264</a><a id="L1265" href="#L1265">1265</a><a id="L1266" href="#L1266">1266</a><a id="L1267" href="#L1267">1267</a><a id="L1268" href="#L1268">1268</a><a id="L1269" href="#L1269">1269</a><a id="L1270" href="#L1270">1270</a><a id="L1271" href="#L1271">1271</a><a id="L1272" href="#L1272">1272</a><a id="L1273" href="#L1273">1273</a><a id="L1274" href="#L1274">1274</a><a id="L1275" href="#L1275">1275</a><a id="L1276" href="#L1276">1276</a><a id="L1277" href="#L1277">1277</a><a id="L1278" href="#L1278">1278</a><a id="L1279" href="#L1279">1279</a><a id="L1280" href="#L1280">1280</a><a id="L1281" href="#L1281">1281</a><a id="L1282" href="#L1282">1282</a><a id="L1283" href="#L1283">1283</a><a id="L1284" href="#L1284">1284</a><a id="L1285" href="#L1285">1285</a><a id="L1286" href="#L1286">1286</a><a id="L1287" href="#L1287">1287</a><a id="L1288" href="#L1288">1288</a><a id="L1289" href="#L1289">1289</a><a id="L1290" href="#L1290">1290</a><a id="L1291" href="#L1291">1291</a><a id="L1292" href="#L1292">1292</a><a id="L1293" href="#L1293">1293</a><a id="L1294" href="#L1294">1294</a><a id="L1295" href="#L1295">1295</a><a id="L1296" href="#L1296">1296</a><a id="L1297" href="#L1297">1297</a><a id="L1298" href="#L1298">1298</a><a id="L1299" href="#L1299">1299</a><a id="L1300" href="#L1300">1300</a><a id="L1301" href="#L1301">1301</a><a id="L1302" href="#L1302">1302</a><a id="L1303" href="#L1303">1303</a><a id="L1304" href="#L1304">1304</a><a id="L1305" href="#L1305">1305</a><a id="L1306" href="#L1306">1306</a><a id="L1307" href="#L1307">1307</a><a id="L1308" href="#L1308">1308</a><a id="L1309" href="#L1309">1309</a><a id="L1310" href="#L1310">1310</a><a id="L1311" href="#L1311">1311</a><a id="L1312" href="#L1312">1312</a><a id="L1313" href="#L1313">1313</a><a id="L1314" href="#L1314">1314</a><a id="L1315" href="#L1315">1315</a><a id="L1316" href="#L1316">1316</a><a id="L1317" href="#L1317">1317</a><a id="L1318" href="#L1318">1318</a><a id="L1319" href="#L1319">1319</a><a id="L1320" href="#L1320">1320</a><a id="L1321" href="#L1321">1321</a><a id="L1322" href="#L1322">1322</a><a id="L1323" href="#L1323">1323</a><a id="L1324" href="#L1324">1324</a><a id="L1325" href="#L1325">1325</a><a id="L1326" href="#L1326">1326</a><a id="L1327" href="#L1327">1327</a><a id="L1328" href="#L1328">1328</a><a id="L1329" href="#L1329">1329</a><a id="L1330" href="#L1330">1330</a><a id="L1331" href="#L1331">1331</a><a id="L1332" href="#L1332">1332</a><a id="L1333" href="#L1333">1333</a><a id="L1334" href="#L1334">1334</a><a id="L1335" href="#L1335">1335</a><a id="L1336" href="#L1336">1336</a><a id="L1337" href="#L1337">1337</a><a id="L1338" href="#L1338">1338</a><a id="L1339" href="#L1339">1339</a><a id="L1340" href="#L1340">1340</a><a id="L1341" href="#L1341">1341</a><a id="L1342" href="#L1342">1342</a><a id="L1343" href="#L1343">1343</a><a id="L1344" href="#L1344">1344</a><a id="L1345" href="#L1345">1345</a><a id="L1346" href="#L1346">1346</a><a id="L1347" href="#L1347">1347</a><a id="L1348" href="#L1348">1348</a><a id="L1349" href="#L1349">1349</a><a id="L1350" href="#L1350">1350</a><a id="L1351" href="#L1351">1351</a><a id="L1352" href="#L1352">1352</a><a id="L1353" href="#L1353">1353</a><a id="L1354" href="#L1354">1354</a><a id="L1355" href="#L1355">1355</a><a id="L1356" href="#L1356">1356</a><a id="L1357" href="#L1357">1357</a><a id="L1358" href="#L1358">1358</a><a id="L1359" href="#L1359">1359</a><a id="L1360" href="#L1360">1360</a><a id="L1361" href="#L1361">1361</a><a id="L1362" href="#L1362">1362</a><a id="L1363" href="#L1363">1363</a><a id="L1364" href="#L1364">1364</a><a id="L1365" href="#L1365">1365</a><a id="L1366" href="#L1366">1366</a><a id="L1367" href="#L1367">1367</a><a id="L1368" href="#L1368">1368</a><a id="L1369" href="#L1369">1369</a><a id="L1370" href="#L1370">1370</a><a id="L1371" href="#L1371">1371</a><a id="L1372" href="#L1372">1372</a><a id="L1373" href="#L1373">1373</a><a id="L1374" href="#L1374">1374</a><a id="L1375" href="#L1375">1375</a><a id="L1376" href="#L1376">1376</a><a id="L1377" href="#L1377">1377</a><a id="L1378" href="#L1378">1378</a><a id="L1379" href="#L1379">1379</a><a id="L1380" href="#L1380">1380</a><a id="L1381" href="#L1381">1381</a><a id="L1382" href="#L1382">1382</a><a id="L1383" href="#L1383">1383</a><a id="L1384" href="#L1384">1384</a><a id="L1385" href="#L1385">1385</a><a id="L1386" href="#L1386">1386</a><a id="L1387" href="#L1387">1387</a><a id="L1388" href="#L1388">1388</a><a id="L1389" href="#L1389">1389</a><a id="L1390" href="#L1390">1390</a><a id="L1391" href="#L1391">1391</a><a id="L1392" href="#L1392">1392</a><a id="L1393" href="#L1393">1393</a><a id="L1394" href="#L1394">1394</a><a id="L1395" href="#L1395">1395</a><a id="L1396" href="#L1396">1396</a><a id="L1397" href="#L1397">1397</a><a id="L1398" href="#L1398">1398</a><a id="L1399" href="#L1399">1399</a><a id="L1400" href="#L1400">1400</a><a id="L1401" href="#L1401">1401</a><a id="L1402" href="#L1402">1402</a><a id="L1403" href="#L1403">1403</a><a id="L1404" href="#L1404">1404</a><a id="L1405" href="#L1405">1405</a><a id="L1406" href="#L1406">1406</a><a id="L1407" href="#L1407">1407</a><a id="L1408" href="#L1408">1408</a><a id="L1409" href="#L1409">1409</a><a id="L1410" href="#L1410">1410</a><a id="L1411" href="#L1411">1411</a><a id="L1412" href="#L1412">1412</a><a id="L1413" href="#L1413">1413</a><a id="L1414" href="#L1414">1414</a><a id="L1415" href="#L1415">1415</a><a id="L1416" href="#L1416">1416</a><a id="L1417" href="#L1417">1417</a><a id="L1418" href="#L1418">1418</a><a id="L1419" href="#L1419">1419</a><a id="L1420" href="#L1420">1420</a><a id="L1421" href="#L1421">1421</a><a id="L1422" href="#L1422">1422</a><a id="L1423" href="#L1423">1423</a><a id="L1424" href="#L1424">1424</a><a id="L1425" href="#L1425">1425</a><a id="L1426" href="#L1426">1426</a><a id="L1427" href="#L1427">1427</a><a id="L1428" href="#L1428">1428</a><a id="L1429" href="#L1429">1429</a><a id="L1430" href="#L1430">1430</a><a id="L1431" href="#L1431">1431</a><a id="L1432" href="#L1432">1432</a><a id="L1433" href="#L1433">1433</a><a id="L1434" href="#L1434">1434</a><a id="L1435" href="#L1435">1435</a><a id="L1436" href="#L1436">1436</a><a id="L1437" href="#L1437">1437</a><a id="L1438" href="#L1438">1438</a><a id="L1439" href="#L1439">1439</a><a id="L1440" href="#L1440">1440</a><a id="L1441" href="#L1441">1441</a><a id="L1442" href="#L1442">1442</a><a id="L1443" href="#L1443">1443</a><a id="L1444" href="#L1444">1444</a><a id="L1445" href="#L1445">1445</a><a id="L1446" href="#L1446">1446</a><a id="L1447" href="#L1447">1447</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/* zlib.h -- interface of the 'zlib' general purpose compression library
+  version 1.2.3, July 18th, 2005
+
+  Copyright (C) 1995-2005 Jean-loup Gailly and Mark Adler
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
+
+  Jean-loup Gailly        Mark Adler
+  jloup@gzip.org          madler@alumni.caltech.edu
+
+
+  The data format used by the zlib library is described by RFCs (Request for
+  Comments) 1950 to 1952 in the files http://www.ietf.org/rfc/rfc1950.txt
+  (zlib format), rfc1951.txt (deflate format) and rfc1952.txt (gzip format).
+*/</span>
+
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">util</span>.<span class="i">compress</span>.<span class="i">c</span>.<span class="i">zlib</span>;</span>
+
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span>:
+
+<span class="d Compound"><span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">ZLIB_VERSION</span> = <span class="e String"><span class="sl">"1.2.3"</span></span>.<span class="e Identifier"><span class="i">ptr</span></span>;</span>
+<span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span>  <span class="i">ZLIB_VERNUM</span>  = <span class="e Int"><span class="n">0x1230</span></span>;</span>
+
+<span class="bc">/*
+     The 'zlib' compression library provides in-memory compression and
+  decompression functions, including integrity checks of the uncompressed
+  data.  This version of the library supports only one compression method
+  (deflation) but other algorithms will be added later and will have the same
+  stream interface.
+
+     Compression can be done in a single step if the buffers are large
+  enough (for example if an input file is mmap'ed), or can be done by
+  repeated calls of the compression function.  In the latter case, the
+  application must provide more input and/or consume the output
+  (providing more output space) before each call.
+
+     The compressed data format used by default by the in-memory functions is
+  the zlib format, which is a zlib wrapper documented in RFC 1950, wrapped
+  around a deflate stream, which is itself documented in RFC 1951.
+
+     The library also supports reading and writing files in gzip (.gz) format
+  with an interface similar to that of stdio using the functions that start
+  with "gz".  The gzip format is different from the zlib format.  gzip is a
+  gzip wrapper, documented in RFC 1952, wrapped around a deflate stream.
+
+     This library can optionally read and write gzip streams in memory as well.
+
+     The zlib format was designed to be compact and fast for use in memory
+  and on communications channels.  The gzip format was designed for single-
+  file compression on file systems, has a larger header than zlib to maintain
+  directory information, and uses a different, slower check method than zlib.
+
+     The library does not install any signal handler. The decoder checks
+  the consistency of the compressed data, so the library should never
+  crash even in case of corrupted input.
+*/</span>
+
+<span class="d Protection"><span class="k">private</span></span>
+<span class="d Compound">{
+    <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">stdc</span>.<span class="i">config</span> : <span class="i">c_long</span>, <span class="i">c_ulong</span>;</span>
+
+    <span class="d Version"><span class="k">version</span>( <span class="i">Posix</span> )
+    <span class="d Compound">{
+        <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">stdc</span>.<span class="i">posix</span>.<span class="i">sys</span>.<span class="i">types</span> : <span class="i">z_off_t</span> = <span class="i">off_t</span>;</span>
+    }</span>
+    <span class="k">else</span>
+    <span class="d Compound">{
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">c_long</span></span> <span class="i">z_off_t</span>;</span></span>
+    }</span></span>
+
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">ubyte</span></span>     <span class="i">Byte</span>;</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span>      <span class="i">uInt</span>;</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">c_ulong</span></span>   <span class="i">uLong</span>;</span></span>
+
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">Byte</span></span>      <span class="i">Bytef</span>;</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">char</span></span>      <span class="i">charf</span>;</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span>       <span class="i">intf</span>;</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">uInt</span></span>      <span class="i">uIntf</span>;</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">uLong</span></span>     <span class="i">uLongf</span>;</span></span>
+
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>     <span class="i">voidpc</span>;</span></span> <span class="lc">// TODO: normally const</span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>     <span class="i">voidpf</span>;</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>     <span class="i">voidp</span>;</span></span>
+
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">voidpf</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">voidpf</span></span> <span class="i">opaque</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">uInt</span></span> <span class="i">items</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">uInt</span></span> <span class="i">size</span></span>)</span></span> <span class="i">alloc_func</span>;</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span>   <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">voidpf</span></span> <span class="i">opaque</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">voidpf</span></span> <span class="i">address</span></span>)</span></span>        <span class="i">free_func</span>;</span></span>
+
+    <span class="d Struct"><span class="k">struct</span> <span class="i">internal_state</span> <span class="d Compound">{}</span></span>
+}</span>
+
+<span class="d Struct"><span class="k">struct</span> <span class="i">z_stream</span>
+<span class="d Compound">{
+    <span class="d Variables"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>          <span class="i">next_in</span>;</span>   <span class="bc">/* next input byte */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">uInt</span></span>            <span class="i">avail_in</span>;</span>  <span class="bc">/* number of bytes available at next_in */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">uLong</span></span>           <span class="i">total_in</span>;</span>  <span class="bc">/* total nb of input bytes read so far */</span>
+
+    <span class="d Variables"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>          <span class="i">next_out</span>;</span>  <span class="bc">/* next output byte should be put there */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">uInt</span></span>            <span class="i">avail_out</span>;</span> <span class="bc">/* remaining free space at next_out */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">uLong</span></span>           <span class="i">total_out</span>;</span> <span class="bc">/* total nb of bytes output so far */</span>
+
+    <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span>           <span class="i">msg</span>;</span>       <span class="bc">/* last error message, NULL if no error */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">internal_state</span></span><span class="t Pointer">*</span> <span class="i">state</span>;</span>     <span class="bc">/* not visible by applications */</span>
+
+    <span class="d Variables"><span class="t Identifier"><span class="i">alloc_func</span></span>      <span class="i">zalloc</span>;</span>    <span class="bc">/* used to allocate the internal state */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">free_func</span></span>       <span class="i">zfree</span>;</span>     <span class="bc">/* used to free the internal state */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">voidpf</span></span>          <span class="i">opaque</span>;</span>    <span class="bc">/* private data object passed to zalloc and zfree */</span>
+
+    <span class="d Variables"><span class="t Integral"><span class="k">int</span></span>             <span class="i">data_type</span>;</span> <span class="bc">/* best guess about the data type: binary or text */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">uLong</span></span>           <span class="i">adler</span>;</span>     <span class="bc">/* adler32 value of the uncompressed data */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">uLong</span></span>           <span class="i">reserved</span>;</span>  <span class="bc">/* reserved for future use */</span>
+}</span></span>
+
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">z_stream</span></span><span class="t Pointer">*</span> <span class="i">z_streamp</span>;</span></span>
+
+<span class="bc">/*
+     gzip header information passed to and from zlib routines.  See RFC 1952
+  for more details on the meanings of these fields.
+*/</span>
+<span class="d Struct"><span class="k">struct</span> <span class="i">gz_header</span>
+<span class="d Compound">{
+    <span class="d Variables"><span class="t Integral"><span class="k">int</span></span>     <span class="i">text</span>;</span>       <span class="bc">/* true if compressed data believed to be text */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">uLong</span></span>   <span class="i">time</span>;</span>       <span class="bc">/* modification time */</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">int</span></span>     <span class="i">xflags</span>;</span>     <span class="bc">/* extra flags (not used when writing a gzip file) */</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">int</span></span>     <span class="i">os</span>;</span>         <span class="bc">/* operating system */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">extra</span>;</span>      <span class="bc">/* pointer to extra field or Z_NULL if none */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">uInt</span></span>    <span class="i">extra_len</span>;</span>  <span class="bc">/* extra field length (valid if extra != Z_NULL) */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">uInt</span></span>    <span class="i">extra_max</span>;</span>  <span class="bc">/* space at extra (only when reading header) */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">name</span>;</span>       <span class="bc">/* pointer to zero-terminated file name or Z_NULL */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">uInt</span></span>    <span class="i">name_max</span>;</span>   <span class="bc">/* space at name (only when reading header) */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">comment</span>;</span>    <span class="bc">/* pointer to zero-terminated comment or Z_NULL */</span>
+    <span class="d Variables"><span class="t Identifier"><span class="i">uInt</span></span>    <span class="i">comm_max</span>;</span>   <span class="bc">/* space at comment (only when reading header) */</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">int</span></span>     <span class="i">hcrc</span>;</span>       <span class="bc">/* true if there was or will be a header crc */</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">int</span></span>     <span class="i">done</span>;</span>       <span class="bc">/* true when done reading gzip header (not used
+                           when writing a gzip file) */</span>
+}</span></span>
+
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">gz_header</span></span><span class="t Pointer">*</span> <span class="i">gz_headerp</span>;</span></span>
+
+<span class="bc">/*
+   The application must update next_in and avail_in when avail_in has
+   dropped to zero. It must update next_out and avail_out when avail_out
+   has dropped to zero. The application must initialize zalloc, zfree and
+   opaque before calling the init function. All other fields are set by the
+   compression library and must not be updated by the application.
+
+   The opaque value provided by the application will be passed as the first
+   parameter for calls of zalloc and zfree. This can be useful for custom
+   memory management. The compression library attaches no meaning to the
+   opaque value.
+
+   zalloc must return Z_NULL if there is not enough memory for the object.
+   If zlib is used in a multi-threaded application, zalloc and zfree must be
+   thread safe.
+
+   On 16-bit systems, the functions zalloc and zfree must be able to allocate
+   exactly 65536 bytes, but will not be required to allocate more than this
+   if the symbol MAXSEG_64K is defined (see zconf.h). WARNING: On MSDOS,
+   pointers returned by zalloc for objects of exactly 65536 bytes *must*
+   have their offset normalized to zero. The default allocation function
+   provided by this library ensures this (see zutil.c). To reduce memory
+   requirements and avoid any allocation of 64K objects, at the expense of
+   compression ratio, compile the library with -DMAX_WBITS=14 (see zconf.h).
+
+   The fields total_in and total_out can be used for statistics or
+   progress reports. After compression, total_in holds the total size of
+   the uncompressed data and may be saved for use in the decompressor
+   (particularly if the decompressor wants to decompress everything in
+   a single step).
+*/</span>
+
+                        <span class="bc">/* constants */</span>
+
+<span class="d Enum"><span class="k">enum</span>
+{
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_NO_FLUSH</span></span>      = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_PARTIAL_FLUSH</span></span> = <span class="e Int"><span class="n">1</span></span></span>, <span class="bc">/* will be removed, use Z_SYNC_FLUSH instead */</span>
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_SYNC_FLUSH</span></span>    = <span class="e Int"><span class="n">2</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_FULL_FLUSH</span></span>    = <span class="e Int"><span class="n">3</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_FINISH</span></span>        = <span class="e Int"><span class="n">4</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_BLOCK</span></span>         = <span class="e Int"><span class="n">5</span></span></span>,
+}</span>
+<span class="bc">/* Allowed flush values; see deflate() and inflate() below for details */</span>
+
+<span class="d Enum"><span class="k">enum</span>
+{
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_OK</span></span>            = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_STREAM_END</span></span>    = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_NEED_DICT</span></span>     = <span class="e Int"><span class="n">2</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_ERRNO</span></span>         = <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_STREAM_ERROR</span></span>  = <span class="e Sign">-<span class="e Int"><span class="n">2</span></span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_DATA_ERROR</span></span>    = <span class="e Sign">-<span class="e Int"><span class="n">3</span></span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_MEM_ERROR</span></span>     = <span class="e Sign">-<span class="e Int"><span class="n">4</span></span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_BUF_ERROR</span></span>     = <span class="e Sign">-<span class="e Int"><span class="n">5</span></span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_VERSION_ERROR</span></span> = <span class="e Sign">-<span class="e Int"><span class="n">6</span></span></span></span>,
+}</span>
+<span class="bc">/* Return codes for the compression/decompression functions. Negative
+ * values are errors, positive values are used for special but normal events.
+ */</span>
+
+<span class="d Enum"><span class="k">enum</span>
+{
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_NO_COMPRESSION</span></span>      = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_BEST_SPEED</span></span>          = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_BEST_COMPRESSION</span></span>    = <span class="e Int"><span class="n">9</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_DEFAULT_COMPRESSION</span></span> = <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>,
+}</span>
+<span class="bc">/* compression levels */</span>
+
+<span class="d Enum"><span class="k">enum</span>
+{
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_FILTERED</span></span>            = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_HUFFMAN_ONLY</span></span>        = <span class="e Int"><span class="n">2</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_RLE</span></span>                 = <span class="e Int"><span class="n">3</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_FIXED</span></span>               = <span class="e Int"><span class="n">4</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_DEFAULT_STRATEGY</span></span>    = <span class="e Int"><span class="n">0</span></span></span>,
+}</span>
+<span class="bc">/* compression strategy; see deflateInit2() below for details */</span>
+
+<span class="d Enum"><span class="k">enum</span>
+{
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_BINARY</span></span>   = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_TEXT</span></span>     = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_ASCII</span></span>    = <span class="e Identifier"><span class="i">Z_TEXT</span></span></span>,  <span class="bc">/* for compatibility with 1.2.2 and earlier */</span>
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_UNKNOWN</span></span>  = <span class="e Int"><span class="n">2</span></span></span>,
+}</span>
+<span class="bc">/* Possible values of the data_type field (though see inflate()) */</span>
+
+<span class="d Enum"><span class="k">enum</span>
+{
+    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_DEFLATED</span></span> = <span class="e Int"><span class="n">8</span></span></span>,
+}</span>
+<span class="bc">/* The deflate compression method (the only one supported in this version) */</span>
+
+<span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">Z_NULL</span> = <span class="e Null"><span class="k">null</span></span>;</span>    <span class="bc">/* for initializing zalloc, zfree, opaque */</span>
+
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">zlibVersion</span></span> <span class="i">zlib_version</span>;</span></span>
+<span class="bc">/* for compatibility with versions &lt; 1.0.2 */</span>
+
+                        <span class="bc">/* basic functions */</span>
+
+<span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">zlibVersion</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+<span class="bc">/* The application can compare zlibVersion and ZLIB_VERSION for consistency.
+   If the first character differs, the library code actually used is
+   not compatible with the zlib.h header file used by the application.
+   This check is automatically made by deflateInit and inflateInit.
+ */</span>
+
+<span class="bc">/*
+int deflateInit (z_streamp strm, int level);
+
+     Initializes the internal stream state for compression. The fields
+   zalloc, zfree and opaque must be initialized before by the caller.
+   If zalloc and zfree are set to Z_NULL, deflateInit updates them to
+   use default allocation functions.
+
+     The compression level must be Z_DEFAULT_COMPRESSION, or between 0 and 9:
+   1 gives best speed, 9 gives best compression, 0 gives no compression at
+   all (the input data is simply copied a block at a time).
+   Z_DEFAULT_COMPRESSION requests a default compromise between speed and
+   compression (currently equivalent to level 6).
+
+     deflateInit returns Z_OK if success, Z_MEM_ERROR if there was not
+   enough memory, Z_STREAM_ERROR if level is not a valid compression level,
+   Z_VERSION_ERROR if the zlib library version (zlib_version) is incompatible
+   with the version assumed by the caller (ZLIB_VERSION).
+   msg is set to null if there is no error message.  deflateInit does not
+   perform any compression: this will be done by deflate().
+*/</span>
+
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">flush</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+    deflate compresses as much data as possible, and stops when the input
+  buffer becomes empty or the output buffer becomes full. It may introduce some
+  output latency (reading input without producing any output) except when
+  forced to flush.
+
+    The detailed semantics are as follows. deflate performs one or both of the
+  following actions:
+
+  - Compress more input starting at next_in and update next_in and avail_in
+    accordingly. If not all input can be processed (because there is not
+    enough room in the output buffer), next_in and avail_in are updated and
+    processing will resume at this point for the next call of deflate().
+
+  - Provide more output starting at next_out and update next_out and avail_out
+    accordingly. This action is forced if the parameter flush is non zero.
+    Forcing flush frequently degrades the compression ratio, so this parameter
+    should be set only when necessary (in interactive applications).
+    Some output may be provided even if flush is not set.
+
+  Before the call of deflate(), the application should ensure that at least
+  one of the actions is possible, by providing more input and/or consuming
+  more output, and updating avail_in or avail_out accordingly; avail_out
+  should never be zero before the call. The application can consume the
+  compressed output when it wants, for example when the output buffer is full
+  (avail_out == 0), or after each call of deflate(). If deflate returns Z_OK
+  and with zero avail_out, it must be called again after making room in the
+  output buffer because there might be more output pending.
+
+    Normally the parameter flush is set to Z_NO_FLUSH, which allows deflate to
+  decide how much data to accumualte before producing output, in order to
+  maximize compression.
+
+    If the parameter flush is set to Z_SYNC_FLUSH, all pending output is
+  flushed to the output buffer and the output is aligned on a byte boundary, so
+  that the decompressor can get all input data available so far. (In particular
+  avail_in is zero after the call if enough output space has been provided
+  before the call.)  Flushing may degrade compression for some compression
+  algorithms and so it should be used only when necessary.
+
+    If flush is set to Z_FULL_FLUSH, all output is flushed as with
+  Z_SYNC_FLUSH, and the compression state is reset so that decompression can
+  restart from this point if previous compressed data has been damaged or if
+  random access is desired. Using Z_FULL_FLUSH too often can seriously degrade
+  compression.
+
+    If deflate returns with avail_out == 0, this function must be called again
+  with the same value of the flush parameter and more output space (updated
+  avail_out), until the flush is complete (deflate returns with non-zero
+  avail_out). In the case of a Z_FULL_FLUSH or Z_SYNC_FLUSH, make sure that
+  avail_out is greater than six to avoid repeated flush markers due to
+  avail_out == 0 on return.
+
+    If the parameter flush is set to Z_FINISH, pending input is processed,
+  pending output is flushed and deflate returns with Z_STREAM_END if there
+  was enough output space; if deflate returns with Z_OK, this function must be
+  called again with Z_FINISH and more output space (updated avail_out) but no
+  more input data, until it returns with Z_STREAM_END or an error. After
+  deflate has returned Z_STREAM_END, the only possible operations on the
+  stream are deflateReset or deflateEnd.
+
+    Z_FINISH can be used immediately after deflateInit if all the compression
+  is to be done in a single step. In this case, avail_out must be at least
+  the value returned by deflateBound (see below). If deflate does not return
+  Z_STREAM_END, then it must be called again as described above.
+
+    deflate() sets strm-&gt;adler to the adler32 checksum of all input read
+  so far (that is, total_in bytes).
+
+    deflate() may update strm-&gt;data_type if it can make a good guess about
+  the input data type (Z_BINARY or Z_TEXT). In doubt, the data is considered
+  binary. This field is only for information purposes and does not affect
+  the compression algorithm in any manner.
+
+    deflate() returns Z_OK if some progress has been made (more input
+  processed or more output produced), Z_STREAM_END if all input has been
+  consumed and all output has been produced (only when flush is set to
+  Z_FINISH), Z_STREAM_ERROR if the stream state was inconsistent (for example
+  if next_in or next_out was NULL), Z_BUF_ERROR if no progress is possible
+  (for example avail_in or avail_out was zero). Note that Z_BUF_ERROR is not
+  fatal, and deflate() can be called again with more input and more output
+  space to continue compressing.
+*/</span>
+
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateEnd</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     All dynamically allocated data structures for this stream are freed.
+   This function discards any unprocessed input and does not flush any
+   pending output.
+
+     deflateEnd returns Z_OK if success, Z_STREAM_ERROR if the
+   stream state was inconsistent, Z_DATA_ERROR if the stream was freed
+   prematurely (some input or output was discarded). In the error case,
+   msg may be set but then points to a static string (which must not be
+   deallocated).
+*/</span>
+
+
+<span class="bc">/*
+int inflateInit(z_streamp strm);
+
+     Initializes the internal stream state for decompression. The fields
+   next_in, avail_in, zalloc, zfree and opaque must be initialized before by
+   the caller. If next_in is not Z_NULL and avail_in is large enough (the exact
+   value depends on the compression method), inflateInit determines the
+   compression method from the zlib header and allocates all data structures
+   accordingly; otherwise the allocation will be deferred to the first call of
+   inflate.  If zalloc and zfree are set to Z_NULL, inflateInit updates them to
+   use default allocation functions.
+
+     inflateInit returns Z_OK if success, Z_MEM_ERROR if there was not enough
+   memory, Z_VERSION_ERROR if the zlib library version is incompatible with the
+   version assumed by the caller.  msg is set to null if there is no error
+   message. inflateInit does not perform any decompression apart from reading
+   the zlib header if present: this will be done by inflate().  (So next_in and
+   avail_in may be modified, but next_out and avail_out are unchanged.)
+*/</span>
+
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">flush</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+    inflate decompresses as much data as possible, and stops when the input
+  buffer becomes empty or the output buffer becomes full. It may introduce
+  some output latency (reading input without producing any output) except when
+  forced to flush.
+
+  The detailed semantics are as follows. inflate performs one or both of the
+  following actions:
+
+  - Decompress more input starting at next_in and update next_in and avail_in
+    accordingly. If not all input can be processed (because there is not
+    enough room in the output buffer), next_in is updated and processing
+    will resume at this point for the next call of inflate().
+
+  - Provide more output starting at next_out and update next_out and avail_out
+    accordingly.  inflate() provides as much output as possible, until there
+    is no more input data or no more space in the output buffer (see below
+    about the flush parameter).
+
+  Before the call of inflate(), the application should ensure that at least
+  one of the actions is possible, by providing more input and/or consuming
+  more output, and updating the next_* and avail_* values accordingly.
+  The application can consume the uncompressed output when it wants, for
+  example when the output buffer is full (avail_out == 0), or after each
+  call of inflate(). If inflate returns Z_OK and with zero avail_out, it
+  must be called again after making room in the output buffer because there
+  might be more output pending.
+
+    The flush parameter of inflate() can be Z_NO_FLUSH, Z_SYNC_FLUSH,
+  Z_FINISH, or Z_BLOCK. Z_SYNC_FLUSH requests that inflate() flush as much
+  output as possible to the output buffer. Z_BLOCK requests that inflate() stop
+  if and when it gets to the next deflate block boundary. When decoding the
+  zlib or gzip format, this will cause inflate() to return immediately after
+  the header and before the first block. When doing a raw inflate, inflate()
+  will go ahead and process the first block, and will return when it gets to
+  the end of that block, or when it runs out of data.
+
+    The Z_BLOCK option assists in appending to or combining deflate streams.
+  Also to assist in this, on return inflate() will set strm-&gt;data_type to the
+  number of unused bits in the last byte taken from strm-&gt;next_in, plus 64
+  if inflate() is currently decoding the last block in the deflate stream,
+  plus 128 if inflate() returned immediately after decoding an end-of-block
+  code or decoding the complete header up to just before the first byte of the
+  deflate stream. The end-of-block will not be indicated until all of the
+  uncompressed data from that block has been written to strm-&gt;next_out.  The
+  number of unused bits may in general be greater than seven, except when
+  bit 7 of data_type is set, in which case the number of unused bits will be
+  less than eight.
+
+    inflate() should normally be called until it returns Z_STREAM_END or an
+  error. However if all decompression is to be performed in a single step
+  (a single call of inflate), the parameter flush should be set to
+  Z_FINISH. In this case all pending input is processed and all pending
+  output is flushed; avail_out must be large enough to hold all the
+  uncompressed data. (The size of the uncompressed data may have been saved
+  by the compressor for this purpose.) The next operation on this stream must
+  be inflateEnd to deallocate the decompression state. The use of Z_FINISH
+  is never required, but can be used to inform inflate that a faster approach
+  may be used for the single inflate() call.
+
+     In this implementation, inflate() always flushes as much output as
+  possible to the output buffer, and always uses the faster approach on the
+  first call. So the only effect of the flush parameter in this implementation
+  is on the return value of inflate(), as noted below, or when it returns early
+  because Z_BLOCK is used.
+
+     If a preset dictionary is needed after this call (see inflateSetDictionary
+  below), inflate sets strm-&gt;adler to the adler32 checksum of the dictionary
+  chosen by the compressor and returns Z_NEED_DICT; otherwise it sets
+  strm-&gt;adler to the adler32 checksum of all output produced so far (that is,
+  total_out bytes) and returns Z_OK, Z_STREAM_END or an error code as described
+  below. At the end of the stream, inflate() checks that its computed adler32
+  checksum is equal to that saved by the compressor and returns Z_STREAM_END
+  only if the checksum is correct.
+
+    inflate() will decompress and check either zlib-wrapped or gzip-wrapped
+  deflate data.  The header type is detected automatically.  Any information
+  contained in the gzip header is not retained, so applications that need that
+  information should instead use raw inflate, see inflateInit2() below, or
+  inflateBack() and perform their own processing of the gzip header and
+  trailer.
+
+    inflate() returns Z_OK if some progress has been made (more input processed
+  or more output produced), Z_STREAM_END if the end of the compressed data has
+  been reached and all uncompressed output has been produced, Z_NEED_DICT if a
+  preset dictionary is needed at this point, Z_DATA_ERROR if the input data was
+  corrupted (input stream not conforming to the zlib format or incorrect check
+  value), Z_STREAM_ERROR if the stream structure was inconsistent (for example
+  if next_in or next_out was NULL), Z_MEM_ERROR if there was not enough memory,
+  Z_BUF_ERROR if no progress is possible or if there was not enough room in the
+  output buffer when Z_FINISH is used. Note that Z_BUF_ERROR is not fatal, and
+  inflate() can be called again with more input and more output space to
+  continue decompressing. If Z_DATA_ERROR is returned, the application may then
+  call inflateSync() to look for a good compression block if a partial recovery
+  of the data is desired.
+*/</span>
+
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateEnd</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     All dynamically allocated data structures for this stream are freed.
+   This function discards any unprocessed input and does not flush any
+   pending output.
+
+     inflateEnd returns Z_OK if success, Z_STREAM_ERROR if the stream state
+   was inconsistent. In the error case, msg may be set but then points to a
+   static string (which must not be deallocated).
+*/</span>
+
+                        <span class="bc">/* Advanced functions */</span>
+
+<span class="bc">/*
+    The following functions are needed only in some special applications.
+*/</span>
+
+<span class="bc">/*
+int deflateInit2 (z_streamp strm,
+                                  int       level,
+                                  int       method,
+                                  int       windowBits,
+                                  int       memLevel,
+                                  int       strategy);
+
+     This is another version of deflateInit with more compression options. The
+   fields next_in, zalloc, zfree and opaque must be initialized before by
+   the caller.
+
+     The method parameter is the compression method. It must be Z_DEFLATED in
+   this version of the library.
+
+     The windowBits parameter is the base two logarithm of the window size
+   (the size of the history buffer). It should be in the range 8..15 for this
+   version of the library. Larger values of this parameter result in better
+   compression at the expense of memory usage. The default value is 15 if
+   deflateInit is used instead.
+
+     windowBits can also be -8..-15 for raw deflate. In this case, -windowBits
+   determines the window size. deflate() will then generate raw deflate data
+   with no zlib header or trailer, and will not compute an adler32 check value.
+
+     windowBits can also be greater than 15 for optional gzip encoding. Add
+   16 to windowBits to write a simple gzip header and trailer around the
+   compressed data instead of a zlib wrapper. The gzip header will have no
+   file name, no extra data, no comment, no modification time (set to zero),
+   no header crc, and the operating system will be set to 255 (unknown).  If a
+   gzip stream is being written, strm-&gt;adler is a crc32 instead of an adler32.
+
+     The memLevel parameter specifies how much memory should be allocated
+   for the internal compression state. memLevel=1 uses minimum memory but
+   is slow and reduces compression ratio; memLevel=9 uses maximum memory
+   for optimal speed. The default value is 8. See zconf.h for total memory
+   usage as a function of windowBits and memLevel.
+
+     The strategy parameter is used to tune the compression algorithm. Use the
+   value Z_DEFAULT_STRATEGY for normal data, Z_FILTERED for data produced by a
+   filter (or predictor), Z_HUFFMAN_ONLY to force Huffman encoding only (no
+   string match), or Z_RLE to limit match distances to one (run-length
+   encoding). Filtered data consists mostly of small values with a somewhat
+   random distribution. In this case, the compression algorithm is tuned to
+   compress them better. The effect of Z_FILTERED is to force more Huffman
+   coding and less string matching; it is somewhat intermediate between
+   Z_DEFAULT and Z_HUFFMAN_ONLY. Z_RLE is designed to be almost as fast as
+   Z_HUFFMAN_ONLY, but give better compression for PNG image data. The strategy
+   parameter only affects the compression ratio but not the correctness of the
+   compressed output even if it is not set appropriately.  Z_FIXED prevents the
+   use of dynamic Huffman codes, allowing for a simpler decoder for special
+   applications.
+
+      deflateInit2 returns Z_OK if success, Z_MEM_ERROR if there was not enough
+   memory, Z_STREAM_ERROR if a parameter is invalid (such as an invalid
+   method). msg is set to null if there is no error message.  deflateInit2 does
+   not perform any compression: this will be done by deflate().
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateSetDictionary</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                         <span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>    <span class="i">dictionary</span></span>,
+                         <span class="o Parameter"><span class="t Identifier"><span class="i">uInt</span></span>      <span class="i">dictLength</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Initializes the compression dictionary from the given byte sequence
+   without producing any compressed output. This function must be called
+   immediately after deflateInit, deflateInit2 or deflateReset, before any
+   call of deflate. The compressor and decompressor must use exactly the same
+   dictionary (see inflateSetDictionary).
+
+     The dictionary should consist of strings (byte sequences) that are likely
+   to be encountered later in the data to be compressed, with the most commonly
+   used strings preferably put towards the end of the dictionary. Using a
+   dictionary is most useful when the data to be compressed is short and can be
+   predicted with good accuracy; the data can then be compressed better than
+   with the default empty dictionary.
+
+     Depending on the size of the compression data structures selected by
+   deflateInit or deflateInit2, a part of the dictionary may in effect be
+   discarded, for example if the dictionary is larger than the window size in
+   deflate or deflate2. Thus the strings most likely to be useful should be
+   put at the end of the dictionary, not at the front. In addition, the
+   current implementation of deflate will use at most the window size minus
+   262 bytes of the provided dictionary.
+
+     Upon return of this function, strm-&gt;adler is set to the adler32 value
+   of the dictionary; the decompressor may later use this value to determine
+   which dictionary has been used by the compressor. (The adler32 value
+   applies to the whole dictionary even if only a subset of the dictionary is
+   actually used by the compressor.) If a raw deflate was requested, then the
+   adler32 value is not computed and strm-&gt;adler is not set.
+
+     deflateSetDictionary returns Z_OK if success, or Z_STREAM_ERROR if a
+   parameter is invalid (such as NULL dictionary) or the stream state is
+   inconsistent (for example if deflate has already been called for this stream
+   or if the compression method is bsort). deflateSetDictionary does not
+   perform any compression: this will be done by deflate().
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateCopy</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">dest</span></span>,
+                <span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">source</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Sets the destination stream as a complete copy of the source stream.
+
+     This function can be useful when several compression strategies will be
+   tried, for example when there are several ways of pre-processing the input
+   data with a filter. The streams that will be discarded should then be freed
+   by calling deflateEnd.  Note that deflateCopy duplicates the internal
+   compression state which can be quite large, so this strategy is slow and
+   can consume lots of memory.
+
+     deflateCopy returns Z_OK if success, Z_MEM_ERROR if there was not
+   enough memory, Z_STREAM_ERROR if the source stream state was inconsistent
+   (such as zalloc being NULL). msg is left unchanged in both source and
+   destination.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateReset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     This function is equivalent to deflateEnd followed by deflateInit,
+   but does not free and reallocate all the internal compression state.
+   The stream will keep the same compression level and any other attributes
+   that may have been set by deflateInit2.
+
+      deflateReset returns Z_OK if success, or Z_STREAM_ERROR if the source
+   stream state was inconsistent (such as zalloc or state being NULL).
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateParams</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">level</span></span>,
+                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">strategy</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Dynamically update the compression level and compression strategy.  The
+   interpretation of level and strategy is as in deflateInit2.  This can be
+   used to switch between compression and straight copy of the input data, or
+   to switch to a different kind of input data requiring a different
+   strategy. If the compression level is changed, the input available so far
+   is compressed with the old level (and may be flushed); the new level will
+   take effect only at the next call of deflate().
+
+     Before the call of deflateParams, the stream state must be set as for
+   a call of deflate(), since the currently available input may have to
+   be compressed and flushed. In particular, strm-&gt;avail_out must be non-zero.
+
+     deflateParams returns Z_OK if success, Z_STREAM_ERROR if the source
+   stream state was inconsistent or if a parameter was invalid, Z_BUF_ERROR
+   if strm-&gt;avail_out was zero.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateTune</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">good_length</span></span>,
+                <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">max_lazy</span></span>,
+                <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">nice_length</span></span>,
+                <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">max_chain</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Fine tune deflate's internal compression parameters.  This should only be
+   used by someone who understands the algorithm used by zlib's deflate for
+   searching for the best matching string, and even then only by the most
+   fanatic optimizer trying to squeeze out the last compressed bit for their
+   specific input data.  Read the deflate.c source code for the meaning of the
+   max_lazy, good_length, nice_length, and max_chain parameters.
+
+     deflateTune() can be called after deflateInit() or deflateInit2(), and
+   returns Z_OK on success, or Z_STREAM_ERROR for an invalid deflate stream.
+ */</span>
+
+<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">deflateBound</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                   <span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span>     <span class="i">sourceLen</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     deflateBound() returns an upper bound on the compressed size after
+   deflation of sourceLen bytes.  It must be called after deflateInit()
+   or deflateInit2().  This would be used to allocate an output buffer
+   for deflation in a single pass, and so would be called before deflate().
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflatePrime</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                 <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">bits</span></span>,
+                 <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">value</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     deflatePrime() inserts bits in the deflate output stream.  The intent
+  is that this function is used to start off the deflate output with the
+  bits leftover from a previous deflate stream when appending to it.  As such,
+  this function can only be used for raw deflate, and must be used before the
+  first deflate() call after a deflateInit2() or deflateReset().  bits must be
+  less than or equal to 16, and that many of the least significant bits of
+  value will be inserted in the output.
+
+      deflatePrime returns Z_OK if success, or Z_STREAM_ERROR if the source
+   stream state was inconsistent.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateSetHeader</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
+                     <span class="o Parameter"><span class="t Identifier"><span class="i">gz_headerp</span></span> <span class="i">head</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+      deflateSetHeader() provides gzip header information for when a gzip
+   stream is requested by deflateInit2().  deflateSetHeader() may be called
+   after deflateInit2() or deflateReset() and before the first call of
+   deflate().  The text, time, os, extra field, name, and comment information
+   in the provided gz_header structure are written to the gzip header (xflag is
+   ignored -- the extra flags are set according to the compression level).  The
+   caller must assure that, if not Z_NULL, name and comment are terminated with
+   a zero byte, and that if extra is not Z_NULL, that extra_len bytes are
+   available there.  If hcrc is true, a gzip header crc is included.  Note that
+   the current versions of the command-line version of gzip (up through version
+   1.3.x) do not support header crc's, and will report that it is a "multi-part
+   gzip file" and give up.
+
+      If deflateSetHeader is not used, the default gzip header has text false,
+   the time set to zero, and os set to 255, with no extra, name, or comment
+   fields.  The gzip header is returned to the default state by deflateReset().
+
+      deflateSetHeader returns Z_OK if success, or Z_STREAM_ERROR if the source
+   stream state was inconsistent.
+*/</span>
+
+<span class="bc">/*
+int inflateInit2(z_streamp strm,
+                 int       windowBits);
+
+     This is another version of inflateInit with an extra parameter. The
+   fields next_in, avail_in, zalloc, zfree and opaque must be initialized
+   before by the caller.
+
+     The windowBits parameter is the base two logarithm of the maximum window
+   size (the size of the history buffer).  It should be in the range 8..15 for
+   this version of the library. The default value is 15 if inflateInit is used
+   instead. windowBits must be greater than or equal to the windowBits value
+   provided to deflateInit2() while compressing, or it must be equal to 15 if
+   deflateInit2() was not used. If a compressed stream with a larger window
+   size is given as input, inflate() will return with the error code
+   Z_DATA_ERROR instead of trying to allocate a larger window.
+
+     windowBits can also be -8..-15 for raw inflate. In this case, -windowBits
+   determines the window size. inflate() will then process raw deflate data,
+   not looking for a zlib or gzip header, not generating a check value, and not
+   looking for any check values for comparison at the end of the stream. This
+   is for use with other formats that use the deflate compressed data format
+   such as zip.  Those formats provide their own check values. If a custom
+   format is developed using the raw deflate format for compressed data, it is
+   recommended that a check value such as an adler32 or a crc32 be applied to
+   the uncompressed data as is done in the zlib, gzip, and zip formats.  For
+   most applications, the zlib format should be used as is. Note that comments
+   above on the use in deflateInit2() applies to the magnitude of windowBits.
+
+     windowBits can also be greater than 15 for optional gzip decoding. Add
+   32 to windowBits to enable zlib and gzip decoding with automatic header
+   detection, or add 16 to decode only the gzip format (the zlib format will
+   return a Z_DATA_ERROR).  If a gzip stream is being decoded, strm-&gt;adler is
+   a crc32 instead of an adler32.
+
+     inflateInit2 returns Z_OK if success, Z_MEM_ERROR if there was not enough
+   memory, Z_STREAM_ERROR if a parameter is invalid (such as a null strm). msg
+   is set to null if there is no error message.  inflateInit2 does not perform
+   any decompression apart from reading the zlib header if present: this will
+   be done by inflate(). (So next_in and avail_in may be modified, but next_out
+   and avail_out are unchanged.)
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateSetDictionary</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                         <span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>    <span class="i">dictionary</span></span>,
+                         <span class="o Parameter"><span class="t Identifier"><span class="i">uInt</span></span>      <span class="i">dictLength</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Initializes the decompression dictionary from the given uncompressed byte
+   sequence. This function must be called immediately after a call of inflate,
+   if that call returned Z_NEED_DICT. The dictionary chosen by the compressor
+   can be determined from the adler32 value returned by that call of inflate.
+   The compressor and decompressor must use exactly the same dictionary (see
+   deflateSetDictionary).  For raw inflate, this function can be called
+   immediately after inflateInit2() or inflateReset() and before any call of
+   inflate() to set the dictionary.  The application must insure that the
+   dictionary that was used for compression is provided.
+
+     inflateSetDictionary returns Z_OK if success, Z_STREAM_ERROR if a
+   parameter is invalid (such as NULL dictionary) or the stream state is
+   inconsistent, Z_DATA_ERROR if the given dictionary doesn't match the
+   expected one (incorrect adler32 value). inflateSetDictionary does not
+   perform any decompression: this will be done by subsequent calls of
+   inflate().
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateSync</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+    Skips invalid compressed data until a full flush point (see above the
+  description of deflate with Z_FULL_FLUSH) can be found, or until all
+  available input is skipped. No output is provided.
+
+    inflateSync returns Z_OK if a full flush point has been found, Z_BUF_ERROR
+  if no more input was provided, Z_DATA_ERROR if no flush point has been found,
+  or Z_STREAM_ERROR if the stream structure was inconsistent. In the success
+  case, the application may save the current current value of total_in which
+  indicates where valid compressed data was found. In the error case, the
+  application may repeatedly call inflateSync, providing more input each time,
+  until success or end of the input data.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateCopy</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">dest</span></span>,
+                <span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">source</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Sets the destination stream as a complete copy of the source stream.
+
+     This function can be useful when randomly accessing a large stream.  The
+   first pass through the stream can periodically record the inflate state,
+   allowing restarting inflate at those points when randomly accessing the
+   stream.
+
+     inflateCopy returns Z_OK if success, Z_MEM_ERROR if there was not
+   enough memory, Z_STREAM_ERROR if the source stream state was inconsistent
+   (such as zalloc being NULL). msg is left unchanged in both source and
+   destination.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateReset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     This function is equivalent to inflateEnd followed by inflateInit,
+   but does not free and reallocate all the internal decompression state.
+   The stream will keep attributes that may have been set by inflateInit2.
+
+      inflateReset returns Z_OK if success, or Z_STREAM_ERROR if the source
+   stream state was inconsistent (such as zalloc or state being NULL).
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflatePrime</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                 <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">bits</span></span>,
+                 <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">value</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     This function inserts bits in the inflate input stream.  The intent is
+  that this function is used to start inflating at a bit position in the
+  middle of a byte.  The provided bits will be used before any bytes are used
+  from next_in.  This function should only be used with raw inflate, and
+  should be used before the first inflate() call after inflateInit2() or
+  inflateReset().  bits must be less than or equal to 16, and that many of the
+  least significant bits of value will be inserted in the input.
+
+      inflatePrime returns Z_OK if success, or Z_STREAM_ERROR if the source
+   stream state was inconsistent.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateGetHeader</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
+                     <span class="o Parameter"><span class="t Identifier"><span class="i">gz_headerp</span></span> <span class="i">head</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+      inflateGetHeader() requests that gzip header information be stored in the
+   provided gz_header structure.  inflateGetHeader() may be called after
+   inflateInit2() or inflateReset(), and before the first call of inflate().
+   As inflate() processes the gzip stream, head-&gt;done is zero until the header
+   is completed, at which time head-&gt;done is set to one.  If a zlib stream is
+   being decoded, then head-&gt;done is set to -1 to indicate that there will be
+   no gzip header information forthcoming.  Note that Z_BLOCK can be used to
+   force inflate() to return immediately after header processing is complete
+   and before any actual data is decompressed.
+
+      The text, time, xflags, and os fields are filled in with the gzip header
+   contents.  hcrc is set to true if there is a header CRC.  (The header CRC
+   was valid if done is set to one.)  If extra is not Z_NULL, then extra_max
+   contains the maximum number of bytes to write to extra.  Once done is true,
+   extra_len contains the actual extra field length, and extra contains the
+   extra field, or that field truncated if extra_max is less than extra_len.
+   If name is not Z_NULL, then up to name_max characters are written there,
+   terminated with a zero unless the length is greater than name_max.  If
+   comment is not Z_NULL, then up to comm_max characters are written there,
+   terminated with a zero unless the length is greater than comm_max.  When
+   any of extra, name, or comment are not Z_NULL and the respective field is
+   not present in the header, then that field is set to Z_NULL to signal its
+   absence.  This allows the use of deflateSetHeader() with the returned
+   structure to duplicate the header.  However if those fields are set to
+   allocated memory, then the application will need to save those pointers
+   elsewhere so that they can be eventually freed.
+
+      If inflateGetHeader is not used, then the header information is simply
+   discarded.  The header is always checked for validity, including the header
+   CRC if present.  inflateReset() will reset the process to discard the header
+   information.  The application would need to call inflateGetHeader() again to
+   retrieve the header from the next gzip stream.
+
+      inflateGetHeader returns Z_OK if success, or Z_STREAM_ERROR if the source
+   stream state was inconsistent.
+*/</span>
+
+<span class="bc">/*
+int inflateBackInit(z_streamp strm,
+                    int       windowBits,
+                    ubyte*    window);
+
+     Initialize the internal stream state for decompression using inflateBack()
+   calls.  The fields zalloc, zfree and opaque in strm must be initialized
+   before the call.  If zalloc and zfree are Z_NULL, then the default library-
+   derived memory allocation routines are used.  windowBits is the base two
+   logarithm of the window size, in the range 8..15.  window is a caller
+   supplied buffer of that size.  Except for special applications where it is
+   assured that deflate was used with small window sizes, windowBits must be 15
+   and a 32K byte window must be supplied to be able to decompress general
+   deflate streams.
+
+     See inflateBack() for the usage of these routines.
+
+     inflateBackInit will return Z_OK on success, Z_STREAM_ERROR if any of
+   the paramaters are invalid, Z_MEM_ERROR if the internal state could not
+   be allocated, or Z_VERSION_ERROR if the version of the library does not
+   match the version of the header file.
+*/</span>
+
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span></span>      <span class="i">in_func</span>;</span></span>
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span>  <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span></span>)</span></span> <span class="i">out_func</span>;</span></span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateBack</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                <span class="o Parameter"><span class="t Identifier"><span class="i">in_func</span></span>   <span class="i">in_fn</span></span>,
+                <span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>     <span class="i">in_desc</span></span>,
+                <span class="o Parameter"><span class="t Identifier"><span class="i">out_func</span></span>  <span class="i">out_fn</span></span>,
+                <span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>     <span class="i">out_desc</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     inflateBack() does a raw inflate with a single call using a call-back
+   interface for input and output.  This is more efficient than inflate() for
+   file i/o applications in that it avoids copying between the output and the
+   sliding window by simply making the window itself the output buffer.  This
+   function trusts the application to not change the output buffer passed by
+   the output function, at least until inflateBack() returns.
+
+     inflateBackInit() must be called first to allocate the internal state
+   and to initialize the state with the user-provided window buffer.
+   inflateBack() may then be used multiple times to inflate a complete, raw
+   deflate stream with each call.  inflateBackEnd() is then called to free
+   the allocated state.
+
+     A raw deflate stream is one with no zlib or gzip header or trailer.
+   This routine would normally be used in a utility that reads zip or gzip
+   files and writes out uncompressed files.  The utility would decode the
+   header and process the trailer on its own, hence this routine expects
+   only the raw deflate stream to decompress.  This is different from the
+   normal behavior of inflate(), which expects either a zlib or gzip header and
+   trailer around the deflate stream.
+
+     inflateBack() uses two subroutines supplied by the caller that are then
+   called by inflateBack() for input and output.  inflateBack() calls those
+   routines until it reads a complete deflate stream and writes out all of the
+   uncompressed data, or until it encounters an error.  The function's
+   parameters and return types are defined above in the in_func and out_func
+   aliass.  inflateBack() will call in(in_desc, &amp;buf) which should return the
+   number of bytes of provided input, and a pointer to that input in buf.  If
+   there is no input available, in() must return zero--buf is ignored in that
+   case--and inflateBack() will return a buffer error.  inflateBack() will call
+   out(out_desc, buf, len) to write the uncompressed data buf[0..len-1].  out()
+   should return zero on success, or non-zero on failure.  If out() returns
+   non-zero, inflateBack() will return with an error.  Neither in() nor out()
+   are permitted to change the contents of the window provided to
+   inflateBackInit(), which is also the buffer that out() uses to write from.
+   The length written by out() will be at most the window size.  Any non-zero
+   amount of input may be provided by in().
+
+     For convenience, inflateBack() can be provided input on the first call by
+   setting strm-&gt;next_in and strm-&gt;avail_in.  If that input is exhausted, then
+   in() will be called.  Therefore strm-&gt;next_in must be initialized before
+   calling inflateBack().  If strm-&gt;next_in is Z_NULL, then in() will be called
+   immediately for input.  If strm-&gt;next_in is not Z_NULL, then strm-&gt;avail_in
+   must also be initialized, and then if strm-&gt;avail_in is not zero, input will
+   initially be taken from strm-&gt;next_in[0 .. strm-&gt;avail_in - 1].
+
+     The in_desc and out_desc parameters of inflateBack() is passed as the
+   first parameter of in() and out() respectively when they are called.  These
+   descriptors can be optionally used to pass any information that the caller-
+   supplied in() and out() functions need to do their job.
+
+     On return, inflateBack() will set strm-&gt;next_in and strm-&gt;avail_in to
+   pass back any unused input that was provided by the last in() call.  The
+   return values of inflateBack() can be Z_STREAM_END on success, Z_BUF_ERROR
+   if in() or out() returned an error, Z_DATA_ERROR if there was a format
+   error in the deflate stream (in which case strm-&gt;msg is set to indicate the
+   nature of the error), or Z_STREAM_ERROR if the stream was not properly
+   initialized.  In the case of Z_BUF_ERROR, an input or output error can be
+   distinguished using strm-&gt;next_in which will be Z_NULL only if in() returned
+   an error.  If strm-&gt;next is not Z_NULL, then the Z_BUF_ERROR was due to
+   out() returning non-zero.  (in() will always be called before out(), so
+   strm-&gt;next_in is assured to be defined if out() returns non-zero.)  Note
+   that inflateBack() cannot return Z_OK.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateBackEnd</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     All memory allocated by inflateBackInit() is freed.
+
+     inflateBackEnd() returns Z_OK on success, or Z_STREAM_ERROR if the stream
+   state was inconsistent.
+*/</span>
+
+<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">zlibCompileFlags</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+<span class="bc">/* Return flags indicating compile-time options.
+
+    Type sizes, two bits each, 00 = 16 bits, 01 = 32, 10 = 64, 11 = other:
+     1.0: size of uInt
+     3.2: size of uLong
+     5.4: size of voidpf (pointer)
+     7.6: size of z_off_t
+
+    Compiler, assembler, and debug options:
+     8: DEBUG
+     9: ASMV or ASMINF -- use ASM code
+     10: ZLIB_WINAPI -- exported functions use the WINAPI calling convention
+     11: 0 (reserved)
+
+    One-time table building (smaller code, but not thread-safe if true):
+     12: BUILDFIXED -- build static block decoding tables when needed
+     13: DYNAMIC_CRC_TABLE -- build CRC calculation tables when needed
+     14,15: 0 (reserved)
+
+    Library content (indicates missing functionality):
+     16: NO_GZCOMPRESS -- gz* functions cannot compress (to avoid linking
+                          deflate code when not needed)
+     17: NO_GZIP -- deflate can't write gzip streams, and inflate can't detect
+                    and decode gzip streams (to avoid linking crc code)
+     18-19: 0 (reserved)
+
+    Operation variations (changes in library functionality):
+     20: PKZIP_BUG_WORKAROUND -- slightly more permissive inflate
+     21: FASTEST -- deflate algorithm with only one, lowest compression level
+     22,23: 0 (reserved)
+
+    The sprintf variant used by gzprintf (zero is best):
+     24: 0 = vs*, 1 = s* -- 1 means limited to 20 arguments after the format
+     25: 0 = *nprintf, 1 = *printf -- 1 means gzprintf() not secure!
+     26: 0 = returns value, 1 = void -- 1 means inferred string length returned
+
+    Remainder:
+     27-31: 0 (reserved)
+ */</span>
+
+
+                        <span class="bc">/* utility functions */</span>
+
+<span class="bc">/*
+     The following utility functions are implemented on top of the
+   basic stream-oriented functions. To simplify the interface, some
+   default options are assumed (compression level and memory usage,
+   standard memory allocation functions). The source code of these
+   utility functions can easily be modified if you need special options.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">compress</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">dest</span></span>,
+             <span class="o Parameter"><span class="t Identifier"><span class="i">uLongf</span></span><span class="t Pointer">*</span> <span class="i">destLen</span></span>,
+             <span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">source</span></span>,
+             <span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span>   <span class="i">sourceLen</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Compresses the source buffer into the destination buffer.  sourceLen is
+   the byte length of the source buffer. Upon entry, destLen is the total
+   size of the destination buffer, which must be at least the value returned
+   by compressBound(sourceLen). Upon exit, destLen is the actual size of the
+   compressed buffer.
+     This function can be used to compress a whole file at once if the
+   input file is mmap'ed.
+     compress returns Z_OK if success, Z_MEM_ERROR if there was not
+   enough memory, Z_BUF_ERROR if there was not enough room in the output
+   buffer.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">compress2</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">dest</span></span>,
+              <span class="o Parameter"><span class="t Identifier"><span class="i">uLongf</span></span><span class="t Pointer">*</span> <span class="i">destLen</span></span>,
+              <span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">source</span></span>,
+              <span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span>   <span class="i">sourceLen</span></span>,
+              <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>     <span class="i">level</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Compresses the source buffer into the destination buffer. The level
+   parameter has the same meaning as in deflateInit.  sourceLen is the byte
+   length of the source buffer. Upon entry, destLen is the total size of the
+   destination buffer, which must be at least the value returned by
+   compressBound(sourceLen). Upon exit, destLen is the actual size of the
+   compressed buffer.
+
+     compress2 returns Z_OK if success, Z_MEM_ERROR if there was not enough
+   memory, Z_BUF_ERROR if there was not enough room in the output buffer,
+   Z_STREAM_ERROR if the level parameter is invalid.
+*/</span>
+
+<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">compressBound</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">sourceLen</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     compressBound() returns an upper bound on the compressed size after
+   compress() or compress2() on sourceLen bytes.  It would be used before
+   a compress() or compress2() call to allocate the destination buffer.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">uncompress</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">dest</span></span>,
+               <span class="o Parameter"><span class="t Identifier"><span class="i">uLongf</span></span><span class="t Pointer">*</span> <span class="i">destLen</span></span>,
+               <span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">source</span></span>,
+               <span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span>   <span class="i">sourceLen</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Decompresses the source buffer into the destination buffer.  sourceLen is
+   the byte length of the source buffer. Upon entry, destLen is the total
+   size of the destination buffer, which must be large enough to hold the
+   entire uncompressed data. (The size of the uncompressed data must have
+   been saved previously by the compressor and transmitted to the decompressor
+   by some mechanism outside the scope of this compression library.)
+   Upon exit, destLen is the actual size of the compressed buffer.
+     This function can be used to decompress a whole file at once if the
+   input file is mmap'ed.
+
+     uncompress returns Z_OK if success, Z_MEM_ERROR if there was not
+   enough memory, Z_BUF_ERROR if there was not enough room in the output
+   buffer, or Z_DATA_ERROR if the input data was corrupted or incomplete.
+*/</span>
+
+
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">voidp</span></span> <span class="i">gzFile</span>;</span></span>
+
+<span class="d Function"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">gzopen</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">mode</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Opens a gzip (.gz) file for reading or writing. The mode parameter
+   is as in fopen ("rb" or "wb") but can also include a compression level
+   ("wb9") or a strategy: 'f' for filtered data as in "wb6f", 'h' for
+   Huffman only compression as in "wb1h", or 'R' for run-length encoding
+   as in "wb1R". (See the description of deflateInit2 for more information
+   about the strategy parameter.)
+
+     gzopen can be used to read a file which is not in gzip format; in this
+   case gzread will directly read from the file without decompression.
+
+     gzopen returns NULL if the file could not be opened or if there was
+   insufficient memory to allocate the (de)compression state; errno
+   can be checked to distinguish the two cases (if errno is zero, the
+   zlib error is Z_MEM_ERROR).  */</span>
+
+<span class="d Function"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">gzdopen</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">fd</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">mode</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     gzdopen() associates a gzFile with the file descriptor fd.  File
+   descriptors are obtained from calls like open, dup, creat, pipe or
+   fileno (in the file has been previously opened with fopen).
+   The mode parameter is as in gzopen.
+     The next call of gzclose on the returned gzFile will also close the
+   file descriptor fd, just like fclose(fdopen(fd), mode) closes the file
+   descriptor fd. If you want to keep fd open, use gzdopen(dup(fd), mode).
+     gzdopen returns NULL if there was insufficient memory to allocate
+   the (de)compression state.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzsetparams</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">level</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">strategy</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Dynamically update the compression level or strategy. See the description
+   of deflateInit2 for the meaning of these parameters.
+     gzsetparams returns Z_OK if success, or Z_STREAM_ERROR if the file was not
+   opened for writing.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzread</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">voidp</span></span> <span class="i">buf</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Reads the given number of uncompressed bytes from the compressed file.
+   If the input file was not in gzip format, gzread copies the given number
+   of bytes into the buffer.
+     gzread returns the number of uncompressed bytes actually read (0 for
+   end of file, -1 for error). */</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzwrite</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">voidpc</span></span> <span class="i">buf</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Writes the given number of uncompressed bytes into the compressed file.
+   gzwrite returns the number of uncompressed bytes actually written
+   (0 in case of error).
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzprintf</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">format</span></span>, <span class="o Parameter">...</span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Converts, formats, and writes the args to the compressed file under
+   control of the format string, as in fprintf. gzprintf returns the number of
+   uncompressed bytes actually written (0 in case of error).  The number of
+   uncompressed bytes written is limited to 4095. The caller should assure that
+   this limit is not exceeded. If it is exceeded, then gzprintf() will return
+   return an error (0) with nothing written. In this case, there may also be a
+   buffer overflow with unpredictable consequences, which is possible only if
+   zlib was compiled with the insecure functions sprintf() or vsprintf()
+   because the secure snprintf() or vsnprintf() functions were not available.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzputs</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">s</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+      Writes the given null-terminated string to the compressed file, excluding
+   the terminating null character.
+      gzputs returns the number of characters written, or -1 in case of error.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">gzgets</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">buf</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+      Reads bytes from the compressed file until len-1 characters are read, or
+   a newline character is read and transferred to buf, or an end-of-file
+   condition is encountered.  The string is then terminated with a null
+   character.
+      gzgets returns buf, or Z_NULL in case of error.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzputc</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">c</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+      Writes c, converted to an unsigned char, into the compressed file.
+   gzputc returns the value that was written, or -1 in case of error.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzgetc</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+      Reads one byte from the compressed file. gzgetc returns this byte
+   or -1 in case of end of file or error.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzungetc</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">c</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+      Push one character back onto the stream to be read again later.
+   Only one character of push-back is allowed.  gzungetc() returns the
+   character pushed, or -1 on failure.  gzungetc() will fail if a
+   character has been pushed but not read yet, or if c is -1. The pushed
+   character will be discarded if the stream is repositioned with gzseek()
+   or gzrewind().
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzflush</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">flush</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Flushes all pending output into the compressed file. The parameter
+   flush is as in the deflate() function. The return value is the zlib
+   error number (see function gzerror below). gzflush returns Z_OK if
+   the flush parameter is Z_FINISH and all output could be flushed.
+     gzflush should be called only when strictly necessary because it can
+   degrade compression.
+*/</span>
+
+<span class="d Function"><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">gzseek</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">offset</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">whence</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+      Sets the starting position for the next gzread or gzwrite on the
+   given compressed file. The offset represents a number of bytes in the
+   uncompressed data stream. The whence parameter is defined as in lseek(2);
+   the value SEEK_END is not supported.
+     If the file is opened for reading, this function is emulated but can be
+   extremely slow. If the file is opened for writing, only forward seeks are
+   supported; gzseek then compresses a sequence of zeroes up to the new
+   starting position.
+
+      gzseek returns the resulting offset location as measured in bytes from
+   the beginning of the uncompressed stream, or -1 in case of error, in
+   particular if the file is opened for writing and the new starting position
+   would be before the current position.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzrewind</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Rewinds the given file. This function is supported only for reading.
+
+   gzrewind(file) is equivalent to (int)gzseek(file, 0L, SEEK_SET)
+*/</span>
+
+<span class="d Function"><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">gztell</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Returns the starting position for the next gzread or gzwrite on the
+   given compressed file. This position represents a number of bytes in the
+   uncompressed data stream.
+
+   gztell(file) is equivalent to gzseek(file, 0L, SEEK_CUR)
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzeof</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Returns 1 when EOF has previously been detected reading the given
+   input stream, otherwise zero.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzdirect</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Returns 1 if file is being read directly without decompression, otherwise
+   zero.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzclose</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Flushes all pending output if necessary, closes the compressed file
+   and deallocates all the (de)compression state. The return value is the zlib
+   error number (see function gzerror below).
+*/</span>
+
+<span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">gzerror</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span><span class="t Pointer">*</span> <span class="i">errnum</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Returns the error message for the last error which occurred on the
+   given compressed file. errnum is set to zlib error number. If an
+   error occurred in the file system and not in the compression library,
+   errnum is set to Z_ERRNO and the application may consult errno
+   to get the exact error code.
+*/</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">gzclearerr</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Clears the error and end-of-file flags for file. This is analogous to the
+   clearerr() function in stdio. This is useful for continuing to read a gzip
+   file that is being written concurrently.
+*/</span>
+
+                        <span class="bc">/* checksum functions */</span>
+
+<span class="bc">/*
+     These functions are not related to compression but are exported
+   anyway because they might be useful in applications using the
+   compression library.
+*/</span>
+
+<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler32</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span> <span class="i">buf</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">uInt</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Update a running Adler-32 checksum with the bytes buf[0..len-1] and
+   return the updated checksum. If buf is NULL, this function returns
+   the required initial value for the checksum.
+   An Adler-32 checksum is almost as reliable as a CRC32 but can be computed
+   much faster. Usage example:
+
+     uLong adler = adler32(0L, Z_NULL, 0);
+
+     while (read_buffer(buffer, length) != EOF) {
+       adler = adler32(adler, buffer, length);
+     }
+     if (adler != original_adler) error();
+*/</span>
+
+<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler32_combine</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler1</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler2</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">len2</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Combine two Adler-32 checksums into one.  For two sequences of bytes, seq1
+   and seq2 with lengths len1 and len2, Adler-32 checksums were calculated for
+   each, adler1 and adler2.  adler32_combine() returns the Adler-32 checksum of
+   seq1 and seq2 concatenated, requiring only adler1, adler2, and len2.
+*/</span>
+
+<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc32</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span> <span class="i">buf</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">uInt</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="bc">/*
+     Update a running CRC-32 with the bytes buf[0..len-1] and return the
+   updated CRC-32. If buf is NULL, this function returns the required initial
+   value for the for the crc. Pre- and post-conditioning (one's complement) is
+   performed within this function so it shouldn't be done by the application.
+   Usage example:
+
+     uLong crc = crc32(0L, Z_NULL, 0);
+
+     while (read_buffer(buffer, length) != EOF) {
+       crc = crc32(crc, buffer, length);
+     }
+     if (crc != original_crc) error();
+*/</span>
+
+<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc32_combine</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc1</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc2</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">len2</span></span>)</span><span class="s FuncBody">;</span></span>
+
+<span class="bc">/*
+     Combine two CRC-32 check values into one.  For two sequences of bytes,
+   seq1 and seq2 with lengths len1 and len2, CRC-32 check values were
+   calculated for each, crc1 and crc2.  crc32_combine() returns the CRC-32
+   check value of seq1 and seq2 concatenated, requiring only crc1, crc2, and
+   len2.
+*/</span>
+
+
+                        <span class="bc">/* various hacks, don't look :) */</span>
+
+<span class="bc">/* deflateInit and inflateInit are macros to allow checking the zlib version
+ * and the compiler's view of z_stream:
+ */</span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateInit_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
+                 <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>        <span class="i">level</span></span>,
+                 <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>      <span class="i">ver</span></span>,
+                 <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>        <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateInit_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
+                 <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>      <span class="i">ver</span></span>,
+                 <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>        <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateInit2_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">level</span></span>,
+                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">method</span></span>,
+                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
+                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">memLevel</span></span>,
+                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">strategy</span></span>,
+                  <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>     <span class="i">ver</span></span>,
+                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateInit2_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
+                  <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>     <span class="i">ver</span></span>,
+                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateBackInit_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                     <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
+                     <span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span>    <span class="i">window</span></span>,
+                     <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>     <span class="i">ver</span></span>,
+                     <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
+
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateInit</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
+                           <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>        <span class="i">level</span></span>)</span>
+<span class="s FuncBody"><span class="s Compound">{
+    <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">deflateInit_</span></span>(<span class="i">strm</span>,
+                        <span class="i">level</span>,
+                        <span class="i">ZLIB_VERSION</span>,
+                        <span class="i">z_stream</span>.<span class="i">sizeof</span>)</span>;</span>
+}</span></span></span>
+
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateInit</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>)</span>
+<span class="s FuncBody"><span class="s Compound">{
+    <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">inflateInit_</span></span>(<span class="i">strm</span>,
+                        <span class="i">ZLIB_VERSION</span>,
+                        <span class="i">z_stream</span>.<span class="i">sizeof</span>)</span>;</span>
+}</span></span></span>
+
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateInit2</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                           <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">level</span></span>,
+                           <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">method</span></span>,
+                           <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
+                           <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">memLevel</span></span>,
+                           <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">strategy</span></span>)</span>
+<span class="s FuncBody"><span class="s Compound">{
+    <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">deflateInit2_</span></span>(<span class="i">strm</span>,
+                         <span class="i">level</span>,
+                         <span class="i">method</span>,
+                         <span class="i">windowBits</span>,
+                         <span class="i">memLevel</span>,
+                         <span class="i">strategy</span>,
+                         <span class="i">ZLIB_VERSION</span>,
+                         <span class="i">z_stream</span>.<span class="i">sizeof</span>)</span>;</span>
+}</span></span></span>
+
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateInit2</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                            <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>)</span>
+<span class="s FuncBody"><span class="s Compound">{
+    <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">inflateInit2_</span></span>(<span class="i">strm</span>,
+                         <span class="i">windowBits</span>,
+                         <span class="i">ZLIB_VERSION</span>,
+                         <span class="i">z_stream</span>.<span class="i">sizeof</span>)</span>;</span>
+}</span></span></span>
+
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateBackInit</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                               <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
+                               <span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span>    <span class="i">window</span></span>)</span>
+<span class="s FuncBody"><span class="s Compound">{
+    <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">inflateBackInit_</span></span>(<span class="i">strm</span>,
+                            <span class="i">windowBits</span>,
+                            <span class="i">window</span>,
+                            <span class="i">ZLIB_VERSION</span>,
+                            <span class="i">z_stream</span>.<span class="i">sizeof</span>)</span>;</span>
+}</span></span></span>
+
+<span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>   <span class="i">zError</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span>     <span class="i">inflateSyncPoint</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">z</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">uLongf</span></span><span class="t Pointer">*</span> <span class="i">get_crc_table</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span></span></span>
+
+</pre></td>
+</tr></table>
+</body>
+</html>

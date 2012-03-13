@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.FileSystem</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.FileSystem">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.FileSystem"><a href="htmlsrc/tango.io.FileSystem.html" class="symbol">tango.io.FileSystem</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD:
+                        AFL 3.0:</div>
+<p class="sec_header">Version:</p><div class="cmnt">Mar 2004: Initial release</div>
+<p class="sec_header">Version:</p><div class="cmnt">Feb 2007: Now using mutating paths</div>
+<p class="sec_header">Authors:</p><div class="cmnt">Kris, Chris Sauls (Win95 file support)</div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="FileSystem" href="htmlsrc/tango.io.FileSystem.html#L66">FileSystem</a> <a href="tango.io.FileSystem.html#FileSystem" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Models an OS-specific file-system. Included here are methods to
+        manipulate the current working directory, and to convert a path
+        to its absolute form.</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FileSystem.setDirectory" href="htmlsrc/tango.io.FileSystem.html#L120">setDirectory</a><span class="params">(const(char)[] <em>path</em>)</span> <span class="attrs">[<span class="stc">static</span>, <span class="stc">deprecated</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.setDirectory" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the current working directory</div></div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">see Environment.cwd()</div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="FileSystem.getDirectory" href="htmlsrc/tango.io.FileSystem.html#L154">getDirectory</a><span class="params">()</span> <span class="attrs">[<span class="stc">static</span>, <span class="stc">deprecated</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.getDirectory" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the current working directory</div></div>
+<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">see Environment.cwd()</div></dd>
+<dt class="decl"><span class="rettyp">char[][]</span> <a class="symbol _function" name="FileSystem.roots" href="htmlsrc/tango.io.FileSystem.html#L199">roots</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.roots" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">List the set of root devices (C:, D: etc)</div></div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="FileSystem.freeSpace" href="htmlsrc/tango.io.FileSystem.html#L291">freeSpace</a><span class="params">(const(char)[] <em>folder</em>, bool <em>superuser</em> = <span class="defval"><span class="k">false</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.freeSpace" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Request how much free space in bytes is available on the
+                        disk/mountpoint where folder resides.</div></div>
+<div class="cmnt">If a quota limit exists for this area, that will be taken
+                        into account unless superuser is set to true.
+<p class="bl"></p>
+                        If a user has exceeded the quota, a negative number can
+                        be returned.
+<p class="bl"></p>
+                        Note that the difference between total available space
+                        and free space will not equal the combined size of the
+                        contents on the file system, since the numbers for the
+                        functions here are calculated from the used blocks,
+                        including those spent on metadata and file nodes.
+<p class="bl"></p>
+                        If actual used space is wanted one should use the
+                        statistics functionality of tango.io.vfs.
+<p class="bl"></p>
+                        See also: totalSpace()</div>
+<p class="sec_header">Since:</p><div class="cmnt">0.99.9</div></dd>
+<dt class="decl"><span class="rettyp">ulong</span> <a class="symbol _function" name="FileSystem.totalSpace" href="htmlsrc/tango.io.FileSystem.html#L330">totalSpace</a><span class="params">(const(char)[] <em>folder</em>, bool <em>superuser</em> = <span class="defval"><span class="k">false</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.totalSpace" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Request how large in bytes the
+                        disk/mountpoint where folder resides is.</div></div>
+<div class="cmnt">If a quota limit exists for this area, then
+                        that quota can be what will be returned unless superuser
+                        is set to true. On Posix systems this distinction is not
+                        made though.
+<p class="bl"></p>
+                        NOTE Access to this information when _superuser is
+                        set to true may only be available if the program is
+                        run in superuser mode.
+<p class="bl"></p>
+                        See also: freeSpace()</div>
+<p class="sec_header">Since:</p><div class="cmnt">0.99.9</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

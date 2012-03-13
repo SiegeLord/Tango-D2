@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.model.IConduit</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.model.IConduit">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.model.IConduit"><a href="htmlsrc/tango.io.model.IConduit.html" class="symbol">tango.io.model.IConduit</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: March 2004<br/>
+                        Outback release: December 2006</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="IConduit" href="htmlsrc/tango.io.model.IConduit.html#L31">IConduit</a> : <span class="bclass">InputStream</span>, <span class="bclass">OutputStream</span> <a href="tango.io.model.IConduit.html#IConduit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Conduits provide virtualized access to external content, and
+        represent things like files or Internet connections. Conduits
+        expose a pair of streams, are modelled by tango.io.model.IConduit,
+        and are implemented via classes such as File &amp; SocketConduit.</div></div>
+<div class="cmnt">Additional kinds of conduit are easy to construct: one either
+        subclasses tango.io.device.Conduit, or implements tango.io.model.IConduit.
+        A conduit typically reads and writes from/to an IBuffer in large
+        chunks, typically the entire buffer. Alternatively, one can invoke
+        input.read(dst[]) and/or output.write(src[]) directly.</div>
+<dl>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="IConduit.bufferSize" href="htmlsrc/tango.io.model.IConduit.html#L39">bufferSize</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.model.IConduit.html#IConduit.bufferSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a preferred size for buffering conduit I/O.</div></div></dd>
+<dt class="decl"><span class="rettyp">immutable(char)[]</span> <a class="symbol _function" name="IConduit.toString" href="htmlsrc/tango.io.model.IConduit.html#L47">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.io.model.IConduit.html#IConduit.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the name of this conduit.</div></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="IConduit.isAlive" href="htmlsrc/tango.io.model.IConduit.html#L55">isAlive</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>, <span class="stc">abstract</span>]</span> <a href="tango.io.model.IConduit.html#IConduit.isAlive" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Is the conduit alive?</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="IConduit.detach" href="htmlsrc/tango.io.model.IConduit.html#L63">detach</a><span class="params">()</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.io.model.IConduit.html#IConduit.detach" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Release external resources.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="IConduit.error" href="htmlsrc/tango.io.model.IConduit.html#L71">error</a><span class="params">(const(char[]) <em>msg</em>)</span> <span class="attrs">[<span class="stc">abstract</span>]</span> <a href="tango.io.model.IConduit.html#IConduit.error" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Throw a generic IO exception with the provided msg.</div></div></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="IConduit.Seek" href="htmlsrc/tango.io.model.IConduit.html#L80">Seek</a> <a href="tango.io.model.IConduit.html#IConduit.Seek" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">All streams now support seek(), so this is used to signal
+                a seekable conduit instead.</div></div>
+</dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="IConduit.Truncate" href="htmlsrc/tango.io.model.IConduit.html#L88">Truncate</a> <a href="tango.io.model.IConduit.html#IConduit.Truncate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Indicates the conduit supports resize/truncation.</div></div>
+</dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="ISelectable" href="htmlsrc/tango.io.model.IConduit.html#L101">ISelectable</a> <a href="tango.io.model.IConduit.html#ISelectable" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Describes how to make an IO entity usable with selectors.</div></div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> void* <a class="symbol _alias" name="ISelectable.Handle" href="htmlsrc/tango.io.model.IConduit.html#L104">Handle</a> <a href="tango.io.model.IConduit.html#ISelectable.Handle" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Opaque OS file-handle.</div></div></dd>
+<dt class="decl"><span class="rettyp">Handle</span> <a class="symbol _function" name="ISelectable.fileHandle" href="htmlsrc/tango.io.model.IConduit.html#L117">fileHandle</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.model.IConduit.html#ISelectable.fileHandle" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Opaque OS file-handle.</div></div>
+<div class="cmnt">Models a handle-oriented device.</div>
+<p class="sec_header">TODO:</p><div class="cmnt">Figure out how to avoid exposing this in the general
+                case.</div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="IOStream" href="htmlsrc/tango.io.model.IConduit.html#L127">IOStream</a> <a href="tango.io.model.IConduit.html#IOStream" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The common attributes of streams.</div></div>
+<dl>
+<dt class="decl"><span class="kw">auto</span> <a class="symbol _variable" name="IOStream.Eof" href="htmlsrc/tango.io.model.IConduit.html#L129">Eof</a> <span class="attrs">[<span class="stc">manifest</span>]</span> <a href="tango.io.model.IConduit.html#IOStream.Eof" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">the End-of-Flow identifer</div></div></dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="IOStream.Anchor" href="htmlsrc/tango.io.model.IConduit.html#L137">Anchor</a> <a href="tango.io.model.IConduit.html#IOStream.Anchor" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The anchor positions supported by seek().</div></div>
+</dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="IOStream.seek" href="htmlsrc/tango.io.model.IConduit.html#L153">seek</a><span class="params">(long <em>offset</em>, Anchor <em>anchor</em> = <span class="defval"><span class="i">Begin</span></span>)</span> <a href="tango.io.model.IConduit.html#IOStream.seek" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Move the stream position to the given offset from the
+                provided anchor point, and return adjusted position.</div></div>
+<div class="cmnt">Those conduits which don't support seeking will throw
+                an IOException (and don't implement IConduit.Seek).</div></dd>
+<dt class="decl"><span class="rettyp">IConduit</span> <a class="symbol _function" name="IOStream.conduit" href="htmlsrc/tango.io.model.IConduit.html#L161">conduit</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.model.IConduit.html#IOStream.conduit" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the host conduit.</div></div></dd>
+<dt class="decl"><span class="rettyp">IOStream</span> <a class="symbol _function" name="IOStream.flush" href="htmlsrc/tango.io.model.IConduit.html#L170">flush</a><span class="params">()</span> <a href="tango.io.model.IConduit.html#IOStream.flush" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Flush buffered content. For InputStream this is equivalent
+                to clearing buffered content.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="IOStream.close" href="htmlsrc/tango.io.model.IConduit.html#L178">close</a><span class="params">()</span> <a href="tango.io.model.IConduit.html#IOStream.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Close the input.</div></div></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="IOStream.Mutator" href="htmlsrc/tango.io.model.IConduit.html#L208">Mutator</a> <a href="tango.io.model.IConduit.html#IOStream.Mutator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Marks a stream that performs read/write mutation, rather than
+                generic decoration. This is used to identify those stream that
+                should explicitly not share an upstream buffer with downstream
+                siblings.</div></div>
+<div class="cmnt">Many streams add simple decoration (such as DataStream) while
+                others are merely template aliases. However, streams such as
+                EndianStream mutate content as it passes through the read and
+                write methods, which must be respected. On one hand we wish
+                to share a single buffer instance, while on the other we must
+                ensure correct data flow through an arbitrary combinations of
+                streams.
+<p class="bl"></p>
+                There are two stream variations: one which operate directly
+                upon memory (and thus must have access to a buffer) and another
+                that prefer to have buffered input (for performance reasons) but
+                can operate without. EndianStream is an example of the former,
+                while DataStream represents the latter.
+<p class="bl"></p>
+                In order to sort out who gets what, each stream makes a request
+                for an upstream buffer at construction time. The request has an
+                indication of the intended purpose (array-based access, or not).</div>
+</dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="InputStream" href="htmlsrc/tango.io.model.IConduit.html#L218">InputStream</a> : <span class="bclass">IOStream</span> <a href="tango.io.model.IConduit.html#InputStream" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The Tango input stream.</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="InputStream.read" href="htmlsrc/tango.io.model.IConduit.html#L231">read</a><span class="params">(void[] <em>dst</em>)</span> <a href="tango.io.model.IConduit.html#InputStream.read" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read from stream into a target array. The provided dst
+                will be populated with content from the stream.</div></div>
+<div class="cmnt">Returns the number of bytes read, which may be less than
+                requested in dst. Eof is returned whenever an end-of-flow
+                condition arises.</div></dd>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="InputStream.load" href="htmlsrc/tango.io.model.IConduit.html#L244">load</a><span class="params">(size_t <em>max</em> = <span class="defval">-<span class="n">1</span></span>)</span> <a href="tango.io.model.IConduit.html#InputStream.load" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Load the bits from a stream, and return them all in an
+                array. The optional max value indicates the maximum
+                number of bytes to be read.</div></div>
+<div class="cmnt">Returns an array representing the content, and throws
+                IOException on error.</div></dd>
+<dt class="decl"><span class="rettyp">InputStream</span> <a class="symbol _function" name="InputStream.input" href="htmlsrc/tango.io.model.IConduit.html#L252">input</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.model.IConduit.html#InputStream.input" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the upstream source.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="OutputStream" href="htmlsrc/tango.io.model.IConduit.html#L262">OutputStream</a> : <span class="bclass">IOStream</span> <a href="tango.io.model.IConduit.html#OutputStream" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The Tango output stream.</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="OutputStream.write" href="htmlsrc/tango.io.model.IConduit.html#L275">write</a><span class="params">(const(void)[] <em>src</em>)</span> <a href="tango.io.model.IConduit.html#OutputStream.write" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write to stream from a source array. The provided src
+                content will be written to the stream.</div></div>
+<div class="cmnt">Returns the number of bytes written from src, which may
+                be less than the quantity provided. Eof is returned when
+                an end-of-flow condition arises.</div></dd>
+<dt class="decl"><span class="rettyp">OutputStream</span> <a class="symbol _function" name="OutputStream.copy" href="htmlsrc/tango.io.model.IConduit.html#L285">copy</a><span class="params">(InputStream <em>src</em>, size_t <em>max</em> = <span class="defval">-<span class="n">1</span></span>)</span> <a href="tango.io.model.IConduit.html#OutputStream.copy" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Transfer the content of another stream to this one. Returns
+                a reference to this class, and throws IOException on failure.</div></div></dd>
+<dt class="decl"><span class="rettyp">OutputStream</span> <a class="symbol _function" name="OutputStream.output" href="htmlsrc/tango.io.model.IConduit.html#L293">output</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.model.IConduit.html#OutputStream.output" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the upstream sink.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="InputBuffer" href="htmlsrc/tango.io.model.IConduit.html#L303">InputBuffer</a> : <span class="bclass">InputStream</span> <a href="tango.io.model.IConduit.html#InputBuffer" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A buffered input stream.</div></div>
+</dd>
+<dt class="decl"><span class="kw">interface</span> <a class="symbol _interface" name="OutputBuffer" href="htmlsrc/tango.io.model.IConduit.html#L318">OutputBuffer</a> : <span class="bclass">OutputStream</span> <a href="tango.io.model.IConduit.html#OutputBuffer" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A buffered output stream.</div></div>
+</dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

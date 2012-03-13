@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.digest.Tiger</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.digest.Tiger">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.digest.Tiger"><a href="htmlsrc/tango.util.digest.Tiger.html" class="symbol">tango.util.digest.Tiger</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see doc/license.txt for details</div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: Feb 2006</div>
+<p class="sec_header">Author:</p><div class="cmnt">Regan Heath, Oskar Linde
+<p class="bl"></p>
+        This module implements the Tiger algorithm by Ross Anderson and Eli
+        Biham.</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Tiger" href="htmlsrc/tango.util.digest.Tiger.html#L28">Tiger</a> : <span class="bclass">MerkleDamgard</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.digest.Tiger.html#Tiger" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="Tiger.this" href="htmlsrc/tango.util.digest.Tiger.html#L51">this</a><span class="params">()</span> <a href="tango.util.digest.Tiger.html#Tiger.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct an Tiger</div></div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Tiger.digestSize" href="htmlsrc/tango.util.digest.Tiger.html#L59">digestSize</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.util.digest.Tiger.html#Tiger.digestSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The size of a tiger digest is 24 bytes</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Tiger.reset" href="htmlsrc/tango.util.digest.Tiger.html#L71">reset</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.util.digest.Tiger.html#Tiger.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Initialize the cipher</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Returns the cipher state to it's initial value</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Tiger.createDigest" href="htmlsrc/tango.util.digest.Tiger.html#L90">createDigest</a><span class="params">(ubyte[] <em>buf</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.util.digest.Tiger.html#Tiger.createDigest" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Obtain the digest</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the digest</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Returns a digest of the current cipher state, this may be the
+                final digest, or a digest of the state between calls to update()</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Tiger.passes" href="htmlsrc/tango.util.digest.Tiger.html#L112">passes</a><span class="params">()</span> <a href="tango.util.digest.Tiger.html#Tiger.passes" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get the number of passes being performed</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the number of passes</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">The Tiger algorithm may perform an arbitrary number of passes
+                the minimum recommended number is 3 and this number should be
+                quite secure however the "ultra-cautious" may wish to increase
+                this number.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Tiger.passes:2" href="htmlsrc/tango.util.digest.Tiger.html#L132">passes</a><span class="params">(uint <em>n</em>)</span> <a href="tango.util.digest.Tiger.html#Tiger.passes:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the number of passes to be performed</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>n</em></td><td>the number of passes to perform</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">The Tiger algorithm may perform an arbitrary number of passes
+                the minimum recommended number is 3 and this number should be
+                quite secure however the "ultra-cautious" may wish to increase
+                this number.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Tiger.blockSize" href="htmlsrc/tango.util.digest.Tiger.html#L151">blockSize</a><span class="params">()</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">override</span>]</span> <a href="tango.util.digest.Tiger.html#Tiger.blockSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">block size</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the block size</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Specifies the size (in bytes) of the block of data to pass to
+                each call to transform(). For Tiger the blockSize is 64.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="Tiger.addSize" href="htmlsrc/tango.util.digest.Tiger.html#L167">addSize</a><span class="params">()</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">override</span>]</span> <a href="tango.util.digest.Tiger.html#Tiger.addSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Length padding size</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the length padding size</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Specifies the size (in bytes) of the padding which uses the
+                length of the data which has been ciphered, this padding is
+                carried out by the padLength method. For Tiger the addSize is 8.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Tiger.padMessage" href="htmlsrc/tango.util.digest.Tiger.html#L183">padMessage</a><span class="params">(ubyte[] <em>at</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">override</span>]</span> <a href="tango.util.digest.Tiger.html#Tiger.padMessage" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Pads the cipher data</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>a slice of the cipher buffer to fill with padding</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Fills the passed buffer slice with the appropriate padding for
+                the final call to transform(). This padding will fill the cipher
+                buffer up to blockSize()-addSize().</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Tiger.padLength" href="htmlsrc/tango.util.digest.Tiger.html#L204">padLength</a><span class="params">(ubyte[] <em>at</em>, ulong <em>length</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">override</span>]</span> <a href="tango.util.digest.Tiger.html#Tiger.padLength" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Performs the length padding</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>the slice of the cipher buffer to fill with padding</td></tr>
+<tr><td><em>length</em></td><td>the length of the data which has been ciphered</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Fills the passed buffer slice with addSize() bytes of padding
+                based on the length in bytes of the input data which has been
+                ciphered.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Tiger.transform" href="htmlsrc/tango.util.digest.Tiger.html#L225">transform</a><span class="params">(const(ubyte[]) <em>input</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">override</span>]</span> <a href="tango.util.digest.Tiger.html#Tiger.transform" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Performs the cipher on a block of data</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>the block of data to cipher</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">The actual cipher algorithm is carried out by this method on
+                the passed block of data. This method is called for every
+                blockSize() bytes of input data and once more with the remaining
+                data padded to blockSize().</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2006 Tango. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:27 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

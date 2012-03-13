@@ -1,0 +1,427 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.math.Elliptic</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a><a id="L25" href="#L25">25</a><a id="L26" href="#L26">26</a><a id="L27" href="#L27">27</a><a id="L28" href="#L28">28</a><a id="L29" href="#L29">29</a><a id="L30" href="#L30">30</a><a id="L31" href="#L31">31</a><a id="L32" href="#L32">32</a><a id="L33" href="#L33">33</a><a id="L34" href="#L34">34</a><a id="L35" href="#L35">35</a><a id="L36" href="#L36">36</a><a id="L37" href="#L37">37</a><a id="L38" href="#L38">38</a><a id="L39" href="#L39">39</a><a id="L40" href="#L40">40</a><a id="L41" href="#L41">41</a><a id="L42" href="#L42">42</a><a id="L43" href="#L43">43</a><a id="L44" href="#L44">44</a><a id="L45" href="#L45">45</a><a id="L46" href="#L46">46</a><a id="L47" href="#L47">47</a><a id="L48" href="#L48">48</a><a id="L49" href="#L49">49</a><a id="L50" href="#L50">50</a><a id="L51" href="#L51">51</a><a id="L52" href="#L52">52</a><a id="L53" href="#L53">53</a><a id="L54" href="#L54">54</a><a id="L55" href="#L55">55</a><a id="L56" href="#L56">56</a><a id="L57" href="#L57">57</a><a id="L58" href="#L58">58</a><a id="L59" href="#L59">59</a><a id="L60" href="#L60">60</a><a id="L61" href="#L61">61</a><a id="L62" href="#L62">62</a><a id="L63" href="#L63">63</a><a id="L64" href="#L64">64</a><a id="L65" href="#L65">65</a><a id="L66" href="#L66">66</a><a id="L67" href="#L67">67</a><a id="L68" href="#L68">68</a><a id="L69" href="#L69">69</a><a id="L70" href="#L70">70</a><a id="L71" href="#L71">71</a><a id="L72" href="#L72">72</a><a id="L73" href="#L73">73</a><a id="L74" href="#L74">74</a><a id="L75" href="#L75">75</a><a id="L76" href="#L76">76</a><a id="L77" href="#L77">77</a><a id="L78" href="#L78">78</a><a id="L79" href="#L79">79</a><a id="L80" href="#L80">80</a><a id="L81" href="#L81">81</a><a id="L82" href="#L82">82</a><a id="L83" href="#L83">83</a><a id="L84" href="#L84">84</a><a id="L85" href="#L85">85</a><a id="L86" href="#L86">86</a><a id="L87" href="#L87">87</a><a id="L88" href="#L88">88</a><a id="L89" href="#L89">89</a><a id="L90" href="#L90">90</a><a id="L91" href="#L91">91</a><a id="L92" href="#L92">92</a><a id="L93" href="#L93">93</a><a id="L94" href="#L94">94</a><a id="L95" href="#L95">95</a><a id="L96" href="#L96">96</a><a id="L97" href="#L97">97</a><a id="L98" href="#L98">98</a><a id="L99" href="#L99">99</a><a id="L100" href="#L100">100</a><a id="L101" href="#L101">101</a><a id="L102" href="#L102">102</a><a id="L103" href="#L103">103</a><a id="L104" href="#L104">104</a><a id="L105" href="#L105">105</a><a id="L106" href="#L106">106</a><a id="L107" href="#L107">107</a><a id="L108" href="#L108">108</a><a id="L109" href="#L109">109</a><a id="L110" href="#L110">110</a><a id="L111" href="#L111">111</a><a id="L112" href="#L112">112</a><a id="L113" href="#L113">113</a><a id="L114" href="#L114">114</a><a id="L115" href="#L115">115</a><a id="L116" href="#L116">116</a><a id="L117" href="#L117">117</a><a id="L118" href="#L118">118</a><a id="L119" href="#L119">119</a><a id="L120" href="#L120">120</a><a id="L121" href="#L121">121</a><a id="L122" href="#L122">122</a><a id="L123" href="#L123">123</a><a id="L124" href="#L124">124</a><a id="L125" href="#L125">125</a><a id="L126" href="#L126">126</a><a id="L127" href="#L127">127</a><a id="L128" href="#L128">128</a><a id="L129" href="#L129">129</a><a id="L130" href="#L130">130</a><a id="L131" href="#L131">131</a><a id="L132" href="#L132">132</a><a id="L133" href="#L133">133</a><a id="L134" href="#L134">134</a><a id="L135" href="#L135">135</a><a id="L136" href="#L136">136</a><a id="L137" href="#L137">137</a><a id="L138" href="#L138">138</a><a id="L139" href="#L139">139</a><a id="L140" href="#L140">140</a><a id="L141" href="#L141">141</a><a id="L142" href="#L142">142</a><a id="L143" href="#L143">143</a><a id="L144" href="#L144">144</a><a id="L145" href="#L145">145</a><a id="L146" href="#L146">146</a><a id="L147" href="#L147">147</a><a id="L148" href="#L148">148</a><a id="L149" href="#L149">149</a><a id="L150" href="#L150">150</a><a id="L151" href="#L151">151</a><a id="L152" href="#L152">152</a><a id="L153" href="#L153">153</a><a id="L154" href="#L154">154</a><a id="L155" href="#L155">155</a><a id="L156" href="#L156">156</a><a id="L157" href="#L157">157</a><a id="L158" href="#L158">158</a><a id="L159" href="#L159">159</a><a id="L160" href="#L160">160</a><a id="L161" href="#L161">161</a><a id="L162" href="#L162">162</a><a id="L163" href="#L163">163</a><a id="L164" href="#L164">164</a><a id="L165" href="#L165">165</a><a id="L166" href="#L166">166</a><a id="L167" href="#L167">167</a><a id="L168" href="#L168">168</a><a id="L169" href="#L169">169</a><a id="L170" href="#L170">170</a><a id="L171" href="#L171">171</a><a id="L172" href="#L172">172</a><a id="L173" href="#L173">173</a><a id="L174" href="#L174">174</a><a id="L175" href="#L175">175</a><a id="L176" href="#L176">176</a><a id="L177" href="#L177">177</a><a id="L178" href="#L178">178</a><a id="L179" href="#L179">179</a><a id="L180" href="#L180">180</a><a id="L181" href="#L181">181</a><a id="L182" href="#L182">182</a><a id="L183" href="#L183">183</a><a id="L184" href="#L184">184</a><a id="L185" href="#L185">185</a><a id="L186" href="#L186">186</a><a id="L187" href="#L187">187</a><a id="L188" href="#L188">188</a><a id="L189" href="#L189">189</a><a id="L190" href="#L190">190</a><a id="L191" href="#L191">191</a><a id="L192" href="#L192">192</a><a id="L193" href="#L193">193</a><a id="L194" href="#L194">194</a><a id="L195" href="#L195">195</a><a id="L196" href="#L196">196</a><a id="L197" href="#L197">197</a><a id="L198" href="#L198">198</a><a id="L199" href="#L199">199</a><a id="L200" href="#L200">200</a><a id="L201" href="#L201">201</a><a id="L202" href="#L202">202</a><a id="L203" href="#L203">203</a><a id="L204" href="#L204">204</a><a id="L205" href="#L205">205</a><a id="L206" href="#L206">206</a><a id="L207" href="#L207">207</a><a id="L208" href="#L208">208</a><a id="L209" href="#L209">209</a><a id="L210" href="#L210">210</a><a id="L211" href="#L211">211</a><a id="L212" href="#L212">212</a><a id="L213" href="#L213">213</a><a id="L214" href="#L214">214</a><a id="L215" href="#L215">215</a><a id="L216" href="#L216">216</a><a id="L217" href="#L217">217</a><a id="L218" href="#L218">218</a><a id="L219" href="#L219">219</a><a id="L220" href="#L220">220</a><a id="L221" href="#L221">221</a><a id="L222" href="#L222">222</a><a id="L223" href="#L223">223</a><a id="L224" href="#L224">224</a><a id="L225" href="#L225">225</a><a id="L226" href="#L226">226</a><a id="L227" href="#L227">227</a><a id="L228" href="#L228">228</a><a id="L229" href="#L229">229</a><a id="L230" href="#L230">230</a><a id="L231" href="#L231">231</a><a id="L232" href="#L232">232</a><a id="L233" href="#L233">233</a><a id="L234" href="#L234">234</a><a id="L235" href="#L235">235</a><a id="L236" href="#L236">236</a><a id="L237" href="#L237">237</a><a id="L238" href="#L238">238</a><a id="L239" href="#L239">239</a><a id="L240" href="#L240">240</a><a id="L241" href="#L241">241</a><a id="L242" href="#L242">242</a><a id="L243" href="#L243">243</a><a id="L244" href="#L244">244</a><a id="L245" href="#L245">245</a><a id="L246" href="#L246">246</a><a id="L247" href="#L247">247</a><a id="L248" href="#L248">248</a><a id="L249" href="#L249">249</a><a id="L250" href="#L250">250</a><a id="L251" href="#L251">251</a><a id="L252" href="#L252">252</a><a id="L253" href="#L253">253</a><a id="L254" href="#L254">254</a><a id="L255" href="#L255">255</a><a id="L256" href="#L256">256</a><a id="L257" href="#L257">257</a><a id="L258" href="#L258">258</a><a id="L259" href="#L259">259</a><a id="L260" href="#L260">260</a><a id="L261" href="#L261">261</a><a id="L262" href="#L262">262</a><a id="L263" href="#L263">263</a><a id="L264" href="#L264">264</a><a id="L265" href="#L265">265</a><a id="L266" href="#L266">266</a><a id="L267" href="#L267">267</a><a id="L268" href="#L268">268</a><a id="L269" href="#L269">269</a><a id="L270" href="#L270">270</a><a id="L271" href="#L271">271</a><a id="L272" href="#L272">272</a><a id="L273" href="#L273">273</a><a id="L274" href="#L274">274</a><a id="L275" href="#L275">275</a><a id="L276" href="#L276">276</a><a id="L277" href="#L277">277</a><a id="L278" href="#L278">278</a><a id="L279" href="#L279">279</a><a id="L280" href="#L280">280</a><a id="L281" href="#L281">281</a><a id="L282" href="#L282">282</a><a id="L283" href="#L283">283</a><a id="L284" href="#L284">284</a><a id="L285" href="#L285">285</a><a id="L286" href="#L286">286</a><a id="L287" href="#L287">287</a><a id="L288" href="#L288">288</a><a id="L289" href="#L289">289</a><a id="L290" href="#L290">290</a><a id="L291" href="#L291">291</a><a id="L292" href="#L292">292</a><a id="L293" href="#L293">293</a><a id="L294" href="#L294">294</a><a id="L295" href="#L295">295</a><a id="L296" href="#L296">296</a><a id="L297" href="#L297">297</a><a id="L298" href="#L298">298</a><a id="L299" href="#L299">299</a><a id="L300" href="#L300">300</a><a id="L301" href="#L301">301</a><a id="L302" href="#L302">302</a><a id="L303" href="#L303">303</a><a id="L304" href="#L304">304</a><a id="L305" href="#L305">305</a><a id="L306" href="#L306">306</a><a id="L307" href="#L307">307</a><a id="L308" href="#L308">308</a><a id="L309" href="#L309">309</a><a id="L310" href="#L310">310</a><a id="L311" href="#L311">311</a><a id="L312" href="#L312">312</a><a id="L313" href="#L313">313</a><a id="L314" href="#L314">314</a><a id="L315" href="#L315">315</a><a id="L316" href="#L316">316</a><a id="L317" href="#L317">317</a><a id="L318" href="#L318">318</a><a id="L319" href="#L319">319</a><a id="L320" href="#L320">320</a><a id="L321" href="#L321">321</a><a id="L322" href="#L322">322</a><a id="L323" href="#L323">323</a><a id="L324" href="#L324">324</a><a id="L325" href="#L325">325</a><a id="L326" href="#L326">326</a><a id="L327" href="#L327">327</a><a id="L328" href="#L328">328</a><a id="L329" href="#L329">329</a><a id="L330" href="#L330">330</a><a id="L331" href="#L331">331</a><a id="L332" href="#L332">332</a><a id="L333" href="#L333">333</a><a id="L334" href="#L334">334</a><a id="L335" href="#L335">335</a><a id="L336" href="#L336">336</a><a id="L337" href="#L337">337</a><a id="L338" href="#L338">338</a><a id="L339" href="#L339">339</a><a id="L340" href="#L340">340</a><a id="L341" href="#L341">341</a><a id="L342" href="#L342">342</a><a id="L343" href="#L343">343</a><a id="L344" href="#L344">344</a><a id="L345" href="#L345">345</a><a id="L346" href="#L346">346</a><a id="L347" href="#L347">347</a><a id="L348" href="#L348">348</a><a id="L349" href="#L349">349</a><a id="L350" href="#L350">350</a><a id="L351" href="#L351">351</a><a id="L352" href="#L352">352</a><a id="L353" href="#L353">353</a><a id="L354" href="#L354">354</a><a id="L355" href="#L355">355</a><a id="L356" href="#L356">356</a><a id="L357" href="#L357">357</a><a id="L358" href="#L358">358</a><a id="L359" href="#L359">359</a><a id="L360" href="#L360">360</a><a id="L361" href="#L361">361</a><a id="L362" href="#L362">362</a><a id="L363" href="#L363">363</a><a id="L364" href="#L364">364</a><a id="L365" href="#L365">365</a><a id="L366" href="#L366">366</a><a id="L367" href="#L367">367</a><a id="L368" href="#L368">368</a><a id="L369" href="#L369">369</a><a id="L370" href="#L370">370</a><a id="L371" href="#L371">371</a><a id="L372" href="#L372">372</a><a id="L373" href="#L373">373</a><a id="L374" href="#L374">374</a><a id="L375" href="#L375">375</a><a id="L376" href="#L376">376</a><a id="L377" href="#L377">377</a><a id="L378" href="#L378">378</a><a id="L379" href="#L379">379</a><a id="L380" href="#L380">380</a><a id="L381" href="#L381">381</a><a id="L382" href="#L382">382</a><a id="L383" href="#L383">383</a><a id="L384" href="#L384">384</a><a id="L385" href="#L385">385</a><a id="L386" href="#L386">386</a><a id="L387" href="#L387">387</a><a id="L388" href="#L388">388</a><a id="L389" href="#L389">389</a><a id="L390" href="#L390">390</a><a id="L391" href="#L391">391</a><a id="L392" href="#L392">392</a><a id="L393" href="#L393">393</a><a id="L394" href="#L394">394</a><a id="L395" href="#L395">395</a><a id="L396" href="#L396">396</a><a id="L397" href="#L397">397</a><a id="L398" href="#L398">398</a><a id="L399" href="#L399">399</a><a id="L400" href="#L400">400</a><a id="L401" href="#L401">401</a><a id="L402" href="#L402">402</a><a id="L403" href="#L403">403</a><a id="L404" href="#L404">404</a><a id="L405" href="#L405">405</a><a id="L406" href="#L406">406</a><a id="L407" href="#L407">407</a><a id="L408" href="#L408">408</a><a id="L409" href="#L409">409</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/**
+ * Elliptic integrals.
+ * The functions are named similarly to the names used in Mathematica. 
+ *
+ * License:   BSD style: $(LICENSE)
+ * Copyright: Based on the CEPHES math library, which is
+ *            Copyright (C) 1994 Stephen L. Moshier (moshier@world.std.com).
+ * Authors:   Stephen L. Moshier (original C code). Conversion to D by Don Clugston
+ *
+ * References:
+ * $(LINK http://en.wikipedia.org/wiki/Elliptic_integral)
+ *
+ * Eric W. Weisstein. "Elliptic Integral of the First Kind." From MathWorld--A Wolfram Web Resource. $(LINK http://mathworld.wolfram.com/EllipticIntegraloftheFirstKind.html)
+ *
+ * $(LINK http://www.netlib.org/cephes/ldoubdoc.html)
+ *
+ * Macros:
+ *  TABLE_SV = &lt;table border=1 cellpadding=4 cellspacing=0&gt;
+ *      &lt;caption&gt;Special Values&lt;/caption&gt;
+ *      $0&lt;/table&gt;
+ *  SVH = $(TR $(TH $1) $(TH $2))
+ *  SV  = $(TR $(TD $1) $(TD $2))
+ *  GAMMA =  &amp;#915;
+ *  INTEGRATE = $(BIG &amp;#8747;&lt;sub&gt;$(SMALL $1)&lt;/sub&gt;&lt;sup&gt;$2&lt;/sup&gt;)
+ *  POWER = $1&lt;sup&gt;$2&lt;/sup&gt;
+ *  NAN = $(RED NAN)
+ */</span>
+<span class="bc">/**
+ * Macros:
+ *  TABLE_SV = &lt;table border=1 cellpadding=4 cellspacing=0&gt;
+ *      &lt;caption&gt;Special Values&lt;/caption&gt;
+ *      $0&lt;/table&gt;
+ *  SVH = $(TR $(TH $1) $(TH $2))
+ *  SV  = $(TR $(TD $1) $(TD $2))
+ *
+ *  NAN = $(RED NAN)
+ *  SUP = &lt;span style="vertical-align:super;font-size:smaller"&gt;$0&lt;/span&gt;
+ *  GAMMA =  &amp;#915;
+ *  INTEGRAL = &amp;#8747;
+ *  INTEGRATE = $(BIG &amp;#8747;&lt;sub&gt;$(SMALL $1)&lt;/sub&gt;&lt;sup&gt;$2&lt;/sup&gt;)
+ *  POWER = $1&lt;sup&gt;$2&lt;/sup&gt;
+ *  BIGSUM = $(BIG &amp;Sigma; &lt;sup&gt;$2&lt;/sup&gt;&lt;sub&gt;$(SMALL $1)&lt;/sub&gt;)
+ *  CHOOSE = $(BIG &amp;#40;) &lt;sup&gt;$(SMALL $1)&lt;/sup&gt;&lt;sub&gt;$(SMALL $2)&lt;/sub&gt; $(BIG &amp;#41;)
+ */</span>
+
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">math</span>.<span class="i">Elliptic</span>;</span>
+
+<span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">math</span>.<span class="i">Math</span>;</span>
+<span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">math</span>.<span class="i">IEEE</span>;</span>
+
+<span class="bc">/* These functions are based on code from:
+Cephes Math Library, Release 2.3:  October, 1995
+Copyright 1984, 1987, 1995 by Stephen L. Moshier
+*/</span>
+ 
+
+<span class="bc">/**
+ *  Incomplete elliptic integral of the first kind
+ *
+ * Approximates the integral
+ *   F(phi | m) = $(INTEGRATE 0, phi) dt/ (sqrt( 1- m $(POWER sin, 2) t))
+ *
+ * of amplitude phi and modulus m, using the arithmetic -
+ * geometric mean algorithm.
+ */</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticF</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">phi</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span> )</span>
+<span class="s FuncBody"><span class="s Compound">{
+    <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span>, <span class="i">b</span>, <span class="i">c</span>, <span class="i">e</span>, <span class="i">temp</span>, <span class="i">t</span>, <span class="i">K</span>;</span></span>
+    <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">d</span>, <span class="i">mod</span>, <span class="i">sign</span>, <span class="i">npio2</span>;</span></span>
+
+    <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">m</span></span> == <span class="e Float"><span class="n">0.0L</span></span></span> )
+        <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">phi</span></span>;</span></span></span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">a</span></span> = <span class="e Minus"><span class="e Float"><span class="n">1.0L</span></span> - <span class="e Identifier"><span class="i">m</span></span></span></span>;</span>
+    <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">a</span></span> == <span class="e Float"><span class="n">0.0L</span></span></span> ) <span class="s Scope"><span class="s Compound">{
+        <span class="s If"><span class="k">if</span> ( <span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">fabs</span></span>(<span class="i">phi</span>)</span> &gt;= <span class="e Identifier"><span class="i">PI_2</span></span></span> )  <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">infinity</span></span>;</span></span></span>
+        <span class="s Return"><span class="k">return</span>  <span class="e Call"><span class="e Identifier"><span class="i">log</span></span>(  <span class="i">tan</span>( <span class="n">0.5L</span>*(<span class="i">PI_2</span> + <span class="i">phi</span>) )  )</span>;</span>
+    }</span></span></span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">npio2</span></span> = <span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">int</span></span>)<span class="e Identifier"><span class="i">floor</span></span></span>( <span class="i">phi</span>/<span class="i">PI_2</span> )</span></span>;</span>
+    <span class="s If"><span class="k">if</span> ( <span class="e And"><span class="e Identifier"><span class="i">npio2</span></span> &amp; <span class="e Int"><span class="n">1</span></span></span> )
+        <span class="s Scope"><span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">npio2</span></span> += <span class="e Int"><span class="n">1</span></span></span>;</span></span></span>
+    <span class="s If"><span class="k">if</span> ( <span class="e Identifier"><span class="i">npio2</span></span> ) <span class="s Scope"><span class="s Compound">{
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">K</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">ellipticKComplete</span></span>( <span class="i">a</span> )</span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">phi</span></span> = <span class="e Minus"><span class="e Identifier"><span class="i">phi</span></span> - <span class="e Mul"><span class="e Identifier"><span class="i">npio2</span></span> * <span class="e Identifier"><span class="i">PI_2</span></span></span></span></span>;</span>
+    }</span></span> <span class="k">else</span>
+        <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">K</span></span> = <span class="e Float"><span class="n">0.0L</span></span></span>;</span></span></span>
+    <span class="s If"><span class="k">if</span>( <span class="e Rel"><span class="e Identifier"><span class="i">phi</span></span> &lt; <span class="e Float"><span class="n">0.0L</span></span></span> )<span class="s Scope"><span class="s Compound">{
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">phi</span></span> = <span class="e Sign">-<span class="e Identifier"><span class="i">phi</span></span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">sign</span></span> = <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>;</span>
+    }</span></span> <span class="k">else</span> <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">sign</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span></span></span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">b</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">sqrt</span></span>(<span class="i">a</span>)</span></span>;</span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">t</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">tan</span></span>( <span class="i">phi</span> )</span></span>;</span>
+    <span class="s If"><span class="k">if</span>( <span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">fabs</span></span>(<span class="i">t</span>)</span> &gt; <span class="e Float"><span class="n">10.0L</span></span></span> ) <span class="s Scope"><span class="s Compound">{
+    <span class="bc">/* Transform the amplitude */</span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">e</span></span> = <span class="e Div"><span class="e Float"><span class="n">1.0L</span></span>/<span class="e Paren">(<span class="e Mul"><span class="e Identifier"><span class="i">b</span></span>*<span class="e Identifier"><span class="i">t</span></span></span>)</span></span></span>;</span>
+    <span class="bc">/* ... but avoid multiple recursions.  */</span>
+    <span class="s If"><span class="k">if</span>( <span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">fabs</span></span>(<span class="i">e</span>)</span> &lt; <span class="e Float"><span class="n">10.0L</span></span></span> )<span class="s Scope"><span class="s Compound">{
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">e</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">atan</span></span>(<span class="i">e</span>)</span></span>;</span>
+        <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">npio2</span></span> == <span class="e Int"><span class="n">0</span></span></span> )
+            <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">K</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">ellipticKComplete</span></span>( <span class="i">a</span> )</span></span>;</span></span></span>
+            <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">temp</span></span> = <span class="e Minus"><span class="e Identifier"><span class="i">K</span></span> - <span class="e Call"><span class="e Identifier"><span class="i">ellipticF</span></span>( <span class="i">e</span>, <span class="i">m</span> )</span></span></span>;</span>
+            <span class="s Goto"><span class="k">goto</span> <span class="i">done</span>;</span>
+        }</span></span></span>
+    }</span></span></span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">a</span></span> = <span class="e Float"><span class="n">1.0L</span></span></span>;</span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">c</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">sqrt</span></span>(<span class="i">m</span>)</span></span>;</span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">d</span></span> = <span class="e Int"><span class="n">1</span></span></span>;</span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">mod</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span>
+
+    <span class="s While"><span class="k">while</span>( <span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">fabs</span></span>(<span class="i">c</span>/<span class="i">a</span>)</span> &gt; <span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">epsilon</span></span></span> ) <span class="s Scope"><span class="s Compound">{
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">temp</span></span> = <span class="e Div"><span class="e Identifier"><span class="i">b</span></span>/<span class="e Identifier"><span class="i">a</span></span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">phi</span></span> = <span class="e Plus"><span class="e Plus"><span class="e Identifier"><span class="i">phi</span></span> + <span class="e Call"><span class="e Identifier"><span class="i">atan</span></span>(<span class="i">t</span>*<span class="i">temp</span>)</span></span> + <span class="e Mul"><span class="e Identifier"><span class="i">mod</span></span> * <span class="e Identifier"><span class="i">PI</span></span></span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">mod</span></span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">int</span></span>)<span class="e Paren">(<span class="e Div"><span class="e Paren">(<span class="e Plus"><span class="e Identifier"><span class="i">phi</span></span> + <span class="e Identifier"><span class="i">PI_2</span></span></span>)</span>/<span class="e Identifier"><span class="i">PI</span></span></span>)</span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">t</span></span> = <span class="e Div"><span class="e Mul"><span class="e Identifier"><span class="i">t</span></span> * <span class="e Paren">( <span class="e Plus"><span class="e Float"><span class="n">1.0L</span></span> + <span class="e Identifier"><span class="i">temp</span></span></span> )</span></span>/<span class="e Paren">( <span class="e Minus"><span class="e Float"><span class="n">1.0L</span></span> - <span class="e Mul"><span class="e Mul"><span class="e Identifier"><span class="i">temp</span></span> * <span class="e Identifier"><span class="i">t</span></span></span> * <span class="e Identifier"><span class="i">t</span></span></span></span> )</span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">c</span></span> = <span class="e Mul"><span class="e Float"><span class="n">0.5L</span></span> * <span class="e Paren">( <span class="e Minus"><span class="e Identifier"><span class="i">a</span></span> - <span class="e Identifier"><span class="i">b</span></span></span> )</span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">temp</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">sqrt</span></span>( <span class="i">a</span> * <span class="i">b</span> )</span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">a</span></span> = <span class="e Mul"><span class="e Float"><span class="n">0.5L</span></span> * <span class="e Paren">( <span class="e Plus"><span class="e Identifier"><span class="i">a</span></span> + <span class="e Identifier"><span class="i">b</span></span></span> )</span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">b</span></span> = <span class="e Identifier"><span class="i">temp</span></span></span>;</span>
+        <span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">d</span></span> += <span class="e Identifier"><span class="i">d</span></span></span>;</span>
+    }</span></span></span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">temp</span></span> = <span class="e Div"><span class="e Paren">(<span class="e Plus"><span class="e Call"><span class="e Identifier"><span class="i">atan</span></span>(<span class="i">t</span>)</span> + <span class="e Mul"><span class="e Identifier"><span class="i">mod</span></span> * <span class="e Identifier"><span class="i">PI</span></span></span></span>)</span>/<span class="e Paren">(<span class="e Mul"><span class="e Identifier"><span class="i">d</span></span> * <span class="e Identifier"><span class="i">a</span></span></span>)</span></span></span>;</span>
+
+<span class="s Labeled"><span class="i">done</span>:
+    <span class="s If"><span class="k">if</span> ( <span class="e Rel"><span class="e Identifier"><span class="i">sign</span></span> &lt; <span class="e Int"><span class="n">0</span></span></span> )
+        <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">temp</span></span> = <span class="e Sign">-<span class="e Identifier"><span class="i">temp</span></span></span></span>;</span></span></span></span>
+    <span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">temp</span></span> += <span class="e Mul"><span class="e Identifier"><span class="i">npio2</span></span> * <span class="e Identifier"><span class="i">K</span></span></span></span>;</span>
+    <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">temp</span></span>;</span>
+}</span></span></span>
+
+
+<span class="bc">/**
+ *  Incomplete elliptic integral of the second kind
+ *
+ * Approximates the integral
+ *
+ * E(phi | m) = $(INTEGRATE 0, phi) sqrt( 1- m $(POWER sin, 2) t) dt
+ *
+ * of amplitude phi and modulus m, using the arithmetic -
+ * geometric mean algorithm.
+ */</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticE</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">phi</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span>)</span>
+<span class="s FuncBody"><span class="s Compound">{
+    <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span>, <span class="i">b</span>, <span class="i">c</span>, <span class="i">e</span>, <span class="i">temp</span>, <span class="i">t</span>, <span class="i">E</span>;</span></span>
+    <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">d</span>, <span class="i">mod</span>, <span class="i">npio2</span>, <span class="i">sign</span>;</span></span>
+
+    <span class="s If"><span class="k">if</span> ( <span class="e Equal"><span class="e Identifier"><span class="i">m</span></span> == <span class="e Float"><span class="n">0.0L</span></span></span> ) <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">phi</span></span>;</span></span></span>
+    <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">lphi</span> = <span class="e Identifier"><span class="i">phi</span></span>;</span></span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">npio2</span></span> = <span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">int</span></span>)<span class="e Identifier"><span class="i">floor</span></span></span>( <span class="i">lphi</span>/<span class="i">PI_2</span> )</span></span>;</span>
+    <span class="s If"><span class="k">if</span>( <span class="e And"><span class="e Identifier"><span class="i">npio2</span></span> &amp; <span class="e Int"><span class="n">1</span></span></span> )
+        <span class="s Scope"><span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">npio2</span></span> += <span class="e Int"><span class="n">1</span></span></span>;</span></span></span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">lphi</span></span> = <span class="e Minus"><span class="e Identifier"><span class="i">lphi</span></span> - <span class="e Mul"><span class="e Identifier"><span class="i">npio2</span></span> * <span class="e Identifier"><span class="i">PI_2</span></span></span></span></span>;</span>
+    <span class="s If"><span class="k">if</span>( <span class="e Rel"><span class="e Identifier"><span class="i">lphi</span></span> &lt; <span class="e Float"><span class="n">0.0L</span></span></span> )<span class="s Scope"><span class="s Compound">{
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">lphi</span></span> = <span class="e Sign">-<span class="e Identifier"><span class="i">lphi</span></span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">sign</span></span> = <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>;</span>
+    }</span></span> <span class="k">else</span>  <span class="s Scope"><span class="s Compound">{
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">sign</span></span> = <span class="e Int"><span class="n">1</span></span></span>;</span>
+    }</span></span></span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">a</span></span> = <span class="e Minus"><span class="e Float"><span class="n">1.0L</span></span> - <span class="e Identifier"><span class="i">m</span></span></span></span>;</span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">E</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">ellipticEComplete</span></span>( <span class="i">a</span> )</span></span>;</span>
+    <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">a</span></span> == <span class="e Float"><span class="n">0.0L</span></span></span> ) <span class="s Scope"><span class="s Compound">{
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">temp</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">sin</span></span>( <span class="i">lphi</span> )</span></span>;</span>
+        <span class="s Goto"><span class="k">goto</span> <span class="i">done</span>;</span>
+    }</span></span></span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">t</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">tan</span></span>( <span class="i">lphi</span> )</span></span>;</span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">b</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">sqrt</span></span>(<span class="i">a</span>)</span></span>;</span>
+    <span class="s If"><span class="k">if</span> ( <span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">fabs</span></span>(<span class="i">t</span>)</span> &gt; <span class="e Float"><span class="n">10.0L</span></span></span> ) <span class="s Scope"><span class="s Compound">{
+        <span class="bc">/* Transform the amplitude */</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">e</span></span> = <span class="e Div"><span class="e Float"><span class="n">1.0L</span></span>/<span class="e Paren">(<span class="e Mul"><span class="e Identifier"><span class="i">b</span></span>*<span class="e Identifier"><span class="i">t</span></span></span>)</span></span></span>;</span>
+        <span class="bc">/* ... but avoid multiple recursions.  */</span>
+        <span class="s If"><span class="k">if</span>( <span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">fabs</span></span>(<span class="i">e</span>)</span> &lt; <span class="e Float"><span class="n">10.0L</span></span></span> )<span class="s Scope"><span class="s Compound">{
+            <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">e</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">atan</span></span>(<span class="i">e</span>)</span></span>;</span>
+            <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">temp</span></span> = <span class="e Minus"><span class="e Plus"><span class="e Identifier"><span class="i">E</span></span> + <span class="e Mul"><span class="e Mul"><span class="e Identifier"><span class="i">m</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">sin</span></span>( <span class="i">lphi</span> )</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">sin</span></span>( <span class="i">e</span> )</span></span></span> - <span class="e Call"><span class="e Identifier"><span class="i">ellipticE</span></span>( <span class="i">e</span>, <span class="i">m</span> )</span></span></span>;</span>
+            <span class="s Goto"><span class="k">goto</span> <span class="i">done</span>;</span>
+        }</span></span></span>
+    }</span></span></span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">c</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">sqrt</span></span>(<span class="i">m</span>)</span></span>;</span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">a</span></span> = <span class="e Float"><span class="n">1.0L</span></span></span>;</span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">d</span></span> = <span class="e Int"><span class="n">1</span></span></span>;</span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">e</span></span> = <span class="e Float"><span class="n">0.0L</span></span></span>;</span>
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">mod</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span>
+
+    <span class="s While"><span class="k">while</span>( <span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">fabs</span></span>(<span class="i">c</span>/<span class="i">a</span>)</span> &gt; <span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">epsilon</span></span></span> ) <span class="s Scope"><span class="s Compound">{
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">temp</span></span> = <span class="e Div"><span class="e Identifier"><span class="i">b</span></span>/<span class="e Identifier"><span class="i">a</span></span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">lphi</span></span> = <span class="e Plus"><span class="e Plus"><span class="e Identifier"><span class="i">lphi</span></span> + <span class="e Call"><span class="e Identifier"><span class="i">atan</span></span>(<span class="i">t</span>*<span class="i">temp</span>)</span></span> + <span class="e Mul"><span class="e Identifier"><span class="i">mod</span></span> * <span class="e Identifier"><span class="i">PI</span></span></span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">mod</span></span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">int</span></span>)<span class="e Paren">(<span class="e Div"><span class="e Paren">(<span class="e Plus"><span class="e Identifier"><span class="i">lphi</span></span> + <span class="e Identifier"><span class="i">PI_2</span></span></span>)</span>/<span class="e Identifier"><span class="i">PI</span></span></span>)</span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">t</span></span> = <span class="e Div"><span class="e Mul"><span class="e Identifier"><span class="i">t</span></span> * <span class="e Paren">( <span class="e Plus"><span class="e Float"><span class="n">1.0L</span></span> + <span class="e Identifier"><span class="i">temp</span></span></span> )</span></span>/<span class="e Paren">( <span class="e Minus"><span class="e Float"><span class="n">1.0L</span></span> - <span class="e Mul"><span class="e Mul"><span class="e Identifier"><span class="i">temp</span></span> * <span class="e Identifier"><span class="i">t</span></span></span> * <span class="e Identifier"><span class="i">t</span></span></span></span> )</span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">c</span></span> = <span class="e Mul"><span class="e Float"><span class="n">0.5L</span></span>*<span class="e Paren">( <span class="e Minus"><span class="e Identifier"><span class="i">a</span></span> - <span class="e Identifier"><span class="i">b</span></span></span> )</span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">temp</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">sqrt</span></span>( <span class="i">a</span> * <span class="i">b</span> )</span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">a</span></span> = <span class="e Mul"><span class="e Float"><span class="n">0.5L</span></span>*<span class="e Paren">( <span class="e Plus"><span class="e Identifier"><span class="i">a</span></span> + <span class="e Identifier"><span class="i">b</span></span></span> )</span></span></span>;</span>
+        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">b</span></span> = <span class="e Identifier"><span class="i">temp</span></span></span>;</span>
+        <span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">d</span></span> += <span class="e Identifier"><span class="i">d</span></span></span>;</span>
+        <span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">e</span></span> += <span class="e Mul"><span class="e Identifier"><span class="i">c</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">sin</span></span>(<span class="i">lphi</span>)</span></span></span>;</span>
+    }</span></span></span>
+
+    <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">temp</span></span> = <span class="e Div"><span class="e Identifier"><span class="i">E</span></span> / <span class="e Call"><span class="e Identifier"><span class="i">ellipticKComplete</span></span>( <span class="n">1.0L</span> - <span class="i">m</span> )</span></span></span>;</span>
+    <span class="s Expression"><span class="e MulAssign"><span class="e Identifier"><span class="i">temp</span></span> *= <span class="e Div"><span class="e Paren">(<span class="e Plus"><span class="e Call"><span class="e Identifier"><span class="i">atan</span></span>(<span class="i">t</span>)</span> + <span class="e Mul"><span class="e Identifier"><span class="i">mod</span></span> * <span class="e Identifier"><span class="i">PI</span></span></span></span>)</span>/<span class="e Paren">(<span class="e Mul"><span class="e Identifier"><span class="i">d</span></span> * <span class="e Identifier"><span class="i">a</span></span></span>)</span></span></span>;</span>
+    <span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">temp</span></span> += <span class="e Identifier"><span class="i">e</span></span></span>;</span>
+
+<span class="s Labeled"><span class="i">done</span>:
+    <span class="s If"><span class="k">if</span>( <span class="e Rel"><span class="e Identifier"><span class="i">sign</span></span> &lt; <span class="e Int"><span class="n">0</span></span></span> )
+        <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">temp</span></span> = <span class="e Sign">-<span class="e Identifier"><span class="i">temp</span></span></span></span>;</span></span></span></span>
+    <span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">temp</span></span> += <span class="e Mul"><span class="e Identifier"><span class="i">npio2</span></span> * <span class="e Identifier"><span class="i">E</span></span></span></span>;</span>
+    <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">temp</span></span>;</span>
+}</span></span></span>
+
+
+<span class="bc">/**
+ *  Complete elliptic integral of the first kind
+ *
+ * Approximates the integral
+ *
+ *   K(m) = $(INTEGRATE 0, &amp;pi;/2) dt/ (sqrt( 1- m $(POWER sin, 2) t))
+ *
+ * where m = 1 - x, using the approximation
+ *
+ *     P(x)  -  log x Q(x).
+ *
+ * The argument x is used rather than m so that the logarithmic
+ * singularity at x = 1 will be shifted to the origin; this
+ * preserves maximum accuracy. 
+ *
+ * x must be in the range
+ *  0 &lt;= x &lt;= 1
+ *
+ * This is equivalent to ellipticF(PI_2, 1-x).
+ *
+ * K(0) = &amp;pi;/2.
+ */</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticKComplete</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
+<span class="lc">//    assert(x&gt;=0.0L &amp;&amp; x&lt;=1.0L);</span>
+}</span>
+<span class="k">body</span><span class="s Compound">{
+
+<span class="s Declaration"><span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="t Array">[]</span> <span class="i">P</span> = <span class="e ArrayInit">[
+   <span class="e Float"><span class="n">0x1.62e42fefa39ef35ap+0</span></span>, <span class="lc">// 1.3862943611198906189</span>
+   <span class="e Float"><span class="n">0x1.8b90bfbe8ed811fcp-4</span></span>, <span class="lc">// 0.096573590279993142323</span>
+   <span class="e Float"><span class="n">0x1.fa05af797624c586p-6</span></span>, <span class="lc">// 0.030885144578720423267</span>
+   <span class="e Float"><span class="n">0x1.e979cdfac7249746p-7</span></span>, <span class="lc">// 0.01493761594388688915</span>
+   <span class="e Float"><span class="n">0x1.1f4cc8890cff803cp-7</span></span>, <span class="lc">// 0.0087676982094322259125</span>
+   <span class="e Float"><span class="n">0x1.7befb3bb1fa978acp-8</span></span>, <span class="lc">// 0.0057973684116620276454</span>
+   <span class="e Float"><span class="n">0x1.2c2566aa1d5fe6b8p-8</span></span>, <span class="lc">// 0.0045798659940508010431</span>
+   <span class="e Float"><span class="n">0x1.7333514e7fe57c98p-8</span></span>, <span class="lc">// 0.0056640695097481470287</span>
+   <span class="e Float"><span class="n">0x1.09292d1c8621348cp-7</span></span>, <span class="lc">// 0.0080920667906392630755</span>
+   <span class="e Float"><span class="n">0x1.b89ab5fe793a6062p-8</span></span>, <span class="lc">// 0.0067230886765842542487</span>
+   <span class="e Float"><span class="n">0x1.28e9c44dc5e26e66p-9</span></span>, <span class="lc">// 0.002265267575136470585</span>
+   <span class="e Float"><span class="n">0x1.c2c43245d445addap-13</span></span>,    <span class="lc">// 0.00021494216542320112406</span>
+   <span class="e Float"><span class="n">0x1.4ee247035a03e13p-20</span></span>  <span class="lc">// 1.2475397291548388385e-06</span>
+]</span>;</span></span>
+
+<span class="s Declaration"><span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="t Array">[]</span> <span class="i">Q</span> = <span class="e ArrayInit">[
+   <span class="e Float"><span class="n">0x1p-1</span></span>,  <span class="lc">// 0.5</span>
+   <span class="e Float"><span class="n">0x1.fffffffffff635eap-4</span></span>, <span class="lc">// 0.12499999999999782631</span>
+   <span class="e Float"><span class="n">0x1.1fffffff8a2bea1p-4</span></span>,  <span class="lc">// 0.070312499993302227507</span>
+   <span class="e Float"><span class="n">0x1.8ffffe6f40ec2078p-5</span></span>, <span class="lc">// 0.04882812208418620146</span>
+   <span class="e Float"><span class="n">0x1.323f4dbf7f4d0c2ap-5</span></span>, <span class="lc">// 0.037383701182969303058</span>
+   <span class="e Float"><span class="n">0x1.efe8a028541b50bp-6</span></span>,  <span class="lc">// 0.030267864612427881354</span>
+   <span class="e Float"><span class="n">0x1.9d58c49718d6617cp-6</span></span>, <span class="lc">// 0.025228683455123323041</span>
+   <span class="e Float"><span class="n">0x1.4d1a8d2292ff6e2ep-6</span></span>, <span class="lc">// 0.020331037356569904872</span>
+   <span class="e Float"><span class="n">0x1.b637687027d664aap-7</span></span>, <span class="lc">// 0.013373304362459048444</span>
+   <span class="e Float"><span class="n">0x1.687a640ae5c71332p-8</span></span>, <span class="lc">// 0.0055004591221382442135</span>
+   <span class="e Float"><span class="n">0x1.0f9c30a94a1dcb4ep-10</span></span>,    <span class="lc">// 0.001036110372590318803</span>
+   <span class="e Float"><span class="n">0x1.d321746708e92d48p-15</span></span>     <span class="lc">// 5.568631677757315399e-05</span>
+]</span>;</span></span>
+
+    <span class="s Declaration"><span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">LOG4</span> = <span class="e Float"><span class="n">0x1.62e42fefa39ef358p+0</span></span>;</span></span>  <span class="lc">// log(4)</span>
+
+    <span class="s If"><span class="k">if</span>( <span class="e Rel"><span class="e Identifier"><span class="i">x</span></span> &gt; <span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">epsilon</span></span></span> )
+        <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Minus"><span class="e Call"><span class="e Identifier"><span class="i">poly</span></span>(<span class="i">x</span>,<span class="i">P</span>)</span> - <span class="e Mul"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>(<span class="i">x</span>)</span> * <span class="e Call"><span class="e Identifier"><span class="i">poly</span></span>(<span class="i">x</span>,<span class="i">Q</span>)</span></span></span>;</span></span></span>
+    <span class="s If"><span class="k">if</span> ( <span class="e Equal"><span class="e Identifier"><span class="i">x</span></span> == <span class="e Float"><span class="n">0.0L</span></span></span> )
+        <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">infinity</span></span>;</span></span></span>    
+    <span class="s Return"><span class="k">return</span> <span class="e Minus"><span class="e Identifier"><span class="i">LOG4</span></span> - <span class="e Mul"><span class="e Float"><span class="n">0.5L</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">log</span></span>(<span class="i">x</span>)</span></span></span>;</span>
+}</span></span></span>
+
+<span class="bc">/**
+ *  Complete elliptic integral of the second kind
+ *
+ * Approximates the integral
+ *
+ * E(m) = $(INTEGRATE 0, &amp;pi;/2) sqrt( 1- m $(POWER sin, 2) t) dt
+ *
+ * where m = 1 - x, using the approximation
+ *
+ *      P(x)  -  x log x Q(x).
+ *
+ * Though there are no singularities, the argument m1 is used
+ * rather than m for compatibility with ellipticKComplete().
+ *
+ * E(1) = 1; E(0) = &amp;pi;/2.
+ * m must be in the range 0 &lt;= m &lt;= 1.
+ */</span>
+
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticEComplete</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
+ <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&lt;=<span class="e Float"><span class="n">1.0</span></span></span></span>)</span>;</span>
+}</span>
+<span class="k">body</span> <span class="s Compound">{
+<span class="s Declaration"><span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="t Array">[]</span> <span class="i">P</span> = <span class="e ArrayInit">[
+   <span class="e Float"><span class="n">0x1.c5c85fdf473f78f2p-2</span></span>, <span class="lc">// 0.44314718055994670505</span>
+   <span class="e Float"><span class="n">0x1.d1591f9e9a66477p-5</span></span>,  <span class="lc">// 0.056805192715569305834</span>
+   <span class="e Float"><span class="n">0x1.65af6a7a61f587cp-6</span></span>,  <span class="lc">// 0.021831373198011179718</span>
+   <span class="e Float"><span class="n">0x1.7a4d48ed00d5745ap-7</span></span>, <span class="lc">// 0.011544857605264509506</span>
+   <span class="e Float"><span class="n">0x1.d4f5fe4f93b60688p-8</span></span>, <span class="lc">// 0.0071557756305783152481</span>
+   <span class="e Float"><span class="n">0x1.4cb71c73bac8656ap-8</span></span>, <span class="lc">// 0.0050768322432573952962</span>
+   <span class="e Float"><span class="n">0x1.4a9167859a1d0312p-8</span></span>, <span class="lc">// 0.0050440671671840438539</span>
+   <span class="e Float"><span class="n">0x1.dd296daa7b1f5b7ap-8</span></span>, <span class="lc">// 0.0072809117068399675418</span>
+   <span class="e Float"><span class="n">0x1.04f2c29224ba99b6p-7</span></span>, <span class="lc">// 0.0079635095646944542686</span>
+   <span class="e Float"><span class="n">0x1.0f5820e2d80194d8p-8</span></span>, <span class="lc">// 0.0041403847015715420009</span>
+   <span class="e Float"><span class="n">0x1.95ee634752ca69b6p-11</span></span>,    <span class="lc">// 0.00077425232385887751162</span>
+   <span class="e Float"><span class="n">0x1.0c58aa9ab404f4fp-15</span></span>  <span class="lc">// 3.1989378120323412946e-05</span>
+]</span>;</span></span>
+
+<span class="s Declaration"><span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="t Array">[]</span> <span class="i">Q</span> = <span class="e ArrayInit">[
+   <span class="e Float"><span class="n">0x1.ffffffffffffb1cep-3</span></span>, <span class="lc">// 0.24999999999999986434</span>
+   <span class="e Float"><span class="n">0x1.7ffffffff29eaa0cp-4</span></span>, <span class="lc">// 0.093749999999239422678</span>
+   <span class="e Float"><span class="n">0x1.dfffffbd51eb098p-5</span></span>,  <span class="lc">// 0.058593749514839092674</span>
+   <span class="e Float"><span class="n">0x1.5dffd791cb834c92p-5</span></span>, <span class="lc">// 0.04272453406734691973</span>
+   <span class="e Float"><span class="n">0x1.1397b63c2f09a8ep-5</span></span>,  <span class="lc">// 0.033641677787700181541</span>
+   <span class="e Float"><span class="n">0x1.c567cde5931e75bcp-6</span></span>, <span class="lc">// 0.02767367465121309044</span>
+   <span class="e Float"><span class="n">0x1.75e0cae852be9ddcp-6</span></span>, <span class="lc">// 0.022819708015315777007</span>
+   <span class="e Float"><span class="n">0x1.12bb968236d4e434p-6</span></span>, <span class="lc">// 0.016768357258894633433</span>
+   <span class="e Float"><span class="n">0x1.1f6572c1c402d07cp-7</span></span>, <span class="lc">// 0.0087706384979640787504</span>
+   <span class="e Float"><span class="n">0x1.452c6909f88b8306p-9</span></span>, <span class="lc">// 0.0024808767529843311337</span>
+   <span class="e Float"><span class="n">0x1.1f7504e72d664054p-12</span></span>,    <span class="lc">// 0.00027414045912208516032</span>
+   <span class="e Float"><span class="n">0x1.ad17054dc46913e2p-18</span></span>     <span class="lc">// 6.3939381343012054851e-06</span>
+]</span>;</span></span>
+    <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">x</span></span>==<span class="e Int"><span class="n">0</span></span></span>)
+        <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Float"><span class="n">1.0L</span></span>;</span></span></span>
+    <span class="s Return"><span class="k">return</span> <span class="e Minus"><span class="e Plus"><span class="e Float"><span class="n">1.0L</span></span> + <span class="e Mul"><span class="e Identifier"><span class="i">x</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">poly</span></span>(<span class="i">x</span>,<span class="i">P</span>)</span></span></span> - <span class="e Mul"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>(<span class="i">x</span>)</span> * <span class="e Paren">(<span class="e Mul"><span class="e Identifier"><span class="i">x</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">poly</span></span>(<span class="i">x</span>,<span class="i">Q</span>)</span></span> )</span></span></span>;</span>
+}</span></span></span>
+
+<span class="d Debug"><span class="k">debug</span> (<span class="i">UnitTest</span>)
+<span class="d Compound">{
+<span class="d Unittest"><span class="k">unittest</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Call"><span class="e Identifier"><span class="i">ellipticF</span></span>(<span class="n">1</span>, <span class="n">0</span>)</span>==<span class="e Int"><span class="n">1</span></span></span>)</span>;</span>
+    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e Call"><span class="e Identifier"><span class="i">ellipticEComplete</span></span>(<span class="n">0</span>)</span>==<span class="e Int"><span class="n">1</span></span></span>)</span>;</span>
+    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e Call"><span class="e Identifier"><span class="i">ellipticEComplete</span></span>(<span class="n">1</span>)</span>==<span class="e Identifier"><span class="i">PI_2</span></span></span>)</span>;</span>
+    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">feqrel</span></span>(<span class="i">ellipticKComplete</span>(<span class="n">1</span>),<span class="i">PI_2</span>)</span>&gt;= <span class="e Minus"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span>-<span class="e Int"><span class="n">1</span></span></span></span>)</span>;</span>
+    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e Call"><span class="e Identifier"><span class="i">ellipticKComplete</span></span>(<span class="n">0</span>)</span>==<span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">infinity</span></span></span>)</span>;</span>
+<span class="lc">//    assert(ellipticKComplete(1)==0); //-real.infinity);</span>
+    
+    <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span>=<span class="e Float"><span class="n">0.5653L</span></span>;</span></span>
+    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e Call"><span class="e Identifier"><span class="i">ellipticKComplete</span></span>(<span class="n">1</span>-<span class="i">x</span>)</span> == <span class="e Call"><span class="e Identifier"><span class="i">ellipticF</span></span>(<span class="i">PI_2</span>, <span class="i">x</span>)</span></span> )</span>;</span>
+    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e Call"><span class="e Identifier"><span class="i">ellipticEComplete</span></span>(<span class="n">1</span>-<span class="i">x</span>)</span> == <span class="e Call"><span class="e Identifier"><span class="i">ellipticE</span></span>(<span class="i">PI_2</span>, <span class="i">x</span>)</span></span> )</span>;</span>
+}</span></span></span>
+}</span></span>
+
+
+<span class="bc">/**
+ *  Incomplete elliptic integral of the third kind
+ *
+ * Approximates the integral
+ *
+ * PI(n; phi | m) = $(INTEGRATE t=0, phi) dt/((1 - n $(POWER sin,2)t) * sqrt( 1- m $(POWER sin, 2) t))
+ *
+ * of amplitude phi, modulus m, and characteristic n using Gauss-Legendre
+ * quadrature.
+ * 
+ * Note that ellipticPi(PI_2, m, 1) is infinite for any m.
+ */</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticPi</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">phi</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">n</span></span>)</span>
+<span class="s FuncBody"><span class="s Compound">{
+    <span class="lc">// BUGS: This implementation suffers from poor precision.</span>
+    <span class="s Declaration"><span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">double</span></span> <span class="t Array">[]</span> <span class="i">t</span> = <span class="e ArrayInit">[
+        <span class="e Float"><span class="n">0.9931285991850949</span></span>, <span class="e Float"><span class="n">0.9639719272779138</span></span>,
+        <span class="e Float"><span class="n">0.9122344282513259</span></span>, <span class="e Float"><span class="n">0.8391169718222188</span></span>,
+        <span class="e Float"><span class="n">0.7463319064601508</span></span>, <span class="e Float"><span class="n">0.6360536807265150</span></span>,
+        <span class="e Float"><span class="n">0.5108670019508271</span></span>, <span class="e Float"><span class="n">0.3737060887154195</span></span>,
+        <span class="e Float"><span class="n">0.2277858511416451</span></span>, <span class="e Float"><span class="n">0.7652652113349734e-1</span></span>
+    ]</span>;</span></span>
+    <span class="s Declaration"><span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">double</span></span> <span class="t Array">[]</span> <span class="i">w</span> =<span class="e ArrayInit">[
+        <span class="e Float"><span class="n">0.1761400713915212e-1</span></span>, <span class="e Float"><span class="n">0.4060142980038694e-1</span></span>,
+        <span class="e Float"><span class="n">0.6267204833410907e-1</span></span>, <span class="e Float"><span class="n">0.8327674157670475e-1</span></span>,
+        <span class="e Float"><span class="n">0.1019301198172404</span></span>, <span class="e Float"><span class="n">0.1181945319615184</span></span>,
+        <span class="e Float"><span class="n">0.1316886384491766</span></span>, <span class="e Float"><span class="n">0.1420961093183820</span></span>,
+        <span class="e Float"><span class="n">0.1491729864726037</span></span>, <span class="e Float"><span class="n">0.1527533871307258</span></span>
+    ]</span>;</span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">b1</span> = <span class="e AndAnd"><span class="e Paren">(<span class="e Equal"><span class="e Identifier"><span class="i">m</span></span>==<span class="e Int"><span class="n">1</span></span></span>)</span> &amp;&amp; <span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">abs</span></span>(<span class="i">phi</span>-<span class="n">90</span>)</span>&lt;=<span class="e Float"><span class="n">1e-8</span></span></span></span>;</span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">b2</span> = <span class="e AndAnd"><span class="e Paren">(<span class="e Equal"><span class="e Identifier"><span class="i">n</span></span>==<span class="e Int"><span class="n">1</span></span></span>)</span> &amp;&amp; <span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">abs</span></span>(<span class="i">phi</span>-<span class="n">90</span>)</span>&lt;=<span class="e Float"><span class="n">1e-8</span></span></span></span>;</span></span>
+        <span class="s If"><span class="k">if</span> (<span class="e OrOr"><span class="e Identifier"><span class="i">b1</span></span> || <span class="e Identifier"><span class="i">b2</span></span></span>) <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">infinity</span></span>;</span></span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">c1</span> = <span class="e Mul"><span class="e Float"><span class="n">0.87266462599716e-2</span></span> * <span class="e Identifier"><span class="i">phi</span></span></span>;</span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">c2</span> = <span class="e Identifier"><span class="i">c1</span></span>;</span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">double</span></span> <span class="i">x</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
+        <span class="s For"><span class="k">for</span> (<span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>=<span class="e Int"><span class="n">0</span></span>;</span></span> <span class="e Rel"><span class="e Identifier"><span class="i">i</span></span>&lt; <span class="e Identifier"><span class="i">t</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>; <span class="e PreIncr">++<span class="e Identifier"><span class="i">i</span></span></span>) <span class="s Scope"><span class="s Compound">{
+            <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">c0</span> = <span class="e Mul"><span class="e Identifier"><span class="i">c2</span></span> * <span class="e Index"><span class="e Identifier"><span class="i">t</span></span>[<span class="e Identifier"><span class="i">i</span></span>]</span></span>;</span></span>
+            <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">t1</span> = <span class="e Plus"><span class="e Identifier"><span class="i">c1</span></span> + <span class="e Identifier"><span class="i">c0</span></span></span>;</span></span>
+            <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">t2</span> = <span class="e Minus"><span class="e Identifier"><span class="i">c1</span></span> - <span class="e Identifier"><span class="i">c0</span></span></span>;</span></span>
+            <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">s1</span> = <span class="e Call"><span class="e Identifier"><span class="i">sin</span></span>(<span class="i">t1</span>)</span>;</span></span>  <span class="lc">//  sin(c1 * (1 + t[i]))</span>
+            <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">s2</span> = <span class="e Call"><span class="e Identifier"><span class="i">sin</span></span>(<span class="i">t2</span>)</span>;</span></span>  <span class="lc">//  sin(c1 * (1 - t[i]))</span>
+            <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">f1</span> = <span class="e Div"><span class="e Float"><span class="n">1.0</span></span> / <span class="e Paren">(<span class="e Mul"><span class="e Paren">(<span class="e Minus"><span class="e Float"><span class="n">1.0</span></span> - <span class="e Mul"><span class="e Mul"><span class="e Identifier"><span class="i">n</span></span> * <span class="e Identifier"><span class="i">s1</span></span></span> * <span class="e Identifier"><span class="i">s1</span></span></span></span>)</span> * <span class="e Call"><span class="e Identifier"><span class="i">sqrt</span></span>(<span class="n">1.0</span> - <span class="i">m</span> * <span class="i">s1</span> * <span class="i">s1</span>)</span></span>)</span></span>;</span></span>
+            <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">f2</span> = <span class="e Div"><span class="e Float"><span class="n">1.0</span></span> / <span class="e Paren">(<span class="e Mul"><span class="e Paren">(<span class="e Minus"><span class="e Float"><span class="n">1.0</span></span> - <span class="e Mul"><span class="e Mul"><span class="e Identifier"><span class="i">n</span></span> * <span class="e Identifier"><span class="i">s2</span></span></span> * <span class="e Identifier"><span class="i">s2</span></span></span></span>)</span> * <span class="e Call"><span class="e Identifier"><span class="i">sqrt</span></span>(<span class="n">1.0</span> - <span class="i">m</span> * <span class="i">s2</span> * <span class="i">s2</span>)</span></span>)</span></span>;</span></span>
+            <span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">x</span></span>+= <span class="e Mul"><span class="e Index"><span class="e Identifier"><span class="i">w</span></span>[<span class="e Identifier"><span class="i">i</span></span>]</span>*<span class="e Paren">(<span class="e Plus"><span class="e Identifier"><span class="i">f1</span></span>+<span class="e Identifier"><span class="i">f2</span></span></span>)</span></span></span>;</span>
+        }</span></span></span>
+        <span class="s Return"><span class="k">return</span> <span class="e Mul"><span class="e Identifier"><span class="i">c1</span></span> * <span class="e Identifier"><span class="i">x</span></span></span>;</span>
+}</span></span></span>
+
+<span class="bc">/**
+ *  Complete elliptic integral of the third kind
+ */</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticPiComplete</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">n</span></span>)</span>
+<span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
+ <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">m</span></span>&gt;=<span class="e Sign">-<span class="e Float"><span class="n">1.0</span></span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">m</span></span>&lt;=<span class="e Float"><span class="n">1.0</span></span></span></span>)</span>;</span>
+}</span>
+<span class="k">body</span> <span class="s Compound">{
+    <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">ellipticPi</span></span>(<span class="i">PI_2</span>, <span class="i">m</span>, <span class="i">n</span>)</span>;</span>
+}</span></span></span></span>
+
+</pre></td>
+</tr></table>
+</body>
+</html>

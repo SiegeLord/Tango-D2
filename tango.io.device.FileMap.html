@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.device.FileMap</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.device.FileMap">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.device.FileMap"><a href="htmlsrc/tango.io.device.FileMap.html" class="symbol">tango.io.device.FileMap</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: March 2004</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="FileMap" href="htmlsrc/tango.io.device.FileMap.html#L43">FileMap</a> : <span class="bclass">Array</span> <a href="tango.io.device.FileMap.html#FileMap" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="FileMap.this" href="htmlsrc/tango.io.device.FileMap.html#L56">this</a><span class="params">(const(char[]) <em>path</em>, File.Style <em>style</em> = <span class="defval"><span class="i">ReadWriteOpen</span></span>)</span> <a href="tango.io.device.FileMap.html#FileMap.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a FileMap upon the given path.</div></div>
+<div class="cmnt">You should use resize() to setup the available
+                working space.</div></dd>
+<dt class="decl"><span class="rettyp">ubyte[]</span> <a class="symbol _function" name="FileMap.resize" href="htmlsrc/tango.io.device.FileMap.html#L69">resize</a><span class="params">(long <em>size</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.device.FileMap.html#FileMap.resize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Resize the file and return the remapped content. Usage of
+                map() is not required following this call.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FileMap.close" href="htmlsrc/tango.io.device.FileMap.html#L82">close</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.FileMap.html#FileMap.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Release external resources.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="MappedFile" href="htmlsrc/tango.io.device.FileMap.html#L96">MappedFile</a> <a href="tango.io.device.FileMap.html#MappedFile" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="MappedFile.this" href="htmlsrc/tango.io.device.FileMap.html#L109">this</a><span class="params">(const(char[]) <em>path</em>, File.Style <em>style</em> = <span class="defval"><span class="i">ReadWriteOpen</span></span>)</span> <a href="tango.io.device.FileMap.html#MappedFile.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a FileMap upon the given path.</div></div>
+<div class="cmnt">You should use resize() to setup the available
+                working space.</div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="MappedFile.length" href="htmlsrc/tango.io.device.FileMap.html#L118">length</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.device.FileMap.html#MappedFile.length" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="MappedFile.path" href="htmlsrc/tango.io.device.FileMap.html#L127">path</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.device.FileMap.html#MappedFile.path" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">ubyte[]</span> <a class="symbol _function" name="MappedFile.resize" href="htmlsrc/tango.io.device.FileMap.html#L139">resize</a><span class="params">(long <em>size</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.device.FileMap.html#MappedFile.resize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Resize the file and return the remapped content. Usage of
+                map() is not required following this call.</div></div></dd>
+<dt class="decl"><span class="rettyp">ubyte[]</span> <a class="symbol _function" name="MappedFile.map" href="htmlsrc/tango.io.device.FileMap.html#L161">map</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.device.FileMap.html#MappedFile.map" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return a slice representing file content as a
+                        memory-mapped array.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MappedFile.close" href="htmlsrc/tango.io.device.FileMap.html#L199">close</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.device.FileMap.html#MappedFile.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Release this mapping without flushing.</div></div></dd>
+<dt class="decl"><span class="rettyp">MappedFile</span> <a class="symbol _function" name="MappedFile.flush" href="htmlsrc/tango.io.device.FileMap.html#L232">flush</a><span class="params">()</span> <a href="tango.io.device.FileMap.html#MappedFile.flush" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Flush dirty content out to the drive. This
+                        fails with error 33 if the file content is
+                        virgin. Opening a file for ReadWriteExists
+                        followed by a flush() will cause this.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

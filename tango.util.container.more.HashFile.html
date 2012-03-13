@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.container.more.HashFile</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.container.more.HashFile">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.container.more.HashFile"><a href="htmlsrc/tango.util.container.more.HashFile.html" class="symbol">tango.util.container.more.HashFile</a></h1>
+
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="HashFile" href="htmlsrc/tango.util.container.more.HashFile.html#L42">HashFile</a><span class="tparams">(<em>K</em>, <em>V</em>)</span> <a href="tango.util.container.more.HashFile.html#HashFile" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">HashFile implements a simple mechanism to store and recover a 
+        large quantity of data for the duration of the hosting process.
+        It is intended to act as a local-cache for a remote data-source, 
+        or as a spillover area for large in-memory cache instances. 
+        
+        Note that any and all stored data is rendered invalid the moment
+        a HashFile object is garbage-collected.</div></div>
+<div class="cmnt">The implementation follows a fixed-capacity record scheme, where
+        content can be rewritten in-place until said capacity is reached.
+        At such time, the altered content is moved to a larger capacity
+        record at end-of-file, and a hole remains at the prior location.
+        These holes are not collected, since the lifespan of a HashFile
+        is limited to that of the host process.
+<p class="bl"></p>
+        All index keys must be unique. Writing to the HashFile with an
+        existing key will overwrite any previous content. What follows
+        is a contrived example:
+        
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">alias</span> <span class="i">HashFile</span>!(<span class="k">char</span>[], <span class="k">char</span>[]) <span class="i">Bucket</span>;
+
+<span class="k">auto</span> <span class="i">bucket</span> = <span class="k">new</span> <span class="i">Bucket</span> (<span class="sl">"bucket.bin"</span>, <span class="i">HashFile</span>.<span class="i">HalfK</span>);
+
+<span class="lc">// insert some data, and retrieve it again</span>
+<span class="k">auto</span> <span class="i">text</span> = <span class="sl">"this is a test"</span>;
+<span class="i">bucket</span>.<span class="i">put</span> (<span class="sl">"a key"</span>, <span class="i">text</span>);
+<span class="k">auto</span> <span class="i">b</span> = <span class="k">cast</span>(<span class="k">char</span>[]) <span class="i">bucket</span>.<span class="i">get</span> (<span class="sl">"a key"</span>);
+
+<span class="k">assert</span> (<span class="i">b</span> == <span class="i">text</span>);
+<span class="i">bucket</span>.<span class="i">close</span>;</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="HashFile.BlockSize" href="htmlsrc/tango.util.container.more.HashFile.html#L50">BlockSize</a> <a href="tango.util.container.more.HashFile.html#HashFile.BlockSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Define the capacity (block-size) of each record</div></div>
+</dd>
+<dt class="decl"><a class="symbol _ctor" name="HashFile.this" href="htmlsrc/tango.util.container.more.HashFile.html#L96">this</a><span class="params">(const(char[]) <em>path</em>, BlockSize <em>block</em>, uint <em>initialRecords</em> = <span class="defval"><span class="n">100</span></span>)</span> <a href="tango.util.container.more.HashFile.html#HashFile.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a HashFile with the provided path, record-size,
+                and inital record count. The latter causes records to be 
+                pre-allocated, saving a certain amount of growth activity.
+                Selecting a record size that roughly matches the serialized 
+                content will limit 'thrashing'.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char[])</span> <a class="symbol _function" name="HashFile.path" href="htmlsrc/tango.util.container.more.HashFile.html#L116">path</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.more.HashFile.html#HashFile.path" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return where the HashFile is located</div></div></dd>
+<dt class="decl"><span class="rettyp">ulong</span> <a class="symbol _function" name="HashFile.length" href="htmlsrc/tango.util.container.more.HashFile.html#L127">length</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.util.container.more.HashFile.html#HashFile.length" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the currently populated size of this HashFile</div></div></dd>
+<dt class="decl"><span class="rettyp">V</span> <a class="symbol _function" name="HashFile.get" href="htmlsrc/tango.util.container.more.HashFile.html#L141">get</a><span class="params">(K <em>key</em>, bool <em>clear</em> = <span class="defval"><span class="k">false</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.more.HashFile.html#HashFile.get" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the serialized data for the provided key. Returns
+                null if the key was not found.</div></div>
+<div class="cmnt">Be sure to synchronize access by multiple threads</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HashFile.remove" href="htmlsrc/tango.util.container.more.HashFile.html#L159">remove</a><span class="params">(K <em>key</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.more.HashFile.html#HashFile.remove" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove the provided key from this HashFile. Leaves a 
+                hole in the backing file</div></div>
+<div class="cmnt">Be sure to synchronize access by multiple threads</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HashFile.put" href="htmlsrc/tango.util.container.more.HashFile.html#L180">put</a><span class="params">(K <em>key</em>, V <em>data</em>, K function(K) <em>retain</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.more.HashFile.html#HashFile.put" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write a serialized block of data, and associate it with
+                the provided key. All keys must be unique, and it is the
+                responsibility of the programmer to ensure this. Reusing 
+                an existing key will overwrite previous data.</div></div>
+<div class="cmnt">Note that data is allowed to grow within the occupied 
+                bucket until it becomes larger than the allocated space.
+                When this happens, the data is moved to a larger bucket
+                at the file tail.
+<p class="bl"></p>
+                Be sure to synchronize access by multiple threads</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="HashFile.close" href="htmlsrc/tango.util.container.more.HashFile.html#L202">close</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.util.container.more.HashFile.html#HashFile.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Close this HashFile -- all content is lost.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p></p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:24 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

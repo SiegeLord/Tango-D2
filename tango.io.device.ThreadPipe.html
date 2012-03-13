@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.device.ThreadPipe</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.device.ThreadPipe">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.device.ThreadPipe"><a href="htmlsrc/tango.io.device.ThreadPipe.html" class="symbol">tango.io.device.ThreadPipe</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Jun 2008: Initial release</div>
+<p class="sec_header">Author:</p><div class="cmnt">schveiguy</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ThreadPipe" href="htmlsrc/tango.io.device.ThreadPipe.html#L44">ThreadPipe</a> : <span class="bclass">Conduit</span> <a href="tango.io.device.ThreadPipe.html#ThreadPipe" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Conduit to support a data stream between 2 threads.  One creates a
+ ThreadPipe, then uses the OutputStream and the InputStream from it to
+ communicate.  All traffic is automatically synchronized, so one just uses
+ the streams like they were normal device streams.</div></div>
+<div class="cmnt">It works by maintaining a circular buffer, where data is written to, and
+ read from, in a FIFO fashion.
+ <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">tc</span> = <span class="k">new</span> <span class="i">ThreadPipe</span>;
+<span class="k">void</span> <span class="i">outFunc</span>()
+{
+  <span class="i">Stdout</span>.<span class="i">copy</span>(<span class="i">tc</span>.<span class="i">input</span>);
+}
+
+<span class="k">auto</span> <span class="i">t</span> = <span class="k">new</span> <span class="i">Thread</span>(&amp;<span class="i">outFunc</span>);
+<span class="i">t</span>.<span class="i">start</span>();
+<span class="i">tc</span>.<span class="i">write</span>(<span class="sl">"hello, thread!"</span>);
+<span class="i">tc</span>.<span class="i">close</span>();
+<span class="i">t</span>.<span class="i">join</span>();</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="ThreadPipe.this" href="htmlsrc/tango.io.device.ThreadPipe.html#L58">this</a><span class="params">(size_t <em>bufferSize</em> = <span class="defval">(<span class="n">1024</span>*<span class="n">16</span>)</span>)</span> <a href="tango.io.device.ThreadPipe.html#ThreadPipe.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a new ThreadPipe with the given buffer size.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>bufferSize</em></td><td>The size to allocate the buffer.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="ThreadPipe.bufferSize" href="htmlsrc/tango.io.device.ThreadPipe.html#L75">bufferSize</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.io.device.ThreadPipe.html#ThreadPipe.bufferSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Implements IConduit.bufferSize.</div></div>
+<div class="cmnt">Returns the appropriate buffer size that should be used to buffer the
+ ThreadPipe.  Note that this is simply the buffer size passed in, and
+ since all the ThreadPipe data is in memory, buffering doesn't make
+ much sense.</div></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="ThreadPipe.toString" href="htmlsrc/tango.io.device.ThreadPipe.html#L85">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.ThreadPipe.html#ThreadPipe.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Implements IConduit.toString</div></div>
+<div class="cmnt">Returns "&lt;thread conduit&gt;"</div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ThreadPipe.isAlive" href="htmlsrc/tango.io.device.ThreadPipe.html#L94">isAlive</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.io.device.ThreadPipe.html#ThreadPipe.isAlive" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Returns true if there is data left to be read, and the write end isn't
+ closed.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="ThreadPipe.remaining" href="htmlsrc/tango.io.device.ThreadPipe.html#L105">remaining</a><span class="params">()</span> <a href="tango.io.device.ThreadPipe.html#ThreadPipe.remaining" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the number of bytes remaining to be read in the circular buffer.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="ThreadPipe.writable" href="htmlsrc/tango.io.device.ThreadPipe.html#L114">writable</a><span class="params">()</span> <a href="tango.io.device.ThreadPipe.html#ThreadPipe.writable" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the number of bytes that can be written to the circular buffer.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ThreadPipe.stop" href="htmlsrc/tango.io.device.ThreadPipe.html#L126">stop</a><span class="params">()</span> <a href="tango.io.device.ThreadPipe.html#ThreadPipe.stop" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Close the write end of the conduit.  Writing to the conduit after it is
+ closed will return Eof.</div></div>
+<div class="cmnt">The read end is not closed until the buffer is empty.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ThreadPipe.detach" href="htmlsrc/tango.io.device.ThreadPipe.html#L147">detach</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.ThreadPipe.html#ThreadPipe.detach" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">This does nothing because we have no clue whether the members have been
+ collected, and detach is run in the destructor.  To stop communications,
+ use stop().</div></div>
+<p class="sec_header">TODO:</p><div class="cmnt">move stop() functionality to detach when it becomes possible to
+ have fully-owned members</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="ThreadPipe.read" href="htmlsrc/tango.io.device.ThreadPipe.html#L160">read</a><span class="params">(void[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.ThreadPipe.html#ThreadPipe.read" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Implements InputStream.read.</div></div>
+<div class="cmnt">Read from the conduit into a target array.  The provided dst will be
+ populated with content from the stream.
+<p class="bl"></p>
+ Returns the number of bytes read, which may be less than requested in
+ dst. Eof is returned whenever an end-of-flow condition arises.</div></dd>
+<dt class="decl"><span class="rettyp">ThreadPipe</span> <a class="symbol _function" name="ThreadPipe.clear" href="htmlsrc/tango.io.device.ThreadPipe.html#L212">clear</a><span class="params">()</span> <a href="tango.io.device.ThreadPipe.html#ThreadPipe.clear" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Implements InputStream.clear().</div></div>
+<div class="cmnt">Clear any buffered content.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="ThreadPipe.write" href="htmlsrc/tango.io.device.ThreadPipe.html#L240">write</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.ThreadPipe.html#ThreadPipe.write" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Implements OutputStream.write.</div></div>
+<div class="cmnt">Write to stream from a source array. The provided src content will be
+ written to the stream.
+<p class="bl"></p>
+ Returns the number of bytes written from src, which may be less than
+ the quantity provided. Eof is returned when an end-of-flow condition
+ arises.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008 Steven Schveighoffer.
+                        All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

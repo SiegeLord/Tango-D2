@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.stream.DataFile</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.stream.DataFile">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.stream.DataFile"><a href="htmlsrc/tango.io.stream.DataFile.html" class="symbol">tango.io.stream.DataFile</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: Nov 2007</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="DataFileInput" href="htmlsrc/tango.io.stream.DataFile.html#L26">DataFileInput</a> : <span class="bclass">DataInput</span> <a href="tango.io.stream.DataFile.html#DataFileInput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Composes a seekable file with buffered binary input. A seek causes
+        the input buffer to be cleared.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="DataFileInput.this" href="htmlsrc/tango.io.stream.DataFile.html#L36">this</a><span class="params">(char[] <em>path</em>, File.Style <em>style</em> = <span class="defval"><span class="i">ReadExisting</span></span>)</span> <a href="tango.io.stream.DataFile.html#DataFileInput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compose a FileStream.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="DataFileInput.this:2" href="htmlsrc/tango.io.stream.DataFile.html#L47">this</a><span class="params">(File <em>file</em>)</span> <a href="tango.io.stream.DataFile.html#DataFileInput.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Wrap a File instance.</div></div></dd>
+<dt class="decl"><span class="rettyp">File</span> <a class="symbol _function" name="DataFileInput.file" href="htmlsrc/tango.io.stream.DataFile.html#L58">file</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.DataFile.html#DataFileInput.file" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the underlying conduit.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="DataFileOutput" href="htmlsrc/tango.io.stream.DataFile.html#L72">DataFileOutput</a> : <span class="bclass">DataOutput</span> <a href="tango.io.stream.DataFile.html#DataFileOutput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Composes a seekable file with buffered binary output. A seek causes
+        the output buffer to be flushed first.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="DataFileOutput.this" href="htmlsrc/tango.io.stream.DataFile.html#L82">this</a><span class="params">(char[] <em>path</em>, File.Style <em>style</em> = <span class="defval"><span class="i">WriteCreate</span></span>)</span> <a href="tango.io.stream.DataFile.html#DataFileOutput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Compose a FileStream.</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="DataFileOutput.this:2" href="htmlsrc/tango.io.stream.DataFile.html#L93">this</a><span class="params">(File <em>file</em>)</span> <a href="tango.io.stream.DataFile.html#DataFileOutput.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Wrap a FileConduit instance.</div></div></dd>
+<dt class="decl"><span class="rettyp">File</span> <a class="symbol _function" name="DataFileOutput.file" href="htmlsrc/tango.io.stream.DataFile.html#L104">file</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.DataFile.html#DataFileOutput.file" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the underlying conduit.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2007 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

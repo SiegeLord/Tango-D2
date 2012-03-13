@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.stream.Utf</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.stream.Utf">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.stream.Utf"><a href="htmlsrc/tango.io.stream.Utf.html" class="symbol">tango.io.stream.Utf</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: Nov 2007</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris
+<p class="bl"></p>
+        UTF conversion streams, supporting cross-translation of char, wchar
+        and dchar variants. For supporting endian variations, configure the
+        appropriate EndianStream upstream of this one (closer to the source.)</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="UtfInput" href="htmlsrc/tango.io.stream.Utf.html#L32">UtfInput</a><span class="tparams">(<em>T</em>, <em>S</em>)</span> : <span class="bclass">InputFilter</span>, <span class="bclass">InputFilter.Mutator</span> <a href="tango.io.stream.Utf.html#UtfInput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Streaming UTF converter. Type T is the target or destination type,
+        while S is the source type. Both types are either char/wchar/dchar.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="UtfInput.this" href="htmlsrc/tango.io.stream.Utf.html#L48">this</a><span class="params">(InputStream <em>stream</em>)</span> <a href="tango.io.stream.Utf.html#UtfInput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a buffered utf input converter.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="UtfInput.consume" href="htmlsrc/tango.io.stream.Utf.html#L62">consume</a><span class="params">(T[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Utf.html#UtfInput.consume" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Consume input of type T, and return the number of array
+                elements comsumed.</div></div>
+<div class="cmnt">Returns Eof upon end-of-flow.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="UtfInput.read" href="htmlsrc/tango.io.stream.Utf.html#L74">read</a><span class="params">(void[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Utf.html#UtfInput.read" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="UtfOutput" href="htmlsrc/tango.io.stream.Utf.html#L127">UtfOutput</a><span class="tparams">(<em>S</em>, <em>T</em>)</span> : <span class="bclass">OutputFilter</span>, <span class="bclass">OutputFilter.Mutator</span> <a href="tango.io.stream.Utf.html#UtfOutput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Streaming UTF converter. Type T is the target or destination type,
+        while S is the source type. Both types are either char/wchar/dchar.</div></div>
+<div class="cmnt">Note that the arguments are reversed from those of UtfInput.</div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="UtfOutput.this" href="htmlsrc/tango.io.stream.Utf.html#L144">this</a><span class="params">(OutputStream <em>stream</em>)</span> <a href="tango.io.stream.Utf.html#UtfOutput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Create a buffered utf output converter.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="UtfOutput.consume" href="htmlsrc/tango.io.stream.Utf.html#L158">consume</a><span class="params">(const(S)[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Utf.html#UtfOutput.consume" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Consume input of type T, and return the number of array
+                elements consumed.</div></div>
+<div class="cmnt">Returns Eof upon end-of-flow.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="UtfOutput.write" href="htmlsrc/tango.io.stream.Utf.html#L178">write</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Utf.html#UtfOutput.write" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write to the output stream from a source array. The provided
+                src content is converted as necessary. Note that an attached
+                output buffer must be at least four bytes wide to accommodate
+                a conversion.</div></div>
+<div class="cmnt">Returns the number of bytes consumed from src, which may be
+                less than the quantity provided.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2007 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:55 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

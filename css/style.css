@@ -1,0 +1,421 @@
+@charset "utf-8";
+/* Author: Aziz Köksal */
+* { color: black; }
+body {
+	margin: 0; 
+	/*new:*/
+	font-family: verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
+	padding: 8px 20px;
+}
+
+#kandil-content {
+  margin: 0.5em;
+}
+
+#kandil-footer {
+  margin: 0.5em 0;
+  font-size: 0.6em;
+  /*new:*/
+  color: #666666;
+  background-color: #EEFFEE;
+  border: 1px solid #A0A0A0;
+}
+
+/*new:*/
+#kandil-footer p { margin: 0.2em 0.5em; }
+
+#kandil-content.left_margin { /* To make place for the navbar. */
+  margin-left: 265px;
+}
+
+.splitbar {
+/*width: 4px;*/
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 250px;
+   /*background-color: #308430;*/
+  /*new:*/
+   width: 2px;
+  background-color: DarkGray;
+}
+
+.splitbar, body.moving_splitbar {
+  cursor: e-resize; /* '<->' cursor for Opera, Konqui ... */
+  cursor: ew-resize; /* Make FF display '<->' instead of '->|' */
+}
+
+.splitbar > .handle {
+/*border: 1px dotted #00DD00;*/
+  height: 15%;
+  position: absolute;
+  top: 42.5%;
+  bottom: 42.5%;
+  margin-left: 1px;
+/*new:*/
+  border: 1px dotted LightSteelBlue;
+}
+
+.splitbar:hover, .splitbar.moving {
+/*background-color: #60A460;*/
+  /*new:*/
+  background-color: LightSteelBlue;
+}
+
+#navbar {
+  width: 250px;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+/*background-color: #CDC;*/
+  overflow: hidden;
+}
+
+#panels {
+/*border-top: 2px outset DarkGreen;*/
+  font-size: 0.95em;
+}
+
+#navtabs {
+  margin: 0.5em 0em 0em 0em;
+/*text-align: center;*/
+  /*new:*/
+  text-align: left;
+  font-weight: bold;
+}
+
+#navtabs span {
+  margin: 0.1em;
+  padding: 0.2em;
+/*padding-bottom: 0;
+  border: 1px outset Green;
+border-bottom: none;*/
+  color: Gray;
+  background-color: #EFE;
+  white-space: nowrap;
+  cursor: pointer;
+  /*new:*/
+  padding-bottom: 2px;
+  background-color: #F0F0F0;
+}
+#navtabs span > img {
+  vertical-align: top;
+}
+
+#navtabs span.current, #navtabs span:hover {
+/*padding-bottom: 2px;
+  color: GhostWhite;
+  background-color: #474;
+*/
+/*new:*/
+  color: Black;
+}
+
+/* Use absolute positioning so that > ul can show scrollbars on overflow. */
+#apipanel, #modpanel { position: absolute; height: 100%; width: 100%; }
+
+/* Treeview */
+#panels .tview {
+  position: absolute;
+  top: 23px;
+  bottom: 26px;
+  left: 0; right: 0;
+
+  overflow: auto;
+  margin: 1px;
+  padding: 0.1em;
+  border: 1px inset DarkGreen;
+  background-color: white;
+}
+
+.tview li sub {
+  font-size: small;
+  margin: 0.2em;
+  vertical-align: bottom;
+  color: #555;
+}
+
+.tview li {
+  white-space: nowrap;
+}
+.tview label { /* The treeview label. */
+  padding: 0em 0.1em;
+}
+.tview img { /* The label's icon. */
+  vertical-align: top;
+}
+.tview i { /* The treeview icon. */
+  float: left;
+  width: 16px;
+  height: 16px;
+}
+.tview ul {
+  clear: both;
+}
+.tview i { /* Use minus for expanded state (default.) */
+  background-image: url(../img/icon_tv_minus.png);
+}
+.tview .closed i { /* Use plus for the collapsed state. */
+  background-image: url(../img/icon_tv_plus.png);
+}
+
+.filtered.tview .has_hidden > i {
+  background-image: url(../img/icon_tv_dot.png);
+}
+.filtered.tview .has_hidden.closed > i {
+  background-image: url(../img/icon_tv_plus.png);
+}
+
+.tview .leaf > i { /* No icon for leafs. */
+  display: none;
+}
+.tview .closed > ul {
+  display: none;
+}
+/*.tview .selected > label {
+  background-color: YellowGreen;
+}*/
+.tview, .tview ul {
+  margin-left: 16px;
+  padding-left: 0;
+  list-style: none;
+}
+.tview a {
+  text-decoration: none;
+  color: Black;
+}
+.tview .root > ul { /* Less indentation for the first list. */
+  margin-left: 8px;
+}
+
+/* Quick search */
+.filtered li {
+  display: none;  /* Hide all by default */
+}
+.filtered li.parent_of_match {
+  display: block; /* Parent nodes of matches must be visible */
+}
+.filtered label, .filtered a {
+  color: Gray; /* Make the text gray to indicate no match */
+}
+.filtered li.match {
+  display: block; /* Make matches visible */
+}
+.filtered li.match > label, .filtered li.match > label a {
+  color: Black;
+}
+.filtered li.no_match_msg {
+  display: block;
+}
+.filtered li.show_hidden > ul > li {
+  display: block;
+}
+
+input.filterbox {
+/*  margin: 1px;*/
+  padding-left: 17px;
+/*  border: 1px inset DarkGreen;*/
+  width: 91.2%;
+  color: black;
+  background: white url("../img/icon_magnifier.png") no-repeat;
+/*new:*/
+  margin: 0.2em 0.2em 0em 0.2em;
+  border: 1px inset Gray;
+}
+
+.konqueror input.filterbox {
+  /* Konqueror doesn't support background images for inputs properly. */
+  padding-left: 0;
+  width: 98.2%;
+  background: white;
+}
+
+.tooltip {
+  padding: 0.3em;
+  background-color: LightGoldenRodYellow;
+  border: 1px solid PaleGoldenRod;
+}
+
+/* Content */
+.sec_header {
+  font-weight: bold;
+  margin: 0.5em 0;
+}
+
+.decl {
+  font-family: monospace;
+ /* font-size: 1em;*/
+  font-weight: normal;
+  margin: 0.5em 0;
+/*new:*/
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #000000;
+}
+
+.decl:target { /* Highlight targetted decls */
+  background-color: yellowgreen;
+  border-bottom: 1px solid darkgreen;
+}
+
+.ddef {
+  margin: 0.5em 2.5em;
+  margin-right: 0;
+}
+
+.nocmnt { /* Empty comment for undocumented symbols */
+  width: 2em;
+  margin-bottom: 0.5em;
+  border-top: 1px dashed Gray;
+}
+
+.symlink, .srclink{
+  padding: 0em 0.2em;
+  text-decoration: none;
+  color: DarkRed;
+}
+
+.decl .symlink, .decl .srclink {
+  display: none;
+}
+
+.decl:hover .symlink, .symlink:focus,
+.decl:hover .srclink, .srclink:focus {
+  display: inline;
+}
+
+.symlink:hover, .srclink:hover {
+  border: 1px outset #300;
+  color: white;
+  background-color: DarkRed;
+}
+
+.symbol {
+/*  color: ForestGreen;*/
+  text-decoration: none;
+  font-weight: bold;
+/*new:*/
+  color: #000099;
+}
+
+.summary {
+  margin: 0.5em 0;
+}
+
+.params em, .tparams em {
+  font-weight: normal;
+ /*color: OliveDrab;*/
+ /*new:*/
+  color: #331200;
+  font-style: italic;
+}
+
+.attrs {
+  font-size: 0.8em;
+}
+
+table.params td {
+  vertical-align: top;
+}
+
+table.params td:first-child {
+  padding-right: 0.2em;
+  text-align: right;
+}
+
+#kandil-loading, .ajaxerror {
+  background-color: white;
+  position: fixed;
+  margin: 0.5em;
+  padding: 0.2em;
+  top: 0;
+  right: 0;
+  border: 1px solid DarkRed;
+}
+
+#kandil-loading {
+  border: 1px solid Black;
+}
+
+/* Code formatting */
+.d_code {
+  margin: 0.5em 0em;
+  border: 1px dotted Gray;
+/*border: 1px dotted Gray;*/
+   border-collapse: collapse;
+  /*new:*/
+  border: 1px dotted #99CC99;
+  background-color:#EEFFEE;
+}
+.d_code pre {
+  margin: 0.1em 0.2em;
+}
+.d_code td {
+  vertical-align: top;
+}
+
+.d_codetext {
+  width: 100%;
+}
+
+.d_codelines {
+  border-right: 1px dotted Gray;
+  background-color: #F5F5F5;
+  text-align: right;
+  color: Gray;
+}
+
+dl .loaded_code {
+  max-height:400px; 
+  margin:0.5em 2.5em; 
+}
+
+.loaded_code .d_code {
+  margin: 0;
+  border: none;
+}
+
+.loaded_code {
+  margin: 0.5em 0.1em;
+  border: 1px dotted Gray;
+  max-height: 1000px;
+  overflow: auto;
+}
+
+.loaded_code .d_codelines a {
+  color: DimGray;
+  text-decoration: none;
+}
+
+.loaded_code .d_codelines a:hover {
+  text-decoration: underline;
+}
+
+/* Number */
+.d_code .n { color: teal; }
+/* Keyword */
+.d_code .k { color: darkblue; font-weight: bold; }
+/* Line, block and nested comments */
+.d_code .lc, .bc, .nc { color: gray; }
+/* Identifier */
+.d_code .i { color: black; }
+/* String literal */
+.d_code .sl { /*color: firebrick;*/ /*new*/ color: navy; }
+/* Character literal */
+.d_code .cl { color: purple; }
+/* Special tokens */
+.d_code .st { color: green; font-weight: bold; }
+/* #line, hash line */
+.d_code .hl { color: green; }
+/* filespec (e.g. #line number [filespec]) */
+.d_code .fs { color: purple;}
+/* When the first line starts with "#!" it's a "shebang" */
+.d_code .shebang { color: gray; }
+
+.d_code .d.Module .i, .d_code .d.Import .i { color: blue; }
+.d_code .t.Identifier .i, .d_code .TemplateTypeParameter .i { color: DarkRed; }
+.d_code .t .k { color: DarkRed; font-weight: normal; }
+
+.d_code .d > .i { color: ForestGreen; }
+.d_code .o.Parameter > .i { color: OliveDrab; font-style: italic; }

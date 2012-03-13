@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.util.digest.MerkleDamgard</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.util.digest.MerkleDamgard">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.util.digest.MerkleDamgard"><a href="htmlsrc/tango.util.digest.MerkleDamgard.html" class="symbol">tango.util.digest.MerkleDamgard</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see doc/license.txt for details</div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: Feb 2006</div>
+<p class="sec_header">Author:</p><div class="cmnt">Regan Heath, Oskar Linde
+<p class="bl"></p>
+        This module implements a generic Merkle-Damgard hash function</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="MerkleDamgard" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L59">MerkleDamgard</a> : <span class="bclass">Digest</span> <span class="attrs">[<span class="prot">package</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Extending MerkleDamgard to create a custom hash function requires 
+        the implementation of a number of abstract methods. These include:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">public</span> <span class="k">uint</span> <span class="i">digestSize</span>();
+<span class="k">protected</span> <span class="k">void</span> <span class="i">reset</span>();
+<span class="k">protected</span> <span class="k">void</span> <span class="i">createDigest</span>(<span class="k">ubyte</span>[] <span class="i">buf</span>);
+<span class="k">protected</span> <span class="k">uint</span> <span class="i">blockSize</span>();
+<span class="k">protected</span> <span class="k">uint</span> <span class="i">addSize</span>();
+<span class="k">protected</span> <span class="k">void</span> <span class="i">padMessage</span>(<span class="k">ubyte</span>[] <span class="i">data</span>);
+<span class="k">protected</span> <span class="k">void</span> <span class="i">transform</span>(<span class="k">ubyte</span>[] <span class="i">data</span>);</pre>
+</td></tr>
+</table></div></div>
+<div class="cmnt">In addition there exist two further abstract methods; these methods
+        have empty default implementations since in some cases they are not 
+        required:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+<a href="#L2_ex2" name="L2_ex2">2</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">protected</span> <span class="k">abstract</span> <span class="k">void</span> <span class="i">padLength</span>(<span class="k">ubyte</span>[] <span class="i">data</span>, <span class="k">ulong</span> <span class="i">length</span>);
+<span class="k">protected</span> <span class="k">abstract</span> <span class="k">void</span> <span class="i">extend</span>();</pre>
+</td></tr>
+</table>
+<p class="bl"></p>
+        The method padLength() is required to implement the SHA series of
+        Hash functions and also the Tiger algorithm. Method extend() is 
+        required only to implement the MD2 digest.
+<p class="bl"></p>
+        The basic sequence of internal events is as follows:
+        <ul>
+        <li>transform(), 0 or more times</li>
+        <li>padMessage()</li>
+        <li>padLength()</li>
+        <li>transform()</li>
+        <li>extend()</li>
+        <li>createDigest()</li>
+        <li>reset()</li>
+        </ul></div>
+<dl>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MerkleDamgard.createDigest" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L76">createDigest</a><span class="params">(ubyte[] <em>buf</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">abstract</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.createDigest" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Constructs the digest</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>buf</em></td><td>a buffer with enough space to hold the digest</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Constructs the digest.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="MerkleDamgard.blockSize" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L91">blockSize</a><span class="params">()</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">abstract</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.blockSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Digest block size</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the block size</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Specifies the size (in bytes) of the block of data to pass to
+                each call to transform().</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="MerkleDamgard.addSize" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L108">addSize</a><span class="params">()</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">@property</span>, <span class="stc">abstract</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.addSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Length padding size</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the length padding size</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Specifies the size (in bytes) of the padding which
+                uses the length of the data which has been fed to the
+                algorithm, this padding is carried out by the
+                padLength method.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MerkleDamgard.padMessage" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L125">padMessage</a><span class="params">(ubyte[] <em>data</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">abstract</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.padMessage" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Pads the digest data</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>a slice of the digest buffer to fill with padding</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Fills the passed buffer slice with the appropriate
+                padding for the final call to transform(). This
+                padding will fill the message data buffer up to
+                blockSize()-addSize().</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MerkleDamgard.padLength" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L142">padLength</a><span class="params">(ubyte[] <em>data</em>, ulong <em>length</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.padLength" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Performs the length padding</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>the slice of the digest buffer to fill with padding</td></tr>
+<tr><td><em>length</em></td><td>the length of the data which has been processed</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Fills the passed buffer slice with addSize() bytes of padding
+                based on the length in bytes of the input data which has been
+                processed.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MerkleDamgard.transform" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L159">transform</a><span class="params">(const(ubyte[]) <em>data</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">abstract</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.transform" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Performs the digest on a block of data</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>the block of data to digest</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">The actual digest algorithm is carried out by this method on
+                the passed block of data. This method is called for every
+                blockSize() bytes of input data and once more with the remaining
+                data padded to blockSize().</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MerkleDamgard.extend" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L173">extend</a><span class="params">()</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.extend" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Final processing of digest.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">This method is called after the final transform just prior to
+                the creation of the final digest. The MD2 algorithm requires
+                an additional step at this stage. Future digests may or may not
+                require this method.</div></dd>
+<dt class="decl"><a class="symbol _ctor" name="MerkleDamgard.this" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L185">this</a><span class="params">()</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct a digest</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Constructs the internal buffer for use by the digest, the buffer
+                size (in bytes) is defined by the abstract method blockSize().</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MerkleDamgard.reset" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L200">reset</a><span class="params">()</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.reset" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Initialize the digest</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Returns the digest state to its initial value</div></dd>
+<dt class="decl"><span class="rettyp">MerkleDamgard</span> <a class="symbol _function" name="MerkleDamgard.update" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L217">update</a><span class="params">(const(void[]) <em>input</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.update" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Digest additional data</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>the data to digest</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Continues the digest operation on the additional data.</div></dd>
+<dt class="decl"><span class="rettyp">ubyte[]</span> <a class="symbol _function" name="MerkleDamgard.binaryDigest" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L252">binaryDigest</a><span class="params">(ubyte[] <em>buf</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.binaryDigest" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Complete the digest</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the completed digest</div>
+<p class="sec_header">Remarks:</p><div class="cmnt">Concludes the algorithm producing the final digest.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MerkleDamgard.littleEndian32" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L293">littleEndian32</a><span class="params">(const(ubyte[]) <em>input</em>, uint[] <em>output</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">static</span>, <span class="stc">final</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.littleEndian32" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts 8 bit to 32 bit Little Endian</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>the source array</td></tr>
+<tr><td><em>output</em></td><td>the destination array</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Converts an array of ubyte[] into uint[] in Little Endian byte order.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MerkleDamgard.bigEndian32" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L315">bigEndian32</a><span class="params">(const(ubyte[]) <em>input</em>, uint[] <em>output</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">static</span>, <span class="stc">final</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.bigEndian32" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts 8 bit to 32 bit Big Endian</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>the source array</td></tr>
+<tr><td><em>output</em></td><td>the destination array</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Converts an array of ubyte[] into uint[] in Big Endian byte order.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MerkleDamgard.littleEndian64" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L337">littleEndian64</a><span class="params">(const(ubyte[]) <em>input</em>, ulong[] <em>output</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">static</span>, <span class="stc">final</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.littleEndian64" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts 8 bit to 64 bit Little Endian</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>the source array</td></tr>
+<tr><td><em>output</em></td><td>the destination array</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Converts an array of ubyte[] into ulong[] in Little Endian byte order.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MerkleDamgard.bigEndian64" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L358">bigEndian64</a><span class="params">(const(ubyte[]) <em>input</em>, ulong[] <em>output</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">static</span>, <span class="stc">final</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.bigEndian64" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Converts 8 bit to 64 bit Big Endian</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>input</em></td><td>the source array</td></tr>
+<tr><td><em>output</em></td><td>the destination array</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Converts an array of ubyte[] into ulong[] in Big Endian byte order.</div></dd>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="MerkleDamgard.rotateLeft" href="htmlsrc/tango.util.digest.MerkleDamgard.html#L380">rotateLeft</a><span class="params">(uint <em>x</em>, uint <em>n</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">static</span>, <span class="stc">final</span>]</span> <a href="tango.util.digest.MerkleDamgard.html#MerkleDamgard.rotateLeft" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Rotate left by n</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>x</em></td><td>the value to rotate</td></tr>
+<tr><td><em>n</em></td><td>the amount to rotate by</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Rotates a 32 bit value by the specified amount.</div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2006 Tango. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:34:24 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

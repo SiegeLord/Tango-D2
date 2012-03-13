@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.stream.Digester</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.stream.Digester">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.stream.Digester"><a href="htmlsrc/tango.io.stream.Digester.html" class="symbol">tango.io.stream.Digester</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: Oct 2007</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="DigestInput" href="htmlsrc/tango.io.stream.Digester.html#L26">DigestInput</a> : <span class="bclass">InputFilter</span>, <span class="bclass">InputFilter.Mutator</span> <a href="tango.io.stream.Digester.html#DigestInput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Inject a digest filter into an input stream, updating the digest
+        as information flows through it.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="DigestInput.this" href="htmlsrc/tango.io.stream.Digester.html#L36">this</a><span class="params">(InputStream <em>stream</em>, Digest <em>digest</em>)</span> <a href="tango.io.stream.Digester.html#DigestInput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Accepts any input stream, and any digest derivation.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="DigestInput.read" href="htmlsrc/tango.io.stream.Digester.html#L52">read</a><span class="params">(void[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Digester.html#DigestInput.read" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read from conduit into a target array. The provided dst
+                will be populated with content from the conduit.</div></div>
+<div class="cmnt">Returns the number of bytes read, which may be less than
+                requested in dst (or IOStream.Eof for end-of-flow.)</div></dd>
+<dt class="decl"><span class="rettyp">DigestInput</span> <a class="symbol _function" name="DigestInput.slurp" href="htmlsrc/tango.io.stream.Digester.html#L66">slurp</a><span class="params">(void[] <em>dst</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Digester.html#DigestInput.slurp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Slurp remaining stream content and return this.</div></div></dd>
+<dt class="decl"><span class="rettyp">Digest</span> <a class="symbol _function" name="DigestInput.digest" href="htmlsrc/tango.io.stream.Digester.html#L82">digest</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Digester.html#DigestInput.digest" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the Digest instance we were created with. Use this
+                to access the resultant binary or hex digest value.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="DigestOutput" href="htmlsrc/tango.io.stream.Digester.html#L103">DigestOutput</a> : <span class="bclass">OutputFilter</span>, <span class="bclass">InputFilter.Mutator</span> <a href="tango.io.stream.Digester.html#DigestOutput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Inject a digest filter into an output stream, updating the digest
+        as information flows through it. Here's an example where we calculate
+        an MD5 digest as a side-effect of copying a file:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">output</span> = <span class="k">new</span> <span class="i">DigestOutput</span>(<span class="k">new</span> <span class="i">FileOutput</span>(<span class="sl">"output"</span>), <span class="k">new</span> <span class="i">Md5</span>);
+<span class="i">output</span>.<span class="i">copy</span> (<span class="k">new</span> <span class="i">FileInput</span>(<span class="sl">"input"</span>));
+
+<span class="i">Stdout</span>.<span class="i">formatln</span> (<span class="sl">"hex digest: {}"</span>, <span class="i">output</span>.<span class="i">digest</span>.<span class="i">hexDigest</span>);</pre>
+</td></tr>
+</table></div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="DigestOutput.this" href="htmlsrc/tango.io.stream.Digester.html#L113">this</a><span class="params">(OutputStream <em>stream</em>, Digest <em>digest</em>)</span> <a href="tango.io.stream.Digester.html#DigestOutput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Accepts any output stream, and any digest derivation.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="DigestOutput.write" href="htmlsrc/tango.io.stream.Digester.html#L129">write</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Digester.html#DigestOutput.write" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write to conduit from a source array. The provided src
+                content will be written to the conduit.</div></div>
+<div class="cmnt">Returns the number of bytes written from src, which may
+                be less than the quantity provided.</div></dd>
+<dt class="decl"><span class="rettyp">Digest</span> <a class="symbol _function" name="DigestOutput.digest" href="htmlsrc/tango.io.stream.Digester.html#L144">digest</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Digester.html#DigestOutput.digest" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the Digest instance we were created with. Use this
+                to access the resultant binary or hex digest value.</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2007 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

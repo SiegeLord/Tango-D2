@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.io.stream.Data</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.io.stream.Data">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.io.stream.Data"><a href="htmlsrc/tango.io.stream.Data.html" class="symbol">tango.io.stream.Data</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: Oct 2007</div>
+<p class="sec_header">Author:</p><div class="cmnt">Kris
+<p class="bl"></p>
+        These classes represent a simple means of reading and writing
+        discrete data types as binary values, with an option to invert
+        the endian order of numeric values.
+<p class="bl"></p>
+        Arrays are treated as untyped byte streams, with an optional
+        length-prefix, and should otherwise be explicitly managed at
+        the application level. We'll add additional support for arrays
+        and aggregates in future.</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="DataInput" href="htmlsrc/tango.io.stream.Data.html#L47">DataInput</a> : <span class="bclass">InputFilter</span> <a href="tango.io.stream.Data.html#DataInput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A simple way to read binary data from an arbitrary InputStream,
+        such as a file:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">input</span> = <span class="k">new</span> <span class="i">DataInput</span> (<span class="k">new</span> <span class="i">File</span> (<span class="sl">"path"</span>));
+<span class="k">auto</span> <span class="i">x</span> = <span class="i">input</span>.<span class="i">int32</span>;
+<span class="k">auto</span> <span class="i">y</span> = <span class="i">input</span>.<span class="i">float64</span>;
+<span class="k">auto</span> <span class="i">l</span> = <span class="i">input</span>.<span class="i">read</span> (<span class="i">buffer</span>);           <span class="lc">// read raw data directly</span>
+<span class="k">auto</span> <span class="i">s</span> = <span class="k">cast</span>(<span class="k">char</span>[]) <span class="i">input</span>.<span class="i">array</span>;      <span class="lc">// read length, allocate space</span>
+<span class="i">input</span>.<span class="i">close</span>;</pre>
+</td></tr>
+</table></div></div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> array <a class="symbol _alias" name="DataInput.get" href="htmlsrc/tango.io.stream.Data.html#L49">get</a> <a href="tango.io.stream.Data.html#DataInput.get" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> boolean <a class="symbol _alias" name="DataInput.getBool" href="htmlsrc/tango.io.stream.Data.html#L50">getBool</a> <a href="tango.io.stream.Data.html#DataInput.getBool" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> int8 <a class="symbol _alias" name="DataInput.getByte" href="htmlsrc/tango.io.stream.Data.html#L51">getByte</a> <a href="tango.io.stream.Data.html#DataInput.getByte" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> int16 <a class="symbol _alias" name="DataInput.getShort" href="htmlsrc/tango.io.stream.Data.html#L52">getShort</a> <a href="tango.io.stream.Data.html#DataInput.getShort" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> int32 <a class="symbol _alias" name="DataInput.getInt" href="htmlsrc/tango.io.stream.Data.html#L53">getInt</a> <a href="tango.io.stream.Data.html#DataInput.getInt" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> int64 <a class="symbol _alias" name="DataInput.getLong" href="htmlsrc/tango.io.stream.Data.html#L54">getLong</a> <a href="tango.io.stream.Data.html#DataInput.getLong" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> float32 <a class="symbol _alias" name="DataInput.getFloat" href="htmlsrc/tango.io.stream.Data.html#L55">getFloat</a> <a href="tango.io.stream.Data.html#DataInput.getFloat" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> float64 <a class="symbol _alias" name="DataInput.getDouble" href="htmlsrc/tango.io.stream.Data.html#L56">getDouble</a> <a href="tango.io.stream.Data.html#DataInput.getDouble" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Old name aliases.</div></div></dd>
+<dt class="decl"><a class="symbol _enum" name="DataInput.enum" href="htmlsrc/tango.io.stream.Data.html#L59">enum</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.stream.Data.html#DataInput.enum" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Endian variations.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="DataInput.enum.Native" href="htmlsrc/tango.io.stream.Data.html#L61">Native</a> <a href="tango.io.stream.Data.html#DataInput.enum.Native" class="plink">¶</a></dt>
+<dd class="ddef"></dd>
+<dt class="decl"><a class="symbol _enummem" name="DataInput.enum.Network" href="htmlsrc/tango.io.stream.Data.html#L62">Network</a> <a href="tango.io.stream.Data.html#DataInput.enum.Network" class="plink">¶</a></dt>
+<dd class="ddef"></dd>
+<dt class="decl"><a class="symbol _enummem" name="DataInput.enum.Big" href="htmlsrc/tango.io.stream.Data.html#L63">Big</a> <a href="tango.io.stream.Data.html#DataInput.enum.Big" class="plink">¶</a></dt>
+<dd class="ddef"></dd>
+<dt class="decl"><a class="symbol _enummem" name="DataInput.enum.Little" href="htmlsrc/tango.io.stream.Data.html#L64">Little</a> <a href="tango.io.stream.Data.html#DataInput.enum.Little" class="plink">¶</a></dt>
+<dd class="ddef"></dd></dl></dd>
+<dt class="decl"><a class="symbol _ctor" name="DataInput.this" href="htmlsrc/tango.io.stream.Data.html#L79">this</a><span class="params">(InputStream <em>stream</em>)</span> <a href="tango.io.stream.Data.html#DataInput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Propagate ctor to superclass.</div></div></dd>
+<dt class="decl"><span class="rettyp">DataInput</span> <a class="symbol _function" name="DataInput.allocate" href="htmlsrc/tango.io.stream.Data.html#L92">allocate</a><span class="params">(Allocate <em>allocate</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataInput.allocate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set the array allocator.</div></div></dd>
+<dt class="decl"><span class="rettyp">DataInput</span> <a class="symbol _function" name="DataInput.endian" href="htmlsrc/tango.io.stream.Data.html#L104">endian</a><span class="params">(int <em>e</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataInput.endian" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set current endian translation.</div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="DataInput.array" href="htmlsrc/tango.io.stream.Data.html#L125">array</a><span class="params">(void[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataInput.array" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read an array back into a user-provided workspace. The
+                space must be sufficiently large enough to house all of
+                the array, and the actual number of bytes is returned.</div></div>
+<div class="cmnt">Note that the size of the array is written as an integer
+                prefixing the array content itself.  Use read(void[]) to
+                eschew this prefix.</div></dd>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="DataInput.array:2" href="htmlsrc/tango.io.stream.Data.html#L156">array</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataInput.array:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Read an array back from the source, with the assumption
+                it has been written using DataOutput.put() or otherwise
+                prefixed with an integer representing the total number
+                of bytes within the array content. That's *bytes*, not
+                elements.</div></div>
+<div class="cmnt">An array of the appropriate size is allocated either via
+                the provided delegate, or from the heap, populated and
+                returned to the caller. Casting the return value to an
+                appropriate type will adjust the number of elements as</div>
+<p class="sec_header">required:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">text</span> = <span class="k">cast</span>(<span class="k">char</span>[]) <span class="i">input</span>.<span class="i">get</span>;</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="DataInput.boolean" href="htmlsrc/tango.io.stream.Data.html#L171">boolean</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataInput.boolean" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">byte</span> <a class="symbol _function" name="DataInput.int8" href="htmlsrc/tango.io.stream.Data.html#L182">int8</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataInput.int8" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">short</span> <a class="symbol _function" name="DataInput.int16" href="htmlsrc/tango.io.stream.Data.html#L193">int16</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataInput.int16" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="DataInput.int32" href="htmlsrc/tango.io.stream.Data.html#L206">int32</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataInput.int32" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="DataInput.int64" href="htmlsrc/tango.io.stream.Data.html#L219">int64</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataInput.int64" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">float</span> <a class="symbol _function" name="DataInput.float32" href="htmlsrc/tango.io.stream.Data.html#L232">float32</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataInput.float32" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">double</span> <a class="symbol _function" name="DataInput.float64" href="htmlsrc/tango.io.stream.Data.html#L245">float64</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataInput.float64" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="DataInput.read" href="htmlsrc/tango.io.stream.Data.html#L258">read</a><span class="params">(void[] <em>data</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataInput.read" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="DataOutput" href="htmlsrc/tango.io.stream.Data.html#L297">DataOutput</a> : <span class="bclass">OutputFilter</span> <a href="tango.io.stream.Data.html#DataOutput" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A simple way to write binary data to an arbitrary OutputStream,
+        such as a file:
+        <table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex3" name="L1_ex3">1</a>
+<a href="#L2_ex3" name="L2_ex3">2</a>
+<a href="#L3_ex3" name="L3_ex3">3</a>
+<a href="#L4_ex3" name="L4_ex3">4</a>
+<a href="#L5_ex3" name="L5_ex3">5</a>
+<a href="#L6_ex3" name="L6_ex3">6</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">auto</span> <span class="i">output</span> = <span class="k">new</span> <span class="i">DataOutput</span> (<span class="k">new</span> <span class="i">File</span> (<span class="sl">"path"</span>, <span class="i">File</span>.<span class="i">WriteCreate</span>));
+<span class="i">output</span>.<span class="i">int32</span>   (<span class="n">1024</span>);
+<span class="i">output</span>.<span class="i">float64</span> (<span class="n">3.14159</span>);
+<span class="i">output</span>.<span class="i">array</span>   (<span class="sl">"string with length prefix"</span>);
+<span class="i">output</span>.<span class="i">write</span>   (<span class="sl">"raw array, no prefix"</span>);
+<span class="i">output</span>.<span class="i">close</span>;</pre>
+</td></tr>
+</table></div></div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> array <a class="symbol _alias" name="DataOutput.put" href="htmlsrc/tango.io.stream.Data.html#L299">put</a> <a href="tango.io.stream.Data.html#DataOutput.put" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> boolean <a class="symbol _alias" name="DataOutput.putBool" href="htmlsrc/tango.io.stream.Data.html#L300">putBool</a> <a href="tango.io.stream.Data.html#DataOutput.putBool" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> int8 <a class="symbol _alias" name="DataOutput.putByte" href="htmlsrc/tango.io.stream.Data.html#L301">putByte</a> <a href="tango.io.stream.Data.html#DataOutput.putByte" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> int16 <a class="symbol _alias" name="DataOutput.putShort" href="htmlsrc/tango.io.stream.Data.html#L302">putShort</a> <a href="tango.io.stream.Data.html#DataOutput.putShort" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> int32 <a class="symbol _alias" name="DataOutput.putInt" href="htmlsrc/tango.io.stream.Data.html#L303">putInt</a> <a href="tango.io.stream.Data.html#DataOutput.putInt" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> int64 <a class="symbol _alias" name="DataOutput.putLong" href="htmlsrc/tango.io.stream.Data.html#L304">putLong</a> <a href="tango.io.stream.Data.html#DataOutput.putLong" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> float32 <a class="symbol _alias" name="DataOutput.putFloat" href="htmlsrc/tango.io.stream.Data.html#L305">putFloat</a> <a href="tango.io.stream.Data.html#DataOutput.putFloat" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> float64 <a class="symbol _alias" name="DataOutput.putFloat:2" href="htmlsrc/tango.io.stream.Data.html#L306">putFloat</a> <a href="tango.io.stream.Data.html#DataOutput.putFloat:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Old name aliases.</div></div></dd>
+<dt class="decl"><a class="symbol _enum" name="DataOutput.enum" href="htmlsrc/tango.io.stream.Data.html#L309">enum</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.stream.Data.html#DataOutput.enum" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Endian variations.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="DataOutput.enum.Native" href="htmlsrc/tango.io.stream.Data.html#L311">Native</a> <a href="tango.io.stream.Data.html#DataOutput.enum.Native" class="plink">¶</a></dt>
+<dd class="ddef"></dd>
+<dt class="decl"><a class="symbol _enummem" name="DataOutput.enum.Network" href="htmlsrc/tango.io.stream.Data.html#L312">Network</a> <a href="tango.io.stream.Data.html#DataOutput.enum.Network" class="plink">¶</a></dt>
+<dd class="ddef"></dd>
+<dt class="decl"><a class="symbol _enummem" name="DataOutput.enum.Big" href="htmlsrc/tango.io.stream.Data.html#L313">Big</a> <a href="tango.io.stream.Data.html#DataOutput.enum.Big" class="plink">¶</a></dt>
+<dd class="ddef"></dd>
+<dt class="decl"><a class="symbol _enummem" name="DataOutput.enum.Little" href="htmlsrc/tango.io.stream.Data.html#L314">Little</a> <a href="tango.io.stream.Data.html#DataOutput.enum.Little" class="plink">¶</a></dt>
+<dd class="ddef"></dd></dl></dd>
+<dt class="decl"><a class="symbol _ctor" name="DataOutput.this" href="htmlsrc/tango.io.stream.Data.html#L326">this</a><span class="params">(OutputStream <em>stream</em>)</span> <a href="tango.io.stream.Data.html#DataOutput.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Propagate ctor to superclass.</div></div></dd>
+<dt class="decl"><span class="rettyp">DataOutput</span> <a class="symbol _function" name="DataOutput.endian" href="htmlsrc/tango.io.stream.Data.html#L337">endian</a><span class="params">(int <em>e</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataOutput.endian" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Set current endian translation.</div></div></dd>
+<dt class="decl"><span class="rettyp">ulong</span> <a class="symbol _function" name="DataOutput.array" href="htmlsrc/tango.io.stream.Data.html#L354">array</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataOutput.array" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Write an array to the target stream. Note that the size
+                of the array is written as an integer prefixing the array
+                content itself. Use write(void[]) to eschew this prefix.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DataOutput.boolean" href="htmlsrc/tango.io.stream.Data.html#L369">boolean</a><span class="params">(bool <em>x</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataOutput.boolean" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DataOutput.int8" href="htmlsrc/tango.io.stream.Data.html#L378">int8</a><span class="params">(byte <em>x</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataOutput.int8" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DataOutput.int16" href="htmlsrc/tango.io.stream.Data.html#L387">int16</a><span class="params">(short <em>x</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataOutput.int16" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DataOutput.int32" href="htmlsrc/tango.io.stream.Data.html#L398">int32</a><span class="params">(int <em>x</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataOutput.int32" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DataOutput.int64" href="htmlsrc/tango.io.stream.Data.html#L409">int64</a><span class="params">(long <em>x</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataOutput.int64" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DataOutput.float32" href="htmlsrc/tango.io.stream.Data.html#L420">float32</a><span class="params">(float <em>x</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataOutput.float32" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="DataOutput.float64" href="htmlsrc/tango.io.stream.Data.html#L431">float64</a><span class="params">(double <em>x</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataOutput.float64" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="DataOutput.write" href="htmlsrc/tango.io.stream.Data.html#L442">write</a><span class="params">(const(void)[] <em>data</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.stream.Data.html#DataOutput.write" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2007 Kris Bell. All rights reserved</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:54 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

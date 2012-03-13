@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.math.random.NormalSource</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.math.random.NormalSource">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.math.random.NormalSource"><a href="htmlsrc/tango.math.random.NormalSource.html" class="symbol">tango.math.random.NormalSource</a></h1>
+
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
+<p class="sec_header">Version:</p><div class="cmnt">Initial release: July 2008</div>
+<p class="sec_header">Author:</p><div class="cmnt">Fawzi Mohamed</div>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="NormalSource" href="htmlsrc/tango.math.random.NormalSource.html#L15">NormalSource</a><span class="tparams">(<em>RandG</em>, <em>T</em>)</span> <a href="tango.math.random.NormalSource.html#NormalSource" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">class that returns gaussian (normal) distributed numbers (f=exp(-0.5*x*x)/sqrt(2*pi))</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="NormalSource.probDensityF" href="htmlsrc/tango.math.random.NormalSource.html#L18">probDensityF</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.NormalSource.html#NormalSource.probDensityF" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">probability distribution (non normalized, should be divided by sqrt(2*PI))</div></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="NormalSource.invProbDensityF" href="htmlsrc/tango.math.random.NormalSource.html#L20">invProbDensityF</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.NormalSource.html#NormalSource.invProbDensityF" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">inverse probability distribution</div></div></dd>
+<dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="NormalSource.cumProbDensityFCompl" href="htmlsrc/tango.math.random.NormalSource.html#L22">cumProbDensityFCompl</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.NormalSource.html#NormalSource.cumProbDensityFCompl" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">complement of the cumulative density distribution (integral x..infinity probDensityF)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="NormalSource.tailGenerator" href="htmlsrc/tango.math.random.NormalSource.html#L24">tailGenerator</a><span class="params">(RandG <em>r</em>, T <em>dMin</em>, int <em>iNegative</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.NormalSource.html#NormalSource.tailGenerator" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">tail for normal distribution</div></div></dd>
+<dt class="decl">SourceT <a class="symbol _variable" name="NormalSource.source" href="htmlsrc/tango.math.random.NormalSource.html#L36">source</a> <a href="tango.math.random.NormalSource.html#NormalSource.source" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">internal source of normal numbers</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="NormalSource.this" href="htmlsrc/tango.math.random.NormalSource.html#L38">this</a><span class="params">(RandG <em>r</em>)</span> <a href="tango.math.random.NormalSource.html#NormalSource.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes the probability distribution</div></div></dd>
+<dt class="decl"><span class="rettyp">NormalSource</span> <a class="symbol _function" name="NormalSource.opCall" href="htmlsrc/tango.math.random.NormalSource.html#L42">opCall</a><span class="tparams">(<em>U</em>, <em>S</em>...)</span><span class="params">(<span class="k">ref</span> U <em>a</em>, S <em>args</em>)</span> <a href="tango.math.random.NormalSource.html#NormalSource.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">chainable call style initialization of variables (thorugh a call to randomize)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="NormalSource.getRandom" href="htmlsrc/tango.math.random.NormalSource.html#L47">getRandom</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.math.random.NormalSource.html#NormalSource.getRandom" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a normal distribued number</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="NormalSource.getRandom:2" href="htmlsrc/tango.math.random.NormalSource.html#L51">getRandom</a><span class="params">(T <em>sigma</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.math.random.NormalSource.html#NormalSource.getRandom:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a normal distribued number with the given sigma (standard deviation)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="NormalSource.getRandom:3" href="htmlsrc/tango.math.random.NormalSource.html#L55">getRandom</a><span class="params">(T <em>sigma</em>, T <em>mu</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.math.random.NormalSource.html#NormalSource.getRandom:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a normal distribued number with the given sigma (standard deviation) and mu (average)</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="NormalSource.randomize" href="htmlsrc/tango.math.random.NormalSource.html#L59">randomize</a><span class="tparams">(<em>U</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.NormalSource.html#NormalSource.randomize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes a variable with normal distribued number and returns it</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="NormalSource.randomize:2" href="htmlsrc/tango.math.random.NormalSource.html#L63">randomize</a><span class="tparams">(<em>U</em>, <em>V</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>, V <em>sigma</em>)</span> <a href="tango.math.random.NormalSource.html#NormalSource.randomize:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes a variable with normal distribued number with the given sigma and returns it</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="NormalSource.randomize:3" href="htmlsrc/tango.math.random.NormalSource.html#L67">randomize</a><span class="tparams">(<em>U</em>, <em>V</em>, <em>S</em>)</span><span class="params">(<span class="k">ref</span> U <em>el</em>, V <em>sigma</em>, S <em>mu</em>)</span> <a href="tango.math.random.NormalSource.html#NormalSource.randomize:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes a variable with normal distribued numbers with the given sigma and mu and returns it</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="NormalSource.randomizeOp" href="htmlsrc/tango.math.random.NormalSource.html#L71">randomizeOp</a><span class="tparams">(<em>U</em>, <em>S</em>)</span><span class="params">(<span class="k">scope</span> S delegate(T) <em>op</em>, <span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.NormalSource.html#NormalSource.randomizeOp" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initializes the variable with the result of mapping op on the random numbers (of type T)</div></div></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="NormalSource.NormalDistribution" href="htmlsrc/tango.math.random.NormalSource.html#L76">NormalDistribution</a> <a href="tango.math.random.NormalSource.html#NormalSource.NormalDistribution" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">normal distribution with different default sigma and mu
+ f=exp(-x*x/(2*sigma^2))/(sqrt(2 pi)*sigma)</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">NormalDistribution</span> <a class="symbol _function" name="NormalSource.NormalDistribution.create" href="htmlsrc/tango.math.random.NormalSource.html#L80">create</a><span class="params">(NormalSource <em>source</em>, T <em>sigma</em>, T <em>mu</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.math.random.NormalSource.html#NormalSource.NormalDistribution.create" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">constructor</div></div></dd>
+<dt class="decl"><span class="rettyp">NormalDistribution</span> <a class="symbol _function" name="NormalSource.NormalDistribution.opCall" href="htmlsrc/tango.math.random.NormalSource.html#L88">opCall</a><span class="tparams">(<em>U</em>, <em>S</em>...)</span><span class="params">(<span class="k">ref</span> U <em>a</em>, S <em>args</em>)</span> <a href="tango.math.random.NormalSource.html#NormalSource.NormalDistribution.opCall" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">chainable call style initialization of variables (thorugh a call to randomize)</div></div></dd>
+<dt class="decl"><span class="rettyp">T</span> <a class="symbol _function" name="NormalSource.NormalDistribution.getRandom" href="htmlsrc/tango.math.random.NormalSource.html#L93">getRandom</a><span class="params">()</span> <a href="tango.math.random.NormalSource.html#NormalSource.NormalDistribution.getRandom" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a single number</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="NormalSource.NormalDistribution.randomize" href="htmlsrc/tango.math.random.NormalSource.html#L97">randomize</a><span class="tparams">(<em>U</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>)</span> <a href="tango.math.random.NormalSource.html#NormalSource.NormalDistribution.randomize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initialize a</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="NormalSource.NormalDistribution.randomize:2" href="htmlsrc/tango.math.random.NormalSource.html#L102">randomize</a><span class="tparams">(<em>U</em>, <em>V</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>, V <em>s</em>)</span> <a href="tango.math.random.NormalSource.html#NormalSource.NormalDistribution.randomize:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initialize a (let s and m have different types??)</div></div></dd>
+<dt class="decl"><span class="rettyp">U</span> <a class="symbol _function" name="NormalSource.NormalDistribution.randomize:3" href="htmlsrc/tango.math.random.NormalSource.html#L107">randomize</a><span class="tparams">(<em>U</em>, <em>V</em>, <em>S</em>)</span><span class="params">(<span class="k">ref</span> U <em>a</em>, V <em>s</em>, S <em>m</em>)</span> <a href="tango.math.random.NormalSource.html#NormalSource.NormalDistribution.randomize:3" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">initialize a (let s and m have different types??)</div></div></dd></dl></dd>
+<dt class="decl"><span class="rettyp">NormalDistribution</span> <a class="symbol _function" name="NormalSource.normalD" href="htmlsrc/tango.math.random.NormalSource.html#L113">normalD</a><span class="params">(T <em>sigma</em> = <span class="defval"><span class="k">cast</span>(<span class="i">T</span>)<span class="n">1</span></span>, T <em>mu</em> = <span class="defval"><span class="k">cast</span>(<span class="i">T</span>)<span class="n">0</span></span>)</span> <a href="tango.math.random.NormalSource.html#NormalSource.normalD" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">returns a normal distribution with a non-default sigma/mu</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>Copyright (c) 2008. Fawzi Mohamed</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 21:33:56 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>
