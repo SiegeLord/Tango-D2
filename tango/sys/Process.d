@@ -1106,7 +1106,7 @@ class Process
             
             void append_arg(const(char)[] arg)
             {
-			  const(char)[] nextarg = a.substitute(`"`, `\"`);
+              const(char)[] nextarg = arg.substitute(`"`, `\"`);
               //
               // find all instances where \\" occurs, and double all the
               // backslashes.  Otherwise, it will fall under rule 1, and those

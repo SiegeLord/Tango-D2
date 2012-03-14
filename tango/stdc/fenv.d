@@ -117,8 +117,8 @@ enum
 
 version( Win32 )
 {
-    private extern fenv_t _FE_DFL_ENV;
-    fenv_t* FE_DFL_ENV = &_FE_DFL_ENV;
+    private extern const fenv_t _FE_DFL_ENV;
+    const fenv_t* FE_DFL_ENV = &_FE_DFL_ENV;
 }
 else version( linux )
 {
