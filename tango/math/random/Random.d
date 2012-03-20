@@ -1452,7 +1452,17 @@ debug(UnitTest){
                 allStats,false,farr2,darr2,rarr2);
             gFail|=fail;
             if (fail) Stdout("... with Exp distribution");
-        
+
+            uint seed = 0;
+            r.seed({ return 2*(seed++); });
+            auto v1 = r.uniform!(int)();
+
+            seed = 0;
+            r.seed({ return 2*(seed++); });
+            auto v2 = r.uniform!(int)();
+
+            assert(v1 == v2, "Re-seed failure: " ~ RandS.stringof);
+
             r.fromString(status);
             assert(r.uniform!(uint)==tVal,"restoring of status from str failed");
             assert(r.uniform!(ubyte)==t2Val,"restoring of status from str failed");
