@@ -282,6 +282,20 @@ else version( LDC )
 {
     import ldc.intrinsics;
 
+    private AtomicOrdering getOrdering(msync ms)
+    {
+        if (ms == msync.acq)
+            return AtomicOrdering.Acquire;
+        else if (ms == msync.rel)
+            return AtomicOrdering.Release;
+        else if (ms == msync.seq)
+            return AtomicOrdering.SequentiallyConsistent;
+        else if (ms == msync.raw)
+            return AtomicOrdering.NotAtomic;
+        else
+					 assert(0);
+    }
+
 
     ////////////////////////////////////////////////////////////////////////////
     // Atomic Load
@@ -292,23 +306,19 @@ else version( LDC )
     {
         T atomicLoad(ref T val)
         {
-            llvm_memory_barrier(
-                ms == msync.hlb || ms == msync.acq || ms == msync.seq,
-                ms == msync.hsb || ms == msync.acq || ms == msync.seq,
-                ms == msync.slb || ms == msync.rel || ms == msync.seq,
-                ms == msync.ssb || ms == msync.rel || ms == msync.seq,
-                false);
+					  AtomicOrdering ordering = getOrdering(ms == msync.acq ? msync.seq : ms);
+
             static if (isPointerType!(T))
             {
-                return cast(T)llvm_atomic_load_add!(size_t)(cast(size_t*)&val, 0);
+							  return cast(T)llvm_atomic_load!(size_t)(cast(size_t*)&val, ordering);
             }
             else static if (is(T == bool))
             {
-                return llvm_atomic_load_add!(ubyte)(cast(ubyte*)&val, cast(ubyte)0) ? 1 : 0;
+							  return cast(T)llvm_atomic_load!(ubyte)(cast(ubyte*)&val, ordering);
             }
             else
             {
-                return llvm_atomic_load_add!(T)(&val, cast(T)0);
+							  return cast(T)llvm_atomic_load!(T)(cast(T*)&val, ordering);
             }
         }
     }
@@ -323,23 +333,19 @@ else version( LDC )
     {
         void atomicStore( ref T val, T newval )
         {
-            llvm_memory_barrier(
-                ms == msync.hlb || ms == msync.acq || ms == msync.seq,
-                ms == msync.hsb || ms == msync.acq || ms == msync.seq,
-                ms == msync.slb || ms == msync.rel || ms == msync.seq,
-                ms == msync.ssb || ms == msync.rel || ms == msync.seq,
-                false);
+					  AtomicOrdering ordering = getOrdering(ms == msync.rel ? msync.seq : ms);
+
             static if (isPointerType!(T))
             {
-                llvm_atomic_swap!(size_t)(cast(size_t*)&val, cast(size_t)newval);
+                llvm_atomic_store!(size_t)(cast(size_t)newval, cast(size_t*)&val, ordering);
             }
             else static if (is(T == bool))
             {
-                llvm_atomic_swap!(ubyte)(cast(ubyte*)&val, newval?1:0);
+							  llvm_atomic_store!(ubyte)(newval, cast(ubyte*)&val, ordering);
             }
             else
             {
-                llvm_atomic_swap!(T)(&val, newval);
+                llvm_atomic_store!(T)(cast(T)newval, cast(T*)&val, ordering);
             }
         }
     }
@@ -354,30 +360,26 @@ else version( LDC )
     {
         bool atomicStoreIf( ref T val, T newval, T equalTo )
         {
-            llvm_memory_barrier(
-                ms == msync.hlb || ms == msync.acq || ms == msync.seq,
-                ms == msync.hsb || ms == msync.acq || ms == msync.seq,
-                ms == msync.slb || ms == msync.rel || ms == msync.seq,
-                ms == msync.ssb || ms == msync.rel || ms == msync.seq,
-                false);
+					  AtomicOrdering ordering = getOrdering(ms == msync.rel ? msync.seq : ms);
+
             T oldval = void;
             static if (isPointerType!(T))
             {
-                oldval = cast(T)llvm_atomic_cmp_swap!(size_t)(cast(size_t*)&val, cast(size_t)equalTo, cast(size_t)newval);
+							oldval = cast(T)llvm_atomic_cmp_swap!(size_t)(cast(size_t*)&val, cast(size_t)equalTo, cast(size_t)newval, ordering);
             }
             else static if (is(T == bool))
             {
-                oldval = llvm_atomic_cmp_swap!(ubyte)(cast(ubyte*)&val, equalTo?1:0, newval?1:0)?0:1;
+							oldval = llvm_atomic_cmp_swap!(ubyte)(cast(ubyte*)&val, equalTo?1:0, newval?1:0, ordering)?0:1;
             }
             else
             {
-                oldval = llvm_atomic_cmp_swap!(T)(&val, equalTo, newval);
+							oldval = llvm_atomic_cmp_swap!(T)(&val, equalTo, newval, ordering);
             }
             return oldval == equalTo;
         }
     }
-    
-    
+
+
     ////////////////////////////////////////////////////////////////////////////
     // Atomic Increment
     ////////////////////////////////////////////////////////////////////////////
@@ -404,8 +406,8 @@ else version( LDC )
             return val;
         }
     }
-    
-    
+
+
     ////////////////////////////////////////////////////////////////////////////
     // Atomic Decrement
     ////////////////////////////////////////////////////////////////////////////
