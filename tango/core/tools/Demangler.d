@@ -243,6 +243,9 @@ public class Demangler
     /** Demangles the given string. */
     public char[] demangle (char[] input)
     {
+        // Special case for "_Dmain"
+        if (input == "_Dmain")
+            return "main";
         char[4096] buf=void;
         auto res=DemangleInstance(this,input,buf);
         if (res.mangledName() && res.input.length==0){
@@ -260,6 +263,9 @@ public class Demangler
     /** Demangles the given string using output to hold the result. */
     public char[] demangle (char[] input, char[] output)
     {
+        // Special case for "_Dmain"
+        if (input == "_Dmain")
+            return "main";
         auto res=DemangleInstance(this,input,output);
         if (res.mangledName () && res.input.length==0) {
             return res.slice;

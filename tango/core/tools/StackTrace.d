@@ -111,9 +111,48 @@ static this(){
     internalFuncs["_D5tango4core10stacktrace10StackTrace14BasicTraceInfo5traceMFPS5tango4core10stacktrace10StackTrace12TraceContextiZv"]=1;
     internalFuncs["_D5tango4core10stacktrace10StackTrace11basicTracerFPvZC9Exception9TraceInfo"]=1;
     internalFuncs["_rt_createTraceContext"]=1;
-    internalFuncs["_D2rt6dmain24mainUiPPaZi7runMainMFZv"]=1;
-    internalFuncs["_D2rt6dmain24mainUiPPaZi6runAllMFZv"]=1;
-    internalFuncs["_D2rt6dmain24mainUiPPaZi7tryExecMFDFZvZv"]=1;
+    internalFuncs["_D2rt8compiler3dmd2rt6dmain24mainUiPPaZi7runMainMFZv"]=1;
+    internalFuncs["_D2rt8compiler3dmd2rt6dmain24mainUiPPaZi6runAllMFZv"]=1;
+    internalFuncs["_D2rt8compiler3dmd2rt6dmain24mainUiPPaZi7tryExecMFDFZvZv"]=1;
+    internalFuncs["main"]=1;
+    // glib specific
+    internalFuncs["__libc_start_main"]=1;
+    // backtrace() gets always the backtrace at the point it were called, so
+    // ignore things we don't really want to see
+    internalFuncs["_D5tango4core5tools10StackTrace20defaultAddrBacktraceFPS5tango4core5tools10StackTrace12TraceContextPS5tango4core5tools10StackTrace12TraceContextPkkPiZk"]=1;
+    internalFuncs["_D5tango4core5tools10StackTrace14BasicTraceInfo5traceMFPS5tango4core5tools10StackTrace12TraceContextiZv"]=1;
+    internalFuncs["_D5tango4core5tools10StackTrace11basicTracerFPvZC9Exception9TraceInfo"]=1;
+    // assertion internals should not be shown to users
+    internalFuncs["onAssertError"]=1;
+    internalFuncs["_d_assert"]=1;
+    internalFuncs["onAssertErrorMsg"]=1;
+    internalFuncs["_d_assert_msg"]=1;
+    // ignore calls when called for uncaught exceptions
+    internalFuncs["_d_throwc"]=1;
+}
+
+// function to determine if a name is an internal method
+char[][] internalMethodEnders = [
+    "8__assertFiZv",
+    "9__requireMFZv"
+];
+bool isInternalMethod(char[] name)
+{
+    static bool endsWith(char[] str, char[] what)
+    {
+        if (str.length < what.length)
+            return false;
+        return str[$-what.length .. $] == what;
+    }
+    if (name[0..2] != "_D"){
+        return false;
+    }
+    foreach (end; internalMethodEnders){
+        if (endsWith(name, end)){
+            return true;
+        }
+    }
+    return false;
 }
 
 /// Returns the name of the function at the given adress (if possible)
@@ -183,8 +222,13 @@ class BasicTraceInfo: Exception.TraceInfo
             fInfo.exactAddress=(addrPrecision & 2) || (iframe==0 && (addrPrecision & 1));
             rt_symbolizeFrameInfo(fInfo,&context,buf);
 
-            auto r= fInfo.func in internalFuncs;
-            fInfo.internalFunction |= (r !is null);
+            if (!fInfo.internalFunction){
+                auto r= (fInfo.func in internalFuncs);
+                fInfo.internalFunction = (r !is null);
+                if (!fInfo.internalFunction){
+                    fInfo.internalFunction = isInternalMethod(fInfo.func);
+                }
+            }
             fInfo.func = demangler.demangle(fInfo.func,buf2);
             int res=loopBody(fInfo);
             if (res) return res;
@@ -193,11 +237,15 @@ class BasicTraceInfo: Exception.TraceInfo
     }
     /// Writes out the stacktrace.
     void writeOut(void delegate(char[]) sink){
+        int ignored = 0;
         foreach (ref fInfo; this){
             if (!fInfo.internalFunction){
+                fInfo.iframe -= ignored;
                 fInfo.writeOut(sink);
+                fInfo.iframe += ignored;
                 sink("\n");
             }
+            else ignored++;
         }
     }
 }
