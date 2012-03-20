@@ -1271,7 +1271,7 @@ public abstract class Address
                 // Getting name info. Don't look up hostname, returns
                 // numeric name. (NIFlags.NUMERICHOST)
                 getnameinfo (name, nameLen, host.ptr, host.length, null, 0, NIFlags.NUMERICHOST);
-                return fromStringz (host.ptr);
+                return fromStringz (host.ptr).dup;
         }
 
         /***********************************************************************
