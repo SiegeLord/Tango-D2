@@ -83,6 +83,41 @@ long toLong(T) (T[] digits, uint radix=0)
 
 /******************************************************************************
 
+        Parse an unsignedinteger value from the provided 'digits' string.
+
+        The string is inspected for an optional radix prefix. A
+        radix may be provided as an argument instead, whereupon
+        it must match the prefix (where present). When radix is
+        set to zero, conversion will default to decimal.
+
+        Throws: IllegalArgumentException where the input text is not parsable
+        in its entirety.
+
+        See_also: the low level functions parse() and convert()
+
+******************************************************************************/
+
+ulong toUlong(T, U=uint) (T[] digits, U radix=0)
+{return toLong!(T)(digits, radix);}
+
+ulong toUlong(T) (T[] digits, uint radix=0)
+{
+        bool sign = false;
+
+        auto eaten = trim (digits, sign, radix);
+        if (sign)
+            throw new IllegalArgumentException ("Integer.toUlong :: invalid literal");
+
+        uint len = 0;
+        auto value = convert (digits[eaten..$], radix, &len);
+        if (len == 0 || eaten + len < digits.length)
+            throw new IllegalArgumentException ("Integer.toUlong :: invalid literal");
+
+        return value;
+}
+
+/******************************************************************************
+
         Wrapper to make life simpler. Returns a text version
         of the provided value.
 
@@ -607,6 +642,8 @@ debug (UnitTest)
         assert (toLong("1") is 1);
         assert (toInt("1", 10) is 1);
         assert (toLong("1", 10) is 1);
+        assert (toUlong("1", 10) is 1);
+        assert (toUlong("18446744073709551615") is ulong.max);
 
         assert (atoi ("12345") is 12345);
         assert (itoa (tmp, 12345) == "12345");
