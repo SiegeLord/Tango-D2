@@ -13,6 +13,7 @@
 module tango.net.device.LocalSocket;
 
 private import tango.net.device.Socket;
+private import tango.net.device.Berkeley;
 
 /*******************************************************************************
 

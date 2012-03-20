@@ -15,6 +15,7 @@ module tango.net.device.Multicast;
 
 public  import  tango.net.InternetAddress;
 public  import  tango.net.device.Datagram;
+private import  tango.net.device.Berkeley;
 
 /******************************************************************************
         

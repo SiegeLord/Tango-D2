@@ -221,7 +221,7 @@ version (Win32)
 
         private typedef int socket_t = ~0;
 
-        package extern (Windows)
+        private extern (Windows)
         {
                 alias closesocket close;
 
@@ -346,7 +346,7 @@ else
 
         private typedef int socket_t = -1;
 
-        package extern (C)
+        private extern (C)
         {
                 socket_t socket(int af, int type, int protocol);
                 int fcntl(socket_t s, int f, ...);
