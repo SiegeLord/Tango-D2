@@ -913,15 +913,69 @@ void _trace_epi_n()
         }
     }
     else {
-        asm {
-            naked   ;
-            pushad  ;
-        }
-        trace_epi();
-        asm
+        version (D_InlineAsm_X86_64)
         {
-            popad   ;
-            ret     ;
+            asm 
+            {
+                naked   ;
+                push RAX ;
+                push RBX ;
+                push RCX ;
+                push RDX ;
+                push RSI ;
+                push RDI ;
+                push RBP ;
+                push R8  ;
+                push R9  ;
+                push R10  ;
+                push R11  ;
+                push R12  ;
+                push R13  ;
+                push R14  ;
+                push R15  ;
+                push RAX ;
+            }
+        }
+        else
+        {
+            asm 
+            {
+                naked   ;
+                pushad  ;
+            }
+        }
+        
+        trace_epi();
+        version(D_InlineAsm_X86_64)
+        {
+            asm
+            {
+                pop RAX ;   // 16 byte align the stack
+                pop R15 ;
+                pop R14 ;
+                pop R13 ;
+                pop R12 ;
+                pop R11 ;
+                pop R10 ;
+                pop R9  ;
+                pop R8  ;
+                pop RBP ;
+                pop RDI ;
+                pop RSI ;
+                pop RDX ;
+                pop RCX ;
+                pop RBX ;
+                pop RAX ;
+                ret     ;
+            }
+        }
+        else
+        {
+            asm
+            {
+                popad   ;
+                ret     ;
+            }
         }
     }
 }
