@@ -522,7 +522,7 @@ class Process
      * Note that if copyEnv is set to true, this value is ignored.
      */
     @property
-    public const(char[])[const(char)[]] env() const
+    public const(const(char[])[char[]]) env() const
     {
         return _env;
     }

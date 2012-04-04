@@ -484,7 +484,7 @@ struct Time
                   max       = {maximum};
 
         /// Represents the epoch (1/1/0001)
-        enum Time epoch     = {0};
+        enum Time epoch     = {0L};
 
         /// Represents the epoch of 1/1/1601 (Commonly used in Windows systems)
         enum Time epoch1601 = {TimeSpan.Epoch1601};
