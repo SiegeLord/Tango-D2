@@ -133,7 +133,7 @@ struct GCBits
     {
         version (bitops)
         {
-            return std.intrinsic.btr(data + 1, i);
+            return std.intrinsic.btr(cast(size_t*) (data + 1), i);
         }
         else version (Asm86)
         {

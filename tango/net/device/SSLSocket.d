@@ -14,6 +14,8 @@ private import tango.net.util.PKI;
 
 private import tango.net.device.Socket;
 
+private import tango.net.device.Berkeley;
+
 private import tango.net.util.c.OpenSSL;
 
 /*******************************************************************************

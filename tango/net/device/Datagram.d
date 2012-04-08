@@ -13,7 +13,8 @@
 
 module tango.net.device.Datagram;
 
-package import tango.net.device.Socket;
+private import tango.net.device.Socket;
+private import tango.net.device.Berkeley;
 
 /*******************************************************************************
         

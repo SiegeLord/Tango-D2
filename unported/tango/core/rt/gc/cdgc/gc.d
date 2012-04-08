@@ -798,7 +798,7 @@ size_t fullcollectshell(bool early = false, bool force_block = false)
                 push R13  ;
                 push R14  ;
                 push R15  ;
-                push EAX ;   // 16 byte align the stack
+                push RAX ;   // 16 byte align the stack
             }
         }
         else
@@ -817,10 +817,35 @@ size_t fullcollectshell(bool early = false, bool force_block = false)
     }
     else
     {
-    asm
-    {
-        popad               ;
-    }
+        version (D_InlineAsm_X86_64)
+        {
+            asm
+            {
+                pop RAX ;
+                pop R15  ;
+                pop R14  ;
+                pop R13  ;
+                pop R12  ;
+                pop R11  ;
+                pop R10  ;
+                pop R9  ;
+                pop R8  ;
+                pop RBP ;
+                pop RDI ;
+                pop RSI ;
+                pop RDX ;
+                pop RCX ;
+                pop RBX ;
+                pop RAX ;
+            }
+        }
+        else
+        {
+            asm
+            {
+                popad               ;
+            }
+        }
     }
     return result;
 }

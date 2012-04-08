@@ -1298,31 +1298,28 @@ class Exception : Object
             if (defaultFramePrintingFunction){
                 defaultFramePrintingFunction(this,sink);
             } else {
-                char[26] buf;
-                //auto len=snprintf(buf.ptr,26,"[%8zx]",address);
-                //sink(buf[0..len]);
-                //len=snprintf(buf.ptr,26,"%8zx",baseImg);
-                //sink(buf[0..len]);
-                //len=snprintf(buf.ptr,26,"%+td ",offsetImg);
-                //sink(buf[0..len]);
-                //while (++len<6) sink(" ");
-                if (func.length) {
-                    sink(func);
-                } else {
-                    sink("???");
-                }
-                for (size_t i=func.length;i<80;++i) sink(" ");
-                //len=snprintf(buf.ptr,26," @%zx",baseSymb);
-                //sink(buf[0..len]);
-                //len=snprintf(buf.ptr,26,"%+td ",offsetSymb);
-                //sink(buf[0..len]);
-                if (extra.length){
-                    sink(extra);
-                    sink(" ");
-                }
-                sink(file);
+                // Imitate GDB backtrace format, something like:
+                // printf("#%-4td %p in %s (%s) at %s:%lld\n",
+                //     iframe, address, func, extra, file, line);
+                const M = 26;
+                char[M] buf;
+                auto len = snprintf(buf.ptr, M, "#%-4td ", this.iframe);
+                sink(buf[0..len]);
+
+                len = snprintf(buf.ptr, M, "%p", this.address);
+                sink(buf[0..len]);
+
+                sink(" in ");
+                sink(this.func.length ? this.func : "???");
+                sink(" (");
+                sink(this.extra);
+                sink(") at ");
+
+                sink(this.file);
                 sink(":");
-                sink(ulongToUtf8(buf, cast(size_t) line));
+
+                len = snprintf(buf.ptr, M, "%zu", cast(size_t) this.line);
+                sink(buf[0..len]);
             }
         }
 

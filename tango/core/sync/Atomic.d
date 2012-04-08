@@ -3,10 +3,10 @@
  * concurrent programming.
  * The current design replaces the previous Atomic module by Sean and is inspired
  * partly by the llvm atomic operations, and Sean's version
- * 
+ *
  * If no atomic ops are available an (inefficent) fallback solution is provided
  * For classes atomic access means atomic access to their *address* not their content
- * 
+ *
  * If you want unique counters or flags to communicate in multithreading settings
  * look at tango.core.sync.Counter that provides them in a better way and handles
  * better the absence of atomic ops.
@@ -67,8 +67,8 @@ private {
                                            is( T == ulong )/+||
                                            is( T == ucent  )+/;
     }
-    
-    /// substitutes classes with void* 
+
+    /// substitutes classes with void*
     template ClassPtr(T){
         static if (is(T==class)){
             alias void* ClassPtr;
@@ -106,7 +106,7 @@ template atomicValueIsProperlyAligned( T )
  * if device is true als uncached and device memory is synchronized
  *
  * Barriers are typically paired
- * 
+ *
  * For example if you want to ensure that all writes
  * are done before setting a flags that communicates that an objects is initialized you would
  * need memoryBarrier(false,false,false,true) before setting the flag.
@@ -117,7 +117,7 @@ template atomicValueIsProperlyAligned( T )
  * incompatible definitions around (some obviously wrong), so some care migth be in order
  * To be safer memoryBarrier(false,true,false,true) might be used for acquire, and
  * memoryBarrier(true,false,true,false) for release which are slighlty stronger.
- * 
+ *
  * These barriers are also called write barrier and read barrier respectively.
  *
  * A full memory fence is (true,true,true,true) and ensures that stores and loads before the
@@ -129,7 +129,8 @@ template atomicValueIsProperlyAligned( T )
 version( LDC )
 {
     void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
-        llvm_memory_barrier(ll,ls,sl,ss,device);
+			  // XXX: this is overly conservative
+			  llvm_memory_fence();
     }
 } else */version(D_InlineAsm_X86){
     void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
@@ -359,7 +360,7 @@ private T aCasT(T,V)(ref T val, T newval, T equalTo){
     vAtt.v=atomicCAS(*valPtr.v,vNew.v,vOld.v);
     return vAtt.t;
 }
-/// internal reduction 
+/// internal reduction
 private T aCas(T)(ref T val, T newval, T equalTo){
     static if (T.sizeof==1){
         return aCasT!(T,ubyte)(val,newval,equalTo);
@@ -378,7 +379,7 @@ private T aCas(T)(ref T val, T newval, T equalTo){
  * Atomic compare & exchange (can be used to implement everything else)
  * stores newval into val if val==equalTo in one atomic operation.
  * Barriers are not implied, just atomicity!
- * Returns the value that is checked against equalTo (i.e. an exchange was performed 
+ * Returns the value that is checked against equalTo (i.e. an exchange was performed
  * if result==equalTo, otherwise one can use the result as the current value).
 */
 version(LDC){

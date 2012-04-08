@@ -2373,7 +2373,7 @@ struct Gcx
                 push R13  ;
                 push R14  ;
                 push R15  ;
-                push EAX ;   // 16 byte align the stack
+                push RAX ;   // 16 byte align the stack
             }
         }
         else
@@ -2401,7 +2401,7 @@ struct Gcx
         {
             asm
             {
-                pop EAX ;   // 16 byte align the stack
+                pop RAX ;
                 pop R15  ;
                 pop R14  ;
                 pop R13  ;

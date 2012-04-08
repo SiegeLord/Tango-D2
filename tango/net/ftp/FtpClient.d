@@ -13,6 +13,7 @@ module tango.net.ftp.FtpClient;
 private 
 {
     import tango.net.ftp.Telnet;
+    import tango.net.device.Berkeley;
     import tango.text.Util;
     import tango.time.Clock;
     import tango.text.Regex: Regex;

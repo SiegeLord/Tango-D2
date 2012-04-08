@@ -455,45 +455,13 @@ else
         return !archive.readonly;
     }
 
-    // workaround for a bug in gdb. See ticket #190
-    version (GNU)
-    {
-        override VfsFolder close(bool commit = true)
-        in { assert( valid ); }
-        body
-        {
-            return closeImpl(commit);
-        }
-
-        override VfsFolder sync()
-        {
-            assert( valid );
-            return syncImpl();
-        }
-    }
-    else
-    {
-        override VfsFolder close(bool commit = true)
-        in { assert( valid ); }
-        body
-        {
-            return closeImpl(commit);
-        }
-
-
-        override VfsFolder sync()
-        in { assert( valid ); }
-        body
-        {
-            return syncImpl();
-        }
-    }
-
     /**
      * Closes this folder object.  If commit is true, then the folder is
      * sync'ed before being closed.
      */
-    protected VfsFolder closeImpl(bool commit = true)
+    VfsFolder close(bool commit = true)
+    in { assert( valid ); }
+    body
     {
         // MUTATE
         if( commit ) sync();
@@ -508,10 +476,10 @@ else
      * This will flush any changes to the archive to disk.  Note that this
      * applies to the entire archive, not just this folder and its contents.
      */
-    protected VfsFolder syncImpl()
-		in { assert( valid ); }
-    body
+    override VfsFolder sync()
     {
+        assert( valid );
+
         // MUTATE
         archive.sync();
         return this;
@@ -668,7 +636,8 @@ class ZipFolder : ZipSubFolder
      */
     final override VfsFolder close(bool commit = true)
     {
-				assert( valid );
+        assert (valid);
+
         debug( ZipFolder )
             Stderr.formatln("ZipFolder.close({})",commit);
 
@@ -703,7 +672,8 @@ class ZipFolder : ZipSubFolder
     }
     body
     {
-				assert( valid );
+        assert( valid );
+
         debug( ZipFolder )
             Stderr("ZipFolder.sync()").newline;
 

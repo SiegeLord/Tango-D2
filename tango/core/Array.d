@@ -1903,7 +1903,7 @@ else
                 buf[p2] = t;
             }
 
-            if( buf.length < 2 )
+            if( buf.length < 1 )
                 return 0;
 
             size_t  l = 0,
@@ -1955,6 +1955,7 @@ else
         test( "abcdefg".dup, ( char c ) { return c < 'd'; }, 3 );
         test( "gfedcba".dup, ( char c ) { return c < 'd'; }, 3 );
         test( "bbdaabc".dup, ( char c ) { return c < 'c'; }, 5 );
+        test( "f".dup,       ( char c ) { return c == 'f'; }, 1 );
       }
     }
 }
