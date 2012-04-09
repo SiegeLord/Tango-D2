@@ -98,10 +98,10 @@ long toLong(T) (const(T[]) digits, uint radix=0)
 
 ******************************************************************************/
 
-ulong toUlong(T, U=uint) (T[] digits, U radix=0)
+ulong toUlong(T, U=uint) (const(T[]) digits, U radix=0)
 {return toLong!(T)(digits, radix);}
 
-ulong toUlong(T) (T[] digits, uint radix=0)
+ulong toUlong(T) (const(T[]) digits, uint radix=0)
 {
         bool sign = false;
 
@@ -109,7 +109,7 @@ ulong toUlong(T) (T[] digits, uint radix=0)
         if (sign)
             throw new IllegalArgumentException ("Integer.toUlong :: invalid literal");
 
-        uint len = 0;
+        size_t len = 0;
         auto value = convert (digits[eaten..$], radix, &len);
         if (len == 0 || eaten + len < digits.length)
             throw new IllegalArgumentException ("Integer.toUlong :: invalid literal");

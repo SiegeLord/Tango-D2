@@ -132,13 +132,13 @@ shared static this(){
 }
 
 // function to determine if a name is an internal method
-char[][] internalMethodEnders = [
+const(char[])[] internalMethodEnders = [
     "8__assertFiZv",
     "9__requireMFZv"
 ];
-bool isInternalMethod(char[] name)
+bool isInternalMethod(const(char)[] name)
 {
-    static bool endsWith(char[] str, char[] what)
+    static bool endsWith(const(char)[] str, const(char)[] what)
     {
         if (str.length < what.length)
             return false;
@@ -263,9 +263,9 @@ class BasicTraceInfo: Throwable.TraceInfo{
     }
 
     /// Writes out the stacktrace.
-    void writeOut(scope void delegate(char[]) sink){
+    void writeOut(scope void delegate(const(char[])) sink){
         int ignored = 0;
-        foreach (ref fInfo; this){
+        foreach (ref FrameInfo fInfo; this){
             if (!fInfo.internalFunction){
                 fInfo.iframe -= ignored;
                 fInfo.writeOut(sink);
@@ -274,6 +274,13 @@ class BasicTraceInfo: Throwable.TraceInfo{
             }
             else ignored++;
         }
+    }
+    
+    override immutable(char)[] toString()
+    {
+        immutable(char)[] ret;
+        writeOut((str) { ret ~= str; });
+        return ret;
     }
 }
 
