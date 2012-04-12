@@ -224,7 +224,7 @@ version (Win32)
             init  = ~0
         }
 
-        private extern (Windows)
+        package extern (Windows)
         {
                 alias closesocket close;
 
@@ -353,7 +353,7 @@ else
             init  = -1
         }
 
-        private extern (C)
+        package extern (C)
         {
                 socket_t socket(int af, int type, int protocol);
                 int fcntl(socket_t s, int f, ...);
