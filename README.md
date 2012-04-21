@@ -23,8 +23,14 @@ Since one of the important use cases of this port is porting programs from D1 to
 - tango.sys.Process
     - args no longer returns the program name as the first element. Get it from programName property instead.
 
-How to use it
+Installation
 --------
+
+### From packages
+
+jordisayol maintains a APT repository with a reasonably recent version of Tango-D2 available there. Worth a try if you're using a Debian based OS. To use it, follow the directions on this website: https://code.google.com/p/d-apt/wiki/APT_Repository .
+
+### From source
 
 It is possible to use the binary bob building tool (located in `build/bin/*/bob`) like so:
 
