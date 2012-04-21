@@ -1159,6 +1159,7 @@ inout(T)[] unescape(T) (inout(T)[] src, T[] dst = null)
 
 ******************************************************************************/
 
+@trusted nothrow pure
 size_t jhash (const(ubyte)* k, size_t len, size_t c = 0)
 {
         size_t a = 0x9e3779b9,
@@ -1216,6 +1217,7 @@ size_t jhash (const(ubyte)* k, size_t len, size_t c = 0)
 }
 
 /// ditto
+@trusted nothrow pure
 size_t jhash (const(void)[] x, size_t c = 0)
 {
         return jhash (cast(ubyte*) x.ptr, x.length, c);
@@ -1368,7 +1370,7 @@ private struct QuoteFruct(T, M)
         {
                 int     ret;
                 size_t  mark;
-                T[]     token;
+                const(T)[]     token;
 
                 if (set.length)
                     for (size_t i=0; i < src.length; ++i)

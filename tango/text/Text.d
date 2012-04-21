@@ -1119,7 +1119,8 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        override hash_t toHash ()
+        override @trusted nothrow
+        hash_t toHash ()
         {
                 return Util.jhash (cast(ubyte*) content.ptr, contentLength * T.sizeof);
         }
@@ -1659,7 +1660,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract override hash_t toHash ();
+        abstract override @trusted nothrow hash_t toHash ();
 
         /***********************************************************************
 

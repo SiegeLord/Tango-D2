@@ -17,11 +17,11 @@ module tango.core.Traits;
 
 template BaseTypeOf( T )
 {
-    static if (is(T S : const(S)))
-        alias S BaseTypeOf;
-    else static if (is(T S : shared(S)))
+    static if (is(T S : shared(S)))
         alias S BaseTypeOf;
     else static if (is(T S : shared(const(S))))
+        alias S BaseTypeOf;
+    else static if (is(T S : const(S)))
         alias S BaseTypeOf;
     else
         alias T BaseTypeOf;
