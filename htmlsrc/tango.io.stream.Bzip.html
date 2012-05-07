@@ -107,7 +107,7 @@
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">init</span></span>(<span class="i">stream</span>, <span class="i">blockSize</span>)</span>;</span>
         <span class="s ScopeGuard"><span class="k">scope</span>(<span class="i">failure</span>) <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span></span>
 
-        <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="i">stream</span>)</span>;</span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span>(<span class="i">stream</span>);</span></span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">out_chunk</span></span> = <span class="e New"><span class="k">new</span> <span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[<span class="e Identifier"><span class="i">BUFFER_SIZE</span></span></span>]</span></span>;</span>
     }</span></span></span>
 
@@ -356,7 +356,7 @@
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">init</span></span>(<span class="i">stream</span>, <span class="i">small</span>)</span>;</span>
         <span class="s ScopeGuard"><span class="k">scope</span>(<span class="i">failure</span>) <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span></span>
 
-        <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="i">stream</span>)</span>;</span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span>(<span class="i">stream</span>);</span></span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">in_chunk</span></span> = <span class="e New"><span class="k">new</span> <span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[<span class="e Identifier"><span class="i">BUFFER_SIZE</span></span></span>]</span></span>;</span>
     }</span></span></span>
 
@@ -500,12 +500,12 @@
 <span class="d Compound">{
     <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">int</span></span> <span class="i">code</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
-        <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="i">codeName</span>(<span class="i">code</span>))</span>;</span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span>(<span class="i">codeName</span><span class="t CFunc"><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">code</span></span></span>)</span></span>);</span></span>
     }</span></span></span>
 
     <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">string</span></span> <span class="i">msg</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
-        <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="i">msg</span>)</span>;</span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span>(<span class="i">msg</span>);</span></span>
     }</span></span></span>
 
     <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">string</span></span> <span class="i">codeName</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">int</span></span> <span class="i">code</span></span>)</span>

@@ -23,7 +23,7 @@
 <p class="sec_header">Version:</p><div class="cmnt">Dec 2006 : South Pacific release</div>
 <p class="sec_header">Author:</p><div class="cmnt">Kris</div>
 <dl>
-<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Datagram" href="htmlsrc/tango.net.device.Datagram.html#L40">Datagram</a> : <span class="bclass">Socket</span> <a href="tango.net.device.Datagram.html#Datagram" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Datagram" href="htmlsrc/tango.net.device.Datagram.html#L41">Datagram</a> : <span class="bclass">Socket</span> <a href="tango.net.device.Datagram.html#Datagram" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Datagrams provide a low-overhead, non-reliable data transmission
         mechanism.</div></div>
@@ -42,17 +42,17 @@
         an InternetAddress constructed with a port only (ADDR_ANY), thus
         requesting the OS to assign the address of a local network adapter</div>
 <dl>
-<dt class="decl"><a class="symbol _ctor" name="Datagram.this" href="htmlsrc/tango.net.device.Datagram.html#L48">this</a><span class="params">()</span> <a href="tango.net.device.Datagram.html#Datagram.this" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _ctor" name="Datagram.this" href="htmlsrc/tango.net.device.Datagram.html#L49">this</a><span class="params">()</span> <a href="tango.net.device.Datagram.html#Datagram.this" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Create a read/write datagram socket</div></div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Datagram.read" href="htmlsrc/tango.net.device.Datagram.html#L64">read</a><span class="params">(void[] <em>src</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.Datagram.html#Datagram.read" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Datagram.read" href="htmlsrc/tango.net.device.Datagram.html#L65">read</a><span class="params">(void[] <em>src</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.Datagram.html#Datagram.read" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Populate the provided array from the socket. This will stall
                 until some data is available, or a timeout occurs. We assume 
                 the datagram has been connected.</div></div>
 <div class="cmnt">Returns the number of bytes read to the output, or Eof if
                 the socket cannot read</div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Datagram.read:2" href="htmlsrc/tango.net.device.Datagram.html#L81">read</a><span class="params">(void[] <em>dst</em>, Address <em>from</em>)</span> <a href="tango.net.device.Datagram.html#Datagram.read:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Datagram.read:2" href="htmlsrc/tango.net.device.Datagram.html#L82">read</a><span class="params">(void[] <em>dst</em>, Address <em>from</em>)</span> <a href="tango.net.device.Datagram.html#Datagram.read:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Read bytes from an available datagram into the given array.
                 When provided, the 'from' address will be populated with the
@@ -60,14 +60,14 @@
                 mechanics exposed via our Socket superclass.</div></div>
 <div class="cmnt">Returns the number of bytes read from the input, or Eof if
                 the socket cannot read</div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Datagram.write" href="htmlsrc/tango.net.device.Datagram.html#L106">write</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.Datagram.html#Datagram.write" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Datagram.write" href="htmlsrc/tango.net.device.Datagram.html#L107">write</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.Datagram.html#Datagram.write" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Write the provided content to the socket. This will stall
                 until the socket responds in some manner. We assume the 
                 datagram has been connected.</div></div>
 <div class="cmnt">Returns the number of bytes sent to the output, or Eof if
                 the socket cannot write</div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Datagram.write:2" href="htmlsrc/tango.net.device.Datagram.html#L121">write</a><span class="params">(const(void)[] <em>src</em>, Address <em>to</em>)</span> <a href="tango.net.device.Datagram.html#Datagram.write:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="Datagram.write:2" href="htmlsrc/tango.net.device.Datagram.html#L122">write</a><span class="params">(const(void)[] <em>src</em>, Address <em>to</em>)</span> <a href="tango.net.device.Datagram.html#Datagram.write:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Write an array to the specified address. If address 'to' is
                 null, it is assumed the socket has been connected instead.</div></div>
@@ -76,7 +76,7 @@
 </div>
 <div id="kandil-footer">
   <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:13 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:28 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

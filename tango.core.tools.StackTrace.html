@@ -43,48 +43,48 @@
  backtrace information, if possible finding the calling context, thus
  if fInfo.exactAddress is false the address might be changed to the one preceding it
  returns true if it managed to at least find the function name</div></div></dd>
-<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="nameOfFunctionAt" href="htmlsrc/tango.core.tools.StackTrace.html#L122">nameOfFunctionAt</a><span class="params">(void* <em>addr</em>, char[] <em>buf</em>)</span> <a href="tango.core.tools.StackTrace.html#nameOfFunctionAt" class="plink">¶</a></dt>
-<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="nameOfFunctionAt:2" href="htmlsrc/tango.core.tools.StackTrace.html#L133">nameOfFunctionAt</a><span class="params">(void* <em>addr</em>)</span> <a href="tango.core.tools.StackTrace.html#nameOfFunctionAt:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="nameOfFunctionAt" href="htmlsrc/tango.core.tools.StackTrace.html#L161">nameOfFunctionAt</a><span class="params">(void* <em>addr</em>, char[] <em>buf</em>)</span> <a href="tango.core.tools.StackTrace.html#nameOfFunctionAt" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="nameOfFunctionAt:2" href="htmlsrc/tango.core.tools.StackTrace.html#L172">nameOfFunctionAt</a><span class="params">(void* <em>addr</em>)</span> <a href="tango.core.tools.StackTrace.html#nameOfFunctionAt:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">returns the name of the function at the given adress (if possible)
  function@ and then the address. For delegates you can use .funcptr
  does not demangle</div></div></dd>
-<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="AddrPrecision" href="htmlsrc/tango.core.tools.StackTrace.html#L139">AddrPrecision</a> <a href="tango.core.tools.StackTrace.html#AddrPrecision" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="AddrPrecision" href="htmlsrc/tango.core.tools.StackTrace.html#L178">AddrPrecision</a> <a href="tango.core.tools.StackTrace.html#AddrPrecision" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">precision of the addresses given by the backtrace function</div></div>
 </dd>
-<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="BasicTraceInfo" href="htmlsrc/tango.core.tools.StackTrace.html#L146">BasicTraceInfo</a> : <span class="bclass">Throwable.TraceInfo</span> <a href="tango.core.tools.StackTrace.html#BasicTraceInfo" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="BasicTraceInfo" href="htmlsrc/tango.core.tools.StackTrace.html#L185">BasicTraceInfo</a> : <span class="bclass">Throwable.TraceInfo</span> <a href="tango.core.tools.StackTrace.html#BasicTraceInfo" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">basic class that represents a stacktrace</div></div>
 <dl>
-<dt class="decl"><a class="symbol _ctor" name="BasicTraceInfo.this" href="htmlsrc/tango.core.tools.StackTrace.html#L152">this</a><span class="params">()</span> <a href="tango.core.tools.StackTrace.html#BasicTraceInfo.this" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _ctor" name="BasicTraceInfo.this" href="htmlsrc/tango.core.tools.StackTrace.html#L191">this</a><span class="params">()</span> <a href="tango.core.tools.StackTrace.html#BasicTraceInfo.this" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">cretes an empty stacktrace</div></div></dd>
-<dt class="decl"><a class="symbol _ctor" name="BasicTraceInfo.this:2" href="htmlsrc/tango.core.tools.StackTrace.html#L154">this</a><span class="params">(size_t[] <em>traceAddresses</em>, AddrPrecision <em>addrPrecision</em>)</span> <a href="tango.core.tools.StackTrace.html#BasicTraceInfo.this:2" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _ctor" name="BasicTraceInfo.this:2" href="htmlsrc/tango.core.tools.StackTrace.html#L193">this</a><span class="params">(size_t[] <em>traceAddresses</em>, AddrPrecision <em>addrPrecision</em>)</span> <a href="tango.core.tools.StackTrace.html#BasicTraceInfo.this:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">creates a stacktrace with the given traceAddresses</div></div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="BasicTraceInfo.trace" href="htmlsrc/tango.core.tools.StackTrace.html#L164">trace</a><span class="params">(TraceContext* <em>contextIn</em> = <span class="defval"><span class="k">null</span></span>, int <em>skipFrames</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.core.tools.StackTrace.html#BasicTraceInfo.trace" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="BasicTraceInfo.trace" href="htmlsrc/tango.core.tools.StackTrace.html#L203">trace</a><span class="params">(TraceContext* <em>contextIn</em> = <span class="defval"><span class="k">null</span></span>, int <em>skipFrames</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.core.tools.StackTrace.html#BasicTraceInfo.trace" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">takes a stacktrace</div></div></dd>
-<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="BasicTraceInfo.opApply" href="htmlsrc/tango.core.tools.StackTrace.html#L173">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref char[]) <em>dg</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.core.tools.StackTrace.html#BasicTraceInfo.opApply" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="BasicTraceInfo.opApply" href="htmlsrc/tango.core.tools.StackTrace.html#L212">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref char[]) <em>dg</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.core.tools.StackTrace.html#BasicTraceInfo.opApply" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">loops on the stacktrace</div></div></dd>
-<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="BasicTraceInfo.toString" href="htmlsrc/tango.core.tools.StackTrace.html#L221">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.core.tools.StackTrace.html#BasicTraceInfo.toString" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="BasicTraceInfo.writeOut" href="htmlsrc/tango.core.tools.StackTrace.html#L266">writeOut</a><span class="params">(<span class="k">scope</span> void delegate(const(char[])) <em>sink</em>)</span> <a href="tango.core.tools.StackTrace.html#BasicTraceInfo.writeOut" class="plink">¶</a></dt>
 <dd class="ddef">
-<div class="summary"><div class="cmnt">writes out the stacktrace</div></div></dd></dl></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="defaultAddrBacktrace" href="htmlsrc/tango.core.tools.StackTrace.html#L244">defaultAddrBacktrace</a><span class="params">(TraceContext* <em>context</em>, TraceContext* <em>contextOut</em>, size_t* <em>traceBuf</em>, size_t <em>length</em>, int* <em>flags</em>)</span> <a href="tango.core.tools.StackTrace.html#defaultAddrBacktrace" class="plink">¶</a></dt>
+<div class="summary"><div class="cmnt">Writes out the stacktrace.</div></div></dd></dl></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="defaultAddrBacktrace" href="htmlsrc/tango.core.tools.StackTrace.html#L301">defaultAddrBacktrace</a><span class="params">(TraceContext* <em>context</em>, TraceContext* <em>contextOut</em>, size_t* <em>traceBuf</em>, size_t <em>length</em>, int* <em>flags</em>)</span> <a href="tango.core.tools.StackTrace.html#defaultAddrBacktrace" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">default (tango given) backtrace function</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="defaultSymbolizeFrameInfo" href="htmlsrc/tango.core.tools.StackTrace.html#L334">defaultSymbolizeFrameInfo</a><span class="params">(<span class="k">ref</span> FrameInfo <em>fInfo</em>, TraceContext* <em>context</em>, char[] <em>buf</em>)</span> <a href="tango.core.tools.StackTrace.html#defaultSymbolizeFrameInfo" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="defaultSymbolizeFrameInfo" href="htmlsrc/tango.core.tools.StackTrace.html#L391">defaultSymbolizeFrameInfo</a><span class="params">(<span class="k">ref</span> FrameInfo <em>fInfo</em>, TraceContext* <em>context</em>, char[] <em>buf</em>)</span> <a href="tango.core.tools.StackTrace.html#defaultSymbolizeFrameInfo" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">loads symbols for the given frame info with the methods defined in tango itself</div></div></dd>
-<dt class="decl"><span class="rettyp">Exception.TraceInfo</span> <a class="symbol _function" name="basicTracer" href="htmlsrc/tango.core.tools.StackTrace.html#L347">basicTracer</a><span class="params">(void* <em>ptr</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.core.tools.StackTrace.html#basicTracer" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Exception.TraceInfo</span> <a class="symbol _function" name="basicTracer" href="htmlsrc/tango.core.tools.StackTrace.html#L404">basicTracer</a><span class="params">(void* <em>ptr</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.core.tools.StackTrace.html#basicTracer" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">function that generates a trace (handler compatible with old TraceInfo)</div></div></dd></dl>
 </div>
 <div id="kandil-footer">
   <p>Copyright (C) 2009 Fawzi</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:08 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:24 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

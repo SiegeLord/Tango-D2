@@ -36,24 +36,24 @@
         systems should typically have the TZ environment variable set to 
         a valid descriptor.</div>
 <dl>
-<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="WallClock.now" href="htmlsrc/tango.time.WallClock.html#L48">now</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.time.WallClock.html#WallClock.now" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="WallClock.now" href="htmlsrc/tango.time.WallClock.html#L144">now</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.time.WallClock.html#WallClock.now" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the current local time</div></div></dd>
-<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="WallClock.zone" href="htmlsrc/tango.time.WallClock.html#L60">zone</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.time.WallClock.html#WallClock.zone" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="WallClock.zone" href="htmlsrc/tango.time.WallClock.html#L161">zone</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.time.WallClock.html#WallClock.zone" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the timezone relative to GMT. The value is 
                         negative when west of GMT</div></div></dd>
-<dt class="decl"><span class="rettyp">DateTime</span> <a class="symbol _function" name="WallClock.toDate" href="htmlsrc/tango.time.WallClock.html#L76">toDate</a><span class="params">()</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.WallClock.html#WallClock.toDate" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">DateTime</span> <a class="symbol _function" name="WallClock.toDate" href="htmlsrc/tango.time.WallClock.html#L181">toDate</a><span class="params">()</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.WallClock.html#WallClock.toDate" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Set fields to represent a local version of the 
                         current UTC time. All values must fall within 
                         the domain supported by the OS</div></div></dd>
-<dt class="decl"><span class="rettyp">DateTime</span> <a class="symbol _function" name="WallClock.toDate:2" href="htmlsrc/tango.time.WallClock.html#L89">toDate</a><span class="params">(const(Time) <em>utc</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.WallClock.html#WallClock.toDate:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">DateTime</span> <a class="symbol _function" name="WallClock.toDate:2" href="htmlsrc/tango.time.WallClock.html#L194">toDate</a><span class="params">(const(Time) <em>utc</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.WallClock.html#WallClock.toDate:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Set fields to represent a local version of the 
                         provided UTC time. All values must fall within 
                         the domain supported by the OS</div></div></dd>
-<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="WallClock.fromDate" href="htmlsrc/tango.time.WallClock.html#L100">fromDate</a><span class="params">(<span class="k">ref</span> const(DateTime) <em>date</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.WallClock.html#WallClock.fromDate" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="WallClock.fromDate" href="htmlsrc/tango.time.WallClock.html#L222">fromDate</a><span class="params">(<span class="k">ref</span> const(DateTime) <em>dt</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.WallClock.html#WallClock.fromDate" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Convert Date fields to local time</div></div></dd>
 <dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="WallClock.toLocal" href="htmlsrc/tango.time.WallClock.html#L243">toLocal</a><span class="params">(const(Time) <em>utc</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.WallClock.html#WallClock.toLocal" class="plink">¶</a></dt>
@@ -65,7 +65,7 @@
 </div>
 <div id="kandil-footer">
   <p>Copyright (c) 2007 Kris Bell. All rights reserved</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:38 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:46 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

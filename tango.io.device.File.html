@@ -319,38 +319,44 @@ nix systems. An alternative is to use File.load which
 <dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.append" href="htmlsrc/tango.io.device.File.html#L371">append</a><span class="params">(const(char)[] <em>path</em>, const(void)[] <em>content</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.device.File.html#File.append" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Convenience function to append content to a file.</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="File.open" href="htmlsrc/tango.io.device.File.html#L394">open</a><span class="params">(const(char)[] <em>path</em>, Style <em>style</em>, DWORD <em>addattr</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.io.device.File.html#File.open" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="File.open" href="htmlsrc/tango.io.device.File.html#L624">open</a><span class="params">(const(char[]) <em>path</em>, Style <em>style</em>, int <em>addflags</em>, int <em>access</em> = <span class="defval"><span class="i">octal</span>!(<span class="n">666</span>)</span>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.io.device.File.html#File.open" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Low level open for sub-classes that need to apply specific
                     attributes.</div></div>
 <p class="sec_header">Return:</p><div class="cmnt">False in case of failure.</div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.open:2" href="htmlsrc/tango.io.device.File.html#L497">open</a><span class="params">(const(char[]) <em>path</em>, Style <em>style</em> = <span class="defval"><span class="i">ReadExisting</span></span>)</span> <a href="tango.io.device.File.html#File.open:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.open:2" href="htmlsrc/tango.io.device.File.html#L686">open</a><span class="params">(const(char[]) <em>path</em>, Style <em>style</em> = <span class="defval"><span class="i">ReadExisting</span></span>)</span> <a href="tango.io.device.File.html#File.open:2" class="plink">¶</a></dt>
 <dd class="ddef">
-<div class="summary"><div class="cmnt">Open a file with the provided style.</div></div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.truncate" href="htmlsrc/tango.io.device.File.html#L511">truncate</a><span class="params">()</span> <a href="tango.io.device.File.html#File.truncate" class="plink">¶</a></dt>
+<div class="summary"><div class="cmnt">Open a file with the provided style.</div></div>
+<div class="cmnt">Note that files default to no-sharing. That is,
+                        they are locked exclusively to the host process
+                        unless otherwise stipulated. We do this in order
+                        to expose the same default behaviour as Win32.
+<p class="bl"></p>
+                        <b>No file locking for borked POSIX.</b></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.truncate" href="htmlsrc/tango.io.device.File.html#L700">truncate</a><span class="params">()</span> <a href="tango.io.device.File.html#File.truncate" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Set the file size to be that of the current seek
                         position. The file must be writable for this to
                         succeed.</div></div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.truncate:2" href="htmlsrc/tango.io.device.File.html#L523">truncate</a><span class="params">(long <em>size</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.File.html#File.truncate:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.truncate:2" href="htmlsrc/tango.io.device.File.html#L712">truncate</a><span class="params">(long <em>size</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.File.html#File.truncate:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Set the file size to be the specified length. The
                         file must be writable for this to succeed.</div></div></dd>
-<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="File.seek" href="htmlsrc/tango.io.device.File.html#L540">seek</a><span class="params">(long <em>offset</em>, Anchor <em>anchor</em> = <span class="defval"><span class="i">Begin</span></span>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.File.html#File.seek" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="File.seek" href="htmlsrc/tango.io.device.File.html#L726">seek</a><span class="params">(long <em>offset</em>, Anchor <em>anchor</em> = <span class="defval"><span class="i">Begin</span></span>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.device.File.html#File.seek" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Set the file seek position to the specified offset
                         from the given anchor.</div></div></dd>
-<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="File.position" href="htmlsrc/tango.io.device.File.html#L565">position</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.device.File.html#File.position" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="File.position" href="htmlsrc/tango.io.device.File.html#L740">position</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.device.File.html#File.position" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the current file position.</div></div></dd>
-<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="File.length" href="htmlsrc/tango.io.device.File.html#L576">length</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.device.File.html#File.length" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="File.length" href="htmlsrc/tango.io.device.File.html#L751">length</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.io.device.File.html#File.length" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the total length of this file.</div></div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.sync" href="htmlsrc/tango.io.device.File.html#L598">sync</a><span class="params">()</span> <a href="tango.io.device.File.html#File.sync" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="File.sync" href="htmlsrc/tango.io.device.File.html#L772">sync</a><span class="params">()</span> <a href="tango.io.device.File.html#File.sync" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Instructs the OS to flush it's internal buffers to
                         the disk device.</div></div>
-<p class="sec_header">NOTE:</p><div class="cmnt">Due to OS and hardware design, data flushed
+<p class="sec_header">NOTE:</p><div class="cmnt">due to OS and hardware design, data flushed
                         cannot be guaranteed to be actually on disk-platters.
                         Actual durability of data depends on write-caches,
                         barriers, presence of battery-backup, filesystem and
@@ -358,7 +364,7 @@ nix systems. An alternative is to use File.load which
 </div>
 <div id="kandil-footer">
   <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:09 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:25 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

@@ -306,7 +306,7 @@
  copied from the current process.  If set to false, then the environment
  is set from the env field.</div></div>
 <p class="sec_header">Returns:</p><div class="cmnt">A reference to this for chaining</div></dd>
-<dt class="decl"><span class="rettyp">const(char[])[const(char)[]]</span> <a class="symbol _function" name="Process.env" href="htmlsrc/tango.sys.Process.html#L525">env</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.sys.Process.html#Process.env" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(const(char[])[char[]])</span> <a class="symbol _function" name="Process.env" href="htmlsrc/tango.sys.Process.html#L525">env</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.sys.Process.html#Process.env" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return an associative array with the process' environment variables.</div></div>
 <div class="cmnt">Note that if copyEnv is set to true, this value is ignored.</div></dd>
@@ -479,7 +479,7 @@
 <p class="sec_header">Remarks:</p><div class="cmnt">The process must not be running and the provided list of arguments must
  not be empty. If there was any argument already present in the args
  member, they will be replaced by the arguments supplied to the method.</div>
-<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">Use constructor or properties to set up process for
+<p class="sec_header"><span class="red">Deprecated:</span></p>)<div class="cmnt">Use constructor or properties to set up process for
  execution.</div></dd>
 <dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Process.execute:2" href="htmlsrc/tango.sys.Process.html#L869">execute</a><span class="params">(const(char)[] <em>command</em>, const(char[])[const(char)[]] <em>env</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">deprecated</span>]</span> <a href="tango.sys.Process.html#Process.execute:2" class="plink">¶</a></dt>
 <dd class="ddef">
@@ -502,7 +502,7 @@
 <p class="sec_header">Remarks:</p><div class="cmnt">The process must not be running and the provided list of arguments must
  not be empty. If there was any argument already present in the args
  member, they will be replaced by the arguments supplied to the method.</div>
-<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">use properties or the constructor to set these parameters
+<p class="sec_header"><span class="red">Deprecated:</span></p>)<div class="cmnt">use properties or the constructor to set these parameters
  instead.</div></dd>
 <dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Process.execute:3" href="htmlsrc/tango.sys.Process.html#L929">execute</a><span class="params">(const(char[])[] <em>args</em>, const(char[])[char[]] <em>env</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">deprecated</span>]</span> <a href="tango.sys.Process.html#Process.execute:3" class="plink">¶</a></dt>
 <dd class="ddef">
@@ -526,7 +526,7 @@
 <p class="sec_header">Remarks:</p><div class="cmnt">The process must not be running and the provided list of arguments must
  not be empty. If there was any argument already present in the args
  member, they will be replaced by the arguments supplied to the method.</div>
-<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">Use properties or the constructor to set these parameters instead.</div>
+<p class="sec_header"><span class="red">Deprecated:</span></p>)<div class="cmnt">Use properties or the constructor to set these parameters instead.</div>
 <p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
   <tr><td class="d_codelines">
 <pre><a href="#L1_ex10" name="L1_ex10">1</a>
@@ -621,13 +621,24 @@
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Explicitly close any resources held by this process object. It is recommended
  to always call this when you are done with the process.</div></div></dd>
-<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="Process.toNullEndedBuffer" href="htmlsrc/tango.sys.Process.html#L1899">toNullEndedBuffer</a><span class="params">(const(char[])[char[]] <em>src</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">static</span>]</span> <a href="tango.sys.Process.html#Process.toNullEndedBuffer" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(char)*[]</span> <a class="symbol _function" name="Process.toNullEndedArray" href="htmlsrc/tango.sys.Process.html#L1920">toNullEndedArray</a><span class="params">(const(char)[] <em>elem0</em>, const(char[])[] <em>src</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">static</span>]</span> <a href="tango.sys.Process.html#Process.toNullEndedArray" class="plink">¶</a></dt>
 <dd class="ddef">
-<div class="summary"><div class="cmnt">Convert an associative array of strings to a buffer containing a
- concatenation of "<name>=<value>" strings separated by a null
- character and with an additional null character at the end of it.
- This is the format expected by the CreateProcess() Windows API for
- the environment variables.</div></div></dd></dl></dd>
+<div class="summary"><div class="cmnt">Convert an array of strings to an array of pointers to char with
+ a terminating null character (C strings). The resulting array
+ has a null pointer at the end. This is the format expected by
+ the execv*() family of POSIX functions.</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)*[]</span> <a class="symbol _function" name="Process.toNullEndedArray:2" href="htmlsrc/tango.sys.Process.html#L1952">toNullEndedArray</a><span class="params">(const(char[])[char[]] <em>src</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">static</span>]</span> <a href="tango.sys.Process.html#Process.toNullEndedArray:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Convert an associative array of strings to an array of pointers to
+ char with a terminating null character (C strings). The resulting
+ array has a null pointer at the end. This is the format expected by
+ the execv*() family of POSIX functions for environment variables.</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="Process.execvpe" href="htmlsrc/tango.sys.Process.html#L1971">execvpe</a><span class="params">(const(char)[] <em>filename</em>, const(char)*[] <em>argv</em>, const(char)*[] <em>envp</em>)</span> <span class="attrs">[<span class="prot">protected</span>, <span class="stc">static</span>]</span> <a href="tango.sys.Process.html#Process.execvpe" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Execute a process by looking up a file in the system path, passing
+ the array of arguments and the the environment variables. This
+ method is a combination of the execve() and execvp() POSIX system
+ calls.</div></div></dd></dl></dd>
 <dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ProcessCreateException" href="htmlsrc/tango.sys.Process.html#L2030">ProcessCreateException</a> : <span class="bclass">ProcessException</span> <a href="tango.sys.Process.html#ProcessCreateException" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Exception thrown when the process cannot be created.</div></div>
@@ -649,7 +660,7 @@
 </div>
 <div id="kandil-footer">
   <p>Copyright (c) 2006 Juan Jose Comellas. All rights reserved</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:16 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:31 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

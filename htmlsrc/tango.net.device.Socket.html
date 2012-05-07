@@ -592,7 +592,7 @@
 
         <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Address</span></span> <span class="i">addr</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">backlog</span>=<span class="e Int"><span class="n">32</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">reuse</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
-                <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span> (<span class="i">addr</span>)</span>;</span>
+                <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span> (<span class="i">addr</span>);</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Call"><span class="e Call"><span class="e Identifier"><span class="i">berkeley</span></span>.<span class="e Identifier"><span class="i">addressReuse</span></span>(<span class="i">reuse</span>)</span>.<span class="e Identifier"><span class="i">bind</span></span>(<span class="i">addr</span>)</span>.<span class="e Identifier"><span class="i">listen</span></span>(<span class="i">backlog</span>)</span>;</span>
         }</span></span></span>
 

@@ -304,7 +304,7 @@
     <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">copyEnv</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span><span class="t Array">[]</span> <span class="i">args</span> ...</span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_copyEnv</span></span> = <span class="e Identifier"><span class="i">copyEnv</span></span></span>;</span>
-        <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>(<span class="i">args</span>)</span>;</span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">this</span></span>(<span class="i">args</span>);</span></span>
     }</span></span></span>
 
     <span class="bc">/**
@@ -536,7 +536,7 @@
      * Note that if copyEnv is set to true, this value is ignored.
      */</span>
     <span class="d StorageClass">@<span class="i">property</span></span>
-    <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span><span class="t Array">[<span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span>]</span> <span class="i">env</span><span class="o Parameters">()</span> <span class="k">const</span>
+    <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span><span class="t Array">[<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>]</span>)</span> <span class="i">env</span><span class="o Parameters">()</span> <span class="k">const</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">_env</span></span>;</span>
     }</span></span></span>
@@ -1120,7 +1120,7 @@
             
             <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">append_arg</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">arg</span></span>)</span>
             <span class="s FuncBody"><span class="s Compound">{
-			  <span class="s Declaration"><span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">nextarg</span> = <span class="e Call"><span class="e Identifier"><span class="i">a</span></span>.<span class="e Identifier"><span class="i">substitute</span></span>(<span class="sl">`"`</span>, <span class="sl">`\"`</span>)</span>;</span></span>
+              <span class="s Declaration"><span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">nextarg</span> = <span class="e Call"><span class="e Identifier"><span class="i">arg</span></span>.<span class="e Identifier"><span class="i">substitute</span></span>(<span class="sl">`"`</span>, <span class="sl">`\"`</span>)</span>;</span></span>
               <span class="lc">//</span>
               <span class="lc">// find all instances where \\" occurs, and double all the</span>
               <span class="lc">// backslashes.  Otherwise, it will fall under rule 1, and those</span>

@@ -91,7 +91,7 @@
 <dt class="decl"><span class="rettyp">FilePath</span> <a class="symbol _function" name="FilePath.dup" href="htmlsrc/tango.io.FilePath.html#L136">dup</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.FilePath.html#FilePath.dup" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Duplicate this path.</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.cString" href="htmlsrc/tango.io.FilePath.html#L154">cString</a><span class="params">()</span> <span class="attrs">[<span class="stc">wild</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.cString" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.cString" href="htmlsrc/tango.io.FilePath.html#L154">cString</a><span class="params">()</span> <span class="attrs">[<span class="stc">inout</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.cString" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the complete text of this filepath as a null
                 terminated string for use with a C api. Use toString
@@ -99,11 +99,11 @@
 <div class="cmnt">Note that the nul is always embedded within the string
                 maintained by FilePath, so there's no heap overhead when
                 making a C call.</div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.root" href="htmlsrc/tango.io.FilePath.html#L166">root</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.root" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.root" href="htmlsrc/tango.io.FilePath.html#L166">root</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.root" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the root of this path. Roots are constructs such as
                 "C:".</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.folder" href="htmlsrc/tango.io.FilePath.html#L183">folder</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.folder" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.folder" href="htmlsrc/tango.io.FilePath.html#L183">folder</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.folder" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the file path.</div></div>
 <div class="cmnt">Paths may start and end with a "/".
@@ -111,7 +111,7 @@
                 an empty string. Directory paths may be split such that the
                 directory name is placed into the 'name' member; directory
                 paths are treated no differently than file paths.</div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.parent" href="htmlsrc/tango.io.FilePath.html#L206">parent</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.parent" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.parent" href="htmlsrc/tango.io.FilePath.html#L206">parent</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.parent" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns a path representing the parent of this one. This
                 will typically return the current path component, though
@@ -125,7 +125,7 @@
 <p class="bl"></p>
                 See pop() also, which is generally more useful when working
                 with FilePath instances.</div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.name" href="htmlsrc/tango.io.FilePath.html#L217">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.name" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.name" href="htmlsrc/tango.io.FilePath.html#L217">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.name" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the name of this file, or directory.</div></div></dd>
 <dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="FilePath.ext" href="htmlsrc/tango.io.FilePath.html#L231">ext</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.ext" class="plink">¶</a></dt>
@@ -134,14 +134,14 @@
                 '.' separator e.g. path "foo.bar" has ext "bar". Note that
                 patterns of adjacent separators are treated specially; for
                 example, ".." will wind up with no ext at all.</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.suffix" href="htmlsrc/tango.io.FilePath.html#L243">suffix</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.suffix" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.suffix" href="htmlsrc/tango.io.FilePath.html#L243">suffix</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.suffix" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Suffix is like ext, but includes the separator e.g. path
                 "foo.bar" has suffix ".bar".</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.path" href="htmlsrc/tango.io.FilePath.html#L254">path</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.path" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.path" href="htmlsrc/tango.io.FilePath.html#L254">path</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.path" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the root + folder combination.</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.file" href="htmlsrc/tango.io.FilePath.html#L265">file</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.file" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="FilePath.file" href="htmlsrc/tango.io.FilePath.html#L265">file</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.file" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the name + suffix combination.</div></div></dd>
 <dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="FilePath.opEquals" href="htmlsrc/tango.io.FilePath.html#L290">opEquals</a><span class="params">(Object <em>o</em>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.FilePath.html#FilePath.opEquals" class="plink">¶</a></dt>
@@ -325,7 +325,7 @@
 <dt class="decl"><span class="rettyp">FilePath</span> <a class="symbol _function" name="FilePath.from" href="htmlsrc/tango.io.FilePath.html#L796">from</a><span class="params">(<span class="k">ref</span> FileInfo <em>info</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.FilePath.html#FilePath.from" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Construct a FilePath from the given FileInfo.</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="FilePath.exists" href="htmlsrc/tango.io.FilePath.html#L815">exists</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.exists" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="FilePath.exists" href="htmlsrc/tango.io.FilePath.html#L815">exists</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.exists" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Does this path currently exist?.</div></div></dd>
 <dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="FilePath.modified" href="htmlsrc/tango.io.FilePath.html#L830">modified</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.FilePath.html#FilePath.modified" class="plink">¶</a></dt>
@@ -350,7 +350,7 @@
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Change the name or location of a file/directory, and
                 adopt the provided Path.</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(FilePath)</span> <a class="symbol _function" name="FilePath.copy" href="htmlsrc/tango.io.FilePath.html#L884">copy</a><span class="params">(const(char)[] <em>source</em>)</span> <span class="attrs">[<span class="stc">wild</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.copy" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(FilePath)</span> <a class="symbol _function" name="FilePath.copy" href="htmlsrc/tango.io.FilePath.html#L884">copy</a><span class="params">(const(char)[] <em>source</em>)</span> <span class="attrs">[<span class="stc">inout</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.copy" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Transfer the content of another file to this one. Returns a
                 reference to this class on success, or throws an IOException
@@ -373,22 +373,22 @@
 <div class="cmnt">Timstamps are returns in a format dictated by the
                 file system. For example NTFS keeps UTC time,
                 while FAT timestamps are based on the local time.</div></dd>
-<dt class="decl"><span class="rettyp">inout(FilePath)</span> <a class="symbol _function" name="FilePath.copy:2" href="htmlsrc/tango.io.FilePath.html#L963">copy</a><span class="params">(const(FilePath) <em>src</em>)</span> <span class="attrs">[<span class="stc">wild</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.copy:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(FilePath)</span> <a class="symbol _function" name="FilePath.copy:2" href="htmlsrc/tango.io.FilePath.html#L963">copy</a><span class="params">(const(FilePath) <em>src</em>)</span> <span class="attrs">[<span class="stc">inout</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.copy:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Transfer the content of another file to this one. Returns a
                 reference to this class on success, or throws an IOException
                 upon failure.</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(FilePath)</span> <a class="symbol _function" name="FilePath.remove" href="htmlsrc/tango.io.FilePath.html#L975">remove</a><span class="params">()</span> <span class="attrs">[<span class="stc">wild</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.remove" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(FilePath)</span> <a class="symbol _function" name="FilePath.remove" href="htmlsrc/tango.io.FilePath.html#L975">remove</a><span class="params">()</span> <span class="attrs">[<span class="stc">inout</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.remove" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Remove the file/directory from the file system.</div></div></dd>
 <dt class="decl"><span class="rettyp">FilePath</span> <a class="symbol _function" name="FilePath.rename:2" href="htmlsrc/tango.io.FilePath.html#L988">rename</a><span class="params">(const(char)[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.rename:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">change the name or location of a file/directory, and
                adopt the provided Path.</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(FilePath)</span> <a class="symbol _function" name="FilePath.createFile" href="htmlsrc/tango.io.FilePath.html#L1000">createFile</a><span class="params">()</span> <span class="attrs">[<span class="stc">wild</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.createFile" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(FilePath)</span> <a class="symbol _function" name="FilePath.createFile" href="htmlsrc/tango.io.FilePath.html#L1000">createFile</a><span class="params">()</span> <span class="attrs">[<span class="stc">inout</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.createFile" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Create a new file.</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(FilePath)</span> <a class="symbol _function" name="FilePath.createFolder" href="htmlsrc/tango.io.FilePath.html#L1012">createFolder</a><span class="params">()</span> <span class="attrs">[<span class="stc">wild</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.createFolder" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(FilePath)</span> <a class="symbol _function" name="FilePath.createFolder" href="htmlsrc/tango.io.FilePath.html#L1012">createFolder</a><span class="params">()</span> <span class="attrs">[<span class="stc">inout</span>, <span class="stc">final</span>]</span> <a href="tango.io.FilePath.html#FilePath.createFolder" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Create a new directory.</div></div></dd>
 <dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="FilePath.opApply" href="htmlsrc/tango.io.FilePath.html#L1030">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref FileInfo) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>, <span class="stc">const</span>]</span> <a href="tango.io.FilePath.html#FilePath.opApply" class="plink">¶</a></dt>
@@ -406,21 +406,21 @@
 <dt class="decl"><span class="rettyp">immutable(char)[]</span> <a class="symbol _function" name="PathView.toString" href="htmlsrc/tango.io.FilePath.html#L1053">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">const</span>]</span> <a href="tango.io.FilePath.html#PathView.toString" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the complete text of this filepath.</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="PathView.cString" href="htmlsrc/tango.io.FilePath.html#L1062">cString</a><span class="tparams">()</span><span class="params">()</span> <span class="attrs">[<span class="stc">wild</span>]</span> <a href="tango.io.FilePath.html#PathView.cString" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="PathView.cString" href="htmlsrc/tango.io.FilePath.html#L1062">cString</a><span class="tparams">()</span><span class="params">()</span> <span class="attrs">[<span class="stc">inout</span>]</span> <a href="tango.io.FilePath.html#PathView.cString" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the complete text of this filepath.</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="PathView.root" href="htmlsrc/tango.io.FilePath.html#L1071">root</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>]</span> <a href="tango.io.FilePath.html#PathView.root" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="PathView.root" href="htmlsrc/tango.io.FilePath.html#L1071">root</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>]</span> <a href="tango.io.FilePath.html#PathView.root" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the root of this path. Roots are constructs such as
                 "C:".</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="PathView.folder" href="htmlsrc/tango.io.FilePath.html#L1083">folder</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>]</span> <a href="tango.io.FilePath.html#PathView.folder" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="PathView.folder" href="htmlsrc/tango.io.FilePath.html#L1083">folder</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>]</span> <a href="tango.io.FilePath.html#PathView.folder" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the file path. Paths may start and end with a "/".
                 The root path is "/" and an unspecified path is returned as
                 an empty string. Directory paths may be split such that the
                 directory name is placed into the 'name' member; directory
                 paths are treated no differently than file paths.</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="PathView.name" href="htmlsrc/tango.io.FilePath.html#L1092">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>]</span> <a href="tango.io.FilePath.html#PathView.name" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="PathView.name" href="htmlsrc/tango.io.FilePath.html#L1092">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>]</span> <a href="tango.io.FilePath.html#PathView.name" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the name of this file, or directory, excluding a
                 suffix.</div></div></dd>
@@ -430,14 +430,14 @@
                 '.' separator e.g. path "foo.bar" has ext "bar". Note that
                 patterns of adjacent separators are treated specially; for
                 example, ".." will wind up with no ext at all.</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="PathView.suffix" href="htmlsrc/tango.io.FilePath.html#L1112">suffix</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>]</span> <a href="tango.io.FilePath.html#PathView.suffix" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="PathView.suffix" href="htmlsrc/tango.io.FilePath.html#L1112">suffix</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>]</span> <a href="tango.io.FilePath.html#PathView.suffix" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Suffix is like ext, but includes the separator e.g. path
                 "foo.bar" has suffix ".bar".</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="PathView.path" href="htmlsrc/tango.io.FilePath.html#L1120">path</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>]</span> <a href="tango.io.FilePath.html#PathView.path" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="PathView.path" href="htmlsrc/tango.io.FilePath.html#L1120">path</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>]</span> <a href="tango.io.FilePath.html#PathView.path" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the root + folder combination.</div></div></dd>
-<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="PathView.file" href="htmlsrc/tango.io.FilePath.html#L1128">file</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>]</span> <a href="tango.io.FilePath.html#PathView.file" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(char)[]</span> <a class="symbol _function" name="PathView.file" href="htmlsrc/tango.io.FilePath.html#L1128">file</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>]</span> <a href="tango.io.FilePath.html#PathView.file" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the name + suffix combination.</div></div></dd>
 <dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="PathView.isAbsolute" href="htmlsrc/tango.io.FilePath.html#L1137">isAbsolute</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.io.FilePath.html#PathView.isAbsolute" class="plink">¶</a></dt>
@@ -450,7 +450,7 @@
 <dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="PathView.isChild" href="htmlsrc/tango.io.FilePath.html#L1153">isChild</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.io.FilePath.html#PathView.isChild" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns true if this FilePath has a parent.</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="PathView.exists" href="htmlsrc/tango.io.FilePath.html#L1161">exists</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">wild</span>]</span> <a href="tango.io.FilePath.html#PathView.exists" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="PathView.exists" href="htmlsrc/tango.io.FilePath.html#L1161">exists</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">inout</span>]</span> <a href="tango.io.FilePath.html#PathView.exists" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Does this path currently exist?</div></div></dd>
 <dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="PathView.modified" href="htmlsrc/tango.io.FilePath.html#L1170">modified</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">const</span>]</span> <a href="tango.io.FilePath.html#PathView.modified" class="plink">¶</a></dt>
@@ -480,7 +480,7 @@
 </div>
 <div id="kandil-footer">
   <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:08 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:24 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

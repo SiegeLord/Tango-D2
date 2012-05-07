@@ -21,7 +21,7 @@
 <p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
 <p class="sec_header">Author:</p><div class="cmnt">Jeff Davey <j@submersion.com></div>
 <dl>
-<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SSLSocket" href="htmlsrc/tango.net.device.SSLSocket.html#L55">SSLSocket</a> : <span class="bclass">Socket</span> <a href="tango.net.device.SSLSocket.html#SSLSocket" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SSLSocket" href="htmlsrc/tango.net.device.SSLSocket.html#L57">SSLSocket</a> : <span class="bclass">Socket</span> <a href="tango.net.device.SSLSocket.html#SSLSocket" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">SSLSocket is a sub-class of Socket. It's purpose is to
     provide SSL encryption at the socket level as well as easily fit into
@@ -67,28 +67,28 @@
 </td></tr>
 </table></div>
 <dl>
-<dt class="decl"><a class="symbol _ctor" name="SSLSocket.this" href="htmlsrc/tango.net.device.SSLSocket.html#L70">this</a><span class="params">(bool <em>config</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.net.device.SSLSocket.html#SSLSocket.this" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _ctor" name="SSLSocket.this" href="htmlsrc/tango.net.device.SSLSocket.html#L72">this</a><span class="params">(bool <em>config</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.net.device.SSLSocket.html#SSLSocket.this" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Create a default Client Mode SSLSocket.</div></div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SSLSocket.detach" href="htmlsrc/tango.net.device.SSLSocket.html#L148">detach</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.SSLSocket.html#SSLSocket.detach" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SSLSocket.detach" href="htmlsrc/tango.net.device.SSLSocket.html#L150">detach</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.SSLSocket.html#SSLSocket.detach" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Release this SSLSocket.</div></div>
 <div class="cmnt">As per Socket.detach.</div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="SSLSocket.write" href="htmlsrc/tango.net.device.SSLSocket.html#L168">write</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.SSLSocket.html#SSLSocket.write" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="SSLSocket.write" href="htmlsrc/tango.net.device.SSLSocket.html#L170">write</a><span class="params">(const(void)[] <em>src</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.SSLSocket.html#SSLSocket.write" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Writes the passed buffer to the underlying socket stream. This will
         block until socket error.</div></div>
 <div class="cmnt">As per Socket.write</div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="SSLSocket.read" href="htmlsrc/tango.net.device.SSLSocket.html#L189">read</a><span class="params">(void[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.SSLSocket.html#SSLSocket.read" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="SSLSocket.read" href="htmlsrc/tango.net.device.SSLSocket.html#L191">read</a><span class="params">(void[] <em>dst</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.SSLSocket.html#SSLSocket.read" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Reads from the underlying socket stream. If needed, setTimeout will
         set the max length of time the read will take before returning.</div></div>
 <div class="cmnt">As per Socket.read</div></dd>
-<dt class="decl"><span class="rettyp">SSLSocket</span> <a class="symbol _function" name="SSLSocket.shutdown" href="htmlsrc/tango.net.device.SSLSocket.html#L266">shutdown</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.SSLSocket.html#SSLSocket.shutdown" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">SSLSocket</span> <a class="symbol _function" name="SSLSocket.shutdown" href="htmlsrc/tango.net.device.SSLSocket.html#L268">shutdown</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.device.SSLSocket.html#SSLSocket.shutdown" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Shuts down the underlying socket for reading and writing.</div></div>
 <div class="cmnt">As per Socket.shutdown</div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SSLSocket.setCtx" href="htmlsrc/tango.net.device.SSLSocket.html#L291">setCtx</a><span class="params">(SSLCtx <em>ctx</em>, bool <em>clientMode</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.net.device.SSLSocket.html#SSLSocket.setCtx" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="SSLSocket.setCtx" href="htmlsrc/tango.net.device.SSLSocket.html#L293">setCtx</a><span class="params">(SSLCtx <em>ctx</em>, bool <em>clientMode</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.net.device.SSLSocket.html#SSLSocket.setCtx" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Used in conjuction with the above ctor with the create flag disabled. It is
         useful for accepting a new socket into a SSLSocket, and then re-using
@@ -97,7 +97,7 @@
 <table class="params">
 <tr><td><em>ctx</em></td><td>SSLCtx class as provided by PKI</td></tr>
 <tr><td><em>clientMode</em></td><td>if true, the socket will be in Client Mode, Server otherwise.</td></tr></table></dd></dl></dd>
-<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SSLServerSocket" href="htmlsrc/tango.net.device.SSLSocket.html#L350">SSLServerSocket</a> : <span class="bclass">ServerSocket</span> <a href="tango.net.device.SSLSocket.html#SSLServerSocket" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="SSLServerSocket" href="htmlsrc/tango.net.device.SSLSocket.html#L352">SSLServerSocket</a> : <span class="bclass">ServerSocket</span> <a href="tango.net.device.SSLSocket.html#SSLServerSocket" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">SSLServerSocket is a sub-class of ServerSocket. It's purpose is to provide
     SSL encryption at the socket level as well as easily tie into existing
@@ -135,10 +135,10 @@
 </td></tr>
 </table></div>
 <dl>
-<dt class="decl"><a class="symbol _ctor" name="SSLServerSocket.this" href="htmlsrc/tango.net.device.SSLSocket.html#L358">this</a><span class="params">(ushort <em>port</em>, SSLCtx <em>ctx</em>, int <em>backlog</em> = <span class="defval"><span class="n">32</span></span>, bool <em>reuse</em> = <span class="defval"><span class="k">false</span></span>)</span> <a href="tango.net.device.SSLSocket.html#SSLServerSocket.this" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _ctor" name="SSLServerSocket.this" href="htmlsrc/tango.net.device.SSLSocket.html#L360">this</a><span class="params">(ushort <em>port</em>, SSLCtx <em>ctx</em>, int <em>backlog</em> = <span class="defval"><span class="n">32</span></span>, bool <em>reuse</em> = <span class="defval"><span class="k">false</span></span>)</span> <a href="tango.net.device.SSLSocket.html#SSLServerSocket.this" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd>
-<dt class="decl"><a class="symbol _ctor" name="SSLServerSocket.this:2" href="htmlsrc/tango.net.device.SSLSocket.html#L377">this</a><span class="params">(Address <em>addr</em>, SSLCtx <em>ctx</em>, int <em>backlog</em> = <span class="defval"><span class="n">32</span></span>, bool <em>reuse</em> = <span class="defval"><span class="k">false</span></span>)</span> <a href="tango.net.device.SSLSocket.html#SSLServerSocket.this:2" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _ctor" name="SSLServerSocket.this:2" href="htmlsrc/tango.net.device.SSLSocket.html#L379">this</a><span class="params">(Address <em>addr</em>, SSLCtx <em>ctx</em>, int <em>backlog</em> = <span class="defval"><span class="n">32</span></span>, bool <em>reuse</em> = <span class="defval"><span class="k">false</span></span>)</span> <a href="tango.net.device.SSLSocket.html#SSLServerSocket.this:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Constructs a new SSLServerSocket. This constructor is similar to
         ServerSocket, except it takes a SSLCtx as provided by PKI.</div></div>
@@ -148,14 +148,14 @@
 <tr><td><em>ctx</em></td><td>the provided SSLCtx</td></tr>
 <tr><td><em>backlog</em></td><td>the number of connections to backlog before refusing connection</td></tr>
 <tr><td><em>reuse</em></td><td>if enabled, allow rebinding of existing ip/port</td></tr></table></dd>
-<dt class="decl"><span class="rettyp">SSLSocket</span> <a class="symbol _function" name="SSLServerSocket.accept" href="htmlsrc/tango.net.device.SSLSocket.html#L392">accept</a><span class="params">(SSLSocket <em>recipient</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.net.device.SSLSocket.html#SSLServerSocket.accept" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">SSLSocket</span> <a class="symbol _function" name="SSLServerSocket.accept" href="htmlsrc/tango.net.device.SSLSocket.html#L394">accept</a><span class="params">(SSLSocket <em>recipient</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.net.device.SSLSocket.html#SSLServerSocket.accept" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Accepts a new connection and copies the provided server SSLCtx to a new
       SSLSocket.</div></div></dd></dl></dd></dl>
 </div>
 <div id="kandil-footer">
   <p>Copyright (c) 2008 Jeff Davey. All rights reserved</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:13 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:28 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

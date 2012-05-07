@@ -200,9 +200,9 @@
 <p class="sec_header">Returns:</p><div class="cmnt"><table border=1 cellpadding=4 cellspacing=0>
       <caption>Special Values</caption>
       
-  <tr><th>Arguments</th> <th>fdim(x, y)</th></tr>
-  <tr><td>x &gt; y</td> <td>x - y</td></tr>
-  <tr><td>x &lt;= y</td> <td>+0.0</td></tr>
+  <tr><th>Arguments</th> <th>fdim(x, y)</th></tr>)
+  <tr><td>x &gt; y</td> <td>x - y</td></tr>)
+  <tr><td>x &lt;= y</td> <td>+0.0</td></tr>)
  </table></div></dd>
 <dt class="decl"><span class="rettyp">real</span> <a class="symbol _function" name="fabs" href="htmlsrc/tango.math.IEEE.html#L876">fabs</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#fabs" class="plink">¶</a></dt>
 <dd class="ddef">
@@ -218,7 +218,7 @@
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns (x * y) + z, rounding only once according to the
  current rounding mode.</div></div>
-<p class="sec_header"><span class="red">Bugs:</span></p><div class="cmnt">Not currently implemented - rounds twice.</div></dd>
+<p class="sec_header"><span class="red">Bugs:</span></p>)<div class="cmnt">Not currently implemented - rounds twice.</div></dd>
 <dt class="decl"><span class="rettyp">creal</span> <a class="symbol _function" name="expi" href="htmlsrc/tango.math.IEEE.html#L913">expi</a><span class="params">(real <em>y</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#expi" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Calculate cos(y) + i sin(y).</div></div>
@@ -265,12 +265,12 @@
   <table border=1 cellpadding=4 cellspacing=0>
       <caption>Special Values</caption>
       
-    <tr><th>x</th> <th>nextUp(x)   </th></tr>
-    <tr><td>-&infin;</td> <td>-real.max   </td></tr>
-    <tr><td>&plusmn;0.0</td> <td>real.min*real.epsilon </td></tr>
-    <tr><td>real.max</td> <td>&infin; </td></tr>
-    <tr><td>&infin;</td> <td>&infin; </td></tr>
-    <tr><td><span class="red">NAN</span></td> <td><span class="red">NAN</span>   </td></tr>
+    <tr><th>x</th> <th>nextUp(x)   </th></tr>)
+    <tr><td>-&infin;</td> <td>-real.max   </td></tr>)
+    <tr><td>&plusmn;0.0</td> <td>real.min*real.epsilon </td></tr>)
+    <tr><td>real.max</td> <td>&infin; </td></tr>)
+    <tr><td>&infin;</td> <td>&infin; </td></tr>)
+    <tr><td><span class="red">NAN</span></td> <td><span class="red">NAN</span>   </td></tr>)
  </table></div>
 <p class="sec_header">Remarks:</p><div class="cmnt">This function is included in the IEEE 754-2008 standard.
  
@@ -293,12 +293,12 @@
   <table border=1 cellpadding=4 cellspacing=0>
       <caption>Special Values</caption>
       
-    <tr><th>x</th> <th>nextDown(x)   </th></tr>
-    <tr><td>&infin;</td> <td>real.max  </td></tr>
-    <tr><td>&plusmn;0.0</td> <td>-real.min*real.epsilon </td></tr>
-    <tr><td>-real.max</td> <td>-&infin; </td></tr>
-    <tr><td>-&infin;</td> <td>-&infin; </td></tr>
-    <tr><td><span class="red">NAN</span></td> <td><span class="red">NAN</span>    </td></tr>
+    <tr><th>x</th> <th>nextDown(x)   </th></tr>)
+    <tr><td>&infin;</td> <td>real.max  </td></tr>)
+    <tr><td>&plusmn;0.0</td> <td>-real.min*real.epsilon </td></tr>)
+    <tr><td>-real.max</td> <td>-&infin; </td></tr>)
+    <tr><td>-&infin;</td> <td>-&infin; </td></tr>)
+    <tr><td><span class="red">NAN</span></td> <td><span class="red">NAN</span>    </td></tr>)
  </table></div>
 <p class="sec_header">Remarks:</p><div class="cmnt">This function is included in the IEEE 754-2008 standard.
  
@@ -327,12 +327,12 @@
   <table border=1 cellpadding=4 cellspacing=0>
       <caption>Special Values</caption>
       
-    <tr><th>x</th> <th>y</th> <th>feqrel(x, y)  </th></tr>
-    <tr><td>x</td> <td>x</td> <td>typeof(x).mant_dig </td></tr>
-    <tr><td>x</td> <td>&gt;= 2*x</td> <td>0 </td></tr>
-    <tr><td>x</td> <td>&lt;= x/2</td> <td>0 </td></tr>
-    <tr><td><span class="red">NAN</span></td> <td>any</td> <td>0 </td></tr>
-    <tr><td>any</td> <td><span class="red">NAN</span></td> <td>0 </td></tr>
+    <tr><th>x</th> <th>y</th> <th>feqrel(x, y)  </th></tr>)
+    <tr><td>x</td> <td>x</td> <td>typeof(x).mant_dig </td></tr>)
+    <tr><td>x</td> <td>&gt;= 2*x</td> <td>0 </td></tr>)
+    <tr><td>x</td> <td>&lt;= x/2</td> <td>0 </td></tr>)
+    <tr><td><span class="red">NAN</span></td> <td>any</td> <td>0 </td></tr>)
+    <tr><td>any</td> <td><span class="red">NAN</span></td> <td>0 </td></tr>)
   </table></div>
 <p class="sec_header">Remarks:</p><div class="cmnt">This is a very fast operation, suitable for use in speed-critical code.</div></dd>
 <dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="signbit" href="htmlsrc/tango.math.IEEE.html#L1645">signbit</a><span class="params">(real <em>x</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.math.IEEE.html#signbit" class="plink">¶</a></dt>
@@ -372,7 +372,7 @@
 </div>
 <div id="kandil-footer">
   <p>Portions Copyright (C) 2001-2005 Digital Mars.</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:12 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:27 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

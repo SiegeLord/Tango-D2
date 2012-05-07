@@ -99,29 +99,30 @@
 <dt class="decl"><a class="symbol _enummem" name="SocketFlags.NOSIGNAL" href="htmlsrc/tango.net.device.Berkeley.html#L133">NOSIGNAL</a> <a href="tango.net.device.Berkeley.html#SocketFlags.NOSIGNAL" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">inhibit signals</div></div></dd></dl></dd>
-<dt class="decl">int function(const(char)* node, const(char)* service, Address.addrinfo* hints, Address.addrinfo** res) <a class="symbol _variable" name="getaddrinfo" href="htmlsrc/tango.net.device.Berkeley.html#L269">getaddrinfo</a> <span class="attrs">[<span class="prot">package</span>, <span class="linkg">extern(Windows)</span>]</span> <a href="tango.net.device.Berkeley.html#getaddrinfo" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="getaddrinfo" href="htmlsrc/tango.net.device.Berkeley.html#L390">getaddrinfo</a><span class="params">(const(char)* <em>node</em>, const(char)* <em>service</em>, Address.addrinfo* <em>hints</em>, Address.addrinfo** <em>res</em>)</span> <span class="attrs">[<span class="prot">package</span>, <span class="linkg">extern(C)</span>]</span> <a href="tango.net.device.Berkeley.html#getaddrinfo" class="plink">¶</a></dt>
 <dd class="ddef">
-<div class="summary"><div class="cmnt">The gai_strerror function translates error codes of getaddrinfo,
-                freeaddrinfo and getnameinfo to a human readable string, suitable
-                for error reporting. (C) MAN</div></div>
-<div class="cmnt">Given node and service, which identify an Internet host and a service,
+<div class="summary"><div class="cmnt">Given node and service, which identify an Internet host and a service,
                 getaddrinfo() returns one or more addrinfo structures, each of which
-                contains an Internet address that can be specified in a call to bind
-                or connect. The getaddrinfo() function combines the functionality
-                provided by the getservbyname and getservbyport functions into a single
-                interface, but unlike the latter functions, getaddrinfo() is reentrant
-                and allows programs to eliminate IPv4-versus-IPv6 dependencies.(C) MAN</div></dd>
-<dt class="decl">void function(Address.addrinfo* res) <a class="symbol _variable" name="freeaddrinfo" href="htmlsrc/tango.net.device.Berkeley.html#L275">freeaddrinfo</a> <span class="attrs">[<span class="prot">package</span>, <span class="linkg">extern(Windows)</span>]</span> <a href="tango.net.device.Berkeley.html#freeaddrinfo" class="plink">¶</a></dt>
+                contains an Internet address that can be specified in a call to bind or
+                connect. The getaddrinfo() function combines the functionality provided
+                by the getservbyname and getservbyport functions into a single interface,
+                but unlike the latter functions, getaddrinfo() is reentrant and allows
+                programs to eliminate IPv4-versus-IPv6 dependencies. (C) MAN</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="freeaddrinfo" href="htmlsrc/tango.net.device.Berkeley.html#L396">freeaddrinfo</a><span class="params">(Address.addrinfo* <em>res</em>)</span> <span class="attrs">[<span class="prot">package</span>, <span class="linkg">extern(C)</span>]</span> <a href="tango.net.device.Berkeley.html#freeaddrinfo" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">The freeaddrinfo() function frees the memory that was allocated for the
                 dynamically allocated linked list res.  (C) MAN</div></div></dd>
-<dt class="decl">int function(Address.sockaddr* sa, int salen, char* host, int hostlen, char* serv, int servlen, int flags) <a class="symbol _variable" name="getnameinfo" href="htmlsrc/tango.net.device.Berkeley.html#L284">getnameinfo</a> <span class="attrs">[<span class="prot">package</span>, <span class="linkg">extern(Windows)</span>]</span> <a href="tango.net.device.Berkeley.html#getnameinfo" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="getnameinfo" href="htmlsrc/tango.net.device.Berkeley.html#L405">getnameinfo</a><span class="params">(Address.sockaddr* <em>sa</em>, int <em>salen</em>, char* <em>host</em>, int <em>hostlen</em>, char* <em>serv</em>, int <em>servlen</em>, int <em>flags</em>)</span> <span class="attrs">[<span class="prot">package</span>, <span class="linkg">extern(C)</span>]</span> <a href="tango.net.device.Berkeley.html#getnameinfo" class="plink">¶</a></dt>
 <dd class="ddef">
-<div class="summary"><div class="cmnt">The getnameinfo() function is the inverse of getaddrinfo: it converts
-                a socket address to a corresponding host and service, in a protocol-
-                independent manner. It combines the functionality of gethostbyaddr and
-                getservbyport, but unlike those functions, getaddrinfo is reentrant and
-                allows programs to eliminate IPv4-versus-IPv6 dependencies. (C) MAN</div></div></dd>
+<div class="summary"><div class="cmnt">The getnameinfo() function is the inverse of getaddrinfo: it converts a socket
+                address to a corresponding host and service, in a protocol-independent manner.
+                It combines the functionality of gethostbyaddr and getservbyport, but unlike
+                those functions, getaddrinfo is reentrant and allows programs to eliminate
+                IPv4-versus-IPv6 dependencies. (C) MAN</div></div></dd>
+<dt class="decl"><span class="rettyp">const(char)*</span> <a class="symbol _function" name="gai_strerror" href="htmlsrc/tango.net.device.Berkeley.html#L411">gai_strerror</a><span class="params">(int <em>errcode</em>)</span> <span class="attrs">[<span class="prot">package</span>, <span class="linkg">extern(C)</span>]</span> <a href="tango.net.device.Berkeley.html#gai_strerror" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The gai_strerror function translates error codes of getaddrinfo, freeaddrinfo
+                and getnameinfo to a human readable string, suitable for error reporting. (C) MAN</div></div></dd>
 <dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Berkeley" href="htmlsrc/tango.net.device.Berkeley.html#L422">Berkeley</a> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.device.Berkeley.html#Berkeley" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div>
@@ -543,6 +544,9 @@
 <dt class="decl"><span class="rettyp">ubyte[]</span> <a class="symbol _function" name="IPv6Address.addr" href="htmlsrc/tango.net.device.Berkeley.html#L1791">addr</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.addr" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="IPv6Address.toAddrString" href="htmlsrc/tango.net.device.Berkeley.html#L1801">toAddrString</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.toAddrString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt"></div></div></dd>
 <dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="IPv6Address.toPortString" href="htmlsrc/tango.net.device.Berkeley.html#L1812">toPortString</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">override</span>, <span class="stc">const</span>]</span> <a href="tango.net.device.Berkeley.html#IPv6Address.toPortString" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd>
@@ -594,7 +598,7 @@
 </div>
 <div id="kandil-footer">
   <p></p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:13 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:28 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

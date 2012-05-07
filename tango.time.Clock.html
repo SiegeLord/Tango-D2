@@ -33,13 +33,13 @@
         for high-resolution timers. These intervals are measured in
         units of 1 second, and support fractional units (0.001 = 1ms).</div>
 <dl>
-<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Clock.now" href="htmlsrc/tango.time.Clock.html#L58">now</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.time.Clock.html#Clock.now" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Clock.now" href="htmlsrc/tango.time.Clock.html#L182">now</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.time.Clock.html#Clock.now" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the current time as UTC since the epoch</div></div></dd>
-<dt class="decl"><span class="rettyp">DateTime</span> <a class="symbol _function" name="Clock.toDate" href="htmlsrc/tango.time.Clock.html#L71">toDate</a><span class="params">()</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Clock.html#Clock.toDate" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">DateTime</span> <a class="symbol _function" name="Clock.toDate" href="htmlsrc/tango.time.Clock.html#L197">toDate</a><span class="params">()</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Clock.html#Clock.toDate" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Set Date fields to represent the current time.</div></div></dd>
-<dt class="decl"><span class="rettyp">DateTime</span> <a class="symbol _function" name="Clock.toDate:2" href="htmlsrc/tango.time.Clock.html#L89">toDate</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Clock.html#Clock.toDate:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">DateTime</span> <a class="symbol _function" name="Clock.toDate:2" href="htmlsrc/tango.time.Clock.html#L214">toDate</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Clock.html#Clock.toDate:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Set fields to represent the provided UTC time. Note 
                         that the conversion is limited by the underlying OS,
@@ -48,7 +48,7 @@
                         representable date is 1601. On linux it is 1970. Both
                         systems have limitations upon future dates also. Date
                         is limited to millisecond accuracy at best.</div></div></dd>
-<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Clock.fromDate" href="htmlsrc/tango.time.Clock.html#L126">fromDate</a><span class="params">(<span class="k">ref</span> const(DateTime) <em>dt</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Clock.html#Clock.fromDate" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Clock.fromDate" href="htmlsrc/tango.time.Clock.html#L251">fromDate</a><span class="params">(<span class="k">ref</span> const(DateTime) <em>dt</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.time.Clock.html#Clock.fromDate" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Convert Date fields to Time</div></div>
 <div class="cmnt">Note that the conversion is limited by the underlying 
@@ -57,16 +57,16 @@
                         representable date is 1601. On linux it is 1970. Both
                         systems have limitations upon future dates also. Date
                         is limited to millisecond accuracy at best.</div></dd>
-<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Clock.convert" href="htmlsrc/tango.time.Clock.html#L150">convert</a><span class="params">(const(FILETIME) <em>time</em>)</span> <span class="attrs">[<span class="prot">package</span>, <span class="stc">static</span>]</span> <a href="tango.time.Clock.html#Clock.convert" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="Clock.convert" href="htmlsrc/tango.time.Clock.html#L274">convert</a><span class="params">(<span class="k">ref</span> const(timeval) <em>tv</em>)</span> <span class="attrs">[<span class="prot">package</span>, <span class="stc">static</span>]</span> <a href="tango.time.Clock.html#Clock.convert" class="plink">¶</a></dt>
 <dd class="ddef">
-<div class="summary"><div class="cmnt">Convert FILETIME to a Time</div></div></dd>
-<dt class="decl"><span class="rettyp">FILETIME</span> <a class="symbol _function" name="Clock.convert:2" href="htmlsrc/tango.time.Clock.html#L163">convert</a><span class="params">(const(Time) <em>dt</em>)</span> <span class="attrs">[<span class="prot">package</span>, <span class="stc">static</span>]</span> <a href="tango.time.Clock.html#Clock.convert:2" class="plink">¶</a></dt>
+<div class="summary"><div class="cmnt">Convert timeval to a Time</div></div></dd>
+<dt class="decl"><span class="rettyp">timeval</span> <a class="symbol _function" name="Clock.convert:2" href="htmlsrc/tango.time.Clock.html#L287">convert</a><span class="params">(const(Time) <em>time</em>)</span> <span class="attrs">[<span class="prot">package</span>, <span class="stc">static</span>]</span> <a href="tango.time.Clock.html#Clock.convert:2" class="plink">¶</a></dt>
 <dd class="ddef">
-<div class="summary"><div class="cmnt">Convert Time to a FILETIME</div></div></dd></dl></dd></dl>
+<div class="summary"><div class="cmnt">Convert Time to a timeval</div></div></dd></dl></dd></dl>
 </div>
 <div id="kandil-footer">
   <p>Copyright (c) 2007 Kris Bell. All rights reserved</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:38 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:46 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

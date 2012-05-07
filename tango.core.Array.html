@@ -373,7 +373,7 @@
          element satisfies the condition and false if not.  This
          predicate may be any callable type.</td></tr></table>
 <p class="sec_header">Returns:</p><div class="cmnt">The number of elements that satisfy pred.</div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="select" href="htmlsrc/tango.core.Array.html#L1997">select</a><span class="params">(Elem[] <em>buf</em>, Num <em>num</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#select" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="select" href="htmlsrc/tango.core.Array.html#L1998">select</a><span class="params">(Elem[] <em>buf</em>, Num <em>num</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#select" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Partitions buf with num - 1 as a pivot such that the first num elements
  will be less than or equal to the remaining elements in the array.
@@ -398,7 +398,7 @@
          callable type.</td></tr></table>
 <p class="sec_header">Returns:</p><div class="cmnt">The index of the pivot point, which will be the lesser of num - 1 and
   buf.length.</div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="sort" href="htmlsrc/tango.core.Array.html#L2111">sort</a><span class="tparams">(<em>Elem</em>, <em>Pred2E</em> = <span class="defval">IsLess!(Elem)</span>)</span><span class="params">(Elem[] <em>buf</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#sort" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="sort" href="htmlsrc/tango.core.Array.html#L2112">sort</a><span class="tparams">(<em>Elem</em>, <em>Pred2E</em> = <span class="defval">IsLess!(Elem)</span>)</span><span class="params">(Elem[] <em>buf</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#sort" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Sorts buf using the supplied predicate or '&lt;' if none is supplied.  The
  algorithm is not required to be stable.  The current implementation is
@@ -415,7 +415,7 @@
 <tr><td><em>pred</em></td><td>The evaluation predicate, which should return true if e1 is
          less than e2 and false if not.  This predicate may be any
          callable type.</td></tr></table></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="lbound" href="htmlsrc/tango.core.Array.html#L2356">lbound</a><span class="params">(Elem[] <em>buf</em>, Elem <em>pat</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#lbound" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="lbound" href="htmlsrc/tango.core.Array.html#L2357">lbound</a><span class="params">(Elem[] <em>buf</em>, Elem <em>pat</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#lbound" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Performs a binary search of buf, returning the index of the first
  location where pat may be inserted without disrupting sort order.  If
@@ -431,7 +431,7 @@
          less than e2 and false if not.  This predicate may be any
          callable type.</td></tr></table>
 <p class="sec_header">Returns:</p><div class="cmnt">The index of the first match or buf.length if no match was found.</div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="ubound" href="htmlsrc/tango.core.Array.html#L2440">ubound</a><span class="params">(Elem[] <em>buf</em>, Elem <em>pat</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#ubound" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="ubound" href="htmlsrc/tango.core.Array.html#L2441">ubound</a><span class="params">(Elem[] <em>buf</em>, Elem <em>pat</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#ubound" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Performs a binary search of buf, returning the index of the first
  location beyond where pat may be inserted without disrupting sort order.
@@ -447,7 +447,7 @@
          less than e2 and false if not.  This predicate may be any
          callable type.</td></tr></table>
 <p class="sec_header">Returns:</p><div class="cmnt">The index of the first match or buf.length if no match was found.</div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="bsearch" href="htmlsrc/tango.core.Array.html#L2521">bsearch</a><span class="params">(Elem[] <em>buf</em>, Elem <em>pat</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#bsearch" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="bsearch" href="htmlsrc/tango.core.Array.html#L2522">bsearch</a><span class="params">(Elem[] <em>buf</em>, Elem <em>pat</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#bsearch" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Performs a binary search of buf, returning true if an element equivalent
  to pat is found.  Comparisons will be performed using the supplied
@@ -460,7 +460,7 @@
          less than e2 and false if not.  This predicate may be any
          callable type.</td></tr></table>
 <p class="sec_header">Returns:</p><div class="cmnt">True if an element equivalent to pat is found, false if not.</div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="includes" href="htmlsrc/tango.core.Array.html#L2598">includes</a><span class="params">(Elem[] <em>setA</em>, Elem[] <em>setB</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#includes" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="includes" href="htmlsrc/tango.core.Array.html#L2599">includes</a><span class="params">(Elem[] <em>setA</em>, Elem[] <em>setB</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#includes" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Performs a parallel linear scan of setA and setB from [0 .. N)
  where N = min(setA.length, setB.length), returning true if setA
@@ -476,7 +476,7 @@
          less than e2 and false if not.  This predicate may be any
          callable type.</td></tr></table>
 <p class="sec_header">Returns:</p><div class="cmnt">True if setA includes all elements in setB, false if not.</div></dd>
-<dt class="decl"><span class="rettyp">Elem[]</span> <a class="symbol _function" name="unionOf" href="htmlsrc/tango.core.Array.html#L2687">unionOf</a><span class="params">(Elem[] <em>setA</em>, Elem[] <em>setB</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#unionOf" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Elem[]</span> <a class="symbol _function" name="unionOf" href="htmlsrc/tango.core.Array.html#L2688">unionOf</a><span class="params">(Elem[] <em>setA</em>, Elem[] <em>setB</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#unionOf" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Computes the union of setA and setB as a set operation and returns the
  retult in a new sorted array.  Both setA and setB are required to be
@@ -492,7 +492,7 @@
          less than e2 and false if not.  This predicate may be any
          callable type.</td></tr></table>
 <p class="sec_header">Returns:</p><div class="cmnt">A new array containing the union of setA and setB.</div></dd>
-<dt class="decl"><span class="rettyp">Elem[]</span> <a class="symbol _function" name="intersectionOf" href="htmlsrc/tango.core.Array.html#L2773">intersectionOf</a><span class="params">(Elem[] <em>setA</em>, Elem[] <em>setB</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#intersectionOf" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Elem[]</span> <a class="symbol _function" name="intersectionOf" href="htmlsrc/tango.core.Array.html#L2774">intersectionOf</a><span class="params">(Elem[] <em>setA</em>, Elem[] <em>setB</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#intersectionOf" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Computes the intersection of setA and setB as a set operation and
  returns the retult in a new sorted array.  Both setA and setB are
@@ -508,7 +508,7 @@
          less than e2 and false if not.  This predicate may be any
          callable type.</td></tr></table>
 <p class="sec_header">Returns:</p><div class="cmnt">A new array containing the intersection of setA and setB.</div></dd>
-<dt class="decl"><span class="rettyp">Elem[]</span> <a class="symbol _function" name="missingFrom" href="htmlsrc/tango.core.Array.html#L2855">missingFrom</a><span class="params">(Elem[] <em>setA</em>, Elem[] <em>setB</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#missingFrom" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Elem[]</span> <a class="symbol _function" name="missingFrom" href="htmlsrc/tango.core.Array.html#L2856">missingFrom</a><span class="params">(Elem[] <em>setA</em>, Elem[] <em>setB</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#missingFrom" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns a new array containing all elements in setA which are not
  present in setB.  Both setA and setB are required to be sorted.
@@ -522,7 +522,7 @@
          less than e2 and false if not.  This predicate may be any
          callable type.</td></tr></table>
 <p class="sec_header">Returns:</p><div class="cmnt">A new array containing the elements in setA that are not in setB.</div></dd>
-<dt class="decl"><span class="rettyp">Elem[]</span> <a class="symbol _function" name="differenceOf" href="htmlsrc/tango.core.Array.html#L2944">differenceOf</a><span class="params">(Elem[] <em>setA</em>, Elem[] <em>setB</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#differenceOf" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Elem[]</span> <a class="symbol _function" name="differenceOf" href="htmlsrc/tango.core.Array.html#L2945">differenceOf</a><span class="params">(Elem[] <em>setA</em>, Elem[] <em>setB</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#differenceOf" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns a new array containing all elements in setA which are not
  present in setB and the elements in setB which are not present in
@@ -538,7 +538,7 @@
          callable type.</td></tr></table>
 <p class="sec_header">Returns:</p><div class="cmnt">A new array containing the elements in setA that are not in setB
   and the elements in setB that are not in setA.</div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="makeHeap" href="htmlsrc/tango.core.Array.html#L3030">makeHeap</a><span class="params">(Elem[] <em>buf</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#makeHeap" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="makeHeap" href="htmlsrc/tango.core.Array.html#L3031">makeHeap</a><span class="params">(Elem[] <em>buf</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#makeHeap" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Converts buf to a heap using the supplied predicate or '&lt;' if none is
  supplied.</div></div>
@@ -552,7 +552,7 @@
 <tr><td><em>pred</em></td><td>The evaluation predicate, which should return true if e1 is
          less than e2 and false if not.  This predicate may be any
          callable type.</td></tr></table></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="pushHeap" href="htmlsrc/tango.core.Array.html#L3159">pushHeap</a><span class="params">(<span class="k">ref</span> Elem[] <em>buf</em>, Elem <em>val</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#pushHeap" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="pushHeap" href="htmlsrc/tango.core.Array.html#L3160">pushHeap</a><span class="params">(<span class="k">ref</span> Elem[] <em>buf</em>, Elem <em>val</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#pushHeap" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Adds val to buf by appending it and adjusting it up the heap.</div></div>
 <p class="sec_header">Parameters:</p>
@@ -563,7 +563,7 @@
 <tr><td><em>pred</em></td><td>The evaluation predicate, which should return true if e1 is
          less than e2 and false if not.  This predicate may be any
          callable type.</td></tr></table></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="popHeap" href="htmlsrc/tango.core.Array.html#L3280">popHeap</a><span class="params">(<span class="k">ref</span> Elem[] <em>buf</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#popHeap" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="popHeap" href="htmlsrc/tango.core.Array.html#L3281">popHeap</a><span class="params">(<span class="k">ref</span> Elem[] <em>buf</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#popHeap" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Removes the top element from buf by swapping it with the bottom element,
  adjusting it down the heap, and reducing the length of buf by one.</div></div>
@@ -574,7 +574,7 @@
 <tr><td><em>pred</em></td><td>The evaluation predicate, which should return true if e1 is
          less than e2 and false if not.  This predicate may be any
          callable type.</td></tr></table></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="sortHeap" href="htmlsrc/tango.core.Array.html#L3405">sortHeap</a><span class="params">(Elem[] <em>buf</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#sortHeap" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="sortHeap" href="htmlsrc/tango.core.Array.html#L3406">sortHeap</a><span class="params">(Elem[] <em>buf</em>, Pred2E <em>pred</em> = <span class="defval"><span class="i">init</span></span>)</span> <a href="tango.core.Array.html#sortHeap" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Sorts buf as a heap using the supplied predicate or '&lt;' if none is
  supplied.  Calling makeHeap and sortHeap on an array in succession
@@ -589,7 +589,7 @@
 <tr><td><em>pred</em></td><td>The evaluation predicate, which should return true if e1 is
          less than e2 and false if not.  This predicate may be any
          callable type.</td></tr></table></dd>
-<dt class="decl"><span class="rettyp">Elem2[]</span> <a class="symbol _function" name="map" href="htmlsrc/tango.core.Array.html#L3510">map</a><span class="params">(Elem[] <em>array</em>, Map2E <em>func</em>, Elem2[] <em>buf</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.core.Array.html#map" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Elem2[]</span> <a class="symbol _function" name="map" href="htmlsrc/tango.core.Array.html#L3511">map</a><span class="params">(Elem[] <em>array</em>, Map2E <em>func</em>, Elem2[] <em>buf</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.core.Array.html#map" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Apply a function to each element an array. The function's
  return values are stored in another array.</div></div>
@@ -601,7 +601,7 @@
 <p class="sec_header">Returns:</p><div class="cmnt">an array (the same as the buffer passed in, if possible) where the
 		ith element is the result of applying func to the ith element of the
 		input array</div></dd>
-<dt class="decl"><span class="rettyp">Elem</span> <a class="symbol _function" name="reduce" href="htmlsrc/tango.core.Array.html#L3560">reduce</a><span class="params">(Elem[] <em>array</em>, Reduce2E <em>func</em>)</span> <a href="tango.core.Array.html#reduce" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Elem</span> <a class="symbol _function" name="reduce" href="htmlsrc/tango.core.Array.html#L3561">reduce</a><span class="params">(Elem[] <em>array</em>, Reduce2E <em>func</em>)</span> <a href="tango.core.Array.html#reduce" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Reduce an array of elements to a single element, using a user-supplied
  reductor function.</div></div>
@@ -617,7 +617,7 @@
 <tr><td><em>array</em></td><td>the array to reduce</td></tr>
 <tr><td><em>func</em></td><td>the reductor function</td></tr></table>
 <p class="sec_header">Returns:</p><div class="cmnt">the single element reduction</div></dd>
-<dt class="decl"><span class="rettyp">Elem[]</span> <a class="symbol _function" name="filter" href="htmlsrc/tango.core.Array.html#L3618">filter</a><span class="params">(Elem[] <em>array</em>, Pred1E <em>pred</em>, Elem[] <em>buf</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.core.Array.html#filter" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Elem[]</span> <a class="symbol _function" name="filter" href="htmlsrc/tango.core.Array.html#L3619">filter</a><span class="params">(Elem[] <em>array</em>, Pred1E <em>pred</em>, Elem[] <em>buf</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.core.Array.html#filter" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Performs a linear scan of buf from [0 .. buf.length), creating a new 
  array with just the elements that satisfy pred.  The relative order of 
@@ -638,7 +638,7 @@
 </div>
 <div id="kandil-footer">
   <p>Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:06 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:23 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

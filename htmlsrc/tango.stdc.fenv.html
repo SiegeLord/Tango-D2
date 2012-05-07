@@ -131,8 +131,8 @@
 
 <span class="d Version"><span class="k">version</span>( <span class="i">Win32</span> )
 <span class="d Compound">{
-    <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">extern</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">fenv_t</span></span> <span class="i">_FE_DFL_ENV</span>;</span>
-    <span class="d Variables"><span class="t Identifier"><span class="i">fenv_t</span></span><span class="t Pointer">*</span> <span class="i">FE_DFL_ENV</span> = <span class="e Address">&amp;<span class="e Identifier"><span class="i">_FE_DFL_ENV</span></span></span>;</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">extern</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">fenv_t</span></span> <span class="i">_FE_DFL_ENV</span>;</span>
+    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">fenv_t</span></span><span class="t Pointer">*</span> <span class="i">FE_DFL_ENV</span> = <span class="e Address">&amp;<span class="e Identifier"><span class="i">_FE_DFL_ENV</span></span></span>;</span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">linux</span> )
 <span class="d Compound">{

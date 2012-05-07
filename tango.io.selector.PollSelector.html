@@ -20,11 +20,178 @@
 
 <p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
 <p class="sec_header">Author:</p><div class="cmnt">Juan Jose Comellas &lt;<a href="mailto:juanjo@comellas.com.ar">juanjo@comellas.com.ar</a>&gt;</div>
-<dl></dl>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="PollSelector" href="htmlsrc/tango.io.selector.PollSelector.html#L65">PollSelector</a> : <span class="bclass">AbstractSelector</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.PollSelector.html#PollSelector" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Selector that uses the poll() system call to receive I/O events for
+ the registered conduits. To use this class you would normally do
+ something like this:</div></div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+<a href="#L12_ex1" name="L12_ex1">12</a>
+<a href="#L13_ex1" name="L13_ex1">13</a>
+<a href="#L14_ex1" name="L14_ex1">14</a>
+<a href="#L15_ex1" name="L15_ex1">15</a>
+<a href="#L16_ex1" name="L16_ex1">16</a>
+<a href="#L17_ex1" name="L17_ex1">17</a>
+<a href="#L18_ex1" name="L18_ex1">18</a>
+<a href="#L19_ex1" name="L19_ex1">19</a>
+<a href="#L20_ex1" name="L20_ex1">20</a>
+<a href="#L21_ex1" name="L21_ex1">21</a>
+<a href="#L22_ex1" name="L22_ex1">22</a>
+<a href="#L23_ex1" name="L23_ex1">23</a>
+<a href="#L24_ex1" name="L24_ex1">24</a>
+<a href="#L25_ex1" name="L25_ex1">25</a>
+<a href="#L26_ex1" name="L26_ex1">26</a>
+<a href="#L27_ex1" name="L27_ex1">27</a>
+<a href="#L28_ex1" name="L28_ex1">28</a>
+<a href="#L29_ex1" name="L29_ex1">29</a>
+<a href="#L30_ex1" name="L30_ex1">30</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">selector</span>.<span class="i">PollSelector</span>;
+
+<span class="i">Socket</span> <span class="i">socket</span>;
+<span class="i">ISelector</span> <span class="i">selector</span> = <span class="k">new</span> <span class="i">PollSelector</span>();
+
+<span class="i">selector</span>.<span class="i">open</span>(<span class="n">100</span>, <span class="n">10</span>);
+
+<span class="lc">// Register to read from socket</span>
+<span class="i">selector</span>.<span class="i">register</span>(<span class="i">socket</span>, <span class="i">Event</span>.<span class="i">Read</span>);
+
+<span class="k">int</span> <span class="i">eventCount</span> = <span class="i">selector</span>.<span class="i">select</span>(<span class="n">0.1</span>); <span class="lc">// 0.1 seconds</span>
+<span class="k">if</span> (<span class="i">eventCount</span> &gt; <span class="n">0</span>)
+{
+    <span class="lc">// We can now read from the socket</span>
+    <span class="i">socket</span>.<span class="i">read</span>();
+}
+<span class="k">else</span> <span class="k">if</span> (<span class="i">eventCount</span> == <span class="n">0</span>)
+{
+    <span class="lc">// Timeout</span>
+}
+<span class="k">else</span> <span class="k">if</span> (<span class="i">eventCount</span> == -<span class="n">1</span>)
+{
+    <span class="lc">// Another thread called the wakeup() method.</span>
+}
+<span class="k">else</span>
+{
+    <span class="lc">// Error: should never happen.</span>
+}
+
+<span class="i">selector</span>.<span class="i">close</span>();</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> AbstractSelector.select <a class="symbol _alias" name="PollSelector.select" href="htmlsrc/tango.io.selector.PollSelector.html#L71">select</a> <a href="tango.io.selector.PollSelector.html#PollSelector.select" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Alias for the select() method as we're not reimplementing it in
+ this class.</div></div></dd>
+<dt class="decl">uint <a class="symbol _variable" name="PollSelector.DefaultSize" href="htmlsrc/tango.io.selector.PollSelector.html#L77">DefaultSize</a> <span class="attrs">[<span class="prot">public</span>, <span class="stc">const</span>]</span> <a href="tango.io.selector.PollSelector.html#PollSelector.DefaultSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Default number of SelectionKey's that will be handled by the
+ PollSelector.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="PollSelector.open" href="htmlsrc/tango.io.selector.PollSelector.html#L96">open</a><span class="params">(uint <em>size</em> = <span class="defval"><span class="i">DefaultSize</span></span>, uint <em>maxEvents</em> = <span class="defval"><span class="i">DefaultSize</span></span>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.PollSelector.html#PollSelector.open" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Open the poll()-based selector.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>size</em></td><td>maximum amount of conduits that will be registered;
+                it will grow dynamically if needed.</td></tr>
+<tr><td><em>maxEvents</em></td><td>maximum amount of conduit events that will be
+                returned in the selection set per call to select();
+                this value is currently not used by this selector.</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="PollSelector.close" href="htmlsrc/tango.io.selector.PollSelector.html#L112">close</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.PollSelector.html#PollSelector.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Close the selector.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">It can be called multiple times without harmful side-effects.</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="PollSelector.register" href="htmlsrc/tango.io.selector.PollSelector.html#L144">register</a><span class="params">(ISelectable <em>conduit</em>, Event <em>events</em>, Object <em>attachment</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.PollSelector.html#PollSelector.register" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Associate a conduit to the selector and track specific I/O events.
+ If a conduit is already associated, modify the events and
+ attachment.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>conduit</em></td><td>conduit that will be associated to the selector;
+                must be a valid conduit (i.e. not null and open).</td></tr>
+<tr><td><em>events</em></td><td>bit mask of Event values that represent the events
+                that will be tracked for the conduit.</td></tr>
+<tr><td><em>attachment</em></td><td>optional object with application-specific data that
+                will be available when an event is triggered for the
+                conduit</td></tr></table>
+<p class="sec_header">Throws:</p><div class="cmnt">RegisteredConduitException if the conduit had already been
+ registered to the selector.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">selector</span>.<span class="i">register</span>(<span class="i">conduit</span>, <span class="i">Event</span>.<span class="i">Read</span> | <span class="i">Event</span>.<span class="i">Write</span>, <span class="i">object</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="PollSelector.unregister" href="htmlsrc/tango.io.selector.PollSelector.html#L197">unregister</a><span class="params">(ISelectable <em>conduit</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.PollSelector.html#PollSelector.unregister" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove a conduit from the selector.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>conduit</em></td><td>conduit that had been previously associated to the
+                selector; it can be null.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Unregistering a null conduit is allowed and no exception is thrown
+ if this happens.</div>
+<p class="sec_header">Throws:</p><div class="cmnt">UnregisteredConduitException if the conduit had not been previously
+ registered to the selector.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="PollSelector.select:2" href="htmlsrc/tango.io.selector.PollSelector.html#L266">select</a><span class="params">(TimeSpan <em>timeout</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.PollSelector.html#PollSelector.select:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Wait for I/O events from the registered conduits for a specified
+ amount of time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>timeout</em></td><td>Timespan with the maximum amount of time that the
+            selector will wait for events from the conduits; the
+            amount of time is relative to the current system time
+            (i.e. just the number of milliseconds that the selector
+            has to wait for the events).</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The amount of conduits that have received events; 0 if no conduits
+ have received events within the specified timeout; and -1 if the
+ wakeup() method has been called from another thread.</div>
+<p class="sec_header">Throws:</p><div class="cmnt">InterruptedSystemCallException if the underlying system call was
+ interrupted by a signal and the 'restartInterruptedSystemCall'
+ property was set to false; SelectorException if there were no
+ resources available to wait for events from the conduits.</div></dd>
+<dt class="decl"><span class="rettyp">ISelectionSet</span> <a class="symbol _function" name="PollSelector.selectedSet" href="htmlsrc/tango.io.selector.PollSelector.html#L306">selectedSet</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.PollSelector.html#PollSelector.selectedSet" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the selection set resulting from the call to any of the
+ select() methods.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">If the call to select() was unsuccessful or it did not return any
+ events, the returned value will be null.</div></dd>
+<dt class="decl"><span class="rettyp">SelectionKey</span> <a class="symbol _function" name="PollSelector.key" href="htmlsrc/tango.io.selector.PollSelector.html#L320">key</a><span class="params">(ISelectable <em>conduit</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.PollSelector.html#PollSelector.key" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the selection key resulting from the registration of a
+ conduit to the selector.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">If the conduit is not registered to the selector the returned
+ value will SelectionKey.init. No exception will be thrown by this
+ method.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="PollSelector.count" href="htmlsrc/tango.io.selector.PollSelector.html#L336">count</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.PollSelector.html#PollSelector.count" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the number of keys resulting from the registration of a conduit
+ to the selector.</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="PollSelector.opApply" href="htmlsrc/tango.io.selector.PollSelector.html#L346">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref SelectionKey sk) <em>dg</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.PollSelector.html#PollSelector.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate through the currently registered selection keys.  Note that
+ you should not erase or add any items from the selector while
+ iterating, although you can register existing conduits again.</div></div></dd></dl></dd></dl>
 </div>
 <div id="kandil-footer">
   <p>Copyright (c) 2006 Juan Jose Comellas. All rights reserved</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:09 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:25 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

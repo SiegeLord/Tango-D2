@@ -30,18 +30,18 @@
         manipulate the current working directory, and to convert a path
         to its absolute form.</div></div>
 <dl>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FileSystem.setDirectory" href="htmlsrc/tango.io.FileSystem.html#L120">setDirectory</a><span class="params">(const(char)[] <em>path</em>)</span> <span class="attrs">[<span class="stc">static</span>, <span class="stc">deprecated</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.setDirectory" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FileSystem.setDirectory" href="htmlsrc/tango.io.FileSystem.html#L394">setDirectory</a><span class="params">(const(char)[] <em>path</em>)</span> <span class="attrs">[<span class="stc">static</span>, <span class="stc">deprecated</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.setDirectory" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Set the current working directory</div></div>
-<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">see Environment.cwd()</div></dd>
-<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="FileSystem.getDirectory" href="htmlsrc/tango.io.FileSystem.html#L154">getDirectory</a><span class="params">()</span> <span class="attrs">[<span class="stc">static</span>, <span class="stc">deprecated</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.getDirectory" class="plink">¶</a></dt>
+<p class="sec_header"><span class="red">Deprecated:</span></p>)<div class="cmnt">see Environment.cwd()</div></dd>
+<dt class="decl"><span class="rettyp">char[]</span> <a class="symbol _function" name="FileSystem.getDirectory" href="htmlsrc/tango.io.FileSystem.html#L412">getDirectory</a><span class="params">()</span> <span class="attrs">[<span class="stc">static</span>, <span class="stc">deprecated</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.getDirectory" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the current working directory</div></div>
-<p class="sec_header"><span class="red">Deprecated:</span></p><div class="cmnt">see Environment.cwd()</div></dd>
-<dt class="decl"><span class="rettyp">char[][]</span> <a class="symbol _function" name="FileSystem.roots" href="htmlsrc/tango.io.FileSystem.html#L199">roots</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.roots" class="plink">¶</a></dt>
+<p class="sec_header"><span class="red">Deprecated:</span></p>)<div class="cmnt">see Environment.cwd()</div></dd>
+<dt class="decl"><span class="rettyp">char[][]</span> <a class="symbol _function" name="FileSystem.roots" href="htmlsrc/tango.io.FileSystem.html#L431">roots</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.roots" class="plink">¶</a></dt>
 <dd class="ddef">
-<div class="summary"><div class="cmnt">List the set of root devices (C:, D: etc)</div></div></dd>
-<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="FileSystem.freeSpace" href="htmlsrc/tango.io.FileSystem.html#L291">freeSpace</a><span class="params">(const(char)[] <em>folder</em>, bool <em>superuser</em> = <span class="defval"><span class="k">false</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.freeSpace" class="plink">¶</a></dt>
+<div class="summary"><div class="cmnt">List the set of root devices.</div></div></dd>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="FileSystem.freeSpace" href="htmlsrc/tango.io.FileSystem.html#L500">freeSpace</a><span class="params">(const(char)[] <em>folder</em>, bool <em>superuser</em> = <span class="defval"><span class="k">false</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.freeSpace" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Request how much free space in bytes is available on the
                         disk/mountpoint where folder resides.</div></div>
@@ -62,7 +62,7 @@
 <p class="bl"></p>
                         See also: totalSpace()</div>
 <p class="sec_header">Since:</p><div class="cmnt">0.99.9</div></dd>
-<dt class="decl"><span class="rettyp">ulong</span> <a class="symbol _function" name="FileSystem.totalSpace" href="htmlsrc/tango.io.FileSystem.html#L330">totalSpace</a><span class="params">(const(char)[] <em>folder</em>, bool <em>superuser</em> = <span class="defval"><span class="k">false</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.totalSpace" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">long</span> <a class="symbol _function" name="FileSystem.totalSpace" href="htmlsrc/tango.io.FileSystem.html#L535">totalSpace</a><span class="params">(const(char)[] <em>folder</em>, bool <em>superuser</em> = <span class="defval"><span class="k">false</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.io.FileSystem.html#FileSystem.totalSpace" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Request how large in bytes the
                         disk/mountpoint where folder resides is.</div></div>
@@ -80,7 +80,7 @@
 </div>
 <div id="kandil-footer">
   <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:08 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:24 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

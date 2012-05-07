@@ -352,7 +352,7 @@ TODO
 
         <span class="lc">//debug(Zip) data.dump;</span>
 
-        <span class="s Declaration"><span class="d Variables"><span class="t Wild"><span class="k">inout</span>(<span class="k">char</span>[])</span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Wild"><span class="k">inout</span>(<span class="k">ubyte</span>[])</span></span>)</span></span> <span class="i">conv_fn</span>;</span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span>)</span></span>)</span></span> <span class="i">conv_fn</span>;</span></span>
         <span class="s If"><span class="k">if</span>( <span class="e Call"><span class="e Identifier"><span class="i">usingUtf8</span></span>()</span> )
             <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">conv_fn</span></span> = <span class="e Address">&amp;<span class="e Identifier"><span class="i">cp437_to_utf8</span></span></span></span>;</span></span>
         <span class="k">else</span>
@@ -597,7 +597,7 @@ TODO
     <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">file_source</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">File</span></span>(<span class="e Identifier"><span class="i">path</span></span>)</span></span>;</span>
-        <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>(<span class="i">file_source</span>)</span>;</span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">this</span></span>(<span class="i">file_source</span>);</span></span>
     }</span></span></span>
 
     <span class="bc">/**
@@ -982,7 +982,7 @@ TODO
     <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">file_output</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">File</span></span>(<span class="e Identifier"><span class="i">path</span></span>, <span class="e Identifier"><span class="i">File</span></span>.<span class="e Identifier"><span class="i">WriteCreate</span></span>)</span></span>;</span>
-        <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>(<span class="i">file_output</span>)</span>;</span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">this</span></span>(<span class="i">file_output</span>);</span></span>
     }</span></span></span>
 
     <span class="bc">/**
@@ -1545,7 +1545,7 @@ TODO
  */</span>
 <span class="d Class"><span class="k">class</span> <span class="i">ZipException</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">Exception</span></span></span>
 <span class="d Compound">{
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">msg</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="i">msg</span>)</span>;</span> }</span></span></span>
+    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">msg</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span>(<span class="i">msg</span>);</span></span> }</span></span></span>
 
 <span class="d Protection"><span class="k">private</span></span>:
     <span class="d Compound"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Typeof"><span class="k">typeof</span>(<span class="e This"><span class="k">this</span></span>)</span> <span class="i">thisT</span>;</span></span>
@@ -1652,7 +1652,7 @@ TODO
  */</span>
 <span class="d Class"><span class="k">class</span> <span class="i">ZipNotSupportedException</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">ZipException</span></span></span>
 <span class="d Compound">{
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">msg</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="i">msg</span>)</span>;</span> }</span></span></span>
+    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">msg</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span>(<span class="i">msg</span>);</span></span> }</span></span></span>
 
 <span class="d Protection"><span class="k">private</span></span>:
     <span class="d Compound"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">ZipNotSupportedException</span></span> <span class="i">thisT</span>;</span></span>
@@ -2011,7 +2011,7 @@ TODO
     <span class="e String"><span class="sl">"<span class="es">\u207f</span>"</span></span>,   <span class="e String"><span class="sl">"<span class="es">\u00b2</span>"</span></span>,   <span class="e String"><span class="sl">"<span class="es">\u25a0</span>"</span></span>,   <span class="e String"><span class="sl">"<span class="es">\u00a0</span>"</span></span>
 ]</span>;</span>
 
-<span class="d Function"><span class="t Wild"><span class="k">inout</span>(<span class="k">char</span>[])</span> <span class="i">cp437_to_utf8</span><span class="o Parameters">(<span class="o Parameter"><span class="t Wild"><span class="k">inout</span>(<span class="k">ubyte</span>[])</span> <span class="i">s</span></span>)</span>
+<span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">cp437_to_utf8</span><span class="o Parameters">(<span class="o Parameter"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span>)</span> <span class="i">s</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Foreach"><span class="k">foreach</span>( <span class="o Parameters"><span class="o Parameter"><span class="i">i</span></span>,<span class="o Parameter"><span class="i">c</span></span></span> ; <span class="e Identifier"><span class="i">s</span></span> )
     <span class="s Scope"><span class="s Compound">{
@@ -2141,7 +2141,7 @@ TODO
     ]</span></span>;</span>
 }</span></span></span>
 
-<span class="d Function"><span class="t Wild"><span class="k">inout</span>(<span class="k">ubyte</span>)</span><span class="t Array">[]</span> <span class="i">utf8_to_cp437</span><span class="o Parameters">(<span class="o Parameter"><span class="t Wild"><span class="k">inout</span>(<span class="k">char</span>)</span><span class="t Array">[]</span> <span class="i">s</span></span>)</span>
+<span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">ubyte</span></span>)</span><span class="t Array">[]</span> <span class="i">utf8_to_cp437</span><span class="o Parameters">(<span class="o Parameter"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">s</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Typeof"><span class="k">typeof</span>(<span class="k">return</span>)</span> <span class="i">ret_type</span>;</span></span></span> <span class="bc">/* Some sort of strange bug here */</span>
     <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">bug_6867</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">cs</span></span>)</span>
@@ -2234,7 +2234,7 @@ TODO
 <span class="bc">/*
  * This is here to simplify the code elsewhere.
  */</span>
-<span class="d Function"><span class="t Wild"><span class="k">inout</span>(<span class="k">char</span>[])</span> <span class="i">utf8_to_utf8</span><span class="o Parameters">(<span class="o Parameter"><span class="t Wild"><span class="k">inout</span>(<span class="k">ubyte</span>[])</span> <span class="i">s</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e Cast"><span class="k">cast</span>(<span class="t Typeof"><span class="k">typeof</span>(<span class="k">return</span>)</span>) <span class="e Identifier"><span class="i">s</span></span></span>;</span> }</span></span></span>
+<span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">utf8_to_utf8</span><span class="o Parameters">(<span class="o Parameter"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span>)</span> <span class="i">s</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e Cast"><span class="k">cast</span>(<span class="t Typeof"><span class="k">typeof</span>(<span class="k">return</span>)</span>) <span class="e Identifier"><span class="i">s</span></span></span>;</span> }</span></span></span>
 <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">utf8_to_utf8</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">s</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span>) <span class="e Identifier"><span class="i">s</span></span></span>;</span> }</span></span></span>
 
 <span class="lc">//////////////////////////////////////////////////////////////////////////////</span>
@@ -2838,7 +2838,7 @@ TODO
     }</span>
     <span class="k">body</span>
     <span class="s Compound">{
-        <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>(<span class="i">source</span>)</span>;</span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">this</span></span>(<span class="i">source</span>);</span></span>
         <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">_position</span></span> = <span class="e Identifier"><span class="i">position</span></span></span>;</span>
     }</span></span></span>
 
@@ -2934,7 +2934,7 @@ TODO
     }</span>
     <span class="k">body</span>
     <span class="s Compound">{
-        <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>(<span class="i">source</span>)</span>;</span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">this</span></span>(<span class="i">source</span>);</span></span>
         <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">_position</span></span> = <span class="e Identifier"><span class="i">position</span></span></span>;</span>
     }</span></span></span>
 

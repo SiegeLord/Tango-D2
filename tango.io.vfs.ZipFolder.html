@@ -48,82 +48,82 @@
 <dd class="ddef"></dd>
 <dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ZipSubFolder.writable" href="htmlsrc/tango.io.vfs.ZipFolder.html#L451">writable</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipSubFolder.writable" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="ZipSubFolder.closeImpl" href="htmlsrc/tango.io.vfs.ZipFolder.html#L496">closeImpl</a><span class="params">(bool <em>commit</em> = <span class="defval"><span class="k">true</span></span>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipSubFolder.closeImpl" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="ZipSubFolder.close" href="htmlsrc/tango.io.vfs.ZipFolder.html#L462">close</a><span class="params">(bool <em>commit</em> = <span class="defval"><span class="k">true</span></span>)</span> <a href="tango.io.vfs.ZipFolder.html#ZipSubFolder.close" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Closes this folder object.  If commit is true, then the folder is
  sync'ed before being closed.</div></div></dd>
-<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="ZipSubFolder.syncImpl" href="htmlsrc/tango.io.vfs.ZipFolder.html#L511">syncImpl</a><span class="params">()</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipSubFolder.syncImpl" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="ZipSubFolder.sync" href="htmlsrc/tango.io.vfs.ZipFolder.html#L479">sync</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipSubFolder.sync" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">This will flush any changes to the archive to disk.  Note that this
  applies to the entire archive, not just this folder and its contents.</div></div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ZipSubFolder.verify" href="htmlsrc/tango.io.vfs.ZipFolder.html#L521">verify</a><span class="params">(VfsFolder <em>folder</em>, bool <em>mounting</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipSubFolder.verify" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ZipSubFolder.verify" href="htmlsrc/tango.io.vfs.ZipFolder.html#L489">verify</a><span class="params">(VfsFolder <em>folder</em>, bool <em>mounting</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipSubFolder.verify" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">ZipFolder</span> <a class="symbol _function" name="ZipSubFolder.archive" href="htmlsrc/tango.io.vfs.ZipFolder.html#L545">archive</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipSubFolder.archive" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">ZipFolder</span> <a class="symbol _function" name="ZipSubFolder.archive" href="htmlsrc/tango.io.vfs.ZipFolder.html#L513">archive</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipSubFolder.archive" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns a reference to the underlying ZipFolder instance.</div></div></dd></dl></dd>
-<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ZipFolder" href="htmlsrc/tango.io.vfs.ZipFolder.html#L647">ZipFolder</a> : <span class="bclass">ZipSubFolder</span> <a href="tango.io.vfs.ZipFolder.html#ZipFolder" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ZipFolder" href="htmlsrc/tango.io.vfs.ZipFolder.html#L615">ZipFolder</a> : <span class="bclass">ZipSubFolder</span> <a href="tango.io.vfs.ZipFolder.html#ZipFolder" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">ZipFolder serves as the root object for all Zip archives in the VFS.
  Presently, it can only open archives on the local filesystem.</div></div>
 <dl>
-<dt class="decl"><a class="symbol _ctor" name="ZipFolder.this" href="htmlsrc/tango.io.vfs.ZipFolder.html#L654">this</a><span class="params">(const(char)[] <em>path</em>, bool <em>readonly</em> = <span class="defval"><span class="k">false</span></span>)</span> <a href="tango.io.vfs.ZipFolder.html#ZipFolder.this" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _ctor" name="ZipFolder.this" href="htmlsrc/tango.io.vfs.ZipFolder.html#L622">this</a><span class="params">(const(char)[] <em>path</em>, bool <em>readonly</em> = <span class="defval"><span class="k">false</span></span>)</span> <a href="tango.io.vfs.ZipFolder.html#ZipFolder.this" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Opens an archive from the local filesystem.  If the readonly argument
  is specified as true, then modification of the archive will be
  explicitly disallowed.</div></div></dd>
-<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="ZipFolder.close" href="htmlsrc/tango.io.vfs.ZipFolder.html#L669">close</a><span class="params">(bool <em>commit</em> = <span class="defval"><span class="k">true</span></span>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFolder.close" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="ZipFolder.close" href="htmlsrc/tango.io.vfs.ZipFolder.html#L637">close</a><span class="params">(bool <em>commit</em> = <span class="defval"><span class="k">true</span></span>)</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFolder.close" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Closes the archive, and releases all internal resources.  If the commit
  argument is true (the default), then changes to the archive will be
  flushed out to disk.  If false, changes will simply be discarded.</div></div></dd>
-<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="ZipFolder.sync" href="htmlsrc/tango.io.vfs.ZipFolder.html#L698">sync</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFolder.sync" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">VfsFolder</span> <a class="symbol _function" name="ZipFolder.sync" href="htmlsrc/tango.io.vfs.ZipFolder.html#L667">sync</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFolder.sync" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Flushes all changes to the archive out to disk.</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ZipFolder.readonly" href="htmlsrc/tango.io.vfs.ZipFolder.html#L820">readonly</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFolder.readonly" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ZipFolder.readonly" href="htmlsrc/tango.io.vfs.ZipFolder.html#L790">readonly</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFolder.readonly" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Indicates whether the archive was opened for read-only access.  Note
  that in addition to the readonly constructor flag, this is also
  influenced by whether the file itself is read-only or not.</div></div></dd>
-<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="ZipFolder.path" href="htmlsrc/tango.io.vfs.ZipFolder.html#L827">path</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFolder.path" class="plink">¶</a></dt>
-<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="ZipFolder.path:2" href="htmlsrc/tango.io.vfs.ZipFolder.html#L828">path</a><span class="params">(const(char)[] <em>v</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFolder.path:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="ZipFolder.path" href="htmlsrc/tango.io.vfs.ZipFolder.html#L797">path</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFolder.path" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="ZipFolder.path:2" href="htmlsrc/tango.io.vfs.ZipFolder.html#L798">path</a><span class="params">(const(char)[] <em>v</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFolder.path:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Allows you to read and specify the path to the archive.  The effect of
  setting this is to change where the archive will be written to when
  flushed to disk.</div></div></dd></dl></dd>
-<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ZipFile" href="htmlsrc/tango.io.vfs.ZipFolder.html#L992">ZipFile</a> : <span class="bclass">VfsFile</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ZipFile" href="htmlsrc/tango.io.vfs.ZipFolder.html#L962">ZipFile</a> : <span class="bclass">VfsFile</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">This class represents a file within an archive.</div></div>
 <dl>
-<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="ZipFile.name" href="htmlsrc/tango.io.vfs.ZipFolder.html#L995">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.name" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(char)[]</span> <a class="symbol _function" name="ZipFile.name" href="htmlsrc/tango.io.vfs.ZipFolder.html#L965">name</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.name" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="ZipFile.toString" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1004">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.toString" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="ZipFile.toString" href="htmlsrc/tango.io.vfs.ZipFolder.html#L974">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.toString" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ZipFile.exists" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1013">exists</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.exists" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ZipFile.exists" href="htmlsrc/tango.io.vfs.ZipFolder.html#L983">exists</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.exists" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">ulong</span> <a class="symbol _function" name="ZipFile.size" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1023">size</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.size" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">ulong</span> <a class="symbol _function" name="ZipFile.size" href="htmlsrc/tango.io.vfs.ZipFolder.html#L993">size</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.size" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="ZipFile.copy" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1037">copy</a><span class="params">(VfsFile <em>source</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.copy" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="ZipFile.copy" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1007">copy</a><span class="params">(VfsFile <em>source</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.copy" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="ZipFile.move" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1059">move</a><span class="params">(VfsFile <em>source</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.move" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="ZipFile.move" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1029">move</a><span class="params">(VfsFile <em>source</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.move" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="ZipFile.create" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1081">create</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.create" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="ZipFile.create" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1051">create</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.create" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="ZipFile.create:2" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1117">create</a><span class="params">(InputStream <em>stream</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.create:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="ZipFile.create:2" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1087">create</a><span class="params">(InputStream <em>stream</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.create:2" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="ZipFile.remove" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1135">remove</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.remove" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="ZipFile.remove" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1105">remove</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.remove" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">InputStream</span> <a class="symbol _function" name="ZipFile.input" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1173">input</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.input" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">InputStream</span> <a class="symbol _function" name="ZipFile.input" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1143">input</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.input" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">OutputStream</span> <a class="symbol _function" name="ZipFile.output" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1188">output</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.output" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">OutputStream</span> <a class="symbol _function" name="ZipFile.output" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1158">output</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.output" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="ZipFile.dup" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1209">dup</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.dup" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">VfsFile</span> <a class="symbol _function" name="ZipFile.dup" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1179">dup</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.dup" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="ZipFile.modified" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1220">modified</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.modified" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="ZipFile.modified" href="htmlsrc/tango.io.vfs.ZipFolder.html#L1190">modified</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">final</span>]</span> <a href="tango.io.vfs.ZipFolder.html#ZipFile.modified" class="plink">¶</a></dt>
 <dd class="ddef"></dd></dl></dd></dl>
 </div>
 <div id="kandil-footer">
   <p>Copyright © 2007 Daniel Keep.  All rights reserved.</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">dil</a> on Mon Mar 12 22:46:11 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:26 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

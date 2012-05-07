@@ -233,7 +233,7 @@
                     <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">path</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">Format</span></span>.<span class="e Identifier"><span class="i">sprint</span></span>(<span class="i">buf</span>, <span class="sl">"{}.{}{}<span class="es">\0</span>"</span>, <span class="k">this</span>.<span class="i">path</span>, <span class="i">i</span>+<span class="n">1</span>,
                                          <span class="i">compress</span>)</span></span>;</span>
                     
-                    <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_path</span></span>.<span class="e Identifier"><span class="i">rename</span></span>(<span class="i">path</span>)</span>;</span>
+                    <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">this</span></span>.<span class="t Identifier"><span class="i">file_path</span></span>.<span class="t Identifier"><span class="i">rename</span></span>(<span class="i">path</span>);</span></span>
                     
                     <span class="s If"><span class="k">if</span> ( <span class="e Equal"><span class="e Plus"><span class="e Identifier"><span class="i">i</span></span> + <span class="e Int"><span class="n">1</span></span></span> == <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">compress_index</span></span></span> ) <span class="s Scope"><span class="s With"><span class="k">with</span> (<span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">compress_cmd</span></span>) 
                     <span class="s Scope"><span class="s Compound">{
@@ -256,7 +256,7 @@
         <span class="s Scope"><span class="s Compound">{
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">path</span> = <span class="e Call"><span class="e Identifier"><span class="i">Format</span></span>.<span class="e Identifier"><span class="i">sprint</span></span>(<span class="i">buf</span>, <span class="sl">"{}.{}<span class="es">\0</span>"</span>, <span class="k">this</span>.<span class="i">path</span>, <span class="n">1</span>)</span>;</span></span>
                 
-            <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">file_path</span></span>.<span class="e Identifier"><span class="i">rename</span></span>(<span class="i">path</span>)</span>;</span>
+            <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">this</span></span>.<span class="t Identifier"><span class="i">file_path</span></span>.<span class="t Identifier"><span class="i">rename</span></span>(<span class="i">path</span>);</span></span>
         }</span></span></span>
             
         <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">openConduit</span></span> ()</span>;</span>
