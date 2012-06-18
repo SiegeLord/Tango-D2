@@ -1155,24 +1155,24 @@ final class RandomG(SourceT=DefaultEngine)
     
     /// returns a normal distribued number
     T normal(T)(){
-        return normalSource!(T).getRandom();
+        return normalSource!(T)().getRandom();
     }
     /// returns a normal distribued number with the given sigma
     T normalSigma(T)(T sigma){
-        return normalSource!(T).getRandom(sigma);
+        return normalSource!(T)().getRandom(sigma);
     }
     /// returns a normal distribued number with the given sigma and mu
     T normalSigmaMu(T)(T sigma,T mu){
-        return normalSource!(T).getRandom(sigma,mu);
+        return normalSource!(T)().getRandom(sigma,mu);
     }
     
     /// returns an exp distribued number
     T exp(T)(){
-        return expSource!(T).getRandom();
+        return expSource!(T)().getRandom();
     }
     /// returns an exp distribued number with the given scale beta
     T expBeta(T)(T beta){
-        return expSource!(T).getRandom(beta);
+        return expSource!(T)().getRandom(beta);
     }
         
     /// returns a gamma distribued number
