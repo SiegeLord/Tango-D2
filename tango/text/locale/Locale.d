@@ -71,7 +71,7 @@ public class Locale : Layout!(char)
 
         ***********************************************************************/
 
-        protected override char[] unknown (char[] output, const(char)[] format, TypeInfo type, Arg p)
+        protected override char[] unknown (char[] output, const(char)[] format, const(TypeInfo) type, Arg p)
         {
                 switch (type.classinfo.name[9])
                        {
@@ -80,13 +80,13 @@ public class Locale : Layout!(char)
                             if (type is typeid(Time))
                                 return formatDateTime (output, *cast(Time*) p, format, dateFormat);
                        /* Bad dup */
-                       return type.toString().dup;
+                       return (cast()type).toString().dup; /* Cast courtesy of D2 */
 
                        default:
                             break;
                        }
 
-                return "{unhandled argument type: ".dup ~ type.toString() ~ '}';
+                return "{unhandled argument type: ".dup ~ (cast()type).toString() ~ '}'; /* Cast courtesy of D2 */
         }
 
         /**********************************************************************

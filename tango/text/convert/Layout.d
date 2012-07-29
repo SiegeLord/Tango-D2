@@ -578,7 +578,7 @@ class Layout(T)
                       }
 
                       // an astonishing number of typehacks needed to handle arrays :(
-                      void process (TypeInfo _ti, Arg _arg)
+                      void process (const(TypeInfo) _ti, Arg _arg)
                       {
                                 if ((_ti.classinfo.name.length is 14  && _ti.classinfo.name[9..$] == "Const") ||
                                     (_ti.classinfo.name.length is 18  && _ti.classinfo.name[9..$] == "Invariant") ||
@@ -676,7 +676,7 @@ version (WithVariant)
                                       auto arr = *cast(void[]*)_arg;
                                       auto len = arr.length;
                                       auto ptr = cast(Arg) arr.ptr;
-                                      auto elTi = _ti.next();
+                                      auto elTi = (cast()_ti).next(); /* Cast courtesy of D2 */
                                       auto size = elTi.tsize();
                                       length += sink ("[");
                                       while (len > 0)
@@ -709,7 +709,7 @@ version (WithVariant)
 
         ***********************************************************************/
 
-        private T[] dispatch (T[] result, const(T)[] format, TypeInfo type, Arg p)
+        private T[] dispatch (T[] result, const(T)[] format, const(TypeInfo) type, Arg p)
         {
                 switch (type.classinfo.name[9])
                        {
@@ -828,7 +828,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        protected T[] unknown (T[] result, const(T)[] format, TypeInfo type, Arg p)
+        protected T[] unknown (T[] result, const(T)[] format, const(TypeInfo) type, Arg p)
         {
         version (WithExtensions)
                 {
@@ -852,7 +852,7 @@ version (WithVariant)
                              }
                    }
                 }
-                return cast(T[])"{unhandled argument type: " ~ cast(T[])Utf.fromString8 (type.toString(), result) ~ cast(T[])"}";
+                return cast(T[])"{unhandled argument type: " ~ cast(T[])Utf.fromString8 ((cast()type).toString(), result) ~ cast(T[])"}";/* Cast courtesy of D2 */
         }
 
         /**********************************************************************
