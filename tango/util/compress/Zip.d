@@ -65,6 +65,7 @@ private
     align(1)
     struct LocalFileHeaderData
     {
+        align(1):
         ushort      extract_version = ushort.max;
         ushort      general_flags = 0;
         ushort      compression_method = 0;
@@ -195,6 +196,7 @@ struct LocalFileHeader
     align(1)
     struct FileHeaderData
     {
+        align(1):
         ubyte       zip_version;
         ubyte       file_attribute_type;
         ushort      extract_version;
@@ -370,6 +372,7 @@ struct FileHeader
     align(1)
     struct EndOfCDRecordData
     {
+        align(1):
         ushort      disk_number = 0;
         ushort      disk_with_start_of_central_directory = 0;
         ushort      central_directory_entries_on_this_disk;

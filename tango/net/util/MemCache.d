@@ -15,7 +15,8 @@ module tango.net.util.MemCache;
 private import  tango.io.Console;
 
 private import  tango.core.Thread,
-                tango.core.Exception;
+                tango.core.Exception,
+                tango.core.Time;
 
 private import  tango.io.stream.Lines,
                 tango.io.stream.Buffered;
@@ -208,7 +209,7 @@ class MemCache : Thread
         {
                 while (active)
                        try {
-                           Thread.sleep (watchdog);
+                           Thread.sleep (seconds(watchdog));
                            debug(TangoMemCache) Cout ("testing connections ...").newline;
                            connect (hosts);
                            } catch (Exception e)
@@ -640,7 +641,7 @@ void main()
         while (true)
               {
               cache.status (&stat);
-              Thread.sleep (1.0);
+              Thread.sleep (seconds(1.0));
               }
         Cout ("exiting");
 }
