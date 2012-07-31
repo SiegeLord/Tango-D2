@@ -41,10 +41,6 @@ private import tango.core.Octal;
         See_also: the low level functions parse() and convert()
 
 ******************************************************************************/
-
-int toInt(T, U=uint) (const(T[]) digits, U radix=0)
-{return toInt!(T)(digits, radix);}
-
 int toInt(T) (const(T[]) digits, uint radix=0)
 {
         auto x = toLong (digits, radix);
@@ -68,10 +64,6 @@ int toInt(T) (const(T[]) digits, uint radix=0)
         See_also: the low level functions parse() and convert()
 
 ******************************************************************************/
-
-long toLong(T, U=uint) (const(T[]) digits, U radix=0)
-{return toLong!(T)(digits, radix);}
-
 long toLong(T) (const(T[]) digits, uint radix=0)
 {
         size_t len;
@@ -97,10 +89,6 @@ long toLong(T) (const(T[]) digits, uint radix=0)
         See_also: the low level functions parse() and convert()
 
 ******************************************************************************/
-
-ulong toUlong(T, U=uint) (const(T[]) digits, U radix=0)
-{return toLong!(T)(digits, radix);}
-
 ulong toUlong(T) (const(T[]) digits, uint radix=0)
 {
         bool sign = false;
@@ -199,10 +187,6 @@ dchar[] toString32 (long i, const(dchar[]) fmt = null)
         a requested prefix can be inserted into the provided output.
 
 *******************************************************************************/
-
-T[] format(T, U=long) (T[] dst, U i, const(T[]) fmt = null)
-{return format!(T)(dst, cast(long) i, fmt);}
-
 T[] format(T) (T[] dst, long i, const(T[]) fmt = null)
 {
         char    pre,
@@ -231,12 +215,6 @@ private void decode(T) (in T[] fmt, ref char type, out char pre, out int width)
               }
            }
 } 
-
-
-T[] formatter(T, U=long, X=char, Y=char) (T[] dst, U i, X type, Y pre, int width)
-{ return formatter!(T)(dst, cast(long) i, cast(char) type, cast(char) pre, width);}
-
-
 private struct _FormatterInfo(T)
 {
     uint    radix;
@@ -376,10 +354,6 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
         Throws: none. The 'ate' param should be checked for valid input.
 
 ******************************************************************************/
-
-long parse(T, U=uint) (T[] digits, U radix=0, size_t* ate=null)
-{return parse!(T)(digits, radix, ate);}
-
 long parse(T) (T[] digits, uint radix=0, size_t* ate=null)
 {
         bool sign;
@@ -406,10 +380,6 @@ long parse(T) (T[] digits, uint radix=0, size_t* ate=null)
         Throws: none. The 'ate' param should be checked for valid input.
 
 ******************************************************************************/
-
-ulong convert(T, U=uint) (const(T[]) digits, U radix=10, size_t* ate=null)
-{return convert!(T)(digits, radix, ate);}
-
 ulong convert(T) (const(T[]) digits, uint radix=10, size_t* ate=null)
 {
         uint  eaten;
@@ -456,10 +426,6 @@ ulong convert(T) (const(T[]) digits, uint radix=10, size_t* ate=null)
         Returns the number of characters consumed.
 
 ******************************************************************************/
-
-size_t trim(T, U=uint) (const(T[]) digits, ref bool sign, ref U radix)
-{return trim!(T)(digits, sign, radix);}
-
 size_t trim(T) (const(T[]) digits, ref bool sign, ref uint radix)
 {
         T       c;
@@ -559,10 +525,6 @@ uint atoi(T) (T[] s, int radix = 10)
         Returns a populated slice of the provided output
         
 ******************************************************************************/
-
-T[] itoa(T, U=uint) (T[] output, U value, int radix = 10)
-{return itoa!(T)(output, value, radix);}
-
 T[] itoa(T) (T[] output, uint value, int radix = 10)
 {
         T* p = output.ptr + output.length;
