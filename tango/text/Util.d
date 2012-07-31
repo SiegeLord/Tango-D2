@@ -326,10 +326,6 @@ bool containsPattern(T) (const(T)[] source, const(T)[] match)
         Parameter 'start' defaults to 0
 
 ******************************************************************************/
-
-size_t index(T, U=size_t) (const(T)[] source, const(T)[] match, U start=0)
-{return index!(T) (source, match, start);}
-
 size_t index(T) (const(T)[] source, const(T)[] match, size_t start=0)
 {
         return (match.length is 1) ? locate (source, match[0], start) 
@@ -344,10 +340,6 @@ size_t index(T) (const(T)[] source, const(T)[] match, size_t start=0)
         Parameter 'start' defaults to source.length
 
 ******************************************************************************/
-
-size_t rindex(T, U=size_t) (const(T)[] source, const(T)[] match, U start=U.max)
-{return rindex!(T)(source, match, start);}
-
 size_t rindex(T) (const(T)[] source, const(T)[] match, size_t start=size_t.max)
 {
         return (match.length is 1) ? locatePrior (source, match[0], start) 
@@ -362,10 +354,6 @@ size_t rindex(T) (const(T)[] source, const(T)[] match, size_t start=size_t.max)
         Parameter 'start' defaults to 0
 
 ******************************************************************************/
-
-size_t locate(T, U=size_t) (const(T)[] source, const(T) match, U start=0)
-{return locate!(T) (source, match, start);}
-
 size_t locate(T) (const(T)[] source, const(T) match, size_t start=0)
 {
         if (start > source.length)
@@ -382,10 +370,6 @@ size_t locate(T) (const(T)[] source, const(T) match, size_t start=0)
         Parameter 'start' defaults to source.length
 
 ******************************************************************************/
-
-size_t locatePrior(T, U=size_t) (const(T)[] source, const(T) match, U start=U.max)
-{return locatePrior!(T)(source, match, start);}
-
 size_t locatePrior(T) (const(T)[] source, const(T) match, size_t start=size_t.max)
 {
         if (start > source.length)
@@ -405,10 +389,6 @@ size_t locatePrior(T) (const(T)[] source, const(T) match, size_t start=size_t.ma
         Parameter 'start' defaults to 0
 
 ******************************************************************************/
-
-size_t locatePattern(T, U=size_t) (const(T)[] source, const(T)[] match, U start=0)
-{return locatePattern!(T) (source, match, start);}
-
 size_t locatePattern(T) (const(T)[] source, const(T)[] match, size_t start=0)
 {
         size_t    idx;
@@ -440,10 +420,6 @@ size_t locatePattern(T) (const(T)[] source, const(T)[] match, size_t start=0)
         Parameter 'start' defaults to source.length
 
 ******************************************************************************/
-
-size_t locatePatternPrior(T, U=size_t) (const(T)[] source, const(T)[] match, U start=U.max)
-{return locatePatternPrior!(T)(source, match, start);}
-
 size_t locatePatternPrior(T) (const(T)[] source, const(T)[] match, size_t start=size_t.max)
 {
         auto len = source.length;
@@ -708,9 +684,6 @@ T[] combine(T) (T[] dst, const(T)[] prefix, const(T)[] postfix, const(T[])[] src
 
 ******************************************************************************/
 
-T[] repeat(T, U=size_t) (const(T)[] src, U count, T[] dst=null)
-{return repeat!(T)(src, count, dst);}
-
 T[] repeat(T) (const(T)[] src, size_t count, T[] dst=null)
 {
         size_t len = src.length * count;
@@ -746,9 +719,6 @@ bool isSpace(T) (T c)
         
 ******************************************************************************/
 
-bool matching(T, U=size_t) (const(T)* s1, const(T)* s2, U length)
-{return matching!(T) (s1, s2, length);}
-
 bool matching(T) (const(T)* s1, const(T)* s2, size_t length)
 {
         return mismatch(s1, s2, length) is length;
@@ -761,9 +731,6 @@ bool matching(T) (const(T)* s1, const(T)* s2, size_t length)
         and a 0-based index on success
 
 ******************************************************************************/
-
-size_t indexOf(T, U=size_t) (const(T)* str, const(T) match, U length)
-{return indexOf!(T) (str, match, length);}
 
 size_t indexOf(T) (const(T)* str, const(T) match, size_t length)
 {
@@ -832,9 +799,6 @@ size_t indexOf(T) (const(T)* str, const(T) match, size_t length)
         can be used to determine the return value
 
 ******************************************************************************/
-
-size_t mismatch(T, U=size_t) (const(T)* s1, const(T)* s2, U length)
-{return mismatch!(T)(s1, s2, length);}
 
 size_t mismatch(T) (const(T)* s1, const(T)* s2, size_t length)
 {

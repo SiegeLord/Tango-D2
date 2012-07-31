@@ -217,11 +217,7 @@ private bool negative (NumType x)
         will be elided
 
 ******************************************************************************/
-
-T[] format(T, D=NumType, U=int) (T[] dst, D x, U decimals=Dec, U e=Exp, bool pad=Pad)
-{return format2!(T)(dst, x, decimals, e, pad);}
-
-T[] format2(T) (T[] dst, NumType x, int decimals=Dec, int e=Exp, bool pad=Pad)
+T[] format(T) (T[] dst, NumType x, int decimals=Dec, int e=Exp, bool pad=Pad)
 {
         char*           end,
                         str;
