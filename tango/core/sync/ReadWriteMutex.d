@@ -12,6 +12,7 @@ module tango.core.sync.ReadWriteMutex;
 public import tango.core.Exception : SyncException;
 private import tango.core.sync.Condition;
 private import tango.core.sync.Mutex;
+private import tango.core.Time;
 
 version( Win32 )
 {
@@ -413,7 +414,7 @@ debug( UnitTest )
                     if( ++numReaders > maxReaders )
                         maxReaders = numReaders;
                 }
-                Thread.sleep( dur!"msecs"(1) );
+                Thread.sleep( seconds(0.001) );
                 synchronized( synInfo )
                 {
                     --numReaders;
@@ -454,7 +455,7 @@ debug( UnitTest )
                         if( ++numReaders > maxReaders )
                             maxReaders = numReaders;
                     }
-                    Thread.sleep( dur!"msecs"(1) );
+                    Thread.sleep( seconds(0.001) );
                     synchronized( synInfo )
                     {
                         --numReaders;
@@ -474,7 +475,7 @@ debug( UnitTest )
                         if( ++numWriters > maxWriters )
                             maxWriters = numWriters;
                     }
-                    Thread.sleep( dur!"msecs"(1) );
+                    Thread.sleep( seconds(0.001) );
                     synchronized( synInfo )
                     {
                         --numWriters;

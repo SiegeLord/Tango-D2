@@ -209,7 +209,6 @@ class MemCache : Thread
         {
                 while (active)
                        try {
-                               Duration d;
                            Thread.sleep (seconds(watchdog));
                            debug(TangoMemCache) Cout ("testing connections ...").newline;
                            connect (hosts);
