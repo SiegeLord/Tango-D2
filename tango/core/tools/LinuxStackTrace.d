@@ -47,7 +47,7 @@ version(D_Version2)
         if (th.info)
         {
             sink("----------------\n");
-            th.info.opApply((ref char[] msg){sink(msg); return 0;});
+            th.info.opApply((ref const(char[]) msg){sink(msg); return 0;});
         }
         if (th.next){
             sink("\n++++++++++++++++\n");
