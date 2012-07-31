@@ -201,9 +201,9 @@ dchar[] toString32 (long i, const(dchar[]) fmt = null)
 *******************************************************************************/
 
 T[] format(T, U=long) (T[] dst, U i, const(T[]) fmt = null)
-{return format!(T)(dst, cast(long) i, fmt);}
+{return format2!(T)(dst, cast(long) i, fmt);}
 
-T[] format(T) (T[] dst, long i, const(T[]) fmt = null)
+T[] format2(T) (T[] dst, long i, const(T[]) fmt = null)
 {
         char    pre,
                 type;
