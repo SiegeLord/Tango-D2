@@ -234,15 +234,15 @@ version(LDC){
         T oldval = void;
         static if (isPointerOrClass!(T))
         {
-            oldval = cast(T)llvm_atomic_swap!(size_t)(cast(size_t*)&val, cast(size_t)newval);
+            oldval = cast(T)llvm_atomic_swap!(size_t)(cast(shared(size_t)*)&val, cast(size_t)newval);
         }
         else static if (is(T == bool))
         {
-            oldval = llvm_atomic_swap!(ubyte)(cast(ubyte*)&val, newval?1:0)?0:1;
+            oldval = llvm_atomic_swap!(ubyte)(cast(shared(ubyte)*)&val, newval?1:0)?0:1;
         }
         else
         {
-            oldval = llvm_atomic_swap!(T)(&val, newval);
+            oldval = llvm_atomic_swap!(T)(cast(shared)&val, newval);
         }
         return oldval;
     }
@@ -388,7 +388,7 @@ version(LDC){
         T oldval = void;
         static if (isPointerOrClass!(T))
         {
-            oldval = cast(T)cast(void*)llvm_atomic_cmp_swap!(size_t)(cast(size_t*)cast(void*)&val, cast(size_t)cast(void*)equalTo, cast(size_t)cast(void*)newval);
+            oldval = cast(T)cast(void*)llvm_atomic_cmp_swap!(size_t)(cast(shared(size_t)*)cast(void*)&val, cast(size_t)cast(void*)equalTo, cast(size_t)cast(void*)newval);
         }
         else static if (is(T == bool)) // correct also if bol has different size?
         {
@@ -396,7 +396,7 @@ version(LDC){
         }
         else static if (isIntegerType!(T))
         {
-            oldval = llvm_atomic_cmp_swap!(T)(&val, equalTo, newval);
+            oldval = llvm_atomic_cmp_swap!(T)(cast(shared)&val, equalTo, newval);
         } else {
             oldval = aCas(val,newval,equalTo);
         }
@@ -604,12 +604,12 @@ version(LDC){
     T atomicAdd(T)(ref T val, T incV){
         static if (isPointerOrClass!(T))
         {
-            return cast(T)llvm_atomic_load_add!(size_t)(cast(size_t*)&val, incV);
+            return cast(T)llvm_atomic_load_add!(size_t)(cast(shared(size_t)*)&val, incV);
         }
         else static if (isIntegerType!(T))
         {
             static assert( isIntegerType!(T), "invalid type "~T.stringof );
-            return llvm_atomic_load_add!(T)(&val, cast(T)incV);
+            return llvm_atomic_load_add!(T)(cast(shared)&val, cast(T)incV);
         } else {
             return atomicOp(val,delegate T(T a){ return a+incV; });
         }
