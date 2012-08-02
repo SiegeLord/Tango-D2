@@ -285,7 +285,7 @@ struct Uuid
         }
 
         /** Get a hash code representing this UUID. */
-        public const hash_t toHash()
+        public const hash_t toHash() nothrow @safe
         {
                 with (_data)
                 {
