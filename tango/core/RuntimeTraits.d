@@ -146,7 +146,7 @@ const(ClassInfo)[] baseClasses (const(ClassInfo) type)
         return null;
     auto type_nc = cast()type;
     const(ClassInfo)[] types;
-    while ((type_nc = cast()type.base) !is null)
+    while ((type_nc = type_nc.base) !is null)
         types ~= type_nc;
     return types;
 }
@@ -564,8 +564,8 @@ debug (UnitTest)
         assert (isString (dynamicString));
 
         auto type = typeid(int[immutable(char)[]]);
-        assert (valueType (type) is typeid(int), valueType (type).toString ());
-        assert (keyType (type) is typeid(immutable(char)[]), keyType (type).toString ());
+        assert (valueType (type) is typeid(int), (cast()valueType (type)).toString ());
+        assert (keyType (type) is typeid(immutable(char)[]), (cast()keyType (type)).toString ());
         void delegate (int) dg = (int i)
         {
         };
