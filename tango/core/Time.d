@@ -6,17 +6,17 @@
  * Authors:   Pavel Sountsov
  */
 
-import core.time;
+static import core.time;
 
 /**
  * Returns a Duration struct that represents secs seconds.
  */
-Duration seconds(double secs)
+core.time.Duration seconds(double secs)
 {
 	struct DurationClone
 	{
 		long hnsecs;
 	}
 
-	return cast(Duration)(DurationClone(cast(long)(secs * 10_000_000)));
+	return cast(core.time.Duration)(DurationClone(cast(long)(secs * 10_000_000)));
 }
