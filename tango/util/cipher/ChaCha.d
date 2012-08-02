@@ -115,7 +115,6 @@ class ChaCha : Salsa20
     /** ChaCha test vectors */
     debug (UnitTest)
     {
-        import std.stdio;
         unittest
         {
             enum immutable(char)[][] test_keys = [
