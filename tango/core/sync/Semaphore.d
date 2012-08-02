@@ -10,7 +10,7 @@ module tango.core.sync.Semaphore;
 
 public import tango.core.Exception : SyncException;
 
-import tango.core.Time;
+import Time = tango.core.Time;
 
 version( Win32 )
 {
@@ -370,7 +370,7 @@ debug( UnitTest )
                 semaphore.notify();
                 Thread.yield();
             }
-            Thread.sleep(seconds(1));
+            Thread.sleep(Time.seconds(1));
             synchronized( synProduced )
             {
                 allProduced = true;
