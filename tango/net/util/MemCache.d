@@ -14,7 +14,7 @@ module tango.net.util.MemCache;
 
 private import  tango.io.Console;
 
-private import  tango.core.Thread,
+private import  Thr = tango.core.Thread, /* Because the druntime folks in their infinite wisdom decided to publically import core.time in thread */
                 tango.core.Exception,
                 tango.core.Time;
 
@@ -31,7 +31,7 @@ private import  Integer = tango.text.convert.Integer;
 
 ******************************************************************************/
 
-class MemCache : Thread
+class MemCache : Thr.Thread
 {
         private shared(Connection)[] hosts;
         private bool            active;
@@ -209,7 +209,7 @@ class MemCache : Thread
         {
                 while (active)
                        try {
-                           Thread.sleep (seconds(watchdog));
+                           Thr.Thread.sleep (seconds(watchdog));
                            debug(TangoMemCache) Cout ("testing connections ...").newline;
                            connect (hosts);
                            } catch (Exception e)
@@ -641,7 +641,7 @@ void main()
         while (true)
               {
               cache.status (&stat);
-              Thread.sleep (seconds(1.0));
+              Thr.Thread.sleep (seconds(1.0));
               }
         Cout ("exiting");
 }
