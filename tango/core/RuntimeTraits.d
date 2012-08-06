@@ -41,7 +41,7 @@ ClassInfo asClass (TypeInfo type)
     if (isClass (type))
     {
         auto klass = cast(TypeInfo_Class) type;
-        return klass.info;
+        return cast()klass.info;
     }
     return null;
 }
@@ -438,7 +438,7 @@ TypeInfo valueType (TypeInfo type)
 {
     type = realType (type);
     if (isArray (type))
-        return type.next;
+        return cast()type.next;
     auto assocArray = cast(TypeInfo_AssociativeArray) type;
     if (assocArray)
         return assocArray.value;
