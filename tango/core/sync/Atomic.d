@@ -78,8 +78,18 @@ private {
     }
 }
 
-extern(C) void thread_yield();
-
+version(Windows) 
+{
+    import tango.sys.win32.UserGdi;
+    extern(C) void thread_yield()
+    {
+        Sleep(0);
+    }
+}
+else
+{
+    extern(C) void thread_yield();
+}
 // NOTE: Strictly speaking, the x86 supports atomic operations on
 //       unaligned values.  However, this is far slower than the
 //       common case, so such behavior should be prohibited.

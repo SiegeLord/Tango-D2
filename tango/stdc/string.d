@@ -65,13 +65,32 @@ wchar_t* wcsstr(in wchar_t* s1, in wchar_t* s2);
 wchar_t* wcstok(wchar_t* s1, in wchar_t* s2, wchar_t** ptr);
 size_t   wcslen(wchar_t* s);
 
-alias int mbstate_t;
 
-wint_t btowc(int c);
-int    wctob(wint_t c);
-int    mbsinit(in mbstate_t* ps);
-size_t mbrlen(in char* s, size_t n, mbstate_t* ps);
-size_t mbrtowc(wchar_t* pwc, in char* s, size_t n, mbstate_t* ps);
-size_t wcrtomb(char* s, wchar_t wc, mbstate_t* ps);
-size_t mbsrtowcs(wchar_t* dst, in char** src, size_t len, mbstate_t* ps);
-size_t wcsrtombs(char* dst, in wchar_t** src, size_t len, mbstate_t* ps);
+version(Posix)
+{
+    alias int mbstate_t;
+    wint_t btowc(int c);
+    int    wctob(wint_t c);
+    int    mbsinit(in mbstate_t* ps);
+    size_t mbrlen(in char* s, size_t n, mbstate_t* ps);
+    size_t mbrtowc(wchar_t* pwc, in char* s, size_t n, mbstate_t* ps);
+    size_t wcrtomb(char* s, wchar_t wc, mbstate_t* ps);
+    size_t mbsrtowcs(wchar_t* dst, in char** src, size_t len, mbstate_t* ps);
+    size_t wcsrtombs(char* dst, in wchar_t** src, size_t len, mbstate_t* ps);
+}
+else version(DigitalMars)
+{
+}
+else
+{
+    alias int mbstate_t;
+    wint_t btowc(int c);
+    int    wctob(wint_t c);
+    int    mbsinit(in mbstate_t* ps);
+    size_t mbrlen(in char* s, size_t n, mbstate_t* ps);
+    size_t mbrtowc(wchar_t* pwc, in char* s, size_t n, mbstate_t* ps);
+    size_t wcrtomb(char* s, wchar_t wc, mbstate_t* ps);
+    size_t mbsrtowcs(wchar_t* dst, in char** src, size_t len, mbstate_t* ps);
+    size_t wcsrtombs(char* dst, in wchar_t** src, size_t len, mbstate_t* ps);
+}
+

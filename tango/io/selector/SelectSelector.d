@@ -455,7 +455,7 @@ public class SelectSelector: AbstractSelector
             }
             else
             {
-                Thread.sleep(seconds(timeout.interval()));
+                Thread.sleep(dur!"nsecs"(cast(long)(timeout.interval()*1_000_000_000)));
                 _eventCount = 0;
             }
         }

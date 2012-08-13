@@ -50,7 +50,13 @@ c_ulong strtoul(in char* nptr, char** endptr, int base);
 ulong   strtoull(in char* nptr, char** endptr, int base);
 
 double  wcstod(in wchar_t* nptr, wchar_t** endptr);
-float   wcstof(in wchar_t* nptr, wchar_t** endptr);
+
+version(Posix)float   wcstof(in wchar_t* nptr, wchar_t** endptr);
+else version(DigitalMars){}
+else float   wcstof(in wchar_t* nptr, wchar_t** endptr);
+
+
+
 real    wcstold(in wchar_t* nptr, wchar_t** endptr);
 c_long  wcstol(in wchar_t* nptr, wchar_t** endptr, int base);
 long    wcstoll(in wchar_t* nptr, wchar_t** endptr, int base);
