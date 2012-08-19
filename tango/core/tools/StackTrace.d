@@ -97,6 +97,7 @@ extern(C) bool rt_symbolizeFrameInfo(ref FrameInfo fInfo,const(TraceContext)* co
 // names of the functions that should be ignored for the backtrace
 __gshared int[const(char)[]] internalFuncs;
 shared static this(){
+    /* TODO these probably are inaccurate given some parameter constness changes. Some might not even exist anymore. */
     internalFuncs["D5tango4core10stacktrace10StackTrace20defaultAddrBacktraceFPS5tango4core10stacktrace10StackTrace12TraceContextPS5tango4core10stacktrace10StackTrace12TraceContextPkkPiZk"]=1;
     internalFuncs["_D5tango4core10stacktrace10StackTrace20defaultAddrBacktraceFPS5tango4core10stacktrace10StackTrace12TraceContextPS5tango4core10stacktrace10StackTrace12TraceContextPmmPiZm"]=1;
     internalFuncs["rt_addrBacktrace"]=1;
