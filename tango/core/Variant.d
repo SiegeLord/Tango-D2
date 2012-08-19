@@ -205,7 +205,7 @@ private
         {
             if( srctype is typeid(dsttypeT) )
                 return true;
-            srctype = srctype.next;
+            srctype = cast()srctype.next;
         }
 
         /*

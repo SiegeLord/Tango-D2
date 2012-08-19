@@ -118,7 +118,7 @@ char[] toString (NumType d, uint decimals=Dec, int e=Exp)
 {
         char[64] tmp = void;
         
-        return format (tmp, d, decimals, e).dup;
+        return format (tmp, d, cast(int)decimals, e).dup;
 }
                
 /******************************************************************************
@@ -134,7 +134,7 @@ wchar[] toString16 (NumType d, uint decimals=Dec, int e=Exp)
 {
         wchar[64] tmp = void;
         
-        return format (tmp, d, decimals, e).dup;
+        return format (tmp, d, cast(int)decimals, e).dup;
 }
                
 /******************************************************************************
@@ -150,7 +150,7 @@ dchar[] toString32 (NumType d, uint decimals=Dec, int e=Exp)
 {
         dchar[64] tmp = void;
         
-        return format (tmp, d, decimals, e).dup;
+        return format (tmp, d, cast(int)decimals, e).dup;
 }
                
 /******************************************************************************

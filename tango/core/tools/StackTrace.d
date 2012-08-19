@@ -50,7 +50,7 @@ version(Windows){
 
 alias size_t function(TraceContext* context,TraceContext* contextOut,size_t*traceBuf,size_t bufLength,int *flags) AddrBacktraceFunc;
 __gshared AddrBacktraceFunc addrBacktraceFnc;
-alias bool function(ref FrameInfo fInfo,TraceContext* context,char[] buf) SymbolizeFrameInfoFnc;
+alias bool function(ref FrameInfo fInfo,const(TraceContext)* context,char[] buf) SymbolizeFrameInfoFnc;
 __gshared SymbolizeFrameInfoFnc symbolizeFrameInfoFnc;
 
 shared static this(){
@@ -86,7 +86,7 @@ extern(C) size_t rt_addrBacktrace(TraceContext* context, TraceContext *contextOu
 /// backtrace information, if possible finding the calling context, thus
 /// if fInfo.exactAddress is false the address might be changed to the one preceding it
 /// returns true if it managed to at least find the function name
-extern(C) bool rt_symbolizeFrameInfo(ref FrameInfo fInfo,TraceContext* context,char[] buf){
+extern(C) bool rt_symbolizeFrameInfo(ref FrameInfo fInfo,const(TraceContext)* context,char[] buf){
     if (symbolizeFrameInfoFnc !is null){
         return symbolizeFrameInfoFnc(fInfo,context,buf);
     } else {
@@ -97,6 +97,7 @@ extern(C) bool rt_symbolizeFrameInfo(ref FrameInfo fInfo,TraceContext* context,c
 // names of the functions that should be ignored for the backtrace
 __gshared int[const(char)[]] internalFuncs;
 shared static this(){
+    /* TODO these probably are inaccurate given some parameter constness changes. Some might not even exist anymore. */
     internalFuncs["D5tango4core10stacktrace10StackTrace20defaultAddrBacktraceFPS5tango4core10stacktrace10StackTrace12TraceContextPS5tango4core10stacktrace10StackTrace12TraceContextPkkPiZk"]=1;
     internalFuncs["_D5tango4core10stacktrace10StackTrace20defaultAddrBacktraceFPS5tango4core10stacktrace10StackTrace12TraceContextPS5tango4core10stacktrace10StackTrace12TraceContextPmmPiZm"]=1;
     internalFuncs["rt_addrBacktrace"]=1;
@@ -209,15 +210,15 @@ class BasicTraceInfo: Throwable.TraceInfo{
             addrPrecision=AddrPrecision.AllReturn;
     }
     /// loops on the stacktrace
-    override int opApply(scope int delegate(ref char[]) dg )
+    override int opApply(scope int delegate(ref const(char[])) dg ) const
     {
-        return opApply( (ref size_t, ref char[] buf)
+        return opApply( (ref size_t, ref const(char[]) buf)
                         {
                             return dg( buf );
                         } );
     }
 
-    override int opApply(scope int delegate(ref size_t line, ref char[] func) loopBody)
+    override int opApply(scope int delegate(ref size_t line, ref const(char[]) func) loopBody) const
     {
             FrameInfo fInfo;
             for (size_t iframe=0;iframe<traceAddresses.length;++iframe){
@@ -237,7 +238,7 @@ class BasicTraceInfo: Throwable.TraceInfo{
             }
             return 0;
     }
-    int opApply(scope int delegate( ref FrameInfo fInfo ) loopBody){
+    int opApply(scope int delegate( ref FrameInfo fInfo ) loopBody) const {
         FrameInfo fInfo;
         for (size_t iframe=0;iframe<traceAddresses.length;++iframe){
             char[2048] buf;
@@ -263,7 +264,7 @@ class BasicTraceInfo: Throwable.TraceInfo{
     }
 
     /// Writes out the stacktrace.
-    void writeOut(scope void delegate(const(char[])) sink){
+    void writeOut(scope void delegate(const(char[])) sink) const {
         int ignored = 0;
         foreach (ref FrameInfo fInfo; this){
             if (!fInfo.internalFunction){
@@ -322,7 +323,7 @@ version(DladdrSymbolification){
     extern(C)int dladdr(void* addr, Dl_info* info);
 
     /// poor symbolication, uses dladdr, gives no line info, limited info on statically linked files
-    bool dladdrSymbolizeFrameInfo(ref FrameInfo fInfo,TraceContext*context,char[] buf){
+    bool dladdrSymbolizeFrameInfo(ref FrameInfo fInfo,const(TraceContext)*context,char[] buf){
         Dl_info dli;
         void *ip=cast(void*)(fInfo.address);
         if (!fInfo.exactAddress) --ip;
@@ -347,12 +348,12 @@ version(ElfSymbolification){
 version(TangoDoc)
 {
     bool elfSymbolizeFrameInfo(ref FrameInfo fInfo,
-        TraceContext* context, char[] buf);
+        const(TraceContext)* context, char[] buf);
 }
 else
 {
     bool elfSymbolizeFrameInfo(ref FrameInfo fInfo,
-        TraceContext* context, char[] buf)
+        const(TraceContext)* context, char[] buf)
     {
         Dl_info dli;
         void *ip=cast(void*)(fInfo.address);
@@ -388,7 +389,7 @@ else
 }
 
 /// loads symbols for the given frame info with the methods defined in tango itself
-bool defaultSymbolizeFrameInfo(ref FrameInfo fInfo,TraceContext *context, char[] buf){
+bool defaultSymbolizeFrameInfo(ref FrameInfo fInfo,const(TraceContext) *context, char[] buf){
     version(ElfSymbolification) {
         return elfSymbolizeFrameInfo(fInfo,context,buf);
     } else version(DladdrSymbolification){
@@ -464,7 +465,7 @@ version(Posix){
         if (tc.hasContext) tc.context=*(cast(ucontext_t*)ctx);
         Exception.TraceInfo info=basicTracer(&tc);
 
-        info.opApply((ref char[] s) { Runtime.console.stderr(s~"\n"); return 0;});
+        info.opApply((ref const(char[]) s) { Runtime.console.stderr(s~"\n"); return 0;});
 
         Runtime.console.stderr("Stacktrace signal handler abort().\n");
         abort();

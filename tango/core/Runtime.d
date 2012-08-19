@@ -11,8 +11,6 @@ debug(TangoRuntime) private extern(C) int printf(char*,...);
 
 private
 {
-    extern (C) bool rt_isHalting();
-
     alias bool function() ModuleUnitTester;
     alias bool function(Object) CollectHandler;
     alias Exception.TraceInfo function( void* ptr = null ) TraceHandler;
@@ -100,21 +98,6 @@ struct Runtime
     {
         return rt_term( dg );
     }
-
-
-    /**
-     * Returns true if the runtime is halting.  Under normal circumstances,
-     * this will be set between the time that normal application code has
-     * exited and before module dtors are called.
-     *
-     * Returns:
-     *  true if the runtime is halting.
-     */
-    @property static bool isHalting()
-    {
-        return rt_isHalting();
-    }
-
 
     /**
      * Overrides the default trace mechanism with s user-supplied version.  A

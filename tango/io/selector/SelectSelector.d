@@ -10,7 +10,7 @@ module tango.io.selector.SelectSelector;
 
 public import tango.io.model.IConduit;
 
-private import tango.core.Time;
+private import Time = tango.core.Time;
 public import tango.io.selector.model.ISelector;
 
 private import tango.io.selector.AbstractSelector;
@@ -455,7 +455,7 @@ public class SelectSelector: AbstractSelector
             }
             else
             {
-                Thread.sleep(seconds(timeout.interval()));
+                Thread.sleep(Time.seconds(timeout.interval()));
                 _eventCount = 0;
             }
         }
