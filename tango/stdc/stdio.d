@@ -508,14 +508,28 @@ int fwscanf(FILE* stream, in wchar_t* format, ...);
 int swprintf(wchar_t* s, size_t n, in wchar_t* format, ...);
 int swscanf(in wchar_t* s, in wchar_t* format, ...);
 int vfwprintf(FILE* stream, in wchar_t* format, va_list arg);
-int vfwscanf(FILE* stream, in wchar_t* format, va_list arg);
+
 int vswprintf(wchar_t* s, size_t n, in wchar_t* format, va_list arg);
-int vswscanf(in wchar_t* s, in wchar_t* format, va_list arg);
+
 int vwprintf(in wchar_t* format, va_list arg);
-int vwscanf(in wchar_t* format, va_list arg);
 int wprintf(in wchar_t* format, ...);
 int wscanf(in wchar_t* format, ...);
 
+version(Posix)
+{
+    int vwscanf(in wchar_t* format, va_list arg);
+    int vfwscanf(FILE* stream, in wchar_t* format, va_list arg);
+    int vswscanf(in wchar_t* s, in wchar_t* format, va_list arg);
+}
+else version(DigitalMars)
+{
+}
+else
+{
+    int vwscanf(in wchar_t* format, va_list arg);
+    int vfwscanf(FILE* stream, in wchar_t* format, va_list arg);
+    int vswscanf(in wchar_t* s, in wchar_t* format, va_list arg); 
+}
 wint_t fgetwc(FILE* stream);
 wint_t fputwc(wchar_t c, FILE* stream);
 

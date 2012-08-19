@@ -46,9 +46,11 @@ void _exit(int);
 void _cexit();
 void _c_exit();
 
-intptr_t cwait(int*, intptr_t, int);
-intptr_t wait(int*);
-
+version(Posix)
+{
+    intptr_t cwait(int*, intptr_t, int);
+    intptr_t wait(int*);
+}
 int getpid();
 int system(const(char)*);
 

@@ -11,7 +11,7 @@ debug(TangoRuntime) private extern(C) int printf(char*,...);
 
 private
 {
-    extern (C) bool rt_isHalting();
+    //extern (C) bool rt_isHalting();
 
     alias bool function() ModuleUnitTester;
     alias bool function(Object) CollectHandler;
@@ -110,10 +110,10 @@ struct Runtime
      * Returns:
      *  true if the runtime is halting.
      */
-    @property static bool isHalting()
+    /*@property static bool isHalting()
     {
         return rt_isHalting();
-    }
+    }*/
 
 
     /**
