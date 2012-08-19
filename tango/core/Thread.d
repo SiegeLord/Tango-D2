@@ -15,6 +15,20 @@
 module tango.core.Thread;
 
 public import core.thread;
+import Time = tango.core.Time;
+
+extern(C)
+{
+    void thread_yield()
+    {
+        Thread.yield();
+    }
+
+    void thread_sleep(double period)
+    {
+        Thread.sleep(Time.seconds(period));
+    }
+}
 
 /+
 
@@ -3821,14 +3835,5 @@ private:
         tobj.m_curr.tstack = tobj.m_curr.bstack;
     }
 }
-
-extern(C){
-    void thread_yield(){
-        Thread.yield();
-    }
-    
-    void thread_sleep(double period){
-        Thread.sleep(period);
-    }
 }
 +/
