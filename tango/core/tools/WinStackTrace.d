@@ -137,7 +137,7 @@ version(D_Version2)
     bool winSymbolizeFrameInfo(ref FrameInfo fInfo, const(TraceContext) *context,char[] buf){
         HANDLE hProcess;
         if (context!is null){
-            hProcess=cast()context.hProcess;
+            hProcess=cast(HANDLE)context.hProcess;
         } else {
             hProcess=GetCurrentProcess();
         }
