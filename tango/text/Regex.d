@@ -560,7 +560,7 @@ struct CharRange(char_t)
     /* ********************************************************************************************
         Compares the ranges according to their beginning.
     **********************************************************************************************/
-    int opCmp(CharRange cr)
+    int opCmp(const ref CharRange cr) const
     {
         if ( l_ == cr.l_ )
             return 0;
@@ -747,7 +747,7 @@ struct CharClass(char_t)
         return ncc;
     }
 
-    const int opCmp(in CharClass cc)
+    int opCmp(const ref CharClass cc) const
     {
         if ( parts.length < cc.parts.length )
             return -1;
@@ -1136,7 +1136,7 @@ private struct Predicate(char_t)
         input.optimize();
     }
 
-    int opCmp(const(Predicate) p)
+    int opCmp(const ref Predicate p) const
     {
         return input.opCmp(p.input);
     }
@@ -2334,7 +2334,7 @@ private class TDFA(char_t)
         /* ****************************************************************************************
             Order transitions by the order of their predicates.
         ******************************************************************************************/
-        int opCmp(Command cmd)
+        int opCmp(const ref Command cmd) const
         {
             if ( src == CURRENT_POSITION_REGISTER && cmd.src != CURRENT_POSITION_REGISTER )
                 return 1;
@@ -2883,7 +2883,7 @@ private:
         char_t  c;
         bool    end;    /// false = start of range
 
-        int opCmp(Mark m)
+        int opCmp(const ref Mark m) const
         {
             if ( c < m.c )
                 return -1;

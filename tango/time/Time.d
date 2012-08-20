@@ -120,7 +120,7 @@ struct TimeSpan
         /**
          * Compares this object against another TimeSpan value.
          */
-        const int opCmp(const(TimeSpan) t)
+        int opCmp(const ref TimeSpan t) const
         {
                 if (ticks_ < t.ticks_)
                     return -1;
@@ -534,7 +534,7 @@ struct Time
 
         **********************************************************************/
 
-        const int opCmp (const(Time) t) 
+        int opCmp (const ref Time t) const
         {
                 if (ticks_ < t.ticks_)
                     return -1;

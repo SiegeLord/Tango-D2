@@ -689,6 +689,8 @@ struct Variant
             return get!(T) == rhs;
     }
 
+    /* This opCmp is not detectable as one for the purposes of TypeInfo_Struct.xopCmp.
+     * Try doing opCmp(const ref Variant) and opCmp(...). My tests indicate that this may work. */
     /// ditto
     int opCmp(T)(T rhs)
     {
