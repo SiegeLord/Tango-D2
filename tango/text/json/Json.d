@@ -23,6 +23,8 @@ private import tango.text.json.JsonParser;
 
 private import Float = tango.text.convert.Float;
 
+private import Utf = tango.text.convert.Utf;
+
 /*******************************************************************************
 
         Parse json text into a set of inter-related structures. Typical 
@@ -138,9 +140,15 @@ class Json(T) : JsonParser!(T)
 
         ***********************************************************************/
 
-        final T[] toString (const(T)[] space=null, int decimals=2)
+        final T[] toString (const(T)[] space, int decimals=2)
         {
                 return root.print (space, decimals);
+        }
+        
+        final override
+        immutable(char)[] toString()
+        {
+                return Utf.toString(toString(null)).idup;
         }
 
         /***********************************************************************
@@ -612,7 +620,7 @@ class Json(T) : JsonParser!(T)
 
                 ***************************************************************/
 
-                const(T)[] toString (T[] dst = null)
+                const(T)[] toString (T[] dst)
                 {
                         if (type is Type.RawString)
                             return string;
@@ -621,6 +629,11 @@ class Json(T) : JsonParser!(T)
                             return unescape (string, dst);
 
                         return null;
+                }
+                
+                immutable(char)[] toString()
+                {
+                        return Utf.toString(toString(cast(T[])null)).idup;
                 }
                 
                 /***************************************************************
@@ -1052,7 +1065,7 @@ debug (UnitTest)
                   pair ("array", value(array(1, 2)))
                   );
 
-             char[] value = toString();
+             auto value = toString();
              assert (value == `{"edgar":"friendly","count":11.5,"array":[1, 2]}`, value);
              }
         }
@@ -1069,7 +1082,7 @@ debug (UnitTest)
                   pair ("array", value(array(1, 2)))
                   );
 
-             char[] value = toString ("\t");
+             auto value = toString ("\t");
              assert (value == "{\n\t\"edgar\":\"friendly\",\n\t\"count\":11.5,\n\t\"array\":[\n\t\t1, \n\t\t2\n\t]\n}", value);
              }
         }
@@ -1086,7 +1099,7 @@ debug (UnitTest)
                   pair ("array", value(array(1, 2)))
                   );
 
-             dchar[] value = toString ("     ");
+             auto value = toString ("     ");
              assert (value == "{\n     \"edgar\":\"friendly\",\n     \"count\":11.5,\n     \"array\":[\n          1, \n          2\n     ]\n}");
              }
         }

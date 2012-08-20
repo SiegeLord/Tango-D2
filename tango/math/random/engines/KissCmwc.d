@@ -106,7 +106,7 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
         cmwc_c=1;
     }
     /// writes the current status in a string
-    char[] toString(){
+    immutable(char)[] toString(){
         char[] res=new char[11+16+(cmwc_r+9)*9];
         int i=0;
         res[i..i+11]="CMWC+KISS99"[];
@@ -130,7 +130,7 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
             i+=8;
         }
         assert(i==res.length,"unexpected size");
-        return res;
+        return cast(immutable(char)[])res;
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read

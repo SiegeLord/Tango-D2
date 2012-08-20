@@ -148,7 +148,7 @@ struct Twister
         addEntropy(r);
     }
     /// writes the current status in a string
-    char[] toString(){
+    immutable(char)[] toString(){
         char[] res=new char[7+(N+1)*9];
         int i=0;
         res[i..i+7]="Twister"[];
@@ -164,7 +164,7 @@ struct Twister
             i+=8;
         }
         assert(i==res.length,"unexpected size");
-        return res;
+        return cast(immutable(char)[])res;
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read

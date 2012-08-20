@@ -1088,9 +1088,14 @@ struct PathParser(char_t = char)
 
         ***********************************************************************/
 
-        inout(char_t)[] toString () inout
+        inout(char_t)[] dString () inout
         {
                 return fp [0 .. end_];
+        }
+        
+        immutable(char)[] toString() const
+        {
+                return dString().idup;
         }
 
         /***********************************************************************
@@ -1296,7 +1301,7 @@ struct PathParser(char_t = char)
         }*/
         const bool equals (const(char)[] s)
         {
-                return FS.stripped(s) == FS.stripped(toString());
+                return FS.stripped(s) == FS.stripped(dString());
         }
 
         /***********************************************************************
