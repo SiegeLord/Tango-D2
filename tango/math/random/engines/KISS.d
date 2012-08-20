@@ -69,7 +69,7 @@ struct Kiss99{
         restB=0;
     }
     /// writes the current status in a string
-    char[] toString(){
+    immutable(char)[] toString(){
         char[] res=new char[6+6*9];
         int i=0;
         res[i..i+6]="KISS99";
@@ -81,7 +81,7 @@ struct Kiss99{
             i+=8;
         }
         assert(i==res.length,"unexpected size");
-        return res;
+        return cast(immutable(char)[])res;
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read

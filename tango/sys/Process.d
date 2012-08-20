@@ -175,7 +175,7 @@ class Process
         /**
          * Returns a string with a description of the process execution result.
          */
-        public const(char)[] toString()
+        public immutable(char)[] toString()
         {
             const(char)[] str;
 
@@ -206,7 +206,7 @@ class Process
                     str = format("Unknown process result ", reason);
                     break;
             }
-            return str;
+            return cast(immutable(char)[])str;
         }
     }
 

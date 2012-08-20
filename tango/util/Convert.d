@@ -1258,7 +1258,7 @@ struct Foo
 {
     int toInt() { return 42; }
 
-    const(char[]) toString() { return "string foo"; }
+    immutable(char)[] toString() { return "string foo"; }
 
     int[] toIntArray() { return [1,2,3]; }
 

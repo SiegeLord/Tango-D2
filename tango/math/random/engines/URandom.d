@@ -80,8 +80,8 @@ version(has_urandom) {
         /// does nothing
         void seed(scope uint delegate() r) { }
         /// writes the current status in a string
-        char[] toString(){
-            return "URandom".dup;
+        immutable(char)[] toString(){
+            return "URandom";
         }
         /// reads the current status from a string (that should have been trimmed)
         /// returns the number of chars read

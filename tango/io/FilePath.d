@@ -124,7 +124,7 @@ class FilePath : PathView
 
         override final const string toString ()
         {
-                return  (cast(const(char)[])p.toString()).idup;
+                return  p.toString();
         }
 
         /***********************************************************************
@@ -135,7 +135,7 @@ class FilePath : PathView
 
         @property final const FilePath dup ()
         {
-                return FilePath (p.toString().dup);
+                return FilePath (p.dString().dup);
         }
 
         /***********************************************************************
