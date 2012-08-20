@@ -514,13 +514,13 @@ struct BitArray
      *  zero if the arrays are equavalent, and a value greater than zero if
      *  this array sorts after the supplied array.
      */
-    int opCmp( BitArray rhs )
+    int opCmp( const ref BitArray rhs ) const
     {
         auto len = this.length;
         if( rhs.length < len )
             len = rhs.length;
-        size_t* p1 = this.ptr;
-        size_t* p2 = rhs.ptr;
+        auto p1 = this.ptr;
+        auto p2 = rhs.ptr;
         size_t n = len / 32;
         size_t i;
         for( i = 0; i < n; ++i )
