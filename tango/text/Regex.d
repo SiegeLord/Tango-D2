@@ -3978,7 +3978,7 @@ class RegExpT(char_t)
     /**********************************************************************************************
         Return submatch with the given index.
         Params:
-            index   index = 0 returns whole match, index > 0 returns submatch of bracket #index
+            index = 0 returns whole match, index > 0 returns submatch of bracket #index
         Returns:
             Slice of input for the requested submatch, or null if no such submatch exists.
     **********************************************************************************************/
