@@ -26,7 +26,7 @@
 
 <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">core</span>.<span class="i">tools</span>.<span class="i">StackTrace</span>;</span>
 
-<span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span>  <span class="i">rt_setTraceHandler</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">TraceHandler</span></span> <span class="i">h</span></span> )</span><span class="s FuncBody">;</span></span>
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span>  <span class="i">rt_setTraceHandler</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">TraceHandler</span></span> <span class="i">h</span></span> )</span><span class="s FuncBody">;</span></span>
 
 <span class="d StorageClass"><span class="k">shared</span></span> <span class="d StaticCtor"><span class="k">static</span> <span class="k">this</span>()<span class="s FuncBody"><span class="s Compound">{
     <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">rt_setTraceHandler</span></span>(&amp;<span class="i">basicTracer</span>)</span>;</span>

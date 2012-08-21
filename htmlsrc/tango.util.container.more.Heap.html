@@ -25,9 +25,9 @@
 
 <span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">core</span>.<span class="i">Exception</span>;</span>
 
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">minHeapCompare</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">b</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{<span class="s Return"><span class="k">return</span> <span class="e Rel"><span class="e Identifier"><span class="i">a</span></span> &lt;= <span class="e Identifier"><span class="i">b</span></span></span>;</span>}</span></span></span></span></span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">maxHeapCompare</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">b</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{<span class="s Return"><span class="k">return</span> <span class="e Rel"><span class="e Identifier"><span class="i">a</span></span> &gt;= <span class="e Identifier"><span class="i">b</span></span></span>;</span>}</span></span></span></span></span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">defaultHeapSwap</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">t</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">index</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{}</span></span></span></span></span>
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">minHeapCompare</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">b</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{<span class="s Return"><span class="k">return</span> <span class="e Rel"><span class="e Identifier"><span class="i">a</span></span> &lt;= <span class="e Identifier"><span class="i">b</span></span></span>;</span>}</span></span></span></span></span>
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">maxHeapCompare</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">b</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{<span class="s Return"><span class="k">return</span> <span class="e Rel"><span class="e Identifier"><span class="i">a</span></span> &gt;= <span class="e Identifier"><span class="i">b</span></span></span>;</span>}</span></span></span></span></span>
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">defaultHeapSwap</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">t</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">index</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{}</span></span></span></span></span>
 
 <span class="bc">/** A heap is a data structure where you can insert items in random order and extract them in sorted order. 
   * Pushing an element into the heap takes O(lg n) and popping the top of the heap takes O(lg n). Heaps are 
@@ -49,7 +49,7 @@
   *               times per insertion or removal.
 */</span>
 
-<span class="d Template"><span class="d Compound"><span class="d Struct"><span class="k">struct</span> <span class="i">Heap</span> <span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>, <span class="o TemplateAliasParam"><span class="k">alias</span> <span class="i">Compare</span> = <span class="t TemplateInstance"><span class="i">minHeapCompare</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span></span>, <span class="o TemplateAliasParam"><span class="k">alias</span> <span class="i">Move</span> = <span class="t TemplateInstance"><span class="i">defaultHeapSwap</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Struct"><span class="k">struct</span> <span class="i">Heap</span> <span class="o ">(<span class="o "><span class="i">T</span></span>, <span class="o "><span class="k">alias</span> <span class="i">Compare</span> = <span class="t TemplateInstance"><span class="i">minHeapCompare</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span></span>, <span class="o "><span class="k">alias</span> <span class="i">Move</span> = <span class="t TemplateInstance"><span class="i">defaultHeapSwap</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span></span>)</span>
 <span class="d Compound">{
         <span class="lc">// The actual data.</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span>     <span class="i">heap</span>;</span>
@@ -58,7 +58,7 @@
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span>    <span class="i">next</span>;</span>
 
         <span class="bc">/** Inserts the given element into the heap. */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">push</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">t</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">push</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">t</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">index</span> = <span class="e PostIncr"><span class="e Identifier"><span class="i">next</span></span>++</span>;</span></span>
                 <span class="s While"><span class="k">while</span> (<span class="e Rel"><span class="e Identifier"><span class="i">heap</span></span>.<span class="e Identifier"><span class="i">length</span></span> &lt;= <span class="e Identifier"><span class="i">index</span></span></span>)
@@ -70,22 +70,22 @@
         }</span></span></span>
 
         <span class="bc">/** Inserts all elements in the given array into the heap. */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">push</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">array</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">push</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">array</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">heap</span></span>.<span class="e Identifier"><span class="i">length</span></span> &lt; <span class="e Plus"><span class="e Identifier"><span class="i">next</span></span> + <span class="e Identifier"><span class="i">array</span></span>.<span class="e Identifier"><span class="i">length</span></span></span></span>)
                         <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">heap</span></span>.<span class="e Identifier"><span class="i">length</span></span> = <span class="e Plus"><span class="e Plus"><span class="e Identifier"><span class="i">next</span></span> + <span class="e Identifier"><span class="i">array</span></span>.<span class="e Identifier"><span class="i">length</span></span></span> + <span class="e Int"><span class="n">32</span></span></span></span>;</span></span></span>
 
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">t</span></span></span>; <span class="e Identifier"><span class="i">array</span></span>) <span class="s Scope"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">push</span></span> (<span class="i">t</span>);</span></span></span></span>
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">t</span></span></span>; <span class="e Identifier"><span class="i">array</span></span>) <span class="s Scope"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">push</span></span> (<span class="i">t</span>);</span></span></span></span>
         }</span></span></span>
 
         <span class="bc">/** Removes the top of this heap and returns it. */</span>
-        <span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">pop</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">pop</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">removeAt</span></span> (<span class="n">0</span>)</span>;</span>
         }</span></span></span>
 
         <span class="bc">/** Remove the every instance that matches the given item. */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">removeAll</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">t</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">removeAll</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">t</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">// TODO: this is slower than it could be.</span>
                 <span class="lc">// I am reasonably certain we can do the O(n) scan, but I want to</span>
@@ -95,9 +95,9 @@
 
         <span class="bc">/** Remove the first instance that matches the given item. 
           * Returns: true iff the item was found, otherwise false. */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">remove</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">t</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">remove</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">t</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">i</span></span>, <span class="o Parameter"><span class="i">a</span></span></span>; <span class="e Identifier"><span class="i">heap</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">i</span></span>, <span class="o "><span class="i">a</span></span></span>; <span class="e Identifier"><span class="i">heap</span></span>)
                 <span class="s Scope"><span class="s Compound">{
                         <span class="s If"><span class="k">if</span> (<span class="e OrOr"><span class="e Identity"><span class="e Identifier"><span class="i">a</span></span> <span class="k">is</span> <span class="e Identifier"><span class="i">t</span></span></span> || <span class="e Equal"><span class="e Identifier"><span class="i">a</span></span> == <span class="e Identifier"><span class="i">t</span></span></span></span>)
                         <span class="s Scope"><span class="s Compound">{
@@ -112,7 +112,7 @@
           * The index is according to the heap's internal layout; you are 
           * responsible for making sure the index is correct.
           * The heap invariant is maintained. */</span>
-        <span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">removeAt</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">index</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">removeAt</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">index</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">next</span></span> &lt;= <span class="e Identifier"><span class="i">index</span></span></span>)
                 <span class="s Scope"><span class="s Compound">{
@@ -140,39 +140,39 @@
         }</span></span></span>
 
         <span class="bc">/** Gets the value at the top of the heap without removing it. */</span>
-        <span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">peek</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">peek</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">next</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e Index"><span class="e Identifier"><span class="i">heap</span></span>[<span class="e Int"><span class="n">0</span></span>]</span>;</span>
         }</span></span></span>
 
         <span class="bc">/** Returns the number of elements in this heap. */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">size</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">size</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">next</span></span>;</span>
         }</span></span></span>
 
         <span class="bc">/** Reset this heap. */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">clear</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">clear</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">next</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span>
         }</span></span></span>
 
         <span class="bc">/** reset this heap, and use the provided host for value elements */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">clear</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">host</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">clear</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">host</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">heap</span></span> = <span class="e Identifier"><span class="i">host</span></span></span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">clear</span></span>()</span>;</span>
         }</span></span></span>
 
         <span class="bc">/** Get the reserved capacity of this heap. */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">capacity</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">capacity</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">heap</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span>
         }</span></span></span>
 
         <span class="bc">/** Reserve enough space in this heap for value elements. The reserved space is truncated or extended as necessary. If the value is less than the number of elements already in the heap, throw an exception. */</span>
-        <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">capacity</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">value</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">capacity</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">value</span></span> &lt; <span class="e Identifier"><span class="i">next</span></span></span>)
                 <span class="s Scope"><span class="s Compound">{
@@ -183,7 +183,7 @@
         }</span></span></span>
 
         <span class="bc">/** Return a shallow copy of this heap. */</span>
-        <span class="d Function"><span class="t Identifier"><span class="i">Heap</span></span> <span class="i">clone</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Heap</span></span> <span class="i">clone</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">Heap</span></span> <span class="i">other</span>;</span></span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">other</span></span>.<span class="e Identifier"><span class="i">heap</span></span> = <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">heap</span></span>.<span class="e Identifier"><span class="i">dup</span></span></span>;</span>
@@ -192,13 +192,13 @@
         }</span></span></span>
 
         <span class="lc">// Get the index of the parent for the element at the given index.</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">parent</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">index</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">parent</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">index</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Div"><span class="e Paren">(<span class="e Minus"><span class="e Identifier"><span class="i">index</span></span> - <span class="e Int"><span class="n">1</span></span></span>)</span> / <span class="e Int"><span class="n">2</span></span></span>;</span>
         }</span></span></span>
 
         <span class="lc">// Having just inserted, restore the heap invariant (that a node's value is greater than its children)</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fixup</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">index</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fixup</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">index</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">index</span></span> == <span class="e Int"><span class="n">0</span></span></span>) <span class="s Scope"><span class="s Return"><span class="k">return</span>;</span></span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">par</span> = <span class="e Call"><span class="e Identifier"><span class="i">parent</span></span> (<span class="i">index</span>)</span>;</span></span>
@@ -211,7 +211,7 @@
 
         <span class="lc">// Having just removed and replaced the top of the heap with the last inserted element,</span>
         <span class="lc">// restore the heap invariant.</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fixdown</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">index</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fixdown</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">index</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">left</span> = <span class="e Plus"><span class="e Mul"><span class="e Int"><span class="n">2</span></span> * <span class="e Identifier"><span class="i">index</span></span></span> + <span class="e Int"><span class="n">1</span></span></span>;</span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">down</span>;</span></span>
@@ -241,7 +241,7 @@
         }</span></span></span>
 
         <span class="lc">// Swap two elements in the array.</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">swap</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">b</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">swap</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">b</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">t1</span> = <span class="e Index"><span class="e Identifier"><span class="i">heap</span></span>[<span class="e Identifier"><span class="i">a</span></span>]</span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">t2</span> = <span class="e Index"><span class="e Identifier"><span class="i">heap</span></span>[<span class="e Identifier"><span class="i">b</span></span>]</span>;</span></span>
@@ -253,12 +253,12 @@
         
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">pop</span></span>       <span class="i">remove</span>;</span></span>
         
-        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">opOpAssign</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">s</span> : <span class="e String"><span class="sl">"~"</span></span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">t</span></span>)</span>
+        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">opOpAssign</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">s</span> : <span class="e String"><span class="sl">"~"</span></span></span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">t</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">push</span></span>(<span class="i">t</span>);</span></span>
         }</span></span></span></span></span>
         
-        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">opOpAssign</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">s</span> : <span class="e String"><span class="sl">"~"</span></span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">array</span></span>)</span>
+        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">opOpAssign</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">s</span> : <span class="e String"><span class="sl">"~"</span></span></span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">array</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">push</span></span>(<span class="i">array</span>);</span></span>
         }</span></span></span></span></span>
@@ -271,9 +271,9 @@
   *
 */</span>
 
-<span class="d Template"><span class="k">template</span> <span class="i">MinHeap</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">MinHeap</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span>
 <span class="d Compound">{
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">Heap</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>, <span class="t Identifier"><span class="i">minHeapCompare</span></span>)</span></span> <span class="i">MinHeap</span>;</span></span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">Heap</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>, <span class="t Identifier"><span class="i">minHeapCompare</span></span>)</span></span> <span class="i">MinHeap</span>;</span></span>
 }</span></span>
 
 <span class="bc">/** A maxheap implementation. This will have the largest item as the top of the heap. 
@@ -282,9 +282,9 @@
   *
 */</span>
 
-<span class="d Template"><span class="k">template</span> <span class="i">MaxHeap</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">MaxHeap</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span>
 <span class="d Compound">{
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">Heap</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>, <span class="t Identifier"><span class="i">maxHeapCompare</span></span>)</span></span> <span class="i">MaxHeap</span>;</span></span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">Heap</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>, <span class="t Identifier"><span class="i">maxHeapCompare</span></span>)</span></span> <span class="i">MaxHeap</span>;</span></span>
 }</span></span>
 
 
@@ -293,7 +293,7 @@
 <span class="d Compound">{
 <span class="d Unittest"><span class="k">unittest</span>
 <span class="s FuncBody"><span class="s Compound">{
-        <span class="s Declaration"><span class="d Variables"><span class="t TemplateInstance"><span class="i">MinHeap</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">uint</span></span>)</span></span> <span class="i">h</span>;</span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t TemplateInstance"><span class="i">MinHeap</span>!<span class="o ">(<span class="t Integral"><span class="k">uint</span></span>)</span></span> <span class="i">h</span>;</span></span>
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Identity"><span class="e Identifier"><span class="i">h</span></span>.<span class="e Identifier"><span class="i">size</span></span> <span class="k">is</span> <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">1</span></span></span>;</span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">3</span></span></span>;</span>
@@ -311,7 +311,7 @@
 
 <span class="d Unittest"><span class="k">unittest</span>
 <span class="s FuncBody"><span class="s Compound">{
-        <span class="s Declaration"><span class="d Variables"><span class="t TemplateInstance"><span class="i">MinHeap</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">uint</span></span>)</span></span> <span class="i">h</span>;</span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t TemplateInstance"><span class="i">MinHeap</span>!<span class="o ">(<span class="t Integral"><span class="k">uint</span></span>)</span></span> <span class="i">h</span>;</span></span>
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Identity"><span class="e Identifier"><span class="i">h</span></span>.<span class="e Identifier"><span class="i">size</span></span> <span class="k">is</span> <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">1</span></span></span>;</span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">3</span></span></span>;</span>
@@ -331,7 +331,7 @@
 
 <span class="d Unittest"><span class="k">unittest</span>
 <span class="s FuncBody"><span class="s Compound">{
-        <span class="s Declaration"><span class="d Variables"><span class="t TemplateInstance"><span class="i">MaxHeap</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">uint</span></span>)</span></span> <span class="i">h</span>;</span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t TemplateInstance"><span class="i">MaxHeap</span>!<span class="o ">(<span class="t Integral"><span class="k">uint</span></span>)</span></span> <span class="i">h</span>;</span></span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">1</span></span></span>;</span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">3</span></span></span>;</span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">2</span></span></span>;</span>
@@ -345,7 +345,7 @@
 
 <span class="d Unittest"><span class="k">unittest</span>
 <span class="s FuncBody"><span class="s Compound">{
-        <span class="s Declaration"><span class="d Variables"><span class="t TemplateInstance"><span class="i">MaxHeap</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">uint</span></span>)</span></span> <span class="i">h</span>;</span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t TemplateInstance"><span class="i">MaxHeap</span>!<span class="o ">(<span class="t Integral"><span class="k">uint</span></span>)</span></span> <span class="i">h</span>;</span></span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">1</span></span></span>;</span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">3</span></span></span>;</span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">2</span></span></span>;</span>
@@ -359,7 +359,7 @@
 
 <span class="d Variables"><span class="t Integral"><span class="k">long</span></span><span class="t Array">[]</span> <span class="i">swapped</span>;</span>
 <span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span><span class="t Array">[]</span> <span class="i">indices</span>;</span>
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">onMove</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">b</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">onMove</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">b</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">swapped</span></span> ~= <span class="e Identifier"><span class="i">a</span></span></span>;</span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">indices</span></span> ~= <span class="e Identifier"><span class="i">b</span></span></span>;</span>
@@ -369,7 +369,7 @@
         <span class="lc">// this tests that onMove is called with fixdown</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">swapped</span></span> = <span class="e Null"><span class="k">null</span></span></span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">indices</span></span> = <span class="e Null"><span class="k">null</span></span></span>;</span>
-        <span class="s Declaration"><span class="d Variables"><span class="t TemplateInstance"><span class="i">Heap</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">long</span></span>, <span class="t Identifier"><span class="i">minHeapCompare</span></span>, <span class="t Identifier"><span class="i">onMove</span></span>)</span></span> <span class="i">h</span>;</span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t TemplateInstance"><span class="i">Heap</span>!<span class="o ">(<span class="t Integral"><span class="k">long</span></span>, <span class="t Identifier"><span class="i">minHeapCompare</span></span>, <span class="t Identifier"><span class="i">onMove</span></span>)</span></span> <span class="i">h</span>;</span></span>
         <span class="lc">// no swap</span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">1</span></span></span>;</span>
         <span class="lc">// no swap</span>
@@ -394,7 +394,7 @@
         <span class="lc">// this tests that onMove is called with fixup</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">swapped</span></span> = <span class="e Null"><span class="k">null</span></span></span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">indices</span></span> = <span class="e Null"><span class="k">null</span></span></span>;</span>
-        <span class="s Declaration"><span class="d Variables"><span class="t TemplateInstance"><span class="i">Heap</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">long</span></span>, <span class="t Identifier"><span class="i">minHeapCompare</span></span>, <span class="t Identifier"><span class="i">onMove</span></span>)</span></span> <span class="i">h</span>;</span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t TemplateInstance"><span class="i">Heap</span>!<span class="o ">(<span class="t Integral"><span class="k">long</span></span>, <span class="t Identifier"><span class="i">minHeapCompare</span></span>, <span class="t Identifier"><span class="i">onMove</span></span>)</span></span> <span class="i">h</span>;</span></span>
         <span class="lc">// no swap</span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">1</span></span></span>;</span>
         <span class="lc">// no swap</span>
@@ -419,7 +419,7 @@
 
 <span class="d Unittest"><span class="k">unittest</span>
 <span class="s FuncBody"><span class="s Compound">{
-        <span class="s Declaration"><span class="d Variables"><span class="t TemplateInstance"><span class="i">MaxHeap</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">uint</span></span>)</span></span> <span class="i">h</span>;</span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t TemplateInstance"><span class="i">MaxHeap</span>!<span class="o ">(<span class="t Integral"><span class="k">uint</span></span>)</span></span> <span class="i">h</span>;</span></span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">1</span></span></span>;</span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">3</span></span></span>;</span>
         <span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">h</span></span> ~= <span class="e Int"><span class="n">2</span></span></span>;</span>

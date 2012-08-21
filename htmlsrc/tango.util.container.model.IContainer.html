@@ -34,31 +34,31 @@
         
 *******************************************************************************/</span>
 
-<span class="d Template"><span class="d Compound"><span class="d Interface"><span class="k">interface</span> <span class="i">IContainer</span> <span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">V</span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Interface"><span class="k">interface</span> <span class="i">IContainer</span> <span class="o ">(<span class="o "><span class="i">V</span></span>)</span>
 <span class="d Compound">{
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">size</span> <span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">size</span> <span class="o ">()</span><span class="s FuncBody">;</span></span>
 
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isEmpty</span> <span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isEmpty</span> <span class="o ">()</span><span class="s FuncBody">;</span></span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">IContainer</span></span> <span class="i">dup</span> <span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Identifier"><span class="i">IContainer</span></span> <span class="i">dup</span> <span class="o ">()</span><span class="s FuncBody">;</span></span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">IContainer</span></span> <span class="i">clear</span> <span class="o Parameters">()</span><span class="s FuncBody">;</span></span>                          
+        <span class="d Function"><span class="t Identifier"><span class="i">IContainer</span></span> <span class="i">clear</span> <span class="o ">()</span><span class="s FuncBody">;</span></span>                          
 
-        <span class="d Function"><span class="t Identifier"><span class="i">IContainer</span></span> <span class="i">reset</span> <span class="o Parameters">()</span><span class="s FuncBody">;</span></span>                          
+        <span class="d Function"><span class="t Identifier"><span class="i">IContainer</span></span> <span class="i">reset</span> <span class="o ">()</span><span class="s FuncBody">;</span></span>                          
 
-        <span class="d Function"><span class="t Identifier"><span class="i">IContainer</span></span> <span class="i">check</span> <span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Identifier"><span class="i">IContainer</span></span> <span class="i">check</span> <span class="o ">()</span><span class="s FuncBody">;</span></span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">contains</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">contains</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span><span class="s FuncBody">;</span></span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">take</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">element</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">take</span> <span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">element</span></span>)</span><span class="s FuncBody">;</span></span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">V</span></span><span class="t Array">[]</span> <span class="i">toArray</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span><span class="t Array">[]</span> <span class="i">dst</span> = <span class="e Null"><span class="k">null</span></span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Identifier"><span class="i">V</span></span><span class="t Array">[]</span> <span class="i">toArray</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span><span class="t Array">[]</span> <span class="i">dst</span> = <span class="e Null"><span class="k">null</span></span></span>)</span><span class="s FuncBody">;</span></span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">remove</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">element</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">all</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">remove</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">element</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">all</span></span>)</span><span class="s FuncBody">;</span></span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span></span> <span class="i">dg</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span> <span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span></span> <span class="i">dg</span></span>)</span><span class="s FuncBody">;</span></span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">replace</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">oldElement</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">newElement</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">all</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">replace</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">oldElement</span></span>, <span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">newElement</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">all</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span>
 
 
@@ -68,9 +68,9 @@
         
 *******************************************************************************/</span>
 
-<span class="d Template"><span class="k">template</span> <span class="i">Compare</span> <span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">V</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">Compare</span> <span class="o ">(<span class="o "><span class="i">V</span></span>)</span>
 <span class="d Compound">{
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="t Function"><span class="k">function</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">b</span></span>)</span></span> <span class="i">Compare</span>;</span></span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="t Function"><span class="k">function</span> <span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">a</span></span>, <span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">b</span></span>)</span></span> <span class="i">Compare</span>;</span></span>
 }</span></span></span>
 
 

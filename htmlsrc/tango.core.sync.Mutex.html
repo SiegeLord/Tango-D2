@@ -61,7 +61,7 @@
      * Throws:
      *  SyncException on error.
      */</span>
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">()</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Version"><span class="k">version</span>( <span class="i">Win32</span> )
         <span class="s Compound">{
@@ -85,7 +85,7 @@
      * In:
      *  o must not already have a monitor.
      */</span>
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">Object</span></span> <span class="i">o</span></span> )</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">Object</span></span> <span class="i">o</span></span> )</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="lc">// NOTE: With DMD this can be "o.__monitor is null".</span>
@@ -126,7 +126,7 @@
      * Throws:
      *  SyncException on error.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">lock</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">lock</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Version"><span class="k">version</span>( <span class="i">Win32</span> )
         <span class="s Compound">{
@@ -148,7 +148,7 @@
      * Throws:
      *  SyncException on error.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unlock</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unlock</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Version"><span class="k">version</span>( <span class="i">Win32</span> )
         <span class="s Compound">{
@@ -174,7 +174,7 @@
      * Throws:
      *  SyncException on error.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">tryLock</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">tryLock</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Version"><span class="k">version</span>( <span class="i">Win32</span> )
         <span class="s Compound">{
@@ -230,7 +230,7 @@
 <span class="d Protection"><span class="k">package</span></span>:
     <span class="d Compound"><span class="d Version"><span class="k">version</span>( <span class="i">Posix</span> )
     <span class="d Compound">{
-        <span class="d Function"><span class="t Identifier"><span class="i">pthread_mutex_t</span></span><span class="t Pointer">*</span> <span class="i">handleAddr</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">pthread_mutex_t</span></span><span class="t Pointer">*</span> <span class="i">handleAddr</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Return"><span class="k">return</span> <span class="e Address">&amp;<span class="e Identifier"><span class="i">m_hndl</span></span></span>;</span>
         }</span></span></span>
@@ -255,7 +255,7 @@
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span>  <span class="i">numTries</span>   = <span class="e Int"><span class="n">1000</span></span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span>  <span class="i">lockCount</span>  = <span class="e Int"><span class="n">0</span></span>;</span></span>
 
-        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">testFn</span><span class="o Parameters">()</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">testFn</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s For"><span class="k">for</span>( <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span> = <span class="e Int"><span class="n">0</span></span>;</span></span> <span class="e Rel"><span class="e Identifier"><span class="i">i</span></span> &lt; <span class="e Identifier"><span class="i">numTries</span></span></span>; <span class="e PreIncr">++<span class="e Identifier"><span class="i">i</span></span></span> )
             <span class="s Scope"><span class="s Compound">{

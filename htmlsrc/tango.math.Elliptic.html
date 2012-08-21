@@ -78,7 +78,7 @@ Copyright 1984, 1987, 1995 by Stephen L. Moshier
  * geometric mean algorithm.
  */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticF</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">phi</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticF</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">phi</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span> )</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span>, <span class="i">b</span>, <span class="i">c</span>, <span class="i">e</span>, <span class="i">temp</span>, <span class="i">t</span>, <span class="i">K</span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">d</span>, <span class="i">mod</span>, <span class="i">sign</span>, <span class="i">npio2</span>;</span></span>
@@ -153,7 +153,7 @@ Copyright 1984, 1987, 1995 by Stephen L. Moshier
  * geometric mean algorithm.
  */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticE</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">phi</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticE</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">phi</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span>, <span class="i">b</span>, <span class="i">c</span>, <span class="i">e</span>, <span class="i">temp</span>, <span class="i">t</span>, <span class="i">E</span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">d</span>, <span class="i">mod</span>, <span class="i">npio2</span>, <span class="i">sign</span>;</span></span>
@@ -242,7 +242,7 @@ Copyright 1984, 1987, 1995 by Stephen L. Moshier
  * K(0) = &amp;pi;/2.
  */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticKComplete</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticKComplete</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
 <span class="lc">//    assert(x&gt;=0.0L &amp;&amp; x&lt;=1.0L);</span>
 }</span>
@@ -306,7 +306,7 @@ Copyright 1984, 1987, 1995 by Stephen L. Moshier
  * m must be in the range 0 &lt;= m &lt;= 1.
  */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticEComplete</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticEComplete</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
  <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&lt;=<span class="e Float"><span class="n">1.0</span></span></span></span>)</span>;</span>
 }</span>
@@ -374,7 +374,7 @@ Copyright 1984, 1987, 1995 by Stephen L. Moshier
  * 
  * Note that ellipticPi(PI_2, m, 1) is infinite for any m.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticPi</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">phi</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">n</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticPi</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">phi</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">n</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="lc">// BUGS: This implementation suffers from poor precision.</span>
     <span class="s Declaration"><span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">double</span></span> <span class="t Array">[]</span> <span class="i">t</span> = <span class="e ArrayInit">[
@@ -413,7 +413,7 @@ Copyright 1984, 1987, 1995 by Stephen L. Moshier
 <span class="bc">/**
  *  Complete elliptic integral of the third kind
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticPiComplete</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">n</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ellipticPiComplete</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">n</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
  <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">m</span></span>&gt;=<span class="e Sign">-<span class="e Float"><span class="n">1.0</span></span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">m</span></span>&lt;=<span class="e Float"><span class="n">1.0</span></span></span></span>)</span>;</span>
 }</span>

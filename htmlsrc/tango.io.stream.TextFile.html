@@ -44,7 +44,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">File</span></span>.<span class="t Identifier"><span class="i">Style</span></span> <span class="i">style</span> = <span class="e Identifier"><span class="i">File</span></span>.<span class="e Identifier"><span class="i">ReadExisting</span></span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o "><span class="t Identifier"><span class="i">File</span></span>.<span class="t Identifier"><span class="i">Style</span></span> <span class="i">style</span> = <span class="e Identifier"><span class="i">File</span></span>.<span class="e Identifier"><span class="i">ReadExisting</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span> (<span class="k">new</span> <span class="i">File</span> (<span class="i">path</span>, <span class="i">style</span>))</span>;</span>
         }</span></span></span>
@@ -55,7 +55,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">File</span></span> <span class="i">file</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">File</span></span> <span class="i">file</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span> (<span class="i">file</span>);</span></span>
         }</span></span></span>
@@ -76,7 +76,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">File</span></span>.<span class="t Identifier"><span class="i">Style</span></span> <span class="i">style</span> = <span class="e Identifier"><span class="i">File</span></span>.<span class="e Identifier"><span class="i">WriteCreate</span></span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o "><span class="t Identifier"><span class="i">File</span></span>.<span class="t Identifier"><span class="i">Style</span></span> <span class="i">style</span> = <span class="e Identifier"><span class="i">File</span></span>.<span class="e Identifier"><span class="i">WriteCreate</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span> (<span class="k">new</span> <span class="i">File</span> (<span class="i">path</span>, <span class="i">style</span>))</span>;</span>
         }</span></span></span>
@@ -87,7 +87,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">File</span></span> <span class="i">file</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">File</span></span> <span class="i">file</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span> (<span class="i">file</span>);</span></span>
         }</span></span></span>
@@ -102,10 +102,10 @@
 <span class="d Compound">{
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Console</span>;</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">t</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">TextFileInput</span></span> (<span class="e String"><span class="sl">"TextFile.d"</span></span>)</span>;</span></span>
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">line</span></span></span>; <span class="e Identifier"><span class="i">t</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">line</span></span></span>; <span class="e Identifier"><span class="i">t</span></span>)
                          <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Cout</span></span>(<span class="i">line</span>)</span>.<span class="e Identifier"><span class="i">newline</span></span>;</span></span></span>
         }</span></span></span>
 }</span></span></span>

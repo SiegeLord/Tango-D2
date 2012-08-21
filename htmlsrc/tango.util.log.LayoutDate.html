@@ -52,7 +52,7 @@
                         
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">localTime</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">localTime</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">localTime</span></span> = <span class="e Identifier"><span class="i">localTime</span></span></span>;</span>
         }</span></span></span>
@@ -64,7 +64,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">format</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>, <span class="o Parameter"><span class="k">scope</span> <span class="t Identifier"><span class="i">size_t</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span></span>)</span></span> <span class="i">dg</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">format</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>, <span class="o "><span class="k">scope</span> <span class="t Identifier"><span class="i">size_t</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span></span>)</span></span> <span class="i">dg</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">level</span> = <span class="e Identifier"><span class="i">event</span></span>.<span class="e Identifier"><span class="i">levelName</span></span>;</span></span>
                 
@@ -95,7 +95,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">convert</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">tmp</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">i</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">convert</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">tmp</span></span>, <span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">i</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">Integer</span></span>.<span class="e Identifier"><span class="i">formatter</span></span> (<span class="i">tmp</span>, <span class="i">i</span>, <span class="cl">'u'</span>, <span class="cl">'?'</span>, <span class="n">8</span>)</span>;</span>
         }</span></span></span>

@@ -14,7 +14,7 @@
 <td><td><pre class="sourcecode">
 <span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">darwin</span>.<span class="i">consts</span>.<span class="i">sysctl</span>;</span>
 <span class="d Enum"><span class="k">enum</span> <span class="i">SysCtl</span>{
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTL_MAXNAME</span></span> = <span class="e Int"><span class="n">12</span></span></span> , <span class="bc">/* largest number of components supported */</span>
+<span class="d EnumMember"><span class="i">CTL_MAXNAME</span> = <span class="e Int"><span class="n">12</span></span></span> , <span class="bc">/* largest number of components supported */</span>
     <span class="nc">/+
      + Each subsystem defined by sysctl defines a list of variables
      + for that subsystem. Each name is either a node with further
@@ -29,23 +29,23 @@
      + both the kernel funnel and the sysctl memlock. This is not
      + optimal, so it is best to handle locking yourself.
      +/</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLTYPE</span></span> = <span class="e Int"><span class="n">0xf</span></span></span> , <span class="bc">/* Mask for the type */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLTYPE_NODE</span></span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* name is a node */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLTYPE_INT</span></span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* name describes an integer */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLTYPE_STRING</span></span> = <span class="e Int"><span class="n">3</span></span></span>, <span class="bc">/* name describes a string */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLTYPE_QUAD</span></span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* name describes a 64-bit number */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLTYPE_OPAQUE</span></span> = <span class="e Int"><span class="n">5</span></span></span>, <span class="bc">/* name describes a structure */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLTYPE_STRUCT</span></span> = <span class="e Int"><span class="n">5</span></span></span>, <span class="bc">/* name describes a structure */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLFLAG_RD</span></span> = <span class="e Int"><span class="n">0x80000000</span></span></span> , <span class="bc">/* Allow reads of variable */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLFLAG_WR</span></span> = <span class="e Int"><span class="n">0x40000000</span></span></span> , <span class="bc">/* Allow writes to the variable */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLFLAG_RW</span></span> = <span class="e Paren">(<span class="e Or"><span class="e Int"><span class="n">0x80000000</span></span>|<span class="e Int"><span class="n">0x40000000</span></span></span>)</span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLFLAG_NOLOCK</span></span> = <span class="e Int"><span class="n">0x20000000</span></span></span> , <span class="bc">/* XXX Don't Lock */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLFLAG_ANYBODY</span></span> = <span class="e Int"><span class="n">0x10000000</span></span></span>, <span class="bc">/* All users can set this var */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLFLAG_SECURE</span></span> = <span class="e Int"><span class="n">0x08000000</span></span></span> , <span class="bc">/* Permit set only if securelevel&lt;=0 */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLFLAG_MASKED</span></span> = <span class="e Int"><span class="n">0x04000000</span></span></span> , <span class="bc">/* deprecated variable, do not display */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLFLAG_NOAUTO</span></span> = <span class="e Int"><span class="n">0x02000000</span></span></span> , <span class="bc">/* do not auto-register */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLFLAG_KERN</span></span> = <span class="e Int"><span class="n">0x01000000</span></span></span> , <span class="bc">/* valid inside the kernel */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTLFLAG_LOCKED</span></span> = <span class="e Int"><span class="n">0x00800000</span></span></span> , <span class="bc">/* node will handle locking itself (highly encouraged) */</span>
+<span class="d EnumMember"><span class="i">CTLTYPE</span> = <span class="e Int"><span class="n">0xf</span></span></span> , <span class="bc">/* Mask for the type */</span>
+<span class="d EnumMember"><span class="i">CTLTYPE_NODE</span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* name is a node */</span>
+<span class="d EnumMember"><span class="i">CTLTYPE_INT</span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* name describes an integer */</span>
+<span class="d EnumMember"><span class="i">CTLTYPE_STRING</span> = <span class="e Int"><span class="n">3</span></span></span>, <span class="bc">/* name describes a string */</span>
+<span class="d EnumMember"><span class="i">CTLTYPE_QUAD</span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* name describes a 64-bit number */</span>
+<span class="d EnumMember"><span class="i">CTLTYPE_OPAQUE</span> = <span class="e Int"><span class="n">5</span></span></span>, <span class="bc">/* name describes a structure */</span>
+<span class="d EnumMember"><span class="i">CTLTYPE_STRUCT</span> = <span class="e Int"><span class="n">5</span></span></span>, <span class="bc">/* name describes a structure */</span>
+<span class="d EnumMember"><span class="i">CTLFLAG_RD</span> = <span class="e Int"><span class="n">0x80000000</span></span></span> , <span class="bc">/* Allow reads of variable */</span>
+<span class="d EnumMember"><span class="i">CTLFLAG_WR</span> = <span class="e Int"><span class="n">0x40000000</span></span></span> , <span class="bc">/* Allow writes to the variable */</span>
+<span class="d EnumMember"><span class="i">CTLFLAG_RW</span> = <span class="e Paren">(<span class="e Or"><span class="e Int"><span class="n">0x80000000</span></span>|<span class="e Int"><span class="n">0x40000000</span></span></span>)</span></span> ,
+<span class="d EnumMember"><span class="i">CTLFLAG_NOLOCK</span> = <span class="e Int"><span class="n">0x20000000</span></span></span> , <span class="bc">/* XXX Don't Lock */</span>
+<span class="d EnumMember"><span class="i">CTLFLAG_ANYBODY</span> = <span class="e Int"><span class="n">0x10000000</span></span></span>, <span class="bc">/* All users can set this var */</span>
+<span class="d EnumMember"><span class="i">CTLFLAG_SECURE</span> = <span class="e Int"><span class="n">0x08000000</span></span></span> , <span class="bc">/* Permit set only if securelevel&lt;=0 */</span>
+<span class="d EnumMember"><span class="i">CTLFLAG_MASKED</span> = <span class="e Int"><span class="n">0x04000000</span></span></span> , <span class="bc">/* deprecated variable, do not display */</span>
+<span class="d EnumMember"><span class="i">CTLFLAG_NOAUTO</span> = <span class="e Int"><span class="n">0x02000000</span></span></span> , <span class="bc">/* do not auto-register */</span>
+<span class="d EnumMember"><span class="i">CTLFLAG_KERN</span> = <span class="e Int"><span class="n">0x01000000</span></span></span> , <span class="bc">/* valid inside the kernel */</span>
+<span class="d EnumMember"><span class="i">CTLFLAG_LOCKED</span> = <span class="e Int"><span class="n">0x00800000</span></span></span> , <span class="bc">/* node will handle locking itself (highly encouraged) */</span>
     <span class="bc">/*
      * USE THIS instead of a hardwired number from the categories below
      * to get dynamically assigned sysctl entries using the linker-set
@@ -59,203 +59,203 @@
      * in I/O-Kit. In this case, you have to call sysctl_register_oid()
      * manually - just like in a KEXT.
      */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">OID_AUTO</span></span> = <span class="e Paren">(<span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span>)</span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">OID_AUTO_START</span></span> = <span class="e Int"><span class="n">100</span></span></span>, <span class="bc">/* conventional */</span>
+<span class="d EnumMember"><span class="i">OID_AUTO</span> = <span class="e Paren">(<span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span>)</span></span> ,
+<span class="d EnumMember"><span class="i">OID_AUTO_START</span> = <span class="e Int"><span class="n">100</span></span></span>, <span class="bc">/* conventional */</span>
     <span class="bc">/*
      * Top-level identifiers
      */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTL_UNSPEC</span></span> = <span class="e Int"><span class="n">0</span></span></span> , <span class="bc">/* unused */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTL_KERN</span></span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* "high kernel": proc, limits */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTL_VM</span></span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* virtual memory */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTL_VFS</span></span> = <span class="e Int"><span class="n">3</span></span></span> , <span class="bc">/* file system, mount type is next */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTL_NET</span></span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* network, see socket.h */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTL_DEBUG</span></span> = <span class="e Int"><span class="n">5</span></span></span> , <span class="bc">/* debugging parameters */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTL_HW</span></span> = <span class="e Int"><span class="n">6</span></span></span> , <span class="bc">/* generic cpu/io */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTL_MACHDEP</span></span> = <span class="e Int"><span class="n">7</span></span></span>, <span class="bc">/* machine dependent */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTL_USER</span></span> = <span class="e Int"><span class="n">8</span></span></span> , <span class="bc">/* user-level */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTL_MAXID</span></span> = <span class="e Int"><span class="n">9</span></span></span> , <span class="bc">/* number of valid top-level ids */</span>
+<span class="d EnumMember"><span class="i">CTL_UNSPEC</span> = <span class="e Int"><span class="n">0</span></span></span> , <span class="bc">/* unused */</span>
+<span class="d EnumMember"><span class="i">CTL_KERN</span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* "high kernel": proc, limits */</span>
+<span class="d EnumMember"><span class="i">CTL_VM</span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* virtual memory */</span>
+<span class="d EnumMember"><span class="i">CTL_VFS</span> = <span class="e Int"><span class="n">3</span></span></span> , <span class="bc">/* file system, mount type is next */</span>
+<span class="d EnumMember"><span class="i">CTL_NET</span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* network, see socket.h */</span>
+<span class="d EnumMember"><span class="i">CTL_DEBUG</span> = <span class="e Int"><span class="n">5</span></span></span> , <span class="bc">/* debugging parameters */</span>
+<span class="d EnumMember"><span class="i">CTL_HW</span> = <span class="e Int"><span class="n">6</span></span></span> , <span class="bc">/* generic cpu/io */</span>
+<span class="d EnumMember"><span class="i">CTL_MACHDEP</span> = <span class="e Int"><span class="n">7</span></span></span>, <span class="bc">/* machine dependent */</span>
+<span class="d EnumMember"><span class="i">CTL_USER</span> = <span class="e Int"><span class="n">8</span></span></span> , <span class="bc">/* user-level */</span>
+<span class="d EnumMember"><span class="i">CTL_MAXID</span> = <span class="e Int"><span class="n">9</span></span></span> , <span class="bc">/* number of valid top-level ids */</span>
     <span class="bc">/*
      * CTL_KERN identifiers
      */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_OSTYPE</span></span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* string: system version */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_OSRELEASE</span></span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* string: system release */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_OSREV</span></span> = <span class="e Int"><span class="n">3</span></span></span> , <span class="bc">/* int: system revision */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_VERSION</span></span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* string: compile time info */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_MAXVNODES</span></span> = <span class="e Int"><span class="n">5</span></span></span> , <span class="bc">/* int: max vnodes */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_MAXPROC</span></span> = <span class="e Int"><span class="n">6</span></span></span> , <span class="bc">/* int: max processes */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_MAXFILES</span></span> = <span class="e Int"><span class="n">7</span></span></span> , <span class="bc">/* int: max open files */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_ARGMAX</span></span> = <span class="e Int"><span class="n">8</span></span></span> , <span class="bc">/* int: max arguments to exec */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_SECURELVL</span></span> = <span class="e Int"><span class="n">9</span></span></span> , <span class="bc">/* int: system security level */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_HOSTNAME</span></span> = <span class="e Int"><span class="n">10</span></span></span> , <span class="bc">/* string: hostname */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_HOSTID</span></span> = <span class="e Int"><span class="n">11</span></span></span> , <span class="bc">/* int: host identifier */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_CLOCKRATE</span></span> = <span class="e Int"><span class="n">12</span></span></span> , <span class="bc">/* struct: struct clockrate */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_VNODE</span></span> = <span class="e Int"><span class="n">13</span></span></span> , <span class="bc">/* struct: vnode structures */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PROC</span></span> = <span class="e Int"><span class="n">14</span></span></span> , <span class="bc">/* struct: process entries */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_FILE</span></span> = <span class="e Int"><span class="n">15</span></span></span> , <span class="bc">/* struct: file entries */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PROF</span></span> = <span class="e Int"><span class="n">16</span></span></span> , <span class="bc">/* node: kernel profiling info */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_POSIX1</span></span> = <span class="e Int"><span class="n">17</span></span></span> , <span class="bc">/* int: POSIX.1 version */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_NGROUPS</span></span> = <span class="e Int"><span class="n">18</span></span></span> , <span class="bc">/* int: # of supplemental group ids */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_JOB_CONTROL</span></span> = <span class="e Int"><span class="n">19</span></span></span> , <span class="bc">/* int: is job control available */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_SAVED_IDS</span></span> = <span class="e Int"><span class="n">20</span></span></span> , <span class="bc">/* int: saved set-user/group-ID */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_BOOTTIME</span></span> = <span class="e Int"><span class="n">21</span></span></span> , <span class="bc">/* struct: time kernel was booted */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_NISDOMAINNAME</span></span> = <span class="e Int"><span class="n">22</span></span></span> , <span class="bc">/* string: YP domain name */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_DOMAINNAME</span></span> = <span class="e Int"><span class="n">22</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_MAXPARTITIONS</span></span> = <span class="e Int"><span class="n">23</span></span></span> , <span class="bc">/* int: number of partitions/disk */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDEBUG</span></span> = <span class="e Int"><span class="n">24</span></span></span> , <span class="bc">/* int: kernel trace points */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_UPDATEINTERVAL</span></span> = <span class="e Int"><span class="n">25</span></span></span> , <span class="bc">/* int: update process sleep time */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_OSRELDATE</span></span> = <span class="e Int"><span class="n">26</span></span></span> , <span class="bc">/* int: OS release date */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_NTP_PLL</span></span> = <span class="e Int"><span class="n">27</span></span></span> , <span class="bc">/* node: NTP PLL control */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_BOOTFILE</span></span> = <span class="e Int"><span class="n">28</span></span></span> , <span class="bc">/* string: name of booted kernel */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_MAXFILESPERPROC</span></span> = <span class="e Int"><span class="n">29</span></span></span> , <span class="bc">/* int: max open files per proc */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_MAXPROCPERUID</span></span> = <span class="e Int"><span class="n">30</span></span></span> , <span class="bc">/* int: max processes per uid */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_DUMPDEV</span></span> = <span class="e Int"><span class="n">31</span></span></span> , <span class="bc">/* dev_t: device to dump on */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_IPC</span></span> = <span class="e Int"><span class="n">32</span></span></span> , <span class="bc">/* node: anything related to IPC */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_DUMMY</span></span> = <span class="e Int"><span class="n">33</span></span></span> , <span class="bc">/* unused */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PS_STRINGS</span></span> = <span class="e Int"><span class="n">34</span></span></span> , <span class="bc">/* int: address of PS_STRINGS */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_USRSTACK32</span></span> = <span class="e Int"><span class="n">35</span></span></span> , <span class="bc">/* int: address of USRSTACK */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_LOGSIGEXIT</span></span> = <span class="e Int"><span class="n">36</span></span></span> , <span class="bc">/* int: do we log sigexit procs? */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_SYMFILE</span></span> = <span class="e Int"><span class="n">37</span></span></span> , <span class="bc">/* string: kernel symbol filename */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PROCARGS</span></span> = <span class="e Int"><span class="n">38</span></span></span> , <span class="bc">/* was KERN_PCSAMPLES... now deprecated */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_NETBOOT</span></span> = <span class="e Int"><span class="n">40</span></span></span> , <span class="bc">/* int: are we netbooted? 1=yes,0=no */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PANICINFO</span></span> = <span class="e Int"><span class="n">41</span></span></span> , <span class="bc">/* node: panic UI information */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_SYSV</span></span> = <span class="e Int"><span class="n">42</span></span></span> , <span class="bc">/* node: System V IPC information */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_AFFINITY</span></span> = <span class="e Int"><span class="n">43</span></span></span> , <span class="bc">/* xxx */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_TRANSLATE</span></span> = <span class="e Int"><span class="n">44</span></span></span> , <span class="bc">/* xxx */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_CLASSIC</span></span> = <span class="e Int"><span class="n">44</span></span></span> , <span class="bc">/* XXX backwards compat */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_EXEC</span></span> = <span class="e Int"><span class="n">45</span></span></span> , <span class="bc">/* xxx */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_CLASSICHANDLER</span></span> = <span class="e Int"><span class="n">45</span></span></span> , <span class="bc">/* XXX backwards compatibility */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_AIOMAX</span></span> = <span class="e Int"><span class="n">46</span></span></span> , <span class="bc">/* int: max aio requests */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_AIOPROCMAX</span></span> = <span class="e Int"><span class="n">47</span></span></span> , <span class="bc">/* int: max aio requests per process */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_AIOTHREADS</span></span> = <span class="e Int"><span class="n">48</span></span></span> , <span class="bc">/* int: max aio worker threads */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_COREFILE</span></span> = <span class="e Int"><span class="n">50</span></span></span> , <span class="bc">/* string: corefile format string */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_COREDUMP</span></span> = <span class="e Int"><span class="n">51</span></span></span> , <span class="bc">/* int: whether to coredump at all */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_SUGID_COREDUMP</span></span> = <span class="e Int"><span class="n">52</span></span></span> , <span class="bc">/* int: whether to dump SUGID cores */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PROCDELAYTERM</span></span> = <span class="e Int"><span class="n">53</span></span></span> , <span class="bc">/* int: set/reset current proc for delayed termination during shutdown */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_SHREG_PRIVATIZABLE</span></span> = <span class="e Int"><span class="n">54</span></span></span>, <span class="bc">/* int: can shared regions be privatized ? */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PROC_LOW_PRI_IO</span></span> = <span class="e Int"><span class="n">55</span></span></span> , <span class="bc">/* int: set/reset current proc for low priority I/O */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_LOW_PRI_WINDOW</span></span> = <span class="e Int"><span class="n">56</span></span></span> , <span class="bc">/* int: set/reset throttle window - milliseconds */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_LOW_PRI_DELAY</span></span> = <span class="e Int"><span class="n">57</span></span></span> , <span class="bc">/* int: set/reset throttle delay - milliseconds */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_POSIX</span></span> = <span class="e Int"><span class="n">58</span></span></span> , <span class="bc">/* node: posix tunables */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_USRSTACK64</span></span> = <span class="e Int"><span class="n">59</span></span></span> , <span class="bc">/* LP64 user stack query */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_NX_PROTECTION</span></span> = <span class="e Int"><span class="n">60</span></span></span> , <span class="bc">/* int: whether no-execute protection is enabled */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_TFP</span></span> = <span class="e Int"><span class="n">61</span></span></span> , <span class="bc">/* Task for pid settings */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PROCNAME</span></span> = <span class="e Int"><span class="n">62</span></span></span> , <span class="bc">/* setup process program  name(2*MAXCOMLEN) */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_THALTSTACK</span></span> = <span class="e Int"><span class="n">63</span></span></span> , <span class="bc">/* for compat with older x86 and does nothing */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_SPECULATIVE_READS</span></span> = <span class="e Int"><span class="n">64</span></span></span> , <span class="bc">/* int: whether speculative reads are disabled */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_OSVERSION</span></span> = <span class="e Int"><span class="n">65</span></span></span> , <span class="bc">/* for build number i.e. 9A127 */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_SAFEBOOT</span></span> = <span class="e Int"><span class="n">66</span></span></span> , <span class="bc">/* are we booted safe? */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_LCTX</span></span> = <span class="e Int"><span class="n">67</span></span></span> , <span class="bc">/* node: login context */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_RAGEVNODE</span></span> = <span class="e Int"><span class="n">68</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_TTY</span></span> = <span class="e Int"><span class="n">69</span></span></span> , <span class="bc">/* node: tty settings */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_CHECKOPENEVT</span></span> = <span class="e Int"><span class="n">70</span></span></span> , <span class="bc">/* spi: check the VOPENEVT flag on vnodes at open time */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_MAXID</span></span> = <span class="e Int"><span class="n">71</span></span></span> , <span class="bc">/* number of valid kern ids */</span>
+<span class="d EnumMember"><span class="i">KERN_OSTYPE</span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* string: system version */</span>
+<span class="d EnumMember"><span class="i">KERN_OSRELEASE</span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* string: system release */</span>
+<span class="d EnumMember"><span class="i">KERN_OSREV</span> = <span class="e Int"><span class="n">3</span></span></span> , <span class="bc">/* int: system revision */</span>
+<span class="d EnumMember"><span class="i">KERN_VERSION</span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* string: compile time info */</span>
+<span class="d EnumMember"><span class="i">KERN_MAXVNODES</span> = <span class="e Int"><span class="n">5</span></span></span> , <span class="bc">/* int: max vnodes */</span>
+<span class="d EnumMember"><span class="i">KERN_MAXPROC</span> = <span class="e Int"><span class="n">6</span></span></span> , <span class="bc">/* int: max processes */</span>
+<span class="d EnumMember"><span class="i">KERN_MAXFILES</span> = <span class="e Int"><span class="n">7</span></span></span> , <span class="bc">/* int: max open files */</span>
+<span class="d EnumMember"><span class="i">KERN_ARGMAX</span> = <span class="e Int"><span class="n">8</span></span></span> , <span class="bc">/* int: max arguments to exec */</span>
+<span class="d EnumMember"><span class="i">KERN_SECURELVL</span> = <span class="e Int"><span class="n">9</span></span></span> , <span class="bc">/* int: system security level */</span>
+<span class="d EnumMember"><span class="i">KERN_HOSTNAME</span> = <span class="e Int"><span class="n">10</span></span></span> , <span class="bc">/* string: hostname */</span>
+<span class="d EnumMember"><span class="i">KERN_HOSTID</span> = <span class="e Int"><span class="n">11</span></span></span> , <span class="bc">/* int: host identifier */</span>
+<span class="d EnumMember"><span class="i">KERN_CLOCKRATE</span> = <span class="e Int"><span class="n">12</span></span></span> , <span class="bc">/* struct: struct clockrate */</span>
+<span class="d EnumMember"><span class="i">KERN_VNODE</span> = <span class="e Int"><span class="n">13</span></span></span> , <span class="bc">/* struct: vnode structures */</span>
+<span class="d EnumMember"><span class="i">KERN_PROC</span> = <span class="e Int"><span class="n">14</span></span></span> , <span class="bc">/* struct: process entries */</span>
+<span class="d EnumMember"><span class="i">KERN_FILE</span> = <span class="e Int"><span class="n">15</span></span></span> , <span class="bc">/* struct: file entries */</span>
+<span class="d EnumMember"><span class="i">KERN_PROF</span> = <span class="e Int"><span class="n">16</span></span></span> , <span class="bc">/* node: kernel profiling info */</span>
+<span class="d EnumMember"><span class="i">KERN_POSIX1</span> = <span class="e Int"><span class="n">17</span></span></span> , <span class="bc">/* int: POSIX.1 version */</span>
+<span class="d EnumMember"><span class="i">KERN_NGROUPS</span> = <span class="e Int"><span class="n">18</span></span></span> , <span class="bc">/* int: # of supplemental group ids */</span>
+<span class="d EnumMember"><span class="i">KERN_JOB_CONTROL</span> = <span class="e Int"><span class="n">19</span></span></span> , <span class="bc">/* int: is job control available */</span>
+<span class="d EnumMember"><span class="i">KERN_SAVED_IDS</span> = <span class="e Int"><span class="n">20</span></span></span> , <span class="bc">/* int: saved set-user/group-ID */</span>
+<span class="d EnumMember"><span class="i">KERN_BOOTTIME</span> = <span class="e Int"><span class="n">21</span></span></span> , <span class="bc">/* struct: time kernel was booted */</span>
+<span class="d EnumMember"><span class="i">KERN_NISDOMAINNAME</span> = <span class="e Int"><span class="n">22</span></span></span> , <span class="bc">/* string: YP domain name */</span>
+<span class="d EnumMember"><span class="i">KERN_DOMAINNAME</span> = <span class="e Int"><span class="n">22</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_MAXPARTITIONS</span> = <span class="e Int"><span class="n">23</span></span></span> , <span class="bc">/* int: number of partitions/disk */</span>
+<span class="d EnumMember"><span class="i">KERN_KDEBUG</span> = <span class="e Int"><span class="n">24</span></span></span> , <span class="bc">/* int: kernel trace points */</span>
+<span class="d EnumMember"><span class="i">KERN_UPDATEINTERVAL</span> = <span class="e Int"><span class="n">25</span></span></span> , <span class="bc">/* int: update process sleep time */</span>
+<span class="d EnumMember"><span class="i">KERN_OSRELDATE</span> = <span class="e Int"><span class="n">26</span></span></span> , <span class="bc">/* int: OS release date */</span>
+<span class="d EnumMember"><span class="i">KERN_NTP_PLL</span> = <span class="e Int"><span class="n">27</span></span></span> , <span class="bc">/* node: NTP PLL control */</span>
+<span class="d EnumMember"><span class="i">KERN_BOOTFILE</span> = <span class="e Int"><span class="n">28</span></span></span> , <span class="bc">/* string: name of booted kernel */</span>
+<span class="d EnumMember"><span class="i">KERN_MAXFILESPERPROC</span> = <span class="e Int"><span class="n">29</span></span></span> , <span class="bc">/* int: max open files per proc */</span>
+<span class="d EnumMember"><span class="i">KERN_MAXPROCPERUID</span> = <span class="e Int"><span class="n">30</span></span></span> , <span class="bc">/* int: max processes per uid */</span>
+<span class="d EnumMember"><span class="i">KERN_DUMPDEV</span> = <span class="e Int"><span class="n">31</span></span></span> , <span class="bc">/* dev_t: device to dump on */</span>
+<span class="d EnumMember"><span class="i">KERN_IPC</span> = <span class="e Int"><span class="n">32</span></span></span> , <span class="bc">/* node: anything related to IPC */</span>
+<span class="d EnumMember"><span class="i">KERN_DUMMY</span> = <span class="e Int"><span class="n">33</span></span></span> , <span class="bc">/* unused */</span>
+<span class="d EnumMember"><span class="i">KERN_PS_STRINGS</span> = <span class="e Int"><span class="n">34</span></span></span> , <span class="bc">/* int: address of PS_STRINGS */</span>
+<span class="d EnumMember"><span class="i">KERN_USRSTACK32</span> = <span class="e Int"><span class="n">35</span></span></span> , <span class="bc">/* int: address of USRSTACK */</span>
+<span class="d EnumMember"><span class="i">KERN_LOGSIGEXIT</span> = <span class="e Int"><span class="n">36</span></span></span> , <span class="bc">/* int: do we log sigexit procs? */</span>
+<span class="d EnumMember"><span class="i">KERN_SYMFILE</span> = <span class="e Int"><span class="n">37</span></span></span> , <span class="bc">/* string: kernel symbol filename */</span>
+<span class="d EnumMember"><span class="i">KERN_PROCARGS</span> = <span class="e Int"><span class="n">38</span></span></span> , <span class="bc">/* was KERN_PCSAMPLES... now deprecated */</span>
+<span class="d EnumMember"><span class="i">KERN_NETBOOT</span> = <span class="e Int"><span class="n">40</span></span></span> , <span class="bc">/* int: are we netbooted? 1=yes,0=no */</span>
+<span class="d EnumMember"><span class="i">KERN_PANICINFO</span> = <span class="e Int"><span class="n">41</span></span></span> , <span class="bc">/* node: panic UI information */</span>
+<span class="d EnumMember"><span class="i">KERN_SYSV</span> = <span class="e Int"><span class="n">42</span></span></span> , <span class="bc">/* node: System V IPC information */</span>
+<span class="d EnumMember"><span class="i">KERN_AFFINITY</span> = <span class="e Int"><span class="n">43</span></span></span> , <span class="bc">/* xxx */</span>
+<span class="d EnumMember"><span class="i">KERN_TRANSLATE</span> = <span class="e Int"><span class="n">44</span></span></span> , <span class="bc">/* xxx */</span>
+<span class="d EnumMember"><span class="i">KERN_CLASSIC</span> = <span class="e Int"><span class="n">44</span></span></span> , <span class="bc">/* XXX backwards compat */</span>
+<span class="d EnumMember"><span class="i">KERN_EXEC</span> = <span class="e Int"><span class="n">45</span></span></span> , <span class="bc">/* xxx */</span>
+<span class="d EnumMember"><span class="i">KERN_CLASSICHANDLER</span> = <span class="e Int"><span class="n">45</span></span></span> , <span class="bc">/* XXX backwards compatibility */</span>
+<span class="d EnumMember"><span class="i">KERN_AIOMAX</span> = <span class="e Int"><span class="n">46</span></span></span> , <span class="bc">/* int: max aio requests */</span>
+<span class="d EnumMember"><span class="i">KERN_AIOPROCMAX</span> = <span class="e Int"><span class="n">47</span></span></span> , <span class="bc">/* int: max aio requests per process */</span>
+<span class="d EnumMember"><span class="i">KERN_AIOTHREADS</span> = <span class="e Int"><span class="n">48</span></span></span> , <span class="bc">/* int: max aio worker threads */</span>
+<span class="d EnumMember"><span class="i">KERN_COREFILE</span> = <span class="e Int"><span class="n">50</span></span></span> , <span class="bc">/* string: corefile format string */</span>
+<span class="d EnumMember"><span class="i">KERN_COREDUMP</span> = <span class="e Int"><span class="n">51</span></span></span> , <span class="bc">/* int: whether to coredump at all */</span>
+<span class="d EnumMember"><span class="i">KERN_SUGID_COREDUMP</span> = <span class="e Int"><span class="n">52</span></span></span> , <span class="bc">/* int: whether to dump SUGID cores */</span>
+<span class="d EnumMember"><span class="i">KERN_PROCDELAYTERM</span> = <span class="e Int"><span class="n">53</span></span></span> , <span class="bc">/* int: set/reset current proc for delayed termination during shutdown */</span>
+<span class="d EnumMember"><span class="i">KERN_SHREG_PRIVATIZABLE</span> = <span class="e Int"><span class="n">54</span></span></span>, <span class="bc">/* int: can shared regions be privatized ? */</span>
+<span class="d EnumMember"><span class="i">KERN_PROC_LOW_PRI_IO</span> = <span class="e Int"><span class="n">55</span></span></span> , <span class="bc">/* int: set/reset current proc for low priority I/O */</span>
+<span class="d EnumMember"><span class="i">KERN_LOW_PRI_WINDOW</span> = <span class="e Int"><span class="n">56</span></span></span> , <span class="bc">/* int: set/reset throttle window - milliseconds */</span>
+<span class="d EnumMember"><span class="i">KERN_LOW_PRI_DELAY</span> = <span class="e Int"><span class="n">57</span></span></span> , <span class="bc">/* int: set/reset throttle delay - milliseconds */</span>
+<span class="d EnumMember"><span class="i">KERN_POSIX</span> = <span class="e Int"><span class="n">58</span></span></span> , <span class="bc">/* node: posix tunables */</span>
+<span class="d EnumMember"><span class="i">KERN_USRSTACK64</span> = <span class="e Int"><span class="n">59</span></span></span> , <span class="bc">/* LP64 user stack query */</span>
+<span class="d EnumMember"><span class="i">KERN_NX_PROTECTION</span> = <span class="e Int"><span class="n">60</span></span></span> , <span class="bc">/* int: whether no-execute protection is enabled */</span>
+<span class="d EnumMember"><span class="i">KERN_TFP</span> = <span class="e Int"><span class="n">61</span></span></span> , <span class="bc">/* Task for pid settings */</span>
+<span class="d EnumMember"><span class="i">KERN_PROCNAME</span> = <span class="e Int"><span class="n">62</span></span></span> , <span class="bc">/* setup process program  name(2*MAXCOMLEN) */</span>
+<span class="d EnumMember"><span class="i">KERN_THALTSTACK</span> = <span class="e Int"><span class="n">63</span></span></span> , <span class="bc">/* for compat with older x86 and does nothing */</span>
+<span class="d EnumMember"><span class="i">KERN_SPECULATIVE_READS</span> = <span class="e Int"><span class="n">64</span></span></span> , <span class="bc">/* int: whether speculative reads are disabled */</span>
+<span class="d EnumMember"><span class="i">KERN_OSVERSION</span> = <span class="e Int"><span class="n">65</span></span></span> , <span class="bc">/* for build number i.e. 9A127 */</span>
+<span class="d EnumMember"><span class="i">KERN_SAFEBOOT</span> = <span class="e Int"><span class="n">66</span></span></span> , <span class="bc">/* are we booted safe? */</span>
+<span class="d EnumMember"><span class="i">KERN_LCTX</span> = <span class="e Int"><span class="n">67</span></span></span> , <span class="bc">/* node: login context */</span>
+<span class="d EnumMember"><span class="i">KERN_RAGEVNODE</span> = <span class="e Int"><span class="n">68</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_TTY</span> = <span class="e Int"><span class="n">69</span></span></span> , <span class="bc">/* node: tty settings */</span>
+<span class="d EnumMember"><span class="i">KERN_CHECKOPENEVT</span> = <span class="e Int"><span class="n">70</span></span></span> , <span class="bc">/* spi: check the VOPENEVT flag on vnodes at open time */</span>
+<span class="d EnumMember"><span class="i">KERN_MAXID</span> = <span class="e Int"><span class="n">71</span></span></span> , <span class="bc">/* number of valid kern ids */</span>
     <span class="bc">/*                                                  ,
      * Don't add any more sysctls like this.  Instead, use the SYSCTL_*() macros
      * and OID_AUTO. This will have the added benefit of not having to recompile
      * sysctl(8) to pick up your changes.
      */</span>
     <span class="bc">/* KERN_RAGEVNODE types */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_RAGE_PROC</span></span> = <span class="e Int"><span class="n">1</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_RAGE_THREAD</span></span> = <span class="e Int"><span class="n">2</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_UNRAGE_PROC</span></span> = <span class="e Int"><span class="n">3</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_UNRAGE_THREAD</span></span> = <span class="e Int"><span class="n">4</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_RAGE_PROC</span> = <span class="e Int"><span class="n">1</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_RAGE_THREAD</span> = <span class="e Int"><span class="n">2</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_UNRAGE_PROC</span> = <span class="e Int"><span class="n">3</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_UNRAGE_THREAD</span> = <span class="e Int"><span class="n">4</span></span></span> ,
     <span class="bc">/* KERN_OPENEVT types */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_OPENEVT_PROC</span></span> = <span class="e Int"><span class="n">1</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_UNOPENEVT_PROC</span></span> = <span class="e Int"><span class="n">2</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_OPENEVT_PROC</span> = <span class="e Int"><span class="n">1</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_UNOPENEVT_PROC</span> = <span class="e Int"><span class="n">2</span></span></span> ,
     <span class="bc">/* KERN_TFP types */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_TFP_POLICY</span></span> = <span class="e Int"><span class="n">1</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_TFP_POLICY</span> = <span class="e Int"><span class="n">1</span></span></span> ,
     <span class="bc">/* KERN_TFP_POLICY values . All policies allow task port for self */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_TFP_POLICY_DENY</span></span> = <span class="e Int"><span class="n">0</span></span></span>, <span class="bc">/* Deny Mode: None allowed except privileged */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_TFP_POLICY_DEFAULT</span></span> = <span class="e Int"><span class="n">2</span></span></span>, <span class="bc">/* Default  Mode: related ones allowed and upcall authentication */</span>
+<span class="d EnumMember"><span class="i">KERN_TFP_POLICY_DENY</span> = <span class="e Int"><span class="n">0</span></span></span>, <span class="bc">/* Deny Mode: None allowed except privileged */</span>
+<span class="d EnumMember"><span class="i">KERN_TFP_POLICY_DEFAULT</span> = <span class="e Int"><span class="n">2</span></span></span>, <span class="bc">/* Default  Mode: related ones allowed and upcall authentication */</span>
     <span class="bc">/* KERN_KDEBUG types */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDEFLAGS</span></span> = <span class="e Int"><span class="n">1</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDDFLAGS</span></span> = <span class="e Int"><span class="n">2</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDENABLE</span></span> = <span class="e Int"><span class="n">3</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDSETBUF</span></span> = <span class="e Int"><span class="n">4</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDGETBUF</span></span> = <span class="e Int"><span class="n">5</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDSETUP</span></span> = <span class="e Int"><span class="n">6</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDREMOVE</span></span> = <span class="e Int"><span class="n">7</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDSETREG</span></span> = <span class="e Int"><span class="n">8</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDGETREG</span></span> = <span class="e Int"><span class="n">9</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDREADTR</span></span> = <span class="e Int"><span class="n">10</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDPIDTR</span></span> = <span class="e Int"><span class="n">11</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDTHRMAP</span></span> = <span class="e Int"><span class="n">12</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDPIDEX</span></span> = <span class="e Int"><span class="n">14</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDSETRTCDEC</span></span> = <span class="e Int"><span class="n">15</span></span></span> ,
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_KDGETENTROPY</span></span> = <span class="e Int"><span class="n">16</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDEFLAGS</span> = <span class="e Int"><span class="n">1</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDDFLAGS</span> = <span class="e Int"><span class="n">2</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDENABLE</span> = <span class="e Int"><span class="n">3</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDSETBUF</span> = <span class="e Int"><span class="n">4</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDGETBUF</span> = <span class="e Int"><span class="n">5</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDSETUP</span> = <span class="e Int"><span class="n">6</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDREMOVE</span> = <span class="e Int"><span class="n">7</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDSETREG</span> = <span class="e Int"><span class="n">8</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDGETREG</span> = <span class="e Int"><span class="n">9</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDREADTR</span> = <span class="e Int"><span class="n">10</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDPIDTR</span> = <span class="e Int"><span class="n">11</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDTHRMAP</span> = <span class="e Int"><span class="n">12</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDPIDEX</span> = <span class="e Int"><span class="n">14</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDSETRTCDEC</span> = <span class="e Int"><span class="n">15</span></span></span> ,
+<span class="d EnumMember"><span class="i">KERN_KDGETENTROPY</span> = <span class="e Int"><span class="n">16</span></span></span> ,
     <span class="bc">/* KERN_PANICINFO types */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PANICINFO_MAXSIZE</span></span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* quad: panic UI image size limit */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PANICINFO_IMAGE</span></span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* panic UI in 8-bit kraw format */</span>
+<span class="d EnumMember"><span class="i">KERN_PANICINFO_MAXSIZE</span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* quad: panic UI image size limit */</span>
+<span class="d EnumMember"><span class="i">KERN_PANICINFO_IMAGE</span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* panic UI in 8-bit kraw format */</span>
     <span class="bc">/* 
      * KERN_PROC subtypes
      */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PROC_ALL</span></span> = <span class="e Int"><span class="n">0</span></span></span> , <span class="bc">/* everything */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PROC_PID</span></span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* by process id */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PROC_PGRP</span></span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* by process group id */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PROC_SESSION</span></span> = <span class="e Int"><span class="n">3</span></span></span> , <span class="bc">/* by session of pid */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PROC_TTY</span></span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* by controlling tty */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PROC_UID</span></span> = <span class="e Int"><span class="n">5</span></span></span> , <span class="bc">/* by effective uid */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PROC_RUID</span></span> = <span class="e Int"><span class="n">6</span></span></span> , <span class="bc">/* by real uid */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_PROC_LCID</span></span> = <span class="e Int"><span class="n">7</span></span></span> , <span class="bc">/* by login context id */</span>
+<span class="d EnumMember"><span class="i">KERN_PROC_ALL</span> = <span class="e Int"><span class="n">0</span></span></span> , <span class="bc">/* everything */</span>
+<span class="d EnumMember"><span class="i">KERN_PROC_PID</span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* by process id */</span>
+<span class="d EnumMember"><span class="i">KERN_PROC_PGRP</span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* by process group id */</span>
+<span class="d EnumMember"><span class="i">KERN_PROC_SESSION</span> = <span class="e Int"><span class="n">3</span></span></span> , <span class="bc">/* by session of pid */</span>
+<span class="d EnumMember"><span class="i">KERN_PROC_TTY</span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* by controlling tty */</span>
+<span class="d EnumMember"><span class="i">KERN_PROC_UID</span> = <span class="e Int"><span class="n">5</span></span></span> , <span class="bc">/* by effective uid */</span>
+<span class="d EnumMember"><span class="i">KERN_PROC_RUID</span> = <span class="e Int"><span class="n">6</span></span></span> , <span class="bc">/* by real uid */</span>
+<span class="d EnumMember"><span class="i">KERN_PROC_LCID</span> = <span class="e Int"><span class="n">7</span></span></span> , <span class="bc">/* by login context id */</span>
     <span class="bc">/*
      * KERN_LCTX subtypes
      */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_LCTX_ALL</span></span> = <span class="e Int"><span class="n">0</span></span></span> , <span class="bc">/* everything */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_LCTX_LCID</span></span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* by login context id */</span>
+<span class="d EnumMember"><span class="i">KERN_LCTX_ALL</span> = <span class="e Int"><span class="n">0</span></span></span> , <span class="bc">/* everything */</span>
+<span class="d EnumMember"><span class="i">KERN_LCTX_LCID</span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* by login context id */</span>
     <span class="bc">/*
      * KERN_IPC identifiers
      */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KIPC_MAXSOCKBUF</span></span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* int: max size of a socket buffer */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KIPC_SOCKBUF_WASTE</span></span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* int: wastage factor in sockbuf */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KIPC_SOMAXCONN</span></span> = <span class="e Int"><span class="n">3</span></span></span> , <span class="bc">/* int: max length of connection q */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KIPC_MAX_LINKHDR</span></span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* int: max length of link header */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KIPC_MAX_PROTOHDR</span></span> = <span class="e Int"><span class="n">5</span></span></span> , <span class="bc">/* int: max length of network header */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KIPC_MAX_HDR</span></span> = <span class="e Int"><span class="n">6</span></span></span> , <span class="bc">/* int: max total length of headers */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KIPC_MAX_DATALEN</span></span> = <span class="e Int"><span class="n">7</span></span></span> , <span class="bc">/* int: max length of data? */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KIPC_MBSTAT</span></span> = <span class="e Int"><span class="n">8</span></span></span> , <span class="bc">/* struct: mbuf usage statistics */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KIPC_NMBCLUSTERS</span></span> = <span class="e Int"><span class="n">9</span></span></span> , <span class="bc">/* int: maximum mbuf clusters */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">KIPC_SOQLIMITCOMPAT</span></span> = <span class="e Int"><span class="n">10</span></span></span> , <span class="bc">/* int: socket queue limit */</span>
+<span class="d EnumMember"><span class="i">KIPC_MAXSOCKBUF</span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* int: max size of a socket buffer */</span>
+<span class="d EnumMember"><span class="i">KIPC_SOCKBUF_WASTE</span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* int: wastage factor in sockbuf */</span>
+<span class="d EnumMember"><span class="i">KIPC_SOMAXCONN</span> = <span class="e Int"><span class="n">3</span></span></span> , <span class="bc">/* int: max length of connection q */</span>
+<span class="d EnumMember"><span class="i">KIPC_MAX_LINKHDR</span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* int: max length of link header */</span>
+<span class="d EnumMember"><span class="i">KIPC_MAX_PROTOHDR</span> = <span class="e Int"><span class="n">5</span></span></span> , <span class="bc">/* int: max length of network header */</span>
+<span class="d EnumMember"><span class="i">KIPC_MAX_HDR</span> = <span class="e Int"><span class="n">6</span></span></span> , <span class="bc">/* int: max total length of headers */</span>
+<span class="d EnumMember"><span class="i">KIPC_MAX_DATALEN</span> = <span class="e Int"><span class="n">7</span></span></span> , <span class="bc">/* int: max length of data? */</span>
+<span class="d EnumMember"><span class="i">KIPC_MBSTAT</span> = <span class="e Int"><span class="n">8</span></span></span> , <span class="bc">/* struct: mbuf usage statistics */</span>
+<span class="d EnumMember"><span class="i">KIPC_NMBCLUSTERS</span> = <span class="e Int"><span class="n">9</span></span></span> , <span class="bc">/* int: maximum mbuf clusters */</span>
+<span class="d EnumMember"><span class="i">KIPC_SOQLIMITCOMPAT</span> = <span class="e Int"><span class="n">10</span></span></span> , <span class="bc">/* int: socket queue limit */</span>
     <span class="bc">/*
      * CTL_VM identifiers
      */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">VM_METER</span></span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* struct vmmeter */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">VM_LOADAVG</span></span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* struct loadavg */</span>
+<span class="d EnumMember"><span class="i">VM_METER</span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* struct vmmeter */</span>
+<span class="d EnumMember"><span class="i">VM_LOADAVG</span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* struct loadavg */</span>
     <span class="bc">/*
      * Note: "3" was skipped sometime ago and should probably remain unused
      * to avoid any new entry from being accepted by older kernels...
      */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">VM_MACHFACTOR</span></span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* struct loadavg with mach factor*/</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">VM_SWAPUSAGE</span></span> = <span class="e Int"><span class="n">5</span></span></span> , <span class="bc">/* total swap usage */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">VM_MAXID</span></span> = <span class="e Int"><span class="n">6</span></span></span> , <span class="bc">/* number of valid vm ids */</span>
+<span class="d EnumMember"><span class="i">VM_MACHFACTOR</span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* struct loadavg with mach factor*/</span>
+<span class="d EnumMember"><span class="i">VM_SWAPUSAGE</span> = <span class="e Int"><span class="n">5</span></span></span> , <span class="bc">/* total swap usage */</span>
+<span class="d EnumMember"><span class="i">VM_MAXID</span> = <span class="e Int"><span class="n">6</span></span></span> , <span class="bc">/* number of valid vm ids */</span>
     <span class="bc">/*
      * CTL_HW identifiers
      */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_MACHINE</span></span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* string: machine class */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_MODEL</span></span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* string: specific machine model */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_NCPU</span></span> = <span class="e Int"><span class="n">3</span></span></span> , <span class="bc">/* int: number of cpus */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_BYTEORDER</span></span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* int: machine byte order */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_PHYSMEM</span></span> = <span class="e Int"><span class="n">5</span></span></span> , <span class="bc">/* int: total memory */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_USERMEM</span></span> = <span class="e Int"><span class="n">6</span></span></span> , <span class="bc">/* int: non-kernel memory */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_PAGESIZE</span></span> = <span class="e Int"><span class="n">7</span></span></span> , <span class="bc">/* int: software page size */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_DISKNAMES</span></span> = <span class="e Int"><span class="n">8</span></span></span> , <span class="bc">/* strings: disk drive names */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_DISKSTATS</span></span> = <span class="e Int"><span class="n">9</span></span></span> , <span class="bc">/* struct: diskstats[] */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_EPOCH</span></span> = <span class="e Int"><span class="n">10</span></span></span> , <span class="bc">/* int: 0 for Legacy, else NewWorld */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_FLOATINGPT</span></span> = <span class="e Int"><span class="n">11</span></span></span> , <span class="bc">/* int: has HW floating point? */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_MACHINE_ARCH</span></span> = <span class="e Int"><span class="n">12</span></span></span> , <span class="bc">/* string: machine architecture */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_VECTORUNIT</span></span> = <span class="e Int"><span class="n">13</span></span></span> , <span class="bc">/* int: has HW vector unit? */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_BUS_FREQ</span></span> = <span class="e Int"><span class="n">14</span></span></span> , <span class="bc">/* int: Bus Frequency */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_CPU_FREQ</span></span> = <span class="e Int"><span class="n">15</span></span></span> , <span class="bc">/* int: CPU Frequency */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_CACHELINE</span></span> = <span class="e Int"><span class="n">16</span></span></span> , <span class="bc">/* int: Cache Line Size in Bytes */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_L1ICACHESIZE</span></span> = <span class="e Int"><span class="n">17</span></span></span> , <span class="bc">/* int: L1 I Cache Size in Bytes */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_L1DCACHESIZE</span></span> = <span class="e Int"><span class="n">18</span></span></span> , <span class="bc">/* int: L1 D Cache Size in Bytes */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_L2SETTINGS</span></span> = <span class="e Int"><span class="n">19</span></span></span> , <span class="bc">/* int: L2 Cache Settings */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_L2CACHESIZE</span></span> = <span class="e Int"><span class="n">20</span></span></span> , <span class="bc">/* int: L2 Cache Size in Bytes */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_L3SETTINGS</span></span> = <span class="e Int"><span class="n">21</span></span></span> , <span class="bc">/* int: L3 Cache Settings */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_L3CACHESIZE</span></span> = <span class="e Int"><span class="n">22</span></span></span> , <span class="bc">/* int: L3 Cache Size in Bytes */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_TB_FREQ</span></span> = <span class="e Int"><span class="n">23</span></span></span> , <span class="bc">/* int: Bus Frequency */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_MEMSIZE</span></span> = <span class="e Int"><span class="n">24</span></span></span> , <span class="bc">/* uint64_t: physical ram size */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_AVAILCPU</span></span> = <span class="e Int"><span class="n">25</span></span></span> , <span class="bc">/* int: number of available CPUs */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">HW_MAXID</span></span> = <span class="e Int"><span class="n">26</span></span></span> , <span class="bc">/* number of valid hw ids */</span>
+<span class="d EnumMember"><span class="i">HW_MACHINE</span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* string: machine class */</span>
+<span class="d EnumMember"><span class="i">HW_MODEL</span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* string: specific machine model */</span>
+<span class="d EnumMember"><span class="i">HW_NCPU</span> = <span class="e Int"><span class="n">3</span></span></span> , <span class="bc">/* int: number of cpus */</span>
+<span class="d EnumMember"><span class="i">HW_BYTEORDER</span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* int: machine byte order */</span>
+<span class="d EnumMember"><span class="i">HW_PHYSMEM</span> = <span class="e Int"><span class="n">5</span></span></span> , <span class="bc">/* int: total memory */</span>
+<span class="d EnumMember"><span class="i">HW_USERMEM</span> = <span class="e Int"><span class="n">6</span></span></span> , <span class="bc">/* int: non-kernel memory */</span>
+<span class="d EnumMember"><span class="i">HW_PAGESIZE</span> = <span class="e Int"><span class="n">7</span></span></span> , <span class="bc">/* int: software page size */</span>
+<span class="d EnumMember"><span class="i">HW_DISKNAMES</span> = <span class="e Int"><span class="n">8</span></span></span> , <span class="bc">/* strings: disk drive names */</span>
+<span class="d EnumMember"><span class="i">HW_DISKSTATS</span> = <span class="e Int"><span class="n">9</span></span></span> , <span class="bc">/* struct: diskstats[] */</span>
+<span class="d EnumMember"><span class="i">HW_EPOCH</span> = <span class="e Int"><span class="n">10</span></span></span> , <span class="bc">/* int: 0 for Legacy, else NewWorld */</span>
+<span class="d EnumMember"><span class="i">HW_FLOATINGPT</span> = <span class="e Int"><span class="n">11</span></span></span> , <span class="bc">/* int: has HW floating point? */</span>
+<span class="d EnumMember"><span class="i">HW_MACHINE_ARCH</span> = <span class="e Int"><span class="n">12</span></span></span> , <span class="bc">/* string: machine architecture */</span>
+<span class="d EnumMember"><span class="i">HW_VECTORUNIT</span> = <span class="e Int"><span class="n">13</span></span></span> , <span class="bc">/* int: has HW vector unit? */</span>
+<span class="d EnumMember"><span class="i">HW_BUS_FREQ</span> = <span class="e Int"><span class="n">14</span></span></span> , <span class="bc">/* int: Bus Frequency */</span>
+<span class="d EnumMember"><span class="i">HW_CPU_FREQ</span> = <span class="e Int"><span class="n">15</span></span></span> , <span class="bc">/* int: CPU Frequency */</span>
+<span class="d EnumMember"><span class="i">HW_CACHELINE</span> = <span class="e Int"><span class="n">16</span></span></span> , <span class="bc">/* int: Cache Line Size in Bytes */</span>
+<span class="d EnumMember"><span class="i">HW_L1ICACHESIZE</span> = <span class="e Int"><span class="n">17</span></span></span> , <span class="bc">/* int: L1 I Cache Size in Bytes */</span>
+<span class="d EnumMember"><span class="i">HW_L1DCACHESIZE</span> = <span class="e Int"><span class="n">18</span></span></span> , <span class="bc">/* int: L1 D Cache Size in Bytes */</span>
+<span class="d EnumMember"><span class="i">HW_L2SETTINGS</span> = <span class="e Int"><span class="n">19</span></span></span> , <span class="bc">/* int: L2 Cache Settings */</span>
+<span class="d EnumMember"><span class="i">HW_L2CACHESIZE</span> = <span class="e Int"><span class="n">20</span></span></span> , <span class="bc">/* int: L2 Cache Size in Bytes */</span>
+<span class="d EnumMember"><span class="i">HW_L3SETTINGS</span> = <span class="e Int"><span class="n">21</span></span></span> , <span class="bc">/* int: L3 Cache Settings */</span>
+<span class="d EnumMember"><span class="i">HW_L3CACHESIZE</span> = <span class="e Int"><span class="n">22</span></span></span> , <span class="bc">/* int: L3 Cache Size in Bytes */</span>
+<span class="d EnumMember"><span class="i">HW_TB_FREQ</span> = <span class="e Int"><span class="n">23</span></span></span> , <span class="bc">/* int: Bus Frequency */</span>
+<span class="d EnumMember"><span class="i">HW_MEMSIZE</span> = <span class="e Int"><span class="n">24</span></span></span> , <span class="bc">/* uint64_t: physical ram size */</span>
+<span class="d EnumMember"><span class="i">HW_AVAILCPU</span> = <span class="e Int"><span class="n">25</span></span></span> , <span class="bc">/* int: number of available CPUs */</span>
+<span class="d EnumMember"><span class="i">HW_MAXID</span> = <span class="e Int"><span class="n">26</span></span></span> , <span class="bc">/* number of valid hw ids */</span>
     <span class="bc">/*
      * XXX This information should be moved to the man page.
      *
@@ -341,38 +341,38 @@
     <span class="bc">/*
      * CTL_USER definitions
      */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_CS_PATH</span></span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* string: _CS_PATH */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_BC_BASE_MAX</span></span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* int: BC_BASE_MAX */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_BC_DIM_MAX</span></span> = <span class="e Int"><span class="n">3</span></span></span> , <span class="bc">/* int: BC_DIM_MAX */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_BC_SCALE_MAX</span></span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* int: BC_SCALE_MAX */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_BC_STRING_MAX</span></span> = <span class="e Int"><span class="n">5</span></span></span> , <span class="bc">/* int: BC_STRING_MAX */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_COLL_WEIGHTS_MAX</span></span> = <span class="e Int"><span class="n">6</span></span></span> , <span class="bc">/* int: COLL_WEIGHTS_MAX */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_EXPR_NEST_MAX</span></span> = <span class="e Int"><span class="n">7</span></span></span> , <span class="bc">/* int: EXPR_NEST_MAX */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_LINE_MAX</span></span> = <span class="e Int"><span class="n">8</span></span></span> , <span class="bc">/* int: LINE_MAX */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_RE_DUP_MAX</span></span> = <span class="e Int"><span class="n">9</span></span></span> , <span class="bc">/* int: RE_DUP_MAX */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_POSIX2_VERSION</span></span> = <span class="e Int"><span class="n">10</span></span></span> , <span class="bc">/* int: POSIX2_VERSION */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_POSIX2_C_BIND</span></span> = <span class="e Int"><span class="n">11</span></span></span> , <span class="bc">/* int: POSIX2_C_BIND */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_POSIX2_C_DEV</span></span> = <span class="e Int"><span class="n">12</span></span></span> , <span class="bc">/* int: POSIX2_C_DEV */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_POSIX2_CHAR_TERM</span></span> = <span class="e Int"><span class="n">13</span></span></span> , <span class="bc">/* int: POSIX2_CHAR_TERM */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_POSIX2_FORT_DEV</span></span> = <span class="e Int"><span class="n">14</span></span></span> , <span class="bc">/* int: POSIX2_FORT_DEV */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_POSIX2_FORT_RUN</span></span> = <span class="e Int"><span class="n">15</span></span></span> , <span class="bc">/* int: POSIX2_FORT_RUN */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_POSIX2_LOCALEDEF</span></span> = <span class="e Int"><span class="n">16</span></span></span> , <span class="bc">/* int: POSIX2_LOCALEDEF */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_POSIX2_SW_DEV</span></span> = <span class="e Int"><span class="n">17</span></span></span> , <span class="bc">/* int: POSIX2_SW_DEV */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_POSIX2_UPE</span></span> = <span class="e Int"><span class="n">18</span></span></span> , <span class="bc">/* int: POSIX2_UPE */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_STREAM_MAX</span></span> = <span class="e Int"><span class="n">19</span></span></span> , <span class="bc">/* int: POSIX2_STREAM_MAX */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_TZNAME_MAX</span></span> = <span class="e Int"><span class="n">20</span></span></span> , <span class="bc">/* int: POSIX2_TZNAME_MAX */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">USER_MAXID</span></span> = <span class="e Int"><span class="n">21</span></span></span> , <span class="bc">/* number of valid user ids */</span>
+<span class="d EnumMember"><span class="i">USER_CS_PATH</span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* string: _CS_PATH */</span>
+<span class="d EnumMember"><span class="i">USER_BC_BASE_MAX</span> = <span class="e Int"><span class="n">2</span></span></span> , <span class="bc">/* int: BC_BASE_MAX */</span>
+<span class="d EnumMember"><span class="i">USER_BC_DIM_MAX</span> = <span class="e Int"><span class="n">3</span></span></span> , <span class="bc">/* int: BC_DIM_MAX */</span>
+<span class="d EnumMember"><span class="i">USER_BC_SCALE_MAX</span> = <span class="e Int"><span class="n">4</span></span></span> , <span class="bc">/* int: BC_SCALE_MAX */</span>
+<span class="d EnumMember"><span class="i">USER_BC_STRING_MAX</span> = <span class="e Int"><span class="n">5</span></span></span> , <span class="bc">/* int: BC_STRING_MAX */</span>
+<span class="d EnumMember"><span class="i">USER_COLL_WEIGHTS_MAX</span> = <span class="e Int"><span class="n">6</span></span></span> , <span class="bc">/* int: COLL_WEIGHTS_MAX */</span>
+<span class="d EnumMember"><span class="i">USER_EXPR_NEST_MAX</span> = <span class="e Int"><span class="n">7</span></span></span> , <span class="bc">/* int: EXPR_NEST_MAX */</span>
+<span class="d EnumMember"><span class="i">USER_LINE_MAX</span> = <span class="e Int"><span class="n">8</span></span></span> , <span class="bc">/* int: LINE_MAX */</span>
+<span class="d EnumMember"><span class="i">USER_RE_DUP_MAX</span> = <span class="e Int"><span class="n">9</span></span></span> , <span class="bc">/* int: RE_DUP_MAX */</span>
+<span class="d EnumMember"><span class="i">USER_POSIX2_VERSION</span> = <span class="e Int"><span class="n">10</span></span></span> , <span class="bc">/* int: POSIX2_VERSION */</span>
+<span class="d EnumMember"><span class="i">USER_POSIX2_C_BIND</span> = <span class="e Int"><span class="n">11</span></span></span> , <span class="bc">/* int: POSIX2_C_BIND */</span>
+<span class="d EnumMember"><span class="i">USER_POSIX2_C_DEV</span> = <span class="e Int"><span class="n">12</span></span></span> , <span class="bc">/* int: POSIX2_C_DEV */</span>
+<span class="d EnumMember"><span class="i">USER_POSIX2_CHAR_TERM</span> = <span class="e Int"><span class="n">13</span></span></span> , <span class="bc">/* int: POSIX2_CHAR_TERM */</span>
+<span class="d EnumMember"><span class="i">USER_POSIX2_FORT_DEV</span> = <span class="e Int"><span class="n">14</span></span></span> , <span class="bc">/* int: POSIX2_FORT_DEV */</span>
+<span class="d EnumMember"><span class="i">USER_POSIX2_FORT_RUN</span> = <span class="e Int"><span class="n">15</span></span></span> , <span class="bc">/* int: POSIX2_FORT_RUN */</span>
+<span class="d EnumMember"><span class="i">USER_POSIX2_LOCALEDEF</span> = <span class="e Int"><span class="n">16</span></span></span> , <span class="bc">/* int: POSIX2_LOCALEDEF */</span>
+<span class="d EnumMember"><span class="i">USER_POSIX2_SW_DEV</span> = <span class="e Int"><span class="n">17</span></span></span> , <span class="bc">/* int: POSIX2_SW_DEV */</span>
+<span class="d EnumMember"><span class="i">USER_POSIX2_UPE</span> = <span class="e Int"><span class="n">18</span></span></span> , <span class="bc">/* int: POSIX2_UPE */</span>
+<span class="d EnumMember"><span class="i">USER_STREAM_MAX</span> = <span class="e Int"><span class="n">19</span></span></span> , <span class="bc">/* int: POSIX2_STREAM_MAX */</span>
+<span class="d EnumMember"><span class="i">USER_TZNAME_MAX</span> = <span class="e Int"><span class="n">20</span></span></span> , <span class="bc">/* int: POSIX2_TZNAME_MAX */</span>
+<span class="d EnumMember"><span class="i">USER_MAXID</span> = <span class="e Int"><span class="n">21</span></span></span> , <span class="bc">/* number of valid user ids */</span>
     <span class="bc">/*
      * CTL_DEBUG definitions
      *
      * Second level identifier specifies which debug variable.
      * Third level identifier specifies which stucture component.
      */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTL_DEBUG_NAME</span></span> = <span class="e Int"><span class="n">0</span></span></span> , <span class="bc">/* string: variable name */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTL_DEBUG_VALUE</span></span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* int: variable value */</span>
-<span class="d EnumMember"><span class="t Identifier"><span class="i">CTL_DEBUG_MAXID</span></span> = <span class="e Int"><span class="n">20</span></span></span> ,
+<span class="d EnumMember"><span class="i">CTL_DEBUG_NAME</span> = <span class="e Int"><span class="n">0</span></span></span> , <span class="bc">/* string: variable name */</span>
+<span class="d EnumMember"><span class="i">CTL_DEBUG_VALUE</span> = <span class="e Int"><span class="n">1</span></span></span> , <span class="bc">/* int: variable value */</span>
+<span class="d EnumMember"><span class="i">CTL_DEBUG_MAXID</span> = <span class="e Int"><span class="n">20</span></span></span> ,
 }</span>
-<span class="d Enum"><span class="k">enum</span> {<span class="d EnumMember"><span class="t Identifier"><span class="i">KERN_USRSTACK</span></span>=<span class="e Int"><span class="n">35</span></span></span>}</span></span>
+<span class="d Enum"><span class="k">enum</span> {<span class="d EnumMember"><span class="i">KERN_USRSTACK</span>=<span class="e Int"><span class="n">35</span></span></span>}</span></span>
 
 </pre></td>
 </tr></table>

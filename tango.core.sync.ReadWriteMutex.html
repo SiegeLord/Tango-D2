@@ -23,7 +23,7 @@
 <p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
 <p class="sec_header">Author:</p><div class="cmnt">Sean Kelly</div>
 <dl>
-<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ReadWriteMutex" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L47">ReadWriteMutex</a> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ReadWriteMutex" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L48">ReadWriteMutex</a> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">This class represents a mutex that allows any number of readers to enter,
  but when a writer enters, all other readers and writers are blocked.</div></div>
@@ -36,7 +36,7 @@
  an issue however, because it is uncommon to call deeply into unknown code
  while holding a lock that simply protects data.</div>
 <dl>
-<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="ReadWriteMutex.Policy" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L64">Policy</a> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Policy" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="ReadWriteMutex.Policy" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L65">Policy</a> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Policy" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Defines the policy used by this mutex.  Currently, two policies are
  defined.</div></div>
@@ -51,66 +51,66 @@
  Future policies may offer a more even balance between reader and writer
  precedence.</div>
 <dl>
-<dt class="decl"><a class="symbol _enummem" name="ReadWriteMutex.Policy.PREFER_READERS" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L66">PREFER_READERS</a> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Policy.PREFER_READERS" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _enummem" name="ReadWriteMutex.Policy.PREFER_READERS" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L67">PREFER_READERS</a> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Policy.PREFER_READERS" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Readers get preference.  This may starve writers.</div></div></dd>
-<dt class="decl"><a class="symbol _enummem" name="ReadWriteMutex.Policy.PREFER_WRITERS" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L67">PREFER_WRITERS</a> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Policy.PREFER_WRITERS" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _enummem" name="ReadWriteMutex.Policy.PREFER_WRITERS" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L68">PREFER_WRITERS</a> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Policy.PREFER_WRITERS" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Writers get preference.  This may starve readers.</div></div></dd></dl></dd>
-<dt class="decl"><a class="symbol _ctor" name="ReadWriteMutex.this" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L85">this</a><span class="params">(Policy <em>policy</em> = <span class="defval"><span class="i">PREFER_WRITERS</span></span>)</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.this" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _ctor" name="ReadWriteMutex.this" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L86">this</a><span class="params">(Policy <em>policy</em> = <span class="defval"><span class="i">PREFER_WRITERS</span></span>)</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.this" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Initializes a read/write mutex object with the supplied policy.</div></div>
 <p class="sec_header">Parameters:</p>
 <table class="params">
 <tr><td><em>policy</em></td><td>The policy to use.</td></tr></table>
 <p class="sec_header">Throws:</p><div class="cmnt">SyncException on error.</div></dd>
-<dt class="decl"><span class="rettyp">Policy</span> <a class="symbol _function" name="ReadWriteMutex.policy" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L119">policy</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.policy" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Policy</span> <a class="symbol _function" name="ReadWriteMutex.policy" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L120">policy</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.policy" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Gets the policy for the associated mutex.</div></div>
 <p class="sec_header">Returns:</p><div class="cmnt">The policy used by this mutex.</div></dd>
-<dt class="decl"><span class="rettyp">Reader</span> <a class="symbol _function" name="ReadWriteMutex.reader" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L136">reader</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.reader" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Reader</span> <a class="symbol _function" name="ReadWriteMutex.reader" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L137">reader</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.reader" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Gets an object representing the reader lock for the associated mutex.</div></div>
 <p class="sec_header">Returns:</p><div class="cmnt">A reader sub-mutex.</div></dd>
-<dt class="decl"><span class="rettyp">Writer</span> <a class="symbol _function" name="ReadWriteMutex.writer" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L148">writer</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.writer" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Writer</span> <a class="symbol _function" name="ReadWriteMutex.writer" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L149">writer</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>]</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.writer" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Gets an object representing the writer lock for the associated mutex.</div></div>
 <p class="sec_header">Returns:</p><div class="cmnt">A writer sub-mutex.</div></dd>
-<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ReadWriteMutex.Reader" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L163">Reader</a> : <span class="bclass">Object.Monitor</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Reader" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ReadWriteMutex.Reader" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L164">Reader</a> : <span class="bclass">Object.Monitor</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Reader" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">This class can be considered a mutex in its own right, and is used to
  negotiate a read lock for the enclosing mutex.</div></div>
 <dl>
-<dt class="decl"><a class="symbol _ctor" name="ReadWriteMutex.Reader.this" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L169">this</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Reader.this" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _ctor" name="ReadWriteMutex.Reader.this" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L170">this</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Reader.this" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Initializes a read/write mutex reader proxy object.</div></div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ReadWriteMutex.Reader.lock" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L179">lock</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Reader.lock" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ReadWriteMutex.Reader.lock" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L180">lock</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Reader.lock" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Acquires a read lock on the enclosing mutex.</div></div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ReadWriteMutex.Reader.unlock" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L196">unlock</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Reader.unlock" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ReadWriteMutex.Reader.unlock" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L197">unlock</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Reader.unlock" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Releases a read lock on the enclosing mutex.</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ReadWriteMutex.Reader.tryLock" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L217">tryLock</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Reader.tryLock" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ReadWriteMutex.Reader.tryLock" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L218">tryLock</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Reader.tryLock" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Attempts to acquire a read lock on the enclosing mutex.  If one can
  be obtained without blocking, the lock is acquired and true is
  returned.  If not, the lock is not acquired and false is returned.</div></div>
 <p class="sec_header">Returns:</p><div class="cmnt">true if the lock was acquired and false if not.</div></dd></dl></dd>
-<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ReadWriteMutex.Writer" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L266">Writer</a> : <span class="bclass">Object.Monitor</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Writer" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="ReadWriteMutex.Writer" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L267">Writer</a> : <span class="bclass">Object.Monitor</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Writer" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">This class can be considered a mutex in its own right, and is used to
  negotiate a write lock for the enclosing mutex.</div></div>
 <dl>
-<dt class="decl"><a class="symbol _ctor" name="ReadWriteMutex.Writer.this" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L272">this</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Writer.this" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _ctor" name="ReadWriteMutex.Writer.this" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L273">this</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Writer.this" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Initializes a read/write mutex writer proxy object.</div></div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ReadWriteMutex.Writer.lock" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L282">lock</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Writer.lock" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ReadWriteMutex.Writer.lock" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L283">lock</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Writer.lock" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Acquires a write lock on the enclosing mutex.</div></div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ReadWriteMutex.Writer.unlock" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L299">unlock</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Writer.unlock" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="ReadWriteMutex.Writer.unlock" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L300">unlock</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Writer.unlock" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Releases a write lock on the enclosing mutex.</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ReadWriteMutex.Writer.tryLock" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L333">tryLock</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Writer.tryLock" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="ReadWriteMutex.Writer.tryLock" href="htmlsrc/tango.core.sync.ReadWriteMutex.html#L334">tryLock</a><span class="params">()</span> <a href="tango.core.sync.ReadWriteMutex.html#ReadWriteMutex.Writer.tryLock" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Attempts to acquire a write lock on the enclosing mutex.  If one can
  be obtained without blocking, the lock is acquired and true is
@@ -119,7 +119,7 @@
 </div>
 <div id="kandil-footer">
   <p>Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:23 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Tue Aug 21 02:56:44 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

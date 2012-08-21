@@ -79,7 +79,7 @@
     <span class="d Variables"><span class="t Identifier"><span class="i">Addr</span></span>   <span class="i">addr</span>;</span>
 }</span></span>
 
-<span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">tipc_addr</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">zone</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">cluster</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">node</span></span>)</span>
+<span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">tipc_addr</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">zone</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">cluster</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">node</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Or"><span class="e Or"><span class="e Paren">(<span class="e LShift"><span class="e Identifier"><span class="i">zone</span></span> &lt;&lt; <span class="e Int"><span class="n">24</span></span></span>)</span> | <span class="e Paren">(<span class="e LShift"><span class="e Identifier"><span class="i">cluster</span></span> &lt;&lt; <span class="e Int"><span class="n">12</span></span></span>)</span></span> | <span class="e Identifier"><span class="i">node</span></span></span>;</span>
 }</span></span></span>
@@ -92,7 +92,7 @@
     <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Equal"><span class="e Call"><span class="e Identifier"><span class="i">tipc_addr</span></span>(<span class="n">3</span>, <span class="n">1</span>, <span class="n">63</span>)</span> == <span class="e Int"><span class="n">50335807</span></span></span>)</span>;</span>
 }</span></span></span>
 
-<span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">tipc_zone</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">addr</span></span>)</span>
+<span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">tipc_zone</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">addr</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e RShift"><span class="e Identifier"><span class="i">addr</span></span> &gt;&gt; <span class="e Int"><span class="n">24</span></span></span>;</span>
 }</span></span></span>
@@ -105,7 +105,7 @@
     <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Equal"><span class="e Call"><span class="e Identifier"><span class="i">tipc_zone</span></span>(<span class="n">50335807u</span>)</span> == <span class="e Int"><span class="n">3</span></span></span>)</span>;</span>
 }</span></span></span>
 
-<span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">tipc_cluster</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">addr</span></span>)</span>
+<span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">tipc_cluster</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">addr</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e And"><span class="e Paren">(<span class="e RShift"><span class="e Identifier"><span class="i">addr</span></span> &gt;&gt; <span class="e Int"><span class="n">12</span></span></span>)</span> &amp; <span class="e Int"><span class="n">0xfff</span></span></span>;</span>
 }</span></span></span>
@@ -118,7 +118,7 @@
     <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Equal"><span class="e Call"><span class="e Identifier"><span class="i">tipc_cluster</span></span>(<span class="n">50335807u</span>)</span> == <span class="e Int"><span class="n">1</span></span></span>)</span>;</span>
 }</span></span></span>
 
-<span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">tipc_node</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">addr</span></span>)</span>
+<span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">tipc_node</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">addr</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e And"><span class="e Identifier"><span class="i">addr</span></span> &amp; <span class="e Int"><span class="n">0xfff</span></span></span>;</span>
 }</span></span></span>
@@ -133,93 +133,93 @@
 
 <span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">int</span></span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_CFG_SRV</span></span>        = <span class="e Int"><span class="n">0</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_TOP_SRV</span></span>        = <span class="e Int"><span class="n">1</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_RESERVED_TYPES</span></span> = <span class="e Int"><span class="n">64</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_CFG_SRV</span>        = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_TOP_SRV</span>        = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_RESERVED_TYPES</span> = <span class="e Int"><span class="n">64</span></span></span>,
 }</span>
 
 <span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">int</span></span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_ZONE_SCOPE</span></span>    = <span class="e Int"><span class="n">1</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_CLUSTER_SCOPE</span></span> = <span class="e Int"><span class="n">2</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_NODE_SCOPE</span></span>    = <span class="e Int"><span class="n">3</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_ZONE_SCOPE</span>    = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_CLUSTER_SCOPE</span> = <span class="e Int"><span class="n">2</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_NODE_SCOPE</span>    = <span class="e Int"><span class="n">3</span></span></span>,
 }</span>
 
 <span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">int</span></span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_MAX_USER_MSG_SIZE</span></span> = <span class="e Int"><span class="n">66000</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_MAX_USER_MSG_SIZE</span> = <span class="e Int"><span class="n">66000</span></span></span>,
 }</span>
 
 <span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">int</span></span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_LOW_IMPORTANCE</span></span>      = <span class="e Int"><span class="n">0</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_MEDIUM_IMPORTANCE</span></span>   = <span class="e Int"><span class="n">1</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_HIGH_IMPORTANCE</span></span>     = <span class="e Int"><span class="n">2</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_CRITICAL_IMPORTANCE</span></span> = <span class="e Int"><span class="n">3</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_LOW_IMPORTANCE</span>      = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_MEDIUM_IMPORTANCE</span>   = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_HIGH_IMPORTANCE</span>     = <span class="e Int"><span class="n">2</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_CRITICAL_IMPORTANCE</span> = <span class="e Int"><span class="n">3</span></span></span>,
 }</span>
 
 <span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">int</span></span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_OK</span></span>            = <span class="e Int"><span class="n">0</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_ERR_NO_NAME</span></span>   = <span class="e Int"><span class="n">1</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_ERR_NO_PORT</span></span>   = <span class="e Int"><span class="n">2</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_ERR_NO_NODE</span></span>   = <span class="e Int"><span class="n">3</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_ERR_OVERLOAD</span></span>  = <span class="e Int"><span class="n">4</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_CONN_SHUTDOWN</span></span> = <span class="e Int"><span class="n">5</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_OK</span>            = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_ERR_NO_NAME</span>   = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_ERR_NO_PORT</span>   = <span class="e Int"><span class="n">2</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_ERR_NO_NODE</span>   = <span class="e Int"><span class="n">3</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_ERR_OVERLOAD</span>  = <span class="e Int"><span class="n">4</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_CONN_SHUTDOWN</span> = <span class="e Int"><span class="n">5</span></span></span>,
 }</span>
 
 <span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">int</span></span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_SUB_PORTS</span></span>    = <span class="e Int"><span class="n">0x01</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_SUB_SERVICE</span></span>  = <span class="e Int"><span class="n">0x02</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_SUB_CANCEL</span></span>   = <span class="e Int"><span class="n">0x04</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_SUB_PORTS</span>    = <span class="e Int"><span class="n">0x01</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_SUB_SERVICE</span>  = <span class="e Int"><span class="n">0x02</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_SUB_CANCEL</span>   = <span class="e Int"><span class="n">0x04</span></span></span>,
 }</span>
 
 <span class="lc">// not implemented in the current TIPC version</span>
 <span class="d Version"><span class="k">version</span> (<span class="i">none</span>) <span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">int</span></span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_SUB_NO_BIND_EVTS</span></span>   = <span class="e Int"><span class="n">0x04</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_SUB_NO_UNBIND_EVTS</span></span> = <span class="e Int"><span class="n">0x08</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_SUB_SINGLE_EVT</span></span>     = <span class="e Int"><span class="n">0x10</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_SUB_NO_BIND_EVTS</span>   = <span class="e Int"><span class="n">0x04</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_SUB_NO_UNBIND_EVTS</span> = <span class="e Int"><span class="n">0x08</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_SUB_SINGLE_EVT</span>     = <span class="e Int"><span class="n">0x10</span></span></span>,
 }</span></span>
 
 <span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">int</span></span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_WAIT_FOREVER</span></span> = <span class="e Comp">~<span class="e Int"><span class="n">0</span></span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_WAIT_FOREVER</span> = <span class="e Comp">~<span class="e Int"><span class="n">0</span></span></span></span>,
 }</span>
 
 <span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">int</span></span>
 {
 
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_PUBLISHED</span></span>      = <span class="e Int"><span class="n">1</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_WITHDRAWN</span></span>      = <span class="e Int"><span class="n">2</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_SUBSCR_TIMEOUT</span></span> = <span class="e Int"><span class="n">3</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_PUBLISHED</span>      = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_WITHDRAWN</span>      = <span class="e Int"><span class="n">2</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_SUBSCR_TIMEOUT</span> = <span class="e Int"><span class="n">3</span></span></span>,
 }</span>
 
 <span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">int</span></span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">AF_TIPC</span></span>           = <span class="e Int"><span class="n">30</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">PF_TIPC</span></span>           = <span class="e Int"><span class="n">30</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">SOL_TIPC</span></span>          = <span class="e Int"><span class="n">271</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_ADDR_NAMESEQ</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_ADDR_MCAST</span></span>   = <span class="e Int"><span class="n">1</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_ADDR_NAME</span></span>    = <span class="e Int"><span class="n">2</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_ADDR_ID</span></span>      = <span class="e Int"><span class="n">3</span></span></span>,
+    <span class="d EnumMember"><span class="i">AF_TIPC</span>           = <span class="e Int"><span class="n">30</span></span></span>,
+    <span class="d EnumMember"><span class="i">PF_TIPC</span>           = <span class="e Int"><span class="n">30</span></span></span>,
+    <span class="d EnumMember"><span class="i">SOL_TIPC</span>          = <span class="e Int"><span class="n">271</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_ADDR_NAMESEQ</span> = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_ADDR_MCAST</span>   = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_ADDR_NAME</span>    = <span class="e Int"><span class="n">2</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_ADDR_ID</span>      = <span class="e Int"><span class="n">3</span></span></span>,
 }</span>
 
 <span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">int</span></span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_ERRINFO</span></span>  = <span class="e Int"><span class="n">1</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_RETDATA</span></span>  = <span class="e Int"><span class="n">2</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_DESTNAME</span></span> = <span class="e Int"><span class="n">3</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_ERRINFO</span>  = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_RETDATA</span>  = <span class="e Int"><span class="n">2</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_DESTNAME</span> = <span class="e Int"><span class="n">3</span></span></span>,
 }</span>
 
 <span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">int</span></span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_IMPORTANCE</span></span>     = <span class="e Int"><span class="n">127</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_SRC_DROPPABLE</span></span>  = <span class="e Int"><span class="n">128</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_DEST_DROPPABLE</span></span> = <span class="e Int"><span class="n">129</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TIPC_CONN_TIMEOUT</span></span>   = <span class="e Int"><span class="n">130</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_IMPORTANCE</span>     = <span class="e Int"><span class="n">127</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_SRC_DROPPABLE</span>  = <span class="e Int"><span class="n">128</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_DEST_DROPPABLE</span> = <span class="e Int"><span class="n">129</span></span></span>,
+    <span class="d EnumMember"><span class="i">TIPC_CONN_TIMEOUT</span>   = <span class="e Int"><span class="n">130</span></span></span>,
 }</span></span></span>
 
 </pre></td>

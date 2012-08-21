@@ -94,16 +94,16 @@ int open(in char*, int, ...);
 
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Identifier"><span class="i">__USE_LARGEFILE64</span></span> )
     <span class="d Compound">{
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">creat64</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">creat64</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">creat64</span></span> <span class="i">creat</span>;</span></span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">open64</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter">...</span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">open64</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o ">...</span>)</span><span class="s FuncBody">;</span></span>
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">open64</span></span> <span class="i">open</span>;</span></span>
     }</span>
     <span class="k">else</span>
     <span class="d Compound">{
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">creat</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">open</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter">...</span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">creat</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">open</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o ">...</span>)</span><span class="s FuncBody">;</span></span>
     }</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> )
@@ -117,8 +117,8 @@ int open(in char*, int, ...);
         <span class="d Variables"><span class="t Integral"><span class="k">short</span></span>   <span class="i">l_whence</span>;</span>
     }</span></span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">creat</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">open</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter">...</span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">creat</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">open</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o ">...</span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
@@ -131,8 +131,8 @@ int open(in char*, int, ...);
         <span class="d Variables"><span class="t Integral"><span class="k">short</span></span>   <span class="i">l_whence</span>;</span>
     }</span></span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">creat</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">open</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter">...</span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">creat</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">open</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o ">...</span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
@@ -147,8 +147,8 @@ int open(in char*, int, ...);
         <span class="d Variables"><span class="t Identifier"><span class="i">c_long</span></span><span class="t Array">[<span class="e Int"><span class="n">4</span></span>]</span> <span class="i">l_pad</span>;</span>       <span class="bc">/* reserve area */</span>
     }</span></span>
     
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">creat</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">open</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter">...</span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">creat</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">open</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o ">...</span>)</span><span class="s FuncBody">;</span></span>
 
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Identifier"><span class="i">__USE_LARGEFILE64</span></span> )
     <span class="d Compound">{
@@ -158,7 +158,7 @@ int open(in char*, int, ...);
 }</span></span></span></span></span>
 
 <span class="lc">//int creat(in char*, mode_t);</span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">fcntl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter">...</span>)</span><span class="s FuncBody">;</span></span></span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">fcntl</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o ">...</span>)</span><span class="s FuncBody">;</span></span></span></span>
 <span class="lc">//int open(in char*, int, ...);</span>
 
 <span class="lc">//</span>

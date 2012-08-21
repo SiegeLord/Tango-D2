@@ -47,7 +47,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Digest</span></span> <span class="i">digest</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">stream</span></span>, <span class="o "><span class="t Identifier"><span class="i">Digest</span></span> <span class="i">digest</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span> (<span class="i">stream</span>);</span></span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">filter</span></span> = <span class="e Identifier"><span class="i">digest</span></span></span>;</span>
@@ -63,7 +63,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">len</span> = <span class="e Call"><span class="e Identifier"><span class="i">source</span></span>.<span class="e Identifier"><span class="i">read</span></span> (<span class="i">dst</span>)</span>;</span></span>
                 <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">len</span></span> != <span class="e Identifier"><span class="i">Eof</span></span></span>)
@@ -77,7 +77,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DigestInput</span></span> <span class="i">slurp</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DigestInput</span></span> <span class="i">slurp</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">dst</span></span>.<span class="e Identifier"><span class="i">length</span></span> <span class="k">is</span> <span class="e Int"><span class="n">0</span></span></span>)
                     <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">dst</span></span>.<span class="e Identifier"><span class="i">length</span></span> = <span class="e Identifier"><span class="i">conduit</span></span>.<span class="e Identifier"><span class="i">bufferSize</span></span></span>;</span></span></span>
@@ -93,7 +93,7 @@
 
         *********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Digest</span></span> <span class="i">digest</span><span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Digest</span></span> <span class="i">digest</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">filter</span></span>;</span>
         }</span></span></span>
@@ -124,7 +124,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Digest</span></span> <span class="i">digest</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o "><span class="t Identifier"><span class="i">Digest</span></span> <span class="i">digest</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span> (<span class="i">stream</span>);</span></span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">filter</span></span> = <span class="e Identifier"><span class="i">digest</span></span></span>;</span>
@@ -140,7 +140,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">len</span> = <span class="e Call"><span class="e Identifier"><span class="i">sink</span></span>.<span class="e Identifier"><span class="i">write</span></span> (<span class="i">src</span>)</span>;</span></span>
                 <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">len</span></span> != <span class="e Identifier"><span class="i">Eof</span></span></span>)
@@ -155,7 +155,7 @@
 
         *********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Digest</span></span> <span class="i">digest</span><span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Digest</span></span> <span class="i">digest</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">filter</span></span>;</span>
         }</span></span></span>
@@ -173,7 +173,7 @@
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">util</span>.<span class="i">digest</span>.<span class="i">Md5</span>;</span>
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">stream</span>.<span class="i">FileStream</span>;</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">output</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">DigestOutput</span></span>(<span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Array</span></span>(<span class="e Int"><span class="n">1024</span></span>, <span class="e Int"><span class="n">1024</span></span>)</span>, <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Md5</span></span></span>)</span>;</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">output</span></span>.<span class="e Identifier"><span class="i">copy</span></span> (<span class="k">new</span> <span class="i">FileInput</span>(<span class="sl">"Digester.d"</span>))</span>;</span>

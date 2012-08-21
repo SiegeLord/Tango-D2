@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>tango.core.Time</title>
+  <style type="text/css">
+  .linescolumn > a { display: block; }
+  td { vertical-align: top; }
+  </style>
+  <link href="html.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table><tr><td class="linescolumn"><a id="L1" href="#L1">1</a><a id="L2" href="#L2">2</a><a id="L3" href="#L3">3</a><a id="L4" href="#L4">4</a><a id="L5" href="#L5">5</a><a id="L6" href="#L6">6</a><a id="L7" href="#L7">7</a><a id="L8" href="#L8">8</a><a id="L9" href="#L9">9</a><a id="L10" href="#L10">10</a><a id="L11" href="#L11">11</a><a id="L12" href="#L12">12</a><a id="L13" href="#L13">13</a><a id="L14" href="#L14">14</a><a id="L15" href="#L15">15</a><a id="L16" href="#L16">16</a><a id="L17" href="#L17">17</a><a id="L18" href="#L18">18</a><a id="L19" href="#L19">19</a><a id="L20" href="#L20">20</a><a id="L21" href="#L21">21</a><a id="L22" href="#L22">22</a><a id="L23" href="#L23">23</a><a id="L24" href="#L24">24</a></td>
+<td><td><pre class="sourcecode">
+<span class="bc">/**
+ * A lightweight alternative to core.time that avoids all templates
+ *
+ * Copyright: Copyright (C) 2012 Pavel Sountsov.  All rights reserved.
+ * License:   BSD style: $(LICENSE)
+ * Authors:   Pavel Sountsov
+ */</span>
+<span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">core</span>.<span class="i">Time</span>;</span>
+
+<span class="d Import"><span class="k">static</span> <span class="k">import</span> <span class="i">core</span>.<span class="i">time</span>;</span>
+
+<span class="bc">/**
+ * Returns a Duration struct that represents secs seconds.
+ */</span>
+<span class="d Function"><span class="t Identifier"><span class="i">core</span></span>.<span class="t Identifier"><span class="i">time</span></span>.<span class="t Identifier"><span class="i">Duration</span></span> <span class="i">seconds</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">double</span></span> <span class="i">secs</span></span>)</span>
+<span class="s FuncBody"><span class="s Compound">{
+	<span class="s Declaration"><span class="d Struct"><span class="k">struct</span> <span class="i">DurationClone</span>
+	<span class="d Compound">{
+		<span class="d Variables"><span class="t Integral"><span class="k">long</span></span> <span class="i">hnsecs</span>;</span>
+	}</span></span></span>
+
+	<span class="s Return"><span class="k">return</span> <span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">core</span></span>.<span class="t Identifier"><span class="i">time</span></span>.<span class="t Identifier"><span class="i">Duration</span></span>)<span class="e Paren">(<span class="e Call"><span class="e Identifier"><span class="i">DurationClone</span></span>(<span class="k">cast</span>(<span class="k">long</span>)(<span class="i">secs</span> * <span class="n">10_000_000</span>))</span>)</span></span>;</span>
+}</span></span></span></span>
+
+</pre></td>
+</tr></table>
+</body>
+</html>

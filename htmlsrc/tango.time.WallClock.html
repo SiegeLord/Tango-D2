@@ -59,7 +59,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">now</span> <span class="o Parameters">()</span>
+                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">now</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Return"><span class="k">return</span> <span class="e Minus"><span class="e Identifier"><span class="i">Clock</span></span>.<span class="e Identifier"><span class="i">now</span></span> - <span class="e Call"><span class="e Identifier"><span class="i">localBias</span></span>()</span></span>;</span>
                 }</span></span></span>
@@ -71,7 +71,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">zone</span> <span class="o Parameters">()</span>
+                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">zone</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">TIME_ZONE_INFORMATION</span></span> <span class="i">tz</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
 
@@ -87,7 +87,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o Parameters">()</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">toDate</span></span> (<span class="i">Clock</span>.<span class="i">now</span>)</span>;</span>
                 }</span></span></span>
@@ -100,7 +100,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">utc</span></span>)</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">utc</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">Clock</span></span>.<span class="e Identifier"><span class="i">toDate</span></span> (<span class="i">utc</span> - <span class="i">localBias</span>())</span>;</span>
                 }</span></span></span>
@@ -111,7 +111,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">fromDate</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">DateTime</span></span>)</span> <span class="i">date</span></span>)</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">fromDate</span> <span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">DateTime</span></span>)</span> <span class="i">date</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e Plus"><span class="e Call"><span class="e Identifier"><span class="i">Clock</span></span>.<span class="e Identifier"><span class="i">fromDate</span></span>(<span class="i">date</span>)</span> + <span class="e Call"><span class="e Identifier"><span class="i">localBias</span></span>()</span></span>)</span>;</span>
                 }</span></span></span>
@@ -125,7 +125,7 @@
                          
                 ***************************************************************/</span>
 
-                <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">localBias</span> <span class="o Parameters">()</span> 
+                <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">localBias</span> <span class="o ">()</span> 
                 <span class="s FuncBody"><span class="s Compound">{ 
                        <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">bias</span>;</span></span> 
                        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">TIME_ZONE_INFORMATION</span></span> <span class="i">tz</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span> 
@@ -155,7 +155,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">now</span> <span class="o Parameters">()</span>
+                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">now</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">tm</span></span> <span class="i">t</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">timeval</span></span> <span class="i">tv</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
@@ -172,7 +172,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">zone</span> <span class="o Parameters">()</span>
+                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">zone</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Version"><span class="k">version</span> (<span class="i">darwin</span>)
                                 <span class="s Compound">{
@@ -192,7 +192,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o Parameters">()</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">toDate</span></span> (<span class="i">Clock</span>.<span class="i">now</span>)</span>;</span>
                 }</span></span></span>
@@ -205,7 +205,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">utc</span></span>)</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">utc</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">dt</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
                         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">timeval</span> = <span class="e Call"><span class="e Identifier"><span class="i">Clock</span></span>.<span class="e Identifier"><span class="i">convert</span></span> (<span class="i">utc</span>)</span>;</span></span>
@@ -233,7 +233,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">fromDate</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">DateTime</span></span>)</span> <span class="i">dt</span></span>)</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">fromDate</span> <span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">DateTime</span></span>)</span> <span class="i">dt</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">tm</span></span> <span class="i">t</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
 
@@ -254,7 +254,7 @@
 
         ***********************************************************************/</span>
         
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">toLocal</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">utc</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">toLocal</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">utc</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">mod</span> = <span class="e Mod"><span class="e Identifier"><span class="i">utc</span></span>.<span class="e Identifier"><span class="i">ticks</span></span> % <span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">TicksPerMillisecond</span></span></span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">date</span>=<span class="e Call"><span class="e Identifier"><span class="i">toDate</span></span>(<span class="i">utc</span>)</span>;</span></span>
@@ -265,7 +265,7 @@
 
         ***********************************************************************/</span>
         
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">toUtc</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">wall</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">toUtc</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">wall</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">mod</span> = <span class="e Mod"><span class="e Identifier"><span class="i">wall</span></span>.<span class="e Identifier"><span class="i">ticks</span></span> % <span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">TicksPerMillisecond</span></span></span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">date</span>=<span class="e Call"><span class="e Identifier"><span class="i">Clock</span></span>.<span class="e Identifier"><span class="i">toDate</span></span>(<span class="i">wall</span>)</span>;</span></span>

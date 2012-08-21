@@ -69,29 +69,29 @@
         <span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">long</span></span> 
         {
                 <span class="lc">/// basic tick values</span>
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">NanosecondsPerTick</span></span>  = <span class="e Int"><span class="n">100</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">TicksPerMicrosecond</span></span> = <span class="e Div"><span class="e Int"><span class="n">1000</span></span> / <span class="e Identifier"><span class="i">NanosecondsPerTick</span></span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">TicksPerMillisecond</span></span> = <span class="e Mul"><span class="e Int"><span class="n">1000</span></span> * <span class="e Identifier"><span class="i">TicksPerMicrosecond</span></span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">TicksPerSecond</span></span>      = <span class="e Mul"><span class="e Int"><span class="n">1000</span></span> * <span class="e Identifier"><span class="i">TicksPerMillisecond</span></span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">TicksPerMinute</span></span>      = <span class="e Mul"><span class="e Int"><span class="n">60</span></span> * <span class="e Identifier"><span class="i">TicksPerSecond</span></span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">TicksPerHour</span></span>        = <span class="e Mul"><span class="e Int"><span class="n">60</span></span> * <span class="e Identifier"><span class="i">TicksPerMinute</span></span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">TicksPerDay</span></span>         = <span class="e Mul"><span class="e Int"><span class="n">24</span></span> * <span class="e Identifier"><span class="i">TicksPerHour</span></span></span></span>,
+                <span class="d EnumMember"><span class="i">NanosecondsPerTick</span>  = <span class="e Int"><span class="n">100</span></span></span>,
+                <span class="d EnumMember"><span class="i">TicksPerMicrosecond</span> = <span class="e Div"><span class="e Int"><span class="n">1000</span></span> / <span class="e Identifier"><span class="i">NanosecondsPerTick</span></span></span></span>,
+                <span class="d EnumMember"><span class="i">TicksPerMillisecond</span> = <span class="e Mul"><span class="e Int"><span class="n">1000</span></span> * <span class="e Identifier"><span class="i">TicksPerMicrosecond</span></span></span></span>,
+                <span class="d EnumMember"><span class="i">TicksPerSecond</span>      = <span class="e Mul"><span class="e Int"><span class="n">1000</span></span> * <span class="e Identifier"><span class="i">TicksPerMillisecond</span></span></span></span>,
+                <span class="d EnumMember"><span class="i">TicksPerMinute</span>      = <span class="e Mul"><span class="e Int"><span class="n">60</span></span> * <span class="e Identifier"><span class="i">TicksPerSecond</span></span></span></span>,
+                <span class="d EnumMember"><span class="i">TicksPerHour</span>        = <span class="e Mul"><span class="e Int"><span class="n">60</span></span> * <span class="e Identifier"><span class="i">TicksPerMinute</span></span></span></span>,
+                <span class="d EnumMember"><span class="i">TicksPerDay</span>         = <span class="e Mul"><span class="e Int"><span class="n">24</span></span> * <span class="e Identifier"><span class="i">TicksPerHour</span></span></span></span>,
 
                 <span class="lc">// millisecond counts</span>
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">MillisPerSecond</span></span>     = <span class="e Int"><span class="n">1000</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">MillisPerMinute</span></span>     = <span class="e Mul"><span class="e Identifier"><span class="i">MillisPerSecond</span></span> * <span class="e Int"><span class="n">60</span></span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">MillisPerHour</span></span>       = <span class="e Mul"><span class="e Identifier"><span class="i">MillisPerMinute</span></span> * <span class="e Int"><span class="n">60</span></span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">MillisPerDay</span></span>        = <span class="e Mul"><span class="e Identifier"><span class="i">MillisPerHour</span></span> * <span class="e Int"><span class="n">24</span></span></span></span>,
+                <span class="d EnumMember"><span class="i">MillisPerSecond</span>     = <span class="e Int"><span class="n">1000</span></span></span>,
+                <span class="d EnumMember"><span class="i">MillisPerMinute</span>     = <span class="e Mul"><span class="e Identifier"><span class="i">MillisPerSecond</span></span> * <span class="e Int"><span class="n">60</span></span></span></span>,
+                <span class="d EnumMember"><span class="i">MillisPerHour</span>       = <span class="e Mul"><span class="e Identifier"><span class="i">MillisPerMinute</span></span> * <span class="e Int"><span class="n">60</span></span></span></span>,
+                <span class="d EnumMember"><span class="i">MillisPerDay</span>        = <span class="e Mul"><span class="e Identifier"><span class="i">MillisPerHour</span></span> * <span class="e Int"><span class="n">24</span></span></span></span>,
 
                 <span class="lc">/// day counts</span>
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">DaysPerYear</span></span>         = <span class="e Int"><span class="n">365</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">DaysPer4Years</span></span>       = <span class="e Plus"><span class="e Mul"><span class="e Identifier"><span class="i">DaysPerYear</span></span> * <span class="e Int"><span class="n">4</span></span></span> + <span class="e Int"><span class="n">1</span></span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">DaysPer100Years</span></span>     = <span class="e Minus"><span class="e Mul"><span class="e Identifier"><span class="i">DaysPer4Years</span></span> * <span class="e Int"><span class="n">25</span></span></span> - <span class="e Int"><span class="n">1</span></span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">DaysPer400Years</span></span>     = <span class="e Plus"><span class="e Mul"><span class="e Identifier"><span class="i">DaysPer100Years</span></span> * <span class="e Int"><span class="n">4</span></span></span> + <span class="e Int"><span class="n">1</span></span></span></span>,
+                <span class="d EnumMember"><span class="i">DaysPerYear</span>         = <span class="e Int"><span class="n">365</span></span></span>,
+                <span class="d EnumMember"><span class="i">DaysPer4Years</span>       = <span class="e Plus"><span class="e Mul"><span class="e Identifier"><span class="i">DaysPerYear</span></span> * <span class="e Int"><span class="n">4</span></span></span> + <span class="e Int"><span class="n">1</span></span></span></span>,
+                <span class="d EnumMember"><span class="i">DaysPer100Years</span>     = <span class="e Minus"><span class="e Mul"><span class="e Identifier"><span class="i">DaysPer4Years</span></span> * <span class="e Int"><span class="n">25</span></span></span> - <span class="e Int"><span class="n">1</span></span></span></span>,
+                <span class="d EnumMember"><span class="i">DaysPer400Years</span>     = <span class="e Plus"><span class="e Mul"><span class="e Identifier"><span class="i">DaysPer100Years</span></span> * <span class="e Int"><span class="n">4</span></span></span> + <span class="e Int"><span class="n">1</span></span></span></span>,
 
                 <span class="lc">// epoch counts</span>
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">Epoch1601</span></span>           = <span class="e Mul"><span class="e Mul"><span class="e Identifier"><span class="i">DaysPer400Years</span></span> * <span class="e Int"><span class="n">4</span></span></span> * <span class="e Identifier"><span class="i">TicksPerDay</span></span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">Epoch1970</span></span>           = <span class="e Plus"><span class="e Identifier"><span class="i">Epoch1601</span></span> + <span class="e Mul"><span class="e Identifier"><span class="i">TicksPerSecond</span></span> * <span class="e Int"><span class="n">11644473600L</span></span></span></span></span>,
+                <span class="d EnumMember"><span class="i">Epoch1601</span>           = <span class="e Mul"><span class="e Mul"><span class="e Identifier"><span class="i">DaysPer400Years</span></span> * <span class="e Int"><span class="n">4</span></span></span> * <span class="e Identifier"><span class="i">TicksPerDay</span></span></span></span>,
+                <span class="d EnumMember"><span class="i">Epoch1970</span>           = <span class="e Plus"><span class="e Identifier"><span class="i">Epoch1601</span></span> + <span class="e Mul"><span class="e Identifier"><span class="i">TicksPerSecond</span></span> * <span class="e Int"><span class="n">11644473600L</span></span></span></span></span>,
         }</span>
 
         <span class="bc">/**
@@ -118,7 +118,7 @@
          * TimeSpan copyOfMyTimeSpan = TimeSpan(ticks);
          * --------
          */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">ticks</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">ticks</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">ticks_</span></span>;</span>
         }</span></span></span>
@@ -126,7 +126,7 @@
         <span class="bc">/**
          * Determines whether two TimeSpan values are equal
          */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">opEquals</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">opEquals</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identity"><span class="e Identifier"><span class="i">ticks_</span></span> <span class="k">is</span> <span class="e Identifier"><span class="i">t</span></span>.<span class="e Identifier"><span class="i">ticks_</span></span></span>;</span>
         }</span></span></span>
@@ -134,7 +134,7 @@
         <span class="bc">/**
          * Compares this object against another TimeSpan value.
          */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opCmp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opCmp</span><span class="o ">(<span class="o "><span class="k">const</span> <span class="k">ref</span> <span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">t</span></span>)</span> <span class="k">const</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">ticks_</span></span> &lt; <span class="e Identifier"><span class="i">t</span></span>.<span class="e Identifier"><span class="i">ticks_</span></span></span>)
                     <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span>;</span></span></span>
@@ -151,7 +151,7 @@
          * Params: t = A TimeSpan value to add
          * Returns: A TimeSpan value that is the sum of this instance and t.
          */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opBinary</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"+"</span></span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opBinary</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"+"</span></span></span>)</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="i">ticks_</span> + <span class="i">t</span>.<span class="i">ticks_</span>)</span>;</span>
         }</span></span></span></span></span>
@@ -163,7 +163,7 @@
          * Params: t = A TimeSpan value to add
          * Returns: a copy of this instance after adding t.
          */</span>
-        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opOpAssign</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"+"</span></span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span>
+        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opOpAssign</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"+"</span></span></span>)</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">ticks_</span></span> += <span class="e Identifier"><span class="i">t</span></span>.<span class="e Identifier"><span class="i">ticks_</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -176,7 +176,7 @@
          * Returns: A new timespan which is the difference between this
          * instance and t
          */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opBinary</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"-"</span></span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opBinary</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"-"</span></span></span>)</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="i">ticks_</span> - <span class="i">t</span>.<span class="i">ticks_</span>)</span>;</span>
         }</span></span></span></span></span>
@@ -188,7 +188,7 @@
          * Params: t = A TimeSpan to subtract
          * Returns: A copy of this instance after subtracting t.
          */</span>
-        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opOpAssign</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"-"</span></span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span>
+        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opOpAssign</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"-"</span></span></span>)</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e MinusAssign"><span class="e Identifier"><span class="i">ticks_</span></span> -= <span class="e Identifier"><span class="i">t</span></span>.<span class="e Identifier"><span class="i">ticks_</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -204,7 +204,7 @@
          * Params: v = A multiplier to use for scaling this time span.
          * Returns: A new TimeSpan that is scaled by v
          */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opBinary</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"*"</span></span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">v</span></span>)</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opBinary</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"*"</span></span></span>)</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">v</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="i">ticks_</span> * <span class="i">v</span>)</span>;</span>
         }</span></span></span></span></span>
@@ -215,7 +215,7 @@
          * Params: v = A multipler to use for scaling
          * Returns: A copy of this instance after scaling
          */</span>
-        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opOpAssign</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"*"</span></span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">v</span></span>)</span>
+        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opOpAssign</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"*"</span></span></span>)</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">v</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e MulAssign"><span class="e Identifier"><span class="i">ticks_</span></span> *= <span class="e Identifier"><span class="i">v</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -232,7 +232,7 @@
          * Params: v = A divisor to use for scaling this time span.
          * Returns: A new TimeSpan that is divided by v
          */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opBinary</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"/"</span></span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">v</span></span>)</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opBinary</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"/"</span></span></span>)</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">v</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="i">ticks_</span> / <span class="i">v</span>)</span>;</span>
         }</span></span></span></span></span>
@@ -243,7 +243,7 @@
          * Params: v = A multipler to use for dividing
          * Returns: A copy of this instance after dividing
          */</span>
-        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opOpAssign</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"/"</span></span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">v</span></span>)</span>
+        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opOpAssign</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"/"</span></span></span>)</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">v</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e DivAssign"><span class="e Identifier"><span class="i">ticks_</span></span> /= <span class="e Identifier"><span class="i">v</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -256,7 +256,7 @@
          * Returns: The result of integer division between this instance and
          * t.
          */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">opBinary</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"/"</span></span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">opBinary</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"/"</span></span></span>)</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Div"><span class="e Identifier"><span class="i">ticks_</span></span> / <span class="e Identifier"><span class="i">t</span></span>.<span class="e Identifier"><span class="i">ticks</span></span></span>;</span>
         }</span></span></span></span></span>
@@ -266,7 +266,7 @@
          *
          * Returns: The negative equivalent to this time span
          */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opUnary</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"-"</span></span></span>)</span><span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opUnary</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"-"</span></span></span>)</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(-<span class="i">ticks_</span>)</span>;</span>
         }</span></span></span></span></span>
@@ -279,7 +279,7 @@
          *
          * Returns: The number of nanoseconds that this TimeSpan represents.
          */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">nanos</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">nanos</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Mul"><span class="e Identifier"><span class="i">ticks_</span></span> * <span class="e Identifier"><span class="i">NanosecondsPerTick</span></span></span>;</span>
         }</span></span></span>
@@ -289,7 +289,7 @@
          *
          * Returns: The number of microseconds that this TimeSpan represents.
          */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">micros</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">micros</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Div"><span class="e Identifier"><span class="i">ticks_</span></span> / <span class="e Identifier"><span class="i">TicksPerMicrosecond</span></span></span>;</span>
         }</span></span></span>
@@ -299,7 +299,7 @@
          *
          * Returns: The number of milliseconds that this TimeSpan represents.
          */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">millis</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">millis</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Div"><span class="e Identifier"><span class="i">ticks_</span></span> / <span class="e Identifier"><span class="i">TicksPerMillisecond</span></span></span>;</span>
         }</span></span></span>
@@ -309,7 +309,7 @@
          *
          * Returns: The number of seconds that this TimeSpan represents.
          */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">seconds</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">seconds</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Div"><span class="e Identifier"><span class="i">ticks_</span></span> / <span class="e Identifier"><span class="i">TicksPerSecond</span></span></span>;</span>
         }</span></span></span>
@@ -319,7 +319,7 @@
          *
          * Returns: The number of minutes that this TimeSpan represents.
          */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">minutes</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">minutes</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Div"><span class="e Identifier"><span class="i">ticks_</span></span> / <span class="e Identifier"><span class="i">TicksPerMinute</span></span></span>;</span>
         }</span></span></span>
@@ -329,7 +329,7 @@
          *
          * Returns: The number of hours that this TimeSpan represents.
          */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">hours</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">hours</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Div"><span class="e Identifier"><span class="i">ticks_</span></span> / <span class="e Identifier"><span class="i">TicksPerHour</span></span></span>;</span>
         }</span></span></span>
@@ -339,7 +339,7 @@
          *
          * Returns: The number of days that this TimeSpan represents.
          */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">days</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">days</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Div"><span class="e Identifier"><span class="i">ticks_</span></span> / <span class="e Identifier"><span class="i">TicksPerDay</span></span></span>;</span>
         }</span></span></span>
@@ -353,7 +353,7 @@
          * Returns: An interval representing the seconds and fractional
          * seconds that this TimeSpan represents.
          */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">interval</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">interval</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Div"><span class="e Paren">(<span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">double</span></span>) <span class="e Identifier"><span class="i">ticks_</span></span></span>)</span> / <span class="e Identifier"><span class="i">TicksPerSecond</span></span></span>;</span>
         }</span></span></span>
@@ -363,7 +363,7 @@
          *
          * Returns: the TimeOfDay this TimeSpan represents.
          */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeOfDay</span></span> <span class="i">time</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeOfDay</span></span> <span class="i">time</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeOfDay</span></span>(<span class="i">ticks_</span>)</span>;</span>
         }</span></span></span>
@@ -377,7 +377,7 @@
          * Params: value = The number of nanoseconds.
          * Returns: A TimeSpan representing the given number of nanoseconds.
          */</span>
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromNanos</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">value</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromNanos</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="i">value</span> / <span class="i">NanosecondsPerTick</span>)</span>;</span>
         }</span></span></span>
@@ -388,7 +388,7 @@
          * Params: value = The number of microseconds.
          * Returns: A TimeSpan representing the given number of microseconds.
          */</span>
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromMicros</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">value</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromMicros</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="i">TicksPerMicrosecond</span> * <span class="i">value</span>)</span>;</span>
         }</span></span></span>
@@ -399,7 +399,7 @@
          * Params: value = The number of milliseconds.
          * Returns: A TimeSpan representing the given number of milliseconds.
          */</span>
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromMillis</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">value</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromMillis</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="i">TicksPerMillisecond</span> * <span class="i">value</span>)</span>;</span>
         }</span></span></span>
@@ -410,7 +410,7 @@
          * Params: value = The number of seconds.
          * Returns: A TimeSpan representing the given number of seconds.
          */</span>
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromSeconds</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">value</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromSeconds</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="i">TicksPerSecond</span> * <span class="i">value</span>)</span>;</span>
         }</span></span></span>
@@ -421,7 +421,7 @@
          * Params: value = The number of minutes.
          * Returns: A TimeSpan representing the given number of minutes.
          */</span>
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromMinutes</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">value</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromMinutes</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="i">TicksPerMinute</span> * <span class="i">value</span>)</span>;</span>
         }</span></span></span>
@@ -432,7 +432,7 @@
          * Params: value = The number of hours.
          * Returns: A TimeSpan representing the given number of hours.
          */</span>
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromHours</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">value</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromHours</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="i">TicksPerHour</span> * <span class="i">value</span>)</span>;</span>
         }</span></span></span>
@@ -443,7 +443,7 @@
          * Params: value = The number of days.
          * Returns: A TimeSpan representing the given number of days.
          */</span>
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromDays</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">value</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromDays</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="i">TicksPerDay</span> * <span class="i">value</span>)</span>;</span>
         }</span></span></span>
@@ -456,7 +456,7 @@
          * Params: value = The interval to convert in seconds.
          * Returns: A TimeSpan representing the given interval.
          */</span>
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromInterval</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">double</span></span> <span class="i">sec</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">fromInterval</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">double</span></span> <span class="i">sec</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="k">cast</span>(<span class="k">long</span>)(<span class="i">sec</span> * <span class="i">TicksPerSecond</span> + <span class="n">.1</span>))</span>;</span>
         }</span></span></span>
@@ -489,8 +489,8 @@
 
         <span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">long</span></span>
         {
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">maximum</span></span> = <span class="e Minus"><span class="e Mul"><span class="e Paren">(<span class="e Minus"><span class="e Mul"><span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">DaysPer400Years</span></span> * <span class="e Int"><span class="n">25</span></span></span> - <span class="e Int"><span class="n">366</span></span></span>)</span> * <span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">TicksPerDay</span></span></span> - <span class="e Int"><span class="n">1</span></span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">minimum</span></span> = <span class="e Sign">-<span class="e Paren">(<span class="e Minus"><span class="e Mul"><span class="e Paren">(<span class="e Minus"><span class="e Mul"><span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">DaysPer400Years</span></span> * <span class="e Int"><span class="n">25</span></span></span> - <span class="e Int"><span class="n">366</span></span></span>)</span> * <span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">TicksPerDay</span></span></span> - <span class="e Int"><span class="n">1</span></span></span>)</span></span></span>,
+                <span class="d EnumMember"><span class="i">maximum</span> = <span class="e Minus"><span class="e Mul"><span class="e Paren">(<span class="e Minus"><span class="e Mul"><span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">DaysPer400Years</span></span> * <span class="e Int"><span class="n">25</span></span></span> - <span class="e Int"><span class="n">366</span></span></span>)</span> * <span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">TicksPerDay</span></span></span> - <span class="e Int"><span class="n">1</span></span></span></span>,
+                <span class="d EnumMember"><span class="i">minimum</span> = <span class="e Sign">-<span class="e Paren">(<span class="e Minus"><span class="e Mul"><span class="e Paren">(<span class="e Minus"><span class="e Mul"><span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">DaysPer400Years</span></span> * <span class="e Int"><span class="n">25</span></span></span> - <span class="e Int"><span class="n">366</span></span></span>)</span> * <span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">TicksPerDay</span></span></span> - <span class="e Int"><span class="n">1</span></span></span>)</span></span></span>,
         }</span>
 
         <span class="lc">/// Represents the smallest and largest Time value.</span>
@@ -523,7 +523,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">ticks</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">ticks</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">ticks_</span></span>;</span>
         }</span></span></span>
@@ -537,7 +537,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">opEquals</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">t</span></span>)</span> 
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">opEquals</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">t</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identity"><span class="e Identifier"><span class="i">ticks_</span></span> <span class="k">is</span> <span class="e Identifier"><span class="i">t</span></span>.<span class="e Identifier"><span class="i">ticks_</span></span></span>;</span>
         }</span></span></span>
@@ -548,7 +548,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opCmp</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">t</span></span>)</span> 
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opCmp</span> <span class="o ">(<span class="o "><span class="k">const</span> <span class="k">ref</span> <span class="t Identifier"><span class="i">Time</span></span> <span class="i">t</span></span>)</span> <span class="k">const</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">ticks_</span></span> &lt; <span class="e Identifier"><span class="i">t</span></span>.<span class="e Identifier"><span class="i">ticks_</span></span></span>)
                     <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span>;</span></span></span>
@@ -569,7 +569,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">opBinary</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"+"</span></span></span>)</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span> 
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">opBinary</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"+"</span></span></span>)</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">Time</span></span> (<span class="i">ticks_</span> + <span class="i">t</span>.<span class="i">ticks_</span>)</span>;</span>
         }</span></span></span></span></span>
@@ -585,7 +585,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">opOpAssign</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"+"</span></span></span>)</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span> 
+        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">opOpAssign</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"+"</span></span></span>)</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">ticks_</span></span> += <span class="e Identifier"><span class="i">t</span></span>.<span class="e Identifier"><span class="i">ticks_</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -602,7 +602,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">opBinary</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"-"</span></span></span>)</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span> 
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">opBinary</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"-"</span></span></span>)</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">Time</span></span> (<span class="i">ticks_</span> - <span class="i">t</span>.<span class="i">ticks_</span>)</span>;</span>
         }</span></span></span></span></span>
@@ -618,7 +618,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opBinary</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"-"</span></span></span>)</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">t</span></span>)</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">opBinary</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"-"</span></span></span>)</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">t</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="i">ticks_</span> - <span class="i">t</span>.<span class="i">ticks_</span>)</span>;</span>
         }</span></span></span></span></span>
@@ -634,7 +634,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">opOpAssign</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"-"</span></span></span>)</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span> 
+        <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">opOpAssign</span><span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">o</span> : <span class="e String"><span class="sl">"-"</span></span></span>)</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeSpan</span></span>)</span> <span class="i">t</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e MinusAssign"><span class="e Identifier"><span class="i">ticks_</span></span> -= <span class="e Identifier"><span class="i">t</span></span>.<span class="e Identifier"><span class="i">ticks_</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -649,7 +649,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">date</span> <span class="o Parameters">()</span> 
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">date</span> <span class="o ">()</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Minus"><span class="e This"><span class="k">this</span></span> - <span class="e Call"><span class="e Identifier"><span class="i">TimeOfDay</span></span>.<span class="e Identifier"><span class="i">modulo24</span></span>(<span class="i">ticks_</span>)</span></span>;</span>
         }</span></span></span>
@@ -663,7 +663,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeOfDay</span></span> <span class="i">time</span> <span class="o Parameters">()</span> 
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeOfDay</span></span> <span class="i">time</span> <span class="o ">()</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeOfDay</span></span> (<span class="i">ticks_</span>)</span>;</span>
         }</span></span></span>
@@ -676,7 +676,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">span</span> <span class="o Parameters">()</span> 
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">span</span> <span class="o ">()</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span> (<span class="i">ticks_</span>)</span>;</span>
         }</span></span></span>
@@ -696,7 +696,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">unix</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">unix</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="i">ticks_</span> - <span class="i">epoch1970</span>.<span class="i">ticks_</span>)</span>;</span>
         }</span></span></span>
@@ -774,7 +774,7 @@
          * assert(tod.millis == 10000);
          * --------------
          */</span>
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeOfDay</span></span> <span class="i">opCall</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">hours</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">minutes</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">seconds</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">millis</span>=<span class="e Int"><span class="n">0</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeOfDay</span></span> <span class="i">opCall</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">hours</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">minutes</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">seconds</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">millis</span>=<span class="e Int"><span class="n">0</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">TimeOfDay</span></span> <span class="i">t</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">t</span></span>.<span class="e Identifier"><span class="i">hours</span></span>   = <span class="e Identifier"><span class="i">hours</span></span></span>;</span>
@@ -792,7 +792,7 @@
          * Returns: a TimeOfDay value that corresponds to the time of day of
          * the given number of ticks.
          */</span>
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeOfDay</span></span> <span class="i">opCall</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">ticks</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeOfDay</span></span> <span class="i">opCall</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">ticks</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{       
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">TimeOfDay</span></span> <span class="i">t</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">ticks</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">modulo24</span></span>(<span class="i">ticks</span>)</span>.<span class="e Identifier"><span class="i">ticks_</span></span></span>;</span>
@@ -815,7 +815,7 @@
          * normalized, so the hours wrap.  If you pass in 25 hours, the
          * resulting TimeOfDay will have a hour component of 1.
          */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">span</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">span</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Plus"><span class="e Plus"><span class="e Plus"><span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">fromHours</span></span>(<span class="i">hours</span>)</span> +
                        <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">fromMinutes</span></span>(<span class="i">minutes</span>)</span></span> + 
@@ -827,7 +827,7 @@
          * internal routine to adjust ticks by one day. Also adjusts for
          * offsets in the BC era
          */</span>
-        <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">modulo24</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">ticks</span></span>)</span>
+        <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">modulo24</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">ticks</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e ModAssign"><span class="e Identifier"><span class="i">ticks</span></span> %= <span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">TicksPerDay</span></span></span>;</span>
                 <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">ticks</span></span> &lt; <span class="e Int"><span class="n">0</span></span></span>)
@@ -929,7 +929,7 @@
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">time</span>.<span class="i">Clock</span>;</span>
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">time</span>.<span class="i">chrono</span>.<span class="i">Gregorian</span>;</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">foo</span><span class="o Parameters">()</span> 
+        <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">foo</span><span class="o ">()</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">d</span> = <span class="e Call"><span class="e Identifier"><span class="i">Time</span></span>(<span class="n">10</span>)</span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">e</span> = <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="n">20</span>)</span>;</span></span>
@@ -937,7 +937,7 @@
                 <span class="s Return"><span class="k">return</span> <span class="e Plus"><span class="e Identifier"><span class="i">d</span></span> + <span class="e Identifier"><span class="i">e</span></span></span>;</span>
         }</span></span></span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">c</span> = <span class="e Call"><span class="e Identifier"><span class="i">foo</span></span>()</span>;</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span> (<span class="i">c</span>.<span class="i">ticks</span>)</span>.<span class="e Identifier"><span class="i">newline</span></span>;</span>

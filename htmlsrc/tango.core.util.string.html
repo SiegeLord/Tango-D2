@@ -31,7 +31,7 @@
 
 <span class="lc">// convert uint to char[], within the given buffer</span>
 <span class="lc">// Returns a valid slice of the populated buffer</span>
-<span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">intToUtf8</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">tmp</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">val</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">intToUtf8</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">tmp</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">val</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">tmp</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">9</span></span></span>, <span class="e String"><span class="sl">"atoi buffer should be more than 9 chars wide"</span></span>)</span>;</span>
    }</span>
@@ -48,7 +48,7 @@
 
 <span class="lc">// convert uint to char[], within the given buffer</span>
 <span class="lc">// Returns a valid slice of the populated buffer</span>
-<span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">ulongToUtf8</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">tmp</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">val</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">ulongToUtf8</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">tmp</span></span>, <span class="o "><span class="t Integral"><span class="k">ulong</span></span> <span class="i">val</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">tmp</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">19</span></span></span>, <span class="e String"><span class="sl">"atoi buffer should be more than 19 chars wide"</span></span>)</span>;</span>
    }</span>
@@ -65,7 +65,7 @@
 
 
 <span class="lc">// function to compare two strings</span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">stringCompare</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">s1</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">s2</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">stringCompare</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">s1</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">s2</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">len</span> = <span class="e Identifier"><span class="i">s1</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span></span>
 

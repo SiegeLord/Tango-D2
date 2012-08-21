@@ -42,9 +42,9 @@
 
 *******************************************************************************/</span>
 
-<span class="d Protection"><span class="k">protected</span></span> <span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">DocTester</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span>
+<span class="d Protection"><span class="k">protected</span></span> <span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">DocTester</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span>
 <span class="d Compound">{
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">Document</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> <span class="i">Doc</span>;</span></span>         <span class="lc">/// the typed document</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">Document</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> <span class="i">Doc</span>;</span></span>         <span class="lc">/// the typed document</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">Doc</span></span>.<span class="t Identifier"><span class="i">Node</span></span>     <span class="i">Node</span>;</span></span>        <span class="lc">/// generic document node</span>
 
         <span class="bc">/***********************************************************************
@@ -53,7 +53,7 @@
 
         ***********************************************************************/</span>
         
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">validate</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Doc</span></span> <span class="i">doc</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">validate</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Doc</span></span> <span class="i">doc</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{     
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">validate</span></span> (<span class="i">doc</span>.<span class="i">elements</span>)</span>;</span>  
         }</span></span></span>
@@ -64,22 +64,22 @@
 
         ***********************************************************************/</span>
         
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">validate</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">validate</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Switch"><span class="k">switch</span> (<span class="e Identifier"><span class="i">node</span></span>.<span class="e Identifier"><span class="i">id</span></span>)
                        <span class="s Scope"><span class="s Compound">{
                        <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">XmlNodeType</span></span>.<span class="e Identifier"><span class="i">Document</span></span>:
-                            <span class="s Scope"><span class="s Compound"><span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">n</span></span></span>; <span class="e Identifier"><span class="i">node</span></span>.<span class="e Identifier"><span class="i">children</span></span>)
+                            <span class="s Scope"><span class="s Compound"><span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">n</span></span></span>; <span class="e Identifier"><span class="i">node</span></span>.<span class="e Identifier"><span class="i">children</span></span>)
                                      <span class="s Scope"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">validate</span></span> (<span class="i">n</span>);</span></span></span></span>
                             <span class="s Break"><span class="k">break</span>;</span></span></span></span>
         
                        <span class="s Case"><span class="k">case</span> <span class="e Identifier"><span class="i">XmlNodeType</span></span>.<span class="e Identifier"><span class="i">Element</span></span>:
                             <span class="s Scope"><span class="s Compound"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">element</span></span> (<span class="i">node</span>);</span></span>
 
-                            <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">n</span></span></span>; <span class="e Identifier"><span class="i">node</span></span>.<span class="e Identifier"><span class="i">attributes</span></span>)
+                            <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">n</span></span></span>; <span class="e Identifier"><span class="i">node</span></span>.<span class="e Identifier"><span class="i">attributes</span></span>)
                                      <span class="s Scope"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">attribute</span></span> (<span class="i">n</span>);</span></span></span></span>
 
-                            <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">n</span></span></span>; <span class="e Identifier"><span class="i">node</span></span>.<span class="e Identifier"><span class="i">children</span></span>)
+                            <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">n</span></span></span>; <span class="e Identifier"><span class="i">node</span></span>.<span class="e Identifier"><span class="i">children</span></span>)
                                      <span class="s Scope"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">validate</span></span> (<span class="i">n</span>);</span></span></span></span>
                             <span class="s Break"><span class="k">break</span>;</span></span></span></span>
         
@@ -115,7 +115,7 @@
 
         ***********************************************************************/</span>
         
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">element</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">element</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">uniqueAttrNames</span></span> (<span class="i">node</span>);</span></span>
         }</span></span></span>
@@ -126,7 +126,7 @@
 
         ***********************************************************************/</span>
         
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">attribute</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">attribute</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
         }</span></span></span>
 
@@ -136,7 +136,7 @@
 
         ***********************************************************************/</span>
         
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">data</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">data</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
         }</span></span></span>
 
@@ -146,7 +146,7 @@
 
         ***********************************************************************/</span>
         
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">comment</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">comment</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
         }</span></span></span>
 
@@ -156,7 +156,7 @@
 
         ***********************************************************************/</span>
         
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">pi</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">pi</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
         }</span></span></span>
 
@@ -166,7 +166,7 @@
 
         ***********************************************************************/</span>
         
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">cdata</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">cdata</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
         }</span></span></span>
 
@@ -176,7 +176,7 @@
 
         ***********************************************************************/</span>
         
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">doctype</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">doctype</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
         }</span></span></span>
 
@@ -186,13 +186,13 @@
 
         ***********************************************************************/</span>
         
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">uniqueAttrNames</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">uniqueAttrNames</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Node</span></span> <span class="i">node</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[<span class="e Int"><span class="n">128</span></span>]</span>  <span class="i">name1</span> = <span class="e VoidInit"><span class="k">void</span></span>,
                         <span class="i">name2</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
 
                 <span class="lc">// non-optimal, but is it critical?</span>
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">attr</span></span></span>; <span class="e Identifier"><span class="i">node</span></span>.<span class="e Identifier"><span class="i">attributes</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">attr</span></span></span>; <span class="e Identifier"><span class="i">node</span></span>.<span class="e Identifier"><span class="i">attributes</span></span>)
                         <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">name</span> = <span class="e Call"><span class="e Identifier"><span class="i">attr</span></span>.<span class="e Identifier"><span class="i">name</span></span> (<span class="i">name1</span>)</span>;</span></span>
                         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">next</span> = <span class="e Identifier"><span class="i">attr</span></span>.<span class="e Identifier"><span class="i">nextSibling</span></span>;</span></span>
@@ -212,7 +212,7 @@
 
         ***********************************************************************/</span>
         
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">error</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">format</span></span>, <span class="o Parameter">...</span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">error</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">format</span></span>, <span class="o ">...</span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">TextException</span></span> (<span class="e Call"><span class="e Identifier"><span class="i">Format</span></span>.<span class="e Identifier"><span class="i">convert</span></span>(<span class="i">_arguments</span>, <span class="i">_argptr</span>, <span class="i">format</span>)</span>.<span class="e Identifier"><span class="i">idup</span></span>)</span>;</span>
         }</span></span></span>
@@ -227,9 +227,9 @@
 
 <span class="d Debug"><span class="k">debug</span> (<span class="i">DocTester</span>)
 <span class="d Compound">{
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
-                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">v</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">DocTester</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span>)</span></span></span>;</span></span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">v</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">DocTester</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span>)</span></span></span>;</span></span>
         }</span></span></span>
 }</span></span></span>
 

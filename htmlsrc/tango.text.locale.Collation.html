@@ -54,7 +54,7 @@
       culture = A Culture instance whose rules are used to compare strings.
       ignoreCase = true to perform case-insensitive comparisons; false to perform case-sensitive comparisions.
   */</span>
-  <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Culture</span></span> <span class="i">culture</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ignoreCase</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Culture</span></span> <span class="i">culture</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">ignoreCase</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">culture_</span></span> = <span class="e Identifier"><span class="i">culture</span></span></span>;</span>
     <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">ignoreCase_</span></span> = <span class="e Identifier"><span class="i">ignoreCase</span></span></span>;</span>
   }</span></span></span>
@@ -67,7 +67,7 @@
       strA = A string to compare to strB.
       strB = A string to compare to strA.
   */</span>
-  <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">compare</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">strA</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">strB</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">compare</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">strA</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">strB</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">nativeMethods</span></span>.<span class="e Identifier"><span class="i">compareString</span></span>(<span class="i">culture_</span>.<span class="i">id</span>, <span class="i">strA</span>, <span class="n">0</span>, <span class="i">strA</span>.<span class="i">length</span>, <span class="i">strB</span>, <span class="n">0</span>, <span class="i">strB</span>.<span class="i">length</span>, <span class="i">ignoreCase_</span>)</span>;</span>
   }</span></span></span>
 
@@ -79,7 +79,7 @@
       strA = A string to compare to strB.
       strB = A string to compare to strA.
   */</span>
-  <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">equals</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">strA</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">strB</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">equals</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">strA</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">strB</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e Equal"><span class="e Call"><span class="e Identifier"><span class="i">compare</span></span>(<span class="i">strA</span>, <span class="i">strB</span>)</span> == <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
   }</span></span></span>
 
@@ -88,7 +88,7 @@
     Returns:
       A new StringComparer instance.
   */</span>
-  <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringComparer</span></span> <span class="i">currentCulture</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringComparer</span></span> <span class="i">currentCulture</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">StringComparer</span></span>(<span class="e Identifier"><span class="i">Culture</span></span>.<span class="e Identifier"><span class="i">current</span></span>, <span class="e Bool"><span class="k">false</span></span>)</span>;</span>
   }</span></span></span>
 
@@ -97,7 +97,7 @@
     Returns:
       A new StringComparer instance.
   */</span>
-  <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringComparer</span></span> <span class="i">currentCultureIgnoreCase</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringComparer</span></span> <span class="i">currentCultureIgnoreCase</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">StringComparer</span></span>(<span class="e Identifier"><span class="i">Culture</span></span>.<span class="e Identifier"><span class="i">current</span></span>, <span class="e Bool"><span class="k">true</span></span>)</span>;</span>
   }</span></span></span>
 
@@ -106,7 +106,7 @@
     Returns:
       A new StringComparer instance.
   */</span>
-  <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringComparer</span></span> <span class="i">invariantCulture</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringComparer</span></span> <span class="i">invariantCulture</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">invariant_</span></span>;</span>
   }</span></span></span>
 
@@ -115,7 +115,7 @@
     Returns:
       A new StringComparer instance.
   */</span>
-  <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringComparer</span></span> <span class="i">invariantCultureIgnoreCase</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringComparer</span></span> <span class="i">invariantCultureIgnoreCase</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">invariantIgnoreCase_</span></span>;</span>
   }</span></span></span>
 
@@ -126,7 +126,7 @@
   Remarks:
     The delegate has the signature $(I int delegate(const(char)[], const(char)[])).
  */</span>
-<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span></span>)</span></span> <span class="i">StringComparison</span>;</span></span>
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span></span>)</span></span> <span class="i">StringComparison</span>;</span></span>
 
 <span class="bc">/**
   Sorts strings according to the rules of the specified culture.
@@ -148,7 +148,7 @@
     Params:
       comparer = The StringComparer to use when comparing strings. $(I Optional.)
   */</span>
-  <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">StringComparer</span></span> <span class="i">comparer</span> = <span class="e Null"><span class="k">null</span></span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">StringComparer</span></span> <span class="i">comparer</span> = <span class="e Null"><span class="k">null</span></span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">comparer</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
       <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">comparer</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">StringComparer</span></span>.<span class="e Identifier"><span class="i">currentCulture</span></span>()</span></span>;</span></span></span>
     <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">comparison_</span></span> = <span class="e Address">&amp;<span class="e Identifier"><span class="i">comparer</span></span></span>.<span class="e Identifier"><span class="i">compare</span></span></span>;</span>
@@ -161,7 +161,7 @@
     Remarks:
       The comparison parameter must have the same signature as StringComparison.
   */</span>
-  <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">StringComparison</span></span> <span class="i">comparison</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">StringComparison</span></span> <span class="i">comparison</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">comparison_</span></span> = <span class="e Identifier"><span class="i">comparison</span></span></span>;</span>
   }</span></span></span>
 
@@ -170,7 +170,7 @@
     Params:
       array = The array of strings to _sort.
   */</span>
-  <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">void</span></span>)</span> <span class="i">sort</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">array</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">void</span></span>)</span> <span class="i">sort</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">array</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">sort</span></span>(<span class="i">array</span>, <span class="n">0</span>, <span class="i">array</span>.<span class="i">length</span>)</span>;</span>
   }</span></span></span>
 
@@ -181,8 +181,8 @@
       index = The starting index of the range.
       count = The number of elements in the range.
   */</span>
-  <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">void</span></span>)</span> <span class="i">sort</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">array</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">index</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">count</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
-    <span class="s Declaration"><span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">void</span></span>)</span> <span class="i">qsort</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">left</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">right</span></span>, <span class="o Parameter"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">int</span></span><span class="t Pointer">*</span>)</span> <span class="i">dummy</span> = <span class="e Null"><span class="k">null</span></span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">void</span></span>)</span> <span class="i">sort</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">array</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">index</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">count</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="s Declaration"><span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">void</span></span>)</span> <span class="i">qsort</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">left</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">right</span></span>, <span class="o "><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">int</span></span><span class="t Pointer">*</span>)</span> <span class="i">dummy</span> = <span class="e Null"><span class="k">null</span></span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
       <span class="s DoWhile"><span class="k">do</span> <span class="s Scope"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">i</span> = <span class="e Identifier"><span class="i">left</span></span>, <span class="i">j</span> = <span class="e Identifier"><span class="i">right</span></span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">pivot</span> = <span class="e Index"><span class="e Identifier"><span class="i">array</span></span>[<span class="e Plus"><span class="e Identifier"><span class="i">left</span></span> + <span class="e Paren">(<span class="e RShift"><span class="e Paren">(<span class="e Minus"><span class="e Identifier"><span class="i">right</span></span> - <span class="e Identifier"><span class="i">left</span></span></span>)</span> &gt;&gt; <span class="e Int"><span class="n">1</span></span></span>)</span></span>]</span>;</span></span>
@@ -225,7 +225,7 @@
     $(I Property.) Retrieves an instance that performs a case-sensitive sort using the rules of the current culture.
     Returns: A StringSorter instance.
   */</span>
-  <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringSorter</span></span> <span class="i">currentCulture</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringSorter</span></span> <span class="i">currentCulture</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">StringSorter</span></span>(<span class="e Call"><span class="e Identifier"><span class="i">StringComparer</span></span>.<span class="e Identifier"><span class="i">currentCulture</span></span>()</span>)</span>;</span>
   }</span></span></span>
 
@@ -233,7 +233,7 @@
     $(I Property.) Retrieves an instance that performs a case-insensitive sort using the rules of the current culture.
     Returns: A StringSorter instance.
   */</span>
-  <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringSorter</span></span> <span class="i">currentCultureIgnoreCase</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringSorter</span></span> <span class="i">currentCultureIgnoreCase</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">StringSorter</span></span>(<span class="e Call"><span class="e Identifier"><span class="i">StringComparer</span></span>.<span class="e Identifier"><span class="i">currentCultureIgnoreCase</span></span>()</span>)</span>;</span>
   }</span></span></span>
 
@@ -241,7 +241,7 @@
     $(I Property.) Retrieves an instance that performs a case-sensitive sort using the rules of the invariant culture.
     Returns: A StringSorter instance.
   */</span>
-  <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringSorter</span></span> <span class="i">invariantCulture</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringSorter</span></span> <span class="i">invariantCulture</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">invariant_</span></span>;</span>
   }</span></span></span>
 
@@ -249,7 +249,7 @@
     $(I Property.) Retrieves an instance that performs a case-insensitive sort using the rules of the invariant culture.
     Returns: A StringSorter instance.
   */</span>
-  <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringSorter</span></span> <span class="i">invariantCultureIgnoreCase</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+  <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">StringSorter</span></span> <span class="i">invariantCultureIgnoreCase</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">invariantIgnoreCase_</span></span>;</span>
   }</span></span></span>
 

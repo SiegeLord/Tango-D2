@@ -111,7 +111,7 @@
  * = atan(Y0(x)/J0(x)).  M0 is approximated by sqrt(1/x)P7(1/x)/Q7(1/x).
  * The approximation to J0 is M0 * cos(x -  pi/4 + 1/x P5(1/x^2)/Q6(1/x^2)).
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cylBessel_j0</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cylBessel_j0</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
 
 <span class="lc">// j0(x) = (x^2-JZ1)(x^2-JZ2)(x^2-JZ3)P(x**2)/Q(x**2), 0 &lt;= x &lt;= 9</span>
@@ -155,7 +155,7 @@
  * Returns Bessel function of the second kind, of order
  * zero, of the argument.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cylBessel_y0</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cylBessel_y0</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
 <span class="bc">/* The domain is divided into the intervals [0, 5&gt;, [5,9&gt; and
  * [9, infinity). In the first interval a rational approximation
@@ -229,7 +229,7 @@
  *
  * Returns Bessel function of order one of the argument.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cylBessel_j1</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cylBessel_j1</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
 <span class="bc">/* The domain is divided into the intervals [0, 9] and
  * (9, infinity). In the first interval the rational approximation
@@ -271,7 +271,7 @@
  * Returns Bessel function of the second kind, of order
  * zero, of the argument.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cylBessel_y1</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cylBessel_y1</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
     <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&gt;=<span class="e Float"><span class="n">0.0</span></span></span>)</span>;</span>
     <span class="lc">// TODO: should it return -infinity for x&lt;0 ?</span>
@@ -371,7 +371,7 @@
  * BUGS: Not suitable for large n or x.
  *
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cylBessel_jn</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cylBessel_jn</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">pkm2</span>, <span class="i">pkm1</span>, <span class="i">pk</span>, <span class="i">xk</span>, <span class="i">r</span>, <span class="i">ans</span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span>, <span class="i">sign</span>;</span></span>
@@ -450,7 +450,7 @@
  * If n = 0 or 1 the routine for cylBessel_y0 or cylBessel_y1 is called
  * directly.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cylBessel_yn</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cylBessel_yn</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
     <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&gt;<span class="e Int"><span class="n">0</span></span></span>)</span>;</span> <span class="lc">// TODO: should it return -infinity for x&lt;=0 ?</span>
 }</span>
@@ -489,7 +489,7 @@
 
 <span class="d Protection"><span class="k">private</span></span> <span class="d Compound">{
 <span class="lc">// Evaluate Chebyshev series</span>
-<span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">evalCheby</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">double</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">double</span></span> <span class="t Array">[]</span>)</span> <span class="i">poly</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">evalCheby</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">double</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">double</span></span> <span class="t Array">[]</span>)</span> <span class="i">poly</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">double</span></span> <span class="i">b0</span>, <span class="i">b1</span>, <span class="i">b2</span>;</span></span>
     
@@ -516,7 +516,7 @@
  * (8, infinity).  Chebyshev polynomial expansions are employed
  * in each interval.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">cylBessel_i0</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">double</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">cylBessel_i0</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">double</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="lc">// Chebyshev coefficients for exp(-x) I0(x) in the interval [0,8].</span>
     <span class="lc">// lim(x-&gt;0){ exp(-x) I0(x) } = 1.</span>
@@ -568,7 +568,7 @@
  * (8, infinity).  Chebyshev polynomial expansions are employed
  * in each interval.
 */</span>
-<span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">cylBessel_i1</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">double</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">cylBessel_i1</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">double</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{     
     <span class="s Declaration"><span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">double</span></span> <span class="t Array">[]</span> <span class="i">A</span> = <span class="e ArrayInit">[       <span class="e Float"><span class="n">0x1.02a63724a7ffap-2</span></span>,  <span class="e Sign">-<span class="e Float"><span class="n">0x1.694d10469192ep-3</span></span></span>,
         <span class="e Float"><span class="n">0x1.a46dad536f53cp-4</span></span>,  <span class="e Sign">-<span class="e Float"><span class="n">0x1.b1bbc537c9ebcp-5</span></span></span>,   <span class="e Float"><span class="n">0x1.951e3e7bb2349p-6</span></span>,
@@ -656,18 +656,18 @@
         <span class="e Float"><span class="n">3.88547280871200700671E-1L</span></span>, <span class="e Float"><span class="n">4.69742480525120196168E19L</span></span>]</span>
 ]</span>;</span></span>
 
-    <span class="s Foreach"><span class="k">foreach</span>(<span class="o Parameters"><span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="t Array">[<span class="e Int"><span class="n">4</span></span>]</span> <span class="i">t</span></span></span>; <span class="e Identifier"><span class="i">j0_test_points</span></span>) <span class="s Scope"><span class="s Compound">{
+    <span class="s Foreach"><span class="k">foreach</span>(<span class="o "><span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="t Array">[<span class="e Int"><span class="n">4</span></span>]</span> <span class="i">t</span></span></span>; <span class="e Identifier"><span class="i">j0_test_points</span></span>) <span class="s Scope"><span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">feqrel</span></span>(<span class="i">cylBessel_j0</span>(<span class="i">t</span>[<span class="n">0</span>]), <span class="i">t</span>[<span class="n">1</span>]+<span class="i">t</span>[<span class="n">2</span>])</span> &gt;=<span class="e Minus"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span>-<span class="e Int"><span class="n">3</span></span></span></span>)</span>;</span>
     }</span></span></span>
 
-    <span class="s Foreach"><span class="k">foreach</span>(<span class="o Parameters"><span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="t Array">[<span class="e Int"><span class="n">4</span></span>]</span> <span class="i">t</span></span></span>; <span class="e Identifier"><span class="i">y0_test_points</span></span>) <span class="s Scope"><span class="s Compound">{
+    <span class="s Foreach"><span class="k">foreach</span>(<span class="o "><span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="t Array">[<span class="e Int"><span class="n">4</span></span>]</span> <span class="i">t</span></span></span>; <span class="e Identifier"><span class="i">y0_test_points</span></span>) <span class="s Scope"><span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">feqrel</span></span>(<span class="i">cylBessel_y0</span>(<span class="i">t</span>[<span class="n">0</span>]), <span class="i">t</span>[<span class="n">1</span>]+<span class="i">t</span>[<span class="n">2</span>])</span> &gt;=<span class="e Minus"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span>-<span class="e Int"><span class="n">4</span></span></span></span>)</span>;</span>
     }</span></span></span>
-    <span class="s Foreach"><span class="k">foreach</span>(<span class="o Parameters"><span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="t Array">[<span class="e Int"><span class="n">4</span></span>]</span> <span class="i">t</span></span></span>; <span class="e Identifier"><span class="i">j1_test_points</span></span>) <span class="s Scope"><span class="s Compound">{
+    <span class="s Foreach"><span class="k">foreach</span>(<span class="o "><span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="t Array">[<span class="e Int"><span class="n">4</span></span>]</span> <span class="i">t</span></span></span>; <span class="e Identifier"><span class="i">j1_test_points</span></span>) <span class="s Scope"><span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">feqrel</span></span>(<span class="i">cylBessel_j1</span>(<span class="i">t</span>[<span class="n">0</span>]), <span class="i">t</span>[<span class="n">1</span>]+<span class="i">t</span>[<span class="n">2</span>])</span> &gt;=<span class="e Minus"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span>-<span class="e Int"><span class="n">3</span></span></span></span>)</span>;</span>
     }</span></span></span>
 
-    <span class="s Foreach"><span class="k">foreach</span>(<span class="o Parameters"><span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="t Array">[<span class="e Int"><span class="n">4</span></span>]</span> <span class="i">t</span></span></span>; <span class="e Identifier"><span class="i">y1_test_points</span></span>) <span class="s Scope"><span class="s Compound">{
+    <span class="s Foreach"><span class="k">foreach</span>(<span class="o "><span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="t Array">[<span class="e Int"><span class="n">4</span></span>]</span> <span class="i">t</span></span></span>; <span class="e Identifier"><span class="i">y1_test_points</span></span>) <span class="s Scope"><span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">feqrel</span></span>(<span class="i">cylBessel_y1</span>(<span class="i">t</span>[<span class="n">0</span>]), <span class="i">t</span>[<span class="n">1</span>]+<span class="i">t</span>[<span class="n">2</span>])</span> &gt;=<span class="e Minus"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span>-<span class="e Int"><span class="n">4</span></span></span></span>)</span>;</span>
     }</span></span></span>
 
@@ -690,7 +690,7 @@
 <span class="d Unittest"><span class="k">unittest</span> <span class="s FuncBody"><span class="s Compound">{
 
     <span class="lc">// Wronksian test for Bessel functions</span>
-    <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">testWronksian</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+    <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">testWronksian</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
       <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">Jnp1</span> = <span class="e Call"><span class="e Identifier"><span class="i">cylBessel_jn</span></span>(<span class="i">n</span> + <span class="n">1</span>, <span class="i">x</span>)</span>;</span></span>
       <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">Jmn</span> = <span class="e Call"><span class="e Identifier"><span class="i">cylBessel_jn</span></span>(-<span class="i">n</span>, <span class="i">x</span>)</span>;</span></span>

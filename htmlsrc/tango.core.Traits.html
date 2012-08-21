@@ -29,7 +29,7 @@
  * Strips the qualifiers from a type
  */</span>
 
-<span class="d Template"><span class="k">template</span> <span class="i">BaseTypeOf</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">BaseTypeOf</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span> <span class="i">S</span> : <span class="t Shared"><span class="k">shared</span>(<span class="t Identifier"><span class="i">S</span></span>)</span>)</span>)
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">S</span></span> <span class="i">BaseTypeOf</span>;</span></span>
@@ -45,21 +45,21 @@
  * Computes the effective type that inout would have if you have it two parameters of difference constness
  */</span>
 
-<span class="d Template"><span class="k">template</span> <span class="i">InoutTypeOf</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>, <span class="o TemplateTypeParam"><span class="i">M</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">InoutTypeOf</span><span class="o ">(<span class="o "><span class="i">T</span></span>, <span class="o "><span class="i">M</span></span>)</span>
 <span class="d Compound">{
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>(<span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">M</span></span>)</span></span>)</span>);</span>
-    <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e AndAnd"><span class="e Is"><span class="k">is</span>(<span class="t Immutable"><span class="k">immutable</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>)</span> == <span class="t Identifier"><span class="i">T</span></span>)</span> &amp;&amp; <span class="e Is"><span class="k">is</span>(<span class="t Immutable"><span class="k">immutable</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>)</span> == <span class="t Identifier"><span class="i">M</span></span>)</span></span>)
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Immutable"><span class="k">immutable</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>)</span> <span class="i">InoutTypeOf</span>;</span></span>
-    <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Paren">(<span class="e AndAnd"><span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Identifier"><span class="i">T</span></span>)</span> &amp;&amp; <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Identifier"><span class="i">M</span></span>)</span></span>)</span>)
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> <span class="i">InoutTypeOf</span>;</span></span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>(<span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">M</span></span>)</span></span>)</span>);</span>
+    <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e AndAnd"><span class="e Is"><span class="k">is</span>(<span class="t Immutable"><span class="k">immutable</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>)</span> == <span class="t Identifier"><span class="i">T</span></span>)</span> &amp;&amp; <span class="e Is"><span class="k">is</span>(<span class="t Immutable"><span class="k">immutable</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>)</span> == <span class="t Identifier"><span class="i">M</span></span>)</span></span>)
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Immutable"><span class="k">immutable</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>)</span> <span class="i">InoutTypeOf</span>;</span></span>
+    <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Paren">(<span class="e AndAnd"><span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Identifier"><span class="i">T</span></span>)</span> &amp;&amp; <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Identifier"><span class="i">M</span></span>)</span></span>)</span>)
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> <span class="i">InoutTypeOf</span>;</span></span>
     <span class="k">else</span>
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>)</span> <span class="i">InoutTypeOf</span>;</span></span></span></span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>)</span> <span class="i">InoutTypeOf</span>;</span></span></span></span>
 }</span></span>
 
 <span class="bc">/**
  * Evaluates to true if T is char[], wchar[], or dchar[].
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isStringType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isStringType</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isStringType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">T</span></span> : <span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> )</span>  ||
                               <span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">T</span></span> : <span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">wchar</span></span>)</span><span class="t Array">[]</span> )</span></span> ||
@@ -69,23 +69,23 @@
 <span class="bc">/**
  * Evaluates to true if T is char, wchar, or dchar.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isCharType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isCharType</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
-    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isCharType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">char</span></span> )</span>  ||
-                            <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">wchar</span></span> )</span></span> ||
-                            <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">dchar</span></span> )</span></span>;</span>
+    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isCharType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">char</span></span> )</span>  ||
+                            <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">wchar</span></span> )</span></span> ||
+                            <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">dchar</span></span> )</span></span>;</span>
 }</span></span>
 
 
 <span class="bc">/**
  * Evaluates to true if T is a signed integer type.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isSignedIntegerType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isSignedIntegerType</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
-    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isSignedIntegerType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">byte</span></span> )</span>  ||
-                                     <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">short</span></span> )</span></span> ||
-                                     <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">int</span></span> )</span></span>   ||
-                                     <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">long</span></span> )</span></span><span class="nc">/+||
+    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isSignedIntegerType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">byte</span></span> )</span>  ||
+                                     <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">short</span></span> )</span></span> ||
+                                     <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">int</span></span> )</span></span>   ||
+                                     <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">long</span></span> )</span></span><span class="nc">/+||
                                      is( T == cent  )+/</span>;</span>
 }</span></span>
 
@@ -93,12 +93,12 @@
 <span class="bc">/**
  * Evaluates to true if T is an unsigned integer type.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isUnsignedIntegerType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isUnsignedIntegerType</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
-    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isUnsignedIntegerType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">ubyte</span></span> )</span>  ||
-                                       <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">ushort</span></span> )</span></span> ||
-                                       <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">uint</span></span> )</span></span>   ||
-                                       <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">ulong</span></span> )</span></span><span class="nc">/+||
+    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isUnsignedIntegerType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">ubyte</span></span> )</span>  ||
+                                       <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">ushort</span></span> )</span></span> ||
+                                       <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">uint</span></span> )</span></span>   ||
+                                       <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">ulong</span></span> )</span></span><span class="nc">/+||
                                        is( T == ucent  )+/</span>;</span>
 }</span></span>
 
@@ -106,39 +106,39 @@
 <span class="bc">/**
  * Evaluates to true if T is a signed or unsigned integer type.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isIntegerType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isIntegerType</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
-    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isIntegerType</span> = <span class="e OrOr"><span class="e TmplInstance"><span class="i">isSignedIntegerType</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> ||
-                               <span class="e TmplInstance"><span class="i">isUnsignedIntegerType</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span></span>;</span>
+    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isIntegerType</span> = <span class="e OrOr"><span class="e TmplInstance"><span class="i">isSignedIntegerType</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> ||
+                               <span class="e TmplInstance"><span class="i">isUnsignedIntegerType</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span></span>;</span>
 }</span></span>
 
 
 <span class="bc">/**
  * Evaluates to true if T is a real floating-point type.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isRealType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isRealType</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
-    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isRealType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">float</span></span> )</span>  ||
-                            <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">double</span></span> )</span></span> ||
-                            <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">real</span></span> )</span></span>;</span>
+    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isRealType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">float</span></span> )</span>  ||
+                            <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">double</span></span> )</span></span> ||
+                            <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">real</span></span> )</span></span>;</span>
 }</span></span>
 
 
 <span class="bc">/**
  * Evaluates to true if T is a complex floating-point type.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isComplexType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isComplexType</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
-    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isComplexType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">cfloat</span></span> )</span>  ||
-                               <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">cdouble</span></span> )</span></span> ||
-                               <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">creal</span></span> )</span></span>;</span>
+    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isComplexType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">cfloat</span></span> )</span>  ||
+                               <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">cdouble</span></span> )</span></span> ||
+                               <span class="e Is"><span class="k">is</span>( <span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> == <span class="t Integral"><span class="k">creal</span></span> )</span></span>;</span>
 }</span></span>
 
 
 <span class="bc">/**
  * Evaluates to true if T is an imaginary floating-point type.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isImaginaryType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isImaginaryType</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isImaginaryType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">T</span></span> == <span class="t Integral"><span class="k">ifloat</span></span> )</span>  ||
                                  <span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">T</span></span> == <span class="t Integral"><span class="k">idouble</span></span> )</span></span> ||
@@ -150,15 +150,15 @@
  * Evaluates to true if T is any floating-point type: real, complex, or
  * imaginary.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isFloatingPointType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isFloatingPointType</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
-    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isFloatingPointType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e TmplInstance"><span class="i">isRealType</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>    ||
-                                     <span class="e TmplInstance"><span class="i">isComplexType</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span></span> ||
-                                     <span class="e TmplInstance"><span class="i">isImaginaryType</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span></span>;</span>
+    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isFloatingPointType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e TmplInstance"><span class="i">isRealType</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>    ||
+                                     <span class="e TmplInstance"><span class="i">isComplexType</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span></span> ||
+                                     <span class="e TmplInstance"><span class="i">isImaginaryType</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span></span>;</span>
 }</span></span>
 
 <span class="lc">/// true if T is an atomic type</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isAtomicType</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isAtomicType</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span>
 <span class="d Compound">{
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">T</span></span> == <span class="t Integral"><span class="k">bool</span></span> )</span>
             || <span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">T</span></span> == <span class="t Integral"><span class="k">char</span></span> )</span></span>
@@ -186,7 +186,7 @@
 <span class="bc">/**
  * complex type for the given type
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">ComplexTypeOf</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="d Compound">{
+<span class="d Template"><span class="k">template</span> <span class="i">ComplexTypeOf</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="d Compound">{
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">float</span></span>)</span>||<span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">ifloat</span></span>)</span></span>||<span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">cfloat</span></span>)</span></span>)<span class="d Compound">{
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">cfloat</span></span> <span class="i">ComplexTypeOf</span>;</span></span>
     }</span> <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">double</span></span>)</span>|| <span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">idouble</span></span>)</span></span>|| <span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">cdouble</span></span>)</span></span>)<span class="d Compound">{
@@ -199,7 +199,7 @@
 <span class="bc">/**
  * real type for the given type
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">RealTypeOf</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="d Compound">{
+<span class="d Template"><span class="k">template</span> <span class="i">RealTypeOf</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="d Compound">{
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">float</span></span>)</span>|| <span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">ifloat</span></span>)</span></span>|| <span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">cfloat</span></span>)</span></span>)<span class="d Compound">{
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">float</span></span> <span class="i">RealTypeOf</span>;</span></span>
     }</span> <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">double</span></span>)</span>|| <span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">idouble</span></span>)</span></span>|| <span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">cdouble</span></span>)</span></span>)<span class="d Compound">{
@@ -212,7 +212,7 @@
 <span class="bc">/**
  * imaginary type for the given type
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">ImaginaryTypeOf</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="d Compound">{
+<span class="d Template"><span class="k">template</span> <span class="i">ImaginaryTypeOf</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="d Compound">{
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">float</span></span>)</span>|| <span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">ifloat</span></span>)</span></span>|| <span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">cfloat</span></span>)</span></span>)<span class="d Compound">{
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">ifloat</span></span> <span class="i">ImaginaryTypeOf</span>;</span></span>
     }</span> <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">double</span></span>)</span>|| <span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">idouble</span></span>)</span></span>|| <span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span>==<span class="t Integral"><span class="k">cdouble</span></span>)</span></span>)<span class="d Compound">{
@@ -223,10 +223,10 @@
 }</span></span>
 
 <span class="lc">/// type with maximum precision</span>
-<span class="d Template"><span class="k">template</span> <span class="i">MaxPrecTypeOf</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="d Compound">{
-    <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e TmplInstance"><span class="i">isComplexType</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>)<span class="d Compound">{
+<span class="d Template"><span class="k">template</span> <span class="i">MaxPrecTypeOf</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="d Compound">{
+    <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e TmplInstance"><span class="i">isComplexType</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>)<span class="d Compound">{
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">creal</span></span> <span class="i">MaxPrecTypeOf</span>;</span></span>
-    }</span> <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e TmplInstance"><span class="i">isImaginaryType</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>)<span class="d Compound">{
+    }</span> <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e TmplInstance"><span class="i">isImaginaryType</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>)<span class="d Compound">{
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">MaxPrecTypeOf</span>;</span></span>
     }</span> <span class="k">else</span> <span class="d Compound">{
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">MaxPrecTypeOf</span>;</span></span>
@@ -237,12 +237,12 @@
 <span class="bc">/**
  * Evaluates to true if T is a pointer type.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isPointerType</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isPointerType</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span>
 <span class="d Compound">{
         <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">isPointerType</span> = <span class="e Bool"><span class="k">false</span></span>;</span>
 }</span></span>
 
-<span class="d Template"><span class="k">template</span> <span class="i">isPointerType</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span> : <span class="t Identifier"><span class="i">T</span></span><span class="t Pointer">*</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isPointerType</span><span class="o ">(<span class="o "><span class="i">T</span> : <span class="t Identifier"><span class="i">T</span></span><span class="t Pointer">*</span></span>)</span>
 <span class="d Compound">{
         <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">isPointerType</span> = <span class="e Bool"><span class="k">true</span></span>;</span>
 }</span></span>
@@ -251,26 +251,26 @@
 <span class="d Compound">{
     <span class="d Unittest"><span class="k">unittest</span>
     <span class="s FuncBody"><span class="s Compound">{
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">int</span></span>)</span>)</span></span>==<span class="t Integral"><span class="k">int</span></span>)</span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">int</span></span>)</span>)</span></span>==<span class="t Integral"><span class="k">int</span></span>)</span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Shared"><span class="k">shared</span>(<span class="t Integral"><span class="k">int</span></span>)</span>)</span></span>==<span class="t Integral"><span class="k">int</span></span>)</span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o TemplateArguments">(<span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">int</span></span>)</span>)</span></span>==<span class="t Integral"><span class="k">int</span></span>)</span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>)</span></span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span></span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Pointer">*</span>)</span></span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span><span class="t Array">[]</span>)</span></span></span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span><span class="t Pointer">*</span>)</span></span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">uint</span></span>)</span></span></span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">MaxPrecTypeOf</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">float</span></span>)</span></span>==<span class="t Integral"><span class="k">real</span></span>)</span>);</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">MaxPrecTypeOf</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">cfloat</span></span>)</span></span>==<span class="t Integral"><span class="k">creal</span></span>)</span>);</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">MaxPrecTypeOf</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">ifloat</span></span>)</span></span>==<span class="t Integral"><span class="k">ireal</span></span>)</span>);</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">int</span></span>)</span>)</span></span>==<span class="t Integral"><span class="k">int</span></span>)</span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">int</span></span>)</span>)</span></span>==<span class="t Integral"><span class="k">int</span></span>)</span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Shared"><span class="k">shared</span>(<span class="t Integral"><span class="k">int</span></span>)</span>)</span></span>==<span class="t Integral"><span class="k">int</span></span>)</span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOf</span>!<span class="o ">(<span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">int</span></span>)</span>)</span></span>==<span class="t Integral"><span class="k">int</span></span>)</span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o ">(<span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>)</span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Pointer">*</span>)</span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span><span class="t Array">[]</span>)</span></span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span><span class="t Pointer">*</span>)</span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o ">(<span class="t Integral"><span class="k">uint</span></span>)</span></span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">MaxPrecTypeOf</span>!<span class="o ">(<span class="t Integral"><span class="k">float</span></span>)</span></span>==<span class="t Integral"><span class="k">real</span></span>)</span>);</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">MaxPrecTypeOf</span>!<span class="o ">(<span class="t Integral"><span class="k">cfloat</span></span>)</span></span>==<span class="t Integral"><span class="k">creal</span></span>)</span>);</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">MaxPrecTypeOf</span>!<span class="o ">(<span class="t Integral"><span class="k">ifloat</span></span>)</span></span>==<span class="t Integral"><span class="k">ireal</span></span>)</span>);</span>
 
         <span class="s Declaration"><span class="d Class"><span class="k">class</span> <span class="i">Ham</span>
         <span class="d Compound">{
             <span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">a</span>;</span>
         }</span></span></span>
 
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ham</span></span>)</span></span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ham</span></span>)</span></span></span> );</span>
 
         <span class="s Declaration"><span class="d Union"><span class="k">union</span> <span class="i">Eggs</span>
         <span class="d Compound">{
@@ -278,12 +278,12 @@
             <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span>  <span class="i">b</span>;</span>
         }</span></span></span>
 
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Eggs</span></span>)</span></span></span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Eggs</span></span><span class="t Pointer">*</span>)</span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o ">(<span class="t Identifier"><span class="i">Eggs</span></span>)</span></span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o ">(<span class="t Identifier"><span class="i">Eggs</span></span><span class="t Pointer">*</span>)</span></span> );</span>
 
         <span class="s Declaration"><span class="d Struct"><span class="k">struct</span> <span class="i">Bacon</span> <span class="d Compound">{}</span></span></span>
 
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Bacon</span></span>)</span></span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o ">(<span class="t Identifier"><span class="i">Bacon</span></span>)</span></span></span> );</span>
 
     }</span></span></span>
 }</span></span>
@@ -291,10 +291,10 @@
 <span class="bc">/**
  * Evaluates to true if T is a a pointer, class, interface, or delegate.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isReferenceType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isReferenceType</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
 
-    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isReferenceType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>  ||
+    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isReferenceType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e TmplInstance"><span class="i">isPointerType</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>  ||
                                <span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">T</span></span> == <span class="k">class</span> )</span></span>     ||
                                <span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">T</span></span> == <span class="k">interface</span> )</span></span> ||
                                <span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">T</span></span> == <span class="k">delegate</span> )</span></span>;</span>
@@ -304,7 +304,7 @@
 <span class="bc">/**
  * Evaulates to true if T is a dynamic array type.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isDynamicArrayType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isDynamicArrayType</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isDynamicArrayType</span> = <span class="e Is"><span class="k">is</span>( <span class="t Typeof"><span class="k">typeof</span>(<span class="e Index"><span class="e Identifier"><span class="i">T</span></span>.<span class="e Identifier"><span class="i">init</span></span>[<span class="e Int"><span class="n">0</span></span>]</span>)</span><span class="t Array">[]</span> == <span class="t Identifier"><span class="i">T</span></span> )</span>;</span>
 }</span></span>
@@ -312,18 +312,18 @@
 <span class="bc">/**
  * Evaluates to true if T is a static array type.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isStaticArrayType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span> : <span class="t Identifier"><span class="i">T</span></span><span class="t Array">[<span class="t Identifier"><span class="i">U</span></span>]</span></span>, <span class="o TemplateValueParam"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">U</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isStaticArrayType</span><span class="o ">( <span class="o "><span class="i">T</span> : <span class="t Identifier"><span class="i">T</span></span><span class="t Array">[<span class="t Identifier"><span class="i">U</span></span>]</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">U</span></span> )</span>
 <span class="d Compound">{
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isStaticArrayType</span> = <span class="e Bool"><span class="k">true</span></span>;</span>
 }</span></span>
 
-<span class="d Template"><span class="k">template</span> <span class="i">isStaticArrayType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isStaticArrayType</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isStaticArrayType</span> = <span class="e Bool"><span class="k">false</span></span>;</span>
 }</span></span>
 
 <span class="lc">/// true for array types</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isArrayType</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isArrayType</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span>
 <span class="d Compound">{
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">T</span></span> <span class="i">U</span> : <span class="t Identifier"><span class="i">U</span></span><span class="t Array">[]</span> )</span>)
         <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isArrayType</span>=<span class="e Bool"><span class="k">true</span></span>;</span>
@@ -335,26 +335,26 @@
 <span class="d Compound">{
     <span class="d Unittest"><span class="k">unittest</span>
     <span class="s FuncBody"><span class="s Compound">{
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isStaticArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">5</span></span>]</span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span></span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isDynamicArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">5</span></span>]</span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span></span></span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">5</span></span>]</span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isStaticArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">5</span></span>]</span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isDynamicArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">5</span></span>]</span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span></span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">5</span></span>]</span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span></span> );</span>
 
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isStaticArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">15</span></span>]</span>)</span></span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isStaticArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isStaticArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">15</span></span>]</span>)</span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isStaticArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span></span> );</span>
 
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isDynamicArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isDynamicArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">15</span></span>]</span>)</span></span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isDynamicArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isDynamicArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">15</span></span>]</span>)</span></span></span> );</span>
 
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">15</span></span>]</span>)</span></span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span> );</span>
-        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span>)</span></span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">15</span></span>]</span>)</span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span> );</span>
+        <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span>)</span></span></span> );</span>
     }</span></span></span>
 }</span></span>
 
 <span class="bc">/**
  * Evaluates to true if T is an associative array type.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isAssocArrayType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isAssocArrayType</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isAssocArrayType</span> = <span class="e Is"><span class="k">is</span>( <span class="t Typeof"><span class="k">typeof</span>(<span class="e Index"><span class="e Identifier"><span class="i">T</span></span>.<span class="e Identifier"><span class="i">init</span></span>.<span class="e Identifier"><span class="i">values</span></span>[<span class="e Int"><span class="n">0</span></span>]</span>)</span><span class="t Array">[<span class="t Typeof"><span class="k">typeof</span>(<span class="e Index"><span class="e Identifier"><span class="i">T</span></span>.<span class="e Identifier"><span class="i">init</span></span>.<span class="e Identifier"><span class="i">keys</span></span>[<span class="e Int"><span class="n">0</span></span>]</span>)</span>]</span> == <span class="t Identifier"><span class="i">T</span></span> )</span>;</span>
 }</span></span>
@@ -364,7 +364,7 @@
  * Evaluates to true if T is a function, function pointer, delegate, or
  * callable object.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">isCallableType</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">isCallableType</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isCallableType</span> = <span class="e OrOr"><span class="e OrOr"><span class="e OrOr"><span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">T</span></span> == <span class="k">function</span> )</span>             ||
                                 <span class="e Is"><span class="k">is</span>( <span class="t Typeof"><span class="k">typeof</span>(<span class="e Deref">*<span class="e Identifier"><span class="i">T</span></span></span>)</span> == <span class="k">function</span> )</span></span>    ||
@@ -376,7 +376,7 @@
 <span class="bc">/**
  * Evaluates to the return type of Fn.  Fn is required to be a callable type.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">ReturnTypeOf</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">Fn</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">ReturnTypeOf</span><span class="o ">( <span class="o "><span class="i">Fn</span></span> )</span>
 <span class="d Compound">{
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">Fn</span></span> <span class="i">Ret</span> == <span class="k">return</span> )</span> )
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">Ret</span></span> <span class="i">ReturnTypeOf</span>;</span></span>
@@ -388,10 +388,10 @@
  * Returns the type that a T would evaluate to in an expression.
  * Expr is not required to be a callable type
  */</span> 
-<span class="d Template"><span class="k">template</span> <span class="i">ExprTypeOf</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">Expr</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">ExprTypeOf</span><span class="o ">( <span class="o "><span class="i">Expr</span></span> )</span>
 <span class="d Compound">{
-    <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e TmplInstance"><span class="i">isCallableType</span>!<span class="o TemplateArguments">( <span class="t Identifier"><span class="i">Expr</span></span> )</span></span>)
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">ReturnTypeOf</span>!<span class="o TemplateArguments">( <span class="t Identifier"><span class="i">Expr</span></span> )</span></span> <span class="i">ExprTypeOf</span>;</span></span>
+    <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e TmplInstance"><span class="i">isCallableType</span>!<span class="o ">( <span class="t Identifier"><span class="i">Expr</span></span> )</span></span>)
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">ReturnTypeOf</span>!<span class="o ">( <span class="t Identifier"><span class="i">Expr</span></span> )</span></span> <span class="i">ExprTypeOf</span>;</span></span>
     <span class="k">else</span>
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">Expr</span></span> <span class="i">ExprTypeOf</span>;</span></span></span>
 }</span></span>
@@ -400,12 +400,12 @@
 <span class="bc">/**
  * Evaluates to the return type of fn.  fn is required to be callable.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">ReturnTypeOf</span><span class="o TemplateParameters">( <span class="o TemplateAliasParam"><span class="k">alias</span> <span class="i">fn</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">ReturnTypeOf</span><span class="o ">( <span class="o "><span class="k">alias</span> <span class="i">fn</span></span> )</span>
 <span class="d Compound">{
 <span class="lc">//    static if( is( typeof(fn) Base == typedef ) )</span>
 <span class="lc">//        alias ReturnTypeOf!(Base) ReturnTypeOf;</span>
 <span class="lc">//    else</span>
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">ReturnTypeOf</span>!<span class="o TemplateArguments">(<span class="t Typeof"><span class="k">typeof</span>(<span class="e Identifier"><span class="i">fn</span></span>)</span>)</span></span> <span class="i">ReturnTypeOf</span>;</span></span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">ReturnTypeOf</span>!<span class="o ">(<span class="t Typeof"><span class="k">typeof</span>(<span class="e Identifier"><span class="i">fn</span></span>)</span>)</span></span> <span class="i">ReturnTypeOf</span>;</span></span>
 }</span></span>
 
 
@@ -413,14 +413,14 @@
  * Evaluates to a tuple representing the parameters of Fn.  Fn is required to
  * be a callable type.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">ParameterTupleOf</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">Fn</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">ParameterTupleOf</span><span class="o ">( <span class="o "><span class="i">Fn</span></span> )</span>
 <span class="d Compound">{
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">Fn</span></span> <span class="i">Params</span> == <span class="k">function</span> )</span> )
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">Params</span></span> <span class="i">ParameterTupleOf</span>;</span></span>
     <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">Fn</span></span> <span class="i">Params</span> == <span class="k">delegate</span> )</span> )
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">ParameterTupleOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Params</span></span>)</span></span> <span class="i">ParameterTupleOf</span>;</span></span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">ParameterTupleOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">Params</span></span>)</span></span> <span class="i">ParameterTupleOf</span>;</span></span>
     <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">Fn</span></span> <span class="i">Params</span> == <span class="t Identifier"><span class="i">Params</span></span><span class="t Pointer">*</span> )</span> )
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">ParameterTupleOf</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Params</span></span>)</span></span> <span class="i">ParameterTupleOf</span>;</span></span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">ParameterTupleOf</span>!<span class="o ">(<span class="t Identifier"><span class="i">Params</span></span>)</span></span> <span class="i">ParameterTupleOf</span>;</span></span>
     <span class="k">else</span>
         <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Bool"><span class="k">false</span></span>, <span class="e String"><span class="sl">"Argument has no parameters."</span></span> );</span></span></span></span>
 }</span></span>
@@ -430,12 +430,12 @@
  * Evaluates to a tuple representing the parameters of fn.  n is required to
  * be callable.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">ParameterTupleOf</span><span class="o TemplateParameters">( <span class="o TemplateAliasParam"><span class="k">alias</span> <span class="i">fn</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">ParameterTupleOf</span><span class="o ">( <span class="o "><span class="k">alias</span> <span class="i">fn</span></span> )</span>
 <span class="d Compound">{
 <span class="lc">//    static if( is( typeof(fn) Base == typedef ) )</span>
 <span class="lc">//        alias ParameterTupleOf!(Base) ParameterTupleOf;</span>
 <span class="lc">//    else</span>
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">ParameterTupleOf</span>!<span class="o TemplateArguments">(<span class="t Typeof"><span class="k">typeof</span>(<span class="e Identifier"><span class="i">fn</span></span>)</span>)</span></span> <span class="i">ParameterTupleOf</span>;</span></span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">ParameterTupleOf</span>!<span class="o ">(<span class="t Typeof"><span class="k">typeof</span>(<span class="e Identifier"><span class="i">fn</span></span>)</span>)</span></span> <span class="i">ParameterTupleOf</span>;</span></span>
 }</span></span>
 
 
@@ -443,7 +443,7 @@
  * Evaluates to a tuple representing the ancestors of T.  T is required to be
  * a class or interface type.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">BaseTypeTupleOf</span><span class="o TemplateParameters">( <span class="o TemplateTypeParam"><span class="i">T</span></span> )</span>
+<span class="d Template"><span class="k">template</span> <span class="i">BaseTypeTupleOf</span><span class="o ">( <span class="o "><span class="i">T</span></span> )</span>
 <span class="d Compound">{
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">T</span></span> <span class="i">Base</span> == <span class="k">super</span> )</span> )
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">Base</span></span> <span class="i">BaseTypeTupleOf</span>;</span></span>
@@ -454,10 +454,10 @@
 <span class="bc">/**
  * Strips the []'s off of a type.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">BaseTypeOfArrays</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">BaseTypeOfArrays</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span>
 <span class="d Compound">{
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">T</span></span> <span class="i">S</span> : <span class="t Identifier"><span class="i">S</span></span><span class="t Array">[]</span>)</span> ) <span class="d Compound">{
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">BaseTypeOfArrays</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">S</span></span>)</span></span>  <span class="i">BaseTypeOfArrays</span>;</span></span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">BaseTypeOfArrays</span>!<span class="o ">(<span class="t Identifier"><span class="i">S</span></span>)</span></span>  <span class="i">BaseTypeOfArrays</span>;</span></span>
     }</span>
     <span class="k">else</span> <span class="d Compound">{
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">T</span></span> <span class="i">BaseTypeOfArrays</span>;</span></span>
@@ -467,7 +467,7 @@
 <span class="bc">/**
  * strips one [] off a type
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">ElementTypeOfArray</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span>:<span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">ElementTypeOfArray</span><span class="o ">(<span class="o "><span class="i">T</span>:<span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span></span>)</span>
 <span class="d Compound">{
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">T</span></span> <span class="i">ElementTypeOfArray</span>;</span></span>
 }</span></span>
@@ -475,36 +475,36 @@
 <span class="bc">/**
  * Count the []'s on an array type
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">rankOfArray</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span> <span class="d Compound">{
+<span class="d Template"><span class="k">template</span> <span class="i">rankOfArray</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span> <span class="d Compound">{
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">T</span></span> <span class="i">S</span> : <span class="t Identifier"><span class="i">S</span></span><span class="t Array">[]</span>)</span>) <span class="d Compound">{
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">rankOfArray</span> = <span class="e Plus"><span class="e Int"><span class="n">1</span></span> + <span class="e TmplInstance"><span class="i">rankOfArray</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">S</span></span>)</span></span></span>;</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">rankOfArray</span> = <span class="e Plus"><span class="e Int"><span class="n">1</span></span> + <span class="e TmplInstance"><span class="i">rankOfArray</span>!<span class="o ">(<span class="t Identifier"><span class="i">S</span></span>)</span></span></span>;</span>
     }</span> <span class="k">else</span> <span class="d Compound">{
         <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">rankOfArray</span> = <span class="e Int"><span class="n">0</span></span>;</span>
     }</span></span>
 }</span></span>
 
 <span class="lc">/// type of the keys of an AA</span>
-<span class="d Template"><span class="k">template</span> <span class="i">KeyTypeOfAA</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="d Compound">{
+<span class="d Template"><span class="k">template</span> <span class="i">KeyTypeOfAA</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="d Compound">{
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Typeof"><span class="k">typeof</span>(<span class="e Index"><span class="e Identifier"><span class="i">T</span></span>.<span class="e Identifier"><span class="i">init</span></span>.<span class="e Identifier"><span class="i">keys</span></span>[<span class="e Int"><span class="n">0</span></span>]</span>)</span> <span class="i">KeyTypeOfAA</span>;</span></span>
 }</span></span>
 
 <span class="lc">/// type of the values of an AA</span>
-<span class="d Template"><span class="k">template</span> <span class="i">ValTypeOfAA</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="d Compound">{
+<span class="d Template"><span class="k">template</span> <span class="i">ValTypeOfAA</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="d Compound">{
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Typeof"><span class="k">typeof</span>(<span class="e Index"><span class="e Identifier"><span class="i">T</span></span>.<span class="e Identifier"><span class="i">init</span></span>.<span class="e Identifier"><span class="i">values</span></span>[<span class="e Int"><span class="n">0</span></span>]</span>)</span> <span class="i">ValTypeOfAA</span>;</span></span>
 }</span></span>
 
 <span class="lc">/// returns the size of a static array</span>
-<span class="d Template"><span class="k">template</span> <span class="i">staticArraySize</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">staticArraySize</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span>
 <span class="d Compound">{
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>(<span class="e TmplInstance"><span class="i">isStaticArrayType</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>,<span class="e String"><span class="sl">"staticArraySize needs a static array as type"</span></span>);</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>(<span class="e Equal"><span class="e TmplInstance"><span class="i">rankOfArray</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>==<span class="e Int"><span class="n">1</span></span></span>,<span class="e String"><span class="sl">"implemented only for 1d arrays..."</span></span>);</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>(<span class="e TmplInstance"><span class="i">isStaticArrayType</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>,<span class="e String"><span class="sl">"staticArraySize needs a static array as type"</span></span>);</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>(<span class="e Equal"><span class="e TmplInstance"><span class="i">rankOfArray</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span>==<span class="e Int"><span class="n">1</span></span></span>,<span class="e String"><span class="sl">"implemented only for 1d arrays..."</span></span>);</span>
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">staticArraySize</span>=<span class="e Div"><span class="e TypeDotId">(<span class="t Identifier"><span class="i">T</span></span>).<span class="i">sizeof</span></span> / <span class="e Typeof"><span class="t Typeof"><span class="k">typeof</span>(<span class="e Deref">*<span class="e Identifier"><span class="i">T</span></span></span>.<span class="e Identifier"><span class="i">ptr</span></span>)</span></span>.<span class="e Identifier"><span class="i">sizeof</span></span></span>;</span>
 }</span></span>
 
 <span class="lc">/// is T is static array returns a dynamic array, otherwise returns T</span>
-<span class="d Template"><span class="k">template</span> <span class="i">DynamicArrayType</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">DynamicArrayType</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span>
 <span class="d Compound">{
-    <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e TmplInstance"><span class="i">isStaticArrayType</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> )
+    <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e TmplInstance"><span class="i">isStaticArrayType</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> )
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Typeof"><span class="k">typeof</span>(<span class="e Identifier"><span class="i">T</span></span>.<span class="e Identifier"><span class="i">dup</span></span>)</span> <span class="i">DynamicArrayType</span>;</span></span>
     <span class="k">else</span>
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">T</span></span> <span class="i">DynamicArrayType</span>;</span></span></span>
@@ -512,29 +512,29 @@
 
 <span class="d Debug"><span class="k">debug</span>( <span class="i">UnitTest</span> )
 <span class="d Compound">{
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOfArrays</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[]</span><span class="t Array">[]</span>)</span></span>==<span class="t Integral"><span class="k">real</span></span>)</span> );</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOfArrays</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span><span class="t Array">[<span class="e Int"><span class="n">3</span></span>]</span>)</span></span>==<span class="t Integral"><span class="k">real</span></span>)</span> );</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">ElementTypeOfArray</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[]</span>)</span></span>==<span class="t Integral"><span class="k">real</span></span>)</span> );</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">ElementTypeOfArray</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[]</span><span class="t Array">[]</span>)</span></span>==<span class="t Integral"><span class="k">real</span></span><span class="t Array">[]</span>)</span> );</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">ElementTypeOfArray</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span><span class="t Array">[]</span>)</span></span>==<span class="t Integral"><span class="k">real</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span> );</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">ElementTypeOfArray</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span></span>==<span class="t Integral"><span class="k">real</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span> );</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Equal"><span class="e TmplInstance"><span class="i">rankOfArray</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[]</span><span class="t Array">[]</span>)</span></span>==<span class="e Int"><span class="n">2</span></span></span> );</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Equal"><span class="e TmplInstance"><span class="i">rankOfArray</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span><span class="t Array">[]</span>)</span></span>==<span class="e Int"><span class="n">2</span></span></span> );</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">ValTypeOfAA</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Integral"><span class="k">int</span></span>]</span>)</span></span>==<span class="t Integral"><span class="k">char</span></span>)</span>);</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">KeyTypeOfAA</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Integral"><span class="k">int</span></span>]</span>)</span></span>==<span class="t Integral"><span class="k">int</span></span>)</span>);</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">ValTypeOfAA</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[<span class="t Integral"><span class="k">int</span></span>]</span>)</span></span>==<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span>);</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">KeyTypeOfAA</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[<span class="t Integral"><span class="k">int</span></span><span class="t Array">[]</span>]</span>)</span></span>==<span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">int</span></span>)</span><span class="t Array">[]</span>)</span>);</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isAssocArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[<span class="t Integral"><span class="k">int</span></span><span class="t Array">[]</span>]</span>)</span></span>);</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isAssocArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span></span>);</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">DynamicArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span></span>==<span class="t TemplateInstance"><span class="i">DynamicArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span>)</span>);</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">DynamicArrayType</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span></span>==<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span>);</span>
-    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Equal"><span class="e TmplInstance"><span class="i">staticArraySize</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span></span>==<span class="e Int"><span class="n">2</span></span></span>);</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOfArrays</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[]</span><span class="t Array">[]</span>)</span></span>==<span class="t Integral"><span class="k">real</span></span>)</span> );</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">BaseTypeOfArrays</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span><span class="t Array">[<span class="e Int"><span class="n">3</span></span>]</span>)</span></span>==<span class="t Integral"><span class="k">real</span></span>)</span> );</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">ElementTypeOfArray</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[]</span>)</span></span>==<span class="t Integral"><span class="k">real</span></span>)</span> );</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">ElementTypeOfArray</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[]</span><span class="t Array">[]</span>)</span></span>==<span class="t Integral"><span class="k">real</span></span><span class="t Array">[]</span>)</span> );</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">ElementTypeOfArray</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span><span class="t Array">[]</span>)</span></span>==<span class="t Integral"><span class="k">real</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span> );</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">ElementTypeOfArray</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span></span>==<span class="t Integral"><span class="k">real</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span> );</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Equal"><span class="e TmplInstance"><span class="i">rankOfArray</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[]</span><span class="t Array">[]</span>)</span></span>==<span class="e Int"><span class="n">2</span></span></span> );</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Equal"><span class="e TmplInstance"><span class="i">rankOfArray</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span><span class="t Array">[]</span>)</span></span>==<span class="e Int"><span class="n">2</span></span></span> );</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">ValTypeOfAA</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Integral"><span class="k">int</span></span>]</span>)</span></span>==<span class="t Integral"><span class="k">char</span></span>)</span>);</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">KeyTypeOfAA</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="t Integral"><span class="k">int</span></span>]</span>)</span></span>==<span class="t Integral"><span class="k">int</span></span>)</span>);</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">ValTypeOfAA</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[<span class="t Integral"><span class="k">int</span></span>]</span>)</span></span>==<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span>);</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">KeyTypeOfAA</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[<span class="t Integral"><span class="k">int</span></span><span class="t Array">[]</span>]</span>)</span></span>==<span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">int</span></span>)</span><span class="t Array">[]</span>)</span>);</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e TmplInstance"><span class="i">isAssocArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[<span class="t Integral"><span class="k">int</span></span><span class="t Array">[]</span>]</span>)</span></span>);</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e TmplInstance"><span class="i">isAssocArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span></span>);</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">DynamicArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span></span>==<span class="t TemplateInstance"><span class="i">DynamicArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span>)</span>);</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Is"><span class="k">is</span>(<span class="t TemplateInstance"><span class="i">DynamicArrayType</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span></span>==<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span>);</span>
+    <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Equal"><span class="e TmplInstance"><span class="i">staticArraySize</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>]</span>)</span></span>==<span class="e Int"><span class="n">2</span></span></span>);</span>
 }</span></span>
 
 <span class="lc">// ------- CTFE -------</span>
 
 <span class="lc">/// compile time integer to string</span>
-<span class="d Function"><span class="t Integral"><span class="k">char</span></span> <span class="t Array">[]</span> <span class="i">ctfe_i2a</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">char</span></span> <span class="t Array">[]</span> <span class="i">ctfe_i2a</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">digit</span>=<span class="e String"><span class="sl">"0123456789"</span></span>.<span class="e Identifier"><span class="i">dup</span></span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">res</span>=<span class="e String"><span class="sl">""</span></span>.<span class="e Identifier"><span class="i">dup</span></span>;</span></span>
     <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">i</span></span>==<span class="e Int"><span class="n">0</span></span></span>)<span class="s Scope"><span class="s Compound">{
@@ -555,7 +555,7 @@
         <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">res</span></span>;</span></span></span>
 }</span></span></span>
 <span class="lc">/// ditto</span>
-<span class="d Function"><span class="t Integral"><span class="k">char</span></span> <span class="t Array">[]</span> <span class="i">ctfe_i2a</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">i</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">char</span></span> <span class="t Array">[]</span> <span class="i">ctfe_i2a</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">i</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">digit</span>=<span class="e String"><span class="sl">"0123456789"</span></span>.<span class="e Identifier"><span class="i">dup</span></span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">res</span>=<span class="e String"><span class="sl">""</span></span>.<span class="e Identifier"><span class="i">dup</span></span>;</span></span>
     <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">i</span></span>==<span class="e Int"><span class="n">0</span></span></span>)<span class="s Scope"><span class="s Compound">{
@@ -576,7 +576,7 @@
         <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">res</span></span>;</span></span></span>
 }</span></span></span>
 <span class="lc">/// ditto</span>
-<span class="d Function"><span class="t Integral"><span class="k">char</span></span> <span class="t Array">[]</span> <span class="i">ctfe_i2a</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">i</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">char</span></span> <span class="t Array">[]</span> <span class="i">ctfe_i2a</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">i</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">digit</span>=<span class="e String"><span class="sl">"0123456789"</span></span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">res</span>;</span></span>
     <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">i</span></span>==<span class="e Int"><span class="n">0</span></span></span>)<span class="s Scope"><span class="s Compound">{
@@ -590,7 +590,7 @@
     <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">res</span></span>;</span>
 }</span></span></span>
 <span class="lc">/// ditto</span>
-<span class="d Function"><span class="t Integral"><span class="k">char</span></span> <span class="t Array">[]</span> <span class="i">ctfe_i2a</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">i</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">char</span></span> <span class="t Array">[]</span> <span class="i">ctfe_i2a</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ulong</span></span> <span class="i">i</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">digit</span>=<span class="e String"><span class="sl">"0123456789"</span></span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">res</span>;</span></span>
     <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">i</span></span>==<span class="e Int"><span class="n">0</span></span></span>)<span class="s Scope"><span class="s Compound">{

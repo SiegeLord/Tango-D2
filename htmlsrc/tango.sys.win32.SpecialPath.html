@@ -34,69 +34,69 @@
 <span class="d Pragma"><span class="k">pragma</span>(<span class="i">lib</span>, <span class="e String"><span class="sl">"shell32.lib"</span></span>)</span><span class="d Empty">;</span>
 
 <span class="d Version"><span class="k">version</span>(<span class="i">Win32SansUnicode</span>)
-    <span class="d Linkage"><span class="k">extern</span>(<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">SHGetSpecialFolderPathA</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">HWND</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">LPCSTR</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">BOOL</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Linkage"><span class="k">extern</span>(<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">SHGetSpecialFolderPathA</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">HWND</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">LPCSTR</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">BOOL</span></span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="k">else</span>
-    <span class="d Linkage"><span class="k">extern</span>(<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">SHGetSpecialFolderPathW</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">HWND</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">LPCWSTR</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">BOOL</span></span></span>)</span><span class="s FuncBody">;</span></span></span>
+    <span class="d Linkage"><span class="k">extern</span>(<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">SHGetSpecialFolderPathW</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">HWND</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">LPCWSTR</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">BOOL</span></span></span>)</span><span class="s FuncBody">;</span></span></span>
 
 <span class="d Enum"><span class="k">enum</span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_DESKTOP</span></span> = <span class="e Int"><span class="n">0</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_INTERNET</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_PROGRAMS</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_CONTROLS</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_PRINTERS</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_PERSONAL</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_FAVORITES</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_STARTUP</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_RECENT</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_SENDTO</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_BITBUCKET</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_STARTMENU</span></span></span>, <span class="lc">// = 11</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_DESKTOPDIRECTORY</span></span> = <span class="e Int"><span class="n">16</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_DRIVES</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_NETWORK</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_NETHOOD</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_FONTS</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_TEMPLATES</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMMON_STARTMENU</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMMON_PROGRAMS</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMMON_STARTUP</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMMON_DESKTOPDIRECTORY</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_APPDATA</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_PRINTHOOD</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_LOCAL_APPDATA</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_ALTSTARTUP</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMMON_ALTSTARTUP</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMMON_FAVORITES</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_INTERNET_CACHE</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COOKIES</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_HISTORY</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMMON_APPDATA</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_WINDOWS</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_SYSTEM</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_PROGRAM_FILES</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_MYPICTURES</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_PROFILE</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_SYSTEMX86</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_PROGRAM_FILESX86</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_PROGRAM_FILES_COMMON</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_PROGRAM_FILES_COMMONX86</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMMON_TEMPLATES</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMMON_DOCUMENTS</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMMON_ADMINTOOLS</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_ADMINTOOLS</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_CONNECTIONS</span></span></span>, <span class="lc">// =49</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMMON_MUSIC</span></span> = <span class="e Int"><span class="n">53</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMMON_PICTURES</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMMON_VIDEO</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_RESOURCES</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_RESOURCES_LOCALIZED</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMMON_OEM_LINKS</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_CDBURN_AREA</span></span></span>, <span class="lc">// = 59</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_COMPUTERSNEARME</span></span> = <span class="e Int"><span class="n">61</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_FLAG_DONT_VERIFY</span></span> = <span class="e Int"><span class="n">0x4000</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_FLAG_CREATE</span></span> = <span class="e Int"><span class="n">0x8000</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CSIDL_FLAG_MASK</span></span> = <span class="e Int"><span class="n">0xFF00</span></span></span>
+    <span class="d EnumMember"><span class="i">CSIDL_DESKTOP</span> = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_INTERNET</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_PROGRAMS</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_CONTROLS</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_PRINTERS</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_PERSONAL</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_FAVORITES</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_STARTUP</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_RECENT</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_SENDTO</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_BITBUCKET</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_STARTMENU</span></span>, <span class="lc">// = 11</span>
+    <span class="d EnumMember"><span class="i">CSIDL_DESKTOPDIRECTORY</span> = <span class="e Int"><span class="n">16</span></span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_DRIVES</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_NETWORK</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_NETHOOD</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_FONTS</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_TEMPLATES</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_COMMON_STARTMENU</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_COMMON_PROGRAMS</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_COMMON_STARTUP</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_COMMON_DESKTOPDIRECTORY</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_APPDATA</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_PRINTHOOD</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_LOCAL_APPDATA</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_ALTSTARTUP</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_COMMON_ALTSTARTUP</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_COMMON_FAVORITES</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_INTERNET_CACHE</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_COOKIES</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_HISTORY</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_COMMON_APPDATA</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_WINDOWS</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_SYSTEM</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_PROGRAM_FILES</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_MYPICTURES</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_PROFILE</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_SYSTEMX86</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_PROGRAM_FILESX86</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_PROGRAM_FILES_COMMON</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_PROGRAM_FILES_COMMONX86</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_COMMON_TEMPLATES</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_COMMON_DOCUMENTS</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_COMMON_ADMINTOOLS</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_ADMINTOOLS</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_CONNECTIONS</span></span>, <span class="lc">// =49</span>
+    <span class="d EnumMember"><span class="i">CSIDL_COMMON_MUSIC</span> = <span class="e Int"><span class="n">53</span></span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_COMMON_PICTURES</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_COMMON_VIDEO</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_RESOURCES</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_RESOURCES_LOCALIZED</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_COMMON_OEM_LINKS</span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_CDBURN_AREA</span></span>, <span class="lc">// = 59</span>
+    <span class="d EnumMember"><span class="i">CSIDL_COMPUTERSNEARME</span> = <span class="e Int"><span class="n">61</span></span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_FLAG_DONT_VERIFY</span> = <span class="e Int"><span class="n">0x4000</span></span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_FLAG_CREATE</span> = <span class="e Int"><span class="n">0x8000</span></span></span>,
+    <span class="d EnumMember"><span class="i">CSIDL_FLAG_MASK</span> = <span class="e Int"><span class="n">0xFF00</span></span></span>
 }</span>
 
 <span class="bc">/**
@@ -111,7 +111,7 @@
  * Returns:
  *  A string containing the path
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">getSpecialPath</span><span class="o Parameters">( <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">csidl</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">getSpecialPath</span><span class="o ">( <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">csidl</span></span> )</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>( <span class="i">Win32SansUnicode</span> )
     <span class="s Compound">{

@@ -30,7 +30,7 @@
 
 <span class="d Version"><span class="k">version</span>(<span class="i">D_Version2</span>)
 <span class="d Compound">{
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">intToUtf8</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">tmp</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">val</span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">intToUtf8</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">tmp</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">val</span></span>)</span>
     <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
          <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">tmp</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">9</span></span></span>, <span class="e String"><span class="sl">"atoi buffer should be more than 9 chars wide"</span></span>)</span>;</span>
          }</span>
@@ -46,7 +46,7 @@
     }</span></span></span>
 
     <span class="lc">// function to compare two strings</span>
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">stringCompare</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">s1</span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">s2</span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">stringCompare</span> <span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">s1</span></span>, <span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">s2</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">len</span> = <span class="e Identifier"><span class="i">s1</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span></span>
 
@@ -81,7 +81,7 @@
         <span class="d Variables"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hThread</span>;</span>
     }</span></span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">winAddrBacktrace</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">TraceContext</span></span><span class="t Pointer">*</span> <span class="i">winCtx</span></span>,<span class="o Parameter"><span class="t Identifier"><span class="i">TraceContext</span></span><span class="t Pointer">*</span> <span class="i">contextOut</span></span>,<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span><span class="t Pointer">*</span><span class="i">traceBuf</span></span>,<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">traceBufLength</span></span>,<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="t Pointer">*</span><span class="i">flags</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">winAddrBacktrace</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">TraceContext</span></span><span class="t Pointer">*</span> <span class="i">winCtx</span></span>,<span class="o "><span class="t Identifier"><span class="i">TraceContext</span></span><span class="t Pointer">*</span> <span class="i">contextOut</span></span>,<span class="o "><span class="t Identifier"><span class="i">size_t</span></span><span class="t Pointer">*</span><span class="i">traceBuf</span></span>,<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">traceBufLength</span></span>,<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="t Pointer">*</span><span class="i">flags</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">CONTEXT</span></span>     <span class="i">context</span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">CONTEXT</span></span><span class="t Pointer">*</span>    <span class="i">ctxPtr</span> = <span class="e Address">&amp;<span class="e Identifier"><span class="i">context</span></span></span>;</span></span>
         
@@ -148,10 +148,10 @@
     }</span></span></span>
     
     
-    <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">winSymbolizeFrameInfo</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">FrameInfo</span></span> <span class="i">fInfo</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">TraceContext</span></span> <span class="t Pointer">*</span><span class="i">context</span></span>,<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">buf</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">winSymbolizeFrameInfo</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">FrameInfo</span></span> <span class="i">fInfo</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TraceContext</span></span>)</span> <span class="t Pointer">*</span><span class="i">context</span></span>,<span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">buf</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span>;</span></span>
         <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">context</span></span>!<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)<span class="s Scope"><span class="s Compound">{
-            <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">hProcess</span></span>=<span class="e Identifier"><span class="i">context</span></span>.<span class="e Identifier"><span class="i">hProcess</span></span></span>;</span>
+            <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">hProcess</span></span>=<span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">HANDLE</span></span>)<span class="e Identifier"><span class="i">context</span></span></span>.<span class="e Identifier"><span class="i">hProcess</span></span></span>;</span>
         }</span></span> <span class="k">else</span> <span class="s Scope"><span class="s Compound">{
             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">hProcess</span></span>=<span class="e Call"><span class="e Identifier"><span class="i">GetCurrentProcess</span></span>()</span></span>;</span>
         }</span></span></span>
@@ -173,8 +173,8 @@
 
 
 <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span>(<span class="i">C</span>)</span> <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span>        <span class="i">_Dmain</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span>        <span class="i">D4core6thread5Fiber3runMFZv</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span>        <span class="i">_Dmain</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span>        <span class="i">D4core6thread5Fiber3runMFZv</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="d Protection"><span class="k">private</span></span> <span class="d Compound">{
     <span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span>  <span class="i">fiberRunFuncLength</span> = <span class="e Int"><span class="n">0</span></span>;</span>
@@ -189,11 +189,11 @@
              <span class="i">prev</span>;</span>
 }</span></span>
 
-<span class="d Linkage"><span class="k">extern</span>(<span class="i">C</span>)</span> <span class="d Function"><span class="t Identifier"><span class="i">Context</span></span><span class="t Pointer">*</span> <span class="i">D4core6thread6Thread10topContextMFZPS4core6thread6Thread7Context</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">core</span></span>.<span class="t Identifier"><span class="i">thread</span></span>.<span class="t Identifier"><span class="i">Thread</span></span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Linkage"><span class="k">extern</span>(<span class="i">C</span>)</span> <span class="d Function"><span class="t Identifier"><span class="i">Context</span></span><span class="t Pointer">*</span> <span class="i">D4core6thread6Thread10topContextMFZPS4core6thread6Thread7Context</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">core</span></span>.<span class="t Identifier"><span class="i">thread</span></span>.<span class="t Identifier"><span class="i">Thread</span></span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">D4core6thread6Thread10topContextMFZPS4core6thread6Thread7Context</span></span> <span class="i">Thread_topContext</span>;</span></span>
 
 
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">walkStack</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">LPCONTEXT</span></span> <span class="i">ContextRecord</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hThread</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">void</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span><span class="t Array">[]</span></span>)</span></span> <span class="i">traceReceiver</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">walkStack</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">LPCONTEXT</span></span> <span class="i">ContextRecord</span></span>, <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>, <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hThread</span></span>, <span class="o "><span class="t Integral"><span class="k">void</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span><span class="t Array">[]</span></span>)</span></span> <span class="i">traceReceiver</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">maxStackSpace</span> = <span class="e Int"><span class="n">32</span></span>;</span></span>
     <span class="s Declaration"><span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">maxHeapSpace</span>      = <span class="e Int"><span class="n">256</span></span>;</span></span>
     <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">maxHeapSpace</span></span>  &gt; <span class="e Identifier"><span class="i">maxStackSpace</span></span></span>);</span>
@@ -203,7 +203,7 @@
     <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span><span class="t Array">[]</span>                            <span class="i">stacktrace</span> = <span class="e Identifier"><span class="i">stackTraceArr</span></span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span>                                <span class="i">i</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
     
-    <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">addAddress</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">addr</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">addAddress</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">addr</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">i</span></span> &lt; <span class="e Identifier"><span class="i">maxStackSpace</span></span></span>) <span class="s Scope"><span class="s Compound">{
             <span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Identifier"><span class="i">stacktrace</span></span>[<span class="e PostIncr"><span class="e Identifier"><span class="i">i</span></span>++</span>]</span> = <span class="e Identifier"><span class="i">addr</span></span></span>;</span>
         }</span></span> <span class="k">else</span> <span class="s Scope"><span class="s Compound">{
@@ -264,9 +264,9 @@
         
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">foundMain</span> = <span class="e Bool"><span class="k">false</span></span>;</span></span>     
         <span class="s Declaration"><span class="d Enum"><span class="k">enum</span> <span class="i">Phase</span> {
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">TryEsp</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">TryEbp</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">GiveUp</span></span></span>
+            <span class="d EnumMember"><span class="i">TryEsp</span></span>,
+            <span class="d EnumMember"><span class="i">TryEbp</span></span>,
+            <span class="d EnumMember"><span class="i">GiveUp</span></span>
         }</span></span>
         
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">Phase</span></span> <span class="i">phase</span> = <span class="e Cond"><span class="e Equal"><span class="e Identifier"><span class="i">ContextRecord</span></span>.<span class="e Identifier"><span class="i">Esp</span></span> == <span class="e Identifier"><span class="i">ContextRecord</span></span>.<span class="e Identifier"><span class="i">Ebp</span></span></span> ? <span class="e Identifier"><span class="i">Phase</span></span>.<span class="e Identifier"><span class="i">TryEbp</span></span> : <span class="e Identifier"><span class="i">Phase</span></span>.<span class="e Identifier"><span class="i">TryEsp</span></span></span>;</span></span>
@@ -287,8 +287,8 @@
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">sym</span> = <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">ret</span></span>;</span></span>
                 
                 <span class="s Declaration"><span class="d Enum"><span class="k">enum</span> {
-                    <span class="d EnumMember"><span class="t Identifier"><span class="i">NearPtrCallOpcode</span></span> = <span class="e Int"><span class="n">0xe8</span></span></span>,
-                    <span class="d EnumMember"><span class="t Identifier"><span class="i">RegisterBasedCallOpcode</span></span> = <span class="e Int"><span class="n">0xff</span></span></span>
+                    <span class="d EnumMember"><span class="i">NearPtrCallOpcode</span> = <span class="e Int"><span class="n">0xe8</span></span></span>,
+                    <span class="d EnumMember"><span class="i">RegisterBasedCallOpcode</span> = <span class="e Int"><span class="n">0xff</span></span></span>
                 }</span></span>
 
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">callAddr</span> = <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">ret</span></span>;</span></span>
@@ -371,7 +371,7 @@
 }</span></span></span>
 
 
-<span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">addrToSymbolDetails</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">addr</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">void</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">func</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">line</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">ptrdiff_t</span></span> <span class="i">addrOffset</span></span>)</span></span> <span class="i">dg</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">addrToSymbolDetails</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">addr</span></span>, <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>, <span class="o "><span class="t Integral"><span class="k">void</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">func</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">file</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">line</span></span>, <span class="o "><span class="t Identifier"><span class="i">ptrdiff_t</span></span> <span class="i">addrOffset</span></span>)</span></span> <span class="i">dg</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ubyte</span></span> <span class="i">buffer</span><span class="t Array">[<span class="e Int"><span class="n">256</span></span>]</span>;</span></span>
 
     <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">SYMBOL_INFO</span></span><span class="t Pointer">*</span> <span class="i">symbol_info</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">SYMBOL_INFO</span></span><span class="t Pointer">*</span>)<span class="e Identifier"><span class="i">buffer</span></span></span>.<span class="e Identifier"><span class="i">ptr</span></span>;</span></span>
@@ -425,7 +425,7 @@
     The array must be null and empty for this function to succeed. The rationale behind this is that the coder should state his decision clearly. This will help and has
     already helped to spot many intricate bugs. 
 */</span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">alloc</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>, <span class="o TemplateTypeParam"><span class="i">intT</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">T</span></span> <span class="i">array</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">intT</span></span> <span class="i">numItems</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">init</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span> 
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">alloc</span><span class="o ">(<span class="o "><span class="i">T</span></span>, <span class="o "><span class="i">intT</span></span>)</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">T</span></span> <span class="i">array</span></span>, <span class="o "><span class="t Identifier"><span class="i">intT</span></span> <span class="i">numItems</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">init</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span> 
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
     <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Identity"><span class="e Identifier"><span class="i">array</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)</span>;</span>
     <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">numItems</span></span> &gt;= <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
@@ -448,7 +448,7 @@
 <span class="bc">/**
     Clone the given array. The result is allocated using alloc() and copied piecewise from the param. Then it's returned
 */</span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">clone</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">array</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">clone</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">array</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">T</span></span> <span class="i">res</span>;</span></span>
     <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">res</span></span>.<span class="e Identifier"><span class="i">alloc</span></span>(<span class="i">array</span>.<span class="i">length</span>, <span class="k">false</span>)</span>;</span>
     <span class="s Expression"><span class="e Assign"><span class="e Slice"><span class="e Identifier"><span class="i">res</span></span>[]</span> = <span class="e Slice"><span class="e Identifier"><span class="i">array</span></span>[]</span></span>;</span>
@@ -470,7 +470,7 @@
     foo.realloc(10);        // &lt;--
     ---
 */</span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">realloc</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>, <span class="o TemplateTypeParam"><span class="i">intT</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">T</span></span> <span class="i">array</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">intT</span></span> <span class="i">numItems</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">init</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">realloc</span><span class="o ">(<span class="o "><span class="i">T</span></span>, <span class="o "><span class="i">intT</span></span>)</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">T</span></span> <span class="i">array</span></span>, <span class="o "><span class="t Identifier"><span class="i">intT</span></span> <span class="i">numItems</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">init</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
     <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">numItems</span></span> &gt;= <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
 }</span>
@@ -493,7 +493,7 @@
 <span class="bc">/**
     Deallocate an array allocated with alloc()
 */</span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">free</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">T</span></span> <span class="i">array</span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">free</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">T</span></span> <span class="i">array</span></span>)</span>
 <span class="s FuncBody"><span class="k">out</span> <span class="s Compound">{
     <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Equal"><span class="e Int"><span class="n">0</span></span> == <span class="e Identifier"><span class="i">array</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>)</span>;</span>
 }</span>
@@ -527,7 +527,7 @@
     assert (barLen == 4);
     ---
 */</span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">append</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>, <span class="o TemplateTypeParam"><span class="i">I</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">T</span></span> <span class="i">array</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">I</span></span> <span class="i">elem</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span><span class="t Pointer">*</span> <span class="i">realLength</span> = <span class="e Null"><span class="k">null</span></span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">append</span><span class="o ">(<span class="o "><span class="i">T</span></span>, <span class="o "><span class="i">I</span></span>)</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">T</span></span> <span class="i">array</span></span>, <span class="o "><span class="t Identifier"><span class="i">I</span></span> <span class="i">elem</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span><span class="t Pointer">*</span> <span class="i">realLength</span> = <span class="e Null"><span class="k">null</span></span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">len</span> = <span class="e Cond"><span class="e Identity"><span class="e Identifier"><span class="i">realLength</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span> ? <span class="e Identifier"><span class="i">array</span></span>.<span class="e Identifier"><span class="i">length</span></span> : <span class="e Deref">*<span class="e Identifier"><span class="i">realLength</span></span></span></span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">capacity</span> = <span class="e Identifier"><span class="i">array</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span></span>
     <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Typeof"><span class="k">typeof</span>(<span class="e Index"><span class="e Identifier"><span class="i">T</span></span>[<span class="e Int"><span class="n">0</span></span>]</span>)</span> <span class="i">ItemT</span>;</span></span></span>
@@ -561,17 +561,17 @@
 
 
 <span class="d Enum"><span class="k">enum</span> {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">MAX_PATH</span></span> = <span class="e Int"><span class="n">260</span></span></span>,
+    <span class="d EnumMember"><span class="i">MAX_PATH</span> = <span class="e Int"><span class="n">260</span></span></span>,
 }</span>
 
 <span class="d Enum"><span class="k">enum</span> : <span class="t Identifier"><span class="i">WORD</span></span> {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">IMAGE_FILE_MACHINE_UNKNOWN</span></span> = <span class="e Int"><span class="n">0</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">IMAGE_FILE_MACHINE_I386</span></span>    = <span class="e Int"><span class="n">332</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">IMAGE_FILE_MACHINE_R3000</span></span>   = <span class="e Int"><span class="n">354</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">IMAGE_FILE_MACHINE_R4000</span></span>   = <span class="e Int"><span class="n">358</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">IMAGE_FILE_MACHINE_R10000</span></span>  = <span class="e Int"><span class="n">360</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">IMAGE_FILE_MACHINE_ALPHA</span></span>   = <span class="e Int"><span class="n">388</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">IMAGE_FILE_MACHINE_POWERPC</span></span> = <span class="e Int"><span class="n">496</span></span></span>
+    <span class="d EnumMember"><span class="i">IMAGE_FILE_MACHINE_UNKNOWN</span> = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="i">IMAGE_FILE_MACHINE_I386</span>    = <span class="e Int"><span class="n">332</span></span></span>,
+    <span class="d EnumMember"><span class="i">IMAGE_FILE_MACHINE_R3000</span>   = <span class="e Int"><span class="n">354</span></span></span>,
+    <span class="d EnumMember"><span class="i">IMAGE_FILE_MACHINE_R4000</span>   = <span class="e Int"><span class="n">358</span></span></span>,
+    <span class="d EnumMember"><span class="i">IMAGE_FILE_MACHINE_R10000</span>  = <span class="e Int"><span class="n">360</span></span></span>,
+    <span class="d EnumMember"><span class="i">IMAGE_FILE_MACHINE_ALPHA</span>   = <span class="e Int"><span class="n">388</span></span></span>,
+    <span class="d EnumMember"><span class="i">IMAGE_FILE_MACHINE_POWERPC</span> = <span class="e Int"><span class="n">496</span></span></span>
 }</span>
 
 <span class="d Version"><span class="k">version</span>(<span class="i">X86</span>) <span class="d Compound">{
@@ -667,8 +667,8 @@
 <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">HMODULE</span>;</span></span>
 
 <span class="d Enum"><span class="k">enum</span> : <span class="t Identifier"><span class="i">BOOL</span></span> {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">FALSE</span></span> = <span class="e Int"><span class="n">0</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TRUE</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">FALSE</span> = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="i">TRUE</span> = <span class="e Int"><span class="n">1</span></span></span>,
 }</span>
 
 <span class="d Struct"><span class="k">struct</span> <span class="i">EXCEPTION_POINTERS</span> <span class="d Compound">{
@@ -689,13 +689,13 @@
 
 
 <span class="d Linkage"><span class="k">extern</span>(<span class="i">Windows</span>)</span> <span class="d Compound">{
-    <span class="d Function"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">GetCurrentProcess</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">GetCurrentThread</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="i">GetThreadContext</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">LPCONTEXT</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">GetCurrentProcess</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">GetCurrentThread</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="i">GetThreadContext</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">LPCONTEXT</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 
 
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">loadWinAPIFunctions</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">loadWinAPIFunctions</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">dbghelp</span> = <span class="e Call"><span class="e Identifier"><span class="i">SharedLib</span></span>.<span class="e Identifier"><span class="i">load</span></span>(<span class="sl">`dbghelp.dll`</span>)</span>;</span></span>
     
     <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">SymEnumerateModules64</span> = <span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">fp_SymEnumerateModules64</span></span>)<span class="e Identifier"><span class="i">dbghelp</span></span></span>.<span class="e Identifier"><span class="i">getSymbol</span></span>(<span class="sl">"SymEnumerateModules64"</span>)</span>;</span></span>
@@ -745,33 +745,33 @@
     <span class="d StorageClass"><span class="k">__gshared</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">fp_SymFunctionTableAccess64</span></span> <span class="i">SymFunctionTableAccess64</span>;</span>
 
 
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">SymOptions</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">SymOptions</span></span>
     )</span></span> <span class="i">fp_SymSetOptions</span>;</span></span>
     
     <span class="d Enum"><span class="k">enum</span> {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SYMOPT_ALLOW_ABSOLUTE_SYMBOLS</span></span> = <span class="e Int"><span class="n">0x00000800</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SYMOPT_DEFERRED_LOADS</span></span> = <span class="e Int"><span class="n">0x00000004</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SYMOPT_UNDNAME</span></span> = <span class="e Int"><span class="n">0x00000002</span></span></span>
+        <span class="d EnumMember"><span class="i">SYMOPT_ALLOW_ABSOLUTE_SYMBOLS</span> = <span class="e Int"><span class="n">0x00000800</span></span></span>,
+        <span class="d EnumMember"><span class="i">SYMOPT_DEFERRED_LOADS</span> = <span class="e Int"><span class="n">0x00000004</span></span></span>,
+        <span class="d EnumMember"><span class="i">SYMOPT_UNDNAME</span> = <span class="e Int"><span class="n">0x00000002</span></span></span>
     }</span>
 
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">LPCTSTR</span></span> <span class="i">UserSearchPath</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="i">fInvadeProcess</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">LPCTSTR</span></span> <span class="i">UserSearchPath</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">BOOL</span></span> <span class="i">fInvadeProcess</span></span>
     )</span></span> <span class="i">fp_SymInitialize</span>;</span></span>
     
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>
     )</span></span> <span class="i">fp_SymCleanup</span>;</span></span>
 
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hFile</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">LPCSTR</span></span> <span class="i">ImageName</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">LPCSTR</span></span> <span class="i">ModuleName</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="i">BaseOfDll</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">SizeOfDll</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hFile</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">LPCSTR</span></span> <span class="i">ImageName</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">LPCSTR</span></span> <span class="i">ModuleName</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="i">BaseOfDll</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">SizeOfDll</span></span>
     )</span></span> <span class="i">fp_SymLoadModule64</span>;</span></span>
     
     <span class="d Struct"><span class="k">struct</span> <span class="i">SYMBOL_INFO</span> <span class="d Compound">{
@@ -793,29 +793,29 @@
     }</span></span>
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">SYMBOL_INFO</span></span><span class="t Pointer">*</span> <span class="i">PSYMBOL_INFO</span>;</span></span>
     
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="i">Address</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PDWORD64</span></span> <span class="i">Displacement</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PSYMBOL_INFO</span></span> <span class="i">Symbol</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="i">Address</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PDWORD64</span></span> <span class="i">Displacement</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PSYMBOL_INFO</span></span> <span class="i">Symbol</span></span>
     )</span></span> <span class="i">fp_SymFromAddr</span>;</span></span>
 
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PCSTR</span></span> <span class="i">Name</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PSYMBOL_INFO</span></span> <span class="i">Symbol</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PCSTR</span></span> <span class="i">Name</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PSYMBOL_INFO</span></span> <span class="i">Symbol</span></span>
     )</span></span> <span class="i">fp_SymFromName</span>;</span></span>
 
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PSYM_ENUMMODULES_CALLBACK64</span></span> <span class="i">EnumModulesCallback</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PVOID</span></span> <span class="i">UserContext</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PSYM_ENUMMODULES_CALLBACK64</span></span> <span class="i">EnumModulesCallback</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PVOID</span></span> <span class="i">UserContext</span></span>
     )</span></span> <span class="i">fp_SymEnumerateModules64</span>;</span></span>
     
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">LPTSTR</span></span> <span class="i">ModuleName</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="i">BaseOfDll</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PVOID</span></span> <span class="i">UserContext</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">LPTSTR</span></span> <span class="i">ModuleName</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="i">BaseOfDll</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PVOID</span></span> <span class="i">UserContext</span></span>
     )</span></span> <span class="i">PSYM_ENUMMODULES_CALLBACK64</span>;</span></span>
 
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">TH32CS_SNAPPROCESS</span> = <span class="e Int"><span class="n">0x00000002</span></span>;</span>
@@ -823,9 +823,9 @@
     
 
     <span class="d Enum"><span class="k">enum</span> {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MAX_MODULE_NAME32</span></span> = <span class="e Int"><span class="n">255</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">TH32CS_SNAPMODULE</span></span> = <span class="e Int"><span class="n">0x00000008</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SYMOPT_LOAD_LINES</span></span> = <span class="e Int"><span class="n">0x10</span></span></span>,
+        <span class="d EnumMember"><span class="i">MAX_MODULE_NAME32</span> = <span class="e Int"><span class="n">255</span></span></span>,
+        <span class="d EnumMember"><span class="i">TH32CS_SNAPMODULE</span> = <span class="e Int"><span class="n">0x00000008</span></span></span>,
+        <span class="d EnumMember"><span class="i">SYMOPT_LOAD_LINES</span> = <span class="e Int"><span class="n">0x10</span></span></span>,
     }</span>
 
     <span class="d Struct"><span class="k">struct</span> <span class="i">IMAGEHLP_LINE64</span> <span class="d Compound">{
@@ -837,49 +837,49 @@
     }</span></span>
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">IMAGEHLP_LINE64</span></span><span class="t Pointer">*</span> <span class="i">PIMAGEHLP_LINE64</span>;</span></span>
  
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="i">dwAddr</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PDWORD</span></span> <span class="i">pdwDisplacement</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PIMAGEHLP_LINE64</span></span> <span class="i">Line</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="i">dwAddr</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PDWORD</span></span> <span class="i">pdwDisplacement</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PIMAGEHLP_LINE64</span></span> <span class="i">Line</span></span>
     )</span></span> <span class="i">fp_SymGetLineFromAddr64</span>;</span></span>
     
 
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PSYMBOL_INFO</span></span> <span class="i">pSymInfo</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">ULONG</span></span> <span class="i">SymbolSize</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PVOID</span></span> <span class="i">UserContext</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">PSYMBOL_INFO</span></span> <span class="i">pSymInfo</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">ULONG</span></span> <span class="i">SymbolSize</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PVOID</span></span> <span class="i">UserContext</span></span>
     )</span></span> <span class="i">PSYM_ENUMERATESYMBOLS_CALLBACK</span>;</span></span>
 
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">ULONG64</span></span> <span class="i">BaseOfDll</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">LPCTSTR</span></span> <span class="i">Mask</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PSYM_ENUMERATESYMBOLS_CALLBACK</span></span> <span class="i">EnumSymbolsCallback</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PVOID</span></span> <span class="i">UserContext</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">ULONG64</span></span> <span class="i">BaseOfDll</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">LPCTSTR</span></span> <span class="i">Mask</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PSYM_ENUMERATESYMBOLS_CALLBACK</span></span> <span class="i">EnumSymbolsCallback</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PVOID</span></span> <span class="i">UserContext</span></span>
     )</span></span> <span class="i">fp_SymEnumSymbols</span>;</span></span>
 
 
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="i">dwAddr</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="i">dwAddr</span></span>
     )</span></span> <span class="i">fp_SymGetModuleBase64</span>;</span></span>
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">fp_SymGetModuleBase64</span></span> <span class="i">PGET_MODULE_BASE_ROUTINE64</span>;</span></span>
     
     
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-      <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
-      <span class="o Parameter"><span class="t Identifier"><span class="i">HMODULE</span></span> <span class="i">hModule</span></span>,
-      <span class="o Parameter"><span class="t Identifier"><span class="i">LPSTR</span></span> <span class="i">lpFilename</span></span>,
-      <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">nSize</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+      <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
+      <span class="o "><span class="t Identifier"><span class="i">HMODULE</span></span> <span class="i">hModule</span></span>,
+      <span class="o "><span class="t Identifier"><span class="i">LPSTR</span></span> <span class="i">lpFilename</span></span>,
+      <span class="o "><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">nSize</span></span>
     )</span></span> <span class="i">fp_GetModuleFileNameExA</span>;</span></span>
     
 
     <span class="d Enum"><span class="k">enum</span> <span class="i">ADDRESS_MODE</span> {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">AddrMode1616</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">AddrMode1632</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">AddrModeReal</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">AddrModeFlat</span></span></span>
+        <span class="d EnumMember"><span class="i">AddrMode1616</span></span>,
+        <span class="d EnumMember"><span class="i">AddrMode1632</span></span>,
+        <span class="d EnumMember"><span class="i">AddrModeReal</span></span>,
+        <span class="d EnumMember"><span class="i">AddrModeFlat</span></span>
     }</span>
     
     <span class="d Struct"><span class="k">struct</span> <span class="i">KDHELP64</span> <span class="d Compound">{
@@ -923,41 +923,41 @@
     
     
     
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="i">lpBaseAddress</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PVOID</span></span> <span class="i">lpBuffer</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">nSize</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">LPDWORD</span></span> <span class="i">lpNumberOfBytesRead</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="i">lpBaseAddress</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PVOID</span></span> <span class="i">lpBuffer</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">nSize</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">LPDWORD</span></span> <span class="i">lpNumberOfBytesRead</span></span>
     )</span></span> <span class="i">PREAD_PROCESS_MEMORY_ROUTINE64</span>;</span></span>
     
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">PVOID</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="i">AddrBase</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">PVOID</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="i">AddrBase</span></span>
     )</span></span> <span class="i">PFUNCTION_TABLE_ACCESS_ROUTINE64</span>;</span></span>
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">PFUNCTION_TABLE_ACCESS_ROUTINE64</span></span> <span class="i">fp_SymFunctionTableAccess64</span>;</span></span>
     
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hThread</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">LPADDRESS64</span></span> <span class="i">lpaddr</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">DWORD64</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hThread</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">LPADDRESS64</span></span> <span class="i">lpaddr</span></span>
     )</span></span> <span class="i">PTRANSLATE_ADDRESS_ROUTINE64</span>;</span></span>
     
     
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span> <span class="o Parameters">(
-        <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">MachineType</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hThread</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">LPSTACKFRAME64</span></span> <span class="i">StackFrame</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PVOID</span></span> <span class="i">ContextRecord</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PREAD_PROCESS_MEMORY_ROUTINE64</span></span> <span class="i">ReadMemoryRoutine</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PFUNCTION_TABLE_ACCESS_ROUTINE64</span></span> <span class="i">FunctionTableAccessRoutine</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PGET_MODULE_BASE_ROUTINE64</span></span> <span class="i">GetModuleBaseRoutine</span></span>,
-        <span class="o Parameter"><span class="t Identifier"><span class="i">PTRANSLATE_ADDRESS_ROUTINE64</span></span> <span class="i">TranslateAddress</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="t Function"><span class="k">function</span> <span class="o ">(
+        <span class="o "><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">MachineType</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hProcess</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">HANDLE</span></span> <span class="i">hThread</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">LPSTACKFRAME64</span></span> <span class="i">StackFrame</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PVOID</span></span> <span class="i">ContextRecord</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PREAD_PROCESS_MEMORY_ROUTINE64</span></span> <span class="i">ReadMemoryRoutine</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PFUNCTION_TABLE_ACCESS_ROUTINE64</span></span> <span class="i">FunctionTableAccessRoutine</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PGET_MODULE_BASE_ROUTINE64</span></span> <span class="i">GetModuleBaseRoutine</span></span>,
+        <span class="o "><span class="t Identifier"><span class="i">PTRANSLATE_ADDRESS_ROUTINE64</span></span> <span class="i">TranslateAddress</span></span>
     )</span></span> <span class="i">fp_StackWalk64</span>;</span></span>
     
     
-    <span class="d Function"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="i">IsBadReadPtr</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="i">IsBadReadPtr</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 
 <span class="lc">//#line 2 "parts/DbgInfo.di"</span>
@@ -986,7 +986,7 @@
     <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span><span class="t Array">[]</span>                 <span class="i">strBuffer</span>;</span>
     <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span>                        <span class="i">strBufferLen</span>;</span>
     
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">addDebugInfo</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">addr</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">func</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">ushort</span></span> <span class="i">line</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">addDebugInfo</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">addr</span></span>, <span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">file</span></span>, <span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">func</span></span>, <span class="o "><span class="t Integral"><span class="k">ushort</span></span> <span class="i">line</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">debugInfo</span></span>.<span class="e Identifier"><span class="i">append</span></span>(<span class="i">AddrDebugInfo</span>(<span class="i">addr</span>, <span class="i">file</span>, <span class="i">func</span>, <span class="i">line</span>), &amp;<span class="i">debugInfoLen</span>)</span>;</span>
 
         <span class="s If"><span class="k">if</span> (<span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span> <span class="d Variables"><span class="i">a</span> = <span class="e In"><span class="e Identifier"><span class="i">file</span></span> <span class="k">in</span> <span class="e Identifier"><span class="i">fileMaxAddr</span></span></span></span></span></span>) <span class="s Scope"><span class="s Compound">{
@@ -996,7 +996,7 @@
         }</span></span></span>
     }</span></span></span>
     
-    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">bufferString</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">str</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">bufferString</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">str</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">res</span>;</span></span>
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">res</span></span>.<span class="e Identifier"><span class="i">alloc</span></span>(<span class="i">str</span>.<span class="i">length</span>+<span class="n">1</span>, <span class="k">false</span>)</span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Slice"><span class="e Identifier"><span class="i">res</span></span>[<span class="e Int"><span class="n">0</span></span>..<span class="e Minus"><span class="e Dollar">$</span>-<span class="e Int"><span class="n">1</span></span></span>]</span> = <span class="e Slice"><span class="e Identifier"><span class="i">str</span></span>[]</span></span>;</span>
@@ -1005,12 +1005,12 @@
         <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">res</span></span>.<span class="e Identifier"><span class="i">ptr</span></span>;</span>
     }</span></span></span>
     
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">freeArrays</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">freeArrays</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">debugInfo</span></span>.<span class="e Identifier"><span class="i">free</span></span>()</span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">debugInfoLen</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span>
 
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">fileMaxAddr</span></span> = <span class="e Null"><span class="k">null</span></span></span>;</span>
-        <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="k">ref</span> <span class="i">s</span></span></span>; <span class="e Slice"><span class="e Identifier"><span class="i">strBuffer</span></span>[<span class="e Int"><span class="n">0</span></span>..<span class="e Identifier"><span class="i">strBufferLen</span></span>]</span>) <span class="s Scope"><span class="s Compound">{
+        <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="k">ref</span> <span class="i">s</span></span></span>; <span class="e Slice"><span class="e Identifier"><span class="i">strBuffer</span></span>[<span class="e Int"><span class="n">0</span></span>..<span class="e Identifier"><span class="i">strBufferLen</span></span>]</span>) <span class="s Scope"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">cFree</span></span>(<span class="i">s</span>);</span></span>
         }</span></span></span>
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">strBuffer</span></span>.<span class="e Identifier"><span class="i">free</span></span>()</span>;</span>
@@ -1026,7 +1026,7 @@
     <span class="d Variables"><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">tail</span>;</span>
     
     
-     <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span><span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">ModuleDebugInfo</span></span></span>)</span></span> <span class="i">dg</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+     <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span><span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">ModuleDebugInfo</span></span></span>)</span></span> <span class="i">dg</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
 			<span class="s Synchronized"><span class="k">synchronized</span>(<span class="e This"><span class="k">this</span></span>)
 			<span class="s Scope"><span class="s Compound">{
         <span class="s For"><span class="k">for</span> (<span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">it</span> = <span class="e Identifier"><span class="i">head</span></span>;</span></span> <span class="e Identity"><span class="e Identifier"><span class="i">it</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>; <span class="e Assign"><span class="e Identifier"><span class="i">it</span></span> = <span class="e Identifier"><span class="i">it</span></span>.<span class="e Identifier"><span class="i">next</span></span></span>) <span class="s Scope"><span class="s Compound">{
@@ -1039,7 +1039,7 @@
     }</span></span></span>
     
     
-     <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">addDebugInfo</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">info</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+     <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">addDebugInfo</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">info</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
 			<span class="s Synchronized"><span class="k">synchronized</span>(<span class="e This"><span class="k">this</span></span>)
         <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">head</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">head</span></span> = <span class="e Assign"><span class="e Identifier"><span class="i">tail</span></span> = <span class="e Identifier"><span class="i">info</span></span></span></span>;</span>
@@ -1053,7 +1053,7 @@
     }</span></span></span>
     
     
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">removeDebugInfo</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">info</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">removeDebugInfo</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">info</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Identity"><span class="e Identifier"><span class="i">info</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)</span>;</span>
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e OrOr"><span class="e OrOr"><span class="e Identity"><span class="e Identifier"><span class="i">info</span></span>.<span class="e Identifier"><span class="i">next</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span> || <span class="e Identity"><span class="e Identifier"><span class="i">info</span></span>.<span class="e Identifier"><span class="i">prev</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span></span> || <span class="e Identity"><span class="e Identifier"><span class="i">head</span></span> <span class="k">is</span> <span class="e Identifier"><span class="i">info</span></span></span></span>)</span>;</span>
         <span class="s Synchronized"><span class="k">synchronized</span>(<span class="e This"><span class="k">this</span></span>)
@@ -1083,22 +1083,22 @@
     <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">globalDebugInfo</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">GlobalDebugInfo</span></span></span></span>;</span>
 }</span></span></span>
 
-<span class="d Linkage"><span class="k">extern</span>(<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">_initLGPLHostExecutableDebugInfo</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">progName</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Linkage"><span class="k">extern</span>(<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">_initLGPLHostExecutableDebugInfo</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">progName</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d StorageClass"><span class="k">scope</span></span> <span class="d Variables"><span class="i">info</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">DebugInfo</span></span>(<span class="e Identifier"><span class="i">progName</span></span>)</span>;</span></span>
     <span class="lc">// we'll let it die now :)</span>
 }</span></span></span>
 
 
-<span class="d Function"><span class="t Identifier"><span class="i">AddrDebugInfo</span></span> <span class="i">getAddrDbgInfo</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">ptrdiff_t</span></span><span class="t Pointer">*</span> <span class="i">diff</span> = <span class="e Null"><span class="k">null</span></span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Identifier"><span class="i">AddrDebugInfo</span></span> <span class="i">getAddrDbgInfo</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Identifier"><span class="i">ptrdiff_t</span></span><span class="t Pointer">*</span> <span class="i">diff</span> = <span class="e Null"><span class="k">null</span></span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">AddrDebugInfo</span></span> <span class="i">bestInfo</span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">minDiff</span> = <span class="e Int"><span class="n">0x7fffffff</span></span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">bestOff</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
     <span class="s Declaration"><span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">addBias</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
     
-    <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">modInfo</span></span></span>; <span class="e Identifier"><span class="i">globalDebugInfo</span></span>) <span class="s Scope"><span class="s Compound">{
+    <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">modInfo</span></span></span>; <span class="e Identifier"><span class="i">globalDebugInfo</span></span>) <span class="s Scope"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">local</span> = <span class="e Bool"><span class="k">false</span></span>;</span></span>
         
-        <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">l</span></span></span>; <span class="e Slice"><span class="e Identifier"><span class="i">modInfo</span></span>.<span class="e Identifier"><span class="i">debugInfo</span></span>[<span class="e Int"><span class="n">0</span></span> .. <span class="e Identifier"><span class="i">modInfo</span></span>.<span class="e Identifier"><span class="i">debugInfoLen</span></span>]</span>) <span class="s Scope"><span class="s Compound">{
+        <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">l</span></span></span>; <span class="e Slice"><span class="e Identifier"><span class="i">modInfo</span></span>.<span class="e Identifier"><span class="i">debugInfo</span></span>[<span class="e Int"><span class="n">0</span></span> .. <span class="e Identifier"><span class="i">modInfo</span></span>.<span class="e Identifier"><span class="i">debugInfoLen</span></span>]</span>) <span class="s Scope"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">diff</span> = <span class="e Minus"><span class="e Minus"><span class="e Identifier"><span class="i">a</span></span> - <span class="e Identifier"><span class="i">l</span></span>.<span class="e Identifier"><span class="i">addr</span></span></span> - <span class="e Identifier"><span class="i">addBias</span></span></span>;</span></span>
             
             <span class="lc">// increasing it will make the lookup give results 'higher' in the code (at lower addresses)</span>
@@ -1151,7 +1151,7 @@
     <span class="d Variables"><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">info</span>;</span>
     
     
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">filename</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">filename</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">info</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">ModuleDebugInfo</span></span></span></span>;</span>
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">ParseCVFile</span></span>(<span class="i">filename</span>);</span></span>
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Identity"><span class="e Identifier"><span class="i">globalDebugInfo</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)</span>;</span>
@@ -1159,7 +1159,7 @@
     }</span></span></span>
      
     <span class="d Protection"><span class="k">private</span></span> <span class="d Compound">{
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">ParseCVFile</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">filename</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">ParseCVFile</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">filename</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span>;</span></span>
 
             <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">filename</span></span> == <span class="e String"><span class="sl">""</span></span></span>) <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span>)</span>;</span></span></span>
@@ -1197,7 +1197,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Int"><span class="n">0</span></span>;</span>
         }</span></span></span>
             
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ParseFileHeaders</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ParseFileHeaders</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">CVHeaderType</span></span> <span class="i">hdrtype</span>;</span></span>
 
             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">hdrtype</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">GetHeaderType</span></span> (<span class="i">debugfile</span>)</span></span>;</span>
@@ -1213,7 +1213,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
         }</span></span></span>
             
-        <span class="d Function"><span class="t Identifier"><span class="i">CVHeaderType</span></span> <span class="i">GetHeaderType</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Identifier"><span class="i">CVHeaderType</span></span> <span class="i">GetHeaderType</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ushort</span></span> <span class="i">hdrtype</span>;</span></span>
             <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">CVHeaderType</span></span> <span class="i">ret</span> = <span class="e Identifier"><span class="i">CVHeaderType</span></span>.<span class="e Identifier"><span class="i">NONE</span></span>;</span></span>
 
@@ -1239,7 +1239,7 @@
         <span class="bc">/*
          * Extract the DOS file headers from an executable
          */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadDOSFileHeader</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">IMAGE_DOS_HEADER</span></span> <span class="t Pointer">*</span><span class="i">doshdr</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadDOSFileHeader</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o "><span class="t Identifier"><span class="i">IMAGE_DOS_HEADER</span></span> <span class="t Pointer">*</span><span class="i">doshdr</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">bytes_read</span>;</span></span>
 
             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bytes_read</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">fread</span></span>(<span class="i">doshdr</span>, <span class="n">1</span>, <span class="i">IMAGE_DOS_HEADER</span>.<span class="i">sizeof</span>, <span class="i">debugfile</span>)</span></span>;</span>
@@ -1258,7 +1258,7 @@
         <span class="bc">/*
          * Extract the DOS and NT file headers from an executable
          */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadPEFileHeader</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">IMAGE_NT_HEADERS</span></span> <span class="t Pointer">*</span><span class="i">nthdr</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadPEFileHeader</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o "><span class="t Identifier"><span class="i">IMAGE_NT_HEADERS</span></span> <span class="t Pointer">*</span><span class="i">nthdr</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">bytes_read</span>;</span></span>
 
             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bytes_read</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">fread</span></span>(<span class="i">nthdr</span>, <span class="n">1</span>, <span class="i">IMAGE_NT_HEADERS</span>.<span class="i">sizeof</span>, <span class="i">debugfile</span>)</span></span>;</span>
@@ -1269,12 +1269,12 @@
             <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
         }</span></span></span>
           
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ParseSectionHeaders</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ParseSectionHeaders</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Not">!<span class="e Identifier"><span class="i">ReadSectionHeaders</span></span></span> (<span class="i">debugfile</span>, <span class="i">g_secthdrs</span>)</span>) <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">false</span></span>;</span></span></span>
             <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
         }</span></span></span>
             
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadSectionHeaders</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">IMAGE_SECTION_HEADER</span></span><span class="t Array">[]</span> <span class="i">secthdrs</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadSectionHeaders</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">IMAGE_SECTION_HEADER</span></span><span class="t Array">[]</span> <span class="i">secthdrs</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s For"><span class="k">for</span>(<span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>=<span class="e Int"><span class="n">0</span></span>;</span></span><span class="e Rel"><span class="e Identifier"><span class="i">i</span></span>&lt;<span class="e Identifier"><span class="i">secthdrs</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;<span class="e PostIncr"><span class="e Identifier"><span class="i">i</span></span>++</span>)<span class="s Scope"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">bytes_read</span>;</span></span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bytes_read</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">fread</span></span>((&amp;<span class="i">secthdrs</span>[<span class="i">i</span>]), <span class="n">1</span>, <span class="i">IMAGE_SECTION_HEADER</span>.<span class="i">sizeof</span>, <span class="i">debugfile</span>)</span></span>;</span>
@@ -1285,7 +1285,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
         }</span></span></span>
           
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ParseDebugDir</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ParseDebugDir</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>;</span></span>
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">filepos</span>;</span></span>
 
@@ -1299,7 +1299,7 @@
 
             <span class="s For"><span class="k">for</span> (<span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">i</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span> <span class="e Rel"><span class="e Identifier"><span class="i">i</span></span> &lt; <span class="e Identifier"><span class="i">g_debugdirs</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>; <span class="e PostIncr"><span class="e Identifier"><span class="i">i</span></span>++</span>) <span class="s Scope"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Enum"><span class="k">enum</span> {
-                    <span class="d EnumMember"><span class="t Identifier"><span class="i">IMAGE_DEBUG_TYPE_CODEVIEW</span></span> = <span class="e Int"><span class="n">2</span></span></span>,
+                    <span class="d EnumMember"><span class="i">IMAGE_DEBUG_TYPE_CODEVIEW</span> = <span class="e Int"><span class="n">2</span></span></span>,
                 }</span></span>
 
                 <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Index"><span class="e Identifier"><span class="i">g_debugdirs</span></span>[<span class="e Identifier"><span class="i">i</span></span>]</span>.<span class="e Identifier"><span class="i">Type</span></span> == <span class="e Identifier"><span class="i">IMAGE_DEBUG_TYPE_CODEVIEW</span></span></span>) <span class="s Scope"><span class="s Compound">{
@@ -1313,7 +1313,7 @@
         }</span></span></span>
             
         <span class="lc">// Calculate the file offset, based on the RVA.</span>
-        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">GetOffsetFromRVA</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">rva</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">GetOffsetFromRVA</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">rva</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>;</span></span>
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">sectbegin</span>;</span></span>
 
@@ -1330,7 +1330,7 @@
         <span class="lc">// blocks of debug data that reside at the end of the file (after the COFF</span>
         <span class="lc">// sections), including FPO data, COFF-style debug info, and the CodeView</span>
         <span class="lc">// we are *really* after.</span>
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadDebugDir</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">IMAGE_DEBUG_DIRECTORY</span></span> <span class="i">debugdirs</span><span class="t Array">[]</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadDebugDir</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">IMAGE_DEBUG_DIRECTORY</span></span> <span class="i">debugdirs</span><span class="t Array">[]</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">bytes_read</span>;</span></span>
             <span class="s For"><span class="k">for</span>(<span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>=<span class="e Int"><span class="n">0</span></span>;</span></span><span class="e Rel"><span class="e Identifier"><span class="i">i</span></span>&lt;<span class="e Identifier"><span class="i">debugdirs</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;<span class="e PostIncr"><span class="e Identifier"><span class="i">i</span></span>++</span>) <span class="s Scope"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bytes_read</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">fread</span></span>((&amp;<span class="i">debugdirs</span>[<span class="i">i</span>]), <span class="n">1</span>, <span class="i">IMAGE_DEBUG_DIRECTORY</span>.<span class="i">sizeof</span>, <span class="i">debugfile</span>)</span></span>;</span>
@@ -1341,7 +1341,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
         }</span></span></span>
           
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ParseCodeViewHeaders</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ParseCodeViewHeaders</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">fseek</span></span>(<span class="i">debugfile</span>, <span class="i">g_dwStartOfCodeView</span>, <span class="i">SEEK_SET</span>)</span>;</span>
             <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Not">!<span class="e Identifier"><span class="i">ReadCodeViewHeader</span></span></span> (<span class="i">debugfile</span>, <span class="i">g_cvSig</span>, <span class="i">g_cvHeader</span>)</span>) <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">false</span></span>;</span></span></span>
             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">g_cvEntries</span></span>.<span class="e Identifier"><span class="i">length</span></span> = <span class="e Identifier"><span class="i">g_cvHeader</span></span>.<span class="e Identifier"><span class="i">cDir</span></span></span>;</span>
@@ -1350,7 +1350,7 @@
         }</span></span></span>
 
             
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadCodeViewHeader</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o Parameter"><span class="k">out</span> <span class="t Identifier"><span class="i">OMFSignature</span></span> <span class="i">sig</span></span>, <span class="o Parameter"><span class="k">out</span> <span class="t Identifier"><span class="i">OMFDirHeader</span></span> <span class="i">dirhdr</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadCodeViewHeader</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o "><span class="k">out</span> <span class="t Identifier"><span class="i">OMFSignature</span></span> <span class="i">sig</span></span>, <span class="o "><span class="k">out</span> <span class="t Identifier"><span class="i">OMFDirHeader</span></span> <span class="i">dirhdr</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">bytes_read</span>;</span></span>
 
             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">bytes_read</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">fread</span></span>((&amp;<span class="i">sig</span>), <span class="n">1</span>, <span class="i">OMFSignature</span>.<span class="i">sizeof</span>, <span class="i">debugfile</span>)</span></span>;</span>
@@ -1366,7 +1366,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
         }</span></span></span>
          
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadCodeViewDirectory</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">OMFDirEntry</span></span><span class="t Array">[]</span> <span class="i">entries</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadCodeViewDirectory</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">OMFDirEntry</span></span><span class="t Array">[]</span> <span class="i">entries</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">bytes_read</span>;</span></span>
 
             <span class="s For"><span class="k">for</span>(<span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>=<span class="e Int"><span class="n">0</span></span>;</span></span><span class="e Rel"><span class="e Identifier"><span class="i">i</span></span>&lt;<span class="e Identifier"><span class="i">entries</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;<span class="e PostIncr"><span class="e Identifier"><span class="i">i</span></span>++</span>)<span class="s Scope"><span class="s Compound">{
@@ -1378,7 +1378,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
         }</span></span></span>
           
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ParseAllModules</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ParseAllModules</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">g_cvHeader</span></span>.<span class="e Identifier"><span class="i">cDir</span></span> == <span class="e Int"><span class="n">0</span></span></span>)<span class="s Scope"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
             }</span></span></span>
@@ -1402,7 +1402,7 @@
         }</span></span></span>
 
             
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadModuleData</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">OMFDirEntry</span></span><span class="t Array">[]</span> <span class="i">entries</span></span>, <span class="o Parameter"><span class="k">out</span> <span class="t Identifier"><span class="i">OMFModuleFull</span></span><span class="t Array">[]</span> <span class="i">modules</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadModuleData</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o "><span class="t Identifier"><span class="i">OMFDirEntry</span></span><span class="t Array">[]</span> <span class="i">entries</span></span>, <span class="o "><span class="k">out</span> <span class="t Identifier"><span class="i">OMFModuleFull</span></span><span class="t Array">[]</span> <span class="i">modules</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">bytes_read</span>;</span></span>
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">pad</span>;</span></span>
 
@@ -1454,7 +1454,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
         }</span></span></span>
          
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ParseRelatedSections</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">index</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ParseRelatedSections</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">index</span></span>, <span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>;</span></span>
 
             <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">g_cvEntries</span></span> == <span class="e Null"><span class="k">null</span></span></span>)
@@ -1477,7 +1477,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
         }</span></span></span>
             
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ParseSrcModuleInfo</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">index</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ParseSrcModuleInfo</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">index</span></span>, <span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>;</span></span>
 
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">byte</span></span> <span class="t Pointer">*</span><span class="i">rawdata</span>;</span></span>
@@ -1513,7 +1513,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
         }</span></span></span>
         
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">ExtractSrcModuleInfo</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">byte</span></span><span class="t Pointer">*</span> <span class="i">rawdata</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">short</span></span> <span class="t Pointer">*</span><span class="i">filecount</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">short</span></span> <span class="t Pointer">*</span><span class="i">segcount</span></span>,<span class="o Parameter"><span class="k">out</span> <span class="t Integral"><span class="k">uint</span></span><span class="t Array">[]</span> <span class="i">fileinfopos</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">ExtractSrcModuleInfo</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">byte</span></span><span class="t Pointer">*</span> <span class="i">rawdata</span></span>, <span class="o "><span class="t Integral"><span class="k">short</span></span> <span class="t Pointer">*</span><span class="i">filecount</span></span>, <span class="o "><span class="t Integral"><span class="k">short</span></span> <span class="t Pointer">*</span><span class="i">segcount</span></span>,<span class="o "><span class="k">out</span> <span class="t Integral"><span class="k">uint</span></span><span class="t Array">[]</span> <span class="i">fileinfopos</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>;</span></span>
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">datalen</span>;</span></span>
 
@@ -1538,7 +1538,7 @@
             }</span></span></span>
         }</span></span></span>
          
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">ExtractSrcModuleFileInfo</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">byte</span></span><span class="t Pointer">*</span> <span class="i">rawdata</span></span>,<span class="o Parameter"><span class="k">out</span> <span class="t Integral"><span class="k">uint</span></span><span class="t Array">[]</span> <span class="i">offset</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">ExtractSrcModuleFileInfo</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">byte</span></span><span class="t Pointer">*</span> <span class="i">rawdata</span></span>,<span class="o "><span class="k">out</span> <span class="t Integral"><span class="k">uint</span></span><span class="t Array">[]</span> <span class="i">offset</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>;</span></span>
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">datalen</span>;</span></span>
 
@@ -1562,7 +1562,7 @@
             }</span></span></span>
         }</span></span></span>
          
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">ExtractSrcModuleLineInfo</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">byte</span></span><span class="t Pointer">*</span> <span class="i">rawdata</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">tablecount</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">ExtractSrcModuleLineInfo</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">byte</span></span><span class="t Pointer">*</span> <span class="i">rawdata</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">tablecount</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>;</span></span>
 
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ushort</span></span> <span class="i">Seg</span>;</span></span>
@@ -1587,7 +1587,7 @@
         }</span></span></span>
 
            
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadChunk</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">void</span></span> <span class="t Pointer">*</span><span class="i">dest</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">length</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">fileoffset</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">ReadChunk</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FILE</span></span><span class="t Pointer">*</span> <span class="i">debugfile</span></span>, <span class="o "><span class="t Integral"><span class="k">void</span></span> <span class="t Pointer">*</span><span class="i">dest</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">length</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">fileoffset</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">bytes_read</span>;</span></span>
 
             <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">fileoffset</span></span> &gt;= <span class="e Int"><span class="n">0</span></span></span>) <span class="s Scope"><span class="s Compound">{
@@ -1604,10 +1604,10 @@
 
 
         <span class="d Enum"><span class="k">enum</span> <span class="i">CVHeaderType</span> : <span class="t Integral"><span class="k">int</span></span> {
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">NONE</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">DOS</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">NT</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">DBG</span></span></span>
+            <span class="d EnumMember"><span class="i">NONE</span></span>,
+            <span class="d EnumMember"><span class="i">DOS</span></span>,
+            <span class="d EnumMember"><span class="i">NT</span></span>,
+            <span class="d EnumMember"><span class="i">DBG</span></span>
         }</span>
 
         <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">g_dwStartOfCodeView</span> = <span class="e Int"><span class="n">0</span></span>;</span>
@@ -1633,13 +1633,13 @@
 
 
 <span class="d Enum"><span class="k">enum</span> {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">IMAGE_FILE_DEBUG_DIRECTORY</span></span> = <span class="e Int"><span class="n">6</span></span></span>
+    <span class="d EnumMember"><span class="i">IMAGE_FILE_DEBUG_DIRECTORY</span> = <span class="e Int"><span class="n">6</span></span></span>
 }</span>
  
 <span class="d Enum"><span class="k">enum</span> {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">sstModule</span></span>           = <span class="e Int"><span class="n">0x120</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">sstSrcModule</span></span>        = <span class="e Int"><span class="n">0x127</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">sstGlobalPub</span></span>        = <span class="e Int"><span class="n">0x12a</span></span></span>,
+    <span class="d EnumMember"><span class="i">sstModule</span>           = <span class="e Int"><span class="n">0x120</span></span></span>,
+    <span class="d EnumMember"><span class="i">sstSrcModule</span>        = <span class="e Int"><span class="n">0x127</span></span></span>,
+    <span class="d EnumMember"><span class="i">sstGlobalPub</span>        = <span class="e Int"><span class="n">0x12a</span></span></span>,
 }</span>
  
 <span class="d Struct"><span class="k">struct</span> <span class="i">OMFSignature</span> <span class="d Compound">{
@@ -1799,7 +1799,7 @@
     <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span>   <span class="i">NumberOfRvaAndSizes</span>;</span>
 
     <span class="d Enum"><span class="k">enum</span> {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">IMAGE_NUMBEROF_DIRECTORY_ENTRIES</span></span> = <span class="e Int"><span class="n">16</span></span></span>,
+        <span class="d EnumMember"><span class="i">IMAGE_NUMBEROF_DIRECTORY_ENTRIES</span> = <span class="e Int"><span class="n">16</span></span></span>,
     }</span>
 
     <span class="d Variables"><span class="t Identifier"><span class="i">IMAGE_DATA_DIRECTORY</span></span> <span class="i">DataDirectory</span><span class="t Array">[<span class="t Identifier"><span class="i">IMAGE_NUMBEROF_DIRECTORY_ENTRIES</span></span>]</span>;</span>
@@ -1812,7 +1812,7 @@
 }</span></span>
  
 <span class="d Enum"><span class="k">enum</span> {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">IMAGE_SIZEOF_SHORT_NAME</span></span> = <span class="e Int"><span class="n">8</span></span></span>,
+    <span class="d EnumMember"><span class="i">IMAGE_SIZEOF_SHORT_NAME</span> = <span class="e Int"><span class="n">8</span></span></span>,
 }</span>
 
 <span class="d Struct"><span class="k">struct</span> <span class="i">IMAGE_SECTION_HEADER</span> <span class="d Compound">{
@@ -1865,15 +1865,15 @@
 }</span></span>
 <span class="lc">//#line 2 "parts/CInterface.di"</span>
 <span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Compound">{
-    <span class="d Function"><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">ModuleDebugInfo_new</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">ModuleDebugInfo_new</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">ModuleDebugInfo</span></span></span>;</span>
     }</span></span></span>
     
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">ModuleDebugInfo_addDebugInfo</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">minfo</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">addr</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">func</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">ushort</span></span> <span class="i">line</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">ModuleDebugInfo_addDebugInfo</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">minfo</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">addr</span></span>, <span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">file</span></span>, <span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">func</span></span>, <span class="o "><span class="t Integral"><span class="k">ushort</span></span> <span class="i">line</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">minfo</span></span>.<span class="e Identifier"><span class="i">addDebugInfo</span></span>(<span class="i">addr</span>, <span class="i">file</span>, <span class="i">func</span>, <span class="i">line</span>)</span>;</span>
     }</span></span></span>
     
-    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">ModuleDebugInfo_bufferString</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">minfo</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">str</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">ModuleDebugInfo_bufferString</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">minfo</span></span>, <span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">str</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">res</span>;</span></span>
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">res</span></span>.<span class="e Identifier"><span class="i">alloc</span></span>(<span class="i">str</span>.<span class="i">length</span>+<span class="n">1</span>, <span class="k">false</span>)</span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Slice"><span class="e Identifier"><span class="i">res</span></span>[<span class="e Int"><span class="n">0</span></span>..<span class="e Minus"><span class="e Dollar">$</span>-<span class="e Int"><span class="n">1</span></span></span>]</span> = <span class="e Slice"><span class="e Identifier"><span class="i">str</span></span>[]</span></span>;</span>
@@ -1882,11 +1882,11 @@
         <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">res</span></span>.<span class="e Identifier"><span class="i">ptr</span></span>;</span>
     }</span></span></span>
     
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">GlobalDebugInfo_addDebugInfo</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">minfo</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">GlobalDebugInfo_addDebugInfo</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">minfo</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">globalDebugInfo</span></span>.<span class="t Identifier"><span class="i">addDebugInfo</span></span>(<span class="i">minfo</span>);</span></span>
     }</span></span></span>
     
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">GlobalDebugInfo_removeDebugInfo</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">minfo</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">GlobalDebugInfo_removeDebugInfo</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ModuleDebugInfo</span></span> <span class="i">minfo</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">globalDebugInfo</span></span>.<span class="t Identifier"><span class="i">removeDebugInfo</span></span>(<span class="i">minfo</span>);</span></span>
     }</span></span></span>
 }</span>
@@ -1897,7 +1897,7 @@
     <span class="s For"><span class="k">for</span> (<span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">fiberRunFuncLength</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span> <span class="e Rel"><span class="e Identifier"><span class="i">fiberRunFuncLength</span></span> &lt; <span class="e Int"><span class="n">0x100</span></span></span>; <span class="e PreIncr">++<span class="e Identifier"><span class="i">fiberRunFuncLength</span></span></span>) <span class="s Scope"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span> <span class="i">ptr</span> = <span class="e Plus"><span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">D4core6thread5Fiber3runMFZv</span></span></span></span> + <span class="e Identifier"><span class="i">fiberRunFuncLength</span></span></span>;</span></span>
         <span class="s Declaration"><span class="d Enum"><span class="k">enum</span> {
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">RetOpcode</span></span> = <span class="e Int"><span class="n">0xc3</span></span></span>
+            <span class="d EnumMember"><span class="i">RetOpcode</span> = <span class="e Int"><span class="n">0xc3</span></span></span>
         }</span></span>
         <span class="s If"><span class="k">if</span> (<span class="e OrOr"><span class="e Call"><span class="e Identifier"><span class="i">IsBadReadPtr</span></span>(<span class="i">ptr</span>, <span class="n">1</span>)</span> || <span class="e Equal"><span class="e Identifier"><span class="i">RetOpcode</span></span> == <span class="e Deref">*<span class="e Identifier"><span class="i">ptr</span></span></span></span></span>) <span class="s Scope"><span class="s Compound">{
             <span class="s Break"><span class="k">break</span>;</span>
@@ -1930,7 +1930,7 @@
     <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">SYMBOL_INFO</span></span> <span class="i">sym</span>;</span></span>
     <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">sym</span></span>.<span class="e Identifier"><span class="i">SizeOfStruct</span></span> = <span class="e Identifier"><span class="i">SYMBOL_INFO</span></span>.<span class="e Identifier"><span class="i">sizeof</span></span></span>;</span> 
 
-    <span class="s Declaration"><span class="d Linkage"><span class="k">extern</span>(<span class="i">C</span>)</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span></span>)</span></span> <span class="i">initTrace</span>;</span></span>
+    <span class="s Declaration"><span class="d Linkage"><span class="k">extern</span>(<span class="i">C</span>)</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span></span>)</span></span> <span class="i">initTrace</span>;</span></span>
     <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">SymFromName</span></span>(<span class="i">GetCurrentProcess</span>(), <span class="i">sym_name</span>.<span class="i">ptr</span>, &amp;<span class="i">sym</span>)</span>) <span class="s Scope"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">initTrace</span></span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Typeof"><span class="k">typeof</span>(<span class="e Identifier"><span class="i">initTrace</span></span>)</span>)<span class="e Identifier"><span class="i">sym</span></span></span>.<span class="e Identifier"><span class="i">Address</span></span></span>;</span>
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Identity"><span class="e Identifier"><span class="i">initTrace</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)</span>;</span> 

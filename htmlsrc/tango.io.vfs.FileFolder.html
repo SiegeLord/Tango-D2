@@ -59,7 +59,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">create</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">create</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">open</span></span> (<span class="i">Path</span>.<span class="i">standard</span>(<span class="i">path</span>.<span class="i">dup</span>), <span class="i">create</span>)</span></span>;</span>
         }</span></span></span>
@@ -70,7 +70,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">join</span></span> (<span class="i">path</span>, <span class="i">name</span>)</span></span>;</span>
         }</span></span></span>
@@ -81,7 +81,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FileFolder</span></span> <span class="i">parent</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">create</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FileFolder</span></span> <span class="i">parent</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">create</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Identifier"><span class="i">parent</span></span>)</span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">open</span></span> (<span class="i">Path</span>.<span class="i">join</span>(<span class="i">parent</span>.<span class="i">path</span>, <span class="i">name</span>), <span class="i">create</span>)</span></span>;</span>
@@ -93,7 +93,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">parse</span></span>(<span class="i">path</span>)</span>.<span class="e Identifier"><span class="i">name</span></span>;</span>
         }</span></span></span>
@@ -104,7 +104,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">string</span></span> <span class="i">toString</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">string</span></span> <span class="i">toString</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">idup</span></span>;</span>
         }</span></span></span>
@@ -119,7 +119,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">verify</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">folder</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">mounting</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">verify</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">folder</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">mounting</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e AndAnd"><span class="e Identifier"><span class="i">mounting</span></span> &amp;&amp; <span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">FileFolder</span></span>) <span class="e Identifier"><span class="i">folder</span></span></span></span>)
                    <span class="s Scope"><span class="s Compound">{
@@ -141,7 +141,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">file</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">file</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FileHost</span></span> (<span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">join</span></span> (<span class="i">path</span>, <span class="i">name</span>)</span>)</span>;</span>
         }</span></span></span>
@@ -152,7 +152,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFolderEntry</span></span> <span class="i">folder</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFolderEntry</span></span> <span class="i">folder</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FolderHost</span></span> (<span class="e This"><span class="k">this</span></span>, <span class="e Identifier"><span class="i">path</span></span>)</span>;</span>
         }</span></span></span>
@@ -163,7 +163,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">clear</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">clear</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">remove</span></span> (<span class="i">Path</span>.<span class="i">collate</span>(<span class="i">path</span>, <span class="sl">"*"</span>, <span class="k">true</span>))</span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -175,7 +175,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">writable</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">writable</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">isWritable</span></span> (<span class="i">path</span>)</span>;</span>
         }</span></span></span>
@@ -186,7 +186,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFolders</span></span> <span class="i">self</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFolders</span></span> <span class="i">self</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FolderGroup</span></span> (<span class="e This"><span class="k">this</span></span>, <span class="e Bool"><span class="k">false</span></span>)</span>;</span>
         }</span></span></span>
@@ -197,7 +197,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFolders</span></span> <span class="i">tree</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFolders</span></span> <span class="i">tree</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FolderGroup</span></span> (<span class="e This"><span class="k">this</span></span>, <span class="e Bool"><span class="k">true</span></span>)</span>;</span>
         }</span></span></span>
@@ -209,11 +209,11 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">VfsFolder</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span> <span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">VfsFolder</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">result</span>;</span></span>
 
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">folder</span></span></span>; <span class="e Call"><span class="e Identifier"><span class="i">folders</span></span>(<span class="k">true</span>)</span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">folder</span></span></span>; <span class="e Call"><span class="e Identifier"><span class="i">folders</span></span>(<span class="k">true</span>)</span>)
                         <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">x</span> = <span class="e Identifier"><span class="i">folder</span></span>;</span></span>
                         <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Paren">(<span class="e Assign"><span class="e Identifier"><span class="i">result</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">dg</span></span>(<span class="i">x</span>)</span></span>)</span> != <span class="e Int"><span class="n">0</span></span></span>)
@@ -231,7 +231,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">close</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">commit</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">close</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">commit</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
         }</span></span></span>
@@ -242,12 +242,12 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">FileFolder</span></span><span class="t Array">[]</span> <span class="i">folders</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">collect</span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">FileFolder</span></span><span class="t Array">[]</span> <span class="i">folders</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">collect</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">FileFolder</span></span><span class="t Array">[]</span> <span class="i">folders</span>;</span></span>
 
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">stats</span></span> = <span class="e Identifier"><span class="i">stats</span></span>.<span class="e Identifier"><span class="i">init</span></span></span>;</span>
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">info</span></span></span>; <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">children</span></span> (<span class="i">path</span>)</span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">info</span></span></span>; <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">children</span></span> (<span class="i">path</span>)</span>)
                          <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">info</span></span>.<span class="e Identifier"><span class="i">folder</span></span>)
                             <span class="s Scope"><span class="s Compound">{
                             <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">collect</span></span>)
@@ -269,11 +269,11 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">files</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">VfsStats</span></span> <span class="i">stats</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">VfsFilter</span></span> <span class="i">filter</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">files</span> <span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">VfsStats</span></span> <span class="i">stats</span></span>, <span class="o "><span class="t Identifier"><span class="i">VfsFilter</span></span> <span class="i">filter</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">files</span>;</span></span>
 
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">info</span></span></span>; <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">children</span></span> (<span class="i">path</span>)</span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">info</span></span></span>; <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">children</span></span> (<span class="i">path</span>)</span>)
                          <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">info</span></span>.<span class="e Identifier"><span class="i">folder</span></span> <span class="k">is</span> <span class="e Bool"><span class="k">false</span></span></span>)
                              <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e OrOr"><span class="e Identity"><span class="e Identifier"><span class="i">filter</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span> || <span class="e Call"><span class="e Identifier"><span class="i">filter</span></span>(&amp;<span class="i">info</span>)</span></span>)
                                 <span class="s Scope"><span class="s Compound">{
@@ -291,7 +291,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">error</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">string</span></span> <span class="i">msg</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">error</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">string</span></span> <span class="i">msg</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">VfsException</span></span> (<span class="e Identifier"><span class="i">msg</span></span>)</span>;</span>
         }</span></span></span>
@@ -302,7 +302,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">open</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">create</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">open</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">create</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">exists</span></span> (<span class="i">path</span>)</span>)
                    <span class="s Scope"><span class="s Compound">{
@@ -336,9 +336,9 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FolderGroup</span></span> <span class="i">host</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">VfsFilter</span></span> <span class="i">filter</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FolderGroup</span></span> <span class="i">host</span></span>, <span class="o "><span class="t Identifier"><span class="i">VfsFilter</span></span> <span class="i">filter</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">folder</span></span></span>; <span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">members</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">folder</span></span></span>; <span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">members</span></span>)
                         <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">files</span> = <span class="e Call"><span class="e Identifier"><span class="i">folder</span></span>.<span class="e Identifier"><span class="i">files</span></span> (<span class="i">stats</span>, <span class="i">filter</span>)</span>;</span></span>
                         <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">files</span></span>.<span class="e Identifier"><span class="i">length</span></span>)
@@ -355,12 +355,12 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">VfsFile</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span> <span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">VfsFile</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span>  <span class="i">result</span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">host</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FileHost</span></span></span>;</span></span>
 
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">file</span></span></span>; <span class="e Identifier"><span class="i">group</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">file</span></span></span>; <span class="e Identifier"><span class="i">group</span></span>)
                         <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">x</span> = <span class="e Identifier"><span class="i">host</span></span>;</span></span>
                         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">path</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">parse</span></span>(<span class="i">file</span>)</span></span>;</span>
@@ -376,7 +376,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">files</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">files</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">group</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span>
         }</span></span></span>
@@ -387,7 +387,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">bytes</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">bytes</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">stats</span></span>.<span class="e Identifier"><span class="i">bytes</span></span>;</span>
         }</span></span></span>
@@ -413,7 +413,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{}</span></span></span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{}</span></span></span>
 
         <span class="bc">/***********************************************************************
 
@@ -422,7 +422,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FileFolder</span></span> <span class="i">root</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">recurse</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FileFolder</span></span> <span class="i">root</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">recurse</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">members</span></span> = <span class="e Cat"><span class="e Identifier"><span class="i">root</span></span> ~ <span class="e Call"><span class="e Identifier"><span class="i">scan</span></span> (<span class="i">root</span>, <span class="i">recurse</span>)</span></span></span>;</span>
         }</span></span></span>
@@ -433,11 +433,11 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">VfsFolder</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span> <span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">VfsFolder</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span>  <span class="i">result</span>;</span></span>
 
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">folder</span></span></span>; <span class="e Identifier"><span class="i">members</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">folder</span></span></span>; <span class="e Identifier"><span class="i">members</span></span>)
                         <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">x</span> = <span class="e Identifier"><span class="i">folder</span></span>;</span></span>
                         <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Paren">(<span class="e Assign"><span class="e Identifier"><span class="i">result</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">dg</span></span>(<span class="i">x</span>)</span></span>)</span> != <span class="e Int"><span class="n">0</span></span></span>)
@@ -452,10 +452,10 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">files</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">files</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">files</span>;</span></span>
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">folder</span></span></span>; <span class="e Identifier"><span class="i">members</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">folder</span></span></span>; <span class="e Identifier"><span class="i">members</span></span>)
                          <span class="s Scope"><span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">files</span></span> += <span class="e Identifier"><span class="i">folder</span></span>.<span class="e Identifier"><span class="i">stats</span></span>.<span class="e Identifier"><span class="i">files</span></span></span>;</span></span></span>
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">files</span></span>;</span>
         }</span></span></span>
@@ -466,11 +466,11 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">bytes</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">bytes</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">bytes</span>;</span></span>
 
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">folder</span></span></span>; <span class="e Identifier"><span class="i">members</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">folder</span></span></span>; <span class="e Identifier"><span class="i">members</span></span>)
                          <span class="s Scope"><span class="s Expression"><span class="e PlusAssign"><span class="e Identifier"><span class="i">bytes</span></span> += <span class="e Identifier"><span class="i">folder</span></span>.<span class="e Identifier"><span class="i">stats</span></span>.<span class="e Identifier"><span class="i">bytes</span></span></span>;</span></span></span>
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">bytes</span></span>;</span>
         }</span></span></span>
@@ -481,7 +481,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">folders</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">folders</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">members</span></span>.<span class="e Identifier"><span class="i">length</span></span> <span class="k">is</span> <span class="e Int"><span class="n">1</span></span></span>)
                     <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Index"><span class="e Identifier"><span class="i">members</span></span>[<span class="e Int"><span class="n">0</span></span>]</span>.<span class="e Identifier"><span class="i">stats</span></span>.<span class="e Identifier"><span class="i">folders</span></span>;</span></span></span>
@@ -494,7 +494,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">entries</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">entries</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Plus"><span class="e Identifier"><span class="i">files</span></span> + <span class="e Identifier"><span class="i">folders</span></span></span>;</span>
         }</span></span></span>
@@ -505,11 +505,11 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFolders</span></span> <span class="i">subset</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">pattern</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFolders</span></span> <span class="i">subset</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">pattern</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{  
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">set</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FolderGroup</span></span></span>;</span></span>
 
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">folder</span></span></span>; <span class="e Identifier"><span class="i">members</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">folder</span></span></span>; <span class="e Identifier"><span class="i">members</span></span>)
                          <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">patternMatch</span></span> (<span class="i">Path</span>.<span class="i">PathParser</span>!(<span class="k">const</span>(<span class="k">char</span>))(<span class="i">folder</span>.<span class="i">path</span>).<span class="i">name</span>, <span class="i">pattern</span>)</span>)
                              <span class="s Scope"><span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">set</span></span>.<span class="e Identifier"><span class="i">members</span></span> ~= <span class="e Identifier"><span class="i">folder</span></span></span>;</span></span></span></span></span>
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">set</span></span>;</span>
@@ -521,9 +521,9 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">FileGroup</span></span> <span class="i">catalog</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">pattern</span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">FileGroup</span></span> <span class="i">catalog</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">pattern</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
-                <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">foo</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">VfsInfo</span></span> <span class="i">info</span></span>)</span>
+                <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">foo</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">VfsInfo</span></span> <span class="i">info</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">patternMatch</span></span> (<span class="i">info</span>.<span class="i">name</span>, <span class="i">pattern</span>)</span>;</span>
                 }</span></span></span></span>
@@ -537,7 +537,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">FileGroup</span></span> <span class="i">catalog</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">VfsFilter</span></span> <span class="i">filter</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">FileGroup</span></span> <span class="i">catalog</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">VfsFilter</span></span> <span class="i">filter</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FileGroup</span></span> (<span class="e This"><span class="k">this</span></span>, <span class="e Identifier"><span class="i">filter</span></span>)</span>;</span>
         }</span></span></span>
@@ -548,11 +548,11 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">FileFolder</span></span><span class="t Array">[]</span> <span class="i">scan</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FileFolder</span></span> <span class="i">root</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">recurse</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">FileFolder</span></span><span class="t Array">[]</span> <span class="i">scan</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FileFolder</span></span> <span class="i">root</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">recurse</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">folders</span> = <span class="e Call"><span class="e Identifier"><span class="i">root</span></span>.<span class="e Identifier"><span class="i">folders</span></span> (<span class="i">recurse</span>)</span>;</span></span>
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">recurse</span></span>)
-                    <span class="s Scope"><span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">child</span></span></span>; <span class="e Identifier"><span class="i">folders</span></span>)
+                    <span class="s Scope"><span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">child</span></span></span>; <span class="e Identifier"><span class="i">folders</span></span>)
                              <span class="s Scope"><span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">folders</span></span> ~= <span class="e Call"><span class="e Identifier"><span class="i">scan</span></span> (<span class="i">child</span>, <span class="i">recurse</span>)</span></span>;</span></span></span></span></span>
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">folders</span></span>;</span>
         }</span></span></span>
@@ -575,7 +575,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FileFolder</span></span> <span class="i">parent</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FileFolder</span></span> <span class="i">parent</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path</span></span> = <span class="e Identifier"><span class="i">path</span></span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">parent</span></span> = <span class="e Identifier"><span class="i">parent</span></span></span>;</span>
@@ -585,7 +585,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">create</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">create</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FileFolder</span></span> (<span class="e Identifier"><span class="i">parent</span></span>, <span class="e Identifier"><span class="i">path</span></span>, <span class="e Bool"><span class="k">true</span></span>)</span>;</span>
         }</span></span></span>
@@ -594,7 +594,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">open</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">open</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FileFolder</span></span> (<span class="e Identifier"><span class="i">parent</span></span>, <span class="e Identifier"><span class="i">path</span></span>, <span class="e Bool"><span class="k">false</span></span>)</span>;</span>
         }</span></span></span>
@@ -605,12 +605,12 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">exists</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">exists</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Try"><span class="k">try</span> <span class="s Scope"><span class="s Compound">{
                     <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">open</span></span>()</span>;</span>
                     <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">true</span></span>;</span>
-                    }</span></span> <span class="s Catch"><span class="k">catch</span> (<span class="o Parameter"><span class="t Identifier"><span class="i">IOException</span></span> <span class="i">x</span></span>) <span class="s Compound">{}</span></span></span>
+                    }</span></span> <span class="s Catch"><span class="k">catch</span> (<span class="o "><span class="t Identifier"><span class="i">IOException</span></span> <span class="i">x</span></span>) <span class="s Compound">{}</span></span></span>
                 <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">false</span></span>;</span>
         }</span></span></span>
 }</span></span>
@@ -624,15 +624,15 @@
 
 <span class="d Protection"><span class="k">private</span></span> <span class="d Class"><span class="k">class</span> <span class="i">FileHost</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">VfsFile</span></span></span>
 <span class="d Compound">{
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Path</span></span>.<span class="t TemplateInstance"><span class="i">PathParser</span>!<span class="o TemplateArguments">(<span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span>)</span></span> <span class="i">path</span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Path</span></span>.<span class="t TemplateInstance"><span class="i">PathParser</span>!<span class="o ">(<span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span>)</span></span> <span class="i">path</span>;</span>
 
         <span class="bc">/***********************************************************************
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
-                <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e TmplInstance"><span class="i">PathParser</span>!<span class="o TemplateArguments">(<span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span>)</span></span>(<span class="i">path</span>)</span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e TmplInstance"><span class="i">PathParser</span>!<span class="o ">(<span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span>)</span></span>(<span class="i">path</span>)</span></span>;</span>
         }</span></span></span>
 
         <span class="bc">/***********************************************************************
@@ -641,7 +641,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">file</span></span>;</span>
         }</span></span></span>
@@ -652,7 +652,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">string</span></span> <span class="i">toString</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">string</span></span> <span class="i">toString</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">toString</span></span>()</span>.<span class="e Identifier"><span class="i">idup</span></span>;</span>
         }</span></span></span>
@@ -663,7 +663,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">exists</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">exists</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">exists</span></span> (<span class="i">path</span>.<span class="i">toString</span>())</span>;</span>
         }</span></span></span>
@@ -674,7 +674,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">size</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">size</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">fileSize</span></span>(<span class="i">path</span>.<span class="i">toString</span>())</span>;</span>
         }</span></span></span>
@@ -685,7 +685,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">create</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">create</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">createFile</span></span>(<span class="i">path</span>.<span class="i">toString</span>())</span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -697,7 +697,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">create</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">input</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">create</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">input</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Call"><span class="e Call"><span class="e Identifier"><span class="i">create</span></span>()</span>.<span class="e Identifier"><span class="i">output</span></span>.<span class="e Identifier"><span class="i">copy</span></span>(<span class="i">input</span>)</span>.<span class="e Identifier"><span class="i">close</span></span>()</span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -709,7 +709,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">copy</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">source</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">copy</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">source</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">input</span> = <span class="e Identifier"><span class="i">source</span></span>.<span class="e Identifier"><span class="i">input</span></span>;</span></span>
                 <span class="s ScopeGuard"><span class="k">scope</span> (<span class="i">exit</span>) <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">input</span></span>.<span class="e Identifier"><span class="i">close</span></span>()</span>;</span></span>
@@ -722,7 +722,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">move</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">source</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">move</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">source</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">copy</span></span> (<span class="i">source</span>);</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">source</span></span>.<span class="e Identifier"><span class="i">remove</span></span>()</span>;</span>
@@ -735,7 +735,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">input</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">input</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">File</span></span> (<span class="e Call"><span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">toString</span></span>()</span>)</span>;</span>
         }</span></span></span>
@@ -746,7 +746,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">output</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">output</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">File</span></span> (<span class="e Call"><span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">toString</span></span>()</span>, <span class="e Identifier"><span class="i">File</span></span>.<span class="e Identifier"><span class="i">WriteExisting</span></span>)</span>;</span>
         }</span></span></span>
@@ -757,7 +757,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">remove</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">remove</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">remove</span></span> (<span class="i">path</span>.<span class="i">toString</span>())</span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -769,7 +769,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">dup</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">dup</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">ret</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FileHost</span></span></span>;</span></span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">ret</span></span>.<span class="e Identifier"><span class="i">path</span></span> = <span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">dup</span></span></span>;</span>
@@ -782,7 +782,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">modified</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">modified</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">timeStamps</span></span>(<span class="i">path</span>.<span class="i">toString</span>())</span>.<span class="e Identifier"><span class="i">modified</span></span>;</span>
         }</span></span></span>
@@ -799,7 +799,7 @@
 <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;</span>
 <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">device</span>.<span class="i">Array</span>;</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
 <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">root</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FileFolder</span></span> (<span class="e String"><span class="sl">"d:/d/import/temp"</span></span>, <span class="e Bool"><span class="k">true</span></span>)</span>;</span></span>
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">root</span></span>.<span class="e Identifier"><span class="i">folder</span></span>(<span class="sl">"test"</span>)</span>.<span class="e Identifier"><span class="i">create</span></span>;</span>

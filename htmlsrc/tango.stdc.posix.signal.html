@@ -35,8 +35,8 @@
 
 <span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span>:
 
-<span class="d Compound"><span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span></span> <span class="i">sigfn_t</span>;</span></span>
-<span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">siginfo_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>)</span></span> <span class="i">sigactfn_t</span>;</span></span>
+<span class="d Compound"><span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span></span> <span class="i">sigfn_t</span>;</span></span>
+<span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">siginfo_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>)</span></span> <span class="i">sigactfn_t</span>;</span></span>
 
 <span class="lc">//</span>
 <span class="lc">// Required</span>
@@ -102,9 +102,9 @@ int raise(int sig);                    (defined in tango.stdc.signal)
 
 <span class="d Enum"><span class="k">enum</span>
 {
-  <span class="d EnumMember"><span class="t Identifier"><span class="i">SIGEV_SIGNAL</span></span></span>,
-  <span class="d EnumMember"><span class="t Identifier"><span class="i">SIGEV_NONE</span></span></span>,
-  <span class="d EnumMember"><span class="t Identifier"><span class="i">SIGEV_THREAD</span></span></span>
+  <span class="d EnumMember"><span class="i">SIGEV_SIGNAL</span></span>,
+  <span class="d EnumMember"><span class="i">SIGEV_NONE</span></span>,
+  <span class="d EnumMember"><span class="i">SIGEV_THREAD</span></span>
 }</span>
 
 <span class="d Union"><span class="k">union</span> <span class="i">sigval</span>
@@ -113,8 +113,8 @@ int raise(int sig);                    (defined in tango.stdc.signal)
     <span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>   <span class="i">sival_ptr</span>;</span>
 }</span></span>
 
-<span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">__libc_current_sigrtmin</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
-<span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">__libc_current_sigrtmax</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+<span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">__libc_current_sigrtmin</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
+<span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">__libc_current_sigrtmax</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 
 <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">__libc_current_sigrtmin</span></span> <span class="i">SIGRTMIN</span>;</span></span>
 <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">__libc_current_sigrtmax</span></span> <span class="i">SIGRTMAX</span>;</span></span>
@@ -267,7 +267,7 @@ int raise(int sig);                    (defined in tango.stdc.signal)
     }</span></span>
 
     <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> ) <span class="d Compound">{}</span> <span class="k">else</span> <span class="d Compound">{
-    <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">()</span></span> <span class="i">sa_restorer</span>;</span>
+    <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o ">()</span></span> <span class="i">sa_restorer</span>;</span>
     }</span></span>
 }</span></span>
 
@@ -429,28 +429,28 @@ int sigwait(in sigset_t*, int*);
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_ASYNCNL</span></span> = <span class="e Sign">-<span class="e Int"><span class="n">60</span></span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_TKILL</span></span>   = <span class="e Sign">-<span class="e Int"><span class="n">6</span></span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_SIGIO</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_ASYNCIO</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_MESGQ</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_TIMER</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_QUEUE</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_USER</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_KERNEL</span></span>  = <span class="e Int"><span class="n">0x80</span></span></span>
+        <span class="d EnumMember"><span class="i">SI_ASYNCNL</span> = <span class="e Sign">-<span class="e Int"><span class="n">60</span></span></span></span>,
+        <span class="d EnumMember"><span class="i">SI_TKILL</span>   = <span class="e Sign">-<span class="e Int"><span class="n">6</span></span></span></span>,
+        <span class="d EnumMember"><span class="i">SI_SIGIO</span></span>,
+        <span class="d EnumMember"><span class="i">SI_ASYNCIO</span></span>,
+        <span class="d EnumMember"><span class="i">SI_MESGQ</span></span>,
+        <span class="d EnumMember"><span class="i">SI_TIMER</span></span>,
+        <span class="d EnumMember"><span class="i">SI_QUEUE</span></span>,
+        <span class="d EnumMember"><span class="i">SI_USER</span></span>,
+        <span class="d EnumMember"><span class="i">SI_KERNEL</span>  = <span class="e Int"><span class="n">0x80</span></span></span>
     }</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">kill</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaction</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaddset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigdelset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigemptyset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigfillset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigismember</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigpending</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigprocmask</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigsuspend</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigwait</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">kill</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaction</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaddset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigdelset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigemptyset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigfillset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigismember</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigpending</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigprocmask</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigsuspend</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigwait</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> )
 <span class="d Compound">{
@@ -492,18 +492,18 @@ int sigwait(in sigset_t*, int*);
     <span class="lc">//SI_ASYNCIO</span>
     <span class="lc">//SI_MESGQ</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">kill</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaction</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaddset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigdelset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigemptyset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigfillset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigismember</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigpending</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigprocmask</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigsuspend</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigwait</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaltstack</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span> <span class="t Pointer">*</span></span> , <span class="o Parameter"><span class="t Integral"><span class="k">void</span></span> <span class="t Pointer">*</span></span> )</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">kill</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaction</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaddset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigdelset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigemptyset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigfillset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigismember</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigpending</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigprocmask</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigsuspend</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigwait</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaltstack</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span> <span class="t Pointer">*</span></span> , <span class="o "><span class="t Integral"><span class="k">void</span></span> <span class="t Pointer">*</span></span> )</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
@@ -559,17 +559,17 @@ int sigwait(in sigset_t*, int*);
         <span class="d Variables"><span class="t Identifier"><span class="i">__reason</span></span> <span class="i">_reason</span>;</span>
     }</span></span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">kill</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaction</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaddset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigdelset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigemptyset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span> <span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigfillset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span> <span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigismember</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span> <span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigpending</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span> <span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigprocmask</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigsuspend</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span> <span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigwait</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">kill</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaction</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaddset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigdelset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigemptyset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span> <span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigfillset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span> <span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigismember</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span> <span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigpending</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span> <span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigprocmask</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigsuspend</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span> <span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigwait</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
@@ -674,28 +674,28 @@ int sigwait(in sigset_t*, int*);
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_NOINFO</span></span>   = <span class="e Int"><span class="n">32767</span></span></span>,    <span class="bc">/* no signal information */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_DTRACE</span></span>   = <span class="e Int"><span class="n">2050</span></span></span>,     <span class="bc">/* kernel generated signal via DTrace action */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_RCTL</span></span>     = <span class="e Int"><span class="n">2049</span></span></span>,     <span class="bc">/* kernel generated signal via rctl action */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_USER</span></span>     = <span class="e Int"><span class="n">0</span></span></span>,        <span class="bc">/* user generated signal via kill() */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_LWP</span></span>      = <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>,       <span class="bc">/* user generated signal via lwp_kill() */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_QUEUE</span></span>    = <span class="e Sign">-<span class="e Int"><span class="n">2</span></span></span></span>,       <span class="bc">/* user generated signal via sigqueue() */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_TIMER</span></span>    = <span class="e Sign">-<span class="e Int"><span class="n">3</span></span></span></span>,       <span class="bc">/* from timer expiration */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_ASYNCIO</span></span>  = <span class="e Sign">-<span class="e Int"><span class="n">4</span></span></span></span>,       <span class="bc">/* from asynchronous I/O completion */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SI_MESGQ</span></span>    = <span class="e Sign">-<span class="e Int"><span class="n">5</span></span></span></span>        <span class="bc">/* from message arrival */</span>
+        <span class="d EnumMember"><span class="i">SI_NOINFO</span>   = <span class="e Int"><span class="n">32767</span></span></span>,    <span class="bc">/* no signal information */</span>
+        <span class="d EnumMember"><span class="i">SI_DTRACE</span>   = <span class="e Int"><span class="n">2050</span></span></span>,     <span class="bc">/* kernel generated signal via DTrace action */</span>
+        <span class="d EnumMember"><span class="i">SI_RCTL</span>     = <span class="e Int"><span class="n">2049</span></span></span>,     <span class="bc">/* kernel generated signal via rctl action */</span>
+        <span class="d EnumMember"><span class="i">SI_USER</span>     = <span class="e Int"><span class="n">0</span></span></span>,        <span class="bc">/* user generated signal via kill() */</span>
+        <span class="d EnumMember"><span class="i">SI_LWP</span>      = <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>,       <span class="bc">/* user generated signal via lwp_kill() */</span>
+        <span class="d EnumMember"><span class="i">SI_QUEUE</span>    = <span class="e Sign">-<span class="e Int"><span class="n">2</span></span></span></span>,       <span class="bc">/* user generated signal via sigqueue() */</span>
+        <span class="d EnumMember"><span class="i">SI_TIMER</span>    = <span class="e Sign">-<span class="e Int"><span class="n">3</span></span></span></span>,       <span class="bc">/* from timer expiration */</span>
+        <span class="d EnumMember"><span class="i">SI_ASYNCIO</span>  = <span class="e Sign">-<span class="e Int"><span class="n">4</span></span></span></span>,       <span class="bc">/* from asynchronous I/O completion */</span>
+        <span class="d EnumMember"><span class="i">SI_MESGQ</span>    = <span class="e Sign">-<span class="e Int"><span class="n">5</span></span></span></span>        <span class="bc">/* from message arrival */</span>
     }</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">kill</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaction</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaddset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigdelset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigemptyset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigfillset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigismember</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigpending</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigprocmask</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigsuspend</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigwait</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">kill</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaction</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigaction_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaddset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigdelset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigemptyset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigfillset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigismember</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigpending</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigprocmask</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigsuspend</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigwait</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span></span>
 
 <span class="lc">//</span>
@@ -830,77 +830,77 @@ int sigrelse(int);
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_ILLOPC</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_ILLOPN</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_ILLADR</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_ILLTRP</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_PRVOPC</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_PRVREG</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_COPROC</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_BADSTK</span></span></span>
+        <span class="d EnumMember"><span class="i">ILL_ILLOPC</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">ILL_ILLOPN</span></span>,
+        <span class="d EnumMember"><span class="i">ILL_ILLADR</span></span>,
+        <span class="d EnumMember"><span class="i">ILL_ILLTRP</span></span>,
+        <span class="d EnumMember"><span class="i">ILL_PRVOPC</span></span>,
+        <span class="d EnumMember"><span class="i">ILL_PRVREG</span></span>,
+        <span class="d EnumMember"><span class="i">ILL_COPROC</span></span>,
+        <span class="d EnumMember"><span class="i">ILL_BADSTK</span></span>
     }</span>
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_INTDIV</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_INTOVF</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_FLTDIV</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_FLTOVF</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_FLTUND</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_FLTRES</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_FLTINV</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_FLTSUB</span></span></span>
+        <span class="d EnumMember"><span class="i">FPE_INTDIV</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">FPE_INTOVF</span></span>,
+        <span class="d EnumMember"><span class="i">FPE_FLTDIV</span></span>,
+        <span class="d EnumMember"><span class="i">FPE_FLTOVF</span></span>,
+        <span class="d EnumMember"><span class="i">FPE_FLTUND</span></span>,
+        <span class="d EnumMember"><span class="i">FPE_FLTRES</span></span>,
+        <span class="d EnumMember"><span class="i">FPE_FLTINV</span></span>,
+        <span class="d EnumMember"><span class="i">FPE_FLTSUB</span></span>
     }</span>
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SEGV_MAPERR</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SEGV_ACCERR</span></span></span>
+        <span class="d EnumMember"><span class="i">SEGV_MAPERR</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">SEGV_ACCERR</span></span>
     }</span>
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">BUS_ADRALN</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">BUS_ADRERR</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">BUS_OBJERR</span></span></span>
+        <span class="d EnumMember"><span class="i">BUS_ADRALN</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">BUS_ADRERR</span></span>,
+        <span class="d EnumMember"><span class="i">BUS_OBJERR</span></span>
     }</span>
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">TRAP_BRKPT</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">TRAP_TRACE</span></span></span>
+        <span class="d EnumMember"><span class="i">TRAP_BRKPT</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">TRAP_TRACE</span></span>
     }</span>
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">CLD_EXITED</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">CLD_KILLED</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">CLD_DUMPED</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">CLD_TRAPPED</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">CLD_STOPPED</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">CLD_CONTINUED</span></span></span>
+        <span class="d EnumMember"><span class="i">CLD_EXITED</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">CLD_KILLED</span></span>,
+        <span class="d EnumMember"><span class="i">CLD_DUMPED</span></span>,
+        <span class="d EnumMember"><span class="i">CLD_TRAPPED</span></span>,
+        <span class="d EnumMember"><span class="i">CLD_STOPPED</span></span>,
+        <span class="d EnumMember"><span class="i">CLD_CONTINUED</span></span>
     }</span>
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLL_IN</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLL_OUT</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLL_MSG</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLL_ERR</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLL_PRI</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLL_HUP</span></span></span>
+        <span class="d EnumMember"><span class="i">POLL_IN</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLL_OUT</span></span>,
+        <span class="d EnumMember"><span class="i">POLL_MSG</span></span>,
+        <span class="d EnumMember"><span class="i">POLL_ERR</span></span>,
+        <span class="d EnumMember"><span class="i">POLL_PRI</span></span>,
+        <span class="d EnumMember"><span class="i">POLL_HUP</span></span>
     }</span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">sigfn_t</span></span> <span class="i">bsd_signal</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">sig</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigfn_t</span></span> <span class="i">func</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Identifier"><span class="i">sigfn_t</span></span> <span class="i">sigset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">sig</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigfn_t</span></span> <span class="i">func</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Identifier"><span class="i">sigfn_t</span></span> <span class="i">bsd_signal</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">sig</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigfn_t</span></span> <span class="i">func</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Identifier"><span class="i">sigfn_t</span></span> <span class="i">sigset</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">sig</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigfn_t</span></span> <span class="i">func</span></span>)</span><span class="s FuncBody">;</span></span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">killpg</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaltstack</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">stack_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">stack_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sighold</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigignore</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">siginterrupt</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigpause</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigrelse</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">killpg</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaltstack</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">stack_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">stack_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sighold</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigignore</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">siginterrupt</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigpause</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigrelse</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
@@ -940,78 +940,78 @@ int sigrelse(int);
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_ILLOPC</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_ILLOPN</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_ILLADR</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_ILLTRP</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_PRVOPC</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_PRVREG</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_COPROC</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ILL_BADSTK</span></span></span>
+        <span class="d EnumMember"><span class="i">ILL_ILLOPC</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">ILL_ILLOPN</span></span>,
+        <span class="d EnumMember"><span class="i">ILL_ILLADR</span></span>,
+        <span class="d EnumMember"><span class="i">ILL_ILLTRP</span></span>,
+        <span class="d EnumMember"><span class="i">ILL_PRVOPC</span></span>,
+        <span class="d EnumMember"><span class="i">ILL_PRVREG</span></span>,
+        <span class="d EnumMember"><span class="i">ILL_COPROC</span></span>,
+        <span class="d EnumMember"><span class="i">ILL_BADSTK</span></span>
     }</span>
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_INTOVF</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_INTDIV</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_FLTDIV</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_FLTOVF</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_FLTUND</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_FLTRES</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_FLTINV</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">FPE_FLTSUB</span></span></span>
+        <span class="d EnumMember"><span class="i">FPE_INTOVF</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">FPE_INTDIV</span></span>,
+        <span class="d EnumMember"><span class="i">FPE_FLTDIV</span></span>,
+        <span class="d EnumMember"><span class="i">FPE_FLTOVF</span></span>,
+        <span class="d EnumMember"><span class="i">FPE_FLTUND</span></span>,
+        <span class="d EnumMember"><span class="i">FPE_FLTRES</span></span>,
+        <span class="d EnumMember"><span class="i">FPE_FLTINV</span></span>,
+        <span class="d EnumMember"><span class="i">FPE_FLTSUB</span></span>
     }</span>
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SEGV_MAPERR</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SEGV_ACCERR</span></span></span>
+        <span class="d EnumMember"><span class="i">SEGV_MAPERR</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">SEGV_ACCERR</span></span>
     }</span>
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">BUS_ADRALN</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">BUS_ADRERR</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">BUS_OBJERR</span></span></span>
+        <span class="d EnumMember"><span class="i">BUS_ADRALN</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">BUS_ADRERR</span></span>,
+        <span class="d EnumMember"><span class="i">BUS_OBJERR</span></span>
     }</span>
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">TRAP_BRKPT</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">TRAP_TRACE</span></span></span>
+        <span class="d EnumMember"><span class="i">TRAP_BRKPT</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">TRAP_TRACE</span></span>
     }</span>
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">CLD_EXITED</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">CLD_KILLED</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">CLD_DUMPED</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">CLD_TRAPPED</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">CLD_STOPPED</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">CLD_CONTINUED</span></span></span>
+        <span class="d EnumMember"><span class="i">CLD_EXITED</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">CLD_KILLED</span></span>,
+        <span class="d EnumMember"><span class="i">CLD_DUMPED</span></span>,
+        <span class="d EnumMember"><span class="i">CLD_TRAPPED</span></span>,
+        <span class="d EnumMember"><span class="i">CLD_STOPPED</span></span>,
+        <span class="d EnumMember"><span class="i">CLD_CONTINUED</span></span>
     }</span>
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLL_IN</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLL_OUT</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLL_MSG</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLL_ERR</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLL_PRI</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLL_HUP</span></span></span>
+        <span class="d EnumMember"><span class="i">POLL_IN</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLL_OUT</span></span>,
+        <span class="d EnumMember"><span class="i">POLL_MSG</span></span>,
+        <span class="d EnumMember"><span class="i">POLL_ERR</span></span>,
+        <span class="d EnumMember"><span class="i">POLL_PRI</span></span>,
+        <span class="d EnumMember"><span class="i">POLL_HUP</span></span>
     }</span>
 
     <span class="lc">//sigfn_t bsd_signal(int sig, sigfn_t func);</span>
     <span class="lc">//sigfn_t sigset(int sig, sigfn_t func);</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">killpg</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaltstack</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">stack_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">stack_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">killpg</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigaltstack</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">stack_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">stack_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
     <span class="lc">//int sighold(int);</span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigblock</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigignore</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">siginterrupt</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigpause</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigrelse</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigblock</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigignore</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">siginterrupt</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigpause</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigrelse</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span>
 <span class="d Version"><span class="k">version</span>(<span class="i">darwin</span>)<span class="d Compound">{
     <span class="lc">// to complete</span>
@@ -1147,15 +1147,15 @@ int sigwaitinfo(in sigset_t*, siginfo_t*);
 
             <span class="d Struct"><span class="k">struct</span> <span class="i">_sigev_thread_t</span>
             <span class="d Compound">{
-                <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigval</span></span></span>)</span></span>   <span class="i">_function</span>;</span>
+                <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigval</span></span></span>)</span></span>   <span class="i">_function</span>;</span>
                 <span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>                   <span class="i">_attribute</span>;</span>
             }</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">_sigev_thread_t</span></span> <span class="i">_sigev_thread</span>;</span>
         }</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">_sigev_un_t</span></span> <span class="i">_sigev_un</span>;</span>
     }</span></span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigqueue</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigval</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigtimedwait</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">siginfo_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">timespec</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigwaitinfo</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">siginfo_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigqueue</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigval</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigtimedwait</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">siginfo_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">timespec</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigwaitinfo</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">siginfo_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
@@ -1165,7 +1165,7 @@ int sigwaitinfo(in sigset_t*, siginfo_t*);
         <span class="d Variables"><span class="t Integral"><span class="k">int</span></span>             <span class="i">sigev_signo</span>;</span>
         <span class="d Variables"><span class="t Identifier"><span class="i">sigval</span></span>          <span class="i">sigev_value</span>;</span>
         <span class="d Struct"><span class="k">struct</span> <span class="i">__sigev_thread</span> <span class="d Compound">{
-            <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigval</span></span></span>)</span></span> <span class="i">_function</span>;</span>
+            <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigval</span></span></span>)</span></span> <span class="i">_function</span>;</span>
             <span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">_attribute</span>;</span>
         }</span></span>
         <span class="d Union"><span class="k">union</span>  <span class="i">_sigev_un</span>
@@ -1176,9 +1176,9 @@ int sigwaitinfo(in sigset_t*, siginfo_t*);
         }</span></span>
     }</span></span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigqueue</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigval</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigtimedwait</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">siginfo_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">timespec</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigwaitinfo</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">siginfo_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigqueue</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigval</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigtimedwait</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">siginfo_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">timespec</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigwaitinfo</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">siginfo_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span> ( <span class="i">solaris</span> )
 <span class="d Compound">{
@@ -1186,7 +1186,7 @@ int sigwaitinfo(in sigset_t*, siginfo_t*);
         <span class="d Variables"><span class="t Integral"><span class="k">int</span></span>                     <span class="i">sigev_notify</span>;</span>   <span class="bc">/* notification mode */</span>
         <span class="d Variables"><span class="t Integral"><span class="k">int</span></span>                     <span class="i">sigev_signo</span>;</span>    <span class="bc">/* signal number */</span>
         <span class="d Variables"><span class="t Identifier"><span class="i">sigval</span></span>                  <span class="i">sigev_value</span>;</span>    <span class="bc">/* signal value */</span>
-        <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigval</span></span></span>)</span></span>   <span class="i">sigev_notify_function</span>;</span>
+        <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigval</span></span></span>)</span></span>   <span class="i">sigev_notify_function</span>;</span>
         <span class="d Variables"><span class="t Identifier"><span class="i">pthread_attr_t</span></span><span class="t Pointer">*</span>         <span class="i">sigev_notify_attributes</span>;</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span>             <span class="i">__sigev_pad2</span>;</span>
     }</span></span>
@@ -1195,7 +1195,7 @@ int sigwaitinfo(in sigset_t*, siginfo_t*);
      <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigev_notify</span>;</span>
      <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">sigev_signo</span>;</span>
      <span class="d Variables"><span class="t Identifier"><span class="i">sigval</span></span> <span class="i">sigev_value</span>;</span>
-     <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigval</span></span></span>)</span></span> <span class="i">sigev_notify_function</span>;</span>
+     <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigval</span></span></span>)</span></span> <span class="i">sigev_notify_function</span>;</span>
      <span class="d Variables"><span class="t Identifier"><span class="i">pthread_attr_t</span></span> <span class="t Pointer">*</span><span class="i">sigev_notify_attributes</span>;</span>
     }</span></span>
 }</span></span></span></span></span>
@@ -1210,23 +1210,23 @@ int pthread_sigmask(int, in sigset_t*, sigset_t*);
 
 <span class="d Version"><span class="k">version</span>( <span class="i">linux</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_kill</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pthread_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_sigmask</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_kill</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pthread_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_sigmask</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_kill</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pthread_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_sigmask</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_kill</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pthread_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_sigmask</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_kill</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pthread_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_sigmask</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_kill</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pthread_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_sigmask</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_kill</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pthread_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_sigmask</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_kill</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pthread_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">pthread_sigmask</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigset_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span></span></span></span>
 
 </pre></td>

@@ -120,7 +120,7 @@
 
 *******************************************************************************/</span>
 
-<span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">FormatOutput</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span>)</span></span> <span class="i">Output</span>;</span></span>
+<span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">FormatOutput</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span>)</span></span> <span class="i">Output</span>;</span></span>
 
 <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d StorageClass"><span class="k">__gshared</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Output</span></span> <span class="i">Stdout</span>;</span> <span class="lc">/// global standard output</span>
 <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d StorageClass"><span class="k">__gshared</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Output</span></span> <span class="i">Stderr</span>;</span> <span class="lc">/// global error output</span>
@@ -131,7 +131,7 @@
 <span class="s FuncBody"><span class="s Compound">{
         <span class="lc">// note that a static-ctor inside Layout fails</span>
         <span class="lc">// to be invoked before this is executed (bug)</span>
-        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">layout</span> = <span class="e TmplInstance"><span class="i">Layout</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span>)</span></span>.<span class="e Identifier"><span class="i">instance</span></span>;</span></span>
+        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">layout</span> = <span class="e TmplInstance"><span class="i">Layout</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span>)</span></span>.<span class="e Identifier"><span class="i">instance</span></span>;</span></span>
 
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">Stdout</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Output</span></span> (<span class="e Identifier"><span class="i">layout</span></span>, <span class="e Identifier"><span class="i">Cout</span></span>.<span class="e Identifier"><span class="i">stream</span></span>)</span></span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">Stderr</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Output</span></span> (<span class="e Identifier"><span class="i">layout</span></span>, <span class="e Identifier"><span class="i">Cerr</span></span>.<span class="e Identifier"><span class="i">stream</span></span>)</span></span>;</span>
@@ -147,7 +147,7 @@
 
 <span class="d Debug"><span class="k">debug</span> (<span class="i">Stdout</span>)
 <span class="d Compound">{
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span> (<span class="sl">"hello"</span>)</span>.<span class="e Identifier"><span class="i">newline</span></span>;</span>
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span> (<span class="n">1</span>)</span>.<span class="e Identifier"><span class="i">newline</span></span>;</span>

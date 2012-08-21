@@ -43,16 +43,16 @@
 <span class="d Version"><span class="k">version</span> (<span class="i">Win32</span>)
         <span class="d Compound">{
         <span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">Text</span> = <span class="i">tango</span>.<span class="i">text</span>.<span class="i">Util</span>;</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span> (<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">GetLogicalDriveStringsA</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">LPSTR</span></span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span> (<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">GetLogicalDriveStringsA</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DWORD</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">LPSTR</span></span></span>)</span><span class="s FuncBody">;</span></span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">stdc</span>.<span class="i">stringz</span> : <span class="i">fromString16z</span>, <span class="i">fromStringz</span>;</span>
 
         <span class="d Enum"><span class="k">enum</span> {
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">FILE_DEVICE_DISK</span></span> = <span class="e Int"><span class="n">7</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IOCTL_DISK_BASE</span></span> = <span class="e Identifier"><span class="i">FILE_DEVICE_DISK</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">METHOD_BUFFERED</span></span> = <span class="e Int"><span class="n">0</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">FILE_READ_ACCESS</span></span> = <span class="e Int"><span class="n">1</span></span></span>
+            <span class="d EnumMember"><span class="i">FILE_DEVICE_DISK</span> = <span class="e Int"><span class="n">7</span></span></span>,
+            <span class="d EnumMember"><span class="i">IOCTL_DISK_BASE</span> = <span class="e Identifier"><span class="i">FILE_DEVICE_DISK</span></span></span>,
+            <span class="d EnumMember"><span class="i">METHOD_BUFFERED</span> = <span class="e Int"><span class="n">0</span></span></span>,
+            <span class="d EnumMember"><span class="i">FILE_READ_ACCESS</span> = <span class="e Int"><span class="n">1</span></span></span>
         }</span>
-        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">CTL_CODE</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">t</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">f</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">m</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">a</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">CTL_CODE</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">t</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">f</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">m</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">a</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Return"><span class="k">return</span> <span class="e Or"><span class="e Or"><span class="e Or"><span class="e Paren">(<span class="e LShift"><span class="e Identifier"><span class="i">t</span></span> &lt;&lt; <span class="e Int"><span class="n">16</span></span></span>)</span> | <span class="e Paren">(<span class="e LShift"><span class="e Identifier"><span class="i">a</span></span> &lt;&lt; <span class="e Int"><span class="n">14</span></span></span>)</span></span> | <span class="e Paren">(<span class="e LShift"><span class="e Identifier"><span class="i">f</span></span> &lt;&lt; <span class="e Int"><span class="n">2</span></span></span>)</span></span> | <span class="e Identifier"><span class="i">m</span></span></span>;</span>
         }</span></span></span>
 
@@ -83,7 +83,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">exception</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">string</span></span> <span class="i">msg</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">exception</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">string</span></span> <span class="i">msg</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">IOException</span></span> (<span class="e Identifier"><span class="i">msg</span></span>)</span>;</span>
         }</span></span></span>
@@ -104,7 +104,7 @@
 
                 <span class="d Version"><span class="k">version</span> (<span class="i">Win32SansUnicode</span>)
                 <span class="d Compound">{
-                        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">windowsPath</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">result</span></span>)</span>
+                        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">windowsPath</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">result</span></span>)</span>
                         <span class="s FuncBody"><span class="s Compound">{
                                 <span class="s Expression"><span class="e Assign"><span class="e Slice"><span class="e Identifier"><span class="i">result</span></span>[<span class="e Int"><span class="n">0</span></span>..<span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">length</span></span>]</span> = <span class="e Identifier"><span class="i">path</span></span></span>;</span>
                                 <span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Identifier"><span class="i">result</span></span>[<span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">length</span></span>]</span> = <span class="e Int"><span class="n">0</span></span></span>;</span>
@@ -112,7 +112,7 @@
                 }</span>
                 <span class="k">else</span>
                 <span class="d Compound">{
-                        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">windowsPath</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">wchar</span></span><span class="t Array">[]</span> <span class="i">result</span></span>)</span>
+                        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">windowsPath</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">wchar</span></span><span class="t Array">[]</span> <span class="i">result</span></span>)</span>
                         <span class="s FuncBody"><span class="s Compound">{
                                 <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">length</span></span> &lt; <span class="e Identifier"><span class="i">result</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>)</span>;</span>
                                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">i</span> = <span class="e Call"><span class="e Identifier"><span class="i">MultiByteToWideChar</span></span> (<span class="i">CP_UTF8</span>, <span class="n">0</span>,
@@ -131,7 +131,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">deprecated</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setDirectory</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
+                <span class="d StorageClass"><span class="k">deprecated</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setDirectory</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Version"><span class="k">version</span> (<span class="i">Win32SansUnicode</span>)
                                 <span class="s Compound">{
@@ -165,7 +165,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">deprecated</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">getDirectory</span> <span class="o Parameters">()</span>
+                <span class="d StorageClass"><span class="k">deprecated</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">getDirectory</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">path</span>;</span></span>
 
@@ -210,7 +210,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">roots</span> <span class="o Parameters">()</span>
+                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">roots</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span>             <span class="i">len</span>;</span></span>
                         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>          <span class="i">str</span>;</span></span>
@@ -230,11 +230,11 @@
                 }</span></span></span>
 
                 <span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> {
-                    <span class="d EnumMember"><span class="t Identifier"><span class="i">volumePathBufferLen</span></span> = <span class="e Plus"><span class="e Identifier"><span class="i">MAX_PATH</span></span> + <span class="e Int"><span class="n">6</span></span></span></span>
+                    <span class="d EnumMember"><span class="i">volumePathBufferLen</span> = <span class="e Plus"><span class="e Identifier"><span class="i">MAX_PATH</span></span> + <span class="e Int"><span class="n">6</span></span></span></span>
                 }</span>
                 
-                <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TCHAR</span></span><span class="t Array">[]</span> <span class="i">getVolumePath</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">folder</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">TCHAR</span></span><span class="t Array">[]</span> <span class="i">volPath_</span></span>,
-                                                     <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">trailingBackslash</span></span>)</span>
+                <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TCHAR</span></span><span class="t Array">[]</span> <span class="i">getVolumePath</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">folder</span></span>, <span class="o "><span class="t Identifier"><span class="i">TCHAR</span></span><span class="t Array">[]</span> <span class="i">volPath_</span></span>,
+                                                     <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">trailingBackslash</span></span>)</span>
                 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
                     <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">volPath_</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">5</span></span></span>)</span>;</span>
                 }</span> <span class="k">body</span> <span class="s Compound">{
@@ -302,7 +302,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">freeSpace</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">folder</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">superuser</span> = <span class="e Bool"><span class="k">false</span></span></span>)</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">freeSpace</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">folder</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">superuser</span> = <span class="e Bool"><span class="k">false</span></span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                     <span class="s Declaration"><span class="d StorageClass"><span class="k">scope</span></span> <span class="d Variables"><span class="i">fp</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FilePath</span></span>(<span class="e Identifier"><span class="i">folder</span></span>.<span class="e Identifier"><span class="i">dup</span></span>)</span>;</span></span>
 
@@ -341,7 +341,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">totalSpace</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">folder</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">superuser</span> = <span class="e Bool"><span class="k">false</span></span></span>)</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">totalSpace</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">folder</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">superuser</span> = <span class="e Bool"><span class="k">false</span></span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                     <span class="s Version"><span class="k">version</span> (<span class="i">Win32SansUnicode</span>) <span class="s Compound">{
                         <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">GetDiskFreeSpaceExA</span></span> <span class="i">GetDiskFreeSpaceEx</span>;</span></span></span>
@@ -405,7 +405,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">deprecated</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setDirectory</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
+                <span class="d StorageClass"><span class="k">deprecated</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setDirectory</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">512</span></span>]</span> <span class="i">tmp</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
                         <span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Identifier"><span class="i">tmp</span></span> [<span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">length</span></span>]</span> = <span class="e Int"><span class="n">0</span></span></span>;</span>
@@ -423,7 +423,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">deprecated</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">getDirectory</span> <span class="o Parameters">()</span>
+                <span class="d StorageClass"><span class="k">deprecated</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">getDirectory</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">512</span></span>]</span> <span class="i">tmp</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
 
@@ -442,7 +442,7 @@
 
                  ***************************************************************/</span>
 
-                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">roots</span> <span class="o Parameters">()</span>
+                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">roots</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Version"><span class="k">version</span>(<span class="i">darwin</span>)
                         <span class="s Compound">{
@@ -511,7 +511,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">freeSpace</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">folder</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">superuser</span> = <span class="e Bool"><span class="k">false</span></span></span>)</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">freeSpace</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">folder</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">superuser</span> = <span class="e Bool"><span class="k">false</span></span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                     <span class="s Declaration"><span class="d StorageClass"><span class="k">scope</span></span> <span class="d Variables"><span class="i">fp</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FilePath</span></span>(<span class="e Identifier"><span class="i">folder</span></span>.<span class="e Identifier"><span class="i">dup</span></span>)</span>;</span></span>
                     <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">statvfs_t</span></span> <span class="i">info</span>;</span></span>
@@ -546,7 +546,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">totalSpace</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">folder</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">superuser</span> = <span class="e Bool"><span class="k">false</span></span></span>)</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">totalSpace</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">folder</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">superuser</span> = <span class="e Bool"><span class="k">false</span></span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                     <span class="s Declaration"><span class="d StorageClass"><span class="k">scope</span></span> <span class="d Variables"><span class="i">fp</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">FilePath</span></span>(<span class="e Identifier"><span class="i">folder</span></span>.<span class="e Identifier"><span class="i">dup</span></span>)</span>;</span></span>
                     <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">statvfs_t</span></span> <span class="i">info</span>;</span></span>
@@ -569,7 +569,7 @@
 <span class="d Compound">{
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">foo</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">FilePath</span></span> <span class="i">path</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">foo</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">FilePath</span></span> <span class="i">path</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>(<span class="sl">"all: "</span>)</span> (<span class="i">path</span>)</span>.<span class="e Identifier"><span class="i">newline</span></span>;</span>
         <span class="s Expression"><span class="e Call"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>(<span class="sl">"path: "</span>)</span> (<span class="i">path</span>.<span class="i">path</span>)</span>.<span class="e Identifier"><span class="i">newline</span></span>;</span>
@@ -580,7 +580,7 @@
         <span class="s Expression"><span class="e Call"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>(<span class="sl">"suffix: "</span>)</span> (<span class="i">path</span>.<span class="i">suffix</span>)</span>.<span class="e Identifier"><span class="i">newline</span></span>.<span class="e Identifier"><span class="i">newline</span></span>;</span>
         }</span></span></span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span> 
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span> 
         <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"dir: {}"</span>, <span class="i">FileSystem</span>.<span class="i">getDirectory</span>)</span>;</span>
 

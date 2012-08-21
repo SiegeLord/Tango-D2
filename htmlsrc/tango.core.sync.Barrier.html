@@ -66,7 +66,7 @@
      * Throws:
      *  SyncException on error.
      */</span>
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">( <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">limit</span></span> )</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">( <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">limit</span></span> )</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Rel"><span class="e Identifier"><span class="i">limit</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span> )</span>;</span>
@@ -92,7 +92,7 @@
      * Throws:
      *  SyncException on error.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">wait</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">wait</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Synchronized"><span class="k">synchronized</span>( <span class="e Identifier"><span class="i">m_lock</span></span> )
         <span class="s Scope"><span class="s Compound">{
@@ -137,7 +137,7 @@
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span>  <span class="i">numReady</span>   = <span class="e Int"><span class="n">0</span></span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span>  <span class="i">numPassed</span>  = <span class="e Int"><span class="n">0</span></span>;</span></span>
 
-        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">threadFn</span><span class="o Parameters">()</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">threadFn</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Synchronized"><span class="k">synchronized</span>( <span class="e Identifier"><span class="i">synInfo</span></span> )
             <span class="s Scope"><span class="s Compound">{

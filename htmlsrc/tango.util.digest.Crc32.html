@@ -39,7 +39,7 @@
         <span class="bc">/**
          * Create a cloned CRC32
          */</span>
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Crc32</span></span> <span class="i">crc32</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Crc32</span></span> <span class="i">crc32</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Slice"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">table</span></span>[]</span> = <span class="e Slice"><span class="e Identifier"><span class="i">crc32</span></span>.<span class="e Identifier"><span class="i">table</span></span>[]</span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">result</span></span> = <span class="e Identifier"><span class="i">crc32</span></span>.<span class="e Identifier"><span class="i">result</span></span></span>;</span>
@@ -53,7 +53,7 @@
          *      default compatible with ZIP, PNG, ethernet and others. Note: This
          *      default value has poor error correcting properties.
          */</span>
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">polynomial</span> = <span class="e Int"><span class="n">0xEDB88320U</span></span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">polynomial</span> = <span class="e Int"><span class="n">0xEDB88320U</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s For"><span class="k">for</span> (<span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span> = <span class="e Int"><span class="n">0</span></span>;</span></span> <span class="e Rel"><span class="e Identifier"><span class="i">i</span></span> &lt; <span class="e Int"><span class="n">256</span></span></span>; <span class="e PostIncr"><span class="e Identifier"><span class="i">i</span></span>++</span>)
                 <span class="s Scope"><span class="s Compound">{
@@ -91,10 +91,10 @@
         }</span></span></span>
 
         <span class="bc">/** */</span>
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Crc32</span></span> <span class="i">update</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span>)</span> <span class="i">input</span></span>)</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Crc32</span></span> <span class="i">update</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span>)</span> <span class="i">input</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">r</span> = <span class="e Identifier"><span class="i">result</span></span>;</span></span> <span class="lc">// DMD optimization</span>
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span> <span class="i">value</span></span></span>; <span class="e Cast"><span class="k">cast</span>(<span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span>)</span>) <span class="e Identifier"><span class="i">input</span></span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="t Integral"><span class="k">ubyte</span></span> <span class="i">value</span></span></span>; <span class="e Cast"><span class="k">cast</span>(<span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span>)</span>) <span class="e Identifier"><span class="i">input</span></span></span>)
                 <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">i</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ubyte</span></span>) <span class="e Identifier"><span class="i">r</span></span></span>;</span></span><span class="lc">// &amp; 0xff;</span>
                         <span class="s Expression"><span class="e XorAssign"><span class="e Identifier"><span class="i">i</span></span> ^= <span class="e Identifier"><span class="i">value</span></span></span>;</span>
@@ -115,13 +115,13 @@
         }</span></span></span>
 
         <span class="bc">/** The Crc32 digestSize is 4 */</span>
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">digestSize</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">digestSize</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Int"><span class="n">4</span></span>;</span>
         }</span></span></span>
 
         <span class="bc">/** */</span>
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">binaryDigest</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">buf</span> = <span class="e Null"><span class="k">null</span></span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">binaryDigest</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">buf</span> = <span class="e Null"><span class="k">null</span></span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">buf</span></span>.<span class="e Identifier"><span class="i">length</span></span> &lt; <span class="e Int"><span class="n">4</span></span></span>)
                         <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">buf</span></span>.<span class="e Identifier"><span class="i">length</span></span> = <span class="e Int"><span class="n">4</span></span></span>;</span></span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">v</span> = <span class="e Comp">~<span class="e Identifier"><span class="i">result</span></span></span>;</span></span>
@@ -134,7 +134,7 @@
         }</span></span></span>
 
         <span class="bc">/** Returns the Crc32 digest as a uint */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">crc32Digest</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">crc32Digest</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">ret</span> = <span class="e Comp">~<span class="e Identifier"><span class="i">result</span></span></span>;</span></span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">result</span></span> = <span class="e Int"><span class="n">0xffffffff</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">ret</span></span>;</span>

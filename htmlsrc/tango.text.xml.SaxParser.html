@@ -43,7 +43,7 @@
         Single attributes are represented by this struct.
 
  *******************************************************************************/</span>
-<span class="d Template"><span class="d Compound"><span class="d Struct"><span class="k">struct</span> <span class="i">Attribute</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> <span class="d Compound">{
+<span class="d Template"><span class="d Compound"><span class="d Struct"><span class="k">struct</span> <span class="i">Attribute</span><span class="o ">(<span class="o "><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> <span class="d Compound">{
 
         <span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">localName</span>;</span>
         <span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">value</span>;</span>
@@ -90,9 +90,9 @@
  * @see org.xml.sax.XMLReader
  * @see org.xml.sax.ErrorHandler
  *******************************************************************************/</span>
-<span class="d Protection"><span class="k">public</span></span> <span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">SaxHandler</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> <span class="d Compound">{
+<span class="d Protection"><span class="k">public</span></span> <span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">SaxHandler</span><span class="o ">(<span class="o "><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> <span class="d Compound">{
         
-        <span class="d Variables"><span class="t TemplateInstance"><span class="i">Locator</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">locator</span>;</span>
+        <span class="d Variables"><span class="t TemplateInstance"><span class="i">Locator</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">locator</span>;</span>
 
         <span class="bc">/*******************************************************************************
          * Receive an object for locating the origin of SAX document events.
@@ -121,7 +121,7 @@
          *                any SAX document event
          * @see org.xml.sax.Locator
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setDocumentLocator</span><span class="o Parameters">(<span class="o Parameter"><span class="t TemplateInstance"><span class="i">Locator</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">locator</span></span>)</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setDocumentLocator</span><span class="o ">(<span class="o "><span class="t TemplateInstance"><span class="i">Locator</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">locator</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">locator</span></span> = <span class="e Identifier"><span class="i">locator</span></span></span>;</span>
         }</span></span></span>
@@ -137,7 +137,7 @@
          *            wrapping another exception
          * @see #endDocument
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">startDocument</span><span class="o Parameters">()</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">startDocument</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 
         }</span></span></span>
@@ -163,7 +163,7 @@
          *            wrapping another exception
          * @see #startDocument
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">endDocument</span><span class="o Parameters">()</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">endDocument</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 
         }</span></span></span>
@@ -206,7 +206,7 @@
          * @see #endPrefixMapping
          * @see #startElement
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">startPrefixMapping</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">prefix</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">uri</span></span>)</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">startPrefixMapping</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">prefix</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">uri</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 
         }</span></span></span>
@@ -227,7 +227,7 @@
          * @see #startPrefixMapping
          * @see #endElement
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">endPrefixMapping</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">prefix</span></span>)</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">endPrefixMapping</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">prefix</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 
         }</span></span></span>
@@ -296,7 +296,7 @@
          * @see org.xml.sax.Attributes
          * @see org.xml.sax.helpers.AttributesImpl
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">startElement</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">uri</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">localName</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">qName</span></span>, <span class="o Parameter"><span class="t TemplateInstance"><span class="i">Attribute</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span><span class="t Array">[]</span> <span class="i">atts</span></span>)</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">startElement</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">uri</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">localName</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">qName</span></span>, <span class="o "><span class="t TemplateInstance"><span class="i">Attribute</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span><span class="t Array">[]</span> <span class="i">atts</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 
         }</span></span></span>
@@ -322,7 +322,7 @@
          * @throws org.xml.sax.SAXException any SAX exception, possibly
          *            wrapping another exception
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">endElement</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">uri</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">localName</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">qName</span></span>)</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">endElement</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">uri</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">localName</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">qName</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 
         }</span></span></span>
@@ -370,7 +370,7 @@
          * @see #ignorableWhitespace 
          * @see org.xml.sax.Locator
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">characters</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">ch</span></span>)</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">characters</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">ch</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 
         }</span></span></span>
@@ -400,7 +400,7 @@
          *            wrapping another exception
          * @see #characters
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">ignorableWhitespace</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ch</span></span> <span class="i">ch</span><span class="t Array">[]</span></span>)</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">ignorableWhitespace</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ch</span></span> <span class="i">ch</span><span class="t Array">[]</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 
         }</span></span></span>
@@ -427,7 +427,7 @@
          * @throws org.xml.sax.SAXException any SAX exception, possibly
          *            wrapping another exception
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">processingInstruction</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">target</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">data</span></span>)</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">processingInstruction</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">target</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">data</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 
         }</span></span></span>
@@ -457,7 +457,7 @@
          * @throws org.xml.sax.SAXException any SAX exception, possibly
          *            wrapping another exception
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">skippedEntity</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">skippedEntity</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 
         }</span></span></span>
@@ -515,7 +515,7 @@
  * @see org.xml.sax.XMLReader#setEntityResolver
  * @see org.xml.sax.InputSource
  *******************************************************************************/</span>
-<span class="d Protection"><span class="k">public</span></span> <span class="d Template"><span class="d Compound"><span class="d Interface"><span class="k">interface</span> <span class="i">EntityResolver</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> <span class="d Compound">{
+<span class="d Protection"><span class="k">public</span></span> <span class="d Template"><span class="d Compound"><span class="d Interface"><span class="k">interface</span> <span class="i">EntityResolver</span><span class="o ">(<span class="o "><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> <span class="d Compound">{
 
         <span class="bc">/*******************************************************************************
          * Allow the application to resolve external entities.
@@ -559,7 +559,7 @@
          * @see org.xml.sax.InputSource
          *******************************************************************************/</span>
 
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">resolveEntity</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">publicId</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">systemId</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">resolveEntity</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">publicId</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">systemId</span></span>)</span><span class="s FuncBody">;</span></span>
 
 }</span></span></span></span>
 
@@ -596,7 +596,7 @@
  * @see org.xml.sax.XMLReader#setErrorHandler
  * @see org.xml.sax.SAXParseException 
  *******************************************************************************/</span>
-<span class="d Protection"><span class="k">public</span></span> <span class="d Template"><span class="d Compound"><span class="d Interface"><span class="k">interface</span> <span class="i">ErrorHandler</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> <span class="d Compound">{
+<span class="d Protection"><span class="k">public</span></span> <span class="d Template"><span class="d Compound"><span class="d Interface"><span class="k">interface</span> <span class="i">ErrorHandler</span><span class="o ">(<span class="o "><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> <span class="d Compound">{
 
         <span class="bc">/*******************************************************************************
          * Receive notification of a warning.
@@ -619,7 +619,7 @@
          *            wrapping another exception.
          * @see org.xml.sax.SAXParseException 
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">warning</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">SAXException</span></span> <span class="i">exception</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">warning</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">SAXException</span></span> <span class="i">exception</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Receive notification of a recoverable error.
@@ -646,7 +646,7 @@
          *            wrapping another exception.
          * @see org.xml.sax.SAXParseException 
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">error</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">SAXException</span></span> <span class="i">exception</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">error</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">SAXException</span></span> <span class="i">exception</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Receive notification of a non-recoverable error.
@@ -676,7 +676,7 @@
          *            wrapping another exception.
          * @see org.xml.sax.SAXParseException
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fatalError</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">SAXException</span></span> <span class="i">exception</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fatalError</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">SAXException</span></span> <span class="i">exception</span></span>)</span><span class="s FuncBody">;</span></span>
 
 }</span></span></span></span>
 
@@ -709,7 +709,7 @@
  * @version 2.0.1 (sax2r2)
  * @see org.xml.sax.ContentHandler#setDocumentLocator 
  *******************************************************************************/</span>
-<span class="d Protection"><span class="k">public</span></span> <span class="d Template"><span class="d Compound"><span class="d Interface"><span class="k">interface</span> <span class="i">Locator</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> <span class="d Compound">{
+<span class="d Protection"><span class="k">public</span></span> <span class="d Template"><span class="d Compound"><span class="d Interface"><span class="k">interface</span> <span class="i">Locator</span><span class="o ">(<span class="o "><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> <span class="d Compound">{
 
         <span class="bc">/*******************************************************************************
          * Return the public identifier for the current document event.
@@ -722,7 +722,7 @@
          *         null if none is available.
          * @see #getSystemId
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">getPublicId</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">getPublicId</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Return the system identifier for the current document event.
@@ -740,7 +740,7 @@
          *         if none is available.
          * @see #getPublicId
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">getSystemId</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">getSystemId</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Return the line number where the current document event ends.
@@ -766,7 +766,7 @@
          * @return The line number, or -1 if none is available.
          * @see #getColumnNumber
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">getLineNumber</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">getLineNumber</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Return the column number where the current document event ends.
@@ -792,7 +792,7 @@
          * @return The column number, or -1 if none is available.
          * @see #getLineNumber
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">getColumnNumber</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">getColumnNumber</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 
 }</span></span></span></span>
 
@@ -824,7 +824,7 @@
         <span class="bc">/*******************************************************************************
          * Create a new SAXException.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span> (<span class="sl">""</span>, <span class="k">cast</span>(<span class="i">Throwable</span>)<span class="k">null</span>)</span>;</span>
         }</span></span></span>
 
@@ -833,7 +833,7 @@
          *
          * @param message The error or warning message.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">message</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">message</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span> (<span class="i">message</span>, <span class="k">cast</span>(<span class="i">Throwable</span>)<span class="k">null</span>)</span>;</span>
         }</span></span></span>
 
@@ -846,7 +846,7 @@
          *
          * @param e The exception to be wrapped in a SAXException.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Exception</span></span> <span class="i">e</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Exception</span></span> <span class="i">e</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span> (<span class="sl">""</span>, <span class="i">e</span>)</span>;</span>
         }</span></span></span>
 
@@ -859,7 +859,7 @@
          * @param message The detail message.
          * @param e The exception to be wrapped in a SAXException.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">message</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Exception</span></span> <span class="i">e</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">message</span></span>, <span class="o "><span class="t Identifier"><span class="i">Exception</span></span> <span class="i">e</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span> (<span class="i">message</span>, <span class="i">e</span>)</span>;</span>
         }</span></span></span>
 
@@ -872,7 +872,7 @@
          *
          * @return The error or warning message.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">message</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">message</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e AndAnd"><span class="e Identity"><span class="e Identifier"><span class="i">msg</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span> &amp;&amp; <span class="e Identity"><span class="e Identifier"><span class="i">next</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">next</span></span>.<span class="e Identifier"><span class="i">msg</span></span>;</span>
                 }</span></span>
@@ -885,22 +885,22 @@
 }</span></span>
 <span class="bc">/*******************************************************************************
  *******************************************************************************/</span>
-<span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">SaxParser</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> : <span class="t BaseClass"><span class="t TemplateInstance"><span class="i">XMLReader</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span></span>, <span class="t BaseClass"><span class="t TemplateInstance"><span class="i">Locator</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span></span> <span class="d Compound">{
+<span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">SaxParser</span><span class="o ">(<span class="o "><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> : <span class="t BaseClass"><span class="t TemplateInstance"><span class="i">XMLReader</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span></span>, <span class="t BaseClass"><span class="t TemplateInstance"><span class="i">Locator</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span></span> <span class="d Compound">{
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">SaxHandler</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">saxHandler</span>;</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">ErrorHandler</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">errorHandler</span>;</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">EntityResolver</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">entityResolver</span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">SaxHandler</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">saxHandler</span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">ErrorHandler</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">errorHandler</span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">EntityResolver</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">entityResolver</span>;</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span>;</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">Attribute</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span><span class="t Array">[]</span> <span class="i">attributes</span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">Attribute</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span><span class="t Array">[]</span> <span class="i">attributes</span>;</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">attrTop</span> = <span class="e Int"><span class="n">0</span></span>;</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">hasStartElement</span> = <span class="e Bool"><span class="k">false</span></span>;</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">startElemName</span>;</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">PullParser</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">parser</span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">PullParser</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">parser</span>;</span>
 
         <span class="bc">/*******************************************************************************
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
-                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">attributes</span></span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">Attribute</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span><span class="t Array">[<span class="e Int"><span class="n">255</span></span>]</span></span></span>;</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">attributes</span></span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">Attribute</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span><span class="t Array">[<span class="e Int"><span class="n">255</span></span>]</span></span></span>;</span>
         }</span></span></span>
 
         <span class="lc">////////////////////////////////////////////////////////////////////</span>
@@ -962,7 +962,7 @@
          *            cannot determine its value at this time.
          * @see #setFeature
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">getFeature</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">getFeature</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">false</span></span>;</span>
         }</span></span></span>
 
@@ -989,7 +989,7 @@
          *            cannot set the requested value.
          * @see #getFeature
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setFeature</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">value</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setFeature</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">value</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
 
         }</span></span></span>
 
@@ -1018,7 +1018,7 @@
          *            cannot determine its value at this time.
          * @see #setProperty
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Object</span></span> <span class="i">getProperty</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Object</span></span> <span class="i">getProperty</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Null"><span class="k">null</span></span>;</span>
         }</span></span></span>
 
@@ -1047,7 +1047,7 @@
          *            XMLReader recognizes the property name but 
          *            cannot set the requested value.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setProperty</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Object</span></span> <span class="i">value</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setProperty</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>, <span class="o "><span class="t Identifier"><span class="i">Object</span></span> <span class="i">value</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
 
         }</span></span></span>
 
@@ -1067,7 +1067,7 @@
          * @param resolver The entity resolver.
          * @see #getEntityResolver
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setEntityResolver</span><span class="o Parameters">(<span class="o Parameter"><span class="t TemplateInstance"><span class="i">EntityResolver</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">resolver</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setEntityResolver</span><span class="o ">(<span class="o "><span class="t TemplateInstance"><span class="i">EntityResolver</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">resolver</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">entityResolver</span></span> = <span class="e Identifier"><span class="i">resolver</span></span></span>;</span>
         }</span></span></span>
 
@@ -1078,7 +1078,7 @@
          *         has been registered.
          * @see #setEntityResolver
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t TemplateInstance"><span class="i">EntityResolver</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">getEntityResolver</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t TemplateInstance"><span class="i">EntityResolver</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">getEntityResolver</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">entityResolver</span></span>;</span>
         }</span></span></span>
 
@@ -1096,7 +1096,7 @@
          * @param handler The content handler.
          * @see #getContentHandler
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setSaxHandler</span><span class="o Parameters">(<span class="o Parameter"><span class="t TemplateInstance"><span class="i">SaxHandler</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">handler</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setSaxHandler</span><span class="o ">(<span class="o "><span class="t TemplateInstance"><span class="i">SaxHandler</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">handler</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">saxHandler</span></span> = <span class="e Identifier"><span class="i">handler</span></span></span>;</span>
         }</span></span></span>
 
@@ -1107,7 +1107,7 @@
          *         has been registered.
          * @see #setContentHandler
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t TemplateInstance"><span class="i">SaxHandler</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">getSaxHandler</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t TemplateInstance"><span class="i">SaxHandler</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">getSaxHandler</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">saxHandler</span></span>;</span>
         }</span></span></span>
 
@@ -1127,7 +1127,7 @@
          * @param handler The error handler.
          * @see #getErrorHandler
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setErrorHandler</span><span class="o Parameters">(<span class="o Parameter"><span class="t TemplateInstance"><span class="i">ErrorHandler</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">handler</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setErrorHandler</span><span class="o ">(<span class="o "><span class="t TemplateInstance"><span class="i">ErrorHandler</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">handler</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">errorHandler</span></span> = <span class="e Identifier"><span class="i">handler</span></span></span>;</span>
         }</span></span></span>
 
@@ -1138,7 +1138,7 @@
          *         has been registered.
          * @see #setErrorHandler
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t TemplateInstance"><span class="i">ErrorHandler</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">getErrorHandler</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t TemplateInstance"><span class="i">ErrorHandler</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">getErrorHandler</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">errorHandler</span></span>;</span>
         }</span></span></span>
 
@@ -1186,7 +1186,7 @@
          * @see #setContentHandler
          * @see #setErrorHandler 
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">input</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">input</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">//TODO turn into a const(Ch)[] buffer</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">doParse</span></span>()</span>;</span>
         }</span></span></span>
@@ -1213,7 +1213,7 @@
          *            supplied by the application.
          * @see #parse(org.xml.sax.InputSource)
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parseUrl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">systemId</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parseUrl</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">systemId</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">//TODO turn url into a const(Ch)[] buffer</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">doParse</span></span>()</span>;</span>
         }</span></span></span>
@@ -1229,22 +1229,22 @@
          *            supplied by the application.
          * @see #parse(org.xml.sax.InputSource)
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
 	        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">this</span></span>.<span class="t Identifier"><span class="i">setContent</span></span>(<span class="i">content</span>);</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">doParse</span></span>()</span>;</span>
         }</span></span></span>
 
         <span class="bc">/*******************************************************************************
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">doParse</span></span>()</span>;</span>
         }</span></span></span>
 
         <span class="bc">/*******************************************************************************
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setContent</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setContent</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
 	        <span class="s If"><span class="k">if</span> (<span class="e Not">!<span class="e Identifier"><span class="i">parser</span></span></span>) <span class="s Scope"><span class="s Compound">{
-                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">parser</span></span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">PullParser</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span>(<span class="e Identifier"><span class="i">content</span></span>)</span></span>;</span>
+                        <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">parser</span></span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">PullParser</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span>(<span class="e Identifier"><span class="i">content</span></span>)</span></span>;</span>
 		}</span></span> <span class="k">else</span> <span class="s Scope"><span class="s Compound">{
 		        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">parser</span></span>.<span class="t Identifier"><span class="i">reset</span></span>(<span class="i">content</span>);</span></span>
 		}</span></span></span>
@@ -1252,7 +1252,7 @@
 
         <span class="bc">/*******************************************************************************
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">reset</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">reset</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">parser</span></span>.<span class="e Identifier"><span class="i">reset</span></span>()</span>;</span>
         }</span></span></span>
 
@@ -1260,7 +1260,7 @@
          *         The meat of the class.  Turn the pull parser's nodes into SAX
          *         events and send out to the SaxHandler.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">doParse</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">doParse</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">saxHandler</span></span>.<span class="e Identifier"><span class="i">setDocumentLocator</span></span>(<span class="k">this</span>)</span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">saxHandler</span></span>.<span class="e Identifier"><span class="i">startDocument</span></span>()</span>;</span>
                 <span class="s While"><span class="k">while</span> (<span class="e Bool"><span class="k">true</span></span>) <span class="s Scope"><span class="s Compound">{
@@ -1330,7 +1330,7 @@
          *         null if none is available.
          * @see #getSystemId
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">getPublicId</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">getPublicId</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Null"><span class="k">null</span></span>;</span>
         }</span></span></span>
 
@@ -1350,7 +1350,7 @@
          *         if none is available.
          * @see #getPublicId
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">getSystemId</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">getSystemId</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Null"><span class="k">null</span></span>;</span>  
         }</span></span></span>
 
@@ -1378,7 +1378,7 @@
          * @return The line number, or -1 if none is available.
          * @see #getColumnNumber
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">getLineNumber</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">getLineNumber</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Int"><span class="n">0</span></span>;</span>
         }</span></span></span>
 
@@ -1406,7 +1406,7 @@
          * @return The column number, or -1 if none is available.
          * @see #getLineNumber
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">getColumnNumber</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">getColumnNumber</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Int"><span class="n">0</span></span>;</span>
         }</span></span></span>
 
@@ -1433,7 +1433,7 @@
  * @version 2.0.1 (sax2r2)
  * @see org.xml.sax.helpers.XMLFilterImpl
  *******************************************************************************/</span>
-<span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">XMLFilter</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">XMLReader</span></span></span> <span class="d Compound">{
+<span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">XMLFilter</span><span class="o ">(<span class="o "><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">XMLReader</span></span></span> <span class="d Compound">{
 
         <span class="bc">/*******************************************************************************
          * Set the parent reader.
@@ -1444,7 +1444,7 @@
          *
          * @param parent The parent reader.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setParent</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">XMLReader</span></span> <span class="i">parent</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setParent</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">XMLReader</span></span> <span class="i">parent</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">//do nothing</span>
         }</span></span></span>
 
@@ -1458,7 +1458,7 @@
          *
          * @return The parent filter, or null if none has been set.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">XMLReader</span></span> <span class="i">getParent</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">XMLReader</span></span> <span class="i">getParent</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Null"><span class="k">null</span></span>;</span>
         }</span></span></span>
 
@@ -1483,7 +1483,7 @@
  * @see org.xml.sax.ContentHandler
  * @see org.xml.sax.ErrorHandler
  *******************************************************************************/</span>
-<span class="d Protection"><span class="k">public</span></span> <span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">XMLFilterImpl</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">SaxHandler</span></span></span>, <span class="t BaseClass"><span class="t Identifier"><span class="i">XMLFilter</span></span></span>, <span class="t BaseClass"><span class="t Identifier"><span class="i">EntityResolver</span></span></span>, <span class="t BaseClass"><span class="t Identifier"><span class="i">ErrorHandler</span></span></span> <span class="d Compound">{
+<span class="d Protection"><span class="k">public</span></span> <span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">XMLFilterImpl</span><span class="o ">(<span class="o "><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">SaxHandler</span></span></span>, <span class="t BaseClass"><span class="t Identifier"><span class="i">XMLFilter</span></span></span>, <span class="t BaseClass"><span class="t Identifier"><span class="i">EntityResolver</span></span></span>, <span class="t BaseClass"><span class="t Identifier"><span class="i">ErrorHandler</span></span></span> <span class="d Compound">{
 
         <span class="lc">////////////////////////////////////////////////////////////////////</span>
         <span class="lc">// Constructors.</span>
@@ -1500,7 +1500,7 @@
          * @see org.xml.sax.XMLReader#setProperty
          * @see #setParent
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
 
         }</span></span></span>
 
@@ -1510,7 +1510,7 @@
          * @see #setParent
          * @see #getParent
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">XMLReader</span></span> <span class="i">parent</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">XMLReader</span></span> <span class="i">parent</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">setParent</span></span>(<span class="i">parent</span>);</span></span>
         }</span></span></span>
 
@@ -1530,7 +1530,7 @@
          * @param parent The parent XML reader.
          * @see #getParent
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setParent</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">XMLReader</span></span> <span class="i">parent</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setParent</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">XMLReader</span></span> <span class="i">parent</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">parent</span></span> = <span class="e Identifier"><span class="i">parent</span></span></span>;</span>
         }</span></span></span>
 
@@ -1540,7 +1540,7 @@
          * @return The parent XML reader, or null if none is set.
          * @see #setParent
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">XMLReader</span></span> <span class="i">getParent</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">XMLReader</span></span> <span class="i">getParent</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">parent</span></span>;</span>
         }</span></span></span>
 
@@ -1560,7 +1560,7 @@
          *            parent recognizes the feature name but 
          *            cannot set the requested value.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setFeature</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">value</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setFeature</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">value</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">parent</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">parent</span></span>.<span class="e Identifier"><span class="i">setFeature</span></span>(<span class="i">name</span>, <span class="i">value</span>)</span>;</span>
                 }</span></span>
@@ -1583,7 +1583,7 @@
          *            parent recognizes the feature name but 
          *            cannot determine its value at this time.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">getFeature</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">getFeature</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">parent</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">parent</span></span>.<span class="e Identifier"><span class="i">getFeature</span></span>(<span class="i">name</span>)</span>;</span>
                 }</span></span>
@@ -1606,7 +1606,7 @@
          *            parent recognizes the property name but 
          *            cannot set the requested value.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setProperty</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Object</span></span> <span class="i">value</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setProperty</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>, <span class="o "><span class="t Identifier"><span class="i">Object</span></span> <span class="i">value</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">parent</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">parent</span></span>.<span class="e Identifier"><span class="i">setProperty</span></span>(<span class="i">name</span>, <span class="i">value</span>)</span>;</span>
                 }</span></span>
@@ -1627,7 +1627,7 @@
          *            parent recognizes the property name but 
          *            cannot determine its value at this time.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Object</span></span> <span class="i">getProperty</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Object</span></span> <span class="i">getProperty</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">parent</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">parent</span></span>.<span class="e Identifier"><span class="i">getProperty</span></span>(<span class="i">name</span>)</span>;</span>
                 }</span></span>
@@ -1642,7 +1642,7 @@
          *
          * @param resolver The new entity resolver.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setEntityResolver</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">EntityResolver</span></span> <span class="i">resolver</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setEntityResolver</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">EntityResolver</span></span> <span class="i">resolver</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">entityResolver</span></span> = <span class="e Identifier"><span class="i">resolver</span></span></span>;</span>
         }</span></span></span>
 
@@ -1651,7 +1651,7 @@
          *
          * @return The current entity resolver, or null if none was set.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">EntityResolver</span></span> <span class="i">getEntityResolver</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">EntityResolver</span></span> <span class="i">getEntityResolver</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">entityResolver</span></span>;</span>
         }</span></span></span>
 
@@ -1660,7 +1660,7 @@
          *
          * @param handler the new content handler
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setSaxHandler</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">SaxHandler</span></span> <span class="i">handler</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setSaxHandler</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">SaxHandler</span></span> <span class="i">handler</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">saxHandler</span></span> = <span class="e Identifier"><span class="i">handler</span></span></span>;</span>
         }</span></span></span>
 
@@ -1669,7 +1669,7 @@
          *
          * @return The current content handler, or null if none was set.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SaxHandler</span></span> <span class="i">getSaxHandler</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SaxHandler</span></span> <span class="i">getSaxHandler</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">saxHandler</span></span>;</span>
         }</span></span></span>
 
@@ -1678,7 +1678,7 @@
          *
          * @param handler the new error handler
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setErrorHandler</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ErrorHandler</span></span> <span class="i">handler</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setErrorHandler</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ErrorHandler</span></span> <span class="i">handler</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">errorHandler</span></span> = <span class="e Identifier"><span class="i">handler</span></span></span>;</span>
         }</span></span></span>
 
@@ -1687,7 +1687,7 @@
          *
          * @return The current error handler, or null if none was set.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">ErrorHandler</span></span> <span class="i">getErrorHandler</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">ErrorHandler</span></span> <span class="i">getErrorHandler</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">errorHandler</span></span>;</span>
         }</span></span></span>
 
@@ -1701,7 +1701,7 @@
          *            possibly from a byte stream or character stream
          *            supplied by the application.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">input</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">input</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">setupParse</span></span>()</span>;</span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">parent</span></span>.<span class="t Identifier"><span class="i">parse</span></span>(<span class="i">input</span>);</span></span>
         }</span></span></span>
@@ -1716,14 +1716,14 @@
          *            possibly from a byte stream or character stream
          *            supplied by the application.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">//TODO FIXME - create a buffer of this content as the input stream, and then parse.</span>
                 <span class="lc">//setupParse();</span>
                 <span class="lc">//parent.parse(input);</span>
         }</span></span></span>
 
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{}</span></span></span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setContent</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{}</span></span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{}</span></span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setContent</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{}</span></span></span>
 
 
         <span class="bc">/*******************************************************************************
@@ -1736,7 +1736,7 @@
          *            possibly from a byte stream or character stream
          *            supplied by the application.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parseUrl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">systemId</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parseUrl</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">systemId</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">//TODO FIXME</span>
                 <span class="lc">//parse(new InputSource(systemId));</span>
         }</span></span></span>
@@ -1756,7 +1756,7 @@
          *            I/O-related exception while obtaining the
          *            new InputSource.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">resolveEntity</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">publicId</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">systemId</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">resolveEntity</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">publicId</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">systemId</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">entityResolver</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">entityResolver</span></span>.<span class="e Identifier"><span class="i">resolveEntity</span></span>(<span class="i">publicId</span>, <span class="i">systemId</span>)</span>;</span>
                 }</span></span>
@@ -1774,7 +1774,7 @@
          *
          * @param locator The document locator.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setDocumentLocator</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Locator</span></span> <span class="i">locator</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setDocumentLocator</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Locator</span></span> <span class="i">locator</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">locator</span></span> = <span class="e Identifier"><span class="i">locator</span></span></span>;</span>
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">saxHandler</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">saxHandler</span></span>.<span class="t Identifier"><span class="i">setDocumentLocator</span></span>(<span class="i">locator</span>);</span></span>
@@ -1788,7 +1788,7 @@
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">startDocument</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">startDocument</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">saxHandler</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">saxHandler</span></span>.<span class="e Identifier"><span class="i">startDocument</span></span>()</span>;</span>
                 }</span></span></span>
@@ -1801,7 +1801,7 @@
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">endDocument</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">endDocument</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">saxHandler</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">saxHandler</span></span>.<span class="e Identifier"><span class="i">endDocument</span></span>()</span>;</span>
                 }</span></span></span>
@@ -1816,7 +1816,7 @@
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">startPrefixMapping</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">prefix</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">uri</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">startPrefixMapping</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">prefix</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">uri</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">saxHandler</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">saxHandler</span></span>.<span class="e Identifier"><span class="i">startPrefixMapping</span></span>(<span class="i">prefix</span>, <span class="i">uri</span>)</span>;</span>
                 }</span></span></span>
@@ -1830,7 +1830,7 @@
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">endPrefixMapping</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">prefix</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">endPrefixMapping</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">prefix</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">saxHandler</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">saxHandler</span></span>.<span class="t Identifier"><span class="i">endPrefixMapping</span></span>(<span class="i">prefix</span>);</span></span>
                 }</span></span></span>
@@ -1848,7 +1848,7 @@
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">startElement</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">uri</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">localName</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">qName</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Attribute</span></span><span class="t Array">[]</span> <span class="i">atts</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">startElement</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">uri</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">localName</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">qName</span></span>, <span class="o "><span class="t Identifier"><span class="i">Attribute</span></span><span class="t Array">[]</span> <span class="i">atts</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">saxHandler</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">saxHandler</span></span>.<span class="e Identifier"><span class="i">startElement</span></span>(<span class="i">uri</span>, <span class="i">localName</span>, <span class="i">qName</span>, <span class="i">atts</span>)</span>;</span>
                 }</span></span></span>    
@@ -1865,7 +1865,7 @@
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">endElement</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">uri</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">localName</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">qName</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">endElement</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">uri</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">localName</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">qName</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">saxHandler</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">saxHandler</span></span>.<span class="e Identifier"><span class="i">endElement</span></span>(<span class="i">uri</span>, <span class="i">localName</span>, <span class="i">qName</span>)</span>;</span>
                 }</span></span></span>
@@ -1879,7 +1879,7 @@
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">characters</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ch</span></span> <span class="i">ch</span><span class="t Array">[]</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">characters</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ch</span></span> <span class="i">ch</span><span class="t Array">[]</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">saxHandler</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">saxHandler</span></span>.<span class="t Identifier"><span class="i">characters</span></span>(<span class="i">ch</span>);</span></span>
                 }</span></span></span>
@@ -1895,7 +1895,7 @@
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">ignorableWhitespace</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ch</span></span> <span class="i">ch</span><span class="t Array">[]</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">ignorableWhitespace</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ch</span></span> <span class="i">ch</span><span class="t Array">[]</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">saxHandler</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">saxHandler</span></span>.<span class="t Identifier"><span class="i">ignorableWhitespace</span></span>(<span class="i">ch</span>);</span></span>
                 }</span></span></span>
@@ -1910,7 +1910,7 @@
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">processingInstruction</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">target</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">data</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">processingInstruction</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">target</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">data</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">saxHandler</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">saxHandler</span></span>.<span class="e Identifier"><span class="i">processingInstruction</span></span>(<span class="i">target</span>, <span class="i">data</span>)</span>;</span>
                 }</span></span></span>
@@ -1924,7 +1924,7 @@
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">skippedEntity</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">skippedEntity</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">saxHandler</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">saxHandler</span></span>.<span class="t Identifier"><span class="i">skippedEntity</span></span>(<span class="i">name</span>);</span></span>
                 }</span></span></span>
@@ -1941,7 +1941,7 @@
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">warning</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">SAXException</span></span> <span class="i">e</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">warning</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">SAXException</span></span> <span class="i">e</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">errorHandler</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">errorHandler</span></span>.<span class="t Identifier"><span class="i">warning</span></span>(<span class="i">e</span>);</span></span>
                 }</span></span></span>
@@ -1955,7 +1955,7 @@
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">error</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">SAXException</span></span> <span class="i">e</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">error</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">SAXException</span></span> <span class="i">e</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">errorHandler</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">errorHandler</span></span>.<span class="t Identifier"><span class="i">error</span></span>(<span class="i">e</span>);</span></span>
                 }</span></span></span>
@@ -1969,7 +1969,7 @@
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fatalError</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">SAXException</span></span> <span class="i">e</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fatalError</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">SAXException</span></span> <span class="i">e</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">errorHandler</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">errorHandler</span></span>.<span class="t Identifier"><span class="i">fatalError</span></span>(<span class="i">e</span>);</span></span>
                 }</span></span></span>
@@ -1986,7 +1986,7 @@
          * non-null, and re-register the filter for all of the 
          * events.&lt;/p&gt;
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setupParse</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setupParse</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">parent</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>) <span class="s Scope"><span class="s Compound">{
                         <span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Exception</span></span>(<span class="e String"><span class="sl">"No parent for filter"</span></span>)</span>;</span>
                 }</span></span></span>
@@ -2048,7 +2048,7 @@
  * @see org.xml.sax.helpers.ParserAdapter
  * @see org.xml.sax.helpers.XMLReaderAdapter 
  *******************************************************************************/</span>
-<span class="d Protection"><span class="k">public</span></span> <span class="d Template"><span class="d Compound"><span class="d Interface"><span class="k">interface</span> <span class="i">XMLReader</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> <span class="d Compound">{
+<span class="d Protection"><span class="k">public</span></span> <span class="d Template"><span class="d Compound"><span class="d Interface"><span class="k">interface</span> <span class="i">XMLReader</span><span class="o ">(<span class="o "><span class="i">Ch</span> = <span class="t Integral"><span class="k">char</span></span></span>)</span> <span class="d Compound">{
 
         <span class="lc">////////////////////////////////////////////////////////////////////</span>
         <span class="lc">// Configuration.</span>
@@ -2109,7 +2109,7 @@
          *            cannot determine its value at this time.
          * @see #setFeature
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">getFeature</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">getFeature</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Set the value of a feature flag.
@@ -2134,7 +2134,7 @@
          *            cannot set the requested value.
          * @see #getFeature
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setFeature</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">value</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setFeature</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">value</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Look up the value of a property.
@@ -2161,7 +2161,7 @@
          *            cannot determine its value at this time.
          * @see #setProperty
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Object</span></span> <span class="i">getProperty</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Object</span></span> <span class="i">getProperty</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Set the value of a property.
@@ -2188,7 +2188,7 @@
          *            XMLReader recognizes the property name but 
          *            cannot set the requested value.
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setProperty</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Object</span></span> <span class="i">value</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setProperty</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>, <span class="o "><span class="t Identifier"><span class="i">Object</span></span> <span class="i">value</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="lc">////////////////////////////////////////////////////////////////////</span>
         <span class="lc">// Event handlers.</span>
@@ -2206,7 +2206,7 @@
          * @param resolver The entity resolver.
          * @see #getEntityResolver
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setEntityResolver</span><span class="o Parameters">(<span class="o Parameter"><span class="t TemplateInstance"><span class="i">EntityResolver</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">resolver</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setEntityResolver</span><span class="o ">(<span class="o "><span class="t TemplateInstance"><span class="i">EntityResolver</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">resolver</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Return the current entity resolver.
@@ -2215,7 +2215,7 @@
          *         has been registered.
          * @see #setEntityResolver
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t TemplateInstance"><span class="i">EntityResolver</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">getEntityResolver</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t TemplateInstance"><span class="i">EntityResolver</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">getEntityResolver</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Allow an application to register a content event handler.
@@ -2231,7 +2231,7 @@
          * @param handler The content handler.
          * @see #getContentHandler
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setSaxHandler</span><span class="o Parameters">(<span class="o Parameter"><span class="t TemplateInstance"><span class="i">SaxHandler</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">handler</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setSaxHandler</span><span class="o ">(<span class="o "><span class="t TemplateInstance"><span class="i">SaxHandler</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">handler</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Return the current content handler.
@@ -2240,7 +2240,7 @@
          *         has been registered.
          * @see #setContentHandler
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t TemplateInstance"><span class="i">SaxHandler</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">getSaxHandler</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t TemplateInstance"><span class="i">SaxHandler</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">getSaxHandler</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Allow an application to register an error event handler.
@@ -2258,7 +2258,7 @@
          * @param handler The error handler.
          * @see #getErrorHandler
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setErrorHandler</span><span class="o Parameters">(<span class="o Parameter"><span class="t TemplateInstance"><span class="i">ErrorHandler</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">handler</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setErrorHandler</span><span class="o ">(<span class="o "><span class="t TemplateInstance"><span class="i">ErrorHandler</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">handler</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Return the current error handler.
@@ -2267,7 +2267,7 @@
          *         has been registered.
          * @see #setErrorHandler
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t TemplateInstance"><span class="i">ErrorHandler</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">getErrorHandler</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t TemplateInstance"><span class="i">ErrorHandler</span>!<span class="o ">(<span class="t Identifier"><span class="i">Ch</span></span>)</span></span> <span class="i">getErrorHandler</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 
         <span class="lc">////////////////////////////////////////////////////////////////////</span>
         <span class="lc">// Parsing.</span>
@@ -2313,7 +2313,7 @@
          * @see #setContentHandler
          * @see #setErrorHandler 
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">input</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">input</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Parse an XML document from a system identifier (URI).
@@ -2337,7 +2337,7 @@
          *            supplied by the application.
          * @see #parse(org.xml.sax.InputSource)
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parseUrl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">systemId</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parseUrl</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">systemId</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          * Parse an XML document from a character array.
@@ -2350,15 +2350,15 @@
          *            supplied by the application.
          * @see #parse(org.xml.sax.InputSource)
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">parse</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/*******************************************************************************
          *******************************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setContent</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setContent</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Ch</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span><span class="s FuncBody">;</span></span>
 
 }</span></span></span></span></span>
 

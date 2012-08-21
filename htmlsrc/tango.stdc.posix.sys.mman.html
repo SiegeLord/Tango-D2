@@ -74,11 +74,11 @@ POSIX_MADV_DONTNEED
 <span class="d Compound">{
 	<span class="d Enum"><span class="k">enum</span>
 	{
-		<span class="d EnumMember"><span class="t Identifier"><span class="i">POSIX_MADV_NORMAL</span></span>     = <span class="e Int"><span class="n">0</span></span></span>,
-	    <span class="d EnumMember"><span class="t Identifier"><span class="i">POSIX_MADV_RANDOM</span></span>     = <span class="e Int"><span class="n">1</span></span></span>,
-	    <span class="d EnumMember"><span class="t Identifier"><span class="i">POSIX_MADV_SEQUENTIAL</span></span> = <span class="e Int"><span class="n">2</span></span></span>,
-	    <span class="d EnumMember"><span class="t Identifier"><span class="i">POSIX_MADV_WILLNEED</span></span>   = <span class="e Int"><span class="n">3</span></span></span>,
-	    <span class="d EnumMember"><span class="t Identifier"><span class="i">POSIX_MADV_DONTNEED</span></span>   = <span class="e Int"><span class="n">4</span></span></span>
+		<span class="d EnumMember"><span class="i">POSIX_MADV_NORMAL</span>     = <span class="e Int"><span class="n">0</span></span></span>,
+	    <span class="d EnumMember"><span class="i">POSIX_MADV_RANDOM</span>     = <span class="e Int"><span class="n">1</span></span></span>,
+	    <span class="d EnumMember"><span class="i">POSIX_MADV_SEQUENTIAL</span> = <span class="e Int"><span class="n">2</span></span></span>,
+	    <span class="d EnumMember"><span class="i">POSIX_MADV_WILLNEED</span>   = <span class="e Int"><span class="n">3</span></span></span>,
+	    <span class="d EnumMember"><span class="i">POSIX_MADV_DONTNEED</span>   = <span class="e Int"><span class="n">4</span></span></span>
 	}</span>
 }</span></span></span></span></span>
 
@@ -117,10 +117,10 @@ PROT_NONE
 <span class="d Compound">{
 	<span class="d Enum"><span class="k">enum</span>
 	{
-		<span class="d EnumMember"><span class="t Identifier"><span class="i">PROT_NONE</span></span>     = <span class="e Int"><span class="n">0x00</span></span></span>,
-	    <span class="d EnumMember"><span class="t Identifier"><span class="i">PROT_READ</span></span>     = <span class="e Int"><span class="n">0x01</span></span></span>,
-	    <span class="d EnumMember"><span class="t Identifier"><span class="i">PROT_WRITE</span></span>    = <span class="e Int"><span class="n">0x02</span></span></span>,
-	    <span class="d EnumMember"><span class="t Identifier"><span class="i">PROT_EXEC</span></span>     = <span class="e Int"><span class="n">0x04</span></span></span>
+		<span class="d EnumMember"><span class="i">PROT_NONE</span>     = <span class="e Int"><span class="n">0x00</span></span></span>,
+	    <span class="d EnumMember"><span class="i">PROT_READ</span>     = <span class="e Int"><span class="n">0x01</span></span></span>,
+	    <span class="d EnumMember"><span class="i">PROT_WRITE</span>    = <span class="e Int"><span class="n">0x02</span></span></span>,
+	    <span class="d EnumMember"><span class="i">PROT_EXEC</span>     = <span class="e Int"><span class="n">0x04</span></span></span>
 	}</span>
 }</span></span></span></span></span>
 
@@ -135,41 +135,41 @@ int munmap(void*, size_t);
 <span class="d Version"><span class="k">version</span>( <span class="i">linux</span> )
 <span class="d Compound">{
     <span class="lc">//void* mmap(void*, size_t, int, int, int, off_t);</span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">munmap</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">munmap</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
 
   <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Identifier"><span class="i">__USE_LARGEFILE64</span></span> )
   <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">mmap64</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">off_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">mmap64</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">off_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">mmap64</span></span> <span class="i">mmap</span>;</span></span>
   }</span>
   <span class="k">else</span>
   <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">mmap</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">off_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">mmap</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">off_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
   }</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">mmap</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">off_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">munmap</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">mmap</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">off_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">munmap</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">mmap</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">off_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">munmap</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">mmap</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">off_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">munmap</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">munmap</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">munmap</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
 
   <span class="d Version"><span class="k">version</span>(<span class="i">X86_64</span>)
-	<span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">mmap</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">off_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+	<span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">mmap</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">off_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
   <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Identifier"><span class="i">__USE_LARGEFILE64</span></span> )
   <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">mmap64</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">off_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">mmap64</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">off_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">mmap64</span></span> <span class="i">mmap</span>;</span></span>
   }</span>
   <span class="k">else</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">mmap</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">off_t</span></span></span>)</span><span class="s FuncBody">;</span></span></span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">mmap</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">off_t</span></span></span>)</span><span class="s FuncBody">;</span></span></span></span>
 }</span></span></span></span></span>
 
 <span class="lc">//</span>
@@ -199,12 +199,12 @@ int msync(void*, size_t, int); (MF|SIO)
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MS_ASYNC</span></span>        = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MS_SYNC</span></span>         = <span class="e Int"><span class="n">4</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MS_INVALIDATE</span></span>   = <span class="e Int"><span class="n">2</span></span></span>
+        <span class="d EnumMember"><span class="i">MS_ASYNC</span>        = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">MS_SYNC</span>         = <span class="e Int"><span class="n">4</span></span></span>,
+        <span class="d EnumMember"><span class="i">MS_INVALIDATE</span>   = <span class="e Int"><span class="n">2</span></span></span>
     }</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">msync</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">msync</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> )
 <span class="d Compound">{
@@ -219,7 +219,7 @@ int msync(void*, size_t, int); (MF|SIO)
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">MS_INVALIDATE</span> = <span class="e Int"><span class="n">0x0002</span></span>;</span>
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">MS_SYNC</span>       = <span class="e Int"><span class="n">0x0010</span></span>;</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">msync</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">msync</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
@@ -234,7 +234,7 @@ int msync(void*, size_t, int); (MF|SIO)
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">MS_ASYNC</span>      = <span class="e Int"><span class="n">0x0001</span></span>;</span>
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">MS_INVALIDATE</span> = <span class="e Int"><span class="n">0x0002</span></span>;</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">msync</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">msync</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span>
 <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
@@ -247,12 +247,12 @@ int msync(void*, size_t, int); (MF|SIO)
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MS_ASYNC</span></span>        = <span class="e Int"><span class="n">0x1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MS_SYNC</span></span>         = <span class="e Int"><span class="n">0x4</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MS_INVALIDATE</span></span>   = <span class="e Int"><span class="n">0x2</span></span></span>
+        <span class="d EnumMember"><span class="i">MS_ASYNC</span>        = <span class="e Int"><span class="n">0x1</span></span></span>,
+        <span class="d EnumMember"><span class="i">MS_SYNC</span>         = <span class="e Int"><span class="n">0x4</span></span></span>,
+        <span class="d EnumMember"><span class="i">MS_INVALIDATE</span>   = <span class="e Int"><span class="n">0x2</span></span></span>
     }</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">msync</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">msync</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span>
 
 <span class="lc">//</span>
@@ -271,8 +271,8 @@ int munlockall();
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">MCL_CURRENT</span>   = <span class="e Int"><span class="n">1</span></span>;</span>
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">MCL_FUTURE</span>    = <span class="e Int"><span class="n">2</span></span>;</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlockall</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlockall</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlockall</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlockall</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> )
@@ -280,24 +280,24 @@ int munlockall();
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">MCL_CURRENT</span>   = <span class="e Int"><span class="n">0x0001</span></span>;</span>
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">MCL_FUTURE</span>    = <span class="e Int"><span class="n">0x0002</span></span>;</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlockall</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlockall</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlockall</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlockall</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">MCL_CURRENT</span>   = <span class="e Int"><span class="n">0x0001</span></span>;</span>
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">MCL_FUTURE</span>    = <span class="e Int"><span class="n">0x0002</span></span>;</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlockall</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlockall</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlockall</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlockall</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
 	<span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">MCL_CURRENT</span>   = <span class="e Int"><span class="n">0x0001</span></span>;</span>
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">MCL_FUTURE</span>    = <span class="e Int"><span class="n">0x0002</span></span>;</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlockall</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlockall</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlockall</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlockall</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span></span>
 
 <span class="lc">//</span>
@@ -310,23 +310,23 @@ int munlock(in void*, size_t);
 
 <span class="d Version"><span class="k">version</span>( <span class="i">linux</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlock</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlock</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlock</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlock</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlock</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlock</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlock</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlock</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlock</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlock</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlock</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlock</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlock</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlock</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mlock</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">munlock</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span></span>
 
 <span class="lc">//</span>
@@ -338,19 +338,19 @@ int mprotect(void*, size_t, int);
 
 <span class="d Version"><span class="k">version</span>( <span class="i">linux</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mprotect</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mprotect</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mprotect</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mprotect</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mprotect</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mprotect</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mprotect</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">mprotect</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span></span>
 
 <span class="lc">//</span>
@@ -363,23 +363,23 @@ int shm_unlink(in char*);
 
 <span class="d Version"><span class="k">version</span>( <span class="i">linux</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_open</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_unlink</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_open</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_unlink</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_open</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_unlink</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_open</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_unlink</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_open</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_unlink</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_open</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_unlink</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_open</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_unlink</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_open</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">mode_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">shm_unlink</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span></span></span></span>
 
 <span class="lc">//</span>

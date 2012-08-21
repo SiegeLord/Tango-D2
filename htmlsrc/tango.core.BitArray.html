@@ -60,16 +60,16 @@
             temp[pos] = val;
         return temp;
     }*/</span>
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">_len</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span><span class="t Pointer">*</span> <span class="i">_ptr</span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">_len</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span><span class="t Pointer">*</span> <span class="i">_ptr</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">len</span></span> = <span class="e Identifier"><span class="i">_len</span></span></span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">ptr</span></span> = <span class="e Identifier"><span class="i">_ptr</span></span></span>;</span>
     }</span></span></span>
 
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span><span class="t Array">[]</span> <span class="i">bits</span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">bool</span></span><span class="t Array">[]</span> <span class="i">bits</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">length</span></span> = <span class="e Identifier"><span class="i">bits</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span>
-        <span class="s Foreach"><span class="k">foreach</span>( <span class="o Parameters"><span class="o Parameter"><span class="i">pos</span></span>, <span class="o Parameter"><span class="i">val</span></span></span>; <span class="e Identifier"><span class="i">bits</span></span> )
+        <span class="s Foreach"><span class="k">foreach</span>( <span class="o "><span class="o "><span class="i">pos</span></span>, <span class="o "><span class="i">val</span></span></span>; <span class="e Identifier"><span class="i">bits</span></span> )
             <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e This"><span class="k">this</span></span>[<span class="e Identifier"><span class="i">pos</span></span>]</span> = <span class="e Identifier"><span class="i">val</span></span></span>;</span></span></span>
     }</span></span></span>
 
@@ -79,7 +79,7 @@
      * Returns:
      *  The number of bits in this array.
      */</span>
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">length</span><span class="o Parameters">()</span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">length</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">len</span></span>;</span>
     }</span></span></span>
@@ -92,7 +92,7 @@
      * Params:
      *  newlen = The number of bits this array should contain.
      */</span>
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">length</span><span class="o Parameters">(<span class="o Parameter"><span class="k">const</span> <span class="t Identifier"><span class="i">size_t</span></span> <span class="i">newlen</span></span> )</span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">length</span><span class="o ">(<span class="o "><span class="k">const</span> <span class="t Identifier"><span class="i">size_t</span></span> <span class="i">newlen</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">newlen</span></span> != <span class="e Identifier"><span class="i">len</span></span></span> )
         <span class="s Scope"><span class="s Compound">{
@@ -123,7 +123,7 @@
      * Returns:
      *  The size a uint array would have to be to store this array.
      */</span>
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">dim</span><span class="o Parameters">()</span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">dim</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Div"><span class="e Paren">(<span class="e Plus"><span class="e Identifier"><span class="i">len</span></span> + <span class="e Int"><span class="n">31</span></span></span>)</span> / <span class="e Int"><span class="n">32</span></span></span>;</span>
     }</span></span></span>
@@ -135,7 +135,7 @@
      * Returns:
      *  A duplicate of this array.
      */</span>
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">dup</span><span class="o Parameters">()</span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">dup</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">ba</span>;</span></span>
 
@@ -180,10 +180,10 @@
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">ptr</span></span> = <span class="e Identifier"><span class="i">ptr</span></span></span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">len</span></span> = <span class="e Identifier"><span class="i">len</span></span></span>;</span>
     }</span></span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">opAssign</span><span class="o Parameters">( <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span><span class="t Array">[]</span> <span class="i">bits</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">opAssign</span><span class="o ">( <span class="o "><span class="t Integral"><span class="k">bool</span></span><span class="t Array">[]</span> <span class="i">bits</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">length</span></span> = <span class="e Identifier"><span class="i">bits</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span>
-        <span class="s Foreach"><span class="k">foreach</span>( <span class="o Parameters"><span class="o Parameter"><span class="i">i</span></span>, <span class="o Parameter"><span class="i">b</span></span></span>; <span class="e Identifier"><span class="i">bits</span></span> )
+        <span class="s Foreach"><span class="k">foreach</span>( <span class="o "><span class="o "><span class="i">i</span></span>, <span class="o "><span class="i">b</span></span></span>; <span class="e Identifier"><span class="i">bits</span></span> )
         <span class="s Scope"><span class="s Compound">{
             <span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Paren">(<span class="e This"><span class="k">this</span></span>)</span>[<span class="e Identifier"><span class="i">i</span></span>]</span> = <span class="e Identifier"><span class="i">b</span></span></span>;</span>
         }</span></span></span>
@@ -209,7 +209,7 @@
      *  assert(ba2[0] == false);
      *  --------------------
      */</span>
-     <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opSliceAssign</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span>)</span>
+     <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opSliceAssign</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span>)</span>
      <span class="s FuncBody"><span class="k">in</span>
      <span class="s Compound">{
          <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">len</span></span> == <span class="e Identifier"><span class="i">len</span></span></span>)</span>;</span>
@@ -235,7 +235,7 @@
      *  target  = The array to map.
      *  numbits = The number of bits to map in target.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">init</span><span class="o Parameters">( <span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">target</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">numbits</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">init</span><span class="o ">( <span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">target</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">numbits</span></span> )</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Rel"><span class="e Identifier"><span class="i">numbits</span></span> &lt;= <span class="e Mul"><span class="e Identifier"><span class="i">target</span></span>.<span class="e Identifier"><span class="i">length</span></span> * <span class="e Int"><span class="n">8</span></span></span></span> )</span>;</span>
@@ -288,7 +288,7 @@
      * Returns:
      *  A shallow copy of this array.
      */</span>
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">reverse</span><span class="o Parameters">()</span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">reverse</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="k">out</span>( <span class="i">result</span> )
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Identifier"><span class="i">result</span></span> == <span class="e This"><span class="k">this</span></span></span> )</span>;</span>
@@ -336,7 +336,7 @@
      * Returns:
      *  A shallow copy of this array.
      */</span>
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">sort</span><span class="o Parameters">()</span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">sort</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="k">out</span>( <span class="i">result</span> )
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Identifier"><span class="i">result</span></span> == <span class="e This"><span class="k">this</span></span></span> )</span>;</span>
@@ -404,7 +404,7 @@
      * Params:
      *  dg = The supplied code as a delegate.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span><span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">bool</span></span></span>)</span></span> <span class="i">dg</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span><span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">bool</span></span></span>)</span></span> <span class="i">dg</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">result</span>;</span></span>
 
@@ -421,7 +421,7 @@
 
 
     <span class="bc">/** ditto */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span><span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">bool</span></span></span>)</span></span> <span class="i">dg</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span><span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">size_t</span></span></span>, <span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">bool</span></span></span>)</span></span> <span class="i">dg</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">result</span>;</span></span>
 
@@ -444,7 +444,7 @@
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">a</span> = <span class="e ArrayInit">[<span class="e Int"><span class="n">1</span></span>,<span class="e Int"><span class="n">0</span></span>,<span class="e Int"><span class="n">1</span></span>]</span>;</span></span>
 
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>;</span></span>
-        <span class="s Foreach"><span class="k">foreach</span>( <span class="o Parameters"><span class="o Parameter"><span class="i">b</span></span></span>; <span class="e Identifier"><span class="i">a</span></span> )
+        <span class="s Foreach"><span class="k">foreach</span>( <span class="o "><span class="o "><span class="i">b</span></span></span>; <span class="e Identifier"><span class="i">a</span></span> )
         <span class="s Scope"><span class="s Compound">{
             <span class="s Switch"><span class="k">switch</span>( <span class="e Identifier"><span class="i">i</span></span> )
             <span class="s Scope"><span class="s Compound">{
@@ -456,7 +456,7 @@
             <span class="s Expression"><span class="e PostIncr"><span class="e Identifier"><span class="i">i</span></span>++</span>;</span>
         }</span></span></span>
 
-        <span class="s Foreach"><span class="k">foreach</span>( <span class="o Parameters"><span class="o Parameter"><span class="i">j</span></span>, <span class="o Parameter"><span class="i">b</span></span></span>; <span class="e Identifier"><span class="i">a</span></span> )
+        <span class="s Foreach"><span class="k">foreach</span>( <span class="o "><span class="o "><span class="i">j</span></span>, <span class="o "><span class="i">b</span></span></span>; <span class="e Identifier"><span class="i">a</span></span> )
         <span class="s Scope"><span class="s Compound">{
             <span class="s Switch"><span class="k">switch</span>( <span class="e Identifier"><span class="i">j</span></span> )
             <span class="s Scope"><span class="s Compound">{
@@ -480,7 +480,7 @@
      * Returns:
      *  false if not equal and non-zero otherwise.
      */</span>
-    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">opEquals</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">BitArray</span></span>)</span> <span class="i">rhs</span></span>)</span>
+    <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">opEquals</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">BitArray</span></span>)</span> <span class="i">rhs</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">length</span></span>()</span> != <span class="e Call"><span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">length</span></span>()</span></span> )
             <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Int"><span class="n">0</span></span>;</span></span></span> <span class="lc">// not equal</span>
@@ -528,13 +528,13 @@
      *  zero if the arrays are equavalent, and a value greater than zero if
      *  this array sorts after the supplied array.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opCmp</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opCmp</span><span class="o ">( <span class="o "><span class="k">const</span> <span class="k">ref</span> <span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span> <span class="k">const</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">len</span> = <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span></span>
         <span class="s If"><span class="k">if</span>( <span class="e Rel"><span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">length</span></span> &lt; <span class="e Identifier"><span class="i">len</span></span></span> )
             <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">len</span></span> = <span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span></span></span>
-        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span><span class="t Pointer">*</span> <span class="i">p1</span> = <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">ptr</span></span>;</span></span>
-        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span><span class="t Pointer">*</span> <span class="i">p2</span> = <span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">ptr</span></span>;</span></span>
+        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p1</span> = <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">ptr</span></span>;</span></span>
+        <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p2</span> = <span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">ptr</span></span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">n</span> = <span class="e Div"><span class="e Identifier"><span class="i">len</span></span> / <span class="e Int"><span class="n">32</span></span></span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">i</span>;</span></span>
         <span class="s For"><span class="k">for</span>( <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">i</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span> <span class="e Rel"><span class="e Identifier"><span class="i">i</span></span> &lt; <span class="e Identifier"><span class="i">n</span></span></span>; <span class="e PreIncr">++<span class="e Identifier"><span class="i">i</span></span></span> )
@@ -584,7 +584,7 @@
      * Returns:
      *  This array represented as a void array.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">opCast</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">opCast</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Slice"><span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span>)<span class="e Identifier"><span class="i">ptr</span></span></span>[<span class="e Int"><span class="n">0</span></span> .. <span class="e Identifier"><span class="i">dim</span></span>]</span>;</span>
     }</span></span></span>
@@ -614,7 +614,7 @@
      * Returns:
      *  The value of the bit at pos.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">opIndex</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">pos</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">opIndex</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">pos</span></span> )</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Rel"><span class="e Identifier"><span class="i">pos</span></span> &lt; <span class="e Identifier"><span class="i">len</span></span></span> )</span>;</span>
@@ -632,7 +632,7 @@
      * Returns:
      *  A new array which is the complement of this array.
      */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opCom</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opCom</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">dim</span> = <span class="e Call"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">dim</span></span>()</span>;</span></span>
 
@@ -677,7 +677,7 @@
      *  A new array which is the result of a bitwise and with this array and
      *  the supplied array.
      */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opAnd</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opAnd</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Identifier"><span class="i">len</span></span> == <span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">length</span></span></span> )</span>;</span>
@@ -727,7 +727,7 @@
      *  A new array which is the result of a bitwise or with this array and
      *  the supplied array.
      */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opOr</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opOr</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Identifier"><span class="i">len</span></span> == <span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">length</span></span></span> )</span>;</span>
@@ -777,7 +777,7 @@
      *  A new array which is the result of a bitwise xor with this array and
      *  the supplied array.
      */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opXor</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opXor</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Identifier"><span class="i">len</span></span> == <span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">length</span></span></span> )</span>;</span>
@@ -827,7 +827,7 @@
      * Returns:
      *  A new array which is the result of this array minus the supplied array.
      */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opSub</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opSub</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Identifier"><span class="i">len</span></span> == <span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">length</span></span></span> )</span>;</span>
@@ -874,7 +874,7 @@
      *  A new array which is the result of this array concatenated with the
      *  supplied array.
      */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opCat</span><span class="o Parameters">( <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">rhs</span></span> )</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opCat</span><span class="o ">( <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">rhs</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">result</span>;</span></span>
 
@@ -886,7 +886,7 @@
 
 
     <span class="bc">/** ditto */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opCat_r</span><span class="o Parameters">( <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">lhs</span></span> )</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opCat_r</span><span class="o ">( <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">lhs</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">result</span>;</span></span>
 
@@ -899,7 +899,7 @@
 
 
     <span class="bc">/** ditto */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opCat</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opCat</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">result</span>;</span></span>
 
@@ -953,7 +953,7 @@
      * Returns:
      *  The new value of the bit at pos.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">opIndexAssign</span><span class="o Parameters">( <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">b</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">pos</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">opIndexAssign</span><span class="o ">( <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">b</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">pos</span></span> )</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Rel"><span class="e Identifier"><span class="i">pos</span></span> &lt; <span class="e Identifier"><span class="i">len</span></span></span> )</span>;</span>
@@ -981,7 +981,7 @@
      * Returns:
      *  A shallow copy of this array.
      */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opAndAssign</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opAndAssign</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Identifier"><span class="i">len</span></span> == <span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">length</span></span></span> )</span>;</span>
@@ -1026,7 +1026,7 @@
      * Returns:
      *  A shallow copy of this array.
      */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opOrAssign</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opOrAssign</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Identifier"><span class="i">len</span></span> == <span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">length</span></span></span> )</span>;</span>
@@ -1071,7 +1071,7 @@
      * Returns:
      *  A shallow copy of this array.
      */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opXorAssign</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opXorAssign</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Identifier"><span class="i">len</span></span> == <span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">length</span></span></span> )</span>;</span>
@@ -1117,7 +1117,7 @@
      * Returns:
      *  A shallow copy of this array.
      */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opSubAssign</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opSubAssign</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>( <span class="e Equal"><span class="e Identifier"><span class="i">len</span></span> == <span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">length</span></span></span> )</span>;</span>
@@ -1159,7 +1159,7 @@
      * Returns:
      *  A shallow copy of this array.
      */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opCatAssign</span><span class="o Parameters">( <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">b</span></span> )</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opCatAssign</span><span class="o ">( <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">b</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">length</span></span> = <span class="e Plus"><span class="e Identifier"><span class="i">len</span></span> + <span class="e Int"><span class="n">1</span></span></span></span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Paren">(<span class="e This"><span class="k">this</span></span>)</span>[<span class="e Minus"><span class="e Identifier"><span class="i">len</span></span> - <span class="e Int"><span class="n">1</span></span></span>]</span> = <span class="e Identifier"><span class="i">b</span></span></span>;</span>
@@ -1188,7 +1188,7 @@
 
 
     <span class="bc">/** ditto */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opCatAssign</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">opCatAssign</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">BitArray</span></span> <span class="i">rhs</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">istart</span> = <span class="e Identifier"><span class="i">len</span></span>;</span></span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">length</span></span> = <span class="e Plus"><span class="e Identifier"><span class="i">len</span></span> + <span class="e Identifier"><span class="i">rhs</span></span>.<span class="e Identifier"><span class="i">length</span></span></span></span>;</span>

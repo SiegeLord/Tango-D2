@@ -104,7 +104,7 @@ Macros:
  * $(GAMMA)(x) = sqrt(2 &amp;pi;) x&lt;sup&gt;x-0.5&lt;/sup&gt; exp(-x) (1 + 1/x P(1/x))
  *
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">gammaStirling</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">gammaStirling</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="lc">// CEPHES code Copyright 1994 by Stephen L. Moshier</span>
 
@@ -145,7 +145,7 @@ Macros:
  * Returns -1 if $(GAMMA)(x) &lt; 0,  +1 if $(GAMMA)(x) &gt; 0,
  * $(NAN) if sign is indeterminate.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">sgnGamma</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">sgnGamma</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="bc">/* Author: Don Clugston. */</span>
     <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">isNaN</span></span>(<span class="i">x</span>)</span>) <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">x</span></span>;</span></span></span>
@@ -193,7 +193,7 @@ Macros:
  *    $(SV -&amp;infin;,     $(NAN)      )
  *  )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">gamma</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">gamma</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
 <span class="bc">/* Based on code from the CEPHES library.
  * CEPHES code Copyright 1994 by Stephen L. Moshier
@@ -328,7 +328,7 @@ Macros:
  *    $(SV &amp;plusmn;&amp;infin;, +&amp;infin;    )
  *  )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">logGamma</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">logGamma</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="bc">/* Based on code from the CEPHES library.
      * CEPHES code Copyright 1994 by Stephen L. Moshier
@@ -468,7 +468,7 @@ Macros:
  *
  * beta(x, y) = (&amp;Gamma;(x) &amp;Gamma;(y))/&amp;Gamma;(x + y)
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">beta</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">beta</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Paren">(<span class="e Plus"><span class="e Identifier"><span class="i">x</span></span>+<span class="e Identifier"><span class="i">y</span></span></span>)</span>&gt; <span class="e Identifier"><span class="i">MAXGAMMA</span></span></span>) <span class="s Scope"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">exp</span></span>(<span class="i">logGamma</span>(<span class="i">x</span>) + <span class="i">logGamma</span>(<span class="i">y</span>) - <span class="i">logGamma</span>(<span class="i">x</span>+<span class="i">y</span>))</span>;</span>
@@ -502,7 +502,7 @@ Macros:
  * The integral is evaluated by a continued fraction expansion
  * or, when b*x is small, by a power series.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaIncomplete</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">aa</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">bb</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">xx</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaIncomplete</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">aa</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">bb</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">xx</span></span> )</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s If"><span class="k">if</span> (<span class="e Not">!<span class="e Paren">(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">aa</span></span>&gt;<span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">bb</span></span>&gt;<span class="e Int"><span class="n">0</span></span></span></span>)</span></span>) <span class="s Scope"><span class="s Compound">{
          <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">isNaN</span></span>(<span class="i">aa</span>)</span>) <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">aa</span></span>;</span></span></span>
@@ -602,7 +602,7 @@ Macros:
  *
  *  Newton iterations or interval halving is used.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaIncompleteInv</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">aa</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">bb</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">yy0</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaIncompleteInv</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">aa</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">bb</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">yy0</span></span> )</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span>, <span class="i">b</span>, <span class="i">y0</span>, <span class="i">d</span>, <span class="i">y</span>, <span class="i">x</span>, <span class="i">x0</span>, <span class="i">x1</span>, <span class="i">lgm</span>, <span class="i">yp</span>, <span class="i">di</span>, <span class="i">dithresh</span>, <span class="i">yl</span>, <span class="i">yh</span>, <span class="i">xt</span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span>, <span class="i">rflg</span>, <span class="i">dir</span>, <span class="i">nflg</span>;</span></span>
@@ -898,7 +898,7 @@ Macros:
 
 <span class="lc">// Continued fraction expansion #1 for incomplete beta integral</span>
 <span class="lc">// Use when x &lt; (a+1)/(a+b+2)</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaDistExpansion1</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaDistExpansion1</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">xk</span>, <span class="i">pk</span>, <span class="i">pkm1</span>, <span class="i">pkm2</span>, <span class="i">qk</span>, <span class="i">qkm1</span>, <span class="i">qkm2</span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">k1</span>, <span class="i">k2</span>, <span class="i">k3</span>, <span class="i">k4</span>, <span class="i">k5</span>, <span class="i">k6</span>, <span class="i">k7</span>, <span class="i">k8</span>;</span></span>
@@ -981,7 +981,7 @@ Macros:
 
 <span class="lc">// Continued fraction expansion #2 for incomplete beta integral</span>
 <span class="lc">// Use when x &gt; (a+1)/(a+b+2)</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaDistExpansion2</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaDistExpansion2</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span>  <span class="i">xk</span>, <span class="i">pk</span>, <span class="i">pkm1</span>, <span class="i">pkm2</span>, <span class="i">qk</span>, <span class="i">qkm1</span>, <span class="i">qkm2</span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">k1</span>, <span class="i">k2</span>, <span class="i">k3</span>, <span class="i">k4</span>, <span class="i">k5</span>, <span class="i">k6</span>, <span class="i">k7</span>, <span class="i">k8</span>;</span></span>
@@ -1062,7 +1062,7 @@ Macros:
 
 <span class="bc">/* Power series for incomplete gamma integral.
    Use when b*x is small.  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaDistPowerSeries</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaDistPowerSeries</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">ai</span> = <span class="e Div"><span class="e Float"><span class="n">1.0L</span></span> / <span class="e Identifier"><span class="i">a</span></span></span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">u</span> = <span class="e Mul"><span class="e Paren">(<span class="e Minus"><span class="e Float"><span class="n">1.0L</span></span> - <span class="e Identifier"><span class="i">b</span></span></span>)</span> * <span class="e Identifier"><span class="i">x</span></span></span>;</span></span>
@@ -1114,7 +1114,7 @@ Macros:
  * continued fraction expansion, depending on the relative
  * values of a and x.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">gammaIncomplete</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">gammaIncomplete</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">x</span></span> &gt;= <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">a</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
@@ -1157,7 +1157,7 @@ Macros:
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">gammaIncompleteCompl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">gammaIncompleteCompl</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">x</span></span> &gt;= <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">a</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
@@ -1237,7 +1237,7 @@ Macros:
  * the routine performs up to 10 Newton iterations to find the
  * root of incompleteGammaCompl(a,x) - p = 0.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">gammaIncompleteComplInv</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">gammaIncompleteComplInv</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
   <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&lt;= <span class="e Int"><span class="n">1</span></span></span></span>)</span>;</span>
   <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">a</span></span>&gt;<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
@@ -1379,7 +1379,7 @@ Macros:
 *  digamma(x) = d/dx logGamma(x)
 *
 */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">digamma</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">digamma</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
    <span class="lc">// Based on CEPHES, Stephen L. Moshier.</span>
  

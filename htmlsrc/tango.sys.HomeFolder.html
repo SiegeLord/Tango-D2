@@ -42,7 +42,7 @@
     <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">stdc</span>.<span class="i">posix</span>.<span class="i">pwd</span>;</span>
     <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">stdc</span>.<span class="i">errno</span>;</span>
 
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">strlen</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span> <span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">strlen</span> <span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span> <span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span>
 
 
@@ -52,7 +52,7 @@
 
 ******************************************************************************/</span>
 
-<span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">homeFolder</span><span class="o Parameters">()</span>
+<span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">homeFolder</span><span class="o ">()</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span> (<span class="i">Windows</span>)
         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">standard</span></span>(<span class="i">Environment</span>.<span class="i">get</span>(<span class="sl">"USERPROFILE"</span>))</span>;</span>
@@ -118,7 +118,7 @@
         -----
     ******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">expandTilde</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">inputPath</span></span>)</span>
+    <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">expandTilde</span> <span class="o ">(<span class="o "><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">inputPath</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
             <span class="lc">// Return early if there is no tilde in path.</span>
             <span class="s If"><span class="k">if</span> (<span class="e OrOr"><span class="e Rel"><span class="e Identifier"><span class="i">inputPath</span></span>.<span class="e Identifier"><span class="i">length</span></span> &lt; <span class="e Int"><span class="n">1</span></span></span> || <span class="e Equal"><span class="e Index"><span class="e Identifier"><span class="i">inputPath</span></span>[<span class="e Int"><span class="n">0</span></span>]</span> != <span class="e Char"><span class="cl">'~'</span></span></span></span>)
@@ -137,7 +137,7 @@
 
     ******************************************************************************/</span>
 
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">expandFromEnvironment</span><span class="o Parameters">(<span class="o Parameter"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">expandFromEnvironment</span><span class="o ">(<span class="o "><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt;= <span class="e Int"><span class="n">1</span></span></span>)</span>;</span>
@@ -164,7 +164,7 @@
 
     ******************************************************************************/</span>
 
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">expandFromDatabase</span><span class="o Parameters">(<span class="o Parameter"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">expandFromDatabase</span><span class="o ">(<span class="o "><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e OrOr"><span class="e Rel"><span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">2</span></span></span> || <span class="e Paren">(<span class="e AndAnd"><span class="e Equal"><span class="e Identifier"><span class="i">path</span></span>.<span class="e Identifier"><span class="i">length</span></span> == <span class="e Int"><span class="n">2</span></span></span> &amp;&amp; <span class="e Equal"><span class="e Index"><span class="e Identifier"><span class="i">path</span></span>[<span class="e Int"><span class="n">1</span></span>]</span> != <span class="e Char"><span class="cl">'/'</span></span></span></span>)</span></span>)</span>;</span>
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e Index"><span class="e Identifier"><span class="i">path</span></span>[<span class="e Int"><span class="n">0</span></span>]</span> == <span class="e Char"><span class="cl">'~'</span></span></span>)</span>;</span>
@@ -283,7 +283,7 @@
         -----
     ******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">expandTilde</span><span class="o Parameters">(<span class="o Parameter"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">inputPath</span></span>)</span>
+    <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">expandTilde</span><span class="o ">(<span class="o "><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">inputPath</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">inputPath</span></span> = <span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span>)<span class="e Identifier"><span class="i">Path</span></span></span>.<span class="e Identifier"><span class="i">standard</span></span>(<span class="i">inputPath</span>.<span class="i">dup</span>)</span></span>;</span>
 
@@ -298,7 +298,7 @@
         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">expandOtherUser</span></span>(<span class="i">inputPath</span>)</span>;</span>
     }</span></span></span>
 
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">expandCurrentUser</span><span class="o Parameters">(<span class="o Parameter"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">expandCurrentUser</span><span class="o ">(<span class="o "><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">userProfileDir</span> = <span class="e Identifier"><span class="i">homeFolder</span></span>;</span></span>
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">offset</span> = <span class="e Call"><span class="e Identifier"><span class="i">TextUtil</span></span>.<span class="e Identifier"><span class="i">locate</span></span>(<span class="i">path</span>, <span class="cl">'/'</span>)</span>;</span></span>
@@ -310,7 +310,7 @@
         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Inout"><span class="k">inout</span></span>)<span class="e Identifier"><span class="i">Path</span></span></span>.<span class="e Identifier"><span class="i">join</span></span>(<span class="i">userProfileDir</span>, <span class="i">path</span>[<span class="i">offset</span>+<span class="n">1</span>..$])</span>;</span>
     }</span></span></span>
 
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">expandOtherUser</span><span class="o Parameters">(<span class="o Parameter"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">expandOtherUser</span><span class="o ">(<span class="o "><span class="t Inout"><span class="k">inout</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">profileDir</span> = <span class="e Call"><span class="e Identifier"><span class="i">Path</span></span>.<span class="e Identifier"><span class="i">parse</span></span>(<span class="i">homeFolder</span>)</span>.<span class="e Identifier"><span class="i">parent</span></span>;</span></span>
         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Inout"><span class="k">inout</span></span>)<span class="e Identifier"><span class="i">Path</span></span></span>.<span class="e Identifier"><span class="i">join</span></span>(<span class="i">profileDir</span>, <span class="i">path</span>[<span class="n">1</span>..$])</span>;</span>

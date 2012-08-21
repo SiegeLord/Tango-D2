@@ -69,7 +69,7 @@
      * Params:
      * bufferSize = The size to allocate the buffer.
      */</span>
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">bufferSize</span>=<span class="e Paren">(<span class="e Mul"><span class="e Int"><span class="n">1024</span></span>*<span class="e Int"><span class="n">16</span></span></span>)</span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">bufferSize</span>=<span class="e Paren">(<span class="e Mul"><span class="e Int"><span class="n">1024</span></span>*<span class="e Int"><span class="n">16</span></span></span>)</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_buf</span></span> = <span class="e New"><span class="k">new</span> <span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[<span class="e Identifier"><span class="i">bufferSize</span></span></span>]</span></span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_closed</span></span> = <span class="e Bool"><span class="k">false</span></span></span>;</span>
@@ -86,7 +86,7 @@
      * since all the ThreadPipe data is in memory, buffering doesn't make
      * much sense.
      */</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">bufferSize</span><span class="o Parameters">()</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">bufferSize</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">_buf</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span>
     }</span></span></span>
@@ -96,7 +96,7 @@
      *
      * Returns "&amp;lt;thread conduit&amp;gt;"
      */</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">string</span></span> <span class="i">toString</span><span class="o Parameters">()</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">string</span></span> <span class="i">toString</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e String"><span class="sl">"&lt;threadpipe&gt;"</span></span>;</span>
     }</span></span></span>
@@ -105,7 +105,7 @@
      * Returns true if there is data left to be read, and the write end isn't
      * closed.
      */</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isAlive</span><span class="o Parameters">()</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isAlive</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Synchronized"><span class="k">synchronized</span>(<span class="e Identifier"><span class="i">_mutex</span></span>)
         <span class="s Scope"><span class="s Compound">{
@@ -116,7 +116,7 @@
     <span class="bc">/**
      * Return the number of bytes remaining to be read in the circular buffer.
      */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">remaining</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">remaining</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Synchronized"><span class="k">synchronized</span>(<span class="e Identifier"><span class="i">_mutex</span></span>)
             <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">_remaining</span></span>;</span></span></span>
@@ -125,7 +125,7 @@
     <span class="bc">/**
      * Return the number of bytes that can be written to the circular buffer.
      */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">writable</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">writable</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Synchronized"><span class="k">synchronized</span>(<span class="e Identifier"><span class="i">_mutex</span></span>)
             <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Minus"><span class="e Identifier"><span class="i">_buf</span></span>.<span class="e Identifier"><span class="i">length</span></span> - <span class="e Identifier"><span class="i">_remaining</span></span></span>;</span></span></span>
@@ -137,7 +137,7 @@
      *
      * The read end is not closed until the buffer is empty.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">stop</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">stop</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="lc">//</span>
         <span class="lc">// close write end.  The read end can stay open until the remaining</span>
@@ -158,7 +158,7 @@
      * TODO: move stop() functionality to detach when it becomes possible to
      * have fully-owned members
      */</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">detach</span><span class="o Parameters">()</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">detach</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
     }</span></span></span>
 
@@ -171,7 +171,7 @@
      * Returns the number of bytes read, which may be less than requested in
      * dst. Eof is returned whenever an end-of-flow condition arises.
      */</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="lc">//</span>
         <span class="lc">// don't block for empty read</span>
@@ -223,7 +223,7 @@
      *
      * Clear any buffered content.
      */</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">ThreadPipe</span></span> <span class="i">clear</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">ThreadPipe</span></span> <span class="i">clear</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Synchronized"><span class="k">synchronized</span>(<span class="e Identifier"><span class="i">_mutex</span></span>)
         <span class="s Scope"><span class="s Compound">{
@@ -251,7 +251,7 @@
      * the quantity provided. Eof is returned when an end-of-flow condition
      * arises.
      */</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="lc">//</span>
         <span class="lc">// don't block for empty write</span>
@@ -298,11 +298,11 @@
     <span class="d Unittest"><span class="k">unittest</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">source</span> = <span class="e New"><span class="k">new</span> <span class="t Integral"><span class="k">uint</span></span><span class="t Array">[<span class="e Int"><span class="n">1000</span></span>]</span></span>;</span></span>
-        <span class="s Foreach"><span class="k">foreach</span>(<span class="o Parameters"><span class="o Parameter"><span class="i">i</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="i">x</span></span></span>; <span class="e Identifier"><span class="i">source</span></span>)
+        <span class="s Foreach"><span class="k">foreach</span>(<span class="o "><span class="o "><span class="i">i</span></span>, <span class="o "><span class="k">ref</span> <span class="i">x</span></span></span>; <span class="e Identifier"><span class="i">source</span></span>)
             <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">x</span></span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">uint</span></span>)<span class="e Identifier"><span class="i">i</span></span></span></span>;</span></span></span>
 
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">ThreadPipe</span></span> <span class="i">tp</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">ThreadPipe</span></span>(<span class="e Int"><span class="n">16</span></span>)</span>;</span></span>
-        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">threadA</span><span class="o Parameters">()</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">threadA</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">sourceBuf</span> = <span class="e Identifier"><span class="i">source</span></span>;</span></span>
             <span class="s While"><span class="k">while</span>(<span class="e Rel"><span class="e Identifier"><span class="i">sourceBuf</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span>)

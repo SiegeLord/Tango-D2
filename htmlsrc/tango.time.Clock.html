@@ -50,7 +50,7 @@
 <span class="d Compound">{
         <span class="lc">// copied from Gregorian.  Used while we rely on OS for toDate.</span>
         <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span><span class="t Array">[]</span> <span class="i">DaysToMonthCommon</span> = <span class="e ArrayInit">[<span class="e Int"><span class="n">0</span></span>, <span class="e Int"><span class="n">31</span></span>, <span class="e Int"><span class="n">59</span></span>, <span class="e Int"><span class="n">90</span></span>, <span class="e Int"><span class="n">120</span></span>, <span class="e Int"><span class="n">151</span></span>, <span class="e Int"><span class="n">181</span></span>, <span class="e Int"><span class="n">212</span></span>, <span class="e Int"><span class="n">243</span></span>, <span class="e Int"><span class="n">273</span></span>, <span class="e Int"><span class="n">304</span></span>, <span class="e Int"><span class="n">334</span></span>, <span class="e Int"><span class="n">365</span></span>]</span>;</span>
-        <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setDoy</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">dt</span></span>)</span>
+        <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setDoy</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">dt</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">doy</span> = <span class="e Plus"><span class="e Identifier"><span class="i">dt</span></span>.<span class="e Identifier"><span class="i">date</span></span>.<span class="e Identifier"><span class="i">day</span></span> + <span class="e Index"><span class="e Identifier"><span class="i">DaysToMonthCommon</span></span>[<span class="e Minus"><span class="e Identifier"><span class="i">dt</span></span>.<span class="e Identifier"><span class="i">date</span></span>.<span class="e Identifier"><span class="i">month</span></span> - <span class="e Int"><span class="n">1</span></span></span>]</span></span>;</span></span>
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span> = <span class="e Identifier"><span class="i">dt</span></span>.<span class="e Identifier"><span class="i">date</span></span>.<span class="e Identifier"><span class="i">year</span></span>;</span></span>
@@ -69,7 +69,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">now</span> <span class="o Parameters">()</span>
+                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">now</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">FILETIME</span></span> <span class="i">fTime</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
                         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">GetSystemTimeAsFileTime</span></span> (&amp;<span class="i">fTime</span>)</span>;</span>
@@ -82,7 +82,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o Parameters">()</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">toDate</span></span> (<span class="i">now</span>)</span>;</span>
                 }</span></span></span>
@@ -100,7 +100,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">dt</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">SYSTEMTIME</span></span> <span class="i">sTime</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
@@ -137,7 +137,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">fromDate</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">DateTime</span></span>)</span> <span class="i">dt</span></span>)</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">fromDate</span> <span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">DateTime</span></span>)</span> <span class="i">dt</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">SYSTEMTIME</span></span> <span class="i">sTime</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">FILETIME</span></span>   <span class="i">fTime</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
@@ -161,7 +161,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">convert</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">FILETIME</span></span>)</span> <span class="i">time</span></span>)</span>
+                <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">convert</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">FILETIME</span></span>)</span> <span class="i">time</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">t</span> = <span class="e Deref">*<span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">long</span></span><span class="t Pointer">*</span>) <span class="e Address">&amp;<span class="e Identifier"><span class="i">time</span></span></span></span></span>;</span></span>
                         <span class="s Expression"><span class="e MulAssign"><span class="e Identifier"><span class="i">t</span></span> *= <span class="e Div"><span class="e Int"><span class="n">100</span></span> / <span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">NanosecondsPerTick</span></span></span></span>;</span>
@@ -174,7 +174,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">FILETIME</span></span> <span class="i">convert</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">dt</span></span>)</span>
+                <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">FILETIME</span></span> <span class="i">convert</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">dt</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">FILETIME</span></span> <span class="i">time</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
 
@@ -193,7 +193,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">now</span> <span class="o Parameters">()</span>
+                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">now</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">timeval</span></span> <span class="i">tv</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
                         <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">gettimeofday</span></span> (&amp;<span class="i">tv</span>, <span class="k">null</span>)</span>)
@@ -208,7 +208,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o Parameters">()</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">toDate</span></span> (<span class="i">now</span>)</span>;</span>
                 }</span></span></span>
@@ -225,7 +225,7 @@
 
                 **************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">toDate</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">DateTime</span></span> <span class="i">dt</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
                         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">timeval</span> = <span class="e Call"><span class="e Identifier"><span class="i">convert</span></span> (<span class="i">time</span>)</span>;</span></span>
@@ -262,7 +262,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">fromDate</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">DateTime</span></span>)</span> <span class="i">dt</span></span>)</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">fromDate</span> <span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">DateTime</span></span>)</span> <span class="i">dt</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">tm</span></span> <span class="i">t</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
 
@@ -285,7 +285,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">convert</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">timeval</span></span>)</span> <span class="i">tv</span></span>)</span>
+                <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">convert</span> <span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">timeval</span></span>)</span> <span class="i">tv</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Return"><span class="k">return</span> <span class="e Plus"><span class="e Plus"><span class="e Identifier"><span class="i">Time</span></span>.<span class="e Identifier"><span class="i">epoch1970</span></span> + 
                                <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">fromSeconds</span></span>(<span class="i">tv</span>.<span class="i">tv_sec</span>)</span></span> + 
@@ -298,7 +298,7 @@
 
                 ***************************************************************/</span>
 
-                <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">timeval</span></span> <span class="i">convert</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span>
+                <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">timeval</span></span> <span class="i">convert</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">timeval</span></span> <span class="i">tv</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
 
@@ -330,7 +330,7 @@
 
 <span class="d Debug"><span class="k">debug</span> (<span class="i">Clock</span>)
 <span class="d Compound">{
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span> 
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">time</span> = <span class="e Identifier"><span class="i">Clock</span></span>.<span class="e Identifier"><span class="i">now</span></span>;</span></span>
         }</span></span></span>

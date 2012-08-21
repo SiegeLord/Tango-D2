@@ -140,13 +140,13 @@
 
 <span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span>
 <span class="d Compound">{
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">memcmp</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span> <span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span> <span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">memcmp</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span> <span class="t Pointer">*</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span> <span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 
 <span class="d Version"><span class="k">version</span> (<span class="i">Win32</span>)
 <span class="d Compound">{
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span>(<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">QueryPerformanceCounter</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span><span class="i">count</span></span>)</span><span class="s FuncBody">;</span></span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span>(<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">QueryPerformanceFrequency</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span><span class="i">frequency</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span>(<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">QueryPerformanceCounter</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span><span class="i">count</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span>(<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">QueryPerformanceFrequency</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span><span class="i">frequency</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span>
 
 <span class="bc">/*******************************************************************************
@@ -229,7 +229,7 @@
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">base</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Hierarchy</span></span> (<span class="e String"><span class="sl">"tango"</span></span>)</span></span>;</span>
 
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">p</span></span></span>; <span class="e Identifier"><span class="i">Pairs</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">p</span></span></span>; <span class="e Identifier"><span class="i">Pairs</span></span>)
                          <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Identifier"><span class="i">map</span></span>[<span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">name</span></span>]</span> = <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">value</span></span></span>;</span></span></span>
 
                 <span class="s Version"><span class="k">version</span> (<span class="i">Posix</span>)
@@ -256,7 +256,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">convert</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">name</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">def</span>=<span class="e Identifier"><span class="i">Level</span></span>.<span class="e Identifier"><span class="i">Trace</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">convert</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">name</span></span>, <span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">def</span>=<span class="e Identifier"><span class="i">Level</span></span>.<span class="e Identifier"><span class="i">Trace</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e In"><span class="e Identifier"><span class="i">name</span></span> <span class="k">in</span> <span class="e Identifier"><span class="i">map</span></span></span>;</span></span>
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">p</span></span>)
@@ -270,7 +270,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">time</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">time</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Version"><span class="k">version</span> (<span class="i">Posix</span>)
                 <span class="s Compound">{
@@ -295,7 +295,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">root</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">root</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">base</span></span>.<span class="e Identifier"><span class="i">root</span></span>;</span>
         }</span></span></span>
@@ -314,7 +314,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">lookup</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">name</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">lookup</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">name</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">base</span></span>.<span class="e Identifier"><span class="i">lookup</span></span> (<span class="i">name</span>)</span>;</span>
         }</span></span></span>
@@ -325,7 +325,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">convert</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">level</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">convert</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">level</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">level</span></span> &gt;= <span class="e Identifier"><span class="i">Level</span></span>.<span class="e Identifier"><span class="i">Trace</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">level</span></span> &lt;= <span class="e Identifier"><span class="i">Level</span></span>.<span class="e Identifier"><span class="i">None</span></span></span></span>)</span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e Index"><span class="e Identifier"><span class="i">LevelNames</span></span>[<span class="e Identifier"><span class="i">level</span></span>]</span>;</span>
@@ -337,7 +337,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Hierarchy</span></span> <span class="i">hierarchy</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Hierarchy</span></span> <span class="i">hierarchy</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">base</span></span>;</span>
         }</span></span></span>
@@ -348,7 +348,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">formatln</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fmt</span></span>, <span class="o Parameter">...</span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">formatln</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fmt</span></span>, <span class="o ">...</span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Version"><span class="k">version</span> (<span class="i">DigitalMarsX64</span>)
             <span class="s Compound">{
@@ -373,7 +373,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">config</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">flush</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">config</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">flush</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">root</span></span>.<span class="e Identifier"><span class="i">add</span></span> (<span class="k">new</span> <span class="i">AppendStream</span> (<span class="i">stream</span>, <span class="i">flush</span>))</span>;</span>
         }</span></span></span>
@@ -473,12 +473,12 @@
         <span class="d Interface"><span class="k">interface</span> <span class="i">Context</span>
         <span class="d Compound">{
                 <span class="lc">/// return a label for this context</span>
-                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">label</span> <span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+                <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">label</span> <span class="o ">()</span><span class="s FuncBody">;</span></span>
 
                 <span class="lc">/// first arg is the setting of the logger itself, and</span>
                 <span class="lc">/// the second arg is what kind of message we're being</span>
                 <span class="lc">/// asked to produce</span>
-                <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">enabled</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">setting</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">target</span></span>)</span><span class="s FuncBody">;</span></span>
+                <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">enabled</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">setting</span></span>, <span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">target</span></span>)</span><span class="s FuncBody">;</span></span>
         }</span></span>
 
         <span class="bc">/***********************************************************************
@@ -504,7 +504,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Hierarchy</span></span> <span class="i">host</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">name</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Hierarchy</span></span> <span class="i">host</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">name</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">host_</span></span> = <span class="e Identifier"><span class="i">host</span></span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">level_</span></span> = <span class="e Identifier"><span class="i">Level</span></span>.<span class="e Identifier"><span class="i">Trace</span></span></span>;</span>
@@ -518,7 +518,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">enabled</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span> = <span class="e Identifier"><span class="i">Level</span></span>.<span class="e Identifier"><span class="i">Fatal</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">enabled</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span> = <span class="e Identifier"><span class="i">Level</span></span>.<span class="e Identifier"><span class="i">Fatal</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">host_</span></span>.<span class="e Identifier"><span class="i">context</span></span>.<span class="e Identifier"><span class="i">enabled</span></span> (<span class="i">level_</span>, <span class="i">level</span>)</span>;</span>
         }</span></span></span>
@@ -529,7 +529,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">trace</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">trace</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">enabled</span></span> (<span class="i">Level</span>.<span class="i">Trace</span>)</span>;</span>
         }</span></span></span>
@@ -540,7 +540,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">trace</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fmt</span></span>, <span class="o Parameter">...</span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">trace</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fmt</span></span>, <span class="o ">...</span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Version"><span class="k">version</span> (<span class="i">DigitalMarsX64</span>)
             <span class="s Compound">{
@@ -562,7 +562,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">info</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">info</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">enabled</span></span> (<span class="i">Level</span>.<span class="i">Info</span>)</span>;</span>
         }</span></span></span>
@@ -573,7 +573,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">info</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fmt</span></span>, <span class="o Parameter">...</span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">info</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fmt</span></span>, <span class="o ">...</span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Version"><span class="k">version</span> (<span class="i">DigitalMarsX64</span>)
             <span class="s Compound">{
@@ -595,7 +595,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">warn</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">warn</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">enabled</span></span> (<span class="i">Level</span>.<span class="i">Warn</span>)</span>;</span>
         }</span></span></span>
@@ -606,7 +606,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">warn</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fmt</span></span>, <span class="o Parameter">...</span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">warn</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fmt</span></span>, <span class="o ">...</span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Version"><span class="k">version</span> (<span class="i">DigitalMarsX64</span>)
             <span class="s Compound">{
@@ -628,7 +628,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">error</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">error</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">enabled</span></span> (<span class="i">Level</span>.<span class="i">Error</span>)</span>;</span>
         }</span></span></span>
@@ -639,7 +639,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">error</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fmt</span></span>, <span class="o Parameter">...</span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">error</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fmt</span></span>, <span class="o ">...</span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Version"><span class="k">version</span> (<span class="i">DigitalMarsX64</span>)
             <span class="s Compound">{
@@ -661,7 +661,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">fatal</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">fatal</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">enabled</span></span> (<span class="i">Level</span>.<span class="i">Fatal</span>)</span>;</span>
         }</span></span></span>
@@ -672,7 +672,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fatal</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fmt</span></span>, <span class="o Parameter">...</span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fatal</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fmt</span></span>, <span class="o ">...</span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Version"><span class="k">version</span> (<span class="i">DigitalMarsX64</span>)
             <span class="s Compound">{
@@ -694,7 +694,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">i</span> = <span class="e Identifier"><span class="i">name_</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span></span>
                 <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">i</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span>)
@@ -708,7 +708,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">level_</span></span>;</span>
         }</span></span></span>
@@ -719,7 +719,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">level</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">l</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">level</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">l</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">level</span></span> (<span class="i">l</span>, <span class="k">false</span>)</span>;</span>
         }</span></span></span>
@@ -731,11 +731,11 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">level</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">propagate</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">level</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">propagate</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">level_</span></span> = <span class="e Identifier"><span class="i">level</span></span></span>;</span>
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">propagate</span></span>)
-                    <span class="s Scope"><span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">log</span></span></span>; <span class="e Identifier"><span class="i">host_</span></span>)
+                    <span class="s Scope"><span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">log</span></span></span>; <span class="e Identifier"><span class="i">host_</span></span>)
                              <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">isChildOf</span></span> (<span class="i">name_</span>)</span>)
                                  <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">log</span></span>.<span class="e Identifier"><span class="i">level_</span></span> = <span class="e Identifier"><span class="i">level</span></span></span>;</span></span></span></span></span></span></span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -748,7 +748,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">additive</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">additive</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">additive_</span></span>;</span>
         }</span></span></span>
@@ -759,7 +759,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">additive</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">enabled</span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">additive</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">enabled</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">additive_</span></span> = <span class="e Identifier"><span class="i">enabled</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -773,7 +773,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">add</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Appender</span></span> <span class="i">another</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">add</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Appender</span></span> <span class="i">another</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Identifier"><span class="i">another</span></span>)</span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">another</span></span>.<span class="e Identifier"><span class="i">next</span></span> = <span class="e Identifier"><span class="i">appender_</span></span></span>;</span>
@@ -787,7 +787,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">clear</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">clear</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">appender_</span></span> = <span class="e Null"><span class="k">null</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -799,7 +799,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">buffer</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">buffer</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">buffer_</span></span>;</span>
         }</span></span></span>
@@ -812,7 +812,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">buffer</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">buf</span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">buffer</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">buf</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">buffer_</span></span> = <span class="e Identifier"><span class="i">buf</span></span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">buffer_size_</span></span> = <span class="e Identifier"><span class="i">buf</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span>
@@ -825,7 +825,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">runtime</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">runtime</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Minus"><span class="e Identifier"><span class="i">Clock</span></span>.<span class="e Identifier"><span class="i">now</span></span> - <span class="e Identifier"><span class="i">Log</span></span>.<span class="e Identifier"><span class="i">beginTime</span></span></span>;</span>
         }</span></span></span>
@@ -836,7 +836,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">append</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o Parameter"><span class="k">lazy</span> <span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">exp</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">append</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o "><span class="k">lazy</span> <span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">exp</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">host_</span></span>.<span class="e Identifier"><span class="i">context</span></span>.<span class="e Identifier"><span class="i">enabled</span></span> (<span class="i">level_</span>, <span class="i">level</span>)</span>)
                    <span class="s Scope"><span class="s Compound">{
@@ -855,7 +855,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">append</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">append</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">// combine appenders from all ancestors</span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">links</span> = <span class="e This"><span class="k">this</span></span>;</span></span>
@@ -890,7 +890,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">format</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">buffer</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">formatStr</span></span>, <span class="o Parameter">...</span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">format</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">buffer</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">formatStr</span></span>, <span class="o ">...</span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Version"><span class="k">version</span> (<span class="i">DigitalMarsX64</span>)
             <span class="s Compound">{
@@ -913,7 +913,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">format</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fmt</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">TypeInfo</span></span><span class="t Array">[]</span> <span class="i">types</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">ArgList</span></span> <span class="i">args</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">format</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fmt</span></span>, <span class="o "><span class="t Identifier"><span class="i">TypeInfo</span></span><span class="t Array">[]</span> <span class="i">types</span></span>, <span class="o "><span class="t Identifier"><span class="i">ArgList</span></span> <span class="i">args</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">types</span></span>.<span class="e Identifier"><span class="i">length</span></span>)
                 <span class="s Scope"><span class="s Compound">{
@@ -927,19 +927,19 @@
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
         }</span></span></span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">formatWithDefaultBuffer</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">fmt</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">TypeInfo</span></span><span class="t Array">[]</span> <span class="i">types</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">ArgList</span></span> <span class="i">args</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">formatWithDefaultBuffer</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">fmt</span></span>, <span class="o "><span class="t Identifier"><span class="i">TypeInfo</span></span><span class="t Array">[]</span> <span class="i">types</span></span>, <span class="o "><span class="t Identifier"><span class="i">ArgList</span></span> <span class="i">args</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">2048</span></span>]</span> <span class="i">tmp</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
             <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">formatWithBuffer</span></span>(<span class="i">level</span>, <span class="i">fmt</span>, <span class="i">types</span>, <span class="i">args</span>, <span class="i">tmp</span>)</span>;</span>
         }</span></span></span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">formatWithProvidedBuffer</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">fmt</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">TypeInfo</span></span><span class="t Array">[]</span> <span class="i">types</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">ArgList</span></span> <span class="i">args</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">formatWithProvidedBuffer</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">fmt</span></span>, <span class="o "><span class="t Identifier"><span class="i">TypeInfo</span></span><span class="t Array">[]</span> <span class="i">types</span></span>, <span class="o "><span class="t Identifier"><span class="i">ArgList</span></span> <span class="i">args</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">formatWithBuffer</span></span>(<span class="i">level</span>, <span class="i">fmt</span>, <span class="i">types</span>, <span class="i">args</span>, <span class="i">buffer_</span>)</span>;</span>
             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">buffer_</span></span>.<span class="e Identifier"><span class="i">length</span></span> = <span class="e Identifier"><span class="i">buffer_size_</span></span></span>;</span>
         }</span></span></span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">formatWithBuffer</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">fmt</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">TypeInfo</span></span><span class="t Array">[]</span> <span class="i">types</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">ArgList</span></span> <span class="i">args</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">buf</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">formatWithBuffer</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">fmt</span></span>, <span class="o "><span class="t Identifier"><span class="i">TypeInfo</span></span><span class="t Array">[]</span> <span class="i">types</span></span>, <span class="o "><span class="t Identifier"><span class="i">ArgList</span></span> <span class="i">args</span></span>, <span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">buf</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">append</span></span> (<span class="i">level</span>, <span class="i">Format</span>.<span class="i">vprint</span> (<span class="i">buf</span>, <span class="i">fmt</span>, <span class="i">types</span>, <span class="i">args</span>))</span>;</span>
         }</span></span></span>
@@ -952,7 +952,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isChildOf</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">candidate</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isChildOf</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">candidate</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">len</span> = <span class="e Identifier"><span class="i">candidate</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span></span>
 
@@ -973,7 +973,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isCloserAncestor</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">other</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isCloserAncestor</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">other</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">name</span> = <span class="e Identifier"><span class="i">other</span></span>.<span class="e Identifier"><span class="i">name_</span></span>;</span></span>
                 <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">isChildOf</span></span> (<span class="i">name</span>)</span>)
@@ -1012,7 +1012,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">name</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">name</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name_</span></span> = <span class="e Identifier"><span class="i">name</span></span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">address_</span></span> = <span class="e String"><span class="sl">"network"</span></span></span>;</span>
@@ -1026,7 +1026,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">label</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">label</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e String"><span class="sl">""</span></span>;</span>
         }</span></span></span>
@@ -1036,7 +1036,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">enabled</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">test</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">enabled</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">test</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Rel"><span class="e Identifier"><span class="i">test</span></span> &gt;= <span class="e Identifier"><span class="i">level</span></span></span>;</span>
         }</span></span></span>
@@ -1047,7 +1047,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">name_</span></span>;</span>
         }</span></span></span>
@@ -1058,7 +1058,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">name</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">name</span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">name</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">name</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">name_</span></span> = <span class="e Identifier"><span class="i">name</span></span></span>;</span>
         }</span></span></span>
@@ -1070,7 +1070,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">address</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">address</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">address_</span></span>;</span>
         }</span></span></span>
@@ -1082,7 +1082,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">address</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">address</span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">address</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">address</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">address_</span></span> = <span class="e Identifier"><span class="i">address</span></span></span>;</span>
         }</span></span></span>
@@ -1094,7 +1094,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span>.<span class="t Identifier"><span class="i">Context</span></span> <span class="i">context</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span>.<span class="t Identifier"><span class="i">Context</span></span> <span class="i">context</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
         	<span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">context_</span></span>;</span>
         }</span></span></span>
@@ -1107,7 +1107,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">context</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Logger</span></span>.<span class="t Identifier"><span class="i">Context</span></span> <span class="i">context</span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">context</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Logger</span></span>.<span class="t Identifier"><span class="i">Context</span></span> <span class="i">context</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
         	<span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">context_</span></span> = <span class="e Identifier"><span class="i">context</span></span></span>;</span>
         }</span></span></span>
@@ -1118,7 +1118,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">root</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">root</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">root_</span></span>;</span>
         }</span></span></span>
@@ -1133,7 +1133,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">lookup</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">label</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">lookup</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">label</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">label</span></span>.<span class="e Identifier"><span class="i">length</span></span>)
                     <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">inject</span></span> (<span class="i">label</span>, (<span class="k">const</span>(<span class="k">char</span>[]) <span class="i">name</span>)
@@ -1147,7 +1147,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">Logger</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span> <span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">Logger</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">ret</span>;</span></span>
 
@@ -1164,7 +1164,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">inject</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">label</span></span>, <span class="o Parameter"><span class="k">scope</span> <span class="t Identifier"><span class="i">Logger</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">name</span></span>)</span></span> <span class="i">dg</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">inject</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">label</span></span>, <span class="o "><span class="k">scope</span> <span class="t Identifier"><span class="i">Logger</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">name</span></span>)</span></span> <span class="i">dg</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Synchronized"><span class="k">synchronized</span>(<span class="e This"><span class="k">this</span></span>)
                 <span class="s Scope"><span class="s Compound">{
@@ -1216,7 +1216,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">insert</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">l</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">insert</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">l</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">prev</span>,
                        <span class="i">curr</span> = <span class="e Identifier"><span class="i">root</span></span>;</span></span>
@@ -1256,9 +1256,9 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">update</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">changed</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">force</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">update</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">changed</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">force</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">logger</span></span></span>; <span class="e This"><span class="k">this</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">logger</span></span></span>; <span class="e This"><span class="k">this</span></span>)
                          <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">propagate</span></span> (<span class="i">logger</span>, <span class="i">changed</span>, <span class="i">force</span>)</span>;</span></span></span>
         }</span></span></span>
 
@@ -1270,7 +1270,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">propagate</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">logger</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">changed</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">force</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">propagate</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">logger</span></span>, <span class="o "><span class="t Identifier"><span class="i">Logger</span></span> <span class="i">changed</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">force</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">// is the changed instance a better match for our parent?</span>
                 <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">logger</span></span>.<span class="e Identifier"><span class="i">isCloserAncestor</span></span> (<span class="i">changed</span>)</span>)
@@ -1314,7 +1314,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">set</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Hierarchy</span></span> <span class="i">host</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">msg</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">name</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">set</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Hierarchy</span></span> <span class="i">host</span></span>, <span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">msg</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">name</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">time_</span></span> = <span class="e Identifier"><span class="i">Log</span></span>.<span class="e Identifier"><span class="i">time</span></span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">level_</span></span> = <span class="e Identifier"><span class="i">level</span></span></span>;</span>
@@ -1329,7 +1329,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">toString</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">toString</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">msg_</span></span>;</span>
         }</span></span></span>
@@ -1340,7 +1340,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">name_</span></span>;</span>
         }</span></span></span>
@@ -1351,7 +1351,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">level_</span></span>;</span>
         }</span></span></span>
@@ -1362,7 +1362,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Hierarchy</span></span> <span class="i">host</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Hierarchy</span></span> <span class="i">host</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">host_</span></span>;</span>
         }</span></span></span>
@@ -1374,7 +1374,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">span</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">span</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Minus"><span class="e Identifier"><span class="i">time_</span></span> - <span class="e Identifier"><span class="i">Log</span></span>.<span class="e Identifier"><span class="i">beginTime</span></span></span>;</span>
         }</span></span></span>
@@ -1385,7 +1385,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">time_</span></span>;</span>
         }</span></span></span>
@@ -1396,7 +1396,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">started</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">started</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">Log</span></span>.<span class="e Identifier"><span class="i">beginTime</span></span>;</span>
         }</span></span></span>
@@ -1407,7 +1407,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">levelName</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">levelName</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Index"><span class="e Identifier"><span class="i">Log</span></span>.<span class="e Identifier"><span class="i">LevelNames</span></span>[<span class="e Identifier"><span class="i">level_</span></span>]</span>;</span>
         }</span></span></span>
@@ -1418,7 +1418,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">toMilli</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">s</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">time</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">toMilli</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">s</span></span>, <span class="o "><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">time</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Rel"><span class="e Identifier"><span class="i">s</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">long</span></span> <span class="i">ms</span> = <span class="e Identifier"><span class="i">time</span></span>.<span class="e Identifier"><span class="i">millis</span></span>;</span></span>
@@ -1462,7 +1462,7 @@
 
         <span class="d Interface"><span class="k">interface</span> <span class="i">Layout</span>
         <span class="d Compound">{
-                <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">format</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>, <span class="o Parameter"><span class="k">scope</span> <span class="t Identifier"><span class="i">size_t</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span></span>)</span></span> <span class="i">dg</span></span>)</span><span class="s FuncBody">;</span></span>
+                <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">format</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>, <span class="o "><span class="k">scope</span> <span class="t Identifier"><span class="i">size_t</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span></span>)</span></span> <span class="i">dg</span></span>)</span><span class="s FuncBody">;</span></span>
         }</span></span>
 
         <span class="bc">/***********************************************************************
@@ -1473,7 +1473,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Mask</span></span> <span class="i">mask</span> <span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Mask</span></span> <span class="i">mask</span> <span class="o ">()</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/***********************************************************************
 
@@ -1481,7 +1481,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o ">()</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/***********************************************************************
 
@@ -1489,7 +1489,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">append</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">append</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/***********************************************************************
 
@@ -1497,7 +1497,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">()</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">layout_</span></span> = <span class="e Identifier"><span class="i">generic</span></span></span>;</span>
         }</span></span></span>
@@ -1519,7 +1519,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">level</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">level_</span></span>;</span>
         }</span></span></span>
@@ -1530,7 +1530,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Appender</span></span> <span class="i">level</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Level</span></span> <span class="i">l</span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Appender</span></span> <span class="i">level</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Level</span></span> <span class="i">l</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">level_</span></span> = <span class="e Identifier"><span class="i">l</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -1545,7 +1545,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">protected</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Mask</span></span> <span class="i">register</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">tag</span></span>)</span>
+        <span class="d Protection"><span class="k">protected</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Mask</span></span> <span class="i">register</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">tag</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">static</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Mask</span></span> <span class="i">mask</span> = <span class="e Int"><span class="n">1</span></span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">static</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Mask</span></span><span class="t Array">[<span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span>]</span> <span class="i">registry</span>;</span></span>
@@ -1573,7 +1573,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">layout</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Layout</span></span> <span class="i">how</span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">layout</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Layout</span></span> <span class="i">how</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">layout_</span></span> = <span class="e Cond"><span class="e Identifier"><span class="i">how</span></span> ? <span class="e Identifier"><span class="i">how</span></span> : <span class="e Identifier"><span class="i">generic</span></span></span></span>;</span>
         }</span></span></span>
@@ -1584,7 +1584,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Layout</span></span> <span class="i">layout</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Layout</span></span> <span class="i">layout</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">layout_</span></span>;</span>
         }</span></span></span>
@@ -1595,7 +1595,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">next</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Appender</span></span> <span class="i">appender</span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">next</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Appender</span></span> <span class="i">appender</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">next_</span></span> = <span class="e Identifier"><span class="i">appender</span></span></span>;</span>
         }</span></span></span>
@@ -1606,7 +1606,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Appender</span></span> <span class="i">next</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Appender</span></span> <span class="i">next</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">next_</span></span>;</span>
         }</span></span></span>
@@ -1618,7 +1618,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
         }</span></span></span>
 }</span></span>
@@ -1641,7 +1641,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Layout</span></span> <span class="i">how</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Layout</span></span> <span class="i">how</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">mask_</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">register</span></span> (<span class="i">name</span>)</span></span>;</span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">layout</span></span> (<span class="i">how</span>);</span></span>
@@ -1653,7 +1653,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Mask</span></span> <span class="i">mask</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Mask</span></span> <span class="i">mask</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">mask_</span></span>;</span>
         }</span></span></span>
@@ -1664,7 +1664,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">classinfo</span></span>.<span class="e Identifier"><span class="i">name</span></span>;</span>
         }</span></span></span>
@@ -1675,7 +1675,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">append</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>)</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">append</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">layout</span></span>.<span class="e Identifier"><span class="i">format</span></span> (<span class="i">event</span>, (<span class="k">const</span>(<span class="k">void</span>)[]){<span class="k">return</span> <span class="k">cast</span>(<span class="i">size_t</span>) <span class="n">0</span>;})</span>;</span>
         }</span></span></span>
@@ -1700,7 +1700,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">flush</span> = <span class="e Bool"><span class="k">false</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Appender</span></span>.<span class="t Identifier"><span class="i">Layout</span></span> <span class="i">how</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">flush</span> = <span class="e Bool"><span class="k">false</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">Appender</span></span>.<span class="t Identifier"><span class="i">Layout</span></span> <span class="i">how</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Identifier"><span class="i">stream</span></span>)</span>;</span>
 
@@ -1716,7 +1716,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Mask</span></span> <span class="i">mask</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Mask</span></span> <span class="i">mask</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">mask_</span></span>;</span>
         }</span></span></span>
@@ -1727,7 +1727,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">classinfo</span></span>.<span class="e Identifier"><span class="i">name</span></span>;</span>
         }</span></span></span>
@@ -1738,7 +1738,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">append</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>)</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">append</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Version"><span class="k">version</span>(<span class="i">Win32</span>)
                         <span class="s Declaration"><span class="d StorageClass"><span class="k">immutable</span></span> <span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">Eol</span> = <span class="e String"><span class="sl">"<span class="es">\r</span><span class="es">\n</span>"</span></span>;</span></span>
@@ -1770,7 +1770,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">format</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>, <span class="o Parameter"><span class="k">scope</span> <span class="t Identifier"><span class="i">size_t</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span></span>)</span></span> <span class="i">dg</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">format</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>, <span class="o "><span class="k">scope</span> <span class="t Identifier"><span class="i">size_t</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span></span>)</span></span> <span class="i">dg</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">20</span></span>]</span> <span class="i">tmp</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
 
@@ -1795,7 +1795,7 @@
 <span class="d Compound">{
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Console</span>;</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Log</span></span>.<span class="e Identifier"><span class="i">config</span></span> (<span class="i">Cerr</span>.<span class="i">stream</span>)</span>;</span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">log</span> = <span class="e Call"><span class="e Identifier"><span class="i">Log</span></span>.<span class="e Identifier"><span class="i">lookup</span></span> (<span class="sl">"fu.bar"</span>)</span>;</span></span>

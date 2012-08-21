@@ -45,7 +45,7 @@
 <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">util</span>.<span class="i">digest</span>.<span class="i">Sha1</span>;</span>
 
 <span class="bc">/** Generates a UUID as described above. */</span>
-<span class="d Function"><span class="t Identifier"><span class="i">Uuid</span></span> <span class="i">newUuid</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Uuid</span></span> <span class="i">namespace</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">name</span></span>)</span>
+<span class="d Function"><span class="t Identifier"><span class="i">Uuid</span></span> <span class="i">newUuid</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Uuid</span></span> <span class="i">namespace</span></span>, <span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">name</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">Uuid</span></span>.<span class="e Identifier"><span class="i">byName</span></span>(<span class="i">namespace</span>, <span class="i">name</span>, <span class="k">new</span> <span class="i">Sha1</span>, <span class="k">cast</span>(<span class="k">ubyte</span>)<span class="n">5</span>)</span>;</span>
 }</span></span></span></span>

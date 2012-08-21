@@ -60,7 +60,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">()</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span> (<span class="i">AddressFamily</span>.<span class="i">INET</span>, <span class="i">SocketType</span>.<span class="i">DGRAM</span>, <span class="i">ProtocolType</span>.<span class="i">IP</span>)</span>;</span>
         }</span></span></span>
@@ -76,7 +76,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">read</span></span> (<span class="i">src</span>, <span class="k">null</span>)</span>;</span>
         }</span></span></span>
@@ -93,7 +93,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Address</span></span> <span class="i">from</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span></span>, <span class="o "><span class="t Identifier"><span class="i">Address</span></span> <span class="i">from</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">count</span>;</span></span>
 
@@ -118,7 +118,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">write</span></span> (<span class="i">src</span>, <span class="k">null</span>)</span>;</span>
         }</span></span></span>
@@ -133,7 +133,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Address</span></span> <span class="i">to</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>, <span class="o "><span class="t Identifier"><span class="i">Address</span></span> <span class="i">to</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">count</span> = <span class="e Identifier"><span class="i">Eof</span></span>;</span></span>
                 
@@ -159,7 +159,7 @@
 
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">net</span>.<span class="i">InternetAddress</span>;</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">addr</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">InternetAddress</span></span> (<span class="e String"><span class="sl">"127.0.0.1"</span></span>, <span class="e Int"><span class="n">8080</span></span>)</span>;</span></span>
 

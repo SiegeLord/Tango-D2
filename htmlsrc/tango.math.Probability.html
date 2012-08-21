@@ -67,13 +67,13 @@ $(LINK http://www.netlib.org/cephes/ldoubdoc.html),
 G. Marsaglia, "Evaluating the Normal Distribution",
 Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
 */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">normalDistribution</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">normalDistribution</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">ErrorFunction</span></span>.<span class="e Identifier"><span class="i">normalDistributionImpl</span></span>(<span class="i">a</span>)</span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">normalDistributionCompl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">normalDistributionCompl</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Sign">-<span class="e Identifier"><span class="i">tango</span></span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">ErrorFunction</span></span>.<span class="e Identifier"><span class="i">normalDistributionImpl</span></span>(-<span class="i">a</span>)</span>;</span>
 }</span></span></span>
@@ -91,13 +91,13 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
  * For larger arguments,  x/sqrt(2 pi) = w + w^3 R(w^2)/S(w^2)) ,
  * where w = p - 0.5 .
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">normalDistributionInv</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">normalDistributionInv</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">ErrorFunction</span></span>.<span class="e Identifier"><span class="i">normalDistributionInvImpl</span></span>(<span class="i">p</span>)</span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">normalDistributionComplInv</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">normalDistributionComplInv</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Sign">-<span class="e Identifier"><span class="i">tango</span></span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">ErrorFunction</span></span>.<span class="e Identifier"><span class="i">normalDistributionInvImpl</span></span>(-<span class="i">p</span>)</span>;</span>
 }</span></span></span>
@@ -131,7 +131,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
  * right tail of the density is found by calling the function
  * with -t instead of t.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">studentsTDistribution</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">nu</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">t</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">studentsTDistribution</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">nu</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">t</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span><span class="s Compound">{
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">nu</span></span>&gt;<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
 }</span>
@@ -208,7 +208,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
  * nu = degrees of freedom. Must be &gt;1
  * p  = probability. 0 &lt; p &lt; 1
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">studentsTDistributionInv</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">nu</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">studentsTDistributionInv</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">nu</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span> )</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">nu</span></span>&gt;<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&gt;=<span class="e Float"><span class="n">0.0L</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&lt;=<span class="e Float"><span class="n">1.0L</span></span></span></span>)</span>;</span>
@@ -255,7 +255,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
 <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e Call"><span class="e Identifier"><span class="i">studentsTDistribution</span></span>(<span class="n">2</span>, -<span class="n">5.4</span>)</span> == <span class="e Mul"><span class="e Float"><span class="n">0.5L</span></span> * <span class="e Paren">(<span class="e Minus"><span class="e Int"><span class="n">1</span></span> - <span class="e Div"><span class="e Float"><span class="n">5.4L</span></span>/<span class="e Call"><span class="e Identifier"><span class="i">sqrt</span></span>(<span class="n">2.0L</span> + <span class="n">5.4</span>*<span class="n">5.4</span>)</span></span></span>)</span></span></span> )</span>;</span>
 
 <span class="lc">// return true if a==b to given number of places.</span>
-<span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isfeqabs</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">diff</span></span>)</span>
+<span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isfeqabs</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">diff</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
   <span class="s Return"><span class="k">return</span> <span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">fabs</span></span>(<span class="i">a</span>-<span class="i">b</span>)</span> &lt; <span class="e Identifier"><span class="i">diff</span></span></span>;</span>
 }</span></span></span></span>
@@ -307,7 +307,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
  *  df2 = Degrees of freedom of the second variable. Must be &gt;= 1
  *  x  = Must be &gt;= 0
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">fDistribution</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">df1</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">df2</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">fDistribution</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">df1</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">df2</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
  <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">df1</span></span>&gt;=<span class="e Int"><span class="n">1</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">df2</span></span>&gt;=<span class="e Int"><span class="n">1</span></span></span></span>)</span>;</span>
  <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
@@ -321,7 +321,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">fDistributionCompl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">df1</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">df2</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">fDistributionCompl</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">df1</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">df2</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
  <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">df1</span></span>&gt;=<span class="e Int"><span class="n">1</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">df2</span></span>&gt;=<span class="e Int"><span class="n">1</span></span></span></span>)</span>;</span>
  <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
@@ -354,7 +354,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
 */</span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">fDistributionComplInv</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">df1</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">df2</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">fDistributionComplInv</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">df1</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">df2</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span> )</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
  <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">df1</span></span>&gt;=<span class="e Int"><span class="n">1</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">df2</span></span>&gt;=<span class="e Int"><span class="n">1</span></span></span></span>)</span>;</span>
  <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&lt;=<span class="e Float"><span class="n">1.0</span></span></span></span>)</span>;</span>
@@ -407,7 +407,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
  *  x  = the $(POWER &amp;chi;,2) variable. Must be positive.
  *
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">chiSqrDistribution</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">v</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">chiSqrDistribution</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">v</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
  <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
  <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">v</span></span>&gt;=<span class="e Float"><span class="n">1.0</span></span></span>)</span>;</span>
@@ -417,7 +417,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">chiSqrDistributionCompl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">v</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">chiSqrDistributionCompl</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">v</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
  <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
  <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">v</span></span>&gt;=<span class="e Float"><span class="n">1.0</span></span></span>)</span>;</span>
@@ -438,7 +438,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
  * v = Degrees of freedom. Must be positive.
  *
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">chiSqrDistributionComplInv</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">v</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">chiSqrDistributionComplInv</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">v</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
   <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&lt;=<span class="e Float"><span class="n">1.0L</span></span></span></span>)</span>;</span>
   <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">v</span></span>&gt;=<span class="e Float"><span class="n">1.0L</span></span></span>)</span>;</span>
@@ -466,7 +466,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
  *
  * x must be greater than 0.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">gammaDistribution</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">gammaDistribution</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
 }</span>
@@ -475,7 +475,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">gammaDistributionCompl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">gammaDistributionCompl</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
 }</span>
@@ -510,25 +510,25 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
  *
  * The inverse finds the value of x for which betaDistribution(a,b,x) - y = 0
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaDistribution</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaDistribution</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span> )</span>
 <span class="s FuncBody"><span class="s Compound">{
    <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">betaIncomplete</span></span>(<span class="i">a</span>, <span class="i">b</span>, <span class="i">x</span> )</span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaDistributionCompl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaDistributionCompl</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">betaIncomplete</span></span>(<span class="i">b</span>, <span class="i">a</span>, <span class="n">1</span>-<span class="i">x</span>)</span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaDistributionInv</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaDistributionInv</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">betaIncompleteInv</span></span>(<span class="i">a</span>, <span class="i">b</span>, <span class="i">y</span>)</span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaDistributionComplInv</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">betaDistributionComplInv</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">b</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Minus"><span class="e Int"><span class="n">1</span></span>-<span class="e Call"><span class="e Identifier"><span class="i">betaIncompleteInv</span></span>(<span class="i">b</span>, <span class="i">a</span>, <span class="i">y</span>)</span></span>;</span>
 }</span></span></span>
@@ -559,7 +559,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
  *
  * The arguments must both be positive.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">poissonDistribution</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">poissonDistribution</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span> )</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
   <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">k</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
   <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">m</span></span>&gt;<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
@@ -569,7 +569,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">poissonDistributionCompl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">poissonDistributionCompl</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">m</span></span> )</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
   <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">k</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
   <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">m</span></span>&gt;<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
@@ -579,7 +579,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">poissonDistributionInv</span><span class="o Parameters">( <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">poissonDistributionInv</span><span class="o ">( <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span> )</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
   <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">k</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
   <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&gt;=<span class="e Float"><span class="n">0.0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&lt;=<span class="e Float"><span class="n">1.0</span></span></span></span>)</span>;</span>
@@ -616,7 +616,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
  *
  * The arguments must be positive, with p ranging from 0 to 1, and k&lt;=n.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">binomialDistribution</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">binomialDistribution</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span> )</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&lt;=<span class="e Float"><span class="n">1.0</span></span></span></span>)</span>;</span> <span class="lc">// domain error</span>
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">k</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">k</span></span>&lt;=<span class="e Identifier"><span class="i">n</span></span></span></span>)</span>;</span>
@@ -647,7 +647,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
 }</span></span>
 
  <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">binomialDistributionCompl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">binomialDistributionCompl</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span> )</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&lt;=<span class="e Float"><span class="n">1.0</span></span></span></span>)</span>;</span> <span class="lc">// domain error</span>
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">k</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">k</span></span>&lt;=<span class="e Identifier"><span class="i">n</span></span></span></span>)</span>;</span>
@@ -693,7 +693,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
  *
  * The arguments must be positive, with 0 &lt;= y &lt;= 1, and k &lt;= n.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">binomialDistributionInv</span><span class="o Parameters">( <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">binomialDistributionInv</span><span class="o ">( <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span> )</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">y</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">y</span></span>&lt;=<span class="e Float"><span class="n">1.0</span></span></span></span>)</span>;</span> <span class="lc">// domain error</span>
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">k</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">k</span></span>&lt;=<span class="e Identifier"><span class="i">n</span></span></span></span>)</span>;</span>
@@ -754,7 +754,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
  * $(LINK http://mathworld.wolfram.com/NegativeBinomialDistribution.html)
  */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">negativeBinomialDistribution</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">negativeBinomialDistribution</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span> )</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&lt;=<span class="e Float"><span class="n">1.0</span></span></span></span>)</span>;</span> <span class="lc">// domain error</span>
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">k</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
@@ -765,7 +765,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">negativeBinomialDistributionInv</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span> )</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">negativeBinomialDistributionInv</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">k</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span> )</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&lt;=<span class="e Float"><span class="n">1.0</span></span></span></span>)</span>;</span> <span class="lc">// domain error</span>
    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">k</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span>)</span>;</span>

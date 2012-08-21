@@ -75,7 +75,7 @@ int poll(pollfd[], nfds_t, int);
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">POLLHUP</span>       = <span class="e Int"><span class="n">0x010</span></span>;</span>
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">POLLNVAL</span>      = <span class="e Int"><span class="n">0x020</span></span>;</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">poll</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pollfd</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">nfds_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">poll</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pollfd</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">nfds_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> )
 <span class="d Compound">{
@@ -90,26 +90,26 @@ int poll(pollfd[], nfds_t, int);
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLIN</span></span>      = <span class="e Int"><span class="n">0x0001</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLPRI</span></span>     = <span class="e Int"><span class="n">0x0002</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLOUT</span></span>     = <span class="e Int"><span class="n">0x0004</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLRDNORM</span></span>  = <span class="e Int"><span class="n">0x0040</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLWRNORM</span></span>  = <span class="e Identifier"><span class="i">POLLOUT</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLRDBAND</span></span>  = <span class="e Int"><span class="n">0x0080</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLWRBAND</span></span>  = <span class="e Int"><span class="n">0x0100</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLEXTEND</span></span>  = <span class="e Int"><span class="n">0x0200</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLATTRIB</span></span>  = <span class="e Int"><span class="n">0x0400</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLNLINK</span></span>   = <span class="e Int"><span class="n">0x0800</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLWRITE</span></span>   = <span class="e Int"><span class="n">0x1000</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLERR</span></span>     = <span class="e Int"><span class="n">0x0008</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLHUP</span></span>     = <span class="e Int"><span class="n">0x0010</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLNVAL</span></span>    = <span class="e Int"><span class="n">0x0020</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLIN</span>      = <span class="e Int"><span class="n">0x0001</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLPRI</span>     = <span class="e Int"><span class="n">0x0002</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLOUT</span>     = <span class="e Int"><span class="n">0x0004</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLRDNORM</span>  = <span class="e Int"><span class="n">0x0040</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLWRNORM</span>  = <span class="e Identifier"><span class="i">POLLOUT</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLRDBAND</span>  = <span class="e Int"><span class="n">0x0080</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLWRBAND</span>  = <span class="e Int"><span class="n">0x0100</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLEXTEND</span>  = <span class="e Int"><span class="n">0x0200</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLATTRIB</span>  = <span class="e Int"><span class="n">0x0400</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLNLINK</span>   = <span class="e Int"><span class="n">0x0800</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLWRITE</span>   = <span class="e Int"><span class="n">0x1000</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLERR</span>     = <span class="e Int"><span class="n">0x0008</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLHUP</span>     = <span class="e Int"><span class="n">0x0010</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLNVAL</span>    = <span class="e Int"><span class="n">0x0020</span></span></span>,
 
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLSTANDARD</span></span> = <span class="e Paren">(<span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Identifier"><span class="i">POLLIN</span></span>|<span class="e Identifier"><span class="i">POLLPRI</span></span></span>|<span class="e Identifier"><span class="i">POLLOUT</span></span></span>|<span class="e Identifier"><span class="i">POLLRDNORM</span></span></span>|<span class="e Identifier"><span class="i">POLLRDBAND</span></span></span>|
+        <span class="d EnumMember"><span class="i">POLLSTANDARD</span> = <span class="e Paren">(<span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Identifier"><span class="i">POLLIN</span></span>|<span class="e Identifier"><span class="i">POLLPRI</span></span></span>|<span class="e Identifier"><span class="i">POLLOUT</span></span></span>|<span class="e Identifier"><span class="i">POLLRDNORM</span></span></span>|<span class="e Identifier"><span class="i">POLLRDBAND</span></span></span>|
                         <span class="e Identifier"><span class="i">POLLWRBAND</span></span></span>|<span class="e Identifier"><span class="i">POLLERR</span></span></span>|<span class="e Identifier"><span class="i">POLLHUP</span></span></span>|<span class="e Identifier"><span class="i">POLLNVAL</span></span></span>)</span></span>
     }</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">poll</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pollfd</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">nfds_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">poll</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pollfd</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">nfds_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
@@ -124,26 +124,26 @@ int poll(pollfd[], nfds_t, int);
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLIN</span></span>      = <span class="e Int"><span class="n">0x0001</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLPRI</span></span>     = <span class="e Int"><span class="n">0x0002</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLOUT</span></span>     = <span class="e Int"><span class="n">0x0004</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLRDNORM</span></span>  = <span class="e Int"><span class="n">0x0040</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLWRNORM</span></span>  = <span class="e Identifier"><span class="i">POLLOUT</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLRDBAND</span></span>  = <span class="e Int"><span class="n">0x0080</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLWRBAND</span></span>  = <span class="e Int"><span class="n">0x0100</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLIN</span>      = <span class="e Int"><span class="n">0x0001</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLPRI</span>     = <span class="e Int"><span class="n">0x0002</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLOUT</span>     = <span class="e Int"><span class="n">0x0004</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLRDNORM</span>  = <span class="e Int"><span class="n">0x0040</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLWRNORM</span>  = <span class="e Identifier"><span class="i">POLLOUT</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLRDBAND</span>  = <span class="e Int"><span class="n">0x0080</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLWRBAND</span>  = <span class="e Int"><span class="n">0x0100</span></span></span>,
         <span class="lc">//POLLEXTEND  = 0x0200,</span>
         <span class="lc">//POLLATTRIB  = 0x0400,</span>
         <span class="lc">//POLLNLINK   = 0x0800,</span>
         <span class="lc">//POLLWRITE   = 0x1000,</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLERR</span></span>     = <span class="e Int"><span class="n">0x0008</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLHUP</span></span>     = <span class="e Int"><span class="n">0x0010</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLNVAL</span></span>    = <span class="e Int"><span class="n">0x0020</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLERR</span>     = <span class="e Int"><span class="n">0x0008</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLHUP</span>     = <span class="e Int"><span class="n">0x0010</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLNVAL</span>    = <span class="e Int"><span class="n">0x0020</span></span></span>,
 
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLSTANDARD</span></span> = <span class="e Paren">(<span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Identifier"><span class="i">POLLIN</span></span>|<span class="e Identifier"><span class="i">POLLPRI</span></span></span>|<span class="e Identifier"><span class="i">POLLOUT</span></span></span>|<span class="e Identifier"><span class="i">POLLRDNORM</span></span></span>|<span class="e Identifier"><span class="i">POLLRDBAND</span></span></span>|
+        <span class="d EnumMember"><span class="i">POLLSTANDARD</span> = <span class="e Paren">(<span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Identifier"><span class="i">POLLIN</span></span>|<span class="e Identifier"><span class="i">POLLPRI</span></span></span>|<span class="e Identifier"><span class="i">POLLOUT</span></span></span>|<span class="e Identifier"><span class="i">POLLRDNORM</span></span></span>|<span class="e Identifier"><span class="i">POLLRDBAND</span></span></span>|
 		<span class="e Identifier"><span class="i">POLLWRBAND</span></span></span>|<span class="e Identifier"><span class="i">POLLERR</span></span></span>|<span class="e Identifier"><span class="i">POLLHUP</span></span></span>|<span class="e Identifier"><span class="i">POLLNVAL</span></span></span>)</span></span>
     }</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">poll</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pollfd</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">nfds_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">poll</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pollfd</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">nfds_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
@@ -160,25 +160,25 @@ int poll(pollfd[], nfds_t, int);
 
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLIN</span></span>      = <span class="e Int"><span class="n">0x0001</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLPRI</span></span>     = <span class="e Int"><span class="n">0x0002</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLOUT</span></span>     = <span class="e Int"><span class="n">0x0004</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLRDNORM</span></span>  = <span class="e Int"><span class="n">0x0040</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLWRNORM</span></span>  = <span class="e Identifier"><span class="i">POLLOUT</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLRDBAND</span></span>  = <span class="e Int"><span class="n">0x0080</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLWRBAND</span></span>  = <span class="e Int"><span class="n">0x0100</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLIN</span>      = <span class="e Int"><span class="n">0x0001</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLPRI</span>     = <span class="e Int"><span class="n">0x0002</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLOUT</span>     = <span class="e Int"><span class="n">0x0004</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLRDNORM</span>  = <span class="e Int"><span class="n">0x0040</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLWRNORM</span>  = <span class="e Identifier"><span class="i">POLLOUT</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLRDBAND</span>  = <span class="e Int"><span class="n">0x0080</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLWRBAND</span>  = <span class="e Int"><span class="n">0x0100</span></span></span>,
         <span class="lc">//POLLEXTEND  = 0x0200,</span>
         <span class="lc">//POLLATTRIB  = 0x0400,</span>
         <span class="lc">//POLLNLINK   = 0x0800,</span>
         <span class="lc">//POLLWRITE   = 0x1000,</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLERR</span></span>     = <span class="e Int"><span class="n">0x0008</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLHUP</span></span>     = <span class="e Int"><span class="n">0x0010</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLNVAL</span></span>    = <span class="e Int"><span class="n">0x0020</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLERR</span>     = <span class="e Int"><span class="n">0x0008</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLHUP</span>     = <span class="e Int"><span class="n">0x0010</span></span></span>,
+        <span class="d EnumMember"><span class="i">POLLNVAL</span>    = <span class="e Int"><span class="n">0x0020</span></span></span>,
 
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">POLLSTANDARD</span></span> = <span class="e Paren">(<span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Identifier"><span class="i">POLLIN</span></span>|<span class="e Identifier"><span class="i">POLLPRI</span></span></span>|<span class="e Identifier"><span class="i">POLLOUT</span></span></span>|<span class="e Identifier"><span class="i">POLLRDNORM</span></span></span>|<span class="e Identifier"><span class="i">POLLRDBAND</span></span></span>|<span class="e Identifier"><span class="i">POLLWRBAND</span></span></span>|<span class="e Identifier"><span class="i">POLLERR</span></span></span>|<span class="e Identifier"><span class="i">POLLHUP</span></span></span>|<span class="e Identifier"><span class="i">POLLNVAL</span></span></span>)</span></span>
+        <span class="d EnumMember"><span class="i">POLLSTANDARD</span> = <span class="e Paren">(<span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Or"><span class="e Identifier"><span class="i">POLLIN</span></span>|<span class="e Identifier"><span class="i">POLLPRI</span></span></span>|<span class="e Identifier"><span class="i">POLLOUT</span></span></span>|<span class="e Identifier"><span class="i">POLLRDNORM</span></span></span>|<span class="e Identifier"><span class="i">POLLRDBAND</span></span></span>|<span class="e Identifier"><span class="i">POLLWRBAND</span></span></span>|<span class="e Identifier"><span class="i">POLLERR</span></span></span>|<span class="e Identifier"><span class="i">POLLHUP</span></span></span>|<span class="e Identifier"><span class="i">POLLNVAL</span></span></span>)</span></span>
     }</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">poll</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pollfd</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">nfds_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">poll</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pollfd</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">nfds_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span></span></span></span>
 
 

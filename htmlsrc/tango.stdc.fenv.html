@@ -97,7 +97,7 @@
 	<span class="d Struct"><span class="k">struct</span> <span class="i">__fex_handler_struct</span>
 	<span class="d Compound">{
 		<span class="d Variables"><span class="t Integral"><span class="k">int</span></span>	<span class="i">__mode</span>;</span>
-		<span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">()</span></span> <span class="i">handler</span>;</span>
+		<span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o ">()</span></span> <span class="i">handler</span>;</span>
 	}</span></span>
 	<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">__fex_handler_struct</span></span><span class="t Array">[<span class="e Int"><span class="n">12</span></span>]</span> <span class="i">__fex_handler_t</span>;</span></span>
 	
@@ -116,17 +116,17 @@
 
 <span class="d Enum"><span class="k">enum</span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">FE_INVALID</span></span>      = <span class="e Int"><span class="n">1</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">FE_DENORMAL</span></span>     = <span class="e Int"><span class="n">2</span></span></span>, <span class="lc">// non-standard</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">FE_DIVBYZERO</span></span>    = <span class="e Int"><span class="n">4</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">FE_OVERFLOW</span></span>     = <span class="e Int"><span class="n">8</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">FE_UNDERFLOW</span></span>    = <span class="e Int"><span class="n">0x10</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">FE_INEXACT</span></span>      = <span class="e Int"><span class="n">0x20</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">FE_ALL_EXCEPT</span></span>   = <span class="e Int"><span class="n">0x3F</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">FE_TONEAREST</span></span>    = <span class="e Int"><span class="n">0</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">FE_UPWARD</span></span>       = <span class="e Int"><span class="n">0x800</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">FE_DOWNWARD</span></span>     = <span class="e Int"><span class="n">0x400</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">FE_TOWARDZERO</span></span>   = <span class="e Int"><span class="n">0xC00</span></span></span>,
+    <span class="d EnumMember"><span class="i">FE_INVALID</span>      = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">FE_DENORMAL</span>     = <span class="e Int"><span class="n">2</span></span></span>, <span class="lc">// non-standard</span>
+    <span class="d EnumMember"><span class="i">FE_DIVBYZERO</span>    = <span class="e Int"><span class="n">4</span></span></span>,
+    <span class="d EnumMember"><span class="i">FE_OVERFLOW</span>     = <span class="e Int"><span class="n">8</span></span></span>,
+    <span class="d EnumMember"><span class="i">FE_UNDERFLOW</span>    = <span class="e Int"><span class="n">0x10</span></span></span>,
+    <span class="d EnumMember"><span class="i">FE_INEXACT</span>      = <span class="e Int"><span class="n">0x20</span></span></span>,
+    <span class="d EnumMember"><span class="i">FE_ALL_EXCEPT</span>   = <span class="e Int"><span class="n">0x3F</span></span></span>,
+    <span class="d EnumMember"><span class="i">FE_TONEAREST</span>    = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="i">FE_UPWARD</span>       = <span class="e Int"><span class="n">0x800</span></span></span>,
+    <span class="d EnumMember"><span class="i">FE_DOWNWARD</span>     = <span class="e Int"><span class="n">0x400</span></span></span>,
+    <span class="d EnumMember"><span class="i">FE_TOWARDZERO</span>   = <span class="e Int"><span class="n">0xC00</span></span></span>,
 }</span>
 
 <span class="d Version"><span class="k">version</span>( <span class="i">Win32</span> )
@@ -158,21 +158,21 @@
     <span class="d StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Bool"><span class="k">false</span></span> );</span>
 }</span></span></span></span></span></span>
 
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">feraiseexcept</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">excepts</span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">feclearexcept</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">excepts</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">feraiseexcept</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">excepts</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">feclearexcept</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">excepts</span></span>)</span><span class="s FuncBody">;</span></span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">fetestexcept</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">excepts</span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">feholdexcept</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">fenv_t</span></span><span class="t Pointer">*</span> <span class="i">envp</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">fetestexcept</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">excepts</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">feholdexcept</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">fenv_t</span></span><span class="t Pointer">*</span> <span class="i">envp</span></span>)</span><span class="s FuncBody">;</span></span>
 
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fegetexceptflag</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">fexcept_t</span></span><span class="t Pointer">*</span> <span class="i">flagp</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">excepts</span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fesetexceptflag</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">fexcept_t</span></span><span class="t Pointer">*</span> <span class="i">flagp</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">excepts</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fegetexceptflag</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">fexcept_t</span></span><span class="t Pointer">*</span> <span class="i">flagp</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">excepts</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fesetexceptflag</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">fexcept_t</span></span><span class="t Pointer">*</span> <span class="i">flagp</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">excepts</span></span>)</span><span class="s FuncBody">;</span></span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">fegetround</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">fesetround</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">round</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">fegetround</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">fesetround</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">round</span></span>)</span><span class="s FuncBody">;</span></span>
 
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fegetenv</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">fenv_t</span></span><span class="t Pointer">*</span> <span class="i">envp</span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fesetenv</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">fenv_t</span></span><span class="t Pointer">*</span> <span class="i">envp</span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">feupdateenv</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">fenv_t</span></span><span class="t Pointer">*</span> <span class="i">envp</span></span>)</span><span class="s FuncBody">;</span></span></span></span>
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fegetenv</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">fenv_t</span></span><span class="t Pointer">*</span> <span class="i">envp</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">fesetenv</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">fenv_t</span></span><span class="t Pointer">*</span> <span class="i">envp</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">feupdateenv</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">fenv_t</span></span><span class="t Pointer">*</span> <span class="i">envp</span></span>)</span><span class="s FuncBody">;</span></span></span></span>
 
 </pre></td>
 </tr></table>

@@ -18,35 +18,35 @@
 <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">cpu_subtype_t</span>;</span></span>
 <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">cpu_threadtype_t</span>;</span></span>
 <span class="d Enum"><span class="k">enum</span>{
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_STATE_MAX</span></span> = <span class="e Int"><span class="n">4</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_STATE_USER</span></span> = <span class="e Int"><span class="n">0</span></span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_STATE_SYSTEM</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_STATE_IDLE</span></span> = <span class="e Int"><span class="n">2</span></span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_STATE_NICE</span></span> = <span class="e Int"><span class="n">3</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_STATE_MAX</span> = <span class="e Int"><span class="n">4</span></span></span>,
+    <span class="d EnumMember"><span class="i">CPU_STATE_USER</span> = <span class="e Int"><span class="n">0</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_STATE_SYSTEM</span> = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">CPU_STATE_IDLE</span> = <span class="e Int"><span class="n">2</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_STATE_NICE</span> = <span class="e Int"><span class="n">3</span></span></span> ,
 <span class="bc">/*
  * Capability bits used in the definition of cpu_type.
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_ARCH_MASK</span></span> = <span class="e Int"><span class="n">0xff000000</span></span></span> , <span class="bc">/* mask for architecture bits */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_ARCH_ABI64</span></span> = <span class="e Int"><span class="n">0x01000000</span></span></span>, <span class="bc">/* 64 bit ABI */</span>
+    <span class="d EnumMember"><span class="i">CPU_ARCH_MASK</span> = <span class="e Int"><span class="n">0xff000000</span></span></span> , <span class="bc">/* mask for architecture bits */</span>
+    <span class="d EnumMember"><span class="i">CPU_ARCH_ABI64</span> = <span class="e Int"><span class="n">0x01000000</span></span></span>, <span class="bc">/* 64 bit ABI */</span>
 <span class="bc">/*
  *  Machine types known by all.
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_TYPE_ANY</span></span> = <span class="e Paren">( <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span>)</span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_TYPE_VAX</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_TYPE_MC680x0</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">6</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_TYPE_X86</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">7</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_TYPE_I386</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">7</span></span>)</span></span> , <span class="bc">/* compatibility */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_TYPE_X86_64</span></span> = <span class="e Paren">(<span class="e Or"><span class="e Paren">( <span class="e Int"><span class="n">7</span></span>)</span> | <span class="e Int"><span class="n">0x01000000</span></span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_TYPE_ANY</span> = <span class="e Paren">( <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span>)</span></span>,
+    <span class="d EnumMember"><span class="i">CPU_TYPE_VAX</span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_TYPE_MC680x0</span> = <span class="e Paren">( <span class="e Int"><span class="n">6</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_TYPE_X86</span> = <span class="e Paren">( <span class="e Int"><span class="n">7</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_TYPE_I386</span> = <span class="e Paren">( <span class="e Int"><span class="n">7</span></span>)</span></span> , <span class="bc">/* compatibility */</span>
+    <span class="d EnumMember"><span class="i">CPU_TYPE_X86_64</span> = <span class="e Paren">(<span class="e Or"><span class="e Paren">( <span class="e Int"><span class="n">7</span></span>)</span> | <span class="e Int"><span class="n">0x01000000</span></span></span>)</span></span> ,
 <span class="bc">/* skip CPU_TYPE_MIPS       ( 8)    */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_TYPE_MC98000</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">10</span></span>)</span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_TYPE_HPPA</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">11</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_TYPE_ARM</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">12</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_TYPE_MC88000</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">13</span></span>)</span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_TYPE_SPARC</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">14</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_TYPE_I860</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">15</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_TYPE_MC98000</span> = <span class="e Paren">( <span class="e Int"><span class="n">10</span></span>)</span></span>,
+    <span class="d EnumMember"><span class="i">CPU_TYPE_HPPA</span> = <span class="e Paren">( <span class="e Int"><span class="n">11</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_TYPE_ARM</span> = <span class="e Paren">( <span class="e Int"><span class="n">12</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_TYPE_MC88000</span> = <span class="e Paren">( <span class="e Int"><span class="n">13</span></span>)</span></span>,
+    <span class="d EnumMember"><span class="i">CPU_TYPE_SPARC</span> = <span class="e Paren">( <span class="e Int"><span class="n">14</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_TYPE_I860</span> = <span class="e Paren">( <span class="e Int"><span class="n">15</span></span>)</span></span> ,
 <span class="bc">/* skip CPU_TYPE_ALPHA      ( 16)   */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_TYPE_POWERPC</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">18</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_TYPE_POWERPC64</span></span> = <span class="e Paren">(<span class="e Or"><span class="e Paren">( <span class="e Int"><span class="n">18</span></span>)</span> | <span class="e Int"><span class="n">0x01000000</span></span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_TYPE_POWERPC</span> = <span class="e Paren">( <span class="e Int"><span class="n">18</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_TYPE_POWERPC64</span> = <span class="e Paren">(<span class="e Or"><span class="e Paren">( <span class="e Int"><span class="n">18</span></span>)</span> | <span class="e Int"><span class="n">0x01000000</span></span></span>)</span></span> ,
 <span class="bc">/*
  *  Machine subtypes (these are defined here, instead of in a machine
  *  dependent directory, so that any program can get all definitions
@@ -55,8 +55,8 @@
 <span class="bc">/*
  * Capability bits used in the definition of cpu_subtype.
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MASK</span></span> = <span class="e Int"><span class="n">0xff000000</span></span></span> , <span class="bc">/* mask for feature flags */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_LIB64</span></span> = <span class="e Int"><span class="n">0x80000000</span></span></span>, <span class="bc">/* 64 bit libraries */</span>
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MASK</span> = <span class="e Int"><span class="n">0xff000000</span></span></span> , <span class="bc">/* mask for feature flags */</span>
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_LIB64</span> = <span class="e Int"><span class="n">0x80000000</span></span></span>, <span class="bc">/* 64 bit libraries */</span>
 <span class="bc">/*
  *  Object files that are hand-crafted to run on any
  *  implementation of an architecture are tagged with
@@ -68,31 +68,31 @@
  *  It is the responsibility of the implementor to make sure the
  *  software handles unsupported implementations elegantly.
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MULTIPLE</span></span> = <span class="e Paren">( <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_LITTLE_ENDIAN</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_BIG_ENDIAN</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MULTIPLE</span> = <span class="e Paren">( <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_LITTLE_ENDIAN</span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_BIG_ENDIAN</span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
 <span class="bc">/*
  *     Machine threadtypes.
  *     This is none - not defined - for most machine types/subtypes.
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_THREADTYPE_NONE</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span>,
+    <span class="d EnumMember"><span class="i">CPU_THREADTYPE_NONE</span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span>,
 <span class="bc">/*
  *  VAX subtypes (these do *not* necessary conform to the actual cpu
  *  ID assigned by DEC available via the SID register).
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_VAX_ALL</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_VAX780</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_VAX785</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">2</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_VAX750</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">3</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_VAX730</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">4</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_UVAXI</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">5</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_UVAXII</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">6</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_VAX8200</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">7</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_VAX8500</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">8</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_VAX8600</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">9</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_VAX8650</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">10</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_VAX8800</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">11</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_UVAXIII</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">12</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_VAX_ALL</span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_VAX780</span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_VAX785</span> = <span class="e Paren">( <span class="e Int"><span class="n">2</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_VAX750</span> = <span class="e Paren">( <span class="e Int"><span class="n">3</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_VAX730</span> = <span class="e Paren">( <span class="e Int"><span class="n">4</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_UVAXI</span> = <span class="e Paren">( <span class="e Int"><span class="n">5</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_UVAXII</span> = <span class="e Paren">( <span class="e Int"><span class="n">6</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_VAX8200</span> = <span class="e Paren">( <span class="e Int"><span class="n">7</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_VAX8500</span> = <span class="e Paren">( <span class="e Int"><span class="n">8</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_VAX8600</span> = <span class="e Paren">( <span class="e Int"><span class="n">9</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_VAX8650</span> = <span class="e Paren">( <span class="e Int"><span class="n">10</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_VAX8800</span> = <span class="e Paren">( <span class="e Int"><span class="n">11</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_UVAXIII</span> = <span class="e Paren">( <span class="e Int"><span class="n">12</span></span>)</span></span> ,
 <span class="bc">/*
  *  680x0 subtypes
  *
@@ -109,111 +109,111 @@
  *  CPU_SUBTYPE_MC68030_ONLY has been added to allow new object
  *  files to be tagged as containing 68030-specific instructions.
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MC680x0_ALL</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MC68030</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,<span class="bc">/* compat */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MC68040</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">2</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MC68030_ONLY</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">3</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MC680x0_ALL</span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MC68030</span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,<span class="bc">/* compat */</span>
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MC68040</span> = <span class="e Paren">( <span class="e Int"><span class="n">2</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MC68030_ONLY</span> = <span class="e Paren">( <span class="e Int"><span class="n">3</span></span>)</span></span> ,
 <span class="bc">/*
  *  I386 subtypes
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_I386_ALL</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">3</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_386</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">3</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_486</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">4</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_486SX</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">4</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">8</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_586</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">5</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_PENT</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">5</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_PENTPRO</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">6</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">1</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_PENTII_M3</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">6</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">3</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_PENTII_M5</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">6</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">5</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_CELERON</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">7</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">6</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_CELERON_MOBILE</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">7</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">7</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_PENTIUM_3</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">8</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_PENTIUM_3_M</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">8</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">1</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_PENTIUM_3_XEON</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">8</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">2</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_PENTIUM_M</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">9</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_PENTIUM_4</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">10</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_PENTIUM_4_M</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">10</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">1</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_ITANIUM</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">11</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_ITANIUM_2</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">11</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">1</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_XEON</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">12</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_XEON_MP</span></span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">12</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">1</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_I386_ALL</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">3</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_386</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">3</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_486</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">4</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_486SX</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">4</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">8</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_586</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">5</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_PENT</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">5</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_PENTPRO</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">6</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">1</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_PENTII_M3</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">6</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">3</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_PENTII_M5</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">6</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">5</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_CELERON</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">7</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">6</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_CELERON_MOBILE</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">7</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">7</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_PENTIUM_3</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">8</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_PENTIUM_3_M</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">8</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">1</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_PENTIUM_3_XEON</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">8</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">2</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_PENTIUM_M</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">9</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_PENTIUM_4</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">10</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_PENTIUM_4_M</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">10</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">1</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_ITANIUM</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">11</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_ITANIUM_2</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">11</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">1</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_XEON</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">12</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">0</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_XEON_MP</span> = <span class="e Paren">( <span class="e Plus"><span class="e Paren">(<span class="e Int"><span class="n">12</span></span>)</span> + <span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Int"><span class="n">1</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">4</span></span></span>)</span></span>)</span></span> ,
 }</span>
-<span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">extractSubtypeFamily</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">x</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">extractSubtypeFamily</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">x</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e And"><span class="e Paren">(<span class="e Identifier"><span class="i">x</span></span>)</span> &amp; <span class="e Int"><span class="n">15</span></span></span>)</span>;</span>
 }</span></span></span>
-<span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">extractCpuSubtypeModel</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">x</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">extractCpuSubtypeModel</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">x</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e RShift"><span class="e Paren">(<span class="e Identifier"><span class="i">x</span></span>)</span> &gt;&gt; <span class="e Int"><span class="n">4</span></span></span>)</span>;</span>
 }</span></span></span>
 <span class="d Enum"><span class="k">enum</span>{
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_INTEL_FAMILY_MAX</span></span> = <span class="e Int"><span class="n">15</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_INTEL_MODEL_ALL</span></span> = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_INTEL_FAMILY_MAX</span> = <span class="e Int"><span class="n">15</span></span></span>,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_INTEL_MODEL_ALL</span> = <span class="e Int"><span class="n">0</span></span></span>,
 <span class="bc">/*
  *  X86 subtypes.
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_X86_ALL</span></span> = <span class="e Paren">(<span class="e Int"><span class="n">3</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_X86_64_ALL</span></span> = <span class="e Paren">(<span class="e Int"><span class="n">3</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_X86_ARCH1</span></span> = <span class="e Paren">(<span class="e Int"><span class="n">4</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_THREADTYPE_INTEL_HTT</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_X86_ALL</span> = <span class="e Paren">(<span class="e Int"><span class="n">3</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_X86_64_ALL</span> = <span class="e Paren">(<span class="e Int"><span class="n">3</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_X86_ARCH1</span> = <span class="e Paren">(<span class="e Int"><span class="n">4</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_THREADTYPE_INTEL_HTT</span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
 <span class="bc">/*
  *  Mips subtypes.
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MIPS_ALL</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MIPS_R2300</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MIPS_R2600</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">2</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MIPS_R2800</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">3</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MIPS_R2000a</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">4</span></span>)</span></span> , <span class="bc">/* pmax */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MIPS_R2000</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">5</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MIPS_R3000a</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">6</span></span>)</span></span> , <span class="bc">/* 3max */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MIPS_R3000</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">7</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MIPS_ALL</span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MIPS_R2300</span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MIPS_R2600</span> = <span class="e Paren">( <span class="e Int"><span class="n">2</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MIPS_R2800</span> = <span class="e Paren">( <span class="e Int"><span class="n">3</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MIPS_R2000a</span> = <span class="e Paren">( <span class="e Int"><span class="n">4</span></span>)</span></span> , <span class="bc">/* pmax */</span>
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MIPS_R2000</span> = <span class="e Paren">( <span class="e Int"><span class="n">5</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MIPS_R3000a</span> = <span class="e Paren">( <span class="e Int"><span class="n">6</span></span>)</span></span> , <span class="bc">/* 3max */</span>
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MIPS_R3000</span> = <span class="e Paren">( <span class="e Int"><span class="n">7</span></span>)</span></span> ,
 <span class="bc">/*
  *  MC98000 (PowerPC) subtypes
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MC98000_ALL</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MC98601</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MC98000_ALL</span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MC98601</span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
 <span class="bc">/*
  *  HPPA subtypes for Hewlett-Packard HP-PA family of
  *  risc processors. Port by NeXT to 700 series. 
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_HPPA_ALL</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_HPPA_7100</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> , <span class="bc">/* compat */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_HPPA_7100LC</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span>,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_HPPA_ALL</span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_HPPA_7100</span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> , <span class="bc">/* compat */</span>
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_HPPA_7100LC</span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span>,
 <span class="bc">/*
  *  MC88000 subtypes.
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MC88000_ALL</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MC88100</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_MC88110</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">2</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MC88000_ALL</span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MC88100</span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_MC88110</span> = <span class="e Paren">( <span class="e Int"><span class="n">2</span></span>)</span></span> ,
 <span class="bc">/*
  *  SPARC subtypes
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_SPARC_ALL</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_SPARC_ALL</span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
 <span class="bc">/*
  *  I860 subtypes
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_I860_ALL</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_I860_860</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span>,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_I860_ALL</span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span>,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_I860_860</span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span>,
 <span class="bc">/*
  *  PowerPC subtypes
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_POWERPC_ALL</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_POWERPC_601</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_POWERPC_602</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">2</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_POWERPC_603</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">3</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_POWERPC_603e</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">4</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_POWERPC_603ev</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">5</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_POWERPC_604</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">6</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_POWERPC_604e</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">7</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_POWERPC_620</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">8</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_POWERPC_750</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">9</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_POWERPC_7400</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">10</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_POWERPC_7450</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">11</span></span>)</span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_POWERPC_970</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">100</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_POWERPC_ALL</span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_POWERPC_601</span> = <span class="e Paren">( <span class="e Int"><span class="n">1</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_POWERPC_602</span> = <span class="e Paren">( <span class="e Int"><span class="n">2</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_POWERPC_603</span> = <span class="e Paren">( <span class="e Int"><span class="n">3</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_POWERPC_603e</span> = <span class="e Paren">( <span class="e Int"><span class="n">4</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_POWERPC_603ev</span> = <span class="e Paren">( <span class="e Int"><span class="n">5</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_POWERPC_604</span> = <span class="e Paren">( <span class="e Int"><span class="n">6</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_POWERPC_604e</span> = <span class="e Paren">( <span class="e Int"><span class="n">7</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_POWERPC_620</span> = <span class="e Paren">( <span class="e Int"><span class="n">8</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_POWERPC_750</span> = <span class="e Paren">( <span class="e Int"><span class="n">9</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_POWERPC_7400</span> = <span class="e Paren">( <span class="e Int"><span class="n">10</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_POWERPC_7450</span> = <span class="e Paren">( <span class="e Int"><span class="n">11</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_POWERPC_970</span> = <span class="e Paren">( <span class="e Int"><span class="n">100</span></span>)</span></span> ,
 <span class="bc">/*
  *  ARM subtypes
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_ARM_ALL</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_ARM_V4T</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">5</span></span>)</span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPU_SUBTYPE_ARM_V6</span></span> = <span class="e Paren">( <span class="e Int"><span class="n">6</span></span>)</span></span> ,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_ARM_ALL</span> = <span class="e Paren">( <span class="e Int"><span class="n">0</span></span>)</span></span>,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_ARM_V4T</span> = <span class="e Paren">( <span class="e Int"><span class="n">5</span></span>)</span></span>,
+    <span class="d EnumMember"><span class="i">CPU_SUBTYPE_ARM_V6</span> = <span class="e Paren">( <span class="e Int"><span class="n">6</span></span>)</span></span> ,
 <span class="bc">/*
  *  CPU families (sysctl hw.cpufamily)
  *
@@ -225,23 +225,23 @@
  * Use feature flags (eg, hw.optional.altivec) to test for optional
  * functionality.
  */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_UNKNOWN</span></span> = <span class="e Int"><span class="n">0</span></span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_POWERPC_G3</span></span> = <span class="e Int"><span class="n">0xcee41549</span></span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_POWERPC_G4</span></span> = <span class="e Int"><span class="n">0x77c184ae</span></span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_POWERPC_G5</span></span> = <span class="e Int"><span class="n">0xed76d8aa</span></span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_INTEL_6_13</span></span> = <span class="e Int"><span class="n">0xaa33392b</span></span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_INTEL_6_14</span></span> = <span class="e Int"><span class="n">0x73d67300</span></span></span> ,<span class="bc">/* " Core Solo" and " Core Duo" (32-bit Pentium-M with SSE3) */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_INTEL_6_15</span></span> = <span class="e Int"><span class="n">0x426f69ef</span></span></span> ,<span class="bc">/* " Core 2 Duo" */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_INTEL_6_23</span></span> = <span class="e Int"><span class="n">0x78ea4fbc</span></span></span> ,<span class="bc">/* Penryn */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_INTEL_6_26</span></span> = <span class="e Int"><span class="n">0x6b5a4cd2</span></span></span> ,<span class="bc">/* Nehalem */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_ARM_9</span></span> = <span class="e Int"><span class="n">0xe73283ae</span></span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_ARM_11</span></span> = <span class="e Int"><span class="n">0x8ff620d8</span></span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_INTEL_YONAH</span></span> = <span class="e Int"><span class="n">0x73d67300</span></span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_INTEL_MEROM</span></span> = <span class="e Int"><span class="n">0x426f69ef</span></span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_INTEL_PENRYN</span></span> = <span class="e Int"><span class="n">0x78ea4fbc</span></span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_INTEL_NEHALEM</span></span> = <span class="e Int"><span class="n">0x6b5a4cd2</span></span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_INTEL_CORE</span></span> = <span class="e Int"><span class="n">0x73d67300</span></span></span> ,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">CPUFAMILY_INTEL_CORE2</span></span> = <span class="e Int"><span class="n">0x426f69ef</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPUFAMILY_UNKNOWN</span> = <span class="e Int"><span class="n">0</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPUFAMILY_POWERPC_G3</span> = <span class="e Int"><span class="n">0xcee41549</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPUFAMILY_POWERPC_G4</span> = <span class="e Int"><span class="n">0x77c184ae</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPUFAMILY_POWERPC_G5</span> = <span class="e Int"><span class="n">0xed76d8aa</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPUFAMILY_INTEL_6_13</span> = <span class="e Int"><span class="n">0xaa33392b</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPUFAMILY_INTEL_6_14</span> = <span class="e Int"><span class="n">0x73d67300</span></span></span> ,<span class="bc">/* " Core Solo" and " Core Duo" (32-bit Pentium-M with SSE3) */</span>
+    <span class="d EnumMember"><span class="i">CPUFAMILY_INTEL_6_15</span> = <span class="e Int"><span class="n">0x426f69ef</span></span></span> ,<span class="bc">/* " Core 2 Duo" */</span>
+    <span class="d EnumMember"><span class="i">CPUFAMILY_INTEL_6_23</span> = <span class="e Int"><span class="n">0x78ea4fbc</span></span></span> ,<span class="bc">/* Penryn */</span>
+    <span class="d EnumMember"><span class="i">CPUFAMILY_INTEL_6_26</span> = <span class="e Int"><span class="n">0x6b5a4cd2</span></span></span> ,<span class="bc">/* Nehalem */</span>
+    <span class="d EnumMember"><span class="i">CPUFAMILY_ARM_9</span> = <span class="e Int"><span class="n">0xe73283ae</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPUFAMILY_ARM_11</span> = <span class="e Int"><span class="n">0x8ff620d8</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPUFAMILY_INTEL_YONAH</span> = <span class="e Int"><span class="n">0x73d67300</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPUFAMILY_INTEL_MEROM</span> = <span class="e Int"><span class="n">0x426f69ef</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPUFAMILY_INTEL_PENRYN</span> = <span class="e Int"><span class="n">0x78ea4fbc</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPUFAMILY_INTEL_NEHALEM</span> = <span class="e Int"><span class="n">0x6b5a4cd2</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPUFAMILY_INTEL_CORE</span> = <span class="e Int"><span class="n">0x73d67300</span></span></span> ,
+    <span class="d EnumMember"><span class="i">CPUFAMILY_INTEL_CORE2</span> = <span class="e Int"><span class="n">0x426f69ef</span></span></span> ,
 }</span></span>
 
 </pre></td>

@@ -33,72 +33,72 @@
   The string returned will not change until `setlocale' is called;
   it is usually in read-only memory and cannot be modified. 
 */</span>
-<span class="d Linkage"><span class="k">extern</span>(<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">nl_langinfo</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">nl_item</span></span> <span class="i">__item</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Linkage"><span class="k">extern</span>(<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">nl_langinfo</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">nl_item</span></span> <span class="i">__item</span></span>)</span><span class="s FuncBody">;</span></span>
 
 <span class="d Enum"><span class="k">enum</span> : <span class="t Identifier"><span class="i">nl_item</span></span>
 {
         <span class="bc">/* LC_TIME category: date and time formatting.  */</span>
 
         <span class="bc">/* Abbreviated days of the week. */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABDAY_1</span></span> = <span class="e Paren">(<span class="e Or"><span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Identifier"><span class="i">LC_TIME</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">16</span></span></span>)</span> | <span class="e Int"><span class="n">0</span></span></span>)</span></span>,  <span class="bc">/* Sun */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABDAY_2</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABDAY_3</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABDAY_4</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABDAY_5</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABDAY_6</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABDAY_7</span></span></span>,
+        <span class="d EnumMember"><span class="i">ABDAY_1</span> = <span class="e Paren">(<span class="e Or"><span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Identifier"><span class="i">LC_TIME</span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">16</span></span></span>)</span> | <span class="e Int"><span class="n">0</span></span></span>)</span></span>,  <span class="bc">/* Sun */</span>
+        <span class="d EnumMember"><span class="i">ABDAY_2</span></span>,
+        <span class="d EnumMember"><span class="i">ABDAY_3</span></span>,
+        <span class="d EnumMember"><span class="i">ABDAY_4</span></span>,
+        <span class="d EnumMember"><span class="i">ABDAY_5</span></span>,
+        <span class="d EnumMember"><span class="i">ABDAY_6</span></span>,
+        <span class="d EnumMember"><span class="i">ABDAY_7</span></span>,
 
         <span class="bc">/* Long-named days of the week. */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DAY_1</span></span></span>,			<span class="bc">/* Sunday */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DAY_2</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DAY_3</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DAY_4</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DAY_5</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DAY_6</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DAY_7</span></span></span>,
+        <span class="d EnumMember"><span class="i">DAY_1</span></span>,			<span class="bc">/* Sunday */</span>
+        <span class="d EnumMember"><span class="i">DAY_2</span></span>,
+        <span class="d EnumMember"><span class="i">DAY_3</span></span>,
+        <span class="d EnumMember"><span class="i">DAY_4</span></span>,
+        <span class="d EnumMember"><span class="i">DAY_5</span></span>,
+        <span class="d EnumMember"><span class="i">DAY_6</span></span>,
+        <span class="d EnumMember"><span class="i">DAY_7</span></span>,
 
         <span class="bc">/* Abbreviated month names.  */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABMON_1</span></span></span>,			<span class="bc">/* Jan */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABMON_2</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABMON_3</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABMON_4</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABMON_5</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABMON_6</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABMON_7</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABMON_8</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABMON_9</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABMON_10</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABMON_11</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ABMON_12</span></span></span>,
+        <span class="d EnumMember"><span class="i">ABMON_1</span></span>,			<span class="bc">/* Jan */</span>
+        <span class="d EnumMember"><span class="i">ABMON_2</span></span>,
+        <span class="d EnumMember"><span class="i">ABMON_3</span></span>,
+        <span class="d EnumMember"><span class="i">ABMON_4</span></span>,
+        <span class="d EnumMember"><span class="i">ABMON_5</span></span>,
+        <span class="d EnumMember"><span class="i">ABMON_6</span></span>,
+        <span class="d EnumMember"><span class="i">ABMON_7</span></span>,
+        <span class="d EnumMember"><span class="i">ABMON_8</span></span>,
+        <span class="d EnumMember"><span class="i">ABMON_9</span></span>,
+        <span class="d EnumMember"><span class="i">ABMON_10</span></span>,
+        <span class="d EnumMember"><span class="i">ABMON_11</span></span>,
+        <span class="d EnumMember"><span class="i">ABMON_12</span></span>,
 
         <span class="bc">/* Long month names.  */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MON_1</span></span></span>,			<span class="bc">/* January */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MON_2</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MON_3</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MON_4</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MON_5</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MON_6</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MON_7</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MON_8</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MON_9</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MON_10</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MON_11</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">MON_12</span></span></span>,
+        <span class="d EnumMember"><span class="i">MON_1</span></span>,			<span class="bc">/* January */</span>
+        <span class="d EnumMember"><span class="i">MON_2</span></span>,
+        <span class="d EnumMember"><span class="i">MON_3</span></span>,
+        <span class="d EnumMember"><span class="i">MON_4</span></span>,
+        <span class="d EnumMember"><span class="i">MON_5</span></span>,
+        <span class="d EnumMember"><span class="i">MON_6</span></span>,
+        <span class="d EnumMember"><span class="i">MON_7</span></span>,
+        <span class="d EnumMember"><span class="i">MON_8</span></span>,
+        <span class="d EnumMember"><span class="i">MON_9</span></span>,
+        <span class="d EnumMember"><span class="i">MON_10</span></span>,
+        <span class="d EnumMember"><span class="i">MON_11</span></span>,
+        <span class="d EnumMember"><span class="i">MON_12</span></span>,
 
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">AM_STR</span></span></span>,			<span class="bc">/* Ante meridiem string.  */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">PM_STR</span></span></span>,			<span class="bc">/* Post meridiem string.  */</span>
+        <span class="d EnumMember"><span class="i">AM_STR</span></span>,			<span class="bc">/* Ante meridiem string.  */</span>
+        <span class="d EnumMember"><span class="i">PM_STR</span></span>,			<span class="bc">/* Post meridiem string.  */</span>
 
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">D_T_FMT</span></span></span>,			<span class="bc">/* Date and time format for strftime.  */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">D_FMT</span></span></span>,			<span class="bc">/* Date format for strftime.  */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">T_FMT</span></span></span>,			<span class="bc">/* Time format for strftime.  */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">T_FMT_AMPM</span></span></span>,			<span class="bc">/* 12-hour time format for strftime.  */</span>
+        <span class="d EnumMember"><span class="i">D_T_FMT</span></span>,			<span class="bc">/* Date and time format for strftime.  */</span>
+        <span class="d EnumMember"><span class="i">D_FMT</span></span>,			<span class="bc">/* Date format for strftime.  */</span>
+        <span class="d EnumMember"><span class="i">T_FMT</span></span>,			<span class="bc">/* Time format for strftime.  */</span>
+        <span class="d EnumMember"><span class="i">T_FMT_AMPM</span></span>,			<span class="bc">/* 12-hour time format for strftime.  */</span>
 
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ERA</span></span></span>,				<span class="bc">/* Alternate era.  */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ERA_YEAR</span></span></span>,			<span class="bc">/* Year in alternate era format.  */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ERA_D_FMT</span></span></span>,			<span class="bc">/* Date in alternate era format.  */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ALT_DIGITS</span></span></span>,			<span class="bc">/* Alternate symbols for digits.  */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ERA_D_T_FMT</span></span></span>,			<span class="bc">/* Date and time in alternate era format.  */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">ERA_T_FMT</span></span></span>,			<span class="bc">/* Time in alternate era format.  */</span>
+        <span class="d EnumMember"><span class="i">ERA</span></span>,				<span class="bc">/* Alternate era.  */</span>
+        <span class="d EnumMember"><span class="i">ERA_YEAR</span></span>,			<span class="bc">/* Year in alternate era format.  */</span>
+        <span class="d EnumMember"><span class="i">ERA_D_FMT</span></span>,			<span class="bc">/* Date in alternate era format.  */</span>
+        <span class="d EnumMember"><span class="i">ALT_DIGITS</span></span>,			<span class="bc">/* Alternate symbols for digits.  */</span>
+        <span class="d EnumMember"><span class="i">ERA_D_T_FMT</span></span>,			<span class="bc">/* Date and time in alternate era format.  */</span>
+        <span class="d EnumMember"><span class="i">ERA_T_FMT</span></span>,			<span class="bc">/* Time in alternate era format.  */</span>
 }</span></span>
 
 </pre></td>

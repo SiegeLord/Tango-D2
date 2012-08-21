@@ -219,51 +219,51 @@
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns whether or not the provided array contains an instance
         of the given match</div></div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="index" href="htmlsrc/tango.text.Util.html#L330">index</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">size_t</span>)</span><span class="params">(const(T)[] <em>source</em>, const(T)[] <em>match</em>, U <em>start</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.text.Util.html#index" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="index" href="htmlsrc/tango.text.Util.html#L329">index</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T)[] <em>source</em>, const(T)[] <em>match</em>, size_t <em>start</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.text.Util.html#index" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the index of the next instance of 'match' starting at
         position 'start', or source.length where there is no match.</div></div>
 <div class="cmnt">Parameter 'start' defaults to 0</div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="rindex" href="htmlsrc/tango.text.Util.html#L348">rindex</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">size_t</span>)</span><span class="params">(const(T)[] <em>source</em>, const(T)[] <em>match</em>, U <em>start</em> = <span class="defval"><span class="i">max</span></span>)</span> <a href="tango.text.Util.html#rindex" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="rindex" href="htmlsrc/tango.text.Util.html#L343">rindex</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T)[] <em>source</em>, const(T)[] <em>match</em>, size_t <em>start</em> = <span class="defval"><span class="i">max</span></span>)</span> <a href="tango.text.Util.html#rindex" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the index of the prior instance of 'match' starting
         just before 'start', or source.length where there is no match.</div></div>
 <div class="cmnt">Parameter 'start' defaults to source.length</div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="locate" href="htmlsrc/tango.text.Util.html#L366">locate</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">size_t</span>)</span><span class="params">(const(T)[] <em>source</em>, const(T) <em>match</em>, U <em>start</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.text.Util.html#locate" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="locate" href="htmlsrc/tango.text.Util.html#L357">locate</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T)[] <em>source</em>, const(T) <em>match</em>, size_t <em>start</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.text.Util.html#locate" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the index of the next instance of 'match' starting at
         position 'start', or source.length where there is no match.</div></div>
 <div class="cmnt">Parameter 'start' defaults to 0</div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="locatePrior" href="htmlsrc/tango.text.Util.html#L386">locatePrior</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">size_t</span>)</span><span class="params">(const(T)[] <em>source</em>, const(T) <em>match</em>, U <em>start</em> = <span class="defval"><span class="i">max</span></span>)</span> <a href="tango.text.Util.html#locatePrior" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="locatePrior" href="htmlsrc/tango.text.Util.html#L373">locatePrior</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T)[] <em>source</em>, const(T) <em>match</em>, size_t <em>start</em> = <span class="defval"><span class="i">max</span></span>)</span> <a href="tango.text.Util.html#locatePrior" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the index of the prior instance of 'match' starting
         just before 'start', or source.length where there is no match.</div></div>
 <div class="cmnt">Parameter 'start' defaults to source.length</div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="locatePattern" href="htmlsrc/tango.text.Util.html#L409">locatePattern</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">size_t</span>)</span><span class="params">(const(T)[] <em>source</em>, const(T)[] <em>match</em>, U <em>start</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.text.Util.html#locatePattern" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="locatePattern" href="htmlsrc/tango.text.Util.html#L392">locatePattern</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T)[] <em>source</em>, const(T)[] <em>match</em>, size_t <em>start</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.text.Util.html#locatePattern" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the index of the next instance of 'match' starting at
         position 'start', or source.length where there is no match.</div></div>
 <div class="cmnt">Parameter 'start' defaults to 0</div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="locatePatternPrior" href="htmlsrc/tango.text.Util.html#L444">locatePatternPrior</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">size_t</span>)</span><span class="params">(const(T)[] <em>source</em>, const(T)[] <em>match</em>, U <em>start</em> = <span class="defval"><span class="i">max</span></span>)</span> <a href="tango.text.Util.html#locatePatternPrior" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="locatePatternPrior" href="htmlsrc/tango.text.Util.html#L423">locatePatternPrior</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T)[] <em>source</em>, const(T)[] <em>match</em>, size_t <em>start</em> = <span class="defval"><span class="i">max</span></span>)</span> <a href="tango.text.Util.html#locatePatternPrior" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the index of the prior instance of 'match' starting
         just before 'start', or source.length where there is no match.</div></div>
 <div class="cmnt">Parameter 'start' defaults to source.length</div></dd>
-<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="head" href="htmlsrc/tango.text.Util.html#L480">head</a><span class="tparams">(<em>T</em>, <em>S</em>)</span><span class="params">(T[] <em>src</em>, S[] <em>pattern</em>,  <span class="k">out</span> T[] <em>tail</em>)</span> <a href="tango.text.Util.html#head" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="head" href="htmlsrc/tango.text.Util.html#L456">head</a><span class="tparams">(<em>T</em>, <em>S</em>)</span><span class="params">(T[] <em>src</em>, S[] <em>pattern</em>,  <span class="k">out</span> T[] <em>tail</em>)</span> <a href="tango.text.Util.html#head" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Split the provided array on the first pattern instance, and 
         return the resultant head and tail. The pattern is excluded 
         from the two segments.</div></div>
 <div class="cmnt">Where a segment is not found, tail will be null and the return
         value will be the original array.</div></dd>
-<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="tail" href="htmlsrc/tango.text.Util.html#L502">tail</a><span class="tparams">(<em>T</em>, <em>S</em>)</span><span class="params">(T[] <em>src</em>, S[] <em>pattern</em>,  <span class="k">out</span> T[] <em>head</em>)</span> <a href="tango.text.Util.html#tail" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="tail" href="htmlsrc/tango.text.Util.html#L478">tail</a><span class="tparams">(<em>T</em>, <em>S</em>)</span><span class="params">(T[] <em>src</em>, S[] <em>pattern</em>,  <span class="k">out</span> T[] <em>head</em>)</span> <a href="tango.text.Util.html#tail" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Split the provided array on the last pattern instance, and 
         return the resultant head and tail. The pattern is excluded 
         from the two segments.</div></div>
 <div class="cmnt">Where a segment is not found, head will be null and the return
         value will be the original array.</div></dd>
-<dt class="decl"><span class="rettyp">T[][]</span> <a class="symbol _function" name="delimit" href="htmlsrc/tango.text.Util.html#L528">delimit</a><span class="tparams">(<em>T</em>, <em>M</em>)</span><span class="params">(T[] <em>src</em>, const(M)[] <em>set</em>)</span> <a href="tango.text.Util.html#delimit" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">T[][]</span> <a class="symbol _function" name="delimit" href="htmlsrc/tango.text.Util.html#L504">delimit</a><span class="tparams">(<em>T</em>, <em>M</em>)</span><span class="params">(T[] <em>src</em>, const(M)[] <em>set</em>)</span> <a href="tango.text.Util.html#delimit" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Split the provided array wherever a delimiter-set instance is
         found, and return the resultant segments. The delimiters are
@@ -274,7 +274,7 @@
 <p class="bl"></p>
         Note that the src content is not duplicated by this function, 
         but is sliced instead.</div></dd>
-<dt class="decl"><span class="rettyp">inout(T)[][]</span> <a class="symbol _function" name="split" href="htmlsrc/tango.text.Util.html#L548">split</a><span class="tparams">(<em>T</em>)</span><span class="params">(inout(T)[] <em>src</em>, const(T)[] <em>pattern</em>)</span> <a href="tango.text.Util.html#split" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(T)[][]</span> <a class="symbol _function" name="split" href="htmlsrc/tango.text.Util.html#L524">split</a><span class="tparams">(<em>T</em>)</span><span class="params">(inout(T)[] <em>src</em>, const(T)[] <em>pattern</em>)</span> <a href="tango.text.Util.html#split" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Split the provided array wherever a pattern instance is
         found, and return the resultant segments. The pattern is
@@ -282,21 +282,21 @@
         
         Note that the src content is not duplicated by this function, 
         but is sliced instead.</div></div></dd>
-<dt class="decl"><span class="kw">alias</span> toLines <a class="symbol _alias" name="splitLines" href="htmlsrc/tango.text.Util.html#L568">splitLines</a> <a href="tango.text.Util.html#splitLines" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">alias</span> toLines <a class="symbol _alias" name="splitLines" href="htmlsrc/tango.text.Util.html#L544">splitLines</a> <a href="tango.text.Util.html#splitLines" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Convert text into a set of lines, where each line is identified
         by a \n or \r\n combination. The line terminator is stripped from
         each resultant array</div></div>
 <div class="cmnt">Note that the src content is not duplicated by this function, but
         is sliced instead.</div></dd>
-<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="lineOf" href="htmlsrc/tango.text.Util.html#L590">lineOf</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>src</em>, size_t <em>index</em>)</span> <a href="tango.text.Util.html#lineOf" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="lineOf" href="htmlsrc/tango.text.Util.html#L566">lineOf</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>src</em>, size_t <em>index</em>)</span> <a href="tango.text.Util.html#lineOf" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return the indexed line, where each line is identified by a \n 
         or \r\n combination. The line terminator is stripped from the 
         resultant line</div></div>
 <div class="cmnt">Note that src content is not duplicated by this function, but
         is sliced instead.</div></dd>
-<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="join" href="htmlsrc/tango.text.Util.html#L611">join</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T[])[] <em>src</em>, const(T)[] <em>postfix</em> = <span class="defval"><span class="k">null</span></span>, T[] <em>dst</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Util.html#join" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="join" href="htmlsrc/tango.text.Util.html#L587">join</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T[])[] <em>src</em>, const(T)[] <em>postfix</em> = <span class="defval"><span class="k">null</span></span>, T[] <em>dst</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Util.html#join" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Combine a series of text segments together, each appended with 
         a postfix pattern. An optional output buffer can be provided to
@@ -304,7 +304,7 @@
         entire output, otherwise the heap will be used instead.</div></div>
 <div class="cmnt">Returns a valid slice of the output, containing the concatenated
         text.</div></dd>
-<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="prefix" href="htmlsrc/tango.text.Util.html#L631">prefix</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>dst</em>, const(T)[] <em>prefix</em>, const(T[])[] <em>src</em>...)</span> <a href="tango.text.Util.html#prefix" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="prefix" href="htmlsrc/tango.text.Util.html#L607">prefix</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>dst</em>, const(T)[] <em>prefix</em>, const(T[])[] <em>src</em>...)</span> <a href="tango.text.Util.html#prefix" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Combine a series of text segments together, each prepended with 
         a prefix pattern. An optional output buffer can be provided to 
@@ -315,7 +315,7 @@
 <p class="bl"></p>
         Returns a valid slice of the output, containing the concatenated
         text.</div></dd>
-<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="postfix" href="htmlsrc/tango.text.Util.html#L651">postfix</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>dst</em>, const(T)[] <em>postfix</em>, const(T[])[] <em>src</em>...)</span> <a href="tango.text.Util.html#postfix" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="postfix" href="htmlsrc/tango.text.Util.html#L627">postfix</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>dst</em>, const(T)[] <em>postfix</em>, const(T[])[] <em>src</em>...)</span> <a href="tango.text.Util.html#postfix" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Combine a series of text segments together, each appended with an 
         optional postfix pattern. An optional output buffer can be provided
@@ -326,7 +326,7 @@
 <p class="bl"></p>
         Returns a valid slice of the output, containing the concatenated
         text.</div></dd>
-<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="combine" href="htmlsrc/tango.text.Util.html#L671">combine</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>dst</em>, const(T)[] <em>prefix</em>, const(T)[] <em>postfix</em>, const(T[])[] <em>src</em>...)</span> <a href="tango.text.Util.html#combine" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="combine" href="htmlsrc/tango.text.Util.html#L647">combine</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>dst</em>, const(T)[] <em>prefix</em>, const(T)[] <em>postfix</em>, const(T[])[] <em>src</em>...)</span> <a href="tango.text.Util.html#combine" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Combine a series of text segments together, each prefixed and/or 
         postfixed with optional strings. An optional output buffer can be 
@@ -337,7 +337,7 @@
 <p class="bl"></p>
         Returns a valid slice of the output, containing the concatenated
         text.</div></dd>
-<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="repeat" href="htmlsrc/tango.text.Util.html#L711">repeat</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">size_t</span>)</span><span class="params">(const(T)[] <em>src</em>, U <em>count</em>, T[] <em>dst</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Util.html#repeat" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="repeat" href="htmlsrc/tango.text.Util.html#L687">repeat</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T)[] <em>src</em>, size_t <em>count</em>, T[] <em>dst</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Util.html#repeat" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Repeat an array for a specific number of times. An optional output 
         buffer can be provided to avoid heap activity - it should be large 
@@ -345,18 +345,18 @@
         instead.</div></div>
 <div class="cmnt">Returns a valid slice of the output, containing the concatenated
         text.</div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isSpace" href="htmlsrc/tango.text.Util.html#L735">isSpace</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>c</em>)</span> <a href="tango.text.Util.html#isSpace" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isSpace" href="htmlsrc/tango.text.Util.html#L708">isSpace</a><span class="tparams">(<em>T</em>)</span><span class="params">(T <em>c</em>)</span> <a href="tango.text.Util.html#isSpace" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Is the argument a whitespace character?</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="matching" href="htmlsrc/tango.text.Util.html#L749">matching</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">size_t</span>)</span><span class="params">(const(T)* <em>s1</em>, const(T)* <em>s2</em>, U <em>length</em>)</span> <a href="tango.text.Util.html#matching" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="matching" href="htmlsrc/tango.text.Util.html#L722">matching</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T)* <em>s1</em>, const(T)* <em>s2</em>, size_t <em>length</em>)</span> <a href="tango.text.Util.html#matching" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Return whether or not the two arrays have matching content</div></div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="indexOf" href="htmlsrc/tango.text.Util.html#L765">indexOf</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">size_t</span>)</span><span class="params">(const(T)* <em>str</em>, const(T) <em>match</em>, U <em>length</em>)</span> <a href="tango.text.Util.html#indexOf" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="indexOf" href="htmlsrc/tango.text.Util.html#L735">indexOf</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T)* <em>str</em>, const(T) <em>match</em>, size_t <em>length</em>)</span> <a href="tango.text.Util.html#indexOf" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns the index of the first match in str, failing once
         length is reached. Note that we return 'length' for failure
         and a 0-based index on success</div></div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="mismatch" href="htmlsrc/tango.text.Util.html#L836">mismatch</a><span class="tparams">(<em>T</em>, <em>U</em> = <span class="defval">size_t</span>)</span><span class="params">(const(T)* <em>s1</em>, const(T)* <em>s2</em>, U <em>length</em>)</span> <a href="tango.text.Util.html#mismatch" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="mismatch" href="htmlsrc/tango.text.Util.html#L803">mismatch</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T)* <em>s1</em>, const(T)* <em>s2</em>, size_t <em>length</em>)</span> <a href="tango.text.Util.html#mismatch" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns the index of a mismatch between s1 &amp; s2, failing when
         length is reached. Note that we return 'length' upon failure
@@ -364,7 +364,7 @@
 <div class="cmnt">Use this as a faster opEquals. Also provides the basis for a
         faster opCmp, since the index of the first mismatched character
         can be used to determine the return value</div></dd>
-<dt class="decl"><span class="rettyp">LineFruct!(T)</span> <a class="symbol _function" name="lines" href="htmlsrc/tango.text.Util.html#L890">lines</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>src</em>)</span> <a href="tango.text.Util.html#lines" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">LineFruct!(T)</span> <a class="symbol _function" name="lines" href="htmlsrc/tango.text.Util.html#L854">lines</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>src</em>)</span> <a href="tango.text.Util.html#lines" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Iterator to isolate lines.</div></div>
 <div class="cmnt">Converts text into a set of lines, where each line is identified
@@ -380,7 +380,7 @@
          ...</pre>
 </td></tr>
 </table></div></dd>
-<dt class="decl"><span class="rettyp">DelimFruct!(T, M)</span> <a class="symbol _function" name="delimiters" href="htmlsrc/tango.text.Util.html#L916">delimiters</a><span class="tparams">(<em>T</em>, <em>M</em>)</span><span class="params">(T[] <em>src</em>, const(M)[] <em>set</em>)</span> <a href="tango.text.Util.html#delimiters" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">DelimFruct!(T, M)</span> <a class="symbol _function" name="delimiters" href="htmlsrc/tango.text.Util.html#L880">delimiters</a><span class="tparams">(<em>T</em>, <em>M</em>)</span><span class="params">(T[] <em>src</em>, const(M)[] <em>set</em>)</span> <a href="tango.text.Util.html#delimiters" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Iterator to isolate text elements.</div></div>
 <div class="cmnt">Splits the provided array wherever a delimiter-set instance is
@@ -400,7 +400,7 @@
          ...</pre>
 </td></tr>
 </table></div></dd>
-<dt class="decl"><span class="rettyp">PatternFruct!(T)</span> <a class="symbol _function" name="patterns" href="htmlsrc/tango.text.Util.html#L940">patterns</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T)[] <em>src</em>, const(T)[] <em>pattern</em>, const(T)[] <em>sub</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Util.html#patterns" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">PatternFruct!(T)</span> <a class="symbol _function" name="patterns" href="htmlsrc/tango.text.Util.html#L904">patterns</a><span class="tparams">(<em>T</em>)</span><span class="params">(const(T)[] <em>src</em>, const(T)[] <em>pattern</em>, const(T)[] <em>sub</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Util.html#patterns" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Iterator to isolate text elements.</div></div>
 <div class="cmnt">Split the provided array wherever a pattern instance is found, 
@@ -417,7 +417,7 @@
          ...</pre>
 </td></tr>
 </table></div></dd>
-<dt class="decl"><span class="rettyp">QuoteFruct!(T, M)</span> <a class="symbol _function" name="quotes" href="htmlsrc/tango.text.Util.html#L964">quotes</a><span class="tparams">(<em>T</em>, <em>M</em>)</span><span class="params">(T[] <em>src</em>, const(M)[] <em>set</em>)</span> <a href="tango.text.Util.html#quotes" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">QuoteFruct!(T, M)</span> <a class="symbol _function" name="quotes" href="htmlsrc/tango.text.Util.html#L928">quotes</a><span class="tparams">(<em>T</em>, <em>M</em>)</span><span class="params">(T[] <em>src</em>, const(M)[] <em>set</em>)</span> <a href="tango.text.Util.html#quotes" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Iterator to isolate optionally quoted text elements.</div></div>
 <div class="cmnt">As per elements(), but with the extension of being quote-aware;
@@ -433,7 +433,7 @@
          ...</pre>
 </td></tr>
 </table></div></dd>
-<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="layout" href="htmlsrc/tango.text.Util.html#L988">layout</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>output</em>, const(T[])[] <em>layout</em>...)</span> <a href="tango.text.Util.html#layout" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">T[]</span> <a class="symbol _function" name="layout" href="htmlsrc/tango.text.Util.html#L952">layout</a><span class="tparams">(<em>T</em>)</span><span class="params">(T[] <em>output</em>, const(T[])[] <em>layout</em>...)</span> <a href="tango.text.Util.html#layout" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Arranges text strings in order, using indices to specify where
         each particular argument should be positioned within the text. 
@@ -453,12 +453,12 @@
 <span class="i">Cout</span> (<span class="i">layout</span> (<span class="i">tmp</span>, <span class="sl">"%1 is after %0"</span>, <span class="sl">"zero"</span>, <span class="sl">"one"</span>)).<span class="i">newline</span>;</pre>
 </td></tr>
 </table></div></div></dd>
-<dt class="decl"><span class="rettyp">inout(T)[]</span> <a class="symbol _function" name="unescape" href="htmlsrc/tango.text.Util.html#L1050">unescape</a><span class="tparams">(<em>T</em>)</span><span class="params">(inout(T)[] <em>src</em>, T[] <em>dst</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Util.html#unescape" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">inout(T)[]</span> <a class="symbol _function" name="unescape" href="htmlsrc/tango.text.Util.html#L1014">unescape</a><span class="tparams">(<em>T</em>)</span><span class="params">(inout(T)[] <em>src</em>, T[] <em>dst</em> = <span class="defval"><span class="k">null</span></span>)</span> <a href="tango.text.Util.html#unescape" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Convert 'escaped' chars to normal ones: \t =&gt; ^t for example.
         Supports \" \' \\ \a \b \f \n \r \t \v</div></div></dd>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="jhash" href="htmlsrc/tango.text.Util.html#L1163">jhash</a><span class="params">(const(ubyte)* <em>k</em>, size_t <em>len</em>, size_t <em>c</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">@trusted</span>, <span class="stc">pure</span>, <span class="stc">nothrow</span>]</span> <a href="tango.text.Util.html#jhash" class="plink">¶</a></dt>
-<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="jhash:2" href="htmlsrc/tango.text.Util.html#L1221">jhash</a><span class="params">(const(void)[] <em>x</em>, size_t <em>c</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">@trusted</span>, <span class="stc">pure</span>, <span class="stc">nothrow</span>]</span> <a href="tango.text.Util.html#jhash:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="jhash" href="htmlsrc/tango.text.Util.html#L1127">jhash</a><span class="params">(const(ubyte)* <em>k</em>, size_t <em>len</em>, size_t <em>c</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">@trusted</span>, <span class="stc">pure</span>, <span class="stc">nothrow</span>]</span> <a href="tango.text.Util.html#jhash" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="jhash:2" href="htmlsrc/tango.text.Util.html#L1185">jhash</a><span class="params">(const(void)[] <em>x</em>, size_t <em>c</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">@trusted</span>, <span class="stc">pure</span>, <span class="stc">nothrow</span>]</span> <a href="tango.text.Util.html#jhash:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">jhash() -- hash a variable-length key into a 32-bit value</div></div>
 <div class="cmnt">k     : the key (the unaligned variable-length array of bytes)
@@ -491,7 +491,7 @@
 </div>
 <div id="kandil-footer">
   <p>Copyright (c) 2004 Kris Bell. All rights reserved</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:41 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Tue Aug 21 02:57:01 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

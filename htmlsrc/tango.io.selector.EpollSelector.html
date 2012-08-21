@@ -176,7 +176,7 @@
          * SelectorException if there are not enough resources to open the
          * selector (e.g. not enough file handles or memory available).
          */</span>
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">open</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">size</span> = <span class="e Identifier"><span class="i">DefaultSize</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">maxEvents</span> = <span class="e Identifier"><span class="i">DefaultMaxEvents</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">open</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">size</span> = <span class="e Identifier"><span class="i">DefaultSize</span></span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">maxEvents</span> = <span class="e Identifier"><span class="i">DefaultMaxEvents</span></span></span>)</span>
         <span class="s FuncBody"><span class="k">in</span>
         <span class="s Compound">{
             <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">size</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
@@ -201,7 +201,7 @@
          * Remarks:
          * It can be called multiple times without harmful side-effects.
          */</span>
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span><span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">_epfd</span></span> &gt;= <span class="e Int"><span class="n">0</span></span></span>)
             <span class="s Scope"><span class="s Compound">{
@@ -215,7 +215,7 @@
          * Return the number of keys resulting from the registration of a conduit 
          * to the selector. 
          */</span>
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">count</span><span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">count</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">_keys</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span>
         }</span></span></span>
@@ -245,7 +245,7 @@
          * selector.register(conduit, Event.Read | Event.Write, object);
          * ---
          */</span>
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">register</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ISelectable</span></span> <span class="i">conduit</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Event</span></span> <span class="i">events</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Object</span></span> <span class="i">attachment</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">register</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ISelectable</span></span> <span class="i">conduit</span></span>, <span class="o "><span class="t Identifier"><span class="i">Event</span></span> <span class="i">events</span></span>, <span class="o "><span class="t Identifier"><span class="i">Object</span></span> <span class="i">attachment</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="k">in</span>
         <span class="s Compound">{
             <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Identity"><span class="e Identifier"><span class="i">conduit</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">conduit</span></span>.<span class="e Identifier"><span class="i">fileHandle</span></span>()</span> &gt;= <span class="e Int"><span class="n">0</span></span></span></span>)</span>;</span>
@@ -313,7 +313,7 @@
          * registered to the selector; SelectorException if there are not
          * enough resources to remove the conduit registration.
          */</span>
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unregister</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ISelectable</span></span> <span class="i">conduit</span></span>)</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unregister</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ISelectable</span></span> <span class="i">conduit</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">conduit</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
             <span class="s Scope"><span class="s Compound">{
@@ -363,7 +363,7 @@
          * property was set to false; SelectorException if there were no
          * resources available to wait for events from the conduits.
          */</span>
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">select</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">timeout</span></span>)</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">select</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">timeout</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">to</span> = <span class="e Paren">(<span class="e Cond"><span class="e Equal"><span class="e Identifier"><span class="i">timeout</span></span> != <span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">max</span></span></span> ? <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">int</span></span>) <span class="e Identifier"><span class="i">timeout</span></span></span>.<span class="e Identifier"><span class="i">millis</span></span> : <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>)</span>;</span></span>
 
@@ -394,7 +394,7 @@
         */</span>
         <span class="d Protection"><span class="k">protected</span></span> <span class="d Class"><span class="k">class</span> <span class="i">EpollSelectionSet</span>: <span class="t BaseClass"><span class="t Identifier"><span class="i">ISelectionSet</span></span></span>
         <span class="d Compound">{
-            <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">length</span><span class="o Parameters">()</span>
+            <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">length</span><span class="o ">()</span>
             <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">_events</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span>
             }</span></span></span>
@@ -402,7 +402,7 @@
             <span class="bc">/**
             * Iterate over all the Conduits that have received events.
             */</span>
-            <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span><span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">SelectionKey</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
+            <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span><span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">SelectionKey</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
             <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">rc</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">SelectionKey</span></span> <span class="i">key</span>;</span></span>
@@ -410,7 +410,7 @@
                 <span class="s Debug"><span class="k">debug</span> (<span class="i">selector</span>)
                     <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">format</span></span>(<span class="sl">"--- EpollSelectionSet.opApply() ({0} events)<span class="es">\n</span>"</span>, <span class="i">_events</span>.<span class="i">length</span>)</span>;</span></span>
 
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="t Identifier"><span class="i">epoll_event</span></span> <span class="i">event</span></span></span>; <span class="e Slice"><span class="e Identifier"><span class="i">_events</span></span>[<span class="e Int"><span class="n">0</span></span>..<span class="e Identifier"><span class="i">_eventCount</span></span>]</span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="t Identifier"><span class="i">epoll_event</span></span> <span class="i">event</span></span></span>; <span class="e Slice"><span class="e Identifier"><span class="i">_events</span></span>[<span class="e Int"><span class="n">0</span></span>..<span class="e Identifier"><span class="i">_eventCount</span></span>]</span>)
                 <span class="s Scope"><span class="s Compound">{
                     <span class="lc">// Only invoke the delegate if there is an event for the conduit.</span>
                     <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">event</span></span>.<span class="e Identifier"><span class="i">events</span></span> != <span class="e Int"><span class="n">0</span></span></span>)
@@ -441,7 +441,7 @@
          * If the call to select() was unsuccessful or it did not return any
          * events, the returned value will be null.
          */</span>
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">ISelectionSet</span></span> <span class="i">selectedSet</span><span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">ISelectionSet</span></span> <span class="i">selectedSet</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e Cond"><span class="e Rel"><span class="e Identifier"><span class="i">_eventCount</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span> ? <span class="e Identifier"><span class="i">_selectionSetIface</span></span> : <span class="e Null"><span class="k">null</span></span></span>)</span>;</span>
         }</span></span></span>
@@ -455,7 +455,7 @@
          * value will SelectionKey.init. No exception will be thrown by this
          * method.
          */</span>
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SelectionKey</span></span> <span class="i">key</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ISelectable</span></span> <span class="i">conduit</span></span>)</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SelectionKey</span></span> <span class="i">key</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ISelectable</span></span> <span class="i">conduit</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s If"><span class="k">if</span>(<span class="e Identity"><span class="e Identifier"><span class="i">conduit</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
             <span class="s Scope"><span class="s Compound">{
@@ -472,10 +472,10 @@
          * you should not erase or add any items from the selector while
          * iterating, although you can register existing conduits again.
          */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span><span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">SelectionKey</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span><span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">SelectionKey</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">result</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
-            <span class="s Foreach"><span class="k">foreach</span>(<span class="o Parameters"><span class="o Parameter"><span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">_keys</span></span>)
+            <span class="s Foreach"><span class="k">foreach</span>(<span class="o "><span class="o "><span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">_keys</span></span>)
             <span class="s Scope"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span>(<span class="e Equal"><span class="e Paren">(<span class="e Assign"><span class="e Identifier"><span class="i">result</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">dg</span></span>(<span class="i">v</span>)</span></span>)</span> != <span class="e Int"><span class="n">0</span></span></span>)
                     <span class="s Scope"><span class="s Break"><span class="k">break</span>;</span></span></span>

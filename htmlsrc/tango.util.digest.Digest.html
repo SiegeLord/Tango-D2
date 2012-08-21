@@ -77,7 +77,7 @@
                  
         *********************************************************************/</span>
     
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Digest</span></span> <span class="i">update</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span>)</span> <span class="i">data</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Digest</span></span> <span class="i">update</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span>)</span> <span class="i">data</span></span>)</span><span class="s FuncBody">;</span></span>
     
         <span class="bc">/********************************************************************
 
@@ -96,7 +96,7 @@
                    
         *********************************************************************/</span>
     
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">binaryDigest</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">buffer</span> = <span class="e Null"><span class="k">null</span></span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">binaryDigest</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">buffer</span> = <span class="e Null"><span class="k">null</span></span></span>)</span><span class="s FuncBody">;</span></span>
     
         <span class="bc">/********************************************************************
      
@@ -110,7 +110,7 @@
                  
         *********************************************************************/</span>
     
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">digestSize</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">digestSize</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
         
         <span class="bc">/*********************************************************************
                
@@ -128,7 +128,7 @@
                     
         *********************************************************************/</span>
         
-        <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">hexDigest</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">buffer</span> = <span class="e Null"><span class="k">null</span></span></span>)</span> 
+        <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">hexDigest</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">buffer</span> = <span class="e Null"><span class="k">null</span></span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">ds</span> = <span class="e Call"><span class="e Identifier"><span class="i">digestSize</span></span>()</span>;</span></span>
             
@@ -146,7 +146,7 @@
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">hexdigits</span> = <span class="e String"><span class="sl">"0123456789abcdef"</span></span>;</span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
             
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">b</span></span></span>; <span class="e Identifier"><span class="i">buf</span></span>) 
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">b</span></span></span>; <span class="e Identifier"><span class="i">buf</span></span>) 
                         <span class="s Scope"><span class="s Compound">{
                         <span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Identifier"><span class="i">buffer</span></span>[<span class="e PostIncr"><span class="e Identifier"><span class="i">i</span></span>++</span>]</span> = <span class="e Index"><span class="e Identifier"><span class="i">hexdigits</span></span>[<span class="e RShift"><span class="e Identifier"><span class="i">b</span></span> &gt;&gt; <span class="e Int"><span class="n">4</span></span></span>]</span></span>;</span>
                         <span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Identifier"><span class="i">buffer</span></span>[<span class="e PostIncr"><span class="e Identifier"><span class="i">i</span></span>++</span>]</span> = <span class="e Index"><span class="e Identifier"><span class="i">hexdigits</span></span>[<span class="e And"><span class="e Identifier"><span class="i">b</span></span> &amp; <span class="e Int"><span class="n">0xf</span></span></span>]</span></span>;</span>

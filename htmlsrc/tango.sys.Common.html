@@ -69,7 +69,7 @@
         <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">FORMAT_MESSAGE_ARGUMENT_ARRAY</span>  = <span class="e Int"><span class="n">0x00002000</span></span>;</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">FORMAT_MESSAGE_MAX_WIDTH_MASK</span>  = <span class="e Int"><span class="n">0x000000FF</span></span>;</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">MAKELANGID</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">WORD</span></span> <span class="i">p</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">WORD</span></span> <span class="i">s</span></span>)</span>  <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e Or"><span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">WORD</span></span>)<span class="e Identifier"><span class="i">s</span></span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">10</span></span></span>)</span> | <span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">WORD</span></span>)<span class="e Identifier"><span class="i">p</span></span></span></span>)</span>;</span> }</span></span></span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">MAKELANGID</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">WORD</span></span> <span class="i">p</span></span>, <span class="o "><span class="t Identifier"><span class="i">WORD</span></span> <span class="i">s</span></span>)</span>  <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e Or"><span class="e Paren">(<span class="e LShift"><span class="e Paren">(<span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">WORD</span></span>)<span class="e Identifier"><span class="i">s</span></span></span>)</span> &lt;&lt; <span class="e Int"><span class="n">10</span></span></span>)</span> | <span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">WORD</span></span>)<span class="e Identifier"><span class="i">p</span></span></span></span>)</span>;</span> }</span></span></span>
 
         <span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">HGLOBAL</span></span> <span class="i">HLOCAL</span>;</span></span>
 
@@ -78,16 +78,16 @@
 
         <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span> (<span class="i">Windows</span>)</span>
                        <span class="d Compound">{
-                       <span class="d Function"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">FormatMessageW</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">dwFlags</span></span>,
-                                             <span class="o Parameter"><span class="t Identifier"><span class="i">LPCVOID</span></span> <span class="i">lpSource</span></span>,
-                                             <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">dwMessageId</span></span>,
-                                             <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">dwLanguageId</span></span>,
-                                             <span class="o Parameter"><span class="t Identifier"><span class="i">LPWSTR</span></span> <span class="i">lpBuffer</span></span>,
-                                             <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">nSize</span></span>,
-                                             <span class="o Parameter"><span class="t Identifier"><span class="i">LPCVOID</span></span> <span class="i">args</span></span>
+                       <span class="d Function"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">FormatMessageW</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">dwFlags</span></span>,
+                                             <span class="o "><span class="t Identifier"><span class="i">LPCVOID</span></span> <span class="i">lpSource</span></span>,
+                                             <span class="o "><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">dwMessageId</span></span>,
+                                             <span class="o "><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">dwLanguageId</span></span>,
+                                             <span class="o "><span class="t Identifier"><span class="i">LPWSTR</span></span> <span class="i">lpBuffer</span></span>,
+                                             <span class="o "><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">nSize</span></span>,
+                                             <span class="o "><span class="t Identifier"><span class="i">LPCVOID</span></span> <span class="i">args</span></span>
                                              )</span><span class="s FuncBody">;</span></span>
 
-                       <span class="d Function"><span class="t Identifier"><span class="i">HLOCAL</span></span> <span class="i">LocalFree</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">HLOCAL</span></span> <span class="i">hMem</span></span>)</span><span class="s FuncBody">;</span></span>
+                       <span class="d Function"><span class="t Identifier"><span class="i">HLOCAL</span></span> <span class="i">LocalFree</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">HLOCAL</span></span> <span class="i">hMem</span></span>)</span><span class="s FuncBody">;</span></span>
                        }</span>
         }</span>
 <span class="k">else</span>
@@ -113,7 +113,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">lastCode</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">lastCode</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Version"><span class="k">version</span> (<span class="i">Win32</span>)
                          <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">GetLastError</span></span>()</span>;</span>
@@ -125,7 +125,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">lastMsg</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">lastMsg</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">lookup</span></span> (<span class="i">lastCode</span>)</span>;</span>
         }</span></span></span>
@@ -134,7 +134,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">lookup</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">errcode</span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">lookup</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">errcode</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">text</span>;</span></span>
 

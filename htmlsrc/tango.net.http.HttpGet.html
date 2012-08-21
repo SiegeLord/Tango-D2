@@ -57,7 +57,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">url</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">url</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span> (<span class="k">new</span> <span class="i">Uri</span>(<span class="i">url</span>))</span>;</span>
         }</span></span></span>
@@ -70,7 +70,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Uri</span></span> <span class="i">uri</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Uri</span></span> <span class="i">uri</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span> (<span class="i">HttpClient</span>.<span class="i">Get</span>, <span class="i">uri</span>)</span>;</span>
 
@@ -82,7 +82,7 @@
         
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">read</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">read</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">buffer</span> = <span class="e Call"><span class="e Super"><span class="k">super</span></span>.<span class="e Identifier"><span class="i">open</span></span>()</span>;</span></span>
                 <span class="s Try"><span class="k">try</span> <span class="s Scope"><span class="s Compound">{
@@ -102,7 +102,7 @@
 <span class="d Compound">{       
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Console</span>;</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">// open a web-page for reading (see HttpPost for writing)</span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">page</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">HttpGet</span></span> (<span class="e String"><span class="sl">"http://www.digitalmars.com/d/intro.html"</span></span>)</span>;</span></span>
@@ -110,7 +110,7 @@
                 <span class="lc">// retrieve and flush display content</span>
                 <span class="s Expression"><span class="e Call"><span class="e Call"><span class="e Identifier"><span class="i">Cout</span></span> (<span class="k">cast</span>(<span class="k">char</span>[]) <span class="i">page</span>.<span class="i">read</span>)</span> ()</span>;</span>
 
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">header</span></span></span>; <span class="e Identifier"><span class="i">page</span></span>.<span class="e Identifier"><span class="i">getResponseHeaders</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">header</span></span></span>; <span class="e Identifier"><span class="i">page</span></span>.<span class="e Identifier"><span class="i">getResponseHeaders</span></span>)
                          <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Call"><span class="e Identifier"><span class="i">Cout</span></span> (<span class="i">header</span>.<span class="i">name</span>.<span class="i">value</span>)</span> (<span class="i">header</span>.<span class="i">value</span>)</span>.<span class="e Identifier"><span class="i">newline</span></span>;</span></span></span>
         }</span></span></span>
 }</span></span></span>

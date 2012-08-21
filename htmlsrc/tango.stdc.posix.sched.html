@@ -105,10 +105,10 @@ int sched_setscheduler(pid_t, int, in sched_param*);
     <span class="lc">//SCHED_SPORADIC ?</span>
 }</span></span></span></span></span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_getparam</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sched_param</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_getscheduler</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_setparam</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sched_param</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_setscheduler</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">sched_param</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_getparam</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">sched_param</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_getscheduler</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_setparam</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sched_param</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_setscheduler</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">sched_param</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 
 <span class="lc">//</span>
 <span class="lc">// Thread (THR)</span>
@@ -119,19 +119,19 @@ int sched_yield();
 
 <span class="d Version"><span class="k">version</span>( <span class="i">linux</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_yield</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_yield</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_yield</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_yield</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
-	<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_yield</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+	<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_yield</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
-	<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_yield</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+	<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_yield</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span></span>
 
 <span class="lc">//</span>
@@ -145,27 +145,27 @@ int sched_rr_get_interval(pid_t, timespec*);
 
 <span class="d Version"><span class="k">version</span>( <span class="i">linux</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_max</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_min</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_rr_get_interval</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">timespec</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_max</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_min</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_rr_get_interval</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">timespec</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_min</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_max</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_min</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_max</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
     <span class="lc">//int sched_rr_get_interval(pid_t, timespec*); // FIXME: unavailable?</span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_min</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_max</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_rr_get_interval</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">timespec</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_min</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_max</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_rr_get_interval</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">timespec</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_min</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_max</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_rr_get_interval</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">timespec</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_min</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_get_priority_max</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">sched_rr_get_interval</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">pid_t</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">timespec</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span></span></span></span>
 
 </pre></td>

@@ -54,7 +54,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fp</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Appender</span></span>.<span class="t Identifier"><span class="i">Layout</span></span> <span class="i">how</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">fp</span></span>, <span class="o "><span class="t Identifier"><span class="i">Appender</span></span>.<span class="t Identifier"><span class="i">Layout</span></span> <span class="i">how</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">// Get a unique fingerprint for this instance</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">mask_</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">register</span></span> (<span class="i">fp</span>)</span></span>;</span>
@@ -72,7 +72,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Mask</span></span> <span class="i">mask</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Mask</span></span> <span class="i">mask</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">mask_</span></span>;</span>
         }</span></span></span>
@@ -83,7 +83,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">classinfo</span></span>.<span class="e Identifier"><span class="i">name</span></span>;</span>
         }</span></span></span>
@@ -94,7 +94,7 @@
                  
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">append</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>)</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">append</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">LogEvent</span></span> <span class="i">event</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Synchronized"><span class="k">synchronized</span>(<span class="e This"><span class="k">this</span></span>)
                 <span class="s Scope"><span class="s Compound">{
@@ -123,7 +123,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">IConduit</span></span> <span class="i">conduit</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">IConduit</span></span> <span class="i">conduit</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">conduit_</span></span>;</span>
         }</span></span></span>
@@ -134,7 +134,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Synchronized"><span class="k">synchronized</span>(<span class="e This"><span class="k">this</span></span>)
                 <span class="s Scope"><span class="s Compound">{
@@ -152,7 +152,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Bout</span></span> <span class="i">configure</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">IConduit</span></span> <span class="i">conduit</span></span>)</span>
+        <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Bout</span></span> <span class="i">configure</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">IConduit</span></span> <span class="i">conduit</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">// create a new buffer upon this conduit</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">conduit_</span></span> = <span class="e Identifier"><span class="i">conduit</span></span></span>;</span>

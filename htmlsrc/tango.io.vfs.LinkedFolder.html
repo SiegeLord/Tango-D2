@@ -60,7 +60,7 @@
                 <span class="d Variables"><span class="t Identifier"><span class="i">Link</span></span><span class="t Pointer">*</span>     <span class="i">next</span>;</span>
                 <span class="d Variables"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">folder</span>;</span>
 
-                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Link</span></span><span class="t Pointer">*</span> <span class="i">opCall</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">folder</span></span>)</span>
+                <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Link</span></span><span class="t Pointer">*</span> <span class="i">opCall</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">folder</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Link</span></span></span>;</span></span>
                         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">folder</span></span> = <span class="e Identifier"><span class="i">folder</span></span></span>;</span>
@@ -75,7 +75,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span> (<span class="i">name</span>);</span></span>
         }</span></span></span>
@@ -95,7 +95,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsHost</span></span> <span class="i">mount</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">folder</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span>=<span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsHost</span></span> <span class="i">mount</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">folder</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span>=<span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">// traverse to the end of the list</span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">link</span> = <span class="e Address">&amp;<span class="e Identifier"><span class="i">head</span></span></span>;</span></span>
@@ -115,7 +115,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsHost</span></span> <span class="i">dismount</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">folder</span></span>)</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsHost</span></span> <span class="i">dismount</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">VfsFolder</span></span> <span class="i">folder</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Int"><span class="n">0</span></span>, <span class="e String"><span class="sl">"LinkedFolder.dismount not implemented"</span></span>)</span>;</span>
         }</span></span></span>
@@ -133,7 +133,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">file</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">VfsFile</span></span> <span class="i">file</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">link</span> = <span class="e Identifier"><span class="i">head</span></span>;</span></span>
                 <span class="s While"><span class="k">while</span> (<span class="e Identifier"><span class="i">link</span></span>)
@@ -143,7 +143,7 @@
                           <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">file</span> = <span class="e Call"><span class="e Identifier"><span class="i">link</span></span>.<span class="e Identifier"><span class="i">folder</span></span>.<span class="e Identifier"><span class="i">file</span></span> (<span class="i">path</span>)</span>;</span></span>
                           <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">file</span></span>.<span class="e Identifier"><span class="i">exists</span></span>)
                               <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">file</span></span>;</span></span></span>
-                          }</span></span> <span class="s Catch"><span class="k">catch</span> (<span class="o Parameter"><span class="t Identifier"><span class="i">VfsException</span></span> <span class="i">x</span></span>) <span class="s Compound">{}</span></span></span>
+                          }</span></span> <span class="s Catch"><span class="k">catch</span> (<span class="o "><span class="t Identifier"><span class="i">VfsException</span></span> <span class="i">x</span></span>) <span class="s Compound">{}</span></span></span>
                       <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">link</span></span> = <span class="e Identifier"><span class="i">link</span></span>.<span class="e Identifier"><span class="i">next</span></span></span>;</span>
                       }</span></span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>.<span class="e Identifier"><span class="i">error</span></span> (<span class="sl">"file '"</span>~<span class="i">path</span>.<span class="i">idup</span>~<span class="sl">"' not found"</span>)</span>;</span>
@@ -161,7 +161,7 @@
 <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;</span>
 <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">vfs</span>.<span class="i">FileFolder</span>;</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
 <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">root</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">LinkedFolder</span></span> (<span class="e String"><span class="sl">"root"</span></span>)</span>;</span></span>
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">sub</span>  = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">VirtualFolder</span></span> (<span class="e String"><span class="sl">"sub"</span></span>)</span>;</span></span>

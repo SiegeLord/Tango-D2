@@ -36,9 +36,9 @@
 
 *******************************************************************************/</span>
 
-<span class="d Template"><span class="d Compound"><span class="d Struct"><span class="k">struct</span> <span class="i">Clink</span> <span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">V</span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Struct"><span class="k">struct</span> <span class="i">Clink</span> <span class="o ">(<span class="o "><span class="i">V</span></span>)</span>
 <span class="d Compound">{
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">Clink</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">V</span></span>)</span></span>    <span class="i">Type</span>;</span></span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">Clink</span>!<span class="o ">(<span class="t Identifier"><span class="i">V</span></span>)</span></span>    <span class="i">Type</span>;</span></span>
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">Type</span></span>         <span class="t Pointer">*</span><span class="i">Ref</span>;</span></span>
 
         <span class="d Variables"><span class="t Identifier"><span class="i">Ref</span></span>     <span class="i">prev</span>,           <span class="lc">// pointer to prev</span>
@@ -51,7 +51,7 @@
                         
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">set</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">v</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">set</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">v</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">set</span></span> (<span class="i">v</span>, &amp;<span class="k">this</span>, &amp;<span class="k">this</span>)</span>;</span>
         }</span></span></span>
@@ -65,7 +65,7 @@
                         
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">set</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">v</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">n</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">set</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">v</span></span>, <span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>, <span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">n</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">value</span></span> = <span class="e Identifier"><span class="i">v</span></span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">prev</span></span> = <span class="e Identifier"><span class="i">p</span></span></span>;</span>
@@ -77,12 +77,12 @@
          * Return true if current cell is the only one on the list
         **/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">singleton</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">singleton</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identity"><span class="e Identifier"><span class="i">next</span></span> <span class="k">is</span> <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span></span>;</span>
         }</span></span></span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">linkNext</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">linkNext</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">p</span></span>)
                    <span class="s Scope"><span class="s Compound">{
@@ -97,7 +97,7 @@
          * Make a cell holding v and link it immediately after current cell
         **/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">addNext</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">v</span></span>, <span class="o Parameter"><span class="k">scope</span> <span class="t Identifier"><span class="i">Ref</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">()</span></span> <span class="i">alloc</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">addNext</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">v</span></span>, <span class="o "><span class="k">scope</span> <span class="t Identifier"><span class="i">Ref</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">()</span></span> <span class="i">alloc</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Call"><span class="e Call"><span class="e Identifier"><span class="i">alloc</span></span>()</span>.<span class="e Identifier"><span class="i">set</span></span> (<span class="i">v</span>, &amp;<span class="k">this</span>, <span class="i">next</span>)</span>;</span></span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">next</span></span>.<span class="e Identifier"><span class="i">prev</span></span> = <span class="e Identifier"><span class="i">p</span></span></span>;</span>
@@ -108,7 +108,7 @@
          * make a node holding v, link it before the current cell, and return it
         **/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">addPrev</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">v</span></span>, <span class="o Parameter"><span class="k">scope</span> <span class="t Identifier"><span class="i">Ref</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">()</span></span> <span class="i">alloc</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">addPrev</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">v</span></span>, <span class="o "><span class="k">scope</span> <span class="t Identifier"><span class="i">Ref</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">()</span></span> <span class="i">alloc</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Identifier"><span class="i">prev</span></span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">c</span> = <span class="e Call"><span class="e Call"><span class="e Identifier"><span class="i">alloc</span></span>()</span>.<span class="e Identifier"><span class="i">set</span></span> (<span class="i">v</span>, <span class="i">p</span>, &amp;<span class="k">this</span>)</span>;</span></span>
@@ -121,7 +121,7 @@
          * link p before current cell
         **/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">linkPrev</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">linkPrev</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">p</span></span>)
                    <span class="s Scope"><span class="s Compound">{
@@ -136,7 +136,7 @@
          * return the number of cells in the list
         **/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">size</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">size</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">c</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
@@ -152,7 +152,7 @@
          * at current cell, or null if no such
         **/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">find</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">element</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">find</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">element</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
                 <span class="s DoWhile"><span class="k">do</span> <span class="s Scope"><span class="s Compound">{
@@ -168,7 +168,7 @@
          * traversal
         **/</span>
 
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">count</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">element</span></span>)</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">count</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">element</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">c</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
@@ -184,7 +184,7 @@
          * return the nth cell traversed from here. It may wrap around.
         **/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">nth</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">n</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">nth</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">n</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
                 <span class="s For"><span class="k">for</span> (<span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span> = <span class="e Int"><span class="n">0</span></span>;</span></span> <span class="e Rel"><span class="e Identifier"><span class="i">i</span></span> &lt; <span class="e Identifier"><span class="i">n</span></span></span>; <span class="e PreIncr">++<span class="e Identifier"><span class="i">i</span></span></span>)
@@ -198,7 +198,7 @@
          * This has no effect on the list if isSingleton()
         **/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unlinkNext</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unlinkNext</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">nn</span> = <span class="e Identifier"><span class="i">next</span></span>.<span class="e Identifier"><span class="i">next</span></span>;</span></span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">nn</span></span>.<span class="e Identifier"><span class="i">prev</span></span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span></span>;</span>
@@ -210,7 +210,7 @@
          * This has no effect on the list if isSingleton()
         **/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unlinkPrev</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unlinkPrev</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">pp</span> = <span class="e Identifier"><span class="i">prev</span></span>.<span class="e Identifier"><span class="i">prev</span></span>;</span></span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">pp</span></span>.<span class="e Identifier"><span class="i">next</span></span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span></span>;</span>
@@ -223,7 +223,7 @@
          * Causes it to be a singleton
         **/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unlink</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unlink</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Identifier"><span class="i">prev</span></span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">n</span> = <span class="e Identifier"><span class="i">next</span></span>;</span></span>
@@ -237,7 +237,7 @@
          * Make a copy of the list and return new head. 
         **/</span>
 
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">copyList</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Identifier"><span class="i">Ref</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">()</span></span> <span class="i">alloc</span></span>)</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">copyList</span> <span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Identifier"><span class="i">Ref</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">()</span></span> <span class="i">alloc</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">hd</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
 

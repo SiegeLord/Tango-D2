@@ -22,12 +22,12 @@
 <p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
 <p class="sec_header">Author:</p><div class="cmnt">Sean Kelly</div>
 <dl>
-<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Runtime" href="htmlsrc/tango.core.Runtime.html#L41">Runtime</a> <a href="tango.core.Runtime.html#Runtime" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="Runtime" href="htmlsrc/tango.core.Runtime.html#L39">Runtime</a> <a href="tango.core.Runtime.html#Runtime" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">This struct encapsulates all functionality related to the underlying runtime
  module for the calling context.</div></div>
 <dl>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Runtime.initialize" href="htmlsrc/tango.core.Runtime.html#L80">initialize</a><span class="params">(void delegate(Exception) <em>dg</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.core.Runtime.html#Runtime.initialize" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Runtime.initialize" href="htmlsrc/tango.core.Runtime.html#L78">initialize</a><span class="params">(void delegate(Exception) <em>dg</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.core.Runtime.html#Runtime.initialize" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Initializes the runtime.  This call is to be used in instances where the
  standard program initialization process is not executed.  This is most
@@ -38,7 +38,7 @@
        initialization process or null if such exceptions should be
        discarded.</td></tr></table>
 <p class="sec_header">Returns:</p><div class="cmnt">true if initialization succeeds and false if initialization fails.</div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Runtime.terminate" href="htmlsrc/tango.core.Runtime.html#L99">terminate</a><span class="params">(void delegate(Exception) <em>dg</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.core.Runtime.html#Runtime.terminate" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Runtime.terminate" href="htmlsrc/tango.core.Runtime.html#L97">terminate</a><span class="params">(void delegate(Exception) <em>dg</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.core.Runtime.html#Runtime.terminate" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Terminates the runtime.  This call is to be used in instances where the
  standard program termination process will not be not executed.  This is
@@ -49,13 +49,7 @@
        termination process or null if such exceptions should be
        discarded.</td></tr></table>
 <p class="sec_header">Returns:</p><div class="cmnt">true if termination succeeds and false if termination fails.</div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Runtime.isHalting" href="htmlsrc/tango.core.Runtime.html#L113">isHalting</a><span class="params">()</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.core.Runtime.html#Runtime.isHalting" class="plink">¶</a></dt>
-<dd class="ddef">
-<div class="summary"><div class="cmnt">Returns true if the runtime is halting.  Under normal circumstances,
- this will be set between the time that normal application code has
- exited and before module dtors are called.</div></div>
-<p class="sec_header">Returns:</p><div class="cmnt">true if the runtime is halting.</div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Runtime.traceHandler" href="htmlsrc/tango.core.Runtime.html#L130">traceHandler</a><span class="params">(TraceHandler <em>h</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.core.Runtime.html#Runtime.traceHandler" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Runtime.traceHandler" href="htmlsrc/tango.core.Runtime.html#L113">traceHandler</a><span class="params">(TraceHandler <em>h</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.core.Runtime.html#Runtime.traceHandler" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Overrides the default trace mechanism with s user-supplied version.  A
  trace represents the context from which an exception was thrown, and the
@@ -66,7 +60,7 @@
 <p class="sec_header">Parameters:</p>
 <table class="params">
 <tr><td><em>h</em></td><td>The new trace handler.  Set to null to use the default handler.</td></tr></table></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Runtime.collectHandler" href="htmlsrc/tango.core.Runtime.html#L147">collectHandler</a><span class="params">(CollectHandler <em>h</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.core.Runtime.html#Runtime.collectHandler" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Runtime.collectHandler" href="htmlsrc/tango.core.Runtime.html#L130">collectHandler</a><span class="params">(CollectHandler <em>h</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.core.Runtime.html#Runtime.collectHandler" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Overrides the default collect hander with a user-supplied version.  This
  routine will be called for each resource object that is finalized in a
@@ -77,7 +71,7 @@
 <p class="sec_header">Parameters:</p>
 <table class="params">
 <tr><td><em>h</em></td><td>The new collect handler.  Set to null to use the default handler.</td></tr></table></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Runtime.moduleUnitTester" href="htmlsrc/tango.core.Runtime.html#L162">moduleUnitTester</a><span class="params">(ModuleUnitTester <em>h</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.core.Runtime.html#Runtime.moduleUnitTester" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Runtime.moduleUnitTester" href="htmlsrc/tango.core.Runtime.html#L145">moduleUnitTester</a><span class="params">(ModuleUnitTester <em>h</em>)</span> <span class="attrs">[<span class="stc">@property</span>, <span class="stc">static</span>]</span> <a href="tango.core.Runtime.html#Runtime.moduleUnitTester" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Overrides the default module unit tester with a user-supplied version.
  This routine will be called once on program initialization.  The return
@@ -86,7 +80,7 @@
 <p class="sec_header">Parameters:</p>
 <table class="params">
 <tr><td><em>h</em></td><td>The new unit tester.  Set to null to use the default unit tester.</td></tr></table></dd></dl></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="runModuleUnitTests" href="htmlsrc/tango.core.Runtime.html#L186">runModuleUnitTests</a><span class="params">()</span> <span class="attrs">[<span class="linkg">extern(C)</span>]</span> <a href="tango.core.Runtime.html#runModuleUnitTests" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="runModuleUnitTests" href="htmlsrc/tango.core.Runtime.html#L169">runModuleUnitTests</a><span class="params">()</span> <span class="attrs">[<span class="linkg">extern(C)</span>]</span> <a href="tango.core.Runtime.html#runModuleUnitTests" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">This routine is called by the runtime to run module unit tests on startup.
  The user-supplied unit tester will be called if one has been supplied,
@@ -96,7 +90,7 @@
 </div>
 <div id="kandil-footer">
   <p>Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:23 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Tue Aug 21 02:56:43 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

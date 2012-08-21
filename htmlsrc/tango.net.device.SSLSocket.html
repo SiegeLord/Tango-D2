@@ -83,7 +83,7 @@
 
     *******************************************************************************/</span>
 
-    <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">config</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">config</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>()</span>;</span>
 
@@ -161,7 +161,7 @@
 
     *******************************************************************************/</span>
 
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">detach</span><span class="o Parameters">()</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">detach</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">sslSocket</span></span>)
         <span class="s Scope"><span class="s Compound">{
@@ -181,7 +181,7 @@
 
     *******************************************************************************/</span>
 
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">src</span></span>.<span class="e Identifier"><span class="i">length</span></span> <span class="k">is</span> <span class="e Int"><span class="n">0</span></span></span>)
             <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Int"><span class="n">0</span></span>;</span></span></span>
@@ -202,7 +202,7 @@
     *******************************************************************************/</span>
 
 
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
 <span class="nc">/+
         timeout = false;
@@ -279,7 +279,7 @@
 
     *******************************************************************************/</span>
 
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SSLSocket</span></span> <span class="i">shutdown</span><span class="o Parameters">()</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SSLSocket</span></span> <span class="i">shutdown</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">SSL</span></span> <span class="t Pointer">*</span><span class="i">obj</span>;</span></span>
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">BIO_get_ssl</span></span>(<span class="i">sslSocket</span>, &amp;<span class="i">obj</span>)</span>;</span>
@@ -304,7 +304,7 @@
     *******************************************************************************/</span>
 
 
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setCtx</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">ctx</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">clientMode</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setCtx</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">ctx</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">clientMode</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">sslCtx</span></span> = <span class="e Identifier"><span class="i">ctx</span></span></span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">sslSocket</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">_convertToSSL</span></span>(<span class="i">sslCtx</span>, <span class="k">false</span>, <span class="i">clientMode</span>)</span></span>;</span>
@@ -315,7 +315,7 @@
         close = close the socket when finished -- should probably be false usually
         client = if true, "client-mode" if false "server-mode"
     */</span>
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">BIO</span></span> <span class="t Pointer">*</span><span class="i">_convertToSSL</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">sslCtx</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">close</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">client</span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">BIO</span></span> <span class="t Pointer">*</span><span class="i">_convertToSSL</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">sslCtx</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">close</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">client</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">BIO</span></span> <span class="t Pointer">*</span><span class="i">rtn</span> = <span class="e Null"><span class="k">null</span></span>;</span></span>
 
@@ -371,7 +371,7 @@
 
     *******************************************************************************/</span>
 
-    <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ushort</span></span> <span class="i">port</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">ctx</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">backlog</span>=<span class="e Int"><span class="n">32</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">reuse</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">ushort</span></span> <span class="i">port</span></span>, <span class="o "><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">ctx</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">backlog</span>=<span class="e Int"><span class="n">32</span></span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">reuse</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">scope</span></span> <span class="d Variables"><span class="i">addr</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">IPv4Address</span></span> (<span class="e Identifier"><span class="i">port</span></span>)</span>;</span></span>
         <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span> (<span class="i">addr</span>, <span class="i">ctx</span>, <span class="i">backlog</span>, <span class="i">reuse</span>)</span>;</span>
@@ -390,7 +390,7 @@
 
     *******************************************************************************/</span>
 
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Address</span></span> <span class="i">addr</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">ctx</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">backlog</span>=<span class="e Int"><span class="n">32</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">reuse</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Address</span></span> <span class="i">addr</span></span>, <span class="o "><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">ctx</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">backlog</span>=<span class="e Int"><span class="n">32</span></span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">reuse</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="i">addr</span>, <span class="i">backlog</span>, <span class="i">reuse</span>)</span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">sslCtx</span></span> = <span class="e Identifier"><span class="i">ctx</span></span></span>;</span>
@@ -405,7 +405,7 @@
 
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">SSLSocket</span></span> <span class="i">accept</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">SSLSocket</span></span> <span class="i">recipient</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">SSLSocket</span></span> <span class="i">accept</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">SSLSocket</span></span> <span class="i">recipient</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">recipient</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
             <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">recipient</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">SSLSocket</span></span>(<span class="e Bool"><span class="k">false</span></span>)</span></span>;</span></span></span>
@@ -431,7 +431,7 @@
 
     <span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span>
     <span class="d Compound">{
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">blah</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">booger</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">void</span></span> <span class="t Pointer">*</span><span class="i">x</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">blah</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">booger</span></span>, <span class="o "><span class="t Integral"><span class="k">void</span></span> <span class="t Pointer">*</span><span class="i">x</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Return"><span class="k">return</span> <span class="e Int"><span class="n">1</span></span>;</span>
         }</span></span></span>
@@ -442,7 +442,7 @@
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">t2</span> = <span class="e Float"><span class="n">1.0</span></span>;</span></span>
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">loadOpenSSL</span></span>()</span>;</span>
-        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">sslCTXTest</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">sslCTXTest</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">s1</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">SSLSocket</span></span>()</span>;</span></span>
             <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">s1</span></span>)
@@ -450,7 +450,7 @@
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">good</span> = <span class="e Bool"><span class="k">false</span></span>;</span></span>
                 <span class="s Try"><span class="k">try</span>
                     <span class="s Scope"><span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">s2</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">SSLSocket</span></span>(<span class="e Identifier"><span class="i">SocketType</span></span>.<span class="e Identifier"><span class="i">STREAM</span></span>,  <span class="e Identifier"><span class="i">ProtocolType</span></span>.<span class="e Identifier"><span class="i">UDP</span></span>)</span>;</span></span></span>
-                <span class="s Catch"><span class="k">catch</span> (<span class="o Parameter"><span class="t Identifier"><span class="i">Exception</span></span> <span class="i">e</span></span>)
+                <span class="s Catch"><span class="k">catch</span> (<span class="o "><span class="t Identifier"><span class="i">Exception</span></span> <span class="i">e</span></span>)
                     <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">good</span></span> = <span class="e Bool"><span class="k">true</span></span></span>;</span></span></span>
 
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">good</span></span>)
@@ -465,7 +465,7 @@
                             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">publicCertificate</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Certificate</span></span>(<span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)<span class="e Identifier"><span class="i">File</span></span></span>.<span class="e Identifier"><span class="i">get</span></span> (<span class="sl">"public.pem"</span>)</span>)</span></span>;</span>
                             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">privateKey</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">PrivateKey</span></span>(<span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)<span class="e Identifier"><span class="i">File</span></span></span>.<span class="e Identifier"><span class="i">get</span></span> (<span class="sl">"private.pem"</span>)</span>)</span></span>;</span>
                         }</span></span>
-                        <span class="s Catch"><span class="k">catch</span> (<span class="o Parameter"><span class="t Identifier"><span class="i">Exception</span></span> <span class="i">ex</span></span>)
+                        <span class="s Catch"><span class="k">catch</span> (<span class="o "><span class="t Identifier"><span class="i">Exception</span></span> <span class="i">ex</span></span>)
                         <span class="s Compound">{
                             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">privateKey</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">PrivateKey</span></span>(<span class="e Int"><span class="n">2048</span></span>)</span></span>;</span>
                             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">publicCertificate</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Certificate</span></span>()</span></span>;</span>
@@ -483,7 +483,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">Test</span></span>.<span class="e Identifier"><span class="i">Status</span></span>.<span class="e Identifier"><span class="i">Failure</span></span>;</span>
         }</span></span></span></span>
 
-        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">sslReadWriteTest</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">sslReadWriteTest</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">s1</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">SSLSocket</span></span>()</span>;</span></span>
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">address</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">IPv4Address</span></span>(<span class="e String"><span class="sl">"209.20.65.224"</span></span>, <span class="e Int"><span class="n">443</span></span>)</span>;</span></span>
@@ -501,7 +501,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">Test</span></span>.<span class="e Identifier"><span class="i">Status</span></span>.<span class="e Identifier"><span class="i">Failure</span></span>;</span>
         }</span></span></span></span>
 
-        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">sslReadWriteTestWithTimeout</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">sslReadWriteTestWithTimeout</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">s1</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">SSLSocket</span></span>()</span>;</span></span>
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">address</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">IPv4Address</span></span>(<span class="e String"><span class="sl">"209.20.65.224"</span></span>, <span class="e Int"><span class="n">443</span></span>)</span>;</span></span>

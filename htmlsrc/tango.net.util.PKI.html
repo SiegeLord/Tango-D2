@@ -98,7 +98,7 @@
 
 *******************************************************************************/</span>
 
-<span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">X509_STORE_CTX</span></span> <span class="t Pointer">*</span><span class="i">ctx</span></span>)</span></span> <span class="i">SSLVerifyCallback</span>;</span></span>
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">X509_STORE_CTX</span></span> <span class="t Pointer">*</span><span class="i">ctx</span></span>)</span></span> <span class="i">SSLVerifyCallback</span>;</span></span>
 
 
 <span class="bc">/*******************************************************************************
@@ -133,7 +133,7 @@
 
     *******************************************************************************/</span>
 
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">()</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Paren">(<span class="e Assign"><span class="e Identifier"><span class="i">_ctx</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">SSL_CTX_new</span></span>(<span class="i">SSLv23_method</span>())</span></span>)</span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
             <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">throwOpenSSLError</span></span>()</span>;</span></span></span>
@@ -157,7 +157,7 @@
                 
     *******************************************************************************/</span>
 
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SSL_CTX</span></span><span class="t Pointer">*</span> <span class="i">native</span><span class="o Parameters">()</span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SSL_CTX</span></span><span class="t Pointer">*</span> <span class="i">native</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{   
         <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">_ctx</span></span>;</span>
     }</span></span></span>
@@ -170,7 +170,7 @@
         
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">certificate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">cert</span></span>)</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">certificate</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">cert</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">SSL_CTX_use_certificate</span></span>(<span class="i">_ctx</span>, <span class="i">cert</span>.<span class="i">_cert</span>)</span>)
             <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_cert</span></span> = <span class="e Identifier"><span class="i">cert</span></span></span>;</span></span>
@@ -188,7 +188,7 @@
     *******************************************************************************/</span>
 
 
-    <span class="d Function"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">privateKey</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">PrivateKey</span></span> <span class="i">key</span></span>)</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">privateKey</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">PrivateKey</span></span> <span class="i">key</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">SSL_CTX_use_PrivateKey</span></span>(<span class="i">_ctx</span>, <span class="i">key</span>.<span class="i">_evpKey</span>)</span>)
             <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_key</span></span> = <span class="e Identifier"><span class="i">key</span></span></span>;</span></span>
@@ -204,7 +204,7 @@
                 
     *******************************************************************************/</span>
 
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">checkKey</span><span class="o Parameters">()</span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">checkKey</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Not">!<span class="e Identifier"><span class="i">SSL_CTX_check_private_key</span></span></span>(<span class="i">_ctx</span>)</span>)
             <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">throwOpenSSLError</span></span>()</span>;</span></span></span>
@@ -218,7 +218,7 @@
                 
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">setVerification</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">flags</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">SSLVerifyCallback</span></span> <span class="i">cb</span></span>)</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">setVerification</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">flags</span></span>, <span class="o "><span class="t Identifier"><span class="i">SSLVerifyCallback</span></span> <span class="i">cb</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">SSL_CTX_set_verify</span></span>(<span class="i">_ctx</span>, <span class="i">flags</span>, <span class="i">cb</span>)</span>;</span>
         <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -232,7 +232,7 @@
     *******************************************************************************/</span>
 
 
-    <span class="d Function"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">store</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">CertificateStore</span></span> <span class="i">store</span></span>)</span> <span class="lc">// warning this will free the existing one.. not sure if it frees on close yet ( so don't set it twice! ?!)</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">store</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">CertificateStore</span></span> <span class="i">store</span></span>)</span> <span class="lc">// warning this will free the existing one.. not sure if it frees on close yet ( so don't set it twice! ?!)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">SSL_CTX_set_cert_store</span></span>(<span class="i">_ctx</span>, <span class="i">store</span>.<span class="i">_store</span>)</span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_store</span></span> = <span class="e Identifier"><span class="i">store</span></span></span>;</span>
@@ -254,7 +254,7 @@
                 
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">caCertsPath</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">SSLCtx</span></span> <span class="i">caCertsPath</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Not">!<span class="e Identifier"><span class="i">SSL_CTX_load_verify_locations</span></span></span>(<span class="i">_ctx</span>, <span class="k">null</span>, <span class="i">toStringz</span>(<span class="i">path</span>))</span>)
             <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">throwOpenSSLError</span></span>()</span>;</span></span></span>
@@ -313,7 +313,7 @@
                 
     *******************************************************************************/</span>
 
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">X509_STORE_CTX</span></span> <span class="t Pointer">*</span><span class="i">ctx</span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">X509_STORE_CTX</span></span> <span class="t Pointer">*</span><span class="i">ctx</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_ctx</span></span> = <span class="e Identifier"><span class="i">ctx</span></span></span>;</span>
     }</span></span></span>
@@ -324,7 +324,7 @@
                 
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">cert</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">cert</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">X509</span></span> <span class="t Pointer">*</span><span class="i">cert</span> = <span class="e Call"><span class="e Identifier"><span class="i">X509_STORE_CTX_get_current_cert</span></span>(<span class="i">_ctx</span>)</span>;</span></span>
         <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">cert</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
@@ -333,13 +333,13 @@
     }</span></span></span>
 
     <span class="lc">// TODO need more research on what used for</span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">error</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">error</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">X509_STORE_CTX_get_error</span></span>(<span class="i">_ctx</span>)</span>;</span>
     }</span></span></span>
 
     <span class="lc">// TODO need more research on what used for</span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">errorDepth</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">errorDepth</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">X509_STORE_CTX_get_error_depth</span></span>(<span class="i">_ctx</span>)</span>;</span>
     }</span></span></span>
@@ -371,7 +371,7 @@
     <span class="d Variables"><span class="t Identifier"><span class="i">Certificate</span></span><span class="t Array">[]</span> <span class="i">_certs</span>;</span>
 
 
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">()</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Paren">(<span class="e Assign"><span class="e Identifier"><span class="i">_store</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">X509_STORE_new</span></span>()</span></span>)</span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
             <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">throwOpenSSLError</span></span>()</span>;</span></span></span>
@@ -392,7 +392,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">CertificateStore</span></span> <span class="i">add</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">cert</span></span>)</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">CertificateStore</span></span> <span class="i">add</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">cert</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">X509_STORE_add_cert</span></span>(<span class="i">_store</span>, <span class="i">cert</span>.<span class="i">_cert</span>)</span>)
             <span class="s Scope"><span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">_certs</span></span> ~= <span class="e Identifier"><span class="i">cert</span></span></span>;</span></span> <span class="lc">// just in case it gets GC'd?</span>
@@ -433,7 +433,7 @@
             publicPemData = pem encoded data containing the public key 
             
     *******************************************************************************/</span>
-    <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">publicPemData</span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">publicPemData</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">BIO</span></span> <span class="t Pointer">*</span><span class="i">bp</span> = <span class="e Call"><span class="e Identifier"><span class="i">BIO_new_mem_buf</span></span>(<span class="i">publicPemData</span>.<span class="i">ptr</span>, <span class="k">cast</span>(<span class="k">int</span>) <span class="i">publicPemData</span>.<span class="i">length</span>)</span>;</span></span>
         <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">bp</span></span>)
@@ -445,7 +445,7 @@
         <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">_evpKey</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
             <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">throwOpenSSLError</span></span>()</span>;</span></span></span>
     }</span></span></span>
-    <span class="d Protection"><span class="k">package</span></span> <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">PrivateKey</span></span> <span class="i">key</span></span>)</span> 
+    <span class="d Protection"><span class="k">package</span></span> <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">PrivateKey</span></span> <span class="i">key</span></span>)</span> 
     <span class="s FuncBody"><span class="s Compound">{        
         <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">_evpKey</span></span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">RSA</span></span> <span class="t Pointer">*</span>)<span class="e Identifier"><span class="i">key</span></span></span>.<span class="e Identifier"><span class="i">_evpKey</span></span>.<span class="e Identifier"><span class="i">pkey</span></span></span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">_existingKey</span></span> = <span class="e Identifier"><span class="i">key</span></span></span>;</span>
@@ -471,7 +471,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">pemFormat</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">pemFormat</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">rtn</span> = <span class="e Null"><span class="k">null</span></span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">BIO</span></span> <span class="t Pointer">*</span><span class="i">bp</span> = <span class="e Call"><span class="e Identifier"><span class="i">BIO_new</span></span>(<span class="i">BIO_s_mem</span>())</span>;</span></span>
@@ -499,7 +499,7 @@
         signature = the digital signature
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">verify</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">data</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">signature</span></span>)</span>
+    <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">verify</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">data</span></span>, <span class="o "><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">signature</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[<span class="t Identifier"><span class="i">MD5_DIGEST_LENGTH</span></span>]</span> <span class="i">digest</span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">MD5_CTX</span></span> <span class="i">c</span>;</span></span>
@@ -526,7 +526,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">encrypt</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">data</span></span>)</span>
+    <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">encrypt</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">data</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">rtn</span>;</span></span>
 
@@ -553,7 +553,7 @@
 
     *******************************************************************************/</span>
        
-    <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">decrypt</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">data</span></span>)</span>
+    <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">decrypt</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">data</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">rtn</span>;</span></span>
 
@@ -600,7 +600,7 @@
         
     *******************************************************************************/</span>
 
-    <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">privatePemData</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">certPass</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">privatePemData</span></span>, <span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">certPass</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">BIO</span></span> <span class="t Pointer">*</span><span class="i">bp</span> = <span class="e Call"><span class="e Identifier"><span class="i">BIO_new_mem_buf</span></span>(<span class="i">privatePemData</span>.<span class="i">ptr</span>, <span class="k">cast</span>(<span class="k">int</span>) <span class="i">privatePemData</span>.<span class="i">length</span>)</span>;</span></span>
         <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">bp</span></span>)
@@ -623,7 +623,7 @@
     *******************************************************************************/</span>
 
 
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">bits</span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">bits</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">RSA</span></span> <span class="t Pointer">*</span><span class="i">rsa</span> = <span class="e Call"><span class="e Identifier"><span class="i">RSA_generate_key</span></span>(<span class="i">bits</span>, <span class="i">RSA_F4</span>, <span class="k">null</span>, <span class="k">null</span>)</span>;</span></span>
         <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">rsa</span></span>)
@@ -653,7 +653,7 @@
         the same.
         
     *******************************************************************************/</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">opEquals</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Object</span></span> <span class="i">obj</span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">opEquals</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Object</span></span> <span class="i">obj</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">pk</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">PrivateKey</span></span>)<span class="e Identifier"><span class="i">obj</span></span></span>;</span></span>
         <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">pk</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
@@ -670,7 +670,7 @@
             AES 256bit encryption, with this as the key.
         
     *******************************************************************************/</span>
-    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">pemFormat</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">pass</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">pemFormat</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">pass</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">rtn</span> = <span class="e Null"><span class="k">null</span></span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">BIO</span></span> <span class="t Pointer">*</span><span class="i">bp</span> = <span class="e Call"><span class="e Identifier"><span class="i">BIO_new</span></span>(<span class="i">BIO_s_mem</span>())</span>;</span></span>
@@ -695,7 +695,7 @@
 
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">PublicKey</span></span> <span class="i">publicKey</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">PublicKey</span></span> <span class="i">publicKey</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">rtn</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">PublicKey</span></span>(<span class="e This"><span class="k">this</span></span>)</span>;</span></span>
         <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">rtn</span></span>;</span>
@@ -712,7 +712,7 @@
 
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">sign</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">ubyte</span></span>)</span><span class="t Array">[]</span> <span class="i">data</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">sigbuf</span></span>)</span>
+    <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">sign</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">ubyte</span></span>)</span><span class="t Array">[]</span> <span class="i">data</span></span>, <span class="o "><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">sigbuf</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">maxSize</span> = <span class="e Call"><span class="e Identifier"><span class="i">RSA_size</span></span>(<span class="k">cast</span>(<span class="i">RSA</span> *)<span class="i">_evpKey</span>.<span class="i">pkey</span>)</span>;</span></span>
         <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">sigbuf</span></span>.<span class="e Identifier"><span class="i">length</span></span> &lt; <span class="e Identifier"><span class="i">maxSize</span></span></span>)
@@ -746,7 +746,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">encrypt</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">data</span></span>)</span>
+    <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">encrypt</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">data</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">rtn</span>;</span></span>
 
@@ -773,7 +773,7 @@
 
     *******************************************************************************/</span>
        
-    <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">decrypt</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">data</span></span>)</span>
+    <span class="d Function"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">decrypt</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">data</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Array">[]</span> <span class="i">rtn</span>;</span></span>
 
@@ -822,7 +822,7 @@
     <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">freeIt</span> = <span class="e Bool"><span class="k">true</span></span>;</span>
 
     <span class="lc">// used with X509_STORE_CTX</span>
-    <span class="d Protection"><span class="k">package</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">X509</span></span> <span class="t Pointer">*</span><span class="i">cert</span></span>)</span>
+    <span class="d Protection"><span class="k">package</span></span> <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">X509</span></span> <span class="t Pointer">*</span><span class="i">cert</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_cert</span></span> = <span class="e Identifier"><span class="i">cert</span></span></span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">freeIt</span></span> = <span class="e Bool"><span class="k">false</span></span></span>;</span>
@@ -833,7 +833,7 @@
         Parses a X509 Certificate from the provided PEM encoded data.
             
     *******************************************************************************/</span>
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">publicPemData</span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">publicPemData</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">BIO</span></span> <span class="t Pointer">*</span><span class="i">data</span> = <span class="e Call"><span class="e Identifier"><span class="i">BIO_new_mem_buf</span></span>(<span class="i">publicPemData</span>.<span class="i">ptr</span>, <span class="k">cast</span>(<span class="k">int</span>) <span class="i">publicPemData</span>.<span class="i">length</span>)</span>;</span></span>
         <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">data</span></span>)
@@ -851,7 +851,7 @@
         X509 certificates programatically.
             
     *******************************************************************************/</span>
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">()</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Paren">(<span class="e Assign"><span class="e Identifier"><span class="i">_cert</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">X509_new</span></span>()</span></span>)</span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
         <span class="s Scope"><span class="s Compound">{
@@ -887,7 +887,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">serialNumber</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">serial</span></span>)</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">serialNumber</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">serial</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">checkFlag</span></span>()</span>;</span>
         <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Not">!<span class="e Identifier"><span class="i">ASN1_INTEGER_set</span></span></span>(<span class="i">X509_get_serialNumber</span>(<span class="i">_cert</span>), <span class="i">serial</span>)</span>)
@@ -900,7 +900,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">serialNumber</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">serialNumber</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Not">!<span class="e Identifier"><span class="i">X509_get_serialNumber</span></span></span>(<span class="i">_cert</span>)</span>)
             <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">throwOpenSSLError</span></span>()</span>;</span></span></span>
@@ -920,7 +920,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">dateBeforeOffset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">t</span></span>)</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">dateBeforeOffset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">t</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">checkFlag</span></span>()</span>;</span>
         <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Not">!<span class="e Identifier"><span class="i">X509_gmtime_adj</span></span></span>(<span class="i">X509_get_notBefore</span>(<span class="i">_cert</span>), <span class="k">cast</span>(<span class="k">int</span>)<span class="i">t</span>.<span class="i">seconds</span>)</span>)
@@ -942,7 +942,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">dateAfterOffset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">t</span></span>)</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">dateAfterOffset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">t</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">checkFlag</span></span>()</span>;</span>
         <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Not">!<span class="e Identifier"><span class="i">X509_gmtime_adj</span></span></span>(<span class="i">X509_get_notAfter</span>(<span class="i">_cert</span>), <span class="k">cast</span>(<span class="k">int</span>)<span class="i">t</span>.<span class="i">seconds</span>)</span>)
@@ -959,7 +959,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">dateAfter</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">dateAfter</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">rtn</span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">ASN1_GENERALIZEDTIME</span></span> <span class="t Pointer">*</span><span class="i">genTime</span> = <span class="e Call"><span class="e Identifier"><span class="i">ASN1_TIME_to_generalizedtime</span></span>(<span class="i">X509_get_notAfter</span>(<span class="i">_cert</span>), <span class="k">null</span>)</span>;</span></span>
@@ -980,7 +980,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">dateBefore</span><span class="o Parameters">()</span>    
+    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">dateBefore</span><span class="o ">()</span>    
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">rtn</span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">ASN1_GENERALIZEDTIME</span></span> <span class="t Pointer">*</span><span class="i">genTime</span> = <span class="e Call"><span class="e Identifier"><span class="i">ASN1_TIME_to_generalizedtime</span></span>(<span class="i">X509_get_notBefore</span>(<span class="i">_cert</span>), <span class="k">null</span>)</span>;</span></span>
@@ -998,7 +998,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">privateKey</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">PrivateKey</span></span> <span class="i">key</span></span>)</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">privateKey</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">PrivateKey</span></span> <span class="i">key</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">checkFlag</span></span>()</span>;</span>
         <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">key</span></span>)
@@ -1028,7 +1028,7 @@
     *******************************************************************************/</span>
 
     <span class="lc">// this kinda sucks.. but it has to be done in a certain order..</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">setSubject</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">country</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">stateProvince</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">city</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">organization</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">cn</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">organizationalUnit</span> = <span class="e Null"><span class="k">null</span></span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">email</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">setSubject</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">country</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">stateProvince</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">city</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">organization</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">cn</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">organizationalUnit</span> = <span class="e Null"><span class="k">null</span></span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">email</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Identifier"><span class="i">country</span></span>)</span>;</span>
@@ -1063,7 +1063,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">subject</span><span class="o Parameters">()</span> <span class="lc">// currently multi-line, could be single-line..</span>
+    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">subject</span><span class="o ">()</span> <span class="lc">// currently multi-line, could be single-line..</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">rtn</span> = <span class="e Null"><span class="k">null</span></span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">X509_NAME</span></span> <span class="t Pointer">*</span><span class="i">subjectName</span> = <span class="e Call"><span class="e Identifier"><span class="i">X509_get_subject_name</span></span>(<span class="i">_cert</span>)</span>;</span></span>
@@ -1095,7 +1095,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">sign</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">caCert</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">PrivateKey</span></span> <span class="i">caKey</span></span>)</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">sign</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Certificate</span></span> <span class="i">caCert</span></span>, <span class="o "><span class="t Identifier"><span class="i">PrivateKey</span></span> <span class="i">caKey</span></span>)</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Identifier"><span class="i">caCert</span></span>)</span>;</span>
@@ -1125,7 +1125,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">opEquals</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Object</span></span> <span class="i">obj</span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">opEquals</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Object</span></span> <span class="i">obj</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">c</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">Certificate</span></span>)<span class="e Identifier"><span class="i">obj</span></span></span>;</span></span>
         <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">c</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
@@ -1143,7 +1143,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">verify</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">CertificateStore</span></span> <span class="i">store</span></span>)</span>
+    <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">verify</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">CertificateStore</span></span> <span class="i">store</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">rtn</span> = <span class="e Bool"><span class="k">false</span></span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">X509_STORE_CTX</span></span> <span class="t Pointer">*</span><span class="i">verifyCtx</span> = <span class="e Call"><span class="e Identifier"><span class="i">X509_STORE_CTX_new</span></span>()</span>;</span></span>
@@ -1166,7 +1166,7 @@
             
     *******************************************************************************/</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">pemFormat</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">pemFormat</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">rtn</span> = <span class="e Null"><span class="k">null</span></span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">BIO</span></span> <span class="t Pointer">*</span><span class="i">bp</span> = <span class="e Call"><span class="e Identifier"><span class="i">BIO_new</span></span>(<span class="i">BIO_s_mem</span>())</span>;</span></span>
@@ -1185,13 +1185,13 @@
         <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">rtn</span></span>;</span>    
     }</span></span></span>
 
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">addNameEntry</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">X509_NAME</span></span> <span class="t Pointer">*</span><span class="i">name</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span> <span class="t Pointer">*</span><span class="i">type</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">value</span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">addNameEntry</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">X509_NAME</span></span> <span class="t Pointer">*</span><span class="i">name</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span> <span class="t Pointer">*</span><span class="i">type</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">value</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Not">!<span class="e Identifier"><span class="i">X509_NAME_add_entry_by_txt</span></span></span>(<span class="i">name</span>, <span class="i">type</span>, <span class="i">MBSTRING_ASC</span>, <span class="i">toStringz</span>(<span class="i">value</span>), <span class="k">cast</span>(<span class="k">int</span>) <span class="i">value</span>.<span class="i">length</span>, -<span class="n">1</span>, <span class="n">0</span>)</span>)
             <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">throwOpenSSLError</span></span>()</span>;</span></span></span>
     }</span></span></span>
 
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">checkFlag</span><span class="o Parameters">()</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">checkFlag</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">readOnly</span></span>)
             <span class="s Scope"><span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Exception</span></span>(<span class="e String"><span class="sl">"The cert is signed already, and cannot be modified."</span></span>)</span>;</span></span></span>
@@ -1208,7 +1208,7 @@
     <span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">t2</span> = <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">fromDays</span></span>(<span class="n">365</span>)</span>;</span> <span class="lc">// can't set this up in delegate ..??</span>
     <span class="d Unittest"><span class="k">unittest</span>
     <span class="s FuncBody"><span class="s Compound">{
-        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">_pkeyGenTest</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">_pkeyGenTest</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">pkey</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">PrivateKey</span></span>(<span class="e Int"><span class="n">2048</span></span>)</span>;</span></span>
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">pem</span> = <span class="e Identifier"><span class="i">pkey</span></span>.<span class="e Identifier"><span class="i">pemFormat</span></span>;</span></span>
@@ -1219,7 +1219,7 @@
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">pem2</span> = <span class="e Call"><span class="e Identifier"><span class="i">pkey3</span></span>.<span class="e Identifier"><span class="i">pemFormat</span></span>(<span class="sl">"hello"</span>)</span>;</span></span>
                 <span class="s Try"><span class="k">try</span>
                     <span class="s Scope"><span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">pkey4</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">PrivateKey</span></span>(<span class="e Identifier"><span class="i">pem2</span></span>, <span class="e String"><span class="sl">"badpass"</span></span>)</span>;</span></span></span>
-                <span class="s Catch"><span class="k">catch</span> (<span class="o Parameter"><span class="t Identifier"><span class="i">Exception</span></span> <span class="i">ex</span></span>)
+                <span class="s Catch"><span class="k">catch</span> (<span class="o "><span class="t Identifier"><span class="i">Exception</span></span> <span class="i">ex</span></span>)
                 <span class="s Compound">{
                     <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">pkey4</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">PrivateKey</span></span>(<span class="e Identifier"><span class="i">pem2</span></span>, <span class="e String"><span class="sl">"hello"</span></span>)</span>;</span></span>
                     <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">Test</span></span>.<span class="e Identifier"><span class="i">Status</span></span>.<span class="e Identifier"><span class="i">Success</span></span>;</span>
@@ -1229,7 +1229,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">Test</span></span>.<span class="e Identifier"><span class="i">Status</span></span>.<span class="e Identifier"><span class="i">Failure</span></span>;</span>
         }</span></span></span></span>
 
-        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">_certGenTest</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">_certGenTest</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">cert</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Certificate</span></span>()</span>;</span></span>
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">pkey</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">PrivateKey</span></span>(<span class="e Int"><span class="n">2048</span></span>)</span>;</span></span>
@@ -1243,7 +1243,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">Test</span></span>.<span class="e Identifier"><span class="i">Status</span></span>.<span class="e Identifier"><span class="i">Failure</span></span>;</span>
         }</span></span></span></span>
 
-        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">_chainValidation</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">_chainValidation</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">caCert</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Certificate</span></span>()</span>;</span></span>
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">caPkey</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">PrivateKey</span></span>(<span class="e Int"><span class="n">2048</span></span>)</span>;</span></span>
@@ -1283,7 +1283,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">Test</span></span>.<span class="e Identifier"><span class="i">Status</span></span>.<span class="e Identifier"><span class="i">Failure</span></span>;</span>
         }</span></span></span></span>   
 
-        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">_rsaCrypto</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">_rsaCrypto</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">key</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">PrivateKey</span></span>(<span class="e Int"><span class="n">2048</span></span>)</span>;</span></span>
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">pemData</span> = <span class="e Identifier"><span class="i">key</span></span>.<span class="e Identifier"><span class="i">publicKey</span></span>.<span class="e Identifier"><span class="i">pemFormat</span></span>;</span></span>
@@ -1300,7 +1300,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">Test</span></span>.<span class="e Identifier"><span class="i">Status</span></span>.<span class="e Identifier"><span class="i">Failure</span></span>;</span>
         }</span></span></span></span>
 
-        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">_rsaSignVerify</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Identifier"><span class="i">Test</span></span>.<span class="t Identifier"><span class="i">Status</span></span> <span class="i">_rsaSignVerify</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span><span class="t Array">[]</span> <span class="i">messages</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">key</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">PrivateKey</span></span>(<span class="e Int"><span class="n">1024</span></span>)</span>;</span></span>
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">key2</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">PrivateKey</span></span>(<span class="e Int"><span class="n">1024</span></span>)</span>;</span></span>

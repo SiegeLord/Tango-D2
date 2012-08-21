@@ -96,7 +96,7 @@
 <span class="d Class"><span class="k">class</span> <span class="i">HttpClient</span>
 <span class="d Compound">{       
         <span class="lc">/// callback for sending PUT content</span>
-        <span class="d Alias"><span class="k">alias</span> <span class="d StorageClass"><span class="k">scope</span></span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Delegate"><span class="k">delegate</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">OutputBuffer</span></span></span>)</span></span> <span class="i">Pump</span>;</span></span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d StorageClass"><span class="k">scope</span></span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Delegate"><span class="k">delegate</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">OutputBuffer</span></span></span>)</span></span> <span class="i">Pump</span>;</span></span>
         
         <span class="lc">// this is struct rather than typedef to avoid compiler bugs</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Struct"><span class="k">struct</span> <span class="i">RequestMethod</span>
@@ -109,7 +109,7 @@
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">BufferedInput</span></span>           <span class="i">input</span>;</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">BufferedOutput</span></span>          <span class="i">output</span>;</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Array</span></span>                   <span class="i">tokens</span>;</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">Lines</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span>)</span></span>            <span class="i">line</span>;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">Lines</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span>)</span></span>            <span class="i">line</span>;</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Socket</span></span>                  <span class="i">socket</span>;</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">RequestMethod</span></span>           <span class="i">method</span>;</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">InternetAddress</span></span>         <span class="i">address</span>;</span>
@@ -139,7 +139,7 @@
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span>                  <span class="i">httpVersion</span>;</span>
 
         <span class="lc">// http version id</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Enum"><span class="k">enum</span> <span class="i">Version</span> {<span class="d EnumMember"><span class="t Identifier"><span class="i">OnePointZero</span></span></span>, <span class="d EnumMember"><span class="t Identifier"><span class="i">OnePointOne</span></span></span>}</span><span class="d Empty">;</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Enum"><span class="k">enum</span> <span class="i">Version</span> {<span class="d EnumMember"><span class="i">OnePointZero</span></span>, <span class="d EnumMember"><span class="i">OnePointOne</span></span>}</span><span class="d Empty">;</span>
 
         <span class="lc">// standard set of request methods ...</span>
         <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">RequestMethod</span></span>      <span class="i">Get</span> = <span class="e StructInit">{<span class="e String"><span class="sl">"GET"</span></span>}</span>,
@@ -159,7 +159,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">RequestMethod</span></span> <span class="i">method</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">url</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">RequestMethod</span></span> <span class="i">method</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">url</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e This"><span class="k">this</span></span> (<span class="i">method</span>, <span class="k">new</span> <span class="i">Uri</span>(<span class="i">url</span>))</span>;</span>
         }</span></span></span>
@@ -172,7 +172,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">RequestMethod</span></span> <span class="i">method</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Uri</span></span> <span class="i">uri</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">RequestMethod</span></span> <span class="i">method</span></span>, <span class="o "><span class="t Identifier"><span class="i">Uri</span></span> <span class="i">uri</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">uri</span></span> = <span class="e Identifier"><span class="i">uri</span></span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">method</span></span> = <span class="e Identifier"><span class="i">method</span></span></span>;</span>
@@ -207,7 +207,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">HttpHeadersView</span></span> <span class="i">getResponseHeaders</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">HttpHeadersView</span></span> <span class="i">getResponseHeaders</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">headersIn</span></span>;</span>
         }</span></span></span>
@@ -219,7 +219,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">HttpHeaders</span></span> <span class="i">getRequestHeaders</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">HttpHeaders</span></span> <span class="i">getRequestHeaders</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">headersOut</span></span>;</span>
         }</span></span></span>
@@ -233,7 +233,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">HttpParams</span></span> <span class="i">getRequestParams</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">HttpParams</span></span> <span class="i">getRequestParams</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">paramsOut</span></span>;</span>
         }</span></span></span>
@@ -244,7 +244,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">UriView</span></span> <span class="i">getUri</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">UriView</span></span> <span class="i">getUri</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">uri</span></span>;</span>
         }</span></span></span>
@@ -257,7 +257,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">ResponseLine</span></span> <span class="i">getResponse</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">ResponseLine</span></span> <span class="i">getResponse</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">responseLine</span></span>;</span>
         }</span></span></span>
@@ -268,7 +268,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">getStatus</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">getStatus</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">responseLine</span></span>.<span class="e Identifier"><span class="i">getStatus</span></span>()</span>;</span>
         }</span></span></span>
@@ -279,7 +279,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isResponseOK</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isResponseOK</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identity"><span class="e Call"><span class="e Identifier"><span class="i">getStatus</span></span>()</span> <span class="k">is</span> <span class="e Identifier"><span class="i">HttpResponseCode</span></span>.<span class="e Identifier"><span class="i">OK</span></span></span>;</span>
         }</span></span></span>
@@ -290,7 +290,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">addCookie</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Cookie</span></span> <span class="i">cookie</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">addCookie</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Cookie</span></span> <span class="i">cookie</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">cookiesOut</span></span>.<span class="t Identifier"><span class="i">add</span></span> (<span class="i">cookie</span>);</span></span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -303,7 +303,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">socket</span></span>)
                    <span class="s Scope"><span class="s Compound">{
@@ -319,7 +319,7 @@
         
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">reset</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">reset</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">headersIn</span></span>.<span class="e Identifier"><span class="i">reset</span></span>()</span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">headersOut</span></span>.<span class="e Identifier"><span class="i">reset</span></span>()</span>;</span>
@@ -334,7 +334,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">setRequest</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">RequestMethod</span></span> <span class="i">method</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">setRequest</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">RequestMethod</span></span> <span class="i">method</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">method</span></span> = <span class="e Identifier"><span class="i">method</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -346,7 +346,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">setVersion</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Version</span></span> <span class="i">v</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">setVersion</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Version</span></span> <span class="i">v</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">versions</span> = <span class="e ArrayInit">[<span class="e String"><span class="sl">"HTTP/1.0"</span></span>, <span class="e String"><span class="sl">"HTTP/1.1"</span></span>]</span>;</span></span>
 
@@ -360,7 +360,7 @@
         
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">enableRedirect</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">yes</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">enableRedirect</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">yes</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">doRedirect</span></span> = <span class="e Identifier"><span class="i">yes</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -372,7 +372,7 @@
         
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">setTimeout</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">float</span></span> <span class="i">interval</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">setTimeout</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">float</span></span> <span class="i">interval</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">timeout</span></span> = <span class="e Identifier"><span class="i">interval</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -384,7 +384,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">keepAlive</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">yes</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">keepAlive</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">yes</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">keepalive</span></span> = <span class="e Identifier"><span class="i">yes</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -396,7 +396,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">encodeUri</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">yes</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">HttpClient</span></span> <span class="i">encodeUri</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">yes</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">encode</span></span> = <span class="e Identifier"><span class="i">yes</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>;</span>
@@ -411,7 +411,7 @@
                 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">InputBuffer</span></span> <span class="i">open</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">InputBuffer</span></span> <span class="i">open</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">open</span></span> (<span class="i">method</span>, <span class="k">null</span>)</span>;</span>
         }</span></span></span>
@@ -426,7 +426,7 @@
                 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">InputBuffer</span></span> <span class="i">open</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Pump</span></span> <span class="i">pump</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">InputBuffer</span></span> <span class="i">open</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Pump</span></span> <span class="i">pump</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">open</span></span> (<span class="i">method</span>, <span class="i">pump</span>)</span>;</span>
         }</span></span></span>
@@ -454,7 +454,7 @@
                 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">InputBuffer</span></span> <span class="i">open</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">RequestMethod</span></span> <span class="i">method</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Pump</span></span> <span class="i">pump</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">InputBuffer</span></span> <span class="i">open</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">RequestMethod</span></span> <span class="i">method</span></span>, <span class="o "><span class="t Identifier"><span class="i">Pump</span></span> <span class="i">pump</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Try"><span class="k">try</span> <span class="s Scope"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">method</span></span> = <span class="e Identifier"><span class="i">method</span></span></span>;</span>
@@ -522,7 +522,7 @@
                       <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Call"><span class="e Identifier"><span class="i">headersOut</span></span>.<span class="e Identifier"><span class="i">get</span></span> (<span class="i">HttpHeader</span>.<span class="i">ContentLength</span>, <span class="k">null</span>)</span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
                          <span class="s Scope"><span class="s Compound">{
                          <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">headersOut</span></span>.<span class="e Identifier"><span class="i">addInt</span></span> (<span class="i">HttpHeader</span>.<span class="i">ContentLength</span>, <span class="i">query</span>.<span class="i">length</span>)</span>;</span>
-                         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">pump</span></span> = <span class="e FuncLiteral"><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">OutputBuffer</span></span> <span class="i">o</span></span>)</span><span class="s FuncBody"><span class="s Compound">{<span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">o</span></span>.<span class="t Identifier"><span class="i">append</span></span>(<span class="i">query</span>);</span></span>}</span></span></span></span>;</span>
+                         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">pump</span></span> = <span class="e FuncLiteral"><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">OutputBuffer</span></span> <span class="i">o</span></span>)</span><span class="s FuncBody"><span class="s Compound">{<span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">o</span></span>.<span class="t Identifier"><span class="i">append</span></span>(<span class="i">query</span>);</span></span>}</span></span></span></span>;</span>
                          }</span></span></span>
                       }</span></span></span>
                    }</span></span></span>
@@ -543,7 +543,7 @@
 
                 <span class="lc">// Token for initial parsing of input header lines</span>
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">line</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
-                    <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">line</span></span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">Lines</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span>)</span></span> (<span class="e Identifier"><span class="i">input</span></span>)</span></span>;</span></span>
+                    <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">line</span></span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">Lines</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span>)</span></span> (<span class="e Identifier"><span class="i">input</span></span>)</span></span>;</span></span>
                 <span class="k">else</span>
                    <span class="s Scope"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">line</span></span>.<span class="t Identifier"><span class="i">set</span></span>(<span class="i">input</span>);</span></span></span></span>
 
@@ -616,7 +616,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">read</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">void</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span></span>)</span></span> <span class="i">sink</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">len</span> = <span class="e Identifier"><span class="i">size_t</span></span>.<span class="e Identifier"><span class="i">max</span></span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">read</span> <span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Integral"><span class="k">void</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span></span>)</span></span> <span class="i">sink</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">len</span> = <span class="e Identifier"><span class="i">size_t</span></span>.<span class="e Identifier"><span class="i">max</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s While"><span class="k">while</span> (<span class="e Bool"><span class="k">true</span></span>)
                       <span class="s Scope"><span class="s Compound">{
@@ -647,7 +647,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">InputBuffer</span></span> <span class="i">redirectPost</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Pump</span></span> <span class="i">pump</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">status</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">InputBuffer</span></span> <span class="i">redirectPost</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Pump</span></span> <span class="i">pump</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">status</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Switch"><span class="k">switch</span> (<span class="e Identifier"><span class="i">status</span></span>)
                        <span class="s Scope"><span class="s Compound">{
@@ -684,7 +684,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">canRepost</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">status</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">canRepost</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">status</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">false</span></span>;</span>
         }</span></span></span>
@@ -695,7 +695,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">protected</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Socket</span></span> <span class="i">createSocket</span> <span class="o Parameters">()</span>
+        <span class="d Protection"><span class="k">protected</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Socket</span></span> <span class="i">createSocket</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Socket</span></span></span>;</span>
         }</span></span></span>
@@ -706,7 +706,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">error</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">msg</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">error</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">msg</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">close</span></span>()</span>;</span>
                 <span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">IOException</span></span> (<span class="e Identifier"><span class="i">msg</span></span>.<span class="e Identifier"><span class="i">idup</span></span>)</span>;</span>
@@ -732,7 +732,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">test</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">test</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">vers</span></span> = <span class="e Index"><span class="e Identifier"><span class="i">tokens</span></span>[<span class="e Int"><span class="n">0</span></span>]</span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">reason</span></span> = <span class="e Index"><span class="e Identifier"><span class="i">tokens</span></span>[<span class="e Int"><span class="n">2</span></span>]</span></span>;</span>
@@ -755,7 +755,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">getVersion</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">getVersion</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">vers</span></span>;</span>
         }</span></span></span>
@@ -766,7 +766,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">getReason</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">getReason</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">reason</span></span>;</span>
         }</span></span></span>
@@ -777,7 +777,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">getStatus</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">getStatus</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">status</span></span>;</span>
         }</span></span></span>
@@ -792,10 +792,10 @@
 <span class="d Compound">{
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
         <span class="lc">// callback for client reader</span>
-        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">sink</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">sink</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span> (<span class="k">cast</span>(<span class="k">const</span>(<span class="k">char</span>)[]) <span class="i">content</span>)</span>;</span>
         }</span></span></span></span>
@@ -810,7 +810,7 @@
         <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">client</span></span>.<span class="e Identifier"><span class="i">isResponseOK</span></span>)
            <span class="s Scope"><span class="s Compound">{
            <span class="lc">// display all returned headers</span>
-           <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">header</span></span></span>; <span class="e Identifier"><span class="i">client</span></span>.<span class="e Identifier"><span class="i">getResponseHeaders</span></span>)
+           <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">header</span></span></span>; <span class="e Identifier"><span class="i">client</span></span>.<span class="e Identifier"><span class="i">getResponseHeaders</span></span>)
                     <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"{} {}"</span>, <span class="i">header</span>.<span class="i">name</span>.<span class="i">value</span>, <span class="i">header</span>.<span class="i">value</span>)</span>;</span></span></span>
         
            <span class="lc">// extract content length</span>

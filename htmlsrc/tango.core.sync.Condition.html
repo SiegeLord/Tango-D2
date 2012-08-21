@@ -72,7 +72,7 @@
      * Throws:
      *  SyncException on error.
      */</span>
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">Mutex</span></span> <span class="i">m</span></span> )</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">Mutex</span></span> <span class="i">m</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Version"><span class="k">version</span>( <span class="i">Win32</span> )
         <span class="s Compound">{
@@ -129,7 +129,7 @@
      * Throws:
      *  SyncException on error.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">wait</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">wait</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Version"><span class="k">version</span>( <span class="i">Win32</span> )
         <span class="s Compound">{
@@ -161,7 +161,7 @@
      * Throws:
      *  SyncException on error.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">wait</span><span class="o Parameters">( <span class="o Parameter"><span class="t Integral"><span class="k">double</span></span> <span class="i">period</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">wait</span><span class="o ">( <span class="o "><span class="t Integral"><span class="k">double</span></span> <span class="i">period</span></span> )</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="lc">// NOTE: The fractional value added to period is to correct fp error.</span>
@@ -194,7 +194,7 @@
      * Throws:
      *  SyncException on error.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">notify</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">notify</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Version"><span class="k">version</span>( <span class="i">Win32</span> )
         <span class="s Compound">{
@@ -215,7 +215,7 @@
      * Throws:
      *  SyncException on error.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">notifyAll</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">notifyAll</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Version"><span class="k">version</span>( <span class="i">Win32</span> )
         <span class="s Compound">{
@@ -233,7 +233,7 @@
 <span class="d Protection"><span class="k">private</span></span>:
     <span class="d Compound"><span class="d Version"><span class="k">version</span>( <span class="i">Win32</span> )
     <span class="d Compound">{
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">timedWait</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">timeout</span></span> )</span>
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">timedWait</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">timeout</span></span> )</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span>   <span class="i">numSignalsLeft</span>;</span></span>
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span>   <span class="i">numWaitersGone</span>;</span></span>
@@ -327,7 +327,7 @@
         }</span></span></span>
 
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">notify</span><span class="o Parameters">( <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">all</span></span> )</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">notify</span><span class="o ">( <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">all</span></span> )</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">DWORD</span></span> <span class="i">rc</span>;</span></span>
 
@@ -414,7 +414,7 @@
     <span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">core</span>.<span class="i">sync</span>.<span class="i">Semaphore</span>;</span>
 
 
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">testNotify</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">testNotify</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">mutex</span>      = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Mutex</span></span></span>;</span></span>
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">condReady</span>  = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Condition</span></span>( <span class="e Identifier"><span class="i">mutex</span></span> )</span>;</span></span>
@@ -427,7 +427,7 @@
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span>  <span class="i">numDone</span>    = <span class="e Int"><span class="n">0</span></span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span>  <span class="i">numPost</span>    = <span class="e Int"><span class="n">0</span></span>;</span></span>
 
-        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">waiter</span><span class="o Parameters">()</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">waiter</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s For"><span class="k">for</span>( <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span> = <span class="e Int"><span class="n">0</span></span>;</span></span> <span class="e Rel"><span class="e Identifier"><span class="i">i</span></span> &lt; <span class="e Identifier"><span class="i">numTries</span></span></span>; <span class="e PreIncr">++<span class="e Identifier"><span class="i">i</span></span></span> )
             <span class="s Scope"><span class="s Compound">{
@@ -484,7 +484,7 @@
     }</span></span></span>
 
 
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">testNotifyAll</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">testNotifyAll</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">mutex</span>      = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Mutex</span></span></span>;</span></span>
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">condReady</span>  = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Condition</span></span>( <span class="e Identifier"><span class="i">mutex</span></span> )</span>;</span></span>
@@ -493,7 +493,7 @@
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span>  <span class="i">numDone</span>    = <span class="e Int"><span class="n">0</span></span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">alert</span>      = <span class="e Bool"><span class="k">false</span></span>;</span></span>
 
-        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">waiter</span><span class="o Parameters">()</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">waiter</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Synchronized"><span class="k">synchronized</span>( <span class="e Identifier"><span class="i">mutex</span></span> )
             <span class="s Scope"><span class="s Compound">{
@@ -527,7 +527,7 @@
     }</span></span></span>
 
 
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">testWaitTimeout</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">testWaitTimeout</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">mutex</span>      = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Mutex</span></span></span>;</span></span>
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">condReady</span>  = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Condition</span></span>( <span class="e Identifier"><span class="i">mutex</span></span> )</span>;</span></span>
@@ -535,7 +535,7 @@
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">alertedOne</span> = <span class="e Bool"><span class="k">true</span></span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">alertedTwo</span> = <span class="e Bool"><span class="k">true</span></span>;</span></span>
 
-        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">waiter</span><span class="o Parameters">()</span>
+        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">waiter</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Synchronized"><span class="k">synchronized</span>( <span class="e Identifier"><span class="i">mutex</span></span> )
             <span class="s Scope"><span class="s Compound">{

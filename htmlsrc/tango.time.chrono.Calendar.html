@@ -46,49 +46,49 @@
         <span class="bc">/**
         * Indicates the current era of the calendar.
         */</span>
-        <span class="d Protection"><span class="k">package</span></span> <span class="d Enum"><span class="k">enum</span> {<span class="d EnumMember"><span class="t Identifier"><span class="i">CURRENT_ERA</span></span> = <span class="e Int"><span class="n">0</span></span></span>}</span><span class="d Empty">;</span>
+        <span class="d Protection"><span class="k">package</span></span> <span class="d Enum"><span class="k">enum</span> {<span class="d EnumMember"><span class="i">CURRENT_ERA</span> = <span class="e Int"><span class="n">0</span></span></span>}</span><span class="d Empty">;</span>
 
         <span class="lc">// Corresponds to Win32 calendar IDs</span>
         <span class="d Protection"><span class="k">package</span></span> <span class="d Enum"><span class="k">enum</span> 
         {
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">GREGORIAN</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">GREGORIAN_US</span></span> = <span class="e Int"><span class="n">2</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">JAPAN</span></span> = <span class="e Int"><span class="n">3</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">TAIWAN</span></span> = <span class="e Int"><span class="n">4</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">KOREA</span></span> = <span class="e Int"><span class="n">5</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">HIJRI</span></span> = <span class="e Int"><span class="n">6</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">THAI</span></span> = <span class="e Int"><span class="n">7</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">HEBREW</span></span> = <span class="e Int"><span class="n">8</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">GREGORIAN_ME_FRENCH</span></span> = <span class="e Int"><span class="n">9</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">GREGORIAN_ARABIC</span></span> = <span class="e Int"><span class="n">10</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">GREGORIAN_XLIT_ENGLISH</span></span> = <span class="e Int"><span class="n">11</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">GREGORIAN_XLIT_FRENCH</span></span> = <span class="e Int"><span class="n">12</span></span></span>
+                <span class="d EnumMember"><span class="i">GREGORIAN</span> = <span class="e Int"><span class="n">1</span></span></span>,
+                <span class="d EnumMember"><span class="i">GREGORIAN_US</span> = <span class="e Int"><span class="n">2</span></span></span>,
+                <span class="d EnumMember"><span class="i">JAPAN</span> = <span class="e Int"><span class="n">3</span></span></span>,
+                <span class="d EnumMember"><span class="i">TAIWAN</span> = <span class="e Int"><span class="n">4</span></span></span>,
+                <span class="d EnumMember"><span class="i">KOREA</span> = <span class="e Int"><span class="n">5</span></span></span>,
+                <span class="d EnumMember"><span class="i">HIJRI</span> = <span class="e Int"><span class="n">6</span></span></span>,
+                <span class="d EnumMember"><span class="i">THAI</span> = <span class="e Int"><span class="n">7</span></span></span>,
+                <span class="d EnumMember"><span class="i">HEBREW</span> = <span class="e Int"><span class="n">8</span></span></span>,
+                <span class="d EnumMember"><span class="i">GREGORIAN_ME_FRENCH</span> = <span class="e Int"><span class="n">9</span></span></span>,
+                <span class="d EnumMember"><span class="i">GREGORIAN_ARABIC</span> = <span class="e Int"><span class="n">10</span></span></span>,
+                <span class="d EnumMember"><span class="i">GREGORIAN_XLIT_ENGLISH</span> = <span class="e Int"><span class="n">11</span></span></span>,
+                <span class="d EnumMember"><span class="i">GREGORIAN_XLIT_FRENCH</span> = <span class="e Int"><span class="n">12</span></span></span>
         }</span>
 
         <span class="d Protection"><span class="k">package</span></span> <span class="d Enum"><span class="k">enum</span> <span class="i">WeekRule</span> 
         {
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">FirstDay</span></span></span>,         <span class="lc">/// Indicates that the first week of the year is the first week containing the first day of the year.</span>
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">FirstFullWeek</span></span></span>,    <span class="lc">/// Indicates that the first week of the year is the first full week following the first day of the year.</span>
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">FirstFourDayWeek</span></span></span>  <span class="lc">/// Indicates that the first week of the year is the first week containing at least four days.</span>
+                <span class="d EnumMember"><span class="i">FirstDay</span></span>,         <span class="lc">/// Indicates that the first week of the year is the first week containing the first day of the year.</span>
+                <span class="d EnumMember"><span class="i">FirstFullWeek</span></span>,    <span class="lc">/// Indicates that the first week of the year is the first full week following the first day of the year.</span>
+                <span class="d EnumMember"><span class="i">FirstFourDayWeek</span></span>  <span class="lc">/// Indicates that the first week of the year is the first week containing at least four days.</span>
         }</span>
 
         <span class="d Protection"><span class="k">package</span></span> <span class="d Enum"><span class="k">enum</span> <span class="i">DatePart</span>
         {
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">Year</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">Month</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">Day</span></span></span>,
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">DayOfYear</span></span></span>
+                <span class="d EnumMember"><span class="i">Year</span></span>,
+                <span class="d EnumMember"><span class="i">Month</span></span>,
+                <span class="d EnumMember"><span class="i">Day</span></span>,
+                <span class="d EnumMember"><span class="i">DayOfYear</span></span>
         }</span>
 
         <span class="d Protection"><span class="k">public</span></span> <span class="d Enum"><span class="k">enum</span> <span class="i">DayOfWeek</span> 
         {
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">Sunday</span></span></span>,    <span class="lc">/// Indicates _Sunday.</span>
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">Monday</span></span></span>,    <span class="lc">/// Indicates _Monday.</span>
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">Tuesday</span></span></span>,   <span class="lc">/// Indicates _Tuesday.</span>
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">Wednesday</span></span></span>, <span class="lc">/// Indicates _Wednesday.</span>
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">Thursday</span></span></span>,  <span class="lc">/// Indicates _Thursday.</span>
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">Friday</span></span></span>,    <span class="lc">/// Indicates _Friday.</span>
-                <span class="d EnumMember"><span class="t Identifier"><span class="i">Saturday</span></span></span>   <span class="lc">/// Indicates _Saturday.</span>
+                <span class="d EnumMember"><span class="i">Sunday</span></span>,    <span class="lc">/// Indicates _Sunday.</span>
+                <span class="d EnumMember"><span class="i">Monday</span></span>,    <span class="lc">/// Indicates _Monday.</span>
+                <span class="d EnumMember"><span class="i">Tuesday</span></span>,   <span class="lc">/// Indicates _Tuesday.</span>
+                <span class="d EnumMember"><span class="i">Wednesday</span></span>, <span class="lc">/// Indicates _Wednesday.</span>
+                <span class="d EnumMember"><span class="i">Thursday</span></span>,  <span class="lc">/// Indicates _Thursday.</span>
+                <span class="d EnumMember"><span class="i">Friday</span></span>,    <span class="lc">/// Indicates _Friday.</span>
+                <span class="d EnumMember"><span class="i">Saturday</span></span>   <span class="lc">/// Indicates _Saturday.</span>
         }</span>
 
 
@@ -102,7 +102,7 @@
          * directly, a derived class may override if it has a more efficient
          * method.
          */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Date</span></span> <span class="i">toDate</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Date</span></span> <span class="i">toDate</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">Date</span></span> <span class="i">d</span>;</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">split</span></span> (<span class="i">time</span>, <span class="i">d</span>.<span class="i">year</span>, <span class="i">d</span>.<span class="i">month</span>, <span class="i">d</span>.<span class="i">day</span>, <span class="i">d</span>.<span class="i">doy</span>, <span class="i">d</span>.<span class="i">dow</span>, <span class="i">d</span>.<span class="i">era</span>)</span>;</span>
@@ -119,7 +119,7 @@
          * directly, a derived class may override if it has a more efficient
          * method.
          */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">split</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">uint</span></span> <span class="i">month</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">uint</span></span> <span class="i">day</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">uint</span></span> <span class="i">doy</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">uint</span></span> <span class="i">dow</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Integral"><span class="k">uint</span></span> <span class="i">era</span></span>)</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">split</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>, <span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">uint</span></span> <span class="i">month</span></span>, <span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">uint</span></span> <span class="i">day</span></span>, <span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">uint</span></span> <span class="i">doy</span></span>, <span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">uint</span></span> <span class="i">dow</span></span>, <span class="o "><span class="k">ref</span> <span class="t Integral"><span class="k">uint</span></span> <span class="i">era</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">year</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">getYear</span></span>(<span class="i">time</span>)</span></span>;</span>
             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">month</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">getMonth</span></span>(<span class="i">time</span>)</span></span>;</span>
@@ -141,7 +141,7 @@
         *   millisecond = An integer representing the _millisecond.
         * Returns: The Time set to the specified date and time.
         */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">toTime</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">month</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">day</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">hour</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">minute</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">second</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">millisecond</span>=<span class="e Int"><span class="n">0</span></span></span>)</span> 
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">toTime</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">month</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">day</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">hour</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">minute</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">second</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">millisecond</span>=<span class="e Int"><span class="n">0</span></span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">toTime</span></span> (<span class="i">year</span>, <span class="i">month</span>, <span class="i">day</span>, <span class="i">hour</span>, <span class="i">minute</span>, <span class="i">second</span>, <span class="i">millisecond</span>, <span class="i">CURRENT_ERA</span>)</span>;</span>
         }</span></span></span>
@@ -152,7 +152,7 @@
         *   date = a representation of the Date
         * Returns: The Time set to the specified date.
         */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">toTime</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Date</span></span>)</span> <span class="i">d</span></span>)</span> 
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">toTime</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Date</span></span>)</span> <span class="i">d</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">toTime</span></span> (<span class="i">d</span>.<span class="i">year</span>, <span class="i">d</span>.<span class="i">month</span>, <span class="i">d</span>.<span class="i">day</span>, <span class="n">0</span>, <span class="n">0</span>, <span class="n">0</span>, <span class="n">0</span>, <span class="i">d</span>.<span class="i">era</span>)</span>;</span>
         }</span></span></span>
@@ -163,7 +163,7 @@
         *   dt = a representation of the date and time
         * Returns: The Time set to the specified date and time.
         */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">toTime</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">DateTime</span></span>)</span> <span class="i">dt</span></span>)</span> 
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">toTime</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">DateTime</span></span>)</span> <span class="i">dt</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">toTime</span></span> (<span class="i">dt</span>.<span class="i">date</span>, <span class="i">dt</span>.<span class="i">time</span>)</span>;</span>
         }</span></span></span>
@@ -175,7 +175,7 @@
         *   t = a representation of the day time 
         * Returns: The Time set to the specified date and time.
         */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">toTime</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Date</span></span>)</span> <span class="i">d</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeOfDay</span></span>)</span> <span class="i">t</span></span>)</span> 
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">toTime</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Date</span></span>)</span> <span class="i">d</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">TimeOfDay</span></span>)</span> <span class="i">t</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">toTime</span></span> (<span class="i">d</span>.<span class="i">year</span>, <span class="i">d</span>.<span class="i">month</span>, <span class="i">d</span>.<span class="i">day</span>, <span class="i">t</span>.<span class="i">hours</span>, <span class="i">t</span>.<span class="i">minutes</span>, <span class="i">t</span>.<span class="i">seconds</span>, <span class="i">t</span>.<span class="i">millis</span>, <span class="i">d</span>.<span class="i">era</span>)</span>;</span>
         }</span></span></span>
@@ -193,49 +193,49 @@
         *   era = An integer representing the _era.
         * Returns: A Time set to the specified date and time.
         */</span>
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">toTime</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">month</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">day</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">hour</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">minute</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">second</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">millisecond</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">era</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">toTime</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">month</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">day</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">hour</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">minute</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">second</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">millisecond</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">era</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/**
         * When overridden, returns the day of the week in the specified Time.
         * Params: time = A Time value.
         * Returns: A DayOfWeek value representing the day of the week of time.
         */</span>
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DayOfWeek</span></span> <span class="i">getDayOfWeek</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">DayOfWeek</span></span> <span class="i">getDayOfWeek</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/**
         * When overridden, returns the day of the month in the specified Time.
         * Params: time = A Time value.
         * Returns: An integer representing the day of the month of time.
         */</span>
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getDayOfMonth</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getDayOfMonth</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/**
         * When overridden, returns the day of the year in the specified Time.
         * Params: time = A Time value.
         * Returns: An integer representing the day of the year of time.
         */</span>
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getDayOfYear</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getDayOfYear</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/**
         * When overridden, returns the month in the specified Time.
         * Params: time = A Time value.
         * Returns: An integer representing the month in time.
         */</span>
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getMonth</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getMonth</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/**
         * When overridden, returns the year in the specified Time.
         * Params: time = A Time value.
         * Returns: An integer representing the year in time.
         */</span>
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getYear</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getYear</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/**
         * When overridden, returns the era in the specified Time.
         * Params: time = A Time value.
         * Returns: An integer representing the ear in time.
         */</span>
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getEra</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getEra</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/**
         * Returns the number of days in the specified _year and _month of the current era.
@@ -244,7 +244,7 @@
         *   month = An integer representing the _month.
         * Returns: The number of days in the specified _year and _month of the current era.
         */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getDaysInMonth</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">month</span></span>)</span> 
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getDaysInMonth</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">month</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">getDaysInMonth</span></span> (<span class="i">year</span>, <span class="i">month</span>, <span class="i">CURRENT_ERA</span>)</span>;</span>
         }</span></span></span>
@@ -257,14 +257,14 @@
         *   era = An integer representing the _era.
         * Returns: The number of days in the specified _year and _month of the specified _era.
         */</span>
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getDaysInMonth</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">month</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">era</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getDaysInMonth</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">month</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">era</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/**
         * Returns the number of days in the specified _year of the current era.
         * Params: year = An integer representing the _year.
         * Returns: The number of days in the specified _year in the current era.
         */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getDaysInYear</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>)</span> 
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getDaysInYear</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">getDaysInYear</span></span> (<span class="i">year</span>, <span class="i">CURRENT_ERA</span>)</span>;</span>
         }</span></span></span>
@@ -276,14 +276,14 @@
         *   era = An integer representing the _era.
         * Returns: The number of days in the specified _year in the specified _era.
         */</span>
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getDaysInYear</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">era</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getDaysInYear</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">era</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/**
         * Returns the number of months in the specified _year of the current era.
         * Params: year = An integer representing the _year.
         * Returns: The number of months in the specified _year in the current era.
         */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getMonthsInYear</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>)</span> 
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getMonthsInYear</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">getMonthsInYear</span></span> (<span class="i">year</span>, <span class="i">CURRENT_ERA</span>)</span>;</span>
         }</span></span></span>
@@ -295,7 +295,7 @@
         *   era = An integer representing the _era.
         * Returns: The number of months in the specified _year in the specified _era.
         */</span>
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getMonthsInYear</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">era</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getMonthsInYear</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">era</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/**
         * Returns the week of the year that includes the specified Time.
@@ -305,7 +305,7 @@
         *   firstDayOfWeek = A DayOfWeek value representing the first day of the week.
         * Returns: An integer representing the week of the year that includes the date in time.
         */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getWeekOfYear</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">WeekRule</span></span> <span class="i">rule</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">DayOfWeek</span></span> <span class="i">firstDayOfWeek</span></span>)</span> 
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">getWeekOfYear</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">time</span></span>, <span class="o "><span class="t Identifier"><span class="i">WeekRule</span></span> <span class="i">rule</span></span>, <span class="o "><span class="t Identifier"><span class="i">DayOfWeek</span></span> <span class="i">firstDayOfWeek</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">year</span> = <span class="e Call"><span class="e Identifier"><span class="i">getYear</span></span> (<span class="i">time</span>)</span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">jan1</span> = <span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">int</span></span>) <span class="e Identifier"><span class="i">getDayOfWeek</span></span></span> (<span class="i">toTime</span> (<span class="i">year</span>, <span class="n">1</span>, <span class="n">1</span>, <span class="n">0</span>, <span class="n">0</span>, <span class="n">0</span>, <span class="n">0</span>))</span>;</span></span>
@@ -350,7 +350,7 @@
         * Params: year = An integer representing the _year.
         * Returns: true is the specified _year is a leap _year; otherwise, false.
         */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isLeapYear</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>)</span> 
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isLeapYear</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">isLeapYear</span></span>(<span class="i">year</span>, <span class="i">CURRENT_ERA</span>)</span>;</span>
         }</span></span></span>
@@ -361,19 +361,19 @@
         * Params: era = An integer representing the _era.
         * Returns: true is the specified _year is a leap _year; otherwise, false.
         */</span>
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isLeapYear</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">era</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isLeapYear</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">era</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/**
         * $(I Property.) When overridden, retrieves the list of eras in the current calendar.
         * Returns: An integer array representing the eras in the current calendar.
         */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span><span class="t Array">[]</span> <span class="i">eras</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span><span class="t Array">[]</span> <span class="i">eras</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/**
         * $(I Property.) Retrieves the identifier associated with the current calendar.
         * Returns: An integer representing the identifier of the current calendar.
         */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">id</span><span class="o Parameters">()</span> 
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">id</span><span class="o ">()</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span>;</span>
         }</span></span></span>
@@ -406,7 +406,7 @@
          * Returns: A Time that represents the provided time with the number
          * of months added.
          */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">addMonths</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">t</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">nMonths</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">truncateDay</span> = <span class="e Bool"><span class="k">false</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">addMonths</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">t</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">nMonths</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">truncateDay</span> = <span class="e Bool"><span class="k">false</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">era</span> = <span class="e Call"><span class="e Identifier"><span class="i">getEra</span></span>(<span class="i">t</span>)</span>;</span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">year</span> = <span class="e Call"><span class="e Identifier"><span class="i">getYear</span></span>(<span class="i">t</span>)</span>;</span></span>
@@ -493,7 +493,7 @@
          * Returns: A Time that represents the provided time with the number
          * of years added.
          */</span>
-        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">addYears</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">t</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">nYears</span></span>)</span>
+        <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Time</span></span> <span class="i">addYears</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Time</span></span>)</span> <span class="i">t</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">nYears</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">date</span> = <span class="e Call"><span class="e Identifier"><span class="i">toDate</span></span>(<span class="i">t</span>)</span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">tod</span> = <span class="e Mod"><span class="e Identifier"><span class="i">t</span></span>.<span class="e Identifier"><span class="i">ticks</span></span> % <span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">TicksPerDay</span></span></span>;</span></span>
@@ -503,7 +503,7 @@
                 <span class="s Return"><span class="k">return</span> <span class="e Plus"><span class="e Call"><span class="e Identifier"><span class="i">toTime</span></span>(<span class="i">date</span>)</span> + <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>(<span class="i">tod</span>)</span></span>;</span>
         }</span></span></span>
 
-        <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">getTimeTicks</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">hour</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">minute</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">second</span></span>)</span> 
+        <span class="d Protection"><span class="k">package</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">getTimeTicks</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">hour</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">minute</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">second</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e Plus"><span class="e Plus"><span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">fromHours</span></span>(<span class="i">hour</span>)</span> + <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">fromMinutes</span></span>(<span class="i">minute</span>)</span></span> + <span class="e Call"><span class="e Identifier"><span class="i">TimeSpan</span></span>.<span class="e Identifier"><span class="i">fromSeconds</span></span>(<span class="i">second</span>)</span></span>)</span>.<span class="e Identifier"><span class="i">ticks</span></span>;</span>
         }</span></span></span>

@@ -33,7 +33,7 @@
 
 
 <span class="d Version"><span class="k">version</span> (<span class="i">Win32</span>)
-         <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span>(<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">QueryPerformanceCounter</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span></span>
+         <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span>(<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">QueryPerformanceCounter</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span></span>
 
 <span class="d Version"><span class="k">version</span> (<span class="i">Posix</span>)
         <span class="d Compound">{
@@ -104,7 +104,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Kiss</span></span> <span class="i">opCall</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Kiss</span></span> <span class="i">opCall</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">Kiss</span></span> <span class="i">rand</span>;</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">rand</span></span>.<span class="e Identifier"><span class="i">seed</span></span>()</span>;</span>
@@ -117,7 +117,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">seed</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">seed</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">s</span>;</span></span>
 
@@ -140,7 +140,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">seed</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">seed</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">seed</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">seed</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">kiss_x</span></span> = <span class="e Or"><span class="e Identifier"><span class="i">seed</span></span> | <span class="e Int"><span class="n">1</span></span></span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">kiss_y</span></span> = <span class="e Or"><span class="e Identifier"><span class="i">seed</span></span> | <span class="e Int"><span class="n">2</span></span></span></span>;</span>
@@ -155,7 +155,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">natural</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">natural</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">kiss_x</span></span> = <span class="e Plus"><span class="e Mul"><span class="e Identifier"><span class="i">kiss_x</span></span> * <span class="e Int"><span class="n">69069</span></span></span> + <span class="e Int"><span class="n">1</span></span></span></span>;</span>
                 <span class="s Expression"><span class="e XorAssign"><span class="e Identifier"><span class="i">kiss_y</span></span> ^= <span class="e LShift"><span class="e Identifier"><span class="i">kiss_y</span></span> &lt;&lt; <span class="e Int"><span class="n">13</span></span></span></span>;</span>
@@ -178,7 +178,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">natural</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">max</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">natural</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">max</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Mod"><span class="e Call"><span class="e Identifier"><span class="i">natural</span></span>()</span> % <span class="e Identifier"><span class="i">max</span></span></span>;</span>
         }</span></span></span>
@@ -192,7 +192,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">natural</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">min</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">max</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">natural</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">min</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">max</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Plus"><span class="e Paren">(<span class="e Mod"><span class="e Call"><span class="e Identifier"><span class="i">natural</span></span>()</span> % <span class="e Paren">(<span class="e Minus"><span class="e Identifier"><span class="i">max</span></span>-<span class="e Identifier"><span class="i">min</span></span></span>)</span></span>)</span> + <span class="e Identifier"><span class="i">min</span></span></span>;</span>
         }</span></span></span>
@@ -204,7 +204,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">fraction</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">fraction</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e Plus"><span class="e Mul"><span class="e Paren">(<span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">int</span></span>) <span class="e Identifier"><span class="i">natural</span></span></span>()</span>)</span> * <span class="e Identifier"><span class="i">M_RAN_INVM32</span></span></span> + <span class="e Paren">(<span class="e Plus"><span class="e Float"><span class="n">0.5</span></span> + <span class="e Div"><span class="e Identifier"><span class="i">M_RAN_INVM32</span></span> / <span class="e Int"><span class="n">2</span></span></span></span>)</span></span>)</span>;</span>
         }</span></span></span>
@@ -216,7 +216,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">fractionEx</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">fractionEx</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e Plus"><span class="e Plus"><span class="e Mul"><span class="e Paren">(<span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">int</span></span>) <span class="e Identifier"><span class="i">natural</span></span></span>()</span>)</span> * <span class="e Identifier"><span class="i">M_RAN_INVM32</span></span></span> + <span class="e Paren">(<span class="e Plus"><span class="e Float"><span class="n">0.5</span></span> + <span class="e Div"><span class="e Identifier"><span class="i">M_RAN_INVM52</span></span> / <span class="e Int"><span class="n">2</span></span></span></span>)</span></span> + 
                        <span class="e Mul"><span class="e Paren">(<span class="e And"><span class="e Paren">(<span class="e Call"><span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">int</span></span>) <span class="e Identifier"><span class="i">natural</span></span></span>()</span>)</span> &amp; <span class="e Int"><span class="n">0x000FFFFF</span></span></span>)</span> * <span class="e Identifier"><span class="i">M_RAN_INVM52</span></span></span></span>)</span>;</span>
@@ -235,7 +235,7 @@
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;</span>
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">time</span>.<span class="i">StopWatch</span>;</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">dbl</span> = <span class="e Call"><span class="e Identifier"><span class="i">Kiss</span></span>()</span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">count</span> = <span class="e Int"><span class="n">100_000_000</span></span>;</span></span>

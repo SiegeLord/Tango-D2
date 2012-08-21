@@ -36,8 +36,8 @@
 <span class="d Compound">{
         <span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span> (<span class="i">Windows</span>)</span> 
         <span class="d Compound">{
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">QueryPerformanceCounter</span>   <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span><span class="i">count</span></span>)</span><span class="s FuncBody">;</span></span>
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">QueryPerformanceFrequency</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span><span class="i">frequency</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">QueryPerformanceCounter</span>   <span class="o ">(<span class="o "><span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span><span class="i">count</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">QueryPerformanceFrequency</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span><span class="i">frequency</span></span>)</span><span class="s FuncBody">;</span></span>
         }</span>
 }</span></span>
 
@@ -90,7 +90,7 @@
 
         ***********************************************************************/</span>
         
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">start</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">start</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">started</span></span> = <span class="e Identifier"><span class="i">timer</span></span></span>;</span>
         }</span></span></span>
@@ -101,7 +101,7 @@
 
         ***********************************************************************/</span>
         
-        <span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">stop</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">stop</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Mul"><span class="e Identifier"><span class="i">multiplier</span></span> * <span class="e Paren">(<span class="e Minus"><span class="e Identifier"><span class="i">timer</span></span> - <span class="e Identifier"><span class="i">started</span></span></span>)</span></span>;</span>
         }</span></span></span>
@@ -112,7 +112,7 @@
 
         ***********************************************************************/</span>
         
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">microsec</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">microsec</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Version"><span class="k">version</span> (<span class="i">Posix</span>)
                          <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e Minus"><span class="e Identifier"><span class="i">timer</span></span> - <span class="e Identifier"><span class="i">started</span></span></span>)</span>;</span></span>
@@ -145,7 +145,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">timer</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">timer</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Version"><span class="k">version</span> (<span class="i">Posix</span>)       
                 <span class="s Compound">{
@@ -177,7 +177,7 @@
 <span class="d Compound">{
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span> 
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">StopWatch</span></span> <span class="i">t</span>;</span></span>
                 <span class="s Expression"><span class="e Identifier"><span class="i">t</span></span>.<span class="e Identifier"><span class="i">start</span></span>;</span>

@@ -50,12 +50,12 @@
 
 *******************************************************************************/</span>
 
-<span class="d Template"><span class="d Compound"><span class="d Struct"><span class="k">struct</span> <span class="i">RedBlack</span> <span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">V</span></span>, <span class="o TemplateTypeParam"><span class="i">A</span> = <span class="t Identifier"><span class="i">AttributeDummy</span></span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Struct"><span class="k">struct</span> <span class="i">RedBlack</span> <span class="o ">(<span class="o "><span class="i">V</span></span>, <span class="o "><span class="i">A</span> = <span class="t Identifier"><span class="i">AttributeDummy</span></span></span>)</span>
 <span class="d Compound">{
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">RedBlack</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">V</span></span>, <span class="t Identifier"><span class="i">A</span></span>)</span></span> <span class="i">Type</span>;</span></span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">RedBlack</span>!<span class="o ">(<span class="t Identifier"><span class="i">V</span></span>, <span class="t Identifier"><span class="i">A</span></span>)</span></span> <span class="i">Type</span>;</span></span>
         <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">Type</span></span>            <span class="t Pointer">*</span><span class="i">Ref</span>;</span></span>
 
-        <span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">bool</span></span> {<span class="d EnumMember"><span class="t Identifier"><span class="i">RED</span></span> = <span class="e Bool"><span class="k">false</span></span></span>, <span class="d EnumMember"><span class="t Identifier"><span class="i">BLACK</span></span> = <span class="e Bool"><span class="k">true</span></span></span>}</span>
+        <span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">bool</span></span> {<span class="d EnumMember"><span class="i">RED</span> = <span class="e Bool"><span class="k">false</span></span></span>, <span class="d EnumMember"><span class="i">BLACK</span> = <span class="e Bool"><span class="k">true</span></span></span>}</span>
 
         <span class="bc">/**
          * Pointer to left child
@@ -90,7 +90,7 @@
 
         <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Not">!<span class="e Is"><span class="k">is</span>(<span class="t Typeof"><span class="k">typeof</span>(<span class="e Identifier"><span class="i">A</span></span>)</span> == <span class="t Identifier"><span class="i">AttributeDummy</span></span>)</span></span>)
         <span class="d Compound">{
-                <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">set</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">v</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">A</span></span> <span class="i">a</span></span>)</span>
+                <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">set</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">v</span></span>, <span class="o "><span class="t Identifier"><span class="i">A</span></span> <span class="i">a</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">attribute</span></span> = <span class="e Identifier"><span class="i">a</span></span></span>;</span>
                         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">set</span></span> (<span class="i">v</span>)</span>;</span>
@@ -102,7 +102,7 @@
          * Normally only called to establish a new root.
         **/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">set</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">v</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">set</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">v</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">value</span></span> = <span class="e Identifier"><span class="i">v</span></span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">left</span></span> = <span class="e Null"><span class="k">null</span></span></span>;</span>
@@ -118,7 +118,7 @@
          * multiple identical links in a RB tree.)
         **/</span> 
 
-        <span class="d Protection"><span class="k">protected</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">dup</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Identifier"><span class="i">Ref</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">()</span></span> <span class="i">alloc</span></span>)</span>
+        <span class="d Protection"><span class="k">protected</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">dup</span> <span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Identifier"><span class="i">Ref</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">()</span></span> <span class="i">alloc</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Is"><span class="k">is</span>(<span class="t Typeof"><span class="k">typeof</span>(<span class="e Identifier"><span class="i">A</span></span>)</span> == <span class="t Identifier"><span class="i">AttributeDummy</span></span>)</span>)
                            <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">t</span> = <span class="e Call"><span class="e Call"><span class="e Identifier"><span class="i">alloc</span></span>()</span>.<span class="e Identifier"><span class="i">set</span></span> (<span class="i">value</span>)</span>;</span></span>
@@ -133,7 +133,7 @@
         <span class="bc">/**
          * See_Also: tango.util.collection.model.View.View.checkImplementation.
         **/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">checkImplementation</span> <span class="o Parameters">()</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">checkImplementation</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
 
                 <span class="lc">// It's too hard to check the property that every simple</span>
@@ -163,7 +163,7 @@
          * Return the minimum value of the current (sub)tree
         **/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">leftmost</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">leftmost</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
                 <span class="s For"><span class="k">for</span> ( ; <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">left</span></span>; <span class="e Assign"><span class="e Identifier"><span class="i">p</span></span> = <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">left</span></span></span>) <span class="s Scope"><span class="s Compound">{}</span></span></span>
@@ -173,7 +173,7 @@
         <span class="bc">/**
          * Return the maximum value of the current (sub)tree
         **/</span>
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">rightmost</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">rightmost</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
                 <span class="s For"><span class="k">for</span> ( ; <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">right</span></span>; <span class="e Assign"><span class="e Identifier"><span class="i">p</span></span> = <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">right</span></span></span>) <span class="s Scope"><span class="s Compound">{}</span></span></span>
@@ -183,7 +183,7 @@
         <span class="bc">/**
          * Return the root (parentless node) of the tree
         **/</span>
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
                 <span class="s For"><span class="k">for</span> ( ; <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">parent</span></span>; <span class="e Assign"><span class="e Identifier"><span class="i">p</span></span> = <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">parent</span></span></span>) <span class="s Scope"><span class="s Compound">{}</span></span></span>
@@ -194,7 +194,7 @@
          * Return true if node is a root (i.e., has a null parent)
         **/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isRoot</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isRoot</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identity"><span class="e Identifier"><span class="i">parent</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>;</span>
         }</span></span></span>
@@ -204,7 +204,7 @@
          * Return the inorder successor, or null if no such
         **/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">successor</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">successor</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">right</span></span>)
                     <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">right</span></span>.<span class="e Identifier"><span class="i">leftmost</span></span>;</span></span></span>
@@ -223,7 +223,7 @@
          * Return the inorder predecessor, or null if no such
         **/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">predecessor</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">predecessor</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">left</span></span>)
                     <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">left</span></span>.<span class="e Identifier"><span class="i">rightmost</span></span>;</span></span></span>
@@ -241,7 +241,7 @@
         <span class="bc">/**
          * Return the number of nodes in the subtree
         **/</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">size</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">size</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">c</span> = <span class="e Int"><span class="n">1</span></span>;</span></span>
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">left</span></span>)
@@ -258,7 +258,7 @@
          * Uses Comparator cmp to find and to check equality.
         **/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">find</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>, <span class="o Parameter"><span class="t TemplateInstance"><span class="i">Compare</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">V</span></span>)</span></span> <span class="i">cmp</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">find</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>, <span class="o "><span class="t TemplateInstance"><span class="i">Compare</span>!<span class="o ">(<span class="t Identifier"><span class="i">V</span></span>)</span></span> <span class="i">cmp</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">t</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
                 <span class="s For"><span class="k">for</span> (;;)
@@ -284,7 +284,7 @@
          * if it doesn't exist, return null
          * Uses Comparator cmp to find and to check equality.
         **/</span>
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">findFirst</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>, <span class="o Parameter"><span class="t TemplateInstance"><span class="i">Compare</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">V</span></span>)</span></span> <span class="i">cmp</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">after</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">findFirst</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>, <span class="o "><span class="t TemplateInstance"><span class="i">Compare</span>!<span class="o ">(<span class="t Identifier"><span class="i">V</span></span>)</span></span> <span class="i">cmp</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">after</span> = <span class="e Bool"><span class="k">true</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">t</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">tLower</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
@@ -330,7 +330,7 @@
          * Return number of nodes of current subtree containing value.
          * Uses Comparator cmp to find and to check equality.
         **/</span>
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">count</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>, <span class="o Parameter"><span class="t TemplateInstance"><span class="i">Compare</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">V</span></span>)</span></span> <span class="i">cmp</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">count</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>, <span class="o "><span class="t TemplateInstance"><span class="i">Compare</span>!<span class="o ">(<span class="t Identifier"><span class="i">V</span></span>)</span></span> <span class="i">cmp</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">c</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">t</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
@@ -362,7 +362,7 @@
         
         <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Not">!<span class="e Is"><span class="k">is</span>(<span class="t Typeof"><span class="k">typeof</span>(<span class="e Identifier"><span class="i">A</span></span>)</span> == <span class="t Identifier"><span class="i">AttributeDummy</span></span>)</span></span>)
         <span class="d Compound">{
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">findAttribute</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">A</span></span> <span class="i">attribute</span></span>, <span class="o Parameter"><span class="t TemplateInstance"><span class="i">Compare</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">A</span></span>)</span></span> <span class="i">cmp</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">findAttribute</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">A</span></span> <span class="i">attribute</span></span>, <span class="o "><span class="t TemplateInstance"><span class="i">Compare</span>!<span class="o ">(<span class="t Identifier"><span class="i">A</span></span>)</span></span> <span class="i">cmp</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">t</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
 
@@ -389,7 +389,7 @@
                 <span class="s Return"><span class="k">return</span> <span class="e Null"><span class="k">null</span></span>;</span> <span class="lc">// not reached</span>
         }</span></span></span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">countAttribute</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">A</span></span> <span class="i">attrib</span></span>, <span class="o Parameter"><span class="t TemplateInstance"><span class="i">Compare</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">A</span></span>)</span></span> <span class="i">cmp</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">countAttribute</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">A</span></span> <span class="i">attrib</span></span>, <span class="o "><span class="t TemplateInstance"><span class="i">Compare</span>!<span class="o ">(<span class="t Identifier"><span class="i">A</span></span>)</span></span> <span class="i">cmp</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">c</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">t</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
@@ -416,7 +416,7 @@
         <span class="bc">/**
          * find and return a cell holding (key, element), or null if no such
         **/</span>
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">find</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">A</span></span> <span class="i">attribute</span></span>, <span class="o Parameter"><span class="t TemplateInstance"><span class="i">Compare</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">V</span></span>)</span></span> <span class="i">cmp</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">find</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>, <span class="o "><span class="t Identifier"><span class="i">A</span></span> <span class="i">attribute</span></span>, <span class="o "><span class="t TemplateInstance"><span class="i">Compare</span>!<span class="o ">(<span class="t Identifier"><span class="i">V</span></span>)</span></span> <span class="i">cmp</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">t</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
 
@@ -445,7 +445,7 @@
          * Return a new subtree containing each value of current subtree
         **/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">copyTree</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Identifier"><span class="i">Ref</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">()</span></span> <span class="i">alloc</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">copyTree</span> <span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Identifier"><span class="i">Ref</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">()</span></span> <span class="i">alloc</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">t</span> = <span class="e Call"><span class="e Identifier"><span class="i">dup</span></span> (<span class="i">alloc</span>)</span>;</span></span>
 
@@ -479,7 +479,7 @@
         **/</span>
 
 
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">insertLeft</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">cell</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">insertLeft</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">cell</span></span>, <span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">left</span></span> = <span class="e Identifier"><span class="i">cell</span></span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">cell</span></span>.<span class="e Identifier"><span class="i">parent</span></span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span></span>;</span>
@@ -495,7 +495,7 @@
          * can change the root!)
         **/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">insertRight</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">cell</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">insertRight</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">cell</span></span>, <span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">right</span></span> = <span class="e Identifier"><span class="i">cell</span></span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">cell</span></span>.<span class="e Identifier"><span class="i">parent</span></span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span></span>;</span>
@@ -511,7 +511,7 @@
         **/</span>
 
 
-        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">remove</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">remove</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">// handle case where we are only node</span>
                 <span class="s If"><span class="k">if</span> (<span class="e AndAnd"><span class="e AndAnd"><span class="e Identity"><span class="e Identifier"><span class="i">left</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span> &amp;&amp; <span class="e Identity"><span class="e Identifier"><span class="i">right</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span></span> &amp;&amp; <span class="e Identity"><span class="e Identifier"><span class="i">parent</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span></span>)
@@ -580,7 +580,7 @@
          * Return new root, in case it changed.
         **/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">swapPosition</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">y</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">swapPosition</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">y</span></span>, <span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="bc">/* Too messy. TODO: find sequence of assigments that are always OK */</span>
 
@@ -722,7 +722,7 @@
          *
         **/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">colorOf</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">colorOf</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Paren">(<span class="e Identity"><span class="e Identifier"><span class="i">p</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)</span> ? <span class="e Identifier"><span class="i">BLACK</span></span> : <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">color</span></span></span>;</span>
         }</span></span></span>
@@ -730,7 +730,7 @@
         <span class="bc">/**
          * return parent of node p, or null if p is null
         **/</span>
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">parentOf</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">parentOf</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Paren">(<span class="e Identity"><span class="e Identifier"><span class="i">p</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)</span> ? <span class="e Null"><span class="k">null</span></span> : <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">parent</span></span></span>;</span>
         }</span></span></span>
@@ -739,7 +739,7 @@
          * Set the color of node p, or do nothing if p is null
         **/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setColor</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">c</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setColor</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">c</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">p</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
                     <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">color</span></span> = <span class="e Identifier"><span class="i">c</span></span></span>;</span></span></span>
@@ -749,7 +749,7 @@
          * return left child of node p, or null if p is null
         **/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">leftOf</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">leftOf</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Paren">(<span class="e Identity"><span class="e Identifier"><span class="i">p</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)</span> ? <span class="e Null"><span class="k">null</span></span> : <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">left</span></span></span>;</span>
         }</span></span></span>
@@ -758,14 +758,14 @@
          * return right child of node p, or null if p is null
         **/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">rightOf</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">rightOf</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">p</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Paren">(<span class="e Identity"><span class="e Identifier"><span class="i">p</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)</span> ? <span class="e Null"><span class="k">null</span></span> : <span class="e Identifier"><span class="i">p</span></span>.<span class="e Identifier"><span class="i">right</span></span></span>;</span>
         }</span></span></span>
 
 
         <span class="bc">/** From CLR **/</span>
-        <span class="d Protection"><span class="k">package</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">rotateLeft</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
+        <span class="d Protection"><span class="k">package</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">rotateLeft</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">r</span> = <span class="e Identifier"><span class="i">right</span></span>;</span></span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">right</span></span> = <span class="e Identifier"><span class="i">r</span></span>.<span class="e Identifier"><span class="i">left</span></span></span>;</span>
@@ -788,7 +788,7 @@
         }</span></span></span>
 
         <span class="bc">/** From CLR **/</span>
-        <span class="d Protection"><span class="k">package</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">rotateRight</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
+        <span class="d Protection"><span class="k">package</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">rotateRight</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">l</span> = <span class="e Identifier"><span class="i">left</span></span>;</span></span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">left</span></span> = <span class="e Identifier"><span class="i">l</span></span>.<span class="e Identifier"><span class="i">right</span></span></span>;</span>
@@ -812,7 +812,7 @@
 
 
         <span class="bc">/** From CLR **/</span>
-        <span class="d Protection"><span class="k">package</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">fixAfterInsertion</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
+        <span class="d Protection"><span class="k">package</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">fixAfterInsertion</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">color</span></span> = <span class="e Identifier"><span class="i">RED</span></span></span>;</span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">x</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
@@ -875,7 +875,7 @@
 
 
         <span class="bc">/** From CLR **/</span>
-        <span class="d Protection"><span class="k">package</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">fixAfterDeletion</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
+        <span class="d Protection"><span class="k">package</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">fixAfterDeletion</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">root</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">x</span> = <span class="e Address">&amp;<span class="e This"><span class="k">this</span></span></span>;</span></span>
                 <span class="s While"><span class="k">while</span> (<span class="e AndAnd"><span class="e Identity"><span class="e Identifier"><span class="i">x</span></span> !<span class="k">is</span> <span class="e Identifier"><span class="i">root</span></span></span> &amp;&amp; <span class="e Identity"><span class="e Call"><span class="e Identifier"><span class="i">colorOf</span></span>(<span class="i">x</span>)</span> <span class="k">is</span> <span class="e Identifier"><span class="i">BLACK</span></span></span></span>)

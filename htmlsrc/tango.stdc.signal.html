@@ -27,7 +27,7 @@
 <span class="lc">// this should be volatile</span>
 <span class="d Compound"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">sig_atomic_t</span>;</span></span>
 
-<span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span></span> <span class="i">sigfn_t</span>;</span></span>
+<span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span></span> <span class="i">sigfn_t</span>;</span></span>
 
 <span class="d Version"><span class="k">version</span>( <span class="i">Posix</span> )
 <span class="d Compound">{
@@ -59,8 +59,8 @@
 }</span></span>
 
 <span class="lc">/// on posix SIGUSR1 and SIGUSR2 are used by the gc, and should not be used/handled/blocked</span>
-<span class="d Function"><span class="t Identifier"><span class="i">sigfn_t</span></span> <span class="i">signal</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">sig</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">sigfn_t</span></span> <span class="i">func</span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span>     <span class="i">raise</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">sig</span></span>)</span><span class="s FuncBody">;</span></span></span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">sigfn_t</span></span> <span class="i">signal</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">sig</span></span>, <span class="o "><span class="t Identifier"><span class="i">sigfn_t</span></span> <span class="i">func</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span>     <span class="i">raise</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">sig</span></span>)</span><span class="s FuncBody">;</span></span></span></span>
 
 </pre></td>
 </tr></table>

@@ -24,9 +24,9 @@
 
 <span class="d Protection"><span class="k">private</span></span>
 <span class="d Compound">{
-    <span class="d Template"><span class="k">template</span> <span class="i">typify</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span>
+    <span class="d Template"><span class="k">template</span> <span class="i">typify</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span>
     <span class="d Compound">{
-        <span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">typify</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">val</span></span> )</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">val</span></span>;</span> }</span></span></span>
+        <span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">typify</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">val</span></span> )</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">val</span></span>;</span> }</span></span></span>
     }</span></span>
 }</span>
 
@@ -151,18 +151,18 @@
     <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">wint_t</span></span>    <span class="i">WINT_MAX</span>    = <span class="e Identifier"><span class="i">wint_t</span></span>.<span class="e Identifier"><span class="i">max</span></span>;</span>
 }</span></span>
 
-<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">int8_t</span></span>)</span></span>  <span class="i">INT8_C</span>;</span></span>
-<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">int16_t</span></span>)</span></span> <span class="i">INT16_C</span>;</span></span>
-<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">int32_t</span></span>)</span></span> <span class="i">INT32_C</span>;</span></span>
-<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">int64_t</span></span>)</span></span> <span class="i">INT64_C</span>;</span></span>
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o ">(<span class="t Identifier"><span class="i">int8_t</span></span>)</span></span>  <span class="i">INT8_C</span>;</span></span>
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o ">(<span class="t Identifier"><span class="i">int16_t</span></span>)</span></span> <span class="i">INT16_C</span>;</span></span>
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o ">(<span class="t Identifier"><span class="i">int32_t</span></span>)</span></span> <span class="i">INT32_C</span>;</span></span>
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o ">(<span class="t Identifier"><span class="i">int64_t</span></span>)</span></span> <span class="i">INT64_C</span>;</span></span>
 
-<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">uint8_t</span></span>)</span></span>  <span class="i">UINT8_C</span>;</span></span>
-<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">uint16_t</span></span>)</span></span> <span class="i">UINT16_C</span>;</span></span>
-<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">uint32_t</span></span>)</span></span> <span class="i">UINT32_C</span>;</span></span>
-<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">uint64_t</span></span>)</span></span> <span class="i">UINT64_C</span>;</span></span>
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o ">(<span class="t Identifier"><span class="i">uint8_t</span></span>)</span></span>  <span class="i">UINT8_C</span>;</span></span>
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o ">(<span class="t Identifier"><span class="i">uint16_t</span></span>)</span></span> <span class="i">UINT16_C</span>;</span></span>
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o ">(<span class="t Identifier"><span class="i">uint32_t</span></span>)</span></span> <span class="i">UINT32_C</span>;</span></span>
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o ">(<span class="t Identifier"><span class="i">uint64_t</span></span>)</span></span> <span class="i">UINT64_C</span>;</span></span>
 
-<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">intmax_t</span></span>)</span></span>  <span class="i">INTMAX_C</span>;</span></span>
-<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">uintmax_t</span></span>)</span></span> <span class="i">UINTMAX_C</span>;</span></span></span></span>
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o ">(<span class="t Identifier"><span class="i">intmax_t</span></span>)</span></span>  <span class="i">INTMAX_C</span>;</span></span>
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">typify</span>!<span class="o ">(<span class="t Identifier"><span class="i">uintmax_t</span></span>)</span></span> <span class="i">UINTMAX_C</span>;</span></span></span></span>
 
 </pre></td>
 </tr></table>

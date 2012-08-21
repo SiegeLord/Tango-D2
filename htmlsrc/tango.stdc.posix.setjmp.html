@@ -88,7 +88,7 @@ void longjmp(jmp_buf, int);
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">__jmp_buf_tag</span></span><span class="t Array">[<span class="e Int"><span class="n">1</span></span>]</span> <span class="i">jmp_buf</span>;</span></span>
 
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">_setjmp</span></span> <span class="i">setjmp</span>;</span></span> <span class="lc">// see XOpen block</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">longjmp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">jmp_buf</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">longjmp</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">jmp_buf</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
@@ -96,8 +96,8 @@ void longjmp(jmp_buf, int);
     <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">X86</span> )		<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span><span class="t Array">[<span class="e Int"><span class="n">10</span></span>]</span> <span class="i">jmp_buf</span>;</span></span>
     <span class="k">else</span> <span class="d Version"><span class="k">version</span> ( <span class="i">SPARC</span> )	<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span><span class="t Array">[<span class="e Int"><span class="n">12</span></span>]</span> <span class="i">jmp_buf</span>;</span></span></span></span></span>
 	
-	<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">setjmp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">jmp_buf</span></span></span>)</span><span class="s FuncBody">;</span></span>
-	<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">longjmp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">jmp_buf</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+	<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">setjmp</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">jmp_buf</span></span></span>)</span><span class="s FuncBody">;</span></span>
+	<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">longjmp</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">jmp_buf</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span>
 
 <span class="lc">//</span>
@@ -114,9 +114,9 @@ void siglongjmp(sigjmp_buf, int);
 <span class="d Compound">{
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">jmp_buf</span></span> <span class="i">sigjmp_buf</span>;</span></span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">__sigsetjmp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigjmp_buf</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">__sigsetjmp</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigjmp_buf</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">__sigsetjmp</span></span> <span class="i">sigsetjmp</span>;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">siglongjmp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigjmp_buf</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">siglongjmp</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigjmp_buf</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
@@ -124,8 +124,8 @@ void siglongjmp(sigjmp_buf, int);
     <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">X86</span> )		<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span><span class="t Array">[<span class="e Int"><span class="n">128</span></span>]</span> <span class="i">sigjmp_buf</span>;</span></span>
     <span class="k">else</span> <span class="d Version"><span class="k">version</span> ( <span class="i">SPARC</span> )	<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span><span class="t Array">[<span class="e Int"><span class="n">19</span></span>]</span> <span class="i">sigjmp_buf</span>;</span></span></span></span></span>
 	
-	<span class="d Function"><span class="t Integral"><span class="k">int</span></span>  <span class="i">sigsetjmp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigjmp_buf</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-	<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">siglongjmp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">sigjmp_buf</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+	<span class="d Function"><span class="t Integral"><span class="k">int</span></span>  <span class="i">sigsetjmp</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigjmp_buf</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+	<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">siglongjmp</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">sigjmp_buf</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span>
 
 <span class="lc">//</span>
@@ -138,13 +138,13 @@ void _longjmp(jmp_buf, int);
 
 <span class="d Version"><span class="k">version</span>( <span class="i">linux</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>  <span class="i">_setjmp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">jmp_buf</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">_longjmp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">jmp_buf</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>  <span class="i">_setjmp</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">jmp_buf</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">_longjmp</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">jmp_buf</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>  <span class="i">_setjmp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">jmp_buf</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">_longjmp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">jmp_buf</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>  <span class="i">_setjmp</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">jmp_buf</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">_longjmp</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">jmp_buf</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span></span>
 
 </pre></td>

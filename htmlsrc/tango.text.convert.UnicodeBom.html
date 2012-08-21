@@ -31,7 +31,7 @@
 <span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span>  <span class="i">Utf</span> = <span class="i">tango</span>.<span class="i">text</span>.<span class="i">convert</span>.<span class="i">Utf</span>;</span>
 
 
-<span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">onUnicodeError</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">msg</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">idx</span> = <span class="e Int"><span class="n">0</span></span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Protection"><span class="k">private</span></span> <span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">onUnicodeError</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">msg</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">idx</span> = <span class="e Int"><span class="n">0</span></span></span>)</span><span class="s FuncBody">;</span></span>
 
 <span class="bc">/*******************************************************************************
 
@@ -40,15 +40,15 @@
 *******************************************************************************/</span>
 
 <span class="d Enum"><span class="k">enum</span> <span class="i">Encoding</span> {
-              <span class="d EnumMember"><span class="t Identifier"><span class="i">Unknown</span></span></span>,
-              <span class="d EnumMember"><span class="t Identifier"><span class="i">UTF_8N</span></span></span>,
-              <span class="d EnumMember"><span class="t Identifier"><span class="i">UTF_8</span></span></span>,
-              <span class="d EnumMember"><span class="t Identifier"><span class="i">UTF_16</span></span></span>,
-              <span class="d EnumMember"><span class="t Identifier"><span class="i">UTF_16BE</span></span></span>,
-              <span class="d EnumMember"><span class="t Identifier"><span class="i">UTF_16LE</span></span></span>,
-              <span class="d EnumMember"><span class="t Identifier"><span class="i">UTF_32</span></span></span>,
-              <span class="d EnumMember"><span class="t Identifier"><span class="i">UTF_32BE</span></span></span>,
-              <span class="d EnumMember"><span class="t Identifier"><span class="i">UTF_32LE</span></span></span>,
+              <span class="d EnumMember"><span class="i">Unknown</span></span>,
+              <span class="d EnumMember"><span class="i">UTF_8N</span></span>,
+              <span class="d EnumMember"><span class="i">UTF_8</span></span>,
+              <span class="d EnumMember"><span class="i">UTF_16</span></span>,
+              <span class="d EnumMember"><span class="i">UTF_16BE</span></span>,
+              <span class="d EnumMember"><span class="i">UTF_16LE</span></span>,
+              <span class="d EnumMember"><span class="i">UTF_32</span></span>,
+              <span class="d EnumMember"><span class="i">UTF_32BE</span></span>,
+              <span class="d EnumMember"><span class="i">UTF_32LE</span></span>,
               }</span><span class="d Empty">;</span>
 
 <span class="bc">/*******************************************************************************
@@ -116,7 +116,7 @@
 
 *******************************************************************************/</span>
 
-<span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">UnicodeBom</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">BomSniffer</span></span></span>
+<span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">UnicodeBom</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">BomSniffer</span></span></span>
 <span class="d Compound">{
         <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e AndAnd"><span class="e AndAnd"><span class="e Not">!<span class="e Is"><span class="k">is</span> (<span class="t Identifier"><span class="i">T</span></span> == <span class="t Integral"><span class="k">char</span></span>)</span></span> &amp;&amp; <span class="e Not">!<span class="e Is"><span class="k">is</span> (<span class="t Identifier"><span class="i">T</span></span> == <span class="t Integral"><span class="k">wchar</span></span>)</span></span></span> &amp;&amp; <span class="e Not">!<span class="e Is"><span class="k">is</span> (<span class="t Identifier"><span class="i">T</span></span> == <span class="t Integral"><span class="k">dchar</span></span>)</span></span></span>) 
                     <span class="d Pragma"><span class="k">pragma</span> (<span class="i">msg</span>, <span class="e String"><span class="sl">"Template type must be char, wchar, or dchar"</span></span>)</span><span class="d Empty">;</span></span>
@@ -128,7 +128,7 @@
 
         ***********************************************************************/</span>
                                   
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Encoding</span></span> <span class="i">encoding</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Encoding</span></span> <span class="i">encoding</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">setup</span></span> (<span class="i">encoding</span>);</span></span>
         }</span></span></span>
@@ -149,7 +149,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">decode</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">content</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">dst</span>=<span class="e Null"><span class="k">null</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span><span class="t Pointer">*</span> <span class="i">ate</span>=<span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">decode</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">content</span></span>, <span class="o "><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">dst</span>=<span class="e Null"><span class="k">null</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span><span class="t Pointer">*</span> <span class="i">ate</span>=<span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">// look for a BOM</span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">info</span> = <span class="e Call"><span class="e Identifier"><span class="i">test</span></span> (<span class="i">content</span>)</span>;</span></span>
@@ -189,7 +189,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">encode</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">content</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span>=<span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">encode</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">content</span></span>, <span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span>=<span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">settings</span></span>.<span class="e Identifier"><span class="i">test</span></span>)
                     <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">onUnicodeError</span></span> (<span class="sl">"UnicodeBom.encode :: cannot write to a non-specific encoding"</span>)</span>;</span></span></span>
@@ -204,7 +204,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">swapBytes</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">content</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">swapBytes</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">content</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">endian</span> = <span class="e Identifier"><span class="i">settings</span></span>.<span class="e Identifier"><span class="i">endian</span></span>;</span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">swap</span>   = <span class="e Identifier"><span class="i">settings</span></span>.<span class="e Identifier"><span class="i">bigEndian</span></span>;</span></span>
@@ -233,7 +233,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">into</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">type</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">dst</span>=<span class="e Null"><span class="k">null</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span><span class="t Pointer">*</span> <span class="i">ate</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">into</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">type</span></span>, <span class="o "><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">dst</span>=<span class="e Null"><span class="k">null</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span><span class="t Pointer">*</span> <span class="i">ate</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">ret</span>;</span></span>
                 
@@ -299,7 +299,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">from</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">type</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span>=<span class="e Null"><span class="k">null</span></span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span><span class="t Pointer">*</span> <span class="i">ate</span>=<span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">from</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">type</span></span>, <span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span>=<span class="e Null"><span class="k">null</span></span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span><span class="t Pointer">*</span> <span class="i">ate</span>=<span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">ret</span>;</span></span>
 
@@ -380,7 +380,7 @@
                 <span class="d Variables"><span class="t Identifier"><span class="i">Encoding</span></span>      <span class="i">fallback</span>;</span>      <span class="lc">// can this encoding be defaulted?</span>
                 }</span></span><span class="d Empty">;</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> {<span class="d EnumMember"><span class="t Identifier"><span class="i">Utf8</span></span></span>, <span class="d EnumMember"><span class="t Identifier"><span class="i">Utf16</span></span></span>, <span class="d EnumMember"><span class="t Identifier"><span class="i">Utf32</span></span></span>}</span><span class="d Empty">;</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> {<span class="d EnumMember"><span class="i">Utf8</span></span>, <span class="d EnumMember"><span class="i">Utf16</span></span>, <span class="d EnumMember"><span class="i">Utf32</span></span>}</span><span class="d Empty">;</span>
         
         <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Info</span></span><span class="t Array">[]</span> <span class="i">lookup</span> =
         <span class="e ArrayInit">[
@@ -404,7 +404,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Encoding</span></span> <span class="i">encoding</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Encoding</span></span> <span class="i">encoding</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">encoder</span></span>;</span>
         }</span></span></span>
@@ -415,7 +415,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">encoded</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">encoded</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">found</span></span>;</span>
         }</span></span></span>
@@ -426,7 +426,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">signature</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">signature</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">settings</span></span>.<span class="e Identifier"><span class="i">bom</span></span>;</span>
         }</span></span></span>
@@ -437,7 +437,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setup</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Encoding</span></span> <span class="i">encoding</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">found</span> = <span class="e Bool"><span class="k">false</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setup</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Encoding</span></span> <span class="i">encoding</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">found</span> = <span class="e Bool"><span class="k">false</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">settings</span></span> = <span class="e Index"><span class="e Address">&amp;<span class="e Identifier"><span class="i">lookup</span></span></span>[<span class="e Identifier"><span class="i">encoding</span></span>]</span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">encoder</span></span> = <span class="e Identifier"><span class="i">encoding</span></span></span>;</span>
@@ -451,7 +451,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Info</span></span>)</span><span class="t Pointer">*</span> <span class="i">test</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">content</span></span>)</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Info</span></span>)</span><span class="t Pointer">*</span> <span class="i">test</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">content</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s For"><span class="k">for</span> (<span class="s Declaration"><span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">Info</span></span>)</span><span class="t Pointer">*</span> <span class="i">info</span>=<span class="e Plus"><span class="e Identifier"><span class="i">lookup</span></span>.<span class="e Identifier"><span class="i">ptr</span></span>+<span class="e Identifier"><span class="i">lookup</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span></span> <span class="e Rel"><span class="e PreDecr">--<span class="e Identifier"><span class="i">info</span></span></span> &gt;= <span class="e Identifier"><span class="i">lookup</span></span>.<span class="e Identifier"><span class="i">ptr</span></span></span>;)
                      <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">info</span></span>.<span class="e Identifier"><span class="i">bom</span></span>)
@@ -475,7 +475,7 @@
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">INPUT2</span> = <span class="e String"><span class="sl">"abc<span class="es">\xE3</span><span class="es">\x81</span><span class="es">\x82</span><span class="es">\xE3</span><span class="es">\x81</span><span class="es">\x84</span><span class="es">\xE3</span><span class="es">\x81</span><span class="es">\x86</span>"</span></span>.<span class="e Identifier"><span class="i">dup</span></span>;</span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">INPUT</span> = <span class="e Cat"><span class="e String"><span class="sl">x"efbbbf"</span></span> ~ <span class="e Identifier"><span class="i">INPUT2</span></span></span>;</span></span>
-                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">bom</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">UnicodeBom</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span>)</span></span>(<span class="e Identifier"><span class="i">Encoding</span></span>.<span class="e Identifier"><span class="i">Unknown</span></span>)</span>;</span></span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">bom</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">UnicodeBom</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span>)</span></span>(<span class="e Identifier"><span class="i">Encoding</span></span>.<span class="e Identifier"><span class="i">Unknown</span></span>)</span>;</span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">ate</span>;</span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">256</span></span>]</span> <span class="i">buf</span>;</span></span>
                 
@@ -493,11 +493,11 @@
 <span class="d Compound">{
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">INPUT2</span> = <span class="e String"><span class="sl">"abc<span class="es">\xE3</span><span class="es">\x81</span><span class="es">\x82</span><span class="es">\xE3</span><span class="es">\x81</span><span class="es">\x84</span><span class="es">\xE3</span><span class="es">\x81</span><span class="es">\x86</span>"</span></span>.<span class="e Identifier"><span class="i">dup</span></span>;</span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">INPUT</span> = <span class="e Cat"><span class="e String"><span class="sl">x"efbbbf"</span></span> ~ <span class="e Identifier"><span class="i">INPUT2</span></span></span>;</span></span>
-                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">bom</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">UnicodeBom</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span>)</span></span>(<span class="e Identifier"><span class="i">Encoding</span></span>.<span class="e Identifier"><span class="i">Unknown</span></span>)</span>;</span></span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">bom</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">UnicodeBom</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span>)</span></span>(<span class="e Identifier"><span class="i">Encoding</span></span>.<span class="e Identifier"><span class="i">Unknown</span></span>)</span>;</span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">ate</span>;</span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">256</span></span>]</span> <span class="i">buf</span>;</span></span>
                 

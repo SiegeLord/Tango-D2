@@ -61,10 +61,10 @@
  * still possible to obtain weak-pointer behavior, but this must be done
  * through a proxy object instead.
  */</span>
-<span class="d Template"><span class="d Compound"><span class="d Struct"><span class="k">struct</span> <span class="i">Signal</span><span class="o TemplateParameters">( <span class="o TemplateTupleParam"><span class="i">Args</span>...</span> )</span>
+<span class="d Template"><span class="d Compound"><span class="d Struct"><span class="k">struct</span> <span class="i">Signal</span><span class="o ">( <span class="o "><span class="i">Args</span>...</span> )</span>
 <span class="d Compound">{
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Args</span></span></span>)</span></span> <span class="i">SlotDg</span>;</span></span> <span class="lc">///</span>
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Args</span></span></span>)</span></span> <span class="i">SlotFn</span>;</span></span> <span class="lc">///</span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Args</span></span></span>)</span></span> <span class="i">SlotDg</span>;</span></span> <span class="lc">///</span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Args</span></span></span>)</span></span> <span class="i">SlotFn</span>;</span></span> <span class="lc">///</span>
 
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">opCall</span></span> <span class="i">call</span>;</span></span> <span class="lc">/// Alias to simplify chained calling.</span>
 
@@ -75,7 +75,7 @@
      * Params:
      * args = The signal arguments.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">opCall</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">Args</span></span> <span class="i">args</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">opCall</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">Args</span></span> <span class="i">args</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Synchronized"><span class="k">synchronized</span>
         <span class="s Scope"><span class="s Compound">{
@@ -109,7 +109,7 @@
      * Params:
      * dg = The delegate to attach.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">attach</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">SlotDg</span></span> <span class="i">dg</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">attach</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">SlotDg</span></span> <span class="i">dg</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Synchronized"><span class="k">synchronized</span>
         <span class="s Scope"><span class="s Compound">{
@@ -134,7 +134,7 @@
      * Params:
      * fn = The function to attach.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">attach</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">SlotFn</span></span> <span class="i">fn</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">attach</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">SlotFn</span></span> <span class="i">fn</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Synchronized"><span class="k">synchronized</span>
         <span class="s Scope"><span class="s Compound">{
@@ -157,7 +157,7 @@
      * Params:
      * dg = The delegate to detach.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">detach</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">SlotDg</span></span> <span class="i">dg</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">detach</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">SlotDg</span></span> <span class="i">dg</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Synchronized"><span class="k">synchronized</span>
         <span class="s Scope"><span class="s Compound">{
@@ -173,7 +173,7 @@
      * Params:
      * fn = The function to detach.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">detach</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">SlotFn</span></span> <span class="i">fn</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">detach</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">SlotFn</span></span> <span class="i">fn</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Synchronized"><span class="k">synchronized</span>
         <span class="s Scope"><span class="s Compound">{
@@ -189,11 +189,11 @@
     <span class="d Compound">{
         <span class="d Enum"><span class="k">enum</span> <span class="i">Type</span>
         {
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">DG</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">FN</span></span></span>
+            <span class="d EnumMember"><span class="i">DG</span></span>,
+            <span class="d EnumMember"><span class="i">FN</span></span>
         }</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Add</span></span> <span class="i">opCall</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">SlotDg</span></span> <span class="i">d</span></span> )</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Add</span></span> <span class="i">opCall</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">SlotDg</span></span> <span class="i">d</span></span> )</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">Add</span></span> <span class="i">e</span>;</span></span>
             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">e</span></span>.<span class="e Identifier"><span class="i">ty</span></span> = <span class="e Identifier"><span class="i">Type</span></span>.<span class="e Identifier"><span class="i">DG</span></span></span>;</span>
@@ -201,7 +201,7 @@
             <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">e</span></span>;</span>
         }</span></span></span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Add</span></span> <span class="i">opCall</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">SlotFn</span></span> <span class="i">f</span></span> )</span>
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Add</span></span> <span class="i">opCall</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">SlotFn</span></span> <span class="i">f</span></span> )</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">Add</span></span> <span class="i">e</span>;</span></span>
             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">e</span></span>.<span class="e Identifier"><span class="i">ty</span></span> = <span class="e Identifier"><span class="i">Type</span></span>.<span class="e Identifier"><span class="i">FN</span></span></span>;</span>
@@ -218,9 +218,9 @@
     }</span></span>
 
 
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">procAdds</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">procAdds</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
-        <span class="s Foreach"><span class="k">foreach</span>( <span class="o Parameters"><span class="o Parameter"><span class="i">a</span></span></span>; <span class="e Identifier"><span class="i">m_add</span></span> )
+        <span class="s Foreach"><span class="k">foreach</span>( <span class="o "><span class="o "><span class="i">a</span></span></span>; <span class="e Identifier"><span class="i">m_add</span></span> )
         <span class="s Scope"><span class="s Compound">{
             <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">a</span></span>.<span class="e Identifier"><span class="i">ty</span></span> == <span class="e Identifier"><span class="i">Add</span></span>.<span class="e Identifier"><span class="i">Type</span></span>.<span class="e Identifier"><span class="i">DG</span></span></span> )
                 <span class="s Scope"><span class="s Expression"><span class="e CatAssign"><span class="e Identifier"><span class="i">m_dgs</span></span> ~= <span class="e Identifier"><span class="i">a</span></span>.<span class="e Identifier"><span class="i">dg</span></span></span>;</span></span>
@@ -244,17 +244,17 @@
   <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Class"><span class="k">class</span> <span class="i">Button</span>
     <span class="d Compound">{
-        <span class="d Variables"><span class="t TemplateInstance"><span class="i">Signal</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">Button</span></span>)</span></span> <span class="i">press</span>;</span>
+        <span class="d Variables"><span class="t TemplateInstance"><span class="i">Signal</span>!<span class="o ">(<span class="t Identifier"><span class="i">Button</span></span>)</span></span> <span class="i">press</span>;</span>
     }</span></span></span>
 
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">count</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
 
-    <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">wasPressedA</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">Button</span></span> <span class="i">b</span></span> )</span>
+    <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">wasPressedA</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">Button</span></span> <span class="i">b</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e PreIncr">++<span class="e Identifier"><span class="i">count</span></span></span>;</span>
     }</span></span></span></span>
 
-    <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">wasPressedB</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">Button</span></span> <span class="i">b</span></span> )</span>
+    <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">wasPressedB</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">Button</span></span> <span class="i">b</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e PreIncr">++<span class="e Identifier"><span class="i">count</span></span></span>;</span>
     }</span></span></span></span>

@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>tango.net.ftp.FtpClient</title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <!-- no favicon -->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/utilities.js"></script>
+  <script type="text/javascript" src="js/symbols.js"></script>
+  <script type="text/javascript" src="js/modules.js"></script>
+  <script type="text/javascript" src="js/quicksearch.js"></script>
+  <script type="text/javascript" src="js/treeview.js"></script>
+  <script type="text/javascript" src="js/navigation.js"></script>
+</head>
+<body id="tango.net.ftp.FtpClient">
+<div id="kandil-content">
+<div class="module">
+  <h1 class="module" id="m-tango.net.ftp.FtpClient"><a href="htmlsrc/tango.net.ftp.FtpClient.html" class="symbol">tango.net.ftp.FtpClient</a></h1>
+
+<p class="sec_header">Author:</p><div class="cmnt">Lester L. Martin II
+                  UWB, bobef</div>
+<p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a>
+ Initial release:  August 8, 2008</div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> void delegate(in size_t pos) <a class="symbol _alias" name="FtpProgress" href="htmlsrc/tango.net.ftp.FtpClient.html#L43">FtpProgress</a> <a href="tango.net.ftp.FtpClient.html#FtpProgress" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">An FTP progress delegate.
+ 
+ You may need to add the restart position to this, and use SIZE to determine
+ percentage completion.  This only represents the number of bytes
+ transferred.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>pos</em></td><td>the current offset into the stream</td></tr></table></dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="FtpFormat" href="htmlsrc/tango.net.ftp.FtpClient.html#L48">FtpFormat</a> <a href="tango.net.ftp.FtpClient.html#FtpFormat" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The format of data transfer.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="FtpFormat.ascii" href="htmlsrc/tango.net.ftp.FtpClient.html#L53">ascii</a> <a href="tango.net.ftp.FtpClient.html#FtpFormat.ascii" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Indicates ASCII NON PRINT format (line ending conversion to CRLF.)</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="FtpFormat.image" href="htmlsrc/tango.net.ftp.FtpClient.html#L57">image</a> <a href="tango.net.ftp.FtpClient.html#FtpFormat.image" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Indicates IMAGE format (8 bit binary octets.)</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="FtpAddress" href="htmlsrc/tango.net.ftp.FtpClient.html#L66">FtpAddress</a> <a href="tango.net.ftp.FtpClient.html#FtpAddress" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A FtpAddress structure that contains all 
+ that is needed to access a FTPConnection; Contributed by Bobef</div></div>
+<p class="sec_header">Since:</p><div class="cmnt">0.99.8</div>
+</dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="FtpResponse" href="htmlsrc/tango.net.ftp.FtpClient.html#L126">FtpResponse</a> <a href="tango.net.ftp.FtpClient.html#FtpResponse" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A server response, consisting of a code and a potentially multi-line 
+ message.</div></div>
+<dl>
+<dt class="decl">char[3] <a class="symbol _variable" name="FtpResponse.code" href="htmlsrc/tango.net.ftp.FtpClient.html#L148">code</a> <a href="tango.net.ftp.FtpClient.html#FtpResponse.code" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The response code.
+     
+     The digits in the response code can be used to determine status
+     programatically.
+     
+     First Digit (status):
+     1xx =             a positive, but preliminary, reply
+     2xx =             a positive reply indicating completion
+     3xx =             a positive reply indicating incomplete status
+     4xx =             a temporary negative reply
+     5xx =             a permanent negative reply
+     
+     Second Digit (subject):
+     x0x =             condition based on syntax
+     x1x =             informational
+     x2x =             connection
+     x3x =             authentication/process
+     x5x =             file system</div></div></dd>
+<dt class="decl">const(char)[] <a class="symbol _variable" name="FtpResponse.message" href="htmlsrc/tango.net.ftp.FtpClient.html#L156">message</a> <a href="tango.net.ftp.FtpClient.html#FtpResponse.message" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The message from the server.
+     
+     With some responses, the message may contain parseable information.
+     For example, this is true of the 257 response.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="FtpConnectionType" href="htmlsrc/tango.net.ftp.FtpClient.html#L162">FtpConnectionType</a> <a href="tango.net.ftp.FtpClient.html#FtpConnectionType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Active or passive connection mode.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="FtpConnectionType.active" href="htmlsrc/tango.net.ftp.FtpClient.html#L167">active</a> <a href="tango.net.ftp.FtpClient.html#FtpConnectionType.active" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Active - server connects to client on open port.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="FtpConnectionType.passive" href="htmlsrc/tango.net.ftp.FtpClient.html#L171">passive</a> <a href="tango.net.ftp.FtpClient.html#FtpConnectionType.passive" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Passive - server listens for a connection from the client.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="FtpConnectionDetail" href="htmlsrc/tango.net.ftp.FtpClient.html#L179">FtpConnectionDetail</a> <a href="tango.net.ftp.FtpClient.html#FtpConnectionDetail" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Detail about the data connection.
+ 
+ This is used to properly send PORT and PASV commands.</div></div>
+<dl>
+<dt class="decl">FtpConnectionType <a class="symbol _variable" name="FtpConnectionDetail.type" href="htmlsrc/tango.net.ftp.FtpClient.html#L184">type</a> <a href="tango.net.ftp.FtpClient.html#FtpConnectionDetail.type" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The type to be used.</div></div></dd>
+<dt class="decl">Address <a class="symbol _variable" name="FtpConnectionDetail.address" href="htmlsrc/tango.net.ftp.FtpClient.html#L189">address</a> <a href="tango.net.ftp.FtpClient.html#FtpConnectionDetail.address" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The address to give the server.</div></div></dd>
+<dt class="decl">Address <a class="symbol _variable" name="FtpConnectionDetail.listen" href="htmlsrc/tango.net.ftp.FtpClient.html#L194">listen</a> <a href="tango.net.ftp.FtpClient.html#FtpConnectionDetail.listen" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The address to actually listen on.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="FtpFeature" href="htmlsrc/tango.net.ftp.FtpClient.html#L200">FtpFeature</a> <a href="tango.net.ftp.FtpClient.html#FtpFeature" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A supported feature of an FTP server.</div></div>
+<dl>
+<dt class="decl">const(char)[] <a class="symbol _variable" name="FtpFeature.command" href="htmlsrc/tango.net.ftp.FtpClient.html#L205">command</a> <a href="tango.net.ftp.FtpClient.html#FtpFeature.command" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The command which is supported, e.g. SIZE.</div></div></dd>
+<dt class="decl">const(char)[] <a class="symbol _variable" name="FtpFeature.params" href="htmlsrc/tango.net.ftp.FtpClient.html#L209">params</a> <a href="tango.net.ftp.FtpClient.html#FtpFeature.params" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Parameters for this command; e.g. facts for MLST.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">enum</span> <a class="symbol _enum" name="FtpFileType" href="htmlsrc/tango.net.ftp.FtpClient.html#L215">FtpFileType</a> <a href="tango.net.ftp.FtpClient.html#FtpFileType" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The type of a file in an FTP listing.</div></div>
+<dl>
+<dt class="decl"><a class="symbol _enummem" name="FtpFileType.unknown" href="htmlsrc/tango.net.ftp.FtpClient.html#L220">unknown</a> <a href="tango.net.ftp.FtpClient.html#FtpFileType.unknown" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">An unknown file or type (no type fact.)</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="FtpFileType.file" href="htmlsrc/tango.net.ftp.FtpClient.html#L224">file</a> <a href="tango.net.ftp.FtpClient.html#FtpFileType.file" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A regular file, or similar.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="FtpFileType.cdir" href="htmlsrc/tango.net.ftp.FtpClient.html#L228">cdir</a> <a href="tango.net.ftp.FtpClient.html#FtpFileType.cdir" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The current directory (e.g. ., but not necessarily.)</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="FtpFileType.pdir" href="htmlsrc/tango.net.ftp.FtpClient.html#L232">pdir</a> <a href="tango.net.ftp.FtpClient.html#FtpFileType.pdir" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A parent directory (usually "..".)</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="FtpFileType.dir" href="htmlsrc/tango.net.ftp.FtpClient.html#L236">dir</a> <a href="tango.net.ftp.FtpClient.html#FtpFileType.dir" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Any other type of directory.</div></div></dd>
+<dt class="decl"><a class="symbol _enummem" name="FtpFileType.other" href="htmlsrc/tango.net.ftp.FtpClient.html#L240">other</a> <a href="tango.net.ftp.FtpClient.html#FtpFileType.other" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Another type of file.  Consult the "type" fact.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="FtpFileInfo" href="htmlsrc/tango.net.ftp.FtpClient.html#L246">FtpFileInfo</a> <a href="tango.net.ftp.FtpClient.html#FtpFileInfo" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Information about a file in an FTP listing.</div></div>
+<dl>
+<dt class="decl">const(char)[] <a class="symbol _variable" name="FtpFileInfo.name" href="htmlsrc/tango.net.ftp.FtpClient.html#L251">name</a> <a href="tango.net.ftp.FtpClient.html#FtpFileInfo.name" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The filename.</div></div></dd>
+<dt class="decl">FtpFileType <a class="symbol _variable" name="FtpFileInfo.type" href="htmlsrc/tango.net.ftp.FtpClient.html#L255">type</a> <a href="tango.net.ftp.FtpClient.html#FtpFileInfo.type" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Its type.</div></div></dd>
+<dt class="decl">ulong <a class="symbol _variable" name="FtpFileInfo.size" href="htmlsrc/tango.net.ftp.FtpClient.html#L260">size</a> <a href="tango.net.ftp.FtpClient.html#FtpFileInfo.size" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Size in bytes (8 bit octets), or ulong.max if not available.</div></div>
+<p class="sec_header">Since:</p><div class="cmnt">0.99.8</div></dd>
+<dt class="decl">Time <a class="symbol _variable" name="FtpFileInfo.modify" href="htmlsrc/tango.net.ftp.FtpClient.html#L264">modify</a> <a href="tango.net.ftp.FtpClient.html#FtpFileInfo.modify" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Modification time, if available.</div></div></dd>
+<dt class="decl">Time <a class="symbol _variable" name="FtpFileInfo.create" href="htmlsrc/tango.net.ftp.FtpClient.html#L268">create</a> <a href="tango.net.ftp.FtpClient.html#FtpFileInfo.create" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Creation time, if available (not often.)</div></div></dd>
+<dt class="decl">const(char)[] <a class="symbol _variable" name="FtpFileInfo.mime" href="htmlsrc/tango.net.ftp.FtpClient.html#L272">mime</a> <a href="tango.net.ftp.FtpClient.html#FtpFileInfo.mime" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">The file's mime type, if known.</div></div></dd>
+<dt class="decl">const(char)[][const(char)[]] <a class="symbol _variable" name="FtpFileInfo.facts" href="htmlsrc/tango.net.ftp.FtpClient.html#L276">facts</a> <a href="tango.net.ftp.FtpClient.html#FtpFileInfo.facts" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">An associative array of all facts returned by the server, lowercased.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="FtpException" href="htmlsrc/tango.net.ftp.FtpClient.html#L283">FtpException</a> : <span class="bclass">Exception</span> <a href="tango.net.ftp.FtpClient.html#FtpException" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Changed location Since: 0.99.8
+ Documentation Pending</div></div>
+<dl>
+<dt class="decl"><a class="symbol _ctor" name="FtpException.this" href="htmlsrc/tango.net.ftp.FtpClient.html#L294">this</a><span class="params">(string <em>message</em>, char[3] <em>code</em> = <span class="defval"><span class="sl">"420"</span></span>)</span> <a href="tango.net.ftp.FtpClient.html#FtpException.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct an FtpException based on a message and code.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>message</em></td><td>the exception message</td></tr>
+<tr><td><em>code</em></td><td>the code (5xx for fatal errors)</td></tr></table></dd>
+<dt class="decl"><a class="symbol _ctor" name="FtpException.this:2" href="htmlsrc/tango.net.ftp.FtpClient.html#L305">this</a><span class="params">(FtpResponse <em>r</em>)</span> <a href="tango.net.ftp.FtpClient.html#FtpException.this:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Construct an FtpException based on a response.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>r</em></td><td>the server response</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">string</span> <a class="symbol _function" name="FtpException.toString" href="htmlsrc/tango.net.ftp.FtpClient.html#L313">toString</a><span class="params">()</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.ftp.FtpClient.html#FtpException.toString" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">A string representation of the error.</div></div></dd></dl></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="FTPConnection" href="htmlsrc/tango.net.ftp.FtpClient.html#L328">FTPConnection</a> : <span class="bclass">Telnet</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Seriously changed Since: 0.99.8
+ Documentation pending</div></div>
+<dl>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="FTPConnection.timeout" href="htmlsrc/tango.net.ftp.FtpClient.html#L341">timeout</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.timeout" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Added Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.timeout:2" href="htmlsrc/tango.net.ftp.FtpClient.html#L348">timeout</a><span class="params">(TimeSpan <em>t</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">@property</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.timeout:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Added Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">TimeSpan</span> <a class="symbol _function" name="FTPConnection.shutdownTime" href="htmlsrc/tango.net.ftp.FtpClient.html#L355">shutdownTime</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.shutdownTime" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Added Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">FtpFeature[]</span> <a class="symbol _function" name="FTPConnection.supportedFeatures" href="htmlsrc/tango.net.ftp.FtpClient.html#L362">supportedFeatures</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.supportedFeatures" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Added Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.exception" href="htmlsrc/tango.net.ftp.FtpClient.html#L373">exception</a><span class="params">(string <em>message</em>)</span> <span class="attrs">[<span class="stc">override</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.exception" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Changed Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.exception:2" href="htmlsrc/tango.net.ftp.FtpClient.html#L380">exception</a><span class="params">(FtpResponse <em>fr</em>)</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.exception:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Changed Since: 0.99.8</div></div></dd>
+<dt class="decl"><a class="symbol _ctor" name="FTPConnection.this" href="htmlsrc/tango.net.ftp.FtpClient.html#L396">this</a><span class="params">(FtpAddress <em>fad</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Added Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.connect" href="htmlsrc/tango.net.ftp.FtpClient.html#L403">connect</a><span class="params">(FtpAddress <em>fad</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.connect" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Added Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.connect:2" href="htmlsrc/tango.net.ftp.FtpClient.html#L410">connect</a><span class="params">(const(char)[] <em>hostname</em>, const(char)[] <em>username</em> = <span class="defval"><span class="sl">"anonymous"</span></span>, const(char)[] <em>password</em> = <span class="defval"><span class="sl">"anonymous@anonymous"</span></span>, uint <em>port</em> = <span class="defval"><span class="n">21</span></span>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.connect:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Changed Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="FTPConnection.exist" href="htmlsrc/tango.net.ftp.FtpClient.html#L572">exist</a><span class="params">(const(char)[] <em>file</em>)</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.exist" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Added Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">Time</span> <a class="symbol _function" name="FTPConnection.modified" href="htmlsrc/tango.net.ftp.FtpClient.html#L621">modified</a><span class="params">(const(char)[] <em>file</em>)</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.modified" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Added Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">Socket</span> <a class="symbol _function" name="FTPConnection.getDataSocket" href="htmlsrc/tango.net.ftp.FtpClient.html#L820">getDataSocket</a><span class="params">()</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.getDataSocket" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Get a data socket from the server.
+     
+     This sends PASV/PORT as necessary.</div></div>
+<p class="sec_header">Returns:</p><div class="cmnt">the data socket or a listener
+     Changed Since: 0.99.8</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.prepareDataSocket" href="htmlsrc/tango.net.ftp.FtpClient.html#L997">prepareDataSocket</a><span class="params">(<span class="k">ref</span> Socket <em>data</em>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.prepareDataSocket" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Prepare a data socket for use.
+     
+     This modifies the socket in some cases.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>data</em></td><td>the data listener socket
+     Changed Since: 0.99.8</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.finishDataCommand" href="htmlsrc/tango.net.ftp.FtpClient.html#L1041">finishDataCommand</a><span class="params">(Socket <em>data</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.finishDataCommand" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Changed Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">Socket</span> <a class="symbol _function" name="FTPConnection.processDataCommand" href="htmlsrc/tango.net.ftp.FtpClient.html#L1056">processDataCommand</a><span class="params">(const(char)[] <em>command</em>, const(char)[][] <em>parameters</em>...)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.processDataCommand" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Changed Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.readStream" href="htmlsrc/tango.net.ftp.FtpClient.html#L1139">readStream</a><span class="params">(Socket <em>data</em>, OutputStream <em>stream</em>, FtpProgress <em>progress</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.readStream" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Changed Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.sendStream" href="htmlsrc/tango.net.ftp.FtpClient.html#L1194">sendStream</a><span class="params">(Socket <em>data</em>, InputStream <em>stream</em>, FtpProgress <em>progress</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.sendStream" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Changed Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.put" href="htmlsrc/tango.net.ftp.FtpClient.html#L1597">put</a><span class="params">(const(char)[] <em>path</em>, InputStream <em>stream</em> = <span class="defval"><span class="k">null</span></span>, FtpProgress <em>progress</em> = <span class="defval"><span class="k">null</span></span>, FtpFormat <em>format</em> = <span class="defval"><span class="i">image</span></span>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.put" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Store data from a stream on the server.
+     
+     Calling this function will change the current data transfer format.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>path</em></td><td>the path to the remote file</td></tr>
+<tr><td><em>stream</em></td><td>data to store, or null for a blank file</td></tr>
+<tr><td><em>progress</em></td><td>a delegate to call with progress information</td></tr>
+<tr><td><em>format</em></td><td>what format to send the data in</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.append" href="htmlsrc/tango.net.ftp.FtpClient.html#L1627">append</a><span class="params">(const(char)[] <em>path</em>, InputStream <em>stream</em>, FtpProgress <em>progress</em> = <span class="defval"><span class="k">null</span></span>, FtpFormat <em>format</em> = <span class="defval"><span class="i">image</span></span>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.append" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Append data to a file on the server.
+     
+     Calling this function will change the current data transfer format.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>path</em></td><td>the path to the remote file</td></tr>
+<tr><td><em>stream</em></td><td>data to append to the file</td></tr>
+<tr><td><em>progress</em></td><td>a delegate to call with progress information</td></tr>
+<tr><td><em>format</em></td><td>what format to send the data in</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.restartSeek" href="htmlsrc/tango.net.ftp.FtpClient.html#L1652">restartSeek</a><span class="params">(size_t <em>offset</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.restartSeek" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Seek to a byte offset for the next transfer.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>offset</em></td><td>the number of bytes to seek forward</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.allocate" href="htmlsrc/tango.net.ftp.FtpClient.html#L1669">allocate</a><span class="params">(long <em>bytes</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.allocate" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Allocate space for a file.
+     
+     After calling this, append() or put() should be the next command.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>bytes</em></td><td>the number of bytes to allocate</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.get" href="htmlsrc/tango.net.ftp.FtpClient.html#L1694">get</a><span class="params">(const(char)[] <em>path</em>, const(char)[] <em>local_file</em>, FtpProgress <em>progress</em> = <span class="defval"><span class="k">null</span></span>, FtpFormat <em>format</em> = <span class="defval"><span class="i">image</span></span>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.get" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Retrieve a remote file's contents into a local file.
+     
+     Calling this function will change the current data transfer format.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>path</em></td><td>the path to the remote file</td></tr>
+<tr><td><em>local_file</em></td><td>the path to the local file</td></tr>
+<tr><td><em>progress</em></td><td>a delegate to call with progress information</td></tr>
+<tr><td><em>format</em></td><td>what format to read the data in</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.enableUTF8" href="htmlsrc/tango.net.ftp.FtpClient.html#L1726">enableUTF8</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.enableUTF8" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Enable UTF8 on servers that don't use this as default. Might need some work</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="FTPConnection.get:2" href="htmlsrc/tango.net.ftp.FtpClient.html#L1742">get</a><span class="params">(const(char)[] <em>path</em>, OutputStream <em>stream</em>, FtpProgress <em>progress</em> = <span class="defval"><span class="k">null</span></span>, FtpFormat <em>format</em> = <span class="defval"><span class="i">image</span></span>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.get:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Retrieve a remote file's contents into a local file.
+     
+     Calling this function will change the current data transfer format.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>path</em></td><td>the path to the remote file</td></tr>
+<tr><td><em>stream</em></td><td>stream to write the data to</td></tr>
+<tr><td><em>progress</em></td><td>a delegate to call with progress information</td></tr>
+<tr><td><em>format</em></td><td>what format to read the data in</td></tr></table></dd>
+<dt class="decl"><span class="rettyp">InputStream</span> <a class="symbol _function" name="FTPConnection.input" href="htmlsrc/tango.net.ftp.FtpClient.html#L1764">input</a><span class="params">(const(char)[] <em>path</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.input" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Added Since: 0.99.8</div></div></dd>
+<dt class="decl"><span class="rettyp">OutputStream</span> <a class="symbol _function" name="FTPConnection.output" href="htmlsrc/tango.net.ftp.FtpClient.html#L1773">output</a><span class="params">(const(char)[] <em>path</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.net.ftp.FtpClient.html#FTPConnection.output" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Added Since: 0.99.8</div></div></dd></dl></dd></dl>
+</div>
+<div id="kandil-footer">
+  <p>(c) Lester L. Martin II
+                  UWB, bobef
+ Based upon prior FtpClient.d</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Tue Aug 21 02:56:49 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
+</div>
+</div>
+</body>
+</html>

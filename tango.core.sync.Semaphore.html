@@ -22,26 +22,26 @@
 <p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
 <p class="sec_header">Author:</p><div class="cmnt">Sean Kelly</div>
 <dl>
-<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Semaphore" href="htmlsrc/tango.core.sync.Semaphore.html#L41">Semaphore</a> <a href="tango.core.sync.Semaphore.html#Semaphore" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="Semaphore" href="htmlsrc/tango.core.sync.Semaphore.html#L43">Semaphore</a> <a href="tango.core.sync.Semaphore.html#Semaphore" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">This class represents a general counting semaphore as concieved by Edsger
  Dijkstra.  As per Mesa type monitors however, "signal" has been replaced
  with "notify" to indicate that control is not transferred to the waiter when
  a notification is sent.</div></div>
 <dl>
-<dt class="decl"><a class="symbol _ctor" name="Semaphore.this" href="htmlsrc/tango.core.sync.Semaphore.html#L57">this</a><span class="params">(uint <em>count</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.core.sync.Semaphore.html#Semaphore.this" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _ctor" name="Semaphore.this" href="htmlsrc/tango.core.sync.Semaphore.html#L59">this</a><span class="params">(uint <em>count</em> = <span class="defval"><span class="n">0</span></span>)</span> <a href="tango.core.sync.Semaphore.html#Semaphore.this" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Initializes a semaphore object with the specified initial count.</div></div>
 <p class="sec_header">Parameters:</p>
 <table class="params">
 <tr><td><em>count</em></td><td>The initial count for the semaphore.</td></tr></table>
 <p class="sec_header">Throws:</p><div class="cmnt">SyncException on error.</div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Semaphore.wait" href="htmlsrc/tango.core.sync.Semaphore.html#L115">wait</a><span class="params">()</span> <a href="tango.core.sync.Semaphore.html#Semaphore.wait" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Semaphore.wait" href="htmlsrc/tango.core.sync.Semaphore.html#L117">wait</a><span class="params">()</span> <a href="tango.core.sync.Semaphore.html#Semaphore.wait" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Wait until the current count is above zero, then atomically decrement
  the count by one and return.</div></div>
 <p class="sec_header">Throws:</p><div class="cmnt">SyncException on error.</div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Semaphore.wait:2" href="htmlsrc/tango.core.sync.Semaphore.html#L169">wait</a><span class="params">(double <em>period</em>)</span> <a href="tango.core.sync.Semaphore.html#Semaphore.wait:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Semaphore.wait:2" href="htmlsrc/tango.core.sync.Semaphore.html#L171">wait</a><span class="params">(double <em>period</em>)</span> <a href="tango.core.sync.Semaphore.html#Semaphore.wait:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Suspends the calling thread until the current count moves above zero or
  until the supplied time period has elapsed.  If the count moves above
@@ -54,12 +54,12 @@
 <p class="sec_header">In:</p><div class="cmnt">period must be less than (uint.max - 1) milliseconds.</div>
 <p class="sec_header">Returns:</p><div class="cmnt">true if notified before the timeout and false if not.</div>
 <p class="sec_header">Throws:</p><div class="cmnt">SyncException on error.</div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Semaphore.notify" href="htmlsrc/tango.core.sync.Semaphore.html#L236">notify</a><span class="params">()</span> <a href="tango.core.sync.Semaphore.html#Semaphore.notify" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="Semaphore.notify" href="htmlsrc/tango.core.sync.Semaphore.html#L238">notify</a><span class="params">()</span> <a href="tango.core.sync.Semaphore.html#Semaphore.notify" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Atomically increment the current count by one.  This will notify one
  waiter, if there are any in the queue.</div></div>
 <p class="sec_header">Throws:</p><div class="cmnt">SyncException on error.</div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Semaphore.tryWait" href="htmlsrc/tango.core.sync.Semaphore.html#L265">tryWait</a><span class="params">()</span> <a href="tango.core.sync.Semaphore.html#Semaphore.tryWait" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="Semaphore.tryWait" href="htmlsrc/tango.core.sync.Semaphore.html#L267">tryWait</a><span class="params">()</span> <a href="tango.core.sync.Semaphore.html#Semaphore.tryWait" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">If the current count is equal to zero, return.  Otherwise, atomically
  decrement the count by one and return true.</div></div>
@@ -68,7 +68,7 @@
 </div>
 <div id="kandil-footer">
   <p>Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:24 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Tue Aug 21 02:56:44 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

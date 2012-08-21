@@ -22,69 +22,69 @@
 <p class="sec_header">Version:</p><div class="cmnt">Mar 2005: Initial release</div>
 <p class="sec_header">Author:</p><div class="cmnt">Kris</div>
 <dl>
-<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="MemCache" href="htmlsrc/tango.net.util.MemCache.html#L33">MemCache</a> : <span class="bclass">Thread</span> <a href="tango.net.util.MemCache.html#MemCache" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="MemCache" href="htmlsrc/tango.net.util.MemCache.html#L34">MemCache</a> : <span class="bclass">Thr.Thread</span> <a href="tango.net.util.MemCache.html#MemCache" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div>
 <dl>
-<dt class="decl"><a class="symbol _ctor" name="MemCache.this" href="htmlsrc/tango.net.util.MemCache.html#L43">this</a><span class="params">(const(char[])[] <em>hosts</em>, uint <em>watchdog</em> = <span class="defval"><span class="n">3</span></span>)</span> <a href="tango.net.util.MemCache.html#MemCache.this" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _ctor" name="MemCache.this" href="htmlsrc/tango.net.util.MemCache.html#L44">this</a><span class="params">(const(char[])[] <em>hosts</em>, uint <em>watchdog</em> = <span class="defval"><span class="n">3</span></span>)</span> <a href="tango.net.util.MemCache.html#MemCache.this" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MemCache.close" href="htmlsrc/tango.net.util.MemCache.html#L60">close</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.close" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MemCache.close" href="htmlsrc/tango.net.util.MemCache.html#L61">close</a><span class="params">()</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.close" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.set" href="htmlsrc/tango.net.util.MemCache.html#L76">set</a><span class="params">(const(void)[][] <em>key</em>, const(void)[][] <em>value</em>, int <em>flags</em> = <span class="defval"><span class="n">0</span></span>, int <em>timeout</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.set" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.set" href="htmlsrc/tango.net.util.MemCache.html#L77">set</a><span class="params">(const(void)[][] <em>key</em>, const(void)[][] <em>value</em>, int <em>flags</em> = <span class="defval"><span class="n">0</span></span>, int <em>timeout</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.set" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Store the key and value</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.add" href="htmlsrc/tango.net.util.MemCache.html#L87">add</a><span class="params">(const(void)[][] <em>key</em>, const(void)[][] <em>value</em>, int <em>flags</em> = <span class="defval"><span class="n">0</span></span>, int <em>timeout</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.add" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.add" href="htmlsrc/tango.net.util.MemCache.html#L88">add</a><span class="params">(const(void)[][] <em>key</em>, const(void)[][] <em>value</em>, int <em>flags</em> = <span class="defval"><span class="n">0</span></span>, int <em>timeout</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.add" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Store the value if key does not already exist</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.replace" href="htmlsrc/tango.net.util.MemCache.html#L98">replace</a><span class="params">(const(void)[][] <em>key</em>, const(void)[][] <em>value</em>, int <em>flags</em> = <span class="defval"><span class="n">0</span></span>, int <em>timeout</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.replace" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.replace" href="htmlsrc/tango.net.util.MemCache.html#L99">replace</a><span class="params">(const(void)[][] <em>key</em>, const(void)[][] <em>value</em>, int <em>flags</em> = <span class="defval"><span class="n">0</span></span>, int <em>timeout</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.replace" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Store the value only if key exists</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.remove" href="htmlsrc/tango.net.util.MemCache.html#L111">remove</a><span class="params">(const(void)[][] <em>key</em>, int <em>timeout</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.remove" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.remove" href="htmlsrc/tango.net.util.MemCache.html#L112">remove</a><span class="params">(const(void)[][] <em>key</em>, int <em>timeout</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.remove" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Remove the specified key and make key "invalid" for the
                 duration of timeout, causing add(), get() and remove() on
                 the same key to fail within that period</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.get" href="htmlsrc/tango.net.util.MemCache.html#L123">get</a><span class="params">(const(void)[][] <em>key</em>, Buffer <em>buffer</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.get" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.get" href="htmlsrc/tango.net.util.MemCache.html#L124">get</a><span class="params">(const(void)[][] <em>key</em>, Buffer <em>buffer</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.get" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">VALUE <key> <flags> <bytes>\r\n
                 <data block>\r\n</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.incr" href="htmlsrc/tango.net.util.MemCache.html#L132">incr</a><span class="params">(const(void)[][] <em>key</em>, uint <em>value</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.incr" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.incr" href="htmlsrc/tango.net.util.MemCache.html#L133">incr</a><span class="params">(const(void)[][] <em>key</em>, uint <em>value</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.incr" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.decr" href="htmlsrc/tango.net.util.MemCache.html#L142">decr</a><span class="params">(const(void)[][] <em>key</em>, uint <em>value</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.decr" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.decr" href="htmlsrc/tango.net.util.MemCache.html#L143">decr</a><span class="params">(const(void)[][] <em>key</em>, uint <em>value</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.decr" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.incr:2" href="htmlsrc/tango.net.util.MemCache.html#L152">incr</a><span class="params">(const(void)[][] <em>key</em>, uint <em>value</em>,  <span class="k">ref</span> uint <em>result</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.incr:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.incr:2" href="htmlsrc/tango.net.util.MemCache.html#L153">incr</a><span class="params">(const(void)[][] <em>key</em>, uint <em>value</em>,  <span class="k">ref</span> uint <em>result</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.incr:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.decr:2" href="htmlsrc/tango.net.util.MemCache.html#L161">decr</a><span class="params">(const(void)[][] <em>key</em>, uint <em>value</em>,  <span class="k">ref</span> uint <em>result</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.decr:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.decr:2" href="htmlsrc/tango.net.util.MemCache.html#L162">decr</a><span class="params">(const(void)[][] <em>key</em>, uint <em>value</em>,  <span class="k">ref</span> uint <em>result</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.decr:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MemCache.status" href="htmlsrc/tango.net.util.MemCache.html#L170">status</a><span class="params">(void delegate(const(char)[], const(char[])[] list) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.status" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MemCache.status" href="htmlsrc/tango.net.util.MemCache.html#L171">status</a><span class="params">(void delegate(const(char)[], const(char[])[] list) <em>dg</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.status" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd>
-<dt class="decl"><span class="rettyp">Buffer</span> <a class="symbol _function" name="MemCache.buffer" href="htmlsrc/tango.net.util.MemCache.html#L180">buffer</a><span class="params">(uint <em>size</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.buffer" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">Buffer</span> <a class="symbol _function" name="MemCache.buffer" href="htmlsrc/tango.net.util.MemCache.html#L181">buffer</a><span class="params">(uint <em>size</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.buffer" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd>
-<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MemCache.setHosts" href="htmlsrc/tango.net.util.MemCache.html#L189">setHosts</a><span class="params">(const(char[])[] <em>hosts</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.setHosts" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="MemCache.setHosts" href="htmlsrc/tango.net.util.MemCache.html#L190">setHosts</a><span class="params">(const(char[])[] <em>hosts</em>)</span> <span class="attrs">[<span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.setHosts" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd>
-<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="MemCache.Buffer" href="htmlsrc/tango.net.util.MemCache.html#L241">Buffer</a> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.Buffer" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="MemCache.Buffer" href="htmlsrc/tango.net.util.MemCache.html#L242">Buffer</a> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.Buffer" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div>
 <dl>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.Buffer.expand" href="htmlsrc/tango.net.util.MemCache.html#L259">expand</a><span class="params">(size_t <em>size</em>)</span> <a href="tango.net.util.MemCache.html#MemCache.Buffer.expand" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="MemCache.Buffer.expand" href="htmlsrc/tango.net.util.MemCache.html#L260">expand</a><span class="params">(size_t <em>size</em>)</span> <a href="tango.net.util.MemCache.html#MemCache.Buffer.expand" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd>
-<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="MemCache.Buffer.set" href="htmlsrc/tango.net.util.MemCache.html#L270">set</a><span class="params">(size_t <em>size</em>)</span> <a href="tango.net.util.MemCache.html#MemCache.Buffer.set" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="MemCache.Buffer.set" href="htmlsrc/tango.net.util.MemCache.html#L271">set</a><span class="params">(size_t <em>size</em>)</span> <a href="tango.net.util.MemCache.html#MemCache.Buffer.set" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd>
-<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="MemCache.Buffer.get" href="htmlsrc/tango.net.util.MemCache.html#L280">get</a><span class="params">()</span> <a href="tango.net.util.MemCache.html#MemCache.Buffer.get" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">void[]</span> <a class="symbol _function" name="MemCache.Buffer.get" href="htmlsrc/tango.net.util.MemCache.html#L281">get</a><span class="params">()</span> <a href="tango.net.util.MemCache.html#MemCache.Buffer.get" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt"></div></div></dd></dl></dd>
-<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="MemCache.jhash" href="htmlsrc/tango.net.util.MemCache.html#L320">jhash</a><span class="params">(const(void)[][] <em>x</em>, uint <em>c</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">static</span>, <span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.jhash" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">uint</span> <a class="symbol _function" name="MemCache.jhash" href="htmlsrc/tango.net.util.MemCache.html#L321">jhash</a><span class="params">(const(void)[][] <em>x</em>, uint <em>c</em> = <span class="defval"><span class="n">0</span></span>)</span> <span class="attrs">[<span class="stc">static</span>, <span class="stc">final</span>]</span> <a href="tango.net.util.MemCache.html#MemCache.jhash" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">jhash() -- hash a variable-length key into a 32-bit value</div></div>
 <div class="cmnt">k     : the key (the unaligned variable-length array of bytes)
@@ -117,7 +117,7 @@
 </div>
 <div id="kandil-footer">
   <p>Copyright (c) 2005 Kris Bell. All rights reserved</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:29 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Tue Aug 21 02:56:49 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

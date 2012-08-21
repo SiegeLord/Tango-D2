@@ -21,18 +21,18 @@
 	<span class="d Compound">{
 		<span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">uint</span></span>
 		{
-			<span class="d EnumMember"><span class="t Identifier"><span class="i">EPOLLIN</span></span>         = <span class="e Int"><span class="n">0x001</span></span></span>,
-			<span class="d EnumMember"><span class="t Identifier"><span class="i">EPOLLPRI</span></span>        = <span class="e Int"><span class="n">0x002</span></span></span>,
-			<span class="d EnumMember"><span class="t Identifier"><span class="i">EPOLLOUT</span></span>        = <span class="e Int"><span class="n">0x004</span></span></span>,
-			<span class="d EnumMember"><span class="t Identifier"><span class="i">EPOLLRDNORM</span></span>     = <span class="e Int"><span class="n">0x040</span></span></span>,
-			<span class="d EnumMember"><span class="t Identifier"><span class="i">EPOLLRDBAND</span></span>     = <span class="e Int"><span class="n">0x080</span></span></span>,
-			<span class="d EnumMember"><span class="t Identifier"><span class="i">EPOLLWRNORM</span></span>     = <span class="e Int"><span class="n">0x100</span></span></span>,
-			<span class="d EnumMember"><span class="t Identifier"><span class="i">EPOLLWRBAND</span></span>     = <span class="e Int"><span class="n">0x200</span></span></span>,
-			<span class="d EnumMember"><span class="t Identifier"><span class="i">EPOLLMSG</span></span>        = <span class="e Int"><span class="n">0x400</span></span></span>,
-			<span class="d EnumMember"><span class="t Identifier"><span class="i">EPOLLERR</span></span>        = <span class="e Int"><span class="n">0x008</span></span></span>,
-			<span class="d EnumMember"><span class="t Identifier"><span class="i">EPOLLHUP</span></span>        = <span class="e Int"><span class="n">0x010</span></span></span>,
-			<span class="d EnumMember"><span class="t Identifier"><span class="i">EPOLLONESHOT</span></span>    = <span class="e Paren">(<span class="e LShift"><span class="e Int"><span class="n">1</span></span> &lt;&lt; <span class="e Int"><span class="n">30</span></span></span>)</span></span>,
-			<span class="d EnumMember"><span class="t Identifier"><span class="i">EPOLLET</span></span>         = <span class="e Paren">(<span class="e LShift"><span class="e Int"><span class="n">1</span></span> &lt;&lt; <span class="e Int"><span class="n">31</span></span></span>)</span></span>
+			<span class="d EnumMember"><span class="i">EPOLLIN</span>         = <span class="e Int"><span class="n">0x001</span></span></span>,
+			<span class="d EnumMember"><span class="i">EPOLLPRI</span>        = <span class="e Int"><span class="n">0x002</span></span></span>,
+			<span class="d EnumMember"><span class="i">EPOLLOUT</span>        = <span class="e Int"><span class="n">0x004</span></span></span>,
+			<span class="d EnumMember"><span class="i">EPOLLRDNORM</span>     = <span class="e Int"><span class="n">0x040</span></span></span>,
+			<span class="d EnumMember"><span class="i">EPOLLRDBAND</span>     = <span class="e Int"><span class="n">0x080</span></span></span>,
+			<span class="d EnumMember"><span class="i">EPOLLWRNORM</span>     = <span class="e Int"><span class="n">0x100</span></span></span>,
+			<span class="d EnumMember"><span class="i">EPOLLWRBAND</span>     = <span class="e Int"><span class="n">0x200</span></span></span>,
+			<span class="d EnumMember"><span class="i">EPOLLMSG</span>        = <span class="e Int"><span class="n">0x400</span></span></span>,
+			<span class="d EnumMember"><span class="i">EPOLLERR</span>        = <span class="e Int"><span class="n">0x008</span></span></span>,
+			<span class="d EnumMember"><span class="i">EPOLLHUP</span>        = <span class="e Int"><span class="n">0x010</span></span></span>,
+			<span class="d EnumMember"><span class="i">EPOLLONESHOT</span>    = <span class="e Paren">(<span class="e LShift"><span class="e Int"><span class="n">1</span></span> &lt;&lt; <span class="e Int"><span class="n">30</span></span></span>)</span></span>,
+			<span class="d EnumMember"><span class="i">EPOLLET</span>         = <span class="e Paren">(<span class="e LShift"><span class="e Int"><span class="n">1</span></span> &lt;&lt; <span class="e Int"><span class="n">31</span></span></span>)</span></span>
 		}</span>
 
 		<span class="lc">// Valid opcodes ( "op" parameter ) to issue to epoll_ctl().</span>
@@ -60,7 +60,7 @@
 		<span class="lc">// The "size" parameter is a hint specifying the number of file</span>
 		<span class="lc">// descriptors to be associated with the new instance. The fd</span>
 		<span class="lc">// returned by epoll_create() should be closed with close().</span>
-		<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">epoll_create</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">size</span></span>)</span><span class="s FuncBody">;</span></span>
+		<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">epoll_create</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">size</span></span>)</span><span class="s FuncBody">;</span></span>
 
 		<span class="lc">// Manipulate an epoll instance "epfd". Returns 0 in case of success,</span>
 		<span class="lc">// -1 in case of error (the "errno" variable will contain the</span>
@@ -68,7 +68,7 @@
 		<span class="lc">// constants defined above. The "fd" parameter is the target of the</span>
 		<span class="lc">// operation. The "event" parameter describes which events the caller</span>
 		<span class="lc">// is interested in and any associated user data.</span>
-		<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">epoll_ctl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">epfd</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">op</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">fd</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">epoll_event</span></span><span class="t Pointer">*</span> <span class="i">event</span></span>)</span><span class="s FuncBody">;</span></span>
+		<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">epoll_ctl</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">epfd</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">op</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">fd</span></span>, <span class="o "><span class="t Identifier"><span class="i">epoll_event</span></span><span class="t Pointer">*</span> <span class="i">event</span></span>)</span><span class="s FuncBody">;</span></span>
 
 		<span class="lc">// Wait for events on an epoll instance "epfd". Returns the number of</span>
 		<span class="lc">// triggered events returned in "events" buffer. Or -1 in case of</span>
@@ -77,7 +77,7 @@
 		<span class="lc">// events. The "maxevents" is the maximum number of events to be</span>
 		<span class="lc">// returned (usually size of "events"). The "timeout" parameter</span>
 		<span class="lc">// specifies the maximum wait time in milliseconds (-1 == infinite).</span>
-		<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">epoll_wait</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">epfd</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">epoll_event</span></span><span class="t Pointer">*</span> <span class="i">events</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">maxevents</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">timeout</span></span>)</span><span class="s FuncBody">;</span></span>
+		<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">epoll_wait</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">epfd</span></span>, <span class="o "><span class="t Identifier"><span class="i">epoll_event</span></span><span class="t Pointer">*</span> <span class="i">events</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">maxevents</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">timeout</span></span>)</span><span class="s FuncBody">;</span></span>
 	}</span>
 }</span></span></span>
 

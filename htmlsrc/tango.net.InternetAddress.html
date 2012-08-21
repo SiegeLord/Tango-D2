@@ -41,7 +41,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span><span class="o Parameters">()</span><span class="s FuncBody"><span class="s Compound">{}</span></span></span>
+        <span class="d Constructor"><span class="k">this</span><span class="o ">()</span><span class="s FuncBody"><span class="s Compound">{}</span></span></span>
 
         <span class="bc">/***********************************************************************
 
@@ -50,9 +50,9 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">addr</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">port</span> = <span class="e Identifier"><span class="i">PORT_ANY</span></span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">addr</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">port</span> = <span class="e Identifier"><span class="i">PORT_ANY</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span> <span class="i">c</span></span></span>; <span class="e Identifier"><span class="i">addr</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span></span>, <span class="o "><span class="t Integral"><span class="k">char</span></span> <span class="i">c</span></span></span>; <span class="e Identifier"><span class="i">addr</span></span>)
                          <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">c</span></span> <span class="k">is</span> <span class="e Char"><span class="cl">':'</span></span></span>)
                             <span class="s Scope"><span class="s Compound">{
                             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">port</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">parse</span></span> (<span class="i">addr</span> [<span class="i">i</span>+<span class="n">1</span> .. $])</span></span>;</span>
@@ -68,7 +68,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">addr</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">ushort</span></span> <span class="i">port</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">addr</span></span>, <span class="o "><span class="t Integral"><span class="k">ushort</span></span> <span class="i">port</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span> (<span class="i">addr</span>, <span class="i">port</span>)</span>;</span>
         }</span></span></span>
@@ -79,7 +79,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ushort</span></span> <span class="i">port</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">ushort</span></span> <span class="i">port</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span> (<span class="i">port</span>);</span></span>
         }</span></span></span>
@@ -88,11 +88,11 @@
 
         **********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">parse</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">s</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">parse</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">s</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{       
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">number</span>;</span></span>
 
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">c</span></span></span>; <span class="e Identifier"><span class="i">s</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">c</span></span></span>; <span class="e Identifier"><span class="i">s</span></span>)
                          <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">number</span></span> = <span class="e Plus"><span class="e Mul"><span class="e Identifier"><span class="i">number</span></span> * <span class="e Int"><span class="n">10</span></span></span> + <span class="e Paren">(<span class="e Minus"><span class="e Identifier"><span class="i">c</span></span> - <span class="e Char"><span class="cl">'0'</span></span></span>)</span></span></span>;</span></span></span>
 
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">number</span></span>;</span>

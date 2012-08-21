@@ -37,7 +37,7 @@
 }</span><span class="k">else</span> <span class="d Version"><span class="k">version</span> (<span class="i">GNU</span>)
     <span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">core</span>.<span class="i">Vararg</span>;</span></span></span>
 
-<span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span></span>)</span></span> <span class="i">Snoop</span>;</span></span>
+<span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span></span>)</span></span> <span class="i">Snoop</span>;</span></span>
 
 <span class="bc">/*******************************************************************************
 
@@ -57,7 +57,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">host</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Snoop</span></span> <span class="i">snoop</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">host</span></span>, <span class="o "><span class="t Identifier"><span class="i">Snoop</span></span> <span class="i">snoop</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Identifier"><span class="i">host</span></span>)</span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">host</span></span> = <span class="e Identifier"><span class="i">host</span></span></span>;</span>
@@ -70,7 +70,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">input</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">input</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">host</span></span>;</span>
         }</span></span></span>
@@ -81,7 +81,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">IConduit</span></span> <span class="i">conduit</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">IConduit</span></span> <span class="i">conduit</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">conduit</span></span>;</span>
         }</span></span></span>
@@ -96,7 +96,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">x</span> = <span class="e Call"><span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">read</span></span> (<span class="i">dst</span>)</span>;</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">trace</span></span> (<span class="sl">"{}: read {} bytes"</span>, <span class="i">host</span>.<span class="i">conduit</span>, <span class="i">x</span> <span class="k">is</span> -<span class="n">1</span> ? <span class="n">0</span> : <span class="i">x</span>)</span>;</span>
@@ -114,7 +114,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">load</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">max</span>=<span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">load</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">max</span>=<span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">x</span> = <span class="e Call"><span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">load</span></span> (<span class="i">max</span>)</span>;</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">trace</span></span> (<span class="sl">"{}: loaded {} bytes"</span>, <span class="i">x</span>.<span class="i">length</span>)</span>;</span>
@@ -127,7 +127,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">flush</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">flush</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">flush</span></span>()</span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">trace</span></span> (<span class="sl">"{}: flushed/cleared"</span>, <span class="i">host</span>.<span class="i">conduit</span>)</span>;</span>
@@ -140,7 +140,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">close</span></span>()</span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">trace</span></span> (<span class="sl">"{}: closed"</span>, <span class="i">host</span>.<span class="i">conduit</span>)</span>;</span>
@@ -153,7 +153,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">seek</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">offset</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Anchor</span></span> <span class="i">anchor</span> = <span class="e Identifier"><span class="i">Anchor</span></span>.<span class="e Identifier"><span class="i">Begin</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">seek</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">offset</span></span>, <span class="o "><span class="t Identifier"><span class="i">Anchor</span></span> <span class="i">anchor</span> = <span class="e Identifier"><span class="i">Anchor</span></span>.<span class="e Identifier"><span class="i">Begin</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">s</span> = <span class="e Call"><span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">seek</span></span> (<span class="i">offset</span>, <span class="i">anchor</span>)</span>;</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">trace</span></span> (<span class="sl">"{}: seek at offset {} from anchor {}"</span>, <span class="i">host</span>.<span class="i">conduit</span>, <span class="i">offset</span>, <span class="i">anchor</span>)</span>;</span>
@@ -166,7 +166,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">snooper</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">x</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">snooper</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">x</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Cerr</span></span>(<span class="i">x</span>)</span>.<span class="e Identifier"><span class="i">newline</span></span>;</span>
         }</span></span></span>
@@ -177,7 +177,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">trace</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">format</span></span>, <span class="o Parameter">...</span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">trace</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">format</span></span>, <span class="o ">...</span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">256</span></span>]</span> <span class="i">tmp</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">snoop</span></span> (<span class="i">Format</span>.<span class="i">vprint</span> (<span class="i">tmp</span>, <span class="i">format</span>, <span class="i">_arguments</span>, <span class="i">_argptr</span>))</span>;</span>
@@ -203,7 +203,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">host</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Snoop</span></span> <span class="i">snoop</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">host</span></span>, <span class="o "><span class="t Identifier"><span class="i">Snoop</span></span> <span class="i">snoop</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Identifier"><span class="i">host</span></span>)</span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">host</span></span> = <span class="e Identifier"><span class="i">host</span></span></span>;</span>
@@ -216,7 +216,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Function"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">output</span> <span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">output</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">host</span></span>;</span>
         }</span></span></span>
@@ -231,7 +231,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">x</span> = <span class="e Call"><span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">write</span></span> (<span class="i">src</span>)</span>;</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">trace</span></span> (<span class="sl">"{}: wrote {} bytes"</span>, <span class="i">host</span>.<span class="i">conduit</span>, <span class="i">x</span> <span class="k">is</span> -<span class="n">1</span> ? <span class="n">0</span> : <span class="i">x</span>)</span>;</span>
@@ -244,7 +244,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">IConduit</span></span> <span class="i">conduit</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">IConduit</span></span> <span class="i">conduit</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">conduit</span></span>;</span>
         }</span></span></span>
@@ -255,7 +255,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">flush</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">flush</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">flush</span></span>()</span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">trace</span></span> (<span class="sl">"{}: flushed"</span>, <span class="i">host</span>.<span class="i">conduit</span>)</span>;</span>
@@ -268,7 +268,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">close</span></span>()</span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">trace</span></span> (<span class="sl">"{}: closed"</span>, <span class="i">host</span>.<span class="i">conduit</span>)</span>;</span>
@@ -281,7 +281,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">copy</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">src</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">max</span>=<span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">copy</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">src</span></span>, <span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">max</span>=<span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">copy</span></span> (<span class="i">src</span>, <span class="i">max</span>)</span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">trace</span></span>(<span class="sl">"{}: copied from {}"</span>, <span class="i">host</span>.<span class="i">conduit</span>, <span class="i">src</span>.<span class="i">conduit</span>)</span>;</span>
@@ -295,7 +295,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">seek</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">offset</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Anchor</span></span> <span class="i">anchor</span> = <span class="e Identifier"><span class="i">Anchor</span></span>.<span class="e Identifier"><span class="i">Begin</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">seek</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">offset</span></span>, <span class="o "><span class="t Identifier"><span class="i">Anchor</span></span> <span class="i">anchor</span> = <span class="e Identifier"><span class="i">Anchor</span></span>.<span class="e Identifier"><span class="i">Begin</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">s</span> = <span class="e Call"><span class="e Identifier"><span class="i">host</span></span>.<span class="e Identifier"><span class="i">seek</span></span> (<span class="i">offset</span>, <span class="i">anchor</span>)</span>;</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">trace</span></span> (<span class="sl">"{}: seek at offset {} from anchor {}"</span>, <span class="i">host</span>.<span class="i">conduit</span>, <span class="i">offset</span>, <span class="i">anchor</span>)</span>;</span>
@@ -308,7 +308,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">snooper</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">x</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">snooper</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">x</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Cerr</span></span>(<span class="i">x</span>)</span>.<span class="e Identifier"><span class="i">newline</span></span>;</span>
         }</span></span></span>
@@ -319,7 +319,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">trace</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">format</span></span>, <span class="o Parameter">...</span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">trace</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">format</span></span>, <span class="o ">...</span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Int"><span class="n">256</span></span>]</span> <span class="i">tmp</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">snoop</span></span> (<span class="i">Format</span>.<span class="i">vprint</span> (<span class="i">tmp</span>, <span class="i">format</span>, <span class="i">_arguments</span>, <span class="i">_argptr</span>))</span>;</span>
@@ -330,7 +330,7 @@
 
 <span class="d Debug"><span class="k">debug</span> (<span class="i">Snoop</span>)
 <span class="d Compound">{
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">s</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">SnoopInput</span></span> (<span class="e Null"><span class="k">null</span></span>)</span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">o</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">SnoopOutput</span></span> (<span class="e Null"><span class="k">null</span></span>)</span>;</span></span>

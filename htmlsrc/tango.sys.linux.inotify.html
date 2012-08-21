@@ -31,44 +31,44 @@
         <span class="d Enum"><span class="k">enum</span>: <span class="t Integral"><span class="k">uint</span></span>
         {
             <span class="bc">/* Supported events suitable for MASK parameter of INOTIFY_ADD_WATCH.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_ACCESS</span></span>           = <span class="e Int"><span class="n">0x00000001</span></span></span>,   <span class="bc">/* File was accessed.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_MODIFY</span></span>           = <span class="e Int"><span class="n">0x00000002</span></span></span>,   <span class="bc">/* File was modified.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_ATTRIB</span></span>           = <span class="e Int"><span class="n">0x00000004</span></span></span>,   <span class="bc">/* Metadata changed.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_CLOSE_WRITE</span></span>      = <span class="e Int"><span class="n">0x00000008</span></span></span>,   <span class="bc">/* Writtable file was closed.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_CLOSE_NOWRITE</span></span>    = <span class="e Int"><span class="n">0x00000010</span></span></span>,   <span class="bc">/* Unwrittable file was closed.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_CLOSE</span></span>            = <span class="e Int"><span class="n">0x00000018</span></span></span>,   <span class="bc">/* Close. */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_OPEN</span></span>             = <span class="e Int"><span class="n">0x00000020</span></span></span>,   <span class="bc">/* File was opened.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_MOVED_FROM</span></span>       = <span class="e Int"><span class="n">0x00000040</span></span></span>,   <span class="bc">/* File was moved from X.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_MOVED_TO</span></span>         = <span class="e Int"><span class="n">0x00000080</span></span></span>,   <span class="bc">/* File was moved to Y.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_MOVE</span></span>             = <span class="e Int"><span class="n">0x000000c0</span></span></span>,   <span class="bc">/* Moves.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_CREATE</span></span>           = <span class="e Int"><span class="n">0x00000100</span></span></span>,   <span class="bc">/* Subfile was created.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_DELETE</span></span>           = <span class="e Int"><span class="n">0x00000200</span></span></span>,   <span class="bc">/* Subfile was deleted.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_DELETE_SELF</span></span>      = <span class="e Int"><span class="n">0x00000400</span></span></span>,   <span class="bc">/* Self was deleted.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_MOVE_SELF</span></span>        = <span class="e Int"><span class="n">0x00000800</span></span></span>,   <span class="bc">/* Self was moved.  */</span>
+            <span class="d EnumMember"><span class="i">IN_ACCESS</span>           = <span class="e Int"><span class="n">0x00000001</span></span></span>,   <span class="bc">/* File was accessed.  */</span>
+            <span class="d EnumMember"><span class="i">IN_MODIFY</span>           = <span class="e Int"><span class="n">0x00000002</span></span></span>,   <span class="bc">/* File was modified.  */</span>
+            <span class="d EnumMember"><span class="i">IN_ATTRIB</span>           = <span class="e Int"><span class="n">0x00000004</span></span></span>,   <span class="bc">/* Metadata changed.  */</span>
+            <span class="d EnumMember"><span class="i">IN_CLOSE_WRITE</span>      = <span class="e Int"><span class="n">0x00000008</span></span></span>,   <span class="bc">/* Writtable file was closed.  */</span>
+            <span class="d EnumMember"><span class="i">IN_CLOSE_NOWRITE</span>    = <span class="e Int"><span class="n">0x00000010</span></span></span>,   <span class="bc">/* Unwrittable file was closed.  */</span>
+            <span class="d EnumMember"><span class="i">IN_CLOSE</span>            = <span class="e Int"><span class="n">0x00000018</span></span></span>,   <span class="bc">/* Close. */</span>
+            <span class="d EnumMember"><span class="i">IN_OPEN</span>             = <span class="e Int"><span class="n">0x00000020</span></span></span>,   <span class="bc">/* File was opened.  */</span>
+            <span class="d EnumMember"><span class="i">IN_MOVED_FROM</span>       = <span class="e Int"><span class="n">0x00000040</span></span></span>,   <span class="bc">/* File was moved from X.  */</span>
+            <span class="d EnumMember"><span class="i">IN_MOVED_TO</span>         = <span class="e Int"><span class="n">0x00000080</span></span></span>,   <span class="bc">/* File was moved to Y.  */</span>
+            <span class="d EnumMember"><span class="i">IN_MOVE</span>             = <span class="e Int"><span class="n">0x000000c0</span></span></span>,   <span class="bc">/* Moves.  */</span>
+            <span class="d EnumMember"><span class="i">IN_CREATE</span>           = <span class="e Int"><span class="n">0x00000100</span></span></span>,   <span class="bc">/* Subfile was created.  */</span>
+            <span class="d EnumMember"><span class="i">IN_DELETE</span>           = <span class="e Int"><span class="n">0x00000200</span></span></span>,   <span class="bc">/* Subfile was deleted.  */</span>
+            <span class="d EnumMember"><span class="i">IN_DELETE_SELF</span>      = <span class="e Int"><span class="n">0x00000400</span></span></span>,   <span class="bc">/* Self was deleted.  */</span>
+            <span class="d EnumMember"><span class="i">IN_MOVE_SELF</span>        = <span class="e Int"><span class="n">0x00000800</span></span></span>,   <span class="bc">/* Self was moved.  */</span>
             
             <span class="bc">/* Events sent by the kernel.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_UMOUNT</span></span>           = <span class="e Int"><span class="n">0x00002000</span></span></span>,   <span class="bc">/* Backing fs was unmounted.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_Q_OVERFLOW</span></span>       = <span class="e Int"><span class="n">0x00004000</span></span></span>,   <span class="bc">/* Event queued overflowed  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_IGNORED</span></span>          = <span class="e Int"><span class="n">0x00008000</span></span></span>,   <span class="bc">/* File was ignored  */</span>
+            <span class="d EnumMember"><span class="i">IN_UMOUNT</span>           = <span class="e Int"><span class="n">0x00002000</span></span></span>,   <span class="bc">/* Backing fs was unmounted.  */</span>
+            <span class="d EnumMember"><span class="i">IN_Q_OVERFLOW</span>       = <span class="e Int"><span class="n">0x00004000</span></span></span>,   <span class="bc">/* Event queued overflowed  */</span>
+            <span class="d EnumMember"><span class="i">IN_IGNORED</span>          = <span class="e Int"><span class="n">0x00008000</span></span></span>,   <span class="bc">/* File was ignored  */</span>
             
             <span class="bc">/* Special flags.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_ONLYDIR</span></span>          = <span class="e Int"><span class="n">0x01000000</span></span></span>,   <span class="bc">/* Only watch the path if it is a directory.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_DONT_FOLLOW</span></span>      = <span class="e Int"><span class="n">0x02000000</span></span></span>,   <span class="bc">/* Do not follow a sym link.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_MASK_ADD</span></span>         = <span class="e Int"><span class="n">0x20000000</span></span></span>,   <span class="bc">/* Add to the mask of an already existing watch.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_ISDIR</span></span>            = <span class="e Int"><span class="n">0x40000000</span></span></span>,   <span class="bc">/* Event occurred against dir.  */</span>
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_ONESHOT</span></span>          = <span class="e Int"><span class="n">0x80000000</span></span></span>,   <span class="bc">/* Only send event once.  */</span>
+            <span class="d EnumMember"><span class="i">IN_ONLYDIR</span>          = <span class="e Int"><span class="n">0x01000000</span></span></span>,   <span class="bc">/* Only watch the path if it is a directory.  */</span>
+            <span class="d EnumMember"><span class="i">IN_DONT_FOLLOW</span>      = <span class="e Int"><span class="n">0x02000000</span></span></span>,   <span class="bc">/* Do not follow a sym link.  */</span>
+            <span class="d EnumMember"><span class="i">IN_MASK_ADD</span>         = <span class="e Int"><span class="n">0x20000000</span></span></span>,   <span class="bc">/* Add to the mask of an already existing watch.  */</span>
+            <span class="d EnumMember"><span class="i">IN_ISDIR</span>            = <span class="e Int"><span class="n">0x40000000</span></span></span>,   <span class="bc">/* Event occurred against dir.  */</span>
+            <span class="d EnumMember"><span class="i">IN_ONESHOT</span>          = <span class="e Int"><span class="n">0x80000000</span></span></span>,   <span class="bc">/* Only send event once.  */</span>
             
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">IN_ALL_EVENTS</span></span>       = <span class="e Int"><span class="n">0x00000fff</span></span></span>,   <span class="bc">/* All events which a program can wait on.  */</span>
+            <span class="d EnumMember"><span class="i">IN_ALL_EVENTS</span>       = <span class="e Int"><span class="n">0x00000fff</span></span></span>,   <span class="bc">/* All events which a program can wait on.  */</span>
         }</span>
         
         <span class="bc">/* Create and initialize inotify instance.  */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inotify_init</span> <span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inotify_init</span> <span class="o ">()</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/* Add watch of object NAME to inotify instance FD.  Notify about events specified by MASK.  */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inotify_add_watch</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">fd</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">name</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">mask</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inotify_add_watch</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">fd</span></span>, <span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">name</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">mask</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="bc">/* Remove the watch specified by WD from the inotify instance FD.  */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inotify_rm_watch</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">fd</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">wd</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inotify_rm_watch</span> <span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">fd</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">wd</span></span>)</span><span class="s FuncBody">;</span></span>
     }</span>
 }</span></span></span>
 

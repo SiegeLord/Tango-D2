@@ -137,31 +137,31 @@
  * For complex numbers, abs(z) = sqrt( $(POWER z.re, 2) + $(POWER z.im, 2) )
  * = hypot(z.re, z.im).
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">abs</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">abs</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">IEEE</span></span>.<span class="e Identifier"><span class="i">fabs</span></span>(<span class="i">x</span>)</span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">abs</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">abs</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> ? <span class="e Identifier"><span class="i">x</span></span> : <span class="e Sign">-<span class="e Identifier"><span class="i">x</span></span></span></span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">abs</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">abs</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&gt;=<span class="e Int"><span class="n">0</span></span></span> ? <span class="e Identifier"><span class="i">x</span></span> : <span class="e Sign">-<span class="e Identifier"><span class="i">x</span></span></span></span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">abs</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">abs</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">hypot</span></span>(<span class="i">z</span>.<span class="i">re</span>, <span class="i">z</span>.<span class="i">im</span>)</span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">abs</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">abs</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">IEEE</span></span>.<span class="e Identifier"><span class="i">fabs</span></span>(<span class="i">y</span>.<span class="i">im</span>)</span>;</span>
 }</span></span></span>
@@ -188,13 +188,13 @@
  * Note that z * conj(z) = $(POWER z.re, 2) + $(POWER z.im, 2)
  * is always a real number
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">conj</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">conj</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Minus"><span class="e Identifier"><span class="i">z</span></span>.<span class="e Identifier"><span class="i">re</span></span> - <span class="e Mul"><span class="e Identifier"><span class="i">z</span></span>.<span class="e Identifier"><span class="i">im</span></span>*<span class="e Float"><span class="n">1i</span></span></span></span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">conj</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">conj</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Sign">-<span class="e Identifier"><span class="i">y</span></span></span>;</span>
 }</span></span></span>
@@ -210,10 +210,10 @@
 
 <span class="d Protection"><span class="k">private</span></span> <span class="d Compound">{
     <span class="lc">// Return the type which would be returned by a max or min operation</span>
-<span class="d Template"><span class="k">template</span> <span class="i">minmaxtype</span><span class="o TemplateParameters">(<span class="o TemplateTupleParam"><span class="i">T</span>...</span>)</span><span class="d Compound">{
+<span class="d Template"><span class="k">template</span> <span class="i">minmaxtype</span><span class="o ">(<span class="o "><span class="i">T</span>...</span>)</span><span class="d Compound">{
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e Equal"><span class="e Identifier"><span class="i">T</span></span>.<span class="e Identifier"><span class="i">length</span></span> == <span class="e Int"><span class="n">1</span></span></span>) <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">T</span></span><span class="t Array">[<span class="e Int"><span class="n">0</span></span>]</span> <span class="i">minmaxtype</span>;</span></span>
     <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e Rel"><span class="e Identifier"><span class="i">T</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">2</span></span></span>)
-        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">minmaxtype</span>!<span class="o TemplateArguments">(<span class="t TemplateInstance"><span class="i">minmaxtype</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span><span class="t Array">[<span class="e Int"><span class="n">0</span></span>..<span class="e Int"><span class="n">2</span></span>]</span>)</span></span>, <span class="t Identifier"><span class="i">T</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>..<span class="e Dollar">$</span>]</span>)</span></span> <span class="i">minmaxtype</span>;</span></span>
+        <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">minmaxtype</span>!<span class="o ">(<span class="t TemplateInstance"><span class="i">minmaxtype</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span><span class="t Array">[<span class="e Int"><span class="n">0</span></span>..<span class="e Int"><span class="n">2</span></span>]</span>)</span></span>, <span class="t Identifier"><span class="i">T</span></span><span class="t Array">[<span class="e Int"><span class="n">2</span></span>..<span class="e Dollar">$</span>]</span>)</span></span> <span class="i">minmaxtype</span>;</span></span>
     <span class="k">else</span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Typeof"><span class="k">typeof</span> (<span class="e Cond"><span class="e Rel"><span class="e Index"><span class="e Identifier"><span class="i">T</span></span>[<span class="e Int"><span class="n">1</span></span>]</span>.<span class="e Identifier"><span class="i">init</span></span> &gt; <span class="e Index"><span class="e Identifier"><span class="i">T</span></span>[<span class="e Int"><span class="n">0</span></span>]</span>.<span class="e Identifier"><span class="i">init</span></span></span> ? <span class="e Index"><span class="e Identifier"><span class="i">T</span></span>[<span class="e Int"><span class="n">1</span></span>]</span>.<span class="e Identifier"><span class="i">init</span></span> : <span class="e Index"><span class="e Identifier"><span class="i">T</span></span>[<span class="e Int"><span class="n">0</span></span>]</span>.<span class="e Identifier"><span class="i">init</span></span></span>)</span> <span class="i">minmaxtype</span>;</span></span></span></span>
 }</span></span>
 }</span>
@@ -223,7 +223,7 @@
  * Note: If the arguments are floating-point numbers, and at least one is a NaN,
  * the result is undefined.
  */</span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t TemplateInstance"><span class="i">minmaxtype</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> <span class="i">min</span><span class="o TemplateParameters">(<span class="o TemplateTupleParam"><span class="i">T</span>...</span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">arg</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t TemplateInstance"><span class="i">minmaxtype</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> <span class="i">min</span><span class="o ">(<span class="o "><span class="i">T</span>...</span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">arg</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
     <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e Equal"><span class="e Identifier"><span class="i">arg</span></span>.<span class="e Identifier"><span class="i">length</span></span> == <span class="e Int"><span class="n">1</span></span></span>) <span class="s Return"><span class="k">return</span> <span class="e Index"><span class="e Identifier"><span class="i">arg</span></span>[<span class="e Int"><span class="n">0</span></span>]</span>;</span>
     <span class="k">else</span> <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e Equal"><span class="e Identifier"><span class="i">arg</span></span>.<span class="e Identifier"><span class="i">length</span></span> == <span class="e Int"><span class="n">2</span></span></span>) <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Rel"><span class="e Index"><span class="e Identifier"><span class="i">arg</span></span>[<span class="e Int"><span class="n">1</span></span>]</span> &lt; <span class="e Index"><span class="e Identifier"><span class="i">arg</span></span>[<span class="e Int"><span class="n">0</span></span>]</span></span> ? <span class="e Index"><span class="e Identifier"><span class="i">arg</span></span>[<span class="e Int"><span class="n">1</span></span>]</span> : <span class="e Index"><span class="e Identifier"><span class="i">arg</span></span>[<span class="e Int"><span class="n">0</span></span>]</span></span>;</span></span></span>
     <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e Rel"><span class="e Identifier"><span class="i">arg</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">2</span></span></span>) <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">min</span></span>(<span class="i">arg</span>[<span class="n">1</span>] &lt; <span class="i">arg</span>[<span class="n">0</span>] ? <span class="i">arg</span>[<span class="n">1</span>] : <span class="i">arg</span>[<span class="n">0</span>], <span class="i">arg</span>[<span class="n">2</span>..$])</span>;</span></span>
@@ -234,7 +234,7 @@
  * Note: If the arguments are floating-point numbers, and at least one is a NaN,
  * the result is undefined.
  */</span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t TemplateInstance"><span class="i">minmaxtype</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> <span class="i">max</span><span class="o TemplateParameters">(<span class="o TemplateTupleParam"><span class="i">T</span>...</span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">arg</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t TemplateInstance"><span class="i">minmaxtype</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span> <span class="i">max</span><span class="o ">(<span class="o "><span class="i">T</span>...</span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">arg</span></span>)</span><span class="s FuncBody"><span class="s Compound">{
     <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e Equal"><span class="e Identifier"><span class="i">arg</span></span>.<span class="e Identifier"><span class="i">length</span></span> == <span class="e Int"><span class="n">1</span></span></span>) <span class="s Return"><span class="k">return</span> <span class="e Index"><span class="e Identifier"><span class="i">arg</span></span>[<span class="e Int"><span class="n">0</span></span>]</span>;</span>
     <span class="k">else</span> <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e Equal"><span class="e Identifier"><span class="i">arg</span></span>.<span class="e Identifier"><span class="i">length</span></span> == <span class="e Int"><span class="n">2</span></span></span>) <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Rel"><span class="e Index"><span class="e Identifier"><span class="i">arg</span></span>[<span class="e Int"><span class="n">1</span></span>]</span> &gt; <span class="e Index"><span class="e Identifier"><span class="i">arg</span></span>[<span class="e Int"><span class="n">0</span></span>]</span></span> ? <span class="e Index"><span class="e Identifier"><span class="i">arg</span></span>[<span class="e Int"><span class="n">1</span></span>]</span> : <span class="e Index"><span class="e Identifier"><span class="i">arg</span></span>[<span class="e Int"><span class="n">0</span></span>]</span></span>;</span></span></span>
     <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e Rel"><span class="e Identifier"><span class="i">arg</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">2</span></span></span>) <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">max</span></span>(<span class="i">arg</span>[<span class="n">1</span>] &gt; <span class="i">arg</span>[<span class="n">0</span>] ? <span class="i">arg</span>[<span class="n">1</span>] : <span class="i">arg</span>[<span class="n">0</span>], <span class="i">arg</span>[<span class="n">2</span>..$])</span>;</span></span>
@@ -258,7 +258,7 @@
  * returned (this behaviour is mandated by IEEE 754R, and is useful
  * for determining the range of a function).
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">minNum</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">minNum</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s If"><span class="k">if</span> (<span class="e OrOr"><span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&lt;=<span class="e Identifier"><span class="i">y</span></span></span> || <span class="e Call"><span class="e Identifier"><span class="i">isNaN</span></span>(<span class="i">y</span>)</span></span>) <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">x</span></span>;</span></span> <span class="k">else</span> <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">y</span></span>;</span></span></span>
 }</span></span></span>
 
@@ -270,7 +270,7 @@
  * returned (this behaviour is mandated by IEEE 754-2008, and is useful
  * for determining the range of a function).
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">maxNum</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">maxNum</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s If"><span class="k">if</span> (<span class="e OrOr"><span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&gt;=<span class="e Identifier"><span class="i">y</span></span></span> || <span class="e Call"><span class="e Identifier"><span class="i">isNaN</span></span>(<span class="i">y</span>)</span></span>) <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">x</span></span>;</span></span> <span class="k">else</span> <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">y</span></span>;</span></span></span>
 }</span></span></span>
 
@@ -280,7 +280,7 @@
  * If both parameters are NaN, either will be returned.
  * If one parameter is a NaN and the other is a number, the NaN is returned.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">minNaN</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">minNaN</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Paren">(<span class="e OrOr"><span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&lt;=<span class="e Identifier"><span class="i">y</span></span></span> || <span class="e Call"><span class="e Identifier"><span class="i">isNaN</span></span>(<span class="i">x</span>)</span></span>)</span>? <span class="e Identifier"><span class="i">x</span></span> : <span class="e Identifier"><span class="i">y</span></span></span>;</span>
 }</span></span></span>
 
@@ -290,7 +290,7 @@
  * If both parameters are NaN, either will be returned.
  * If one parameter is a NaN and the other is a number, the NaN is returned.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">maxNaN</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">maxNaN</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Paren">(<span class="e OrOr"><span class="e Rel"><span class="e Identifier"><span class="i">x</span></span>&gt;=<span class="e Identifier"><span class="i">y</span></span></span> || <span class="e Call"><span class="e Identifier"><span class="i">isNaN</span></span>(<span class="i">x</span>)</span></span>)</span>? <span class="e Identifier"><span class="i">x</span></span> : <span class="e Identifier"><span class="i">y</span></span></span>;</span>
 }</span></span></span>
 
@@ -322,7 +322,7 @@
  *      Results are undefined if |x| &gt;= $(POWER 2,64).
  */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cos</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span> <span class="bc">/* intrinsic */</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cos</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span> <span class="bc">/* intrinsic */</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">LDC</span>)
     <span class="s Compound">{
@@ -361,7 +361,7 @@
  * Bugs:
  *      Results are undefined if |x| &gt;= $(POWER 2,64).
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">sin</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span> <span class="bc">/* intrinsic */</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">sin</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span> <span class="bc">/* intrinsic */</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">LDC</span>)
     <span class="s Compound">{
@@ -389,7 +389,7 @@
 }</span></span>
 
 <span class="d Version"><span class="k">version</span> (<span class="i">GNU</span>) <span class="d Compound">{
-    <span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">tanl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Linkage"><span class="k">extern</span> (<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">tanl</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span>
 
 <span class="bc">/**
@@ -402,7 +402,7 @@
  *	$(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(NAN))     $(TD yes))
  *	)
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">tan</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">tan</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span> (<span class="i">GNU</span>) <span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tanl</span></span>(<span class="i">x</span>)</span>;</span>
@@ -506,19 +506,19 @@
  *
  * Accuracy is preserved for large values of x.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cosPi</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cosPi</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">cos</span></span>((<span class="i">x</span>%<span class="n">2.0</span>)*<span class="i">PI</span>)</span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">sinPi</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">sinPi</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">sin</span></span>((<span class="i">x</span>%<span class="n">2.0</span>)*<span class="i">PI</span>)</span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">atanPi</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">atanPi</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Mul"><span class="e Identifier"><span class="i">PI</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">atan</span></span>(<span class="i">x</span>)</span></span>;</span> <span class="lc">// BUG: Fix this.</span>
 }</span></span></span>
@@ -540,14 +540,14 @@
  * If both sin(&amp;theta;) and cos(&amp;theta;) are required,
  * it is most efficient to use expi(&amp;theta).
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">sin</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">sin</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
   <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">creal</span></span> <span class="i">cs</span> = <span class="e Call"><span class="e Identifier"><span class="i">expi</span></span>(<span class="i">z</span>.<span class="i">re</span>)</span>;</span></span>
   <span class="s Return"><span class="k">return</span> <span class="e Plus"><span class="e Mul"><span class="e Identifier"><span class="i">cs</span></span>.<span class="e Identifier"><span class="i">im</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">cosh</span></span>(<span class="i">z</span>.<span class="i">im</span>)</span></span> + <span class="e Mul"><span class="e Mul"><span class="e Identifier"><span class="i">cs</span></span>.<span class="e Identifier"><span class="i">re</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">sinh</span></span>(<span class="i">z</span>.<span class="i">im</span>)</span></span> * <span class="e Float"><span class="n">1i</span></span></span></span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">sin</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">sin</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
   <span class="s Return"><span class="k">return</span> <span class="e Mul"><span class="e Call"><span class="e Identifier"><span class="i">cosh</span></span>(<span class="i">y</span>.<span class="i">im</span>)</span>*<span class="e Float"><span class="n">1i</span></span></span>;</span>
 }</span></span></span>
@@ -564,14 +564,14 @@
  *
  *  cos(z) = cos(z.re)*cosh(z.im) + sin(z.re)*sinh(z.im)i
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">cos</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">cos</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
   <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">creal</span></span> <span class="i">cs</span> = <span class="e Call"><span class="e Identifier"><span class="i">expi</span></span>(<span class="i">z</span>.<span class="i">re</span>)</span>;</span></span>
   <span class="s Return"><span class="k">return</span> <span class="e Minus"><span class="e Mul"><span class="e Identifier"><span class="i">cs</span></span>.<span class="e Identifier"><span class="i">re</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">cosh</span></span>(<span class="i">z</span>.<span class="i">im</span>)</span></span> - <span class="e Mul"><span class="e Mul"><span class="e Identifier"><span class="i">cs</span></span>.<span class="e Identifier"><span class="i">im</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">sinh</span></span>(<span class="i">z</span>.<span class="i">im</span>)</span></span> * <span class="e Float"><span class="n">1i</span></span></span></span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cos</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cos</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
   <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">cosh</span></span>(<span class="i">y</span>.<span class="i">im</span>)</span>;</span>
 }</span></span></span>
@@ -595,7 +595,7 @@
  *      $(TR $(TD $(NAN))    $(TD $(NAN))  $(TD yes))
  *      )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">acos</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">acos</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">stdc</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">acosl</span></span>(<span class="i">x</span>)</span>;</span>
 }</span></span></span>
@@ -621,7 +621,7 @@
  *      $(TR $(TD $(LT)-1.0)    $(TD $(NAN))       $(TD yes))
  *      )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">asin</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">asin</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">stdc</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">asinl</span></span>(<span class="i">x</span>)</span>;</span>
 }</span></span></span>
@@ -646,7 +646,7 @@
  *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(NAN))       $(TD yes))
  *      )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">atan</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">atan</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">stdc</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">atanl</span></span>(<span class="i">x</span>)</span>;</span>
 }</span></span></span>
@@ -679,7 +679,7 @@
  *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD -$(INFIN))    $(TD $(PLUSMN)3$(PI)/4))
  *      )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">atan2</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">atan2</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">stdc</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">atan2l</span></span>(<span class="i">y</span>,<span class="i">x</span>)</span>;</span>
 }</span></span></span>
@@ -698,7 +698,7 @@
  * asin(z) = -i log( sqrt(1-$(POWER z, 2)) + iz)
  * where both log and sqrt are complex.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">asin</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">asin</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Mul"><span class="e Call"><span class="e Sign">-<span class="e Identifier"><span class="i">log</span></span></span>(<span class="i">sqrt</span>(<span class="n">1</span>-<span class="i">z</span>*<span class="i">z</span>) + <span class="i">z</span>*<span class="n">1i</span>)</span>*<span class="e Float"><span class="n">1i</span></span></span>;</span>
 }</span></span></span>
@@ -714,7 +714,7 @@
  *
  * acos(z) = $(PI)/2 - asin(z)
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">acos</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">acos</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Minus"><span class="e Identifier"><span class="i">PI_2</span></span> - <span class="e Call"><span class="e Identifier"><span class="i">asin</span></span>(<span class="i">z</span>)</span></span>;</span>
 }</span></span></span>
@@ -728,7 +728,7 @@
  *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(PLUSMN)0.0) $(TD no) )
  *      )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cosh</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cosh</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="lc">//  cosh = (exp(x)+exp(-x))/2.</span>
     <span class="lc">// The naive implementation works correctly. </span>
@@ -752,7 +752,7 @@
  *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(PLUSMN)$(INFIN)) $(TD no))
  *      )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">sinh</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">sinh</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="lc">//  sinh(x) =  (exp(x)-exp(-x))/2;    </span>
     <span class="lc">// Very large arguments could cause an overflow, but</span>
@@ -781,7 +781,7 @@
  *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(PLUSMN)1.0) $(TD no))
  *      )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">tanh</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">tanh</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="lc">//  tanh(x) = (exp(x) - exp(-x))/(exp(x)+exp(-x))</span>
     <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">fabs</span></span>(<span class="i">x</span>)</span>&gt; <span class="e Mul"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span> * <span class="e Identifier"><span class="i">LN2</span></span></span></span>)<span class="s Scope"><span class="s Compound">{
@@ -803,14 +803,14 @@
  *
  *  sinh(z) = cos(z.im)*sinh(z.re) + sin(z.im)*cosh(z.re)i
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">sinh</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">sinh</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
   <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">creal</span></span> <span class="i">cs</span> = <span class="e Call"><span class="e Identifier"><span class="i">expi</span></span>(<span class="i">z</span>.<span class="i">im</span>)</span>;</span></span>
   <span class="s Return"><span class="k">return</span> <span class="e Plus"><span class="e Mul"><span class="e Identifier"><span class="i">cs</span></span>.<span class="e Identifier"><span class="i">re</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">sinh</span></span>(<span class="i">z</span>.<span class="i">re</span>)</span></span> + <span class="e Mul"><span class="e Mul"><span class="e Identifier"><span class="i">cs</span></span>.<span class="e Identifier"><span class="i">im</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">cosh</span></span>(<span class="i">z</span>.<span class="i">re</span>)</span></span> * <span class="e Float"><span class="n">1i</span></span></span></span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">sinh</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">sinh</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
   <span class="s Return"><span class="k">return</span> <span class="e Mul"><span class="e Call"><span class="e Identifier"><span class="i">sin</span></span>(<span class="i">y</span>.<span class="i">im</span>)</span>*<span class="e Float"><span class="n">1i</span></span></span>;</span>
 }</span></span></span>
@@ -826,14 +826,14 @@
  *
  *  cosh(z) = cos(z.im)*cosh(z.re) + sin(z.im)*sinh(z.re)i
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">cosh</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">cosh</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
   <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">creal</span></span> <span class="i">cs</span> = <span class="e Call"><span class="e Identifier"><span class="i">expi</span></span>(<span class="i">z</span>.<span class="i">im</span>)</span>;</span></span>
   <span class="s Return"><span class="k">return</span> <span class="e Plus"><span class="e Mul"><span class="e Identifier"><span class="i">cs</span></span>.<span class="e Identifier"><span class="i">re</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">cosh</span></span>(<span class="i">z</span>.<span class="i">re</span>)</span></span> + <span class="e Mul"><span class="e Mul"><span class="e Identifier"><span class="i">cs</span></span>.<span class="e Identifier"><span class="i">im</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">sinh</span></span>(<span class="i">z</span>.<span class="i">re</span>)</span></span> * <span class="e Float"><span class="n">1i</span></span></span></span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cosh</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cosh</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
   <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">cos</span></span>(<span class="i">y</span>.<span class="i">im</span>)</span>;</span>
 }</span></span></span>
@@ -858,7 +858,7 @@
  *    $(SV  +$(INFIN),+$(INFIN))
  *  )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">acosh</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">acosh</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">x</span></span> &gt; <span class="e Div"><span class="e Int"><span class="n">1</span></span>/<span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">epsilon</span></span></span></span>)
     <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Plus"><span class="e Identifier"><span class="i">LN2</span></span> + <span class="e Call"><span class="e Identifier"><span class="i">log</span></span>(<span class="i">x</span>)</span></span>;</span></span>
@@ -894,7 +894,7 @@
  *    $(SV  $(PLUSMN)$(INFIN),$(PLUSMN)$(INFIN))
  *    )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">asinh</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">asinh</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">IEEE</span></span>.<span class="e Identifier"><span class="i">fabs</span></span>(<span class="i">x</span>)</span> &gt; <span class="e Div"><span class="e Int"><span class="n">1</span></span> / <span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">epsilon</span></span></span></span>) <span class="lc">// beyond this point, x*x + 1 == x*x</span>
     <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">IEEE</span></span>.<span class="e Identifier"><span class="i">copysign</span></span>(<span class="i">LN2</span> + <span class="i">log</span>(<span class="i">tango</span>.<span class="i">math</span>.<span class="i">IEEE</span>.<span class="i">fabs</span>(<span class="i">x</span>)), <span class="i">x</span>)</span>;</span></span>
@@ -932,7 +932,7 @@
  *    $(SV  -$(INFIN), -0)
  *    )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">atanh</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">atanh</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="lc">// log( (1+x)/(1-x) ) == log ( 1 + (2*x)/(1-x) )</span>
     <span class="s Return"><span class="k">return</span>  <span class="e Mul"><span class="e Float"><span class="n">0.5</span></span> * <span class="e Call"><span class="e Identifier"><span class="i">log1p</span></span>( <span class="n">2</span> * <span class="i">x</span> / (<span class="n">1</span> - <span class="i">x</span>) )</span></span>;</span>
@@ -952,14 +952,14 @@
 }</span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">atanh</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">atanh</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="lc">// Not optimised for accuracy or speed</span>
     <span class="s Return"><span class="k">return</span> <span class="e Mul"><span class="e Float"><span class="n">0.5</span></span>*<span class="e Paren">(<span class="e Minus"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>(<span class="n">1</span>+<span class="i">y</span>)</span> - <span class="e Call"><span class="e Identifier"><span class="i">log</span></span>(<span class="n">1</span>-<span class="i">y</span>)</span></span>)</span></span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">atanh</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">atanh</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="lc">// Not optimised for accuracy or speed</span>
     <span class="s Return"><span class="k">return</span> <span class="e Mul"><span class="e Float"><span class="n">0.5</span></span> * <span class="e Paren">(<span class="e Minus"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>(<span class="n">1</span> + <span class="i">z</span>)</span> - <span class="e Call"><span class="e Identifier"><span class="i">log</span></span>(<span class="n">1</span>-<span class="i">z</span>)</span></span>)</span></span>;</span>
@@ -979,7 +979,7 @@
  *      $(TR $(TD +$(INFIN)) $(TD +$(INFIN)) $(TD no))
  *      )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">float</span></span> <span class="i">sqrt</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">float</span></span> <span class="i">x</span></span>)</span> <span class="bc">/* intrinsic */</span>
+<span class="d Function"><span class="t Integral"><span class="k">float</span></span> <span class="i">sqrt</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">float</span></span> <span class="i">x</span></span>)</span> <span class="bc">/* intrinsic */</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">LDC</span>)
     <span class="s Compound">{
@@ -999,7 +999,7 @@
     }</span></span></span>
 }</span></span></span>
 
-<span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">sqrt</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">double</span></span> <span class="i">x</span></span>)</span> <span class="bc">/* intrinsic */</span> <span class="lc">/// ditto</span>
+<span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">sqrt</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">double</span></span> <span class="i">x</span></span>)</span> <span class="bc">/* intrinsic */</span> <span class="lc">/// ditto</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">LDC</span>)
     <span class="s Compound">{
@@ -1019,7 +1019,7 @@
     }</span></span></span>
 }</span></span></span>
 
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">sqrt</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span> <span class="bc">/* intrinsic */</span> <span class="lc">/// ditto</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">sqrt</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span> <span class="bc">/* intrinsic */</span> <span class="lc">/// ditto</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">LDC</span>)
     <span class="s Compound">{
@@ -1040,7 +1040,7 @@
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">sqrt</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">sqrt</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
 
     <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">z</span></span> == <span class="e Float"><span class="n">0.0</span></span></span>) <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">z</span></span>;</span></span></span>
@@ -1086,7 +1086,7 @@
  *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(PLUSMN)$(INFIN)) $(TD no) )
  *      )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cbrt</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">cbrt</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">stdc</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">cbrtl</span></span>(<span class="i">x</span>)</span>;</span>
 }</span></span></span>
@@ -1111,7 +1111,7 @@
  *    $(TR $(TD $(NAN))        $(TD $(NAN))    )
  *  )
  */</span>
-<span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">exp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">exp</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">Naked_D_InlineAsm_X86</span>) <span class="s Compound">{
    <span class="lc">//  e^x = 2^(LOG2E*x)</span>
    <span class="lc">// (This is valid because the overflow &amp; underflow limits for exp</span>
@@ -1137,10 +1137,10 @@
  *    $(TR $(TD $(NAN))        $(TD $(NAN))       )
  *  )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">expm1</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span> 
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">expm1</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span> 
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">Naked_D_InlineAsm_X86</span>) <span class="s Compound">{
-      <span class="s Declaration"><span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">PARAMSIZE</span></span> = <span class="e And"><span class="e Paren">(<span class="e Plus"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">sizeof</span></span>+<span class="e Int"><span class="n">3</span></span></span>)</span>&amp;<span class="e Paren">(<span class="e Int"><span class="n">0xFFFF_FFFC</span></span>)</span></span></span> }</span></span> <span class="lc">// always a multiple of 4</span>
+      <span class="s Declaration"><span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="i">PARAMSIZE</span> = <span class="e And"><span class="e Paren">(<span class="e Plus"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">sizeof</span></span>+<span class="e Int"><span class="n">3</span></span></span>)</span>&amp;<span class="e Paren">(<span class="e Int"><span class="n">0xFFFF_FFFC</span></span>)</span></span></span> }</span></span> <span class="lc">// always a multiple of 4</span>
       <span class="s AsmBlock"><span class="k">asm</span> <span class="s Compound">{
         <span class="bc">/*  expm1() for x87 80-bit reals, IEEE754-2008 conformant.
          * Author: Don Clugston.
@@ -1223,10 +1223,10 @@
  *    $(TR $(TD $(NAN))        $(TD $(NAN))    )
  *  )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">exp2</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span> 
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">exp2</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span> 
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">Naked_D_InlineAsm_X86</span>) <span class="s Compound">{
-      <span class="s Declaration"><span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">PARAMSIZE</span></span> = <span class="e And"><span class="e Paren">(<span class="e Plus"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">sizeof</span></span>+<span class="e Int"><span class="n">3</span></span></span>)</span>&amp;<span class="e Paren">(<span class="e Int"><span class="n">0xFFFF_FFFC</span></span>)</span></span></span> }</span></span> <span class="lc">// always a multiple of 4</span>
+      <span class="s Declaration"><span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="i">PARAMSIZE</span> = <span class="e And"><span class="e Paren">(<span class="e Plus"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">sizeof</span></span>+<span class="e Int"><span class="n">3</span></span></span>)</span>&amp;<span class="e Paren">(<span class="e Int"><span class="n">0xFFFF_FFFC</span></span>)</span></span></span> }</span></span> <span class="lc">// always a multiple of 4</span>
       <span class="s AsmBlock"><span class="k">asm</span> <span class="s Compound">{
         <span class="bc">/*  exp2() for x87 80-bit reals, IEEE754-2008 conformant.
          * Author: Don Clugston.
@@ -1347,7 +1347,7 @@
  *    $(TR $(TD +$(INFIN))    $(TD +$(INFIN)) $(TD no)           $(TD no))
  *    )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">log</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">log</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">stdc</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">logl</span></span>(<span class="i">x</span>)</span>;</span>
 }</span></span></span>
@@ -1373,7 +1373,7 @@
  *  $(TR $(TD +$(INFIN))    $(TD -$(INFIN))    $(TD no)           $(TD no))
  *  )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">log1p</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">log1p</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">stdc</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">log1pl</span></span>(<span class="i">x</span>)</span>;</span>
 }</span></span></span>
@@ -1396,7 +1396,7 @@
  *  $(TR $(TD +$(INFIN))    $(TD +$(INFIN)) $(TD no)           $(TD no) )
  *  )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">log2</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">log2</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">stdc</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">log2l</span></span>(<span class="i">x</span>)</span>;</span>
 }</span></span></span>
@@ -1418,7 +1418,7 @@
  *      $(TR $(TD +$(INFIN))    $(TD +$(INFIN)) $(TD no)           $(TD no))
  *      )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">log10</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">log10</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">stdc</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">log10l</span></span>(<span class="i">x</span>)</span>;</span>
 }</span></span></span>
@@ -1441,13 +1441,13 @@
  *  exp(&amp;theta;i)  = cos(&amp;theta;) + sin(&amp;theta;)i.
  *
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">exp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">exp</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
    <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">expi</span></span>(<span class="i">y</span>.<span class="i">im</span>)</span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">exp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">exp</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
   <span class="s Return"><span class="k">return</span> <span class="e Mul"><span class="e Call"><span class="e Identifier"><span class="i">expi</span></span>(<span class="i">z</span>.<span class="i">im</span>)</span> * <span class="e Call"><span class="e Identifier"><span class="i">exp</span></span>(<span class="i">z</span>.<span class="i">re</span>)</span></span>;</span>
 }</span></span></span>
@@ -1482,7 +1482,7 @@
  *    log(-0.0 + yi) = log(-y) - PI_2i  // y&lt;=-0.0
  * ------------
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">log</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">log</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">z</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
   <span class="s Return"><span class="k">return</span> <span class="e Plus"><span class="e Call"><span class="e Identifier"><span class="i">log</span></span>(<span class="i">abs</span>(<span class="i">z</span>))</span> + <span class="e Mul"><span class="e Call"><span class="e Identifier"><span class="i">atan2</span></span>(<span class="i">z</span>.<span class="i">im</span>, <span class="i">z</span>.<span class="i">re</span>)</span>*<span class="e Float"><span class="n">1i</span></span></span></span>;</span>
 }</span></span></span>
@@ -1493,9 +1493,9 @@
  * feqrel for complex numbers. Returns the worst relative
  * equality of the two components.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">cfeqrel</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">b</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">cfeqrel</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">b</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
-    <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">intmin</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">a</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">b</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Rel"><span class="e Identifier"><span class="i">a</span></span>&lt;<span class="e Identifier"><span class="i">b</span></span></span>? <span class="e Identifier"><span class="i">a</span></span>: <span class="e Identifier"><span class="i">b</span></span></span>;</span> }</span></span></span></span>
+    <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">intmin</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">a</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">b</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Rel"><span class="e Identifier"><span class="i">a</span></span>&lt;<span class="e Identifier"><span class="i">b</span></span></span>? <span class="e Identifier"><span class="i">a</span></span>: <span class="e Identifier"><span class="i">b</span></span></span>;</span> }</span></span></span></span>
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">intmin</span></span>(<span class="i">feqrel</span>(<span class="i">a</span>.<span class="i">re</span>, <span class="i">b</span>.<span class="i">re</span>), <span class="i">feqrel</span>(<span class="i">a</span>.<span class="i">im</span>, <span class="i">b</span>.<span class="i">im</span>))</span>;</span>
 }</span></span></span>
 }</span>
@@ -1510,7 +1510,7 @@
 <span class="bc">/**
  * Fast integral powers.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">pow</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">n</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">pow</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">n</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span>;</span></span>
 
@@ -1544,7 +1544,7 @@
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">pow</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">pow</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">n</span></span> &lt; <span class="e Int"><span class="n">0</span></span></span>) <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">pow</span></span>(<span class="i">x</span>, <span class="k">cast</span>(<span class="k">real</span>)<span class="i">n</span>)</span>;</span></span>
     <span class="k">else</span> <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">pow</span></span>(<span class="i">x</span>, <span class="k">cast</span>(<span class="k">uint</span>)<span class="i">n</span>)</span>;</span></span></span>
@@ -1592,7 +1592,7 @@
  *      $(TD no)        $(TD no) )
  * )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">pow</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">pow</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span> (<span class="i">linux</span>) <span class="lc">// C pow() often does not handle special values correctly</span>
     <span class="s Compound">{
@@ -1728,7 +1728,7 @@
  *  $(TR $(TD $(PLUSMNINF)) $(TD $(NAN))       $(TD +$(INFIN))   $(TD no))
  *  )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">hypot</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">hypot</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="bc">/*
      * This is based on code from:
@@ -1836,7 +1836,7 @@
  * Params:
  *      A =     array of coefficients $(SUB a, 0), $(SUB a, 1), etc.
  */</span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">poly</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span>)</span> <span class="i">A</span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">poly</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">T</span></span><span class="t Array">[]</span>)</span> <span class="i">A</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span>
 <span class="s Compound">{
     <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">A</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
@@ -1926,21 +1926,21 @@
 }</span></span>
 
 <span class="d Protection"><span class="k">package</span></span> <span class="d Compound">{
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">rationalPoly</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">T</span></span> <span class="t Array">[]</span>)</span> <span class="i">numerator</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">T</span></span> <span class="t Array">[]</span>)</span> <span class="i">denominator</span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">rationalPoly</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">T</span></span> <span class="t Array">[]</span>)</span> <span class="i">numerator</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">T</span></span> <span class="t Array">[]</span>)</span> <span class="i">denominator</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Div"><span class="e Call"><span class="e Identifier"><span class="i">poly</span></span>(<span class="i">x</span>, <span class="i">numerator</span>)</span>/<span class="e Call"><span class="e Identifier"><span class="i">poly</span></span>(<span class="i">x</span>, <span class="i">denominator</span>)</span></span>;</span>
 }</span></span></span></span></span>
 }</span>
 
 <span class="d StorageClass"><span class="k">deprecated</span></span> <span class="d Compound">{
-<span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">int</span></span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">MANTDIG_2</span></span> = <span class="e Div"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span>/<span class="e Int"><span class="n">2</span></span></span></span> }</span> <span class="lc">// Compiler workaround</span>
+<span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">int</span></span> { <span class="d EnumMember"><span class="i">MANTDIG_2</span> = <span class="e Div"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span>/<span class="e Int"><span class="n">2</span></span></span></span> }</span> <span class="lc">// Compiler workaround</span>
 
 <span class="bc">/** Floating point "approximate equality".
  *
  * Return true if x is equal to y, to within the specified precision
  * If roundoffbits is not specified, a reasonable default is used.
  */</span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">feq</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Integral"><span class="k">int</span></span> <span class="i">precision</span> = <span class="e Identifier"><span class="i">MANTDIG_2</span></span></span>, <span class="o TemplateTypeParam"><span class="i">XReal</span>=<span class="t Integral"><span class="k">real</span></span></span>, <span class="o TemplateTypeParam"><span class="i">YReal</span>=<span class="t Integral"><span class="k">real</span></span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">XReal</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">YReal</span></span> <span class="i">y</span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">feq</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">precision</span> = <span class="e Identifier"><span class="i">MANTDIG_2</span></span></span>, <span class="o "><span class="i">XReal</span>=<span class="t Integral"><span class="k">real</span></span></span>, <span class="o "><span class="i">YReal</span>=<span class="t Integral"><span class="k">real</span></span></span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">XReal</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Identifier"><span class="i">YReal</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>(<span class="e AndAnd"><span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">XReal</span></span>: <span class="t Integral"><span class="k">real</span></span>)</span> &amp;&amp; <span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">YReal</span></span> : <span class="t Integral"><span class="k">real</span></span>)</span></span>);</span>
     <span class="s Return"><span class="k">return</span> <span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">IEEE</span></span>.<span class="e Identifier"><span class="i">feqrel</span></span>(<span class="k">cast</span>(<span class="k">real</span>)<span class="i">x</span>, <span class="k">cast</span>(<span class="k">real</span>)<span class="i">y</span>)</span> &gt;= <span class="e Identifier"><span class="i">precision</span></span></span>;</span>
@@ -1949,7 +1949,7 @@
 <span class="d Unittest"><span class="k">unittest</span><span class="s FuncBody"><span class="s Compound">{
     <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Call"><span class="e Not">!<span class="e Identifier"><span class="i">feq</span></span></span>(<span class="n">1.0</span>,<span class="n">2.0</span>)</span>)</span>;</span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span> = <span class="e Float"><span class="n">58.0000000001</span></span>;</span></span>
-    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Call"><span class="e TmplInstance"><span class="i">feq</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">20</span></span>)</span></span>(<span class="n">58</span>, <span class="i">y</span>)</span>)</span>;</span>
+    <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Call"><span class="e TmplInstance"><span class="i">feq</span>!<span class="o ">(<span class="e Int"><span class="n">20</span></span>)</span></span>(<span class="n">58</span>, <span class="i">y</span>)</span>)</span>;</span>
 }</span></span></span>
 }</span>
 
@@ -1961,7 +1961,7 @@
  * Returns the value of x rounded downward to the next integer
  * (toward negative infinity).
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">floor</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">floor</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">stdc</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">floorl</span></span>(<span class="i">x</span>)</span>;</span>
 }</span></span></span>
@@ -1976,7 +1976,7 @@
  * Returns the value of x rounded upward to the next integer
  * (toward positive infinity).
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ceil</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ceil</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">stdc</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">ceill</span></span>(<span class="i">x</span>)</span>;</span>
 }</span></span></span>
@@ -1990,7 +1990,7 @@
  * If the fractional part of x is exactly 0.5, the return value is rounded to
  * the even integer.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">round</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">round</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">stdc</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">roundl</span></span>(<span class="i">x</span>)</span>;</span>
 }</span></span></span>
@@ -2006,7 +2006,7 @@
  *
  * This is also known as "chop" rounding.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">trunc</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">trunc</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">tango</span></span>.<span class="e Identifier"><span class="i">stdc</span></span>.<span class="e Identifier"><span class="i">math</span></span>.<span class="e Identifier"><span class="i">truncl</span></span>(<span class="i">x</span>)</span>;</span>
 }</span></span></span>
@@ -2026,7 +2026,7 @@
 * If using the default rounding mode (ties round to even integers)
 * rndint(4.5) == 4, rndint(5.5)==6.
 */</span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">rndint</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">rndint</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">Naked_D_InlineAsm_X86</span>)
     <span class="s Compound">{
@@ -2045,7 +2045,7 @@
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">rndlong</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">rndlong</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">Naked_D_InlineAsm_X86</span>)
     <span class="s Compound">{

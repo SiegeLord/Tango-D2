@@ -24,38 +24,38 @@
 <p class="sec_header">Authors:</p><div class="cmnt">Chris Wright (dhasenan) &lt;<a href="mailto:dhasenan@gmail.com">dhasenan@gmail.com</a>&gt;</div>
 <p class="sec_header">License:</p><div class="cmnt">Tango License, Apache 2.0</div>
 <dl>
-<dt class="decl"><span class="rettyp">TypeInfo</span> <a class="symbol _function" name="realType" href="htmlsrc/tango.core.RuntimeTraits.html#L13">realType</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#realType" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(TypeInfo)</span> <a class="symbol _function" name="realType" href="htmlsrc/tango.core.RuntimeTraits.html#L13">realType</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#realType" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">If the given type represents a typedef, return the actual type.</div></div></dd>
-<dt class="decl"><span class="rettyp">ClassInfo</span> <a class="symbol _function" name="asClass" href="htmlsrc/tango.core.RuntimeTraits.html#L34">asClass</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#asClass" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(ClassInfo)</span> <a class="symbol _function" name="asClass" href="htmlsrc/tango.core.RuntimeTraits.html#L34">asClass</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#asClass" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">If the given type represents a class, return its ClassInfo; else return null;</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isDerived" href="htmlsrc/tango.core.RuntimeTraits.html#L51">isDerived</a><span class="params">(ClassInfo <em>derived</em>, ClassInfo <em>base</em>)</span> <a href="tango.core.RuntimeTraits.html#isDerived" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isDerived" href="htmlsrc/tango.core.RuntimeTraits.html#L51">isDerived</a><span class="params">(const(ClassInfo) <em>derived</em>, const(ClassInfo) <em>base</em>)</span> <a href="tango.core.RuntimeTraits.html#isDerived" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns true iff one type is an ancestor of the other, or if the types are the same.
  If either is null, returns false.</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="implements" href="htmlsrc/tango.core.RuntimeTraits.html#L66">implements</a><span class="params">(ClassInfo <em>implementor</em>, ClassInfo <em>iface</em>)</span> <a href="tango.core.RuntimeTraits.html#implements" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="implements" href="htmlsrc/tango.core.RuntimeTraits.html#L68">implements</a><span class="params">(const(ClassInfo) <em>implementor</em>, const(ClassInfo) <em>iface</em>)</span> <a href="tango.core.RuntimeTraits.html#implements" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns true iff implementor implements the interface described
  by iface. This is an expensive operation (linear in the number of
  interfaces and base classes).</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isImplicitly" href="htmlsrc/tango.core.RuntimeTraits.html#L78">isImplicitly</a><span class="params">(ClassInfo <em>test</em>, ClassInfo <em>target</em>)</span> <a href="tango.core.RuntimeTraits.html#isImplicitly" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isImplicitly" href="htmlsrc/tango.core.RuntimeTraits.html#L80">isImplicitly</a><span class="params">(const(ClassInfo) <em>test</em>, const(ClassInfo) <em>target</em>)</span> <a href="tango.core.RuntimeTraits.html#isImplicitly" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns true iff an instance of class test is implicitly castable to target. 
  This is an expensive operation (isDerived + implements).</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isImplicitly:2" href="htmlsrc/tango.core.RuntimeTraits.html#L87">isImplicitly</a><span class="params">(TypeInfo <em>test</em>, TypeInfo <em>target</em>)</span> <a href="tango.core.RuntimeTraits.html#isImplicitly:2" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isImplicitly:2" href="htmlsrc/tango.core.RuntimeTraits.html#L89">isImplicitly</a><span class="params">(const(TypeInfo) <em>test</em>, const(TypeInfo) <em>target</em>)</span> <a href="tango.core.RuntimeTraits.html#isImplicitly:2" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns true iff an instance of type test is implicitly castable to target. 
  If the types describe classes or interfaces, this is an expensive operation.</div></div></dd>
-<dt class="decl"><span class="rettyp">ClassInfo[]</span> <a class="symbol _function" name="baseClasses" href="htmlsrc/tango.core.RuntimeTraits.html#L141">baseClasses</a><span class="params">(ClassInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#baseClasses" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(ClassInfo)[]</span> <a class="symbol _function" name="baseClasses" href="htmlsrc/tango.core.RuntimeTraits.html#L143">baseClasses</a><span class="params">(const(ClassInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#baseClasses" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">ClassInfo[]</span> <a class="symbol _function" name="baseInterfaces" href="htmlsrc/tango.core.RuntimeTraits.html#L155">baseInterfaces</a><span class="params">(ClassInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#baseInterfaces" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(ClassInfo)[]</span> <a class="symbol _function" name="baseInterfaces" href="htmlsrc/tango.core.RuntimeTraits.html#L158">baseInterfaces</a><span class="params">(const(ClassInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#baseInterfaces" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns a list of all interfaces that this type implements, directly
  or indirectly. This includes base interfaces of types the class implements,
  and interfaces that base classes implement, and base interfaces of interfaces
  that base classes implement. This is an expensive operation.</div></div></dd>
-<dt class="decl"><span class="rettyp">ClassInfo[]</span> <a class="symbol _function" name="interfaceGraph" href="htmlsrc/tango.core.RuntimeTraits.html#L190">interfaceGraph</a><span class="params">(ClassInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#interfaceGraph" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(ClassInfo)[]</span> <a class="symbol _function" name="interfaceGraph" href="htmlsrc/tango.core.RuntimeTraits.html#L194">interfaceGraph</a><span class="params">(const(ClassInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#interfaceGraph" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns all the interfaces that this type directly implements, including
  inherited interfaces. This is an expensive operation.</div></div>
@@ -96,91 +96,91 @@
 <span class="lc">// interfaces = [I2.classinfo]</span></pre>
 </td></tr>
 </table></div></dd>
-<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="applyInterfaces" href="htmlsrc/tango.core.RuntimeTraits.html#L202">applyInterfaces</a> <a href="tango.core.RuntimeTraits.html#applyInterfaces" class="plink">¶</a></dt>
+<dt class="decl"><span class="kw">struct</span> <a class="symbol _struct" name="applyInterfaces" href="htmlsrc/tango.core.RuntimeTraits.html#L206">applyInterfaces</a> <a href="tango.core.RuntimeTraits.html#applyInterfaces" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Iterate through all interfaces that type implements, directly or indirectly, including base interfaces.</div></div>
 <dl>
-<dt class="decl"><span class="rettyp">applyInterfaces</span> <a class="symbol _function" name="applyInterfaces.opCall" href="htmlsrc/tango.core.RuntimeTraits.html#L205">opCall</a><span class="params">(ClassInfo <em>type</em>)</span> <span class="attrs">[<span class="stc">static</span>]</span> <a href="tango.core.RuntimeTraits.html#applyInterfaces.opCall" class="plink">¶</a></dt>
+<dt class="decl"><a class="symbol _ctor" name="applyInterfaces.this" href="htmlsrc/tango.core.RuntimeTraits.html#L209">this</a><span class="params">(const(ClassInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#applyInterfaces.this" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="applyInterfaces.opApply" href="htmlsrc/tango.core.RuntimeTraits.html#L213">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref ClassInfo) <em>dg</em>)</span> <a href="tango.core.RuntimeTraits.html#applyInterfaces.opApply" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="applyInterfaces.opApply" href="htmlsrc/tango.core.RuntimeTraits.html#L215">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref ClassInfo) <em>dg</em>)</span> <a href="tango.core.RuntimeTraits.html#applyInterfaces.opApply" class="plink">¶</a></dt>
 <dd class="ddef"></dd></dl></dd>
-<dt class="decl"><span class="rettyp">ClassInfo[]</span> <a class="symbol _function" name="baseTypes" href="htmlsrc/tango.core.RuntimeTraits.html#L235">baseTypes</a><span class="params">(ClassInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#baseTypes" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(ClassInfo)[]</span> <a class="symbol _function" name="baseTypes" href="htmlsrc/tango.core.RuntimeTraits.html#L237">baseTypes</a><span class="params">(const(ClassInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#baseTypes" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">ModuleInfo*</span> <a class="symbol _function" name="moduleOf" href="htmlsrc/tango.core.RuntimeTraits.html#L243">moduleOf</a><span class="params">(ClassInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#moduleOf" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">ModuleInfo*</span> <a class="symbol _function" name="moduleOf" href="htmlsrc/tango.core.RuntimeTraits.html#L245">moduleOf</a><span class="params">(const(ClassInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#moduleOf" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">ClassInfo[]</span> <a class="symbol _function" name="directInterfaces" href="htmlsrc/tango.core.RuntimeTraits.html#L253">directInterfaces</a><span class="params">(ClassInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#directInterfaces" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(ClassInfo)[]</span> <a class="symbol _function" name="directInterfaces" href="htmlsrc/tango.core.RuntimeTraits.html#L255">directInterfaces</a><span class="params">(const(ClassInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#directInterfaces" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns a list of interfaces that this class directly implements.</div></div></dd>
-<dt class="decl"><span class="rettyp">ClassInfo[]</span> <a class="symbol _function" name="derivedTypes" href="htmlsrc/tango.core.RuntimeTraits.html#L264">derivedTypes</a><span class="params">(ClassInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#derivedTypes" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(ClassInfo)[]</span> <a class="symbol _function" name="derivedTypes" href="htmlsrc/tango.core.RuntimeTraits.html#L266">derivedTypes</a><span class="params">(const(ClassInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#derivedTypes" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns a list of all types that are derived from the given type. This does not 
  count interfaces; that is, if type is an interface, you will only get derived 
  interfaces back. It is an expensive operations.</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isDynamicArray" href="htmlsrc/tango.core.RuntimeTraits.html#L275">isDynamicArray</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isDynamicArray" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isDynamicArray" href="htmlsrc/tango.core.RuntimeTraits.html#L277">isDynamicArray</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isDynamicArray" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isStaticArray" href="htmlsrc/tango.core.RuntimeTraits.html#L290">isStaticArray</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isStaticArray" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isStaticArray" href="htmlsrc/tango.core.RuntimeTraits.html#L292">isStaticArray</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isStaticArray" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isArray" href="htmlsrc/tango.core.RuntimeTraits.html#L298">isArray</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isArray" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isArray" href="htmlsrc/tango.core.RuntimeTraits.html#L300">isArray</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isArray" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns true iff the given type is a dynamic or static array (false for associative
  arrays and non-arrays).</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isAssociativeArray" href="htmlsrc/tango.core.RuntimeTraits.html#L305">isAssociativeArray</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isAssociativeArray" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isAssociativeArray" href="htmlsrc/tango.core.RuntimeTraits.html#L307">isAssociativeArray</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isAssociativeArray" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isCharacter" href="htmlsrc/tango.core.RuntimeTraits.html#L312">isCharacter</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isCharacter" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isCharacter" href="htmlsrc/tango.core.RuntimeTraits.html#L314">isCharacter</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isCharacter" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isString" href="htmlsrc/tango.core.RuntimeTraits.html#L319">isString</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isString" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isString" href="htmlsrc/tango.core.RuntimeTraits.html#L321">isString</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isString" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isUnsignedInteger" href="htmlsrc/tango.core.RuntimeTraits.html#L326">isUnsignedInteger</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isUnsignedInteger" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isUnsignedInteger" href="htmlsrc/tango.core.RuntimeTraits.html#L328">isUnsignedInteger</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isUnsignedInteger" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isSignedInteger" href="htmlsrc/tango.core.RuntimeTraits.html#L333">isSignedInteger</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isSignedInteger" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isSignedInteger" href="htmlsrc/tango.core.RuntimeTraits.html#L335">isSignedInteger</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isSignedInteger" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isInteger" href="htmlsrc/tango.core.RuntimeTraits.html#L340">isInteger</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isInteger" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isInteger" href="htmlsrc/tango.core.RuntimeTraits.html#L342">isInteger</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isInteger" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isBool" href="htmlsrc/tango.core.RuntimeTraits.html#L347">isBool</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isBool" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isBool" href="htmlsrc/tango.core.RuntimeTraits.html#L349">isBool</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isBool" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isFloat" href="htmlsrc/tango.core.RuntimeTraits.html#L354">isFloat</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isFloat" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isFloat" href="htmlsrc/tango.core.RuntimeTraits.html#L356">isFloat</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isFloat" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isPrimitive" href="htmlsrc/tango.core.RuntimeTraits.html#L361">isPrimitive</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isPrimitive" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isPrimitive" href="htmlsrc/tango.core.RuntimeTraits.html#L363">isPrimitive</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isPrimitive" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isInterface" href="htmlsrc/tango.core.RuntimeTraits.html#L368">isInterface</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isInterface" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isInterface" href="htmlsrc/tango.core.RuntimeTraits.html#L370">isInterface</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isInterface" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns true iff the given type represents an interface.</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isPointer" href="htmlsrc/tango.core.RuntimeTraits.html#L374">isPointer</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isPointer" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isPointer" href="htmlsrc/tango.core.RuntimeTraits.html#L376">isPointer</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isPointer" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isClass" href="htmlsrc/tango.core.RuntimeTraits.html#L381">isClass</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isClass" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isClass" href="htmlsrc/tango.core.RuntimeTraits.html#L383">isClass</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isClass" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns true iff the type represents a class (false for interfaces).</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isStruct" href="htmlsrc/tango.core.RuntimeTraits.html#L388">isStruct</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isStruct" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isStruct" href="htmlsrc/tango.core.RuntimeTraits.html#L390">isStruct</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isStruct" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isFunction" href="htmlsrc/tango.core.RuntimeTraits.html#L395">isFunction</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isFunction" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isFunction" href="htmlsrc/tango.core.RuntimeTraits.html#L397">isFunction</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isFunction" class="plink">¶</a></dt>
 <dd class="ddef"></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isReferenceType" href="htmlsrc/tango.core.RuntimeTraits.html#L402">isReferenceType</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isReferenceType" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isReferenceType" href="htmlsrc/tango.core.RuntimeTraits.html#L404">isReferenceType</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isReferenceType" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns true iff the given type is a reference type.</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isUserDefined" href="htmlsrc/tango.core.RuntimeTraits.html#L409">isUserDefined</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isUserDefined" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isUserDefined" href="htmlsrc/tango.core.RuntimeTraits.html#L411">isUserDefined</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isUserDefined" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns true iff the given type represents a user-defined type. 
  This does not include functions, delegates, aliases, or typedefs.</div></div></dd>
-<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isValueType" href="htmlsrc/tango.core.RuntimeTraits.html#L416">isValueType</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isValueType" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">bool</span> <a class="symbol _function" name="isValueType" href="htmlsrc/tango.core.RuntimeTraits.html#L418">isValueType</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#isValueType" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">Returns true for all value types, false for all reference types.
  For functions and delegates, returns false (is this the way it should be?).</div></div></dd>
-<dt class="decl"><span class="rettyp">TypeInfo</span> <a class="symbol _function" name="keyType" href="htmlsrc/tango.core.RuntimeTraits.html#L424">keyType</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#keyType" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(TypeInfo)</span> <a class="symbol _function" name="keyType" href="htmlsrc/tango.core.RuntimeTraits.html#L426">keyType</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#keyType" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">The key type of the given type. For an array, size_t; for an associative
  array T[U], U.</div></div></dd>
-<dt class="decl"><span class="rettyp">TypeInfo</span> <a class="symbol _function" name="valueType" href="htmlsrc/tango.core.RuntimeTraits.html#L437">valueType</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#valueType" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(TypeInfo)</span> <a class="symbol _function" name="valueType" href="htmlsrc/tango.core.RuntimeTraits.html#L439">valueType</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#valueType" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">The value type of the given type -- given T[] or T[n], T; given T[U],
  T; given T*, T; anything else, null.</div></div></dd>
-<dt class="decl"><span class="rettyp">TypeInfo</span> <a class="symbol _function" name="returnType" href="htmlsrc/tango.core.RuntimeTraits.html#L453">returnType</a><span class="params">(TypeInfo <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#returnType" class="plink">¶</a></dt>
+<dt class="decl"><span class="rettyp">const(TypeInfo)</span> <a class="symbol _function" name="returnType" href="htmlsrc/tango.core.RuntimeTraits.html#L455">returnType</a><span class="params">(const(TypeInfo) <em>type</em>)</span> <a href="tango.core.RuntimeTraits.html#returnType" class="plink">¶</a></dt>
 <dd class="ddef">
 <div class="summary"><div class="cmnt">If the given type represents a delegate or function, the return type
  of that function. Otherwise, null.</div></div></dd></dl>
 </div>
 <div id="kandil-footer">
   <p>Copyright (c) 2009, CHRISTOPHER WRIGHT</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:23 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Tue Aug 21 02:56:43 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

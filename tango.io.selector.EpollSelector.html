@@ -20,11 +20,273 @@
 
 <p class="sec_header">License:</p><div class="cmnt">BSD style: see <a href="http://www.dsource.org/projects/tango/wiki/LibraryLicense">license.txt</a></div>
 <p class="sec_header">Author:</p><div class="cmnt">Juan Jose Comellas &lt;<a href="mailto:juanjo@comellas.com.ar">juanjo@comellas.com.ar</a>&gt;</div>
-<dl></dl>
+<dl>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="EpollSelector" href="htmlsrc/tango.io.selector.EpollSelector.html#L104">EpollSelector</a> : <span class="bclass">AbstractSelector</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.EpollSelector.html#EpollSelector" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Selector that uses the Linux epoll* family of system calls.</div></div>
+<div class="cmnt">This selector is the best option when dealing with large amounts of
+ conduits under Linux. It will scale much better than any of the other
+ options (PollSelector, SelectSelector). For small amounts of conduits
+ (n &lt; 20) the PollSelector will probably be more performant.</div>
+<p class="sec_header">See Also:</p><div class="cmnt">ISelector, AbstractSelector</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex1" name="L1_ex1">1</a>
+<a href="#L2_ex1" name="L2_ex1">2</a>
+<a href="#L3_ex1" name="L3_ex1">3</a>
+<a href="#L4_ex1" name="L4_ex1">4</a>
+<a href="#L5_ex1" name="L5_ex1">5</a>
+<a href="#L6_ex1" name="L6_ex1">6</a>
+<a href="#L7_ex1" name="L7_ex1">7</a>
+<a href="#L8_ex1" name="L8_ex1">8</a>
+<a href="#L9_ex1" name="L9_ex1">9</a>
+<a href="#L10_ex1" name="L10_ex1">10</a>
+<a href="#L11_ex1" name="L11_ex1">11</a>
+<a href="#L12_ex1" name="L12_ex1">12</a>
+<a href="#L13_ex1" name="L13_ex1">13</a>
+<a href="#L14_ex1" name="L14_ex1">14</a>
+<a href="#L15_ex1" name="L15_ex1">15</a>
+<a href="#L16_ex1" name="L16_ex1">16</a>
+<a href="#L17_ex1" name="L17_ex1">17</a>
+<a href="#L18_ex1" name="L18_ex1">18</a>
+<a href="#L19_ex1" name="L19_ex1">19</a>
+<a href="#L20_ex1" name="L20_ex1">20</a>
+<a href="#L21_ex1" name="L21_ex1">21</a>
+<a href="#L22_ex1" name="L22_ex1">22</a>
+<a href="#L23_ex1" name="L23_ex1">23</a>
+<a href="#L24_ex1" name="L24_ex1">24</a>
+<a href="#L25_ex1" name="L25_ex1">25</a>
+<a href="#L26_ex1" name="L26_ex1">26</a>
+<a href="#L27_ex1" name="L27_ex1">27</a>
+<a href="#L28_ex1" name="L28_ex1">28</a>
+<a href="#L29_ex1" name="L29_ex1">29</a>
+<a href="#L30_ex1" name="L30_ex1">30</a>
+<a href="#L31_ex1" name="L31_ex1">31</a>
+<a href="#L32_ex1" name="L32_ex1">32</a>
+<a href="#L33_ex1" name="L33_ex1">33</a>
+<a href="#L34_ex1" name="L34_ex1">34</a>
+<a href="#L35_ex1" name="L35_ex1">35</a>
+<a href="#L36_ex1" name="L36_ex1">36</a>
+<a href="#L37_ex1" name="L37_ex1">37</a>
+<a href="#L38_ex1" name="L38_ex1">38</a>
+<a href="#L39_ex1" name="L39_ex1">39</a>
+<a href="#L40_ex1" name="L40_ex1">40</a>
+<a href="#L41_ex1" name="L41_ex1">41</a>
+<a href="#L42_ex1" name="L42_ex1">42</a>
+<a href="#L43_ex1" name="L43_ex1">43</a>
+<a href="#L44_ex1" name="L44_ex1">44</a>
+<a href="#L45_ex1" name="L45_ex1">45</a>
+<a href="#L46_ex1" name="L46_ex1">46</a>
+<a href="#L47_ex1" name="L47_ex1">47</a>
+<a href="#L48_ex1" name="L48_ex1">48</a>
+<a href="#L49_ex1" name="L49_ex1">49</a>
+<a href="#L50_ex1" name="L50_ex1">50</a>
+<a href="#L51_ex1" name="L51_ex1">51</a>
+<a href="#L52_ex1" name="L52_ex1">52</a>
+<a href="#L53_ex1" name="L53_ex1">53</a>
+<a href="#L54_ex1" name="L54_ex1">54</a>
+<a href="#L55_ex1" name="L55_ex1">55</a>
+<a href="#L56_ex1" name="L56_ex1">56</a>
+<a href="#L57_ex1" name="L57_ex1">57</a>
+<a href="#L58_ex1" name="L58_ex1">58</a>
+<a href="#L59_ex1" name="L59_ex1">59</a>
+<a href="#L60_ex1" name="L60_ex1">60</a>
+<a href="#L61_ex1" name="L61_ex1">61</a>
+<a href="#L62_ex1" name="L62_ex1">62</a>
+<a href="#L63_ex1" name="L63_ex1">63</a>
+<a href="#L64_ex1" name="L64_ex1">64</a>
+<a href="#L65_ex1" name="L65_ex1">65</a>
+<a href="#L66_ex1" name="L66_ex1">66</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">selector</span>.<span class="i">EpollSelector</span>;
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">net</span>.<span class="i">device</span>.<span class="i">Socket</span>;
+<span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;
+
+<span class="i">SocketConduit</span> <span class="i">conduit1</span>;
+<span class="i">SocketConduit</span> <span class="i">conduit2</span>;
+<span class="i">EpollSelector</span> <span class="i">selector</span> = <span class="k">new</span> <span class="i">EpollSelector</span>();
+<span class="i">MyClass</span> <span class="i">object1</span> = <span class="k">new</span> <span class="i">MyClass</span>();
+<span class="i">MyClass</span> <span class="i">object2</span> = <span class="k">new</span> <span class="i">MyClass</span>();
+<span class="k">uint</span> <span class="i">eventCount</span>;
+
+<span class="lc">// Initialize the selector assuming that it will deal with 10 conduits and</span>
+<span class="lc">// will receive 3 events per invocation to the select() method.</span>
+<span class="i">selector</span>.<span class="i">open</span>(<span class="n">10</span>, <span class="n">3</span>);
+
+<span class="i">selector</span>.<span class="i">register</span>(<span class="i">conduit1</span>, <span class="i">Event</span>.<span class="i">Read</span>, <span class="i">object1</span>);
+<span class="i">selector</span>.<span class="i">register</span>(<span class="i">conduit2</span>, <span class="i">Event</span>.<span class="i">Write</span>, <span class="i">object2</span>);
+
+<span class="i">eventCount</span> = <span class="i">selector</span>.<span class="i">select</span>();
+
+<span class="k">if</span> (<span class="i">eventCount</span> &gt; <span class="n">0</span>)
+{
+    <span class="k">char</span>[<span class="n">16</span>] <span class="i">buffer</span>;
+    <span class="k">int</span> <span class="i">count</span>;
+
+    <span class="k">foreach</span> (<span class="i">SelectionKey</span> <span class="i">key</span>; <span class="i">selector</span>.<span class="i">selectedSet</span>())
+    {
+        <span class="k">if</span> (<span class="i">key</span>.<span class="i">isReadable</span>())
+        {
+            <span class="i">count</span> = (<span class="k">cast</span>(<span class="i">SocketConduit</span>) <span class="i">key</span>.<span class="i">conduit</span>).<span class="i">read</span>(<span class="i">buffer</span>);
+            <span class="k">if</span> (<span class="i">count</span> != <span class="i">IConduit</span>.<span class="i">Eof</span>)
+            {
+                <span class="i">Stdout</span>.<span class="i">format</span>(<span class="sl">"Received '{0}' from peer<span class="es">\n</span>"</span>, <span class="i">buffer</span>[<span class="n">0</span>..<span class="i">count</span>]);
+                <span class="i">selector</span>.<span class="i">register</span>(<span class="i">key</span>.<span class="i">conduit</span>, <span class="i">Event</span>.<span class="i">Write</span>, <span class="i">key</span>.<span class="i">attachment</span>);
+            }
+            <span class="k">else</span>
+            {
+                <span class="i">selector</span>.<span class="i">unregister</span>(<span class="i">key</span>.<span class="i">conduit</span>);
+                <span class="i">key</span>.<span class="i">conduit</span>.<span class="i">close</span>();
+            }
+        }
+
+        <span class="k">if</span> (<span class="i">key</span>.<span class="i">isWritable</span>())
+        {
+            <span class="i">count</span> = (<span class="k">cast</span>(<span class="i">SocketConduit</span>) <span class="i">key</span>.<span class="i">conduit</span>).<span class="i">write</span>(<span class="sl">"MESSAGE"</span>);
+            <span class="k">if</span> (<span class="i">count</span> != <span class="i">IConduit</span>.<span class="i">Eof</span>)
+            {
+                <span class="i">Stdout</span>(<span class="sl">"Sent 'MESSAGE' to peer"</span>);
+                <span class="i">selector</span>.<span class="i">register</span>(<span class="i">key</span>.<span class="i">conduit</span>, <span class="i">Event</span>.<span class="i">Read</span>, <span class="i">key</span>.<span class="i">attachment</span>);
+            }
+            <span class="k">else</span>
+            {
+                <span class="i">selector</span>.<span class="i">unregister</span>(<span class="i">key</span>.<span class="i">conduit</span>);
+                <span class="i">key</span>.<span class="i">conduit</span>.<span class="i">close</span>();
+            }
+        }
+
+        <span class="k">if</span> (<span class="i">key</span>.<span class="i">isError</span>() || <span class="i">key</span>.<span class="i">isHangup</span>() || <span class="i">key</span>.<span class="i">isInvalidHandle</span>())
+        {
+            <span class="i">selector</span>.<span class="i">unregister</span>(<span class="i">key</span>.<span class="i">conduit</span>);
+            <span class="i">key</span>.<span class="i">conduit</span>.<span class="i">close</span>();
+        }
+    }
+}
+
+<span class="i">selector</span>.<span class="i">close</span>();</pre>
+</td></tr>
+</table></div>
+<dl>
+<dt class="decl"><span class="kw">alias</span> AbstractSelector.select <a class="symbol _alias" name="EpollSelector.select" href="htmlsrc/tango.io.selector.EpollSelector.html#L110">select</a> <a href="tango.io.selector.EpollSelector.html#EpollSelector.select" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Alias for the select() method as we're not reimplementing it in 
+ this class.</div></div></dd>
+<dt class="decl">uint <a class="symbol _variable" name="EpollSelector.DefaultSize" href="htmlsrc/tango.io.selector.EpollSelector.html#L116">DefaultSize</a> <span class="attrs">[<span class="prot">public</span>, <span class="stc">const</span>]</span> <a href="tango.io.selector.EpollSelector.html#EpollSelector.DefaultSize" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Default number of SelectionKey's that will be handled by the
+ EpollSelector.</div></div></dd>
+<dt class="decl">uint <a class="symbol _variable" name="EpollSelector.DefaultMaxEvents" href="htmlsrc/tango.io.selector.EpollSelector.html#L121">DefaultMaxEvents</a> <span class="attrs">[<span class="prot">public</span>, <span class="stc">const</span>]</span> <a href="tango.io.selector.EpollSelector.html#EpollSelector.DefaultMaxEvents" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Default maximum number of events that will be received per
+ invocation to select().</div></div></dd>
+<dt class="decl"><a class="symbol _dtor" name="EpollSelector.~this" href="htmlsrc/tango.io.selector.EpollSelector.html#L144">~this</a>() <a href="tango.io.selector.EpollSelector.html#EpollSelector.~this" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Destructor</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="EpollSelector.open" href="htmlsrc/tango.io.selector.EpollSelector.html#L165">open</a><span class="params">(uint <em>size</em> = <span class="defval"><span class="i">DefaultSize</span></span>, uint <em>maxEvents</em> = <span class="defval"><span class="i">DefaultMaxEvents</span></span>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.EpollSelector.html#EpollSelector.open" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Open the epoll selector, makes a call to epoll_create()</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>size</em></td><td>maximum amount of conduits that will be registered;
+                it will grow dynamically if needed.</td></tr>
+<tr><td><em>maxEvents</em></td><td>maximum amount of conduit events that will be
+                returned in the selection set per call to select();
+                this limit is enforced by this selector.</td></tr></table>
+<p class="sec_header">Throws:</p><div class="cmnt">SelectorException if there are not enough resources to open the
+ selector (e.g. not enough file handles or memory available).</div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="EpollSelector.close" href="htmlsrc/tango.io.selector.EpollSelector.html#L190">close</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.EpollSelector.html#EpollSelector.close" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Close the selector, releasing the file descriptor that had been
+ created in the previous call to open().</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">It can be called multiple times without harmful side-effects.</div></dd>
+<dt class="decl"><span class="rettyp">size_t</span> <a class="symbol _function" name="EpollSelector.count" href="htmlsrc/tango.io.selector.EpollSelector.html#L204">count</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.EpollSelector.html#EpollSelector.count" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the number of keys resulting from the registration of a conduit 
+ to the selector.</div></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="EpollSelector.register" href="htmlsrc/tango.io.selector.EpollSelector.html#L234">register</a><span class="params">(ISelectable <em>conduit</em>, Event <em>events</em>, Object <em>attachment</em> = <span class="defval"><span class="k">null</span></span>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.EpollSelector.html#EpollSelector.register" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Associate a conduit to the selector and track specific I/O events.
+ If a conduit is already associated, changes the events and
+ attachment.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>conduit</em></td><td>conduit that will be associated to the selector;
+                must be a valid conduit (i.e. not null and open).</td></tr>
+<tr><td><em>events</em></td><td>bit mask of Event values that represent the events
+                that will be tracked for the conduit.</td></tr>
+<tr><td><em>attachment</em></td><td>optional object with application-specific data that
+                will be available when an event is triggered for the
+                conduit</td></tr></table>
+<p class="sec_header">Throws:</p><div class="cmnt">RegisteredConduitException if the conduit had already been
+ registered to the selector; SelectorException if there are not
+ enough resources to add the conduit to the selector.</div>
+<p class="sec_header">Examples:</p><div class="cmnt"><table class="d_code">
+  <tr><td class="d_codelines">
+<pre><a href="#L1_ex2" name="L1_ex2">1</a>
+</pre></td><td class="d_codetext"><pre>
+<span class="i">selector</span>.<span class="i">register</span>(<span class="i">conduit</span>, <span class="i">Event</span>.<span class="i">Read</span> | <span class="i">Event</span>.<span class="i">Write</span>, <span class="i">object</span>);</pre>
+</td></tr>
+</table></div></dd>
+<dt class="decl"><span class="rettyp">void</span> <a class="symbol _function" name="EpollSelector.unregister" href="htmlsrc/tango.io.selector.EpollSelector.html#L302">unregister</a><span class="params">(ISelectable <em>conduit</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.EpollSelector.html#EpollSelector.unregister" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Remove a conduit from the selector.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>conduit</em></td><td>conduit that had been previously associated to the
+                selector; it can be null.</td></tr></table>
+<p class="sec_header">Remarks:</p><div class="cmnt">Unregistering a null conduit is allowed and no exception is thrown
+ if this happens.</div>
+<p class="sec_header">Throws:</p><div class="cmnt">UnregisteredConduitException if the conduit had not been previously
+ registered to the selector; SelectorException if there are not
+ enough resources to remove the conduit registration.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="EpollSelector.select:2" href="htmlsrc/tango.io.selector.EpollSelector.html#L352">select</a><span class="params">(TimeSpan <em>timeout</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.EpollSelector.html#EpollSelector.select:2" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Wait for I/O events from the registered conduits for a specified
+ amount of time.</div></div>
+<p class="sec_header">Parameters:</p>
+<table class="params">
+<tr><td><em>timeout</em></td><td>TimeSpan with the maximum amount of time that the
+            selector will wait for events from the conduits; the
+            amount of time is relative to the current system time
+            (i.e. just the number of milliseconds that the selector
+            has to wait for the events).</td></tr></table>
+<p class="sec_header">Returns:</p><div class="cmnt">The amount of conduits that have received events; 0 if no conduits
+ have received events within the specified timeout; and -1 if the
+ wakeup() method has been called from another thread.</div>
+<p class="sec_header">Throws:</p><div class="cmnt">InterruptedSystemCallException if the underlying system call was
+ interrupted by a signal and the 'restartInterruptedSystemCall'
+ property was set to false; SelectorException if there were no
+ resources available to wait for events from the conduits.</div></dd>
+<dt class="decl"><span class="kw">class</span> <a class="symbol _class" name="EpollSelector.EpollSelectionSet" href="htmlsrc/tango.io.selector.EpollSelector.html#L381">EpollSelectionSet</a> : <span class="bclass">ISelectionSet</span> <span class="attrs">[<span class="prot">protected</span>]</span> <a href="tango.io.selector.EpollSelector.html#EpollSelector.EpollSelectionSet" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Class used to hold the list of Conduits that have received events.</div></div>
+<p class="sec_header">See Also:</p><div class="cmnt">ISelectionSet</div>
+<dl>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="EpollSelector.EpollSelectionSet.opApply" href="htmlsrc/tango.io.selector.EpollSelector.html#L391">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref SelectionKey) <em>dg</em>)</span> <span class="attrs">[<span class="prot">public</span>]</span> <a href="tango.io.selector.EpollSelector.html#EpollSelector.EpollSelectionSet.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate over all the Conduits that have received events.</div></div></dd></dl></dd>
+<dt class="decl"><span class="rettyp">ISelectionSet</span> <a class="symbol _function" name="EpollSelector.selectedSet" href="htmlsrc/tango.io.selector.EpollSelector.html#L430">selectedSet</a><span class="params">()</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.EpollSelector.html#EpollSelector.selectedSet" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the selection set resulting from the call to any of the
+ select() methods.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">If the call to select() was unsuccessful or it did not return any
+ events, the returned value will be null.</div></dd>
+<dt class="decl"><span class="rettyp">SelectionKey</span> <a class="symbol _function" name="EpollSelector.key" href="htmlsrc/tango.io.selector.EpollSelector.html#L444">key</a><span class="params">(ISelectable <em>conduit</em>)</span> <span class="attrs">[<span class="prot">public</span>, <span class="stc">override</span>]</span> <a href="tango.io.selector.EpollSelector.html#EpollSelector.key" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Return the selection key resulting from the registration of a conduit
+ to the selector.</div></div>
+<p class="sec_header">Remarks:</p><div class="cmnt">If the conduit is not registered to the selector the returned
+ value will SelectionKey.init. No exception will be thrown by this
+ method.</div></dd>
+<dt class="decl"><span class="rettyp">int</span> <a class="symbol _function" name="EpollSelector.opApply" href="htmlsrc/tango.io.selector.EpollSelector.html#L461">opApply</a><span class="params">(<span class="k">scope</span> int delegate(ref SelectionKey) <em>dg</em>)</span> <a href="tango.io.selector.EpollSelector.html#EpollSelector.opApply" class="plink">¶</a></dt>
+<dd class="ddef">
+<div class="summary"><div class="cmnt">Iterate through the currently registered selection keys.  Note that
+ you should not erase or add any items from the selector while
+ iterating, although you can register existing conduits again.</div></div></dd></dl></dd></dl>
 </div>
 <div id="kandil-footer">
   <p>Copyright (c) 2006 Juan Jose Comellas. All rights reserved</p>
-  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Mon May  7 18:12:25 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
+  <p>Page generated by <a href="http://code.google.com/p/dil">DIL</a> on Tue Aug 21 02:56:45 2012. Rendered by <a href="http://code.google.com/p/dil/wiki/Kandil">Kandil</a>.</p>
 </div>
 </div>
 </body>

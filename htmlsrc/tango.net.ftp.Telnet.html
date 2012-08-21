@@ -38,14 +38,14 @@
 <span class="d Compound">{
         <span class="lc">/// The Socket that is used to send commands.</span>
         <span class="d Variables"><span class="t Identifier"><span class="i">Socket</span></span> <span class="i">socket_</span>;</span>
-        <span class="d Variables"><span class="t TemplateInstance"><span class="i">Lines</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span>)</span></span> <span class="i">iterator</span>;</span>
+        <span class="d Variables"><span class="t TemplateInstance"><span class="i">Lines</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span>)</span></span> <span class="i">iterator</span>;</span>
 
-        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">exception</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">string</span></span> <span class="i">message</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d StorageClass"><span class="k">abstract</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">exception</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">string</span></span> <span class="i">message</span></span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="lc">/// Send a line over the Socket Conduit.</span>
         <span class="lc">///</span>
         <span class="lc">/// buf = the bytes to send</span>
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">sendline</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">buf</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">sendline</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">buf</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">sendData</span></span>(<span class="i">buf</span>);</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">sendData</span></span>(<span class="sl">"<span class="es">\r</span><span class="es">\n</span>"</span>)</span>;</span>
@@ -54,7 +54,7 @@
         <span class="lc">/// Send a line over the Socket Conduit.</span>
         <span class="lc">///</span>
         <span class="lc">/// buf = the bytes to send</span>
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">sendData</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">buf</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">sendData</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">buf</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">socket_</span></span>.<span class="t Identifier"><span class="i">write</span></span>(<span class="i">buf</span>);</span></span>
         }</span></span></span>
@@ -62,7 +62,7 @@
         <span class="lc">/// Read a CRLF terminated line from the socket.</span>
         <span class="lc">///</span>
         <span class="lc">/// Returns: the line read</span>
-        <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">readLine</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">readLine</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">to_return</span>;</span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">iterator</span></span>.<span class="t Identifier"><span class="i">readln</span></span>(<span class="i">to_return</span>);</span></span>
@@ -79,11 +79,11 @@
                 the Socket instance used
          *      Since: 0.99.8
          */</span>
-        <span class="d Function"><span class="t Identifier"><span class="i">Socket</span></span> <span class="i">findAvailableServer</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">hostname</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">port</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">Socket</span></span> <span class="i">findAvailableServer</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">hostname</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">port</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">socket_</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Socket</span></span></span></span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">socket_</span></span>.<span class="e Identifier"><span class="i">connect</span></span>(<span class="i">hostname</span>, <span class="i">port</span>)</span>;</span>
-                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">iterator</span></span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">Lines</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span>)</span></span>(<span class="e Identifier"><span class="i">socket_</span></span>)</span></span>;</span>
+                <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">iterator</span></span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">Lines</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span>)</span></span>(<span class="e Identifier"><span class="i">socket_</span></span>)</span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">socket_</span></span>;</span>
         }</span></span></span>
 

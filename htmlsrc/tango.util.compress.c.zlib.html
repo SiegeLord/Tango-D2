@@ -110,8 +110,8 @@
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>     <span class="i">voidpf</span>;</span></span>
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>     <span class="i">voidp</span>;</span></span>
 
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">voidpf</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">voidpf</span></span> <span class="i">opaque</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">uInt</span></span> <span class="i">items</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">uInt</span></span> <span class="i">size</span></span>)</span></span> <span class="i">alloc_func</span>;</span></span>
-    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span>   <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">voidpf</span></span> <span class="i">opaque</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">voidpf</span></span> <span class="i">address</span></span>)</span></span>        <span class="i">free_func</span>;</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">voidpf</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">voidpf</span></span> <span class="i">opaque</span></span>, <span class="o "><span class="t Identifier"><span class="i">uInt</span></span> <span class="i">items</span></span>, <span class="o "><span class="t Identifier"><span class="i">uInt</span></span> <span class="i">size</span></span>)</span></span> <span class="i">alloc_func</span>;</span></span>
+    <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">void</span></span>   <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">voidpf</span></span> <span class="i">opaque</span></span>, <span class="o "><span class="t Identifier"><span class="i">voidpf</span></span> <span class="i">address</span></span>)</span></span>        <span class="i">free_func</span>;</span></span>
 
     <span class="d Struct"><span class="k">struct</span> <span class="i">internal_state</span> <span class="d Compound">{}</span></span>
 }</span>
@@ -200,26 +200,26 @@
 
 <span class="d Enum"><span class="k">enum</span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_NO_FLUSH</span></span>      = <span class="e Int"><span class="n">0</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_PARTIAL_FLUSH</span></span> = <span class="e Int"><span class="n">1</span></span></span>, <span class="bc">/* will be removed, use Z_SYNC_FLUSH instead */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_SYNC_FLUSH</span></span>    = <span class="e Int"><span class="n">2</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_FULL_FLUSH</span></span>    = <span class="e Int"><span class="n">3</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_FINISH</span></span>        = <span class="e Int"><span class="n">4</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_BLOCK</span></span>         = <span class="e Int"><span class="n">5</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_NO_FLUSH</span>      = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_PARTIAL_FLUSH</span> = <span class="e Int"><span class="n">1</span></span></span>, <span class="bc">/* will be removed, use Z_SYNC_FLUSH instead */</span>
+    <span class="d EnumMember"><span class="i">Z_SYNC_FLUSH</span>    = <span class="e Int"><span class="n">2</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_FULL_FLUSH</span>    = <span class="e Int"><span class="n">3</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_FINISH</span>        = <span class="e Int"><span class="n">4</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_BLOCK</span>         = <span class="e Int"><span class="n">5</span></span></span>,
 }</span>
 <span class="bc">/* Allowed flush values; see deflate() and inflate() below for details */</span>
 
 <span class="d Enum"><span class="k">enum</span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_OK</span></span>            = <span class="e Int"><span class="n">0</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_STREAM_END</span></span>    = <span class="e Int"><span class="n">1</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_NEED_DICT</span></span>     = <span class="e Int"><span class="n">2</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_ERRNO</span></span>         = <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_STREAM_ERROR</span></span>  = <span class="e Sign">-<span class="e Int"><span class="n">2</span></span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_DATA_ERROR</span></span>    = <span class="e Sign">-<span class="e Int"><span class="n">3</span></span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_MEM_ERROR</span></span>     = <span class="e Sign">-<span class="e Int"><span class="n">4</span></span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_BUF_ERROR</span></span>     = <span class="e Sign">-<span class="e Int"><span class="n">5</span></span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_VERSION_ERROR</span></span> = <span class="e Sign">-<span class="e Int"><span class="n">6</span></span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_OK</span>            = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_STREAM_END</span>    = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_NEED_DICT</span>     = <span class="e Int"><span class="n">2</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_ERRNO</span>         = <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_STREAM_ERROR</span>  = <span class="e Sign">-<span class="e Int"><span class="n">2</span></span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_DATA_ERROR</span>    = <span class="e Sign">-<span class="e Int"><span class="n">3</span></span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_MEM_ERROR</span>     = <span class="e Sign">-<span class="e Int"><span class="n">4</span></span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_BUF_ERROR</span>     = <span class="e Sign">-<span class="e Int"><span class="n">5</span></span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_VERSION_ERROR</span> = <span class="e Sign">-<span class="e Int"><span class="n">6</span></span></span></span>,
 }</span>
 <span class="bc">/* Return codes for the compression/decompression functions. Negative
  * values are errors, positive values are used for special but normal events.
@@ -227,35 +227,35 @@
 
 <span class="d Enum"><span class="k">enum</span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_NO_COMPRESSION</span></span>      = <span class="e Int"><span class="n">0</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_BEST_SPEED</span></span>          = <span class="e Int"><span class="n">1</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_BEST_COMPRESSION</span></span>    = <span class="e Int"><span class="n">9</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_DEFAULT_COMPRESSION</span></span> = <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_NO_COMPRESSION</span>      = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_BEST_SPEED</span>          = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_BEST_COMPRESSION</span>    = <span class="e Int"><span class="n">9</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_DEFAULT_COMPRESSION</span> = <span class="e Sign">-<span class="e Int"><span class="n">1</span></span></span></span>,
 }</span>
 <span class="bc">/* compression levels */</span>
 
 <span class="d Enum"><span class="k">enum</span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_FILTERED</span></span>            = <span class="e Int"><span class="n">1</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_HUFFMAN_ONLY</span></span>        = <span class="e Int"><span class="n">2</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_RLE</span></span>                 = <span class="e Int"><span class="n">3</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_FIXED</span></span>               = <span class="e Int"><span class="n">4</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_DEFAULT_STRATEGY</span></span>    = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_FILTERED</span>            = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_HUFFMAN_ONLY</span>        = <span class="e Int"><span class="n">2</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_RLE</span>                 = <span class="e Int"><span class="n">3</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_FIXED</span>               = <span class="e Int"><span class="n">4</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_DEFAULT_STRATEGY</span>    = <span class="e Int"><span class="n">0</span></span></span>,
 }</span>
 <span class="bc">/* compression strategy; see deflateInit2() below for details */</span>
 
 <span class="d Enum"><span class="k">enum</span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_BINARY</span></span>   = <span class="e Int"><span class="n">0</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_TEXT</span></span>     = <span class="e Int"><span class="n">1</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_ASCII</span></span>    = <span class="e Identifier"><span class="i">Z_TEXT</span></span></span>,  <span class="bc">/* for compatibility with 1.2.2 and earlier */</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_UNKNOWN</span></span>  = <span class="e Int"><span class="n">2</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_BINARY</span>   = <span class="e Int"><span class="n">0</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_TEXT</span>     = <span class="e Int"><span class="n">1</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_ASCII</span>    = <span class="e Identifier"><span class="i">Z_TEXT</span></span></span>,  <span class="bc">/* for compatibility with 1.2.2 and earlier */</span>
+    <span class="d EnumMember"><span class="i">Z_UNKNOWN</span>  = <span class="e Int"><span class="n">2</span></span></span>,
 }</span>
 <span class="bc">/* Possible values of the data_type field (though see inflate()) */</span>
 
 <span class="d Enum"><span class="k">enum</span>
 {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">Z_DEFLATED</span></span> = <span class="e Int"><span class="n">8</span></span></span>,
+    <span class="d EnumMember"><span class="i">Z_DEFLATED</span> = <span class="e Int"><span class="n">8</span></span></span>,
 }</span>
 <span class="bc">/* The deflate compression method (the only one supported in this version) */</span>
 
@@ -266,7 +266,7 @@
 
                         <span class="bc">/* basic functions */</span>
 
-<span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">zlibVersion</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">zlibVersion</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 <span class="bc">/* The application can compare zlibVersion and ZLIB_VERSION for consistency.
    If the first character differs, the library code actually used is
    not compatible with the zlib.h header file used by the application.
@@ -296,7 +296,7 @@ int deflateInit (z_streamp strm, int level);
 */</span>
 
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">flush</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflate</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">flush</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
     deflate compresses as much data as possible, and stops when the input
   buffer becomes empty or the output buffer becomes full. It may introduce some
@@ -382,7 +382,7 @@ int deflateInit (z_streamp strm, int level);
 */</span>
 
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateEnd</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateEnd</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      All dynamically allocated data structures for this stream are freed.
    This function discards any unprocessed input and does not flush any
@@ -417,7 +417,7 @@ int inflateInit(z_streamp strm);
 */</span>
 
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflate</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">flush</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflate</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">flush</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
     inflate decompresses as much data as possible, and stops when the input
   buffer becomes empty or the output buffer becomes full. It may introduce
@@ -516,7 +516,7 @@ int inflateInit(z_streamp strm);
 */</span>
 
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateEnd</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateEnd</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      All dynamically allocated data structures for this stream are freed.
    This function discards any unprocessed input and does not flush any
@@ -592,9 +592,9 @@ int deflateInit2 (z_streamp strm,
    not perform any compression: this will be done by deflate().
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateSetDictionary</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
-                         <span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>    <span class="i">dictionary</span></span>,
-                         <span class="o Parameter"><span class="t Identifier"><span class="i">uInt</span></span>      <span class="i">dictLength</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateSetDictionary</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                         <span class="o "><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>    <span class="i">dictionary</span></span>,
+                         <span class="o "><span class="t Identifier"><span class="i">uInt</span></span>      <span class="i">dictLength</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Initializes the compression dictionary from the given byte sequence
    without producing any compressed output. This function must be called
@@ -631,8 +631,8 @@ int deflateInit2 (z_streamp strm,
    perform any compression: this will be done by deflate().
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateCopy</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">dest</span></span>,
-                <span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">source</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateCopy</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">dest</span></span>,
+                <span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">source</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Sets the destination stream as a complete copy of the source stream.
 
@@ -649,7 +649,7 @@ int deflateInit2 (z_streamp strm,
    destination.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateReset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateReset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      This function is equivalent to deflateEnd followed by deflateInit,
    but does not free and reallocate all the internal compression state.
@@ -660,9 +660,9 @@ int deflateInit2 (z_streamp strm,
    stream state was inconsistent (such as zalloc or state being NULL).
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateParams</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
-                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">level</span></span>,
-                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">strategy</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateParams</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                  <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">level</span></span>,
+                  <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">strategy</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Dynamically update the compression level and compression strategy.  The
    interpretation of level and strategy is as in deflateInit2.  This can be
@@ -681,11 +681,11 @@ int deflateInit2 (z_streamp strm,
    if strm-&gt;avail_out was zero.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateTune</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
-                <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">good_length</span></span>,
-                <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">max_lazy</span></span>,
-                <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">nice_length</span></span>,
-                <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">max_chain</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateTune</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">good_length</span></span>,
+                <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">max_lazy</span></span>,
+                <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">nice_length</span></span>,
+                <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">max_chain</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Fine tune deflate's internal compression parameters.  This should only be
    used by someone who understands the algorithm used by zlib's deflate for
@@ -698,8 +698,8 @@ int deflateInit2 (z_streamp strm,
    returns Z_OK on success, or Z_STREAM_ERROR for an invalid deflate stream.
  */</span>
 
-<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">deflateBound</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
-                   <span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span>     <span class="i">sourceLen</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">deflateBound</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                   <span class="o "><span class="t Identifier"><span class="i">uLong</span></span>     <span class="i">sourceLen</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      deflateBound() returns an upper bound on the compressed size after
    deflation of sourceLen bytes.  It must be called after deflateInit()
@@ -707,9 +707,9 @@ int deflateInit2 (z_streamp strm,
    for deflation in a single pass, and so would be called before deflate().
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflatePrime</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
-                 <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">bits</span></span>,
-                 <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">value</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflatePrime</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                 <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">bits</span></span>,
+                 <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">value</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      deflatePrime() inserts bits in the deflate output stream.  The intent
   is that this function is used to start off the deflate output with the
@@ -723,8 +723,8 @@ int deflateInit2 (z_streamp strm,
    stream state was inconsistent.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateSetHeader</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
-                     <span class="o Parameter"><span class="t Identifier"><span class="i">gz_headerp</span></span> <span class="i">head</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateSetHeader</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
+                     <span class="o "><span class="t Identifier"><span class="i">gz_headerp</span></span> <span class="i">head</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
       deflateSetHeader() provides gzip header information for when a gzip
    stream is requested by deflateInit2().  deflateSetHeader() may be called
@@ -790,9 +790,9 @@ int inflateInit2(z_streamp strm,
    and avail_out are unchanged.)
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateSetDictionary</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
-                         <span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>    <span class="i">dictionary</span></span>,
-                         <span class="o Parameter"><span class="t Identifier"><span class="i">uInt</span></span>      <span class="i">dictLength</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateSetDictionary</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                         <span class="o "><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>    <span class="i">dictionary</span></span>,
+                         <span class="o "><span class="t Identifier"><span class="i">uInt</span></span>      <span class="i">dictLength</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Initializes the decompression dictionary from the given uncompressed byte
    sequence. This function must be called immediately after a call of inflate,
@@ -812,7 +812,7 @@ int inflateInit2(z_streamp strm,
    inflate().
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateSync</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateSync</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
     Skips invalid compressed data until a full flush point (see above the
   description of deflate with Z_FULL_FLUSH) can be found, or until all
@@ -827,8 +827,8 @@ int inflateInit2(z_streamp strm,
   until success or end of the input data.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateCopy</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">dest</span></span>,
-                <span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">source</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateCopy</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">dest</span></span>,
+                <span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">source</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Sets the destination stream as a complete copy of the source stream.
 
@@ -843,7 +843,7 @@ int inflateInit2(z_streamp strm,
    destination.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateReset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateReset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      This function is equivalent to inflateEnd followed by inflateInit,
    but does not free and reallocate all the internal decompression state.
@@ -853,9 +853,9 @@ int inflateInit2(z_streamp strm,
    stream state was inconsistent (such as zalloc or state being NULL).
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflatePrime</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
-                 <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">bits</span></span>,
-                 <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">value</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflatePrime</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                 <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">bits</span></span>,
+                 <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">value</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      This function inserts bits in the inflate input stream.  The intent is
   that this function is used to start inflating at a bit position in the
@@ -869,8 +869,8 @@ int inflateInit2(z_streamp strm,
    stream state was inconsistent.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateGetHeader</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
-                     <span class="o Parameter"><span class="t Identifier"><span class="i">gz_headerp</span></span> <span class="i">head</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateGetHeader</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
+                     <span class="o "><span class="t Identifier"><span class="i">gz_headerp</span></span> <span class="i">head</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
       inflateGetHeader() requests that gzip header information be stored in the
    provided gz_header structure.  inflateGetHeader() may be called after
@@ -932,14 +932,14 @@ int inflateBackInit(z_streamp strm,
    match the version of the header file.
 */</span>
 
-<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span></span>      <span class="i">in_func</span>;</span></span>
-<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span>  <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span></span>)</span></span> <span class="i">out_func</span>;</span></span>
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span></span>      <span class="i">in_func</span>;</span></span>
+<span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">int</span></span>  <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span></span>)</span></span> <span class="i">out_func</span>;</span></span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateBack</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
-                <span class="o Parameter"><span class="t Identifier"><span class="i">in_func</span></span>   <span class="i">in_fn</span></span>,
-                <span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>     <span class="i">in_desc</span></span>,
-                <span class="o Parameter"><span class="t Identifier"><span class="i">out_func</span></span>  <span class="i">out_fn</span></span>,
-                <span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>     <span class="i">out_desc</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateBack</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                <span class="o "><span class="t Identifier"><span class="i">in_func</span></span>   <span class="i">in_fn</span></span>,
+                <span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>     <span class="i">in_desc</span></span>,
+                <span class="o "><span class="t Identifier"><span class="i">out_func</span></span>  <span class="i">out_fn</span></span>,
+                <span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span>     <span class="i">out_desc</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      inflateBack() does a raw inflate with a single call using a call-back
    interface for input and output.  This is more efficient than inflate() for
@@ -1006,7 +1006,7 @@ int inflateBackInit(z_streamp strm,
    that inflateBack() cannot return Z_OK.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateBackEnd</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateBackEnd</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      All memory allocated by inflateBackInit() is freed.
 
@@ -1014,7 +1014,7 @@ int inflateBackInit(z_streamp strm,
    state was inconsistent.
 */</span>
 
-<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">zlibCompileFlags</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">zlibCompileFlags</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 <span class="bc">/* Return flags indicating compile-time options.
 
     Type sizes, two bits each, 00 = 16 bits, 01 = 32, 10 = 64, 11 = other:
@@ -1066,10 +1066,10 @@ int inflateBackInit(z_streamp strm,
    utility functions can easily be modified if you need special options.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">compress</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">dest</span></span>,
-             <span class="o Parameter"><span class="t Identifier"><span class="i">uLongf</span></span><span class="t Pointer">*</span> <span class="i">destLen</span></span>,
-             <span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">source</span></span>,
-             <span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span>   <span class="i">sourceLen</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">compress</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">dest</span></span>,
+             <span class="o "><span class="t Identifier"><span class="i">uLongf</span></span><span class="t Pointer">*</span> <span class="i">destLen</span></span>,
+             <span class="o "><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">source</span></span>,
+             <span class="o "><span class="t Identifier"><span class="i">uLong</span></span>   <span class="i">sourceLen</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Compresses the source buffer into the destination buffer.  sourceLen is
    the byte length of the source buffer. Upon entry, destLen is the total
@@ -1083,11 +1083,11 @@ int inflateBackInit(z_streamp strm,
    buffer.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">compress2</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">dest</span></span>,
-              <span class="o Parameter"><span class="t Identifier"><span class="i">uLongf</span></span><span class="t Pointer">*</span> <span class="i">destLen</span></span>,
-              <span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">source</span></span>,
-              <span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span>   <span class="i">sourceLen</span></span>,
-              <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>     <span class="i">level</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">compress2</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">dest</span></span>,
+              <span class="o "><span class="t Identifier"><span class="i">uLongf</span></span><span class="t Pointer">*</span> <span class="i">destLen</span></span>,
+              <span class="o "><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">source</span></span>,
+              <span class="o "><span class="t Identifier"><span class="i">uLong</span></span>   <span class="i">sourceLen</span></span>,
+              <span class="o "><span class="t Integral"><span class="k">int</span></span>     <span class="i">level</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Compresses the source buffer into the destination buffer. The level
    parameter has the same meaning as in deflateInit.  sourceLen is the byte
@@ -1101,17 +1101,17 @@ int inflateBackInit(z_streamp strm,
    Z_STREAM_ERROR if the level parameter is invalid.
 */</span>
 
-<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">compressBound</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">sourceLen</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">compressBound</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">sourceLen</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      compressBound() returns an upper bound on the compressed size after
    compress() or compress2() on sourceLen bytes.  It would be used before
    a compress() or compress2() call to allocate the destination buffer.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">uncompress</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">dest</span></span>,
-               <span class="o Parameter"><span class="t Identifier"><span class="i">uLongf</span></span><span class="t Pointer">*</span> <span class="i">destLen</span></span>,
-               <span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">source</span></span>,
-               <span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span>   <span class="i">sourceLen</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">uncompress</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">dest</span></span>,
+               <span class="o "><span class="t Identifier"><span class="i">uLongf</span></span><span class="t Pointer">*</span> <span class="i">destLen</span></span>,
+               <span class="o "><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span>  <span class="i">source</span></span>,
+               <span class="o "><span class="t Identifier"><span class="i">uLong</span></span>   <span class="i">sourceLen</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Decompresses the source buffer into the destination buffer.  sourceLen is
    the byte length of the source buffer. Upon entry, destLen is the total
@@ -1131,7 +1131,7 @@ int inflateBackInit(z_streamp strm,
 
 <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">voidp</span></span> <span class="i">gzFile</span>;</span></span>
 
-<span class="d Function"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">gzopen</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">mode</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">gzopen</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">path</span></span>, <span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">mode</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Opens a gzip (.gz) file for reading or writing. The mode parameter
    is as in fopen ("rb" or "wb") but can also include a compression level
@@ -1148,7 +1148,7 @@ int inflateBackInit(z_streamp strm,
    can be checked to distinguish the two cases (if errno is zero, the
    zlib error is Z_MEM_ERROR).  */</span>
 
-<span class="d Function"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">gzdopen</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">fd</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">mode</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">gzdopen</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">fd</span></span>, <span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">mode</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      gzdopen() associates a gzFile with the file descriptor fd.  File
    descriptors are obtained from calls like open, dup, creat, pipe or
@@ -1161,7 +1161,7 @@ int inflateBackInit(z_streamp strm,
    the (de)compression state.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzsetparams</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">level</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">strategy</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzsetparams</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">level</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">strategy</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Dynamically update the compression level or strategy. See the description
    of deflateInit2 for the meaning of these parameters.
@@ -1169,7 +1169,7 @@ int inflateBackInit(z_streamp strm,
    opened for writing.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzread</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">voidp</span></span> <span class="i">buf</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzread</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o "><span class="t Identifier"><span class="i">voidp</span></span> <span class="i">buf</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Reads the given number of uncompressed bytes from the compressed file.
    If the input file was not in gzip format, gzread copies the given number
@@ -1177,14 +1177,14 @@ int inflateBackInit(z_streamp strm,
      gzread returns the number of uncompressed bytes actually read (0 for
    end of file, -1 for error). */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzwrite</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">voidpc</span></span> <span class="i">buf</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzwrite</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o "><span class="t Identifier"><span class="i">voidpc</span></span> <span class="i">buf</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Writes the given number of uncompressed bytes into the compressed file.
    gzwrite returns the number of uncompressed bytes actually written
    (0 in case of error).
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzprintf</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">format</span></span>, <span class="o Parameter">...</span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzprintf</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">format</span></span>, <span class="o ">...</span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Converts, formats, and writes the args to the compressed file under
    control of the format string, as in fprintf. gzprintf returns the number of
@@ -1197,14 +1197,14 @@ int inflateBackInit(z_streamp strm,
    because the secure snprintf() or vsnprintf() functions were not available.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzputs</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">s</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzputs</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">s</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
       Writes the given null-terminated string to the compressed file, excluding
    the terminating null character.
       gzputs returns the number of characters written, or -1 in case of error.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">gzgets</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">buf</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">gzgets</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o "><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">buf</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
       Reads bytes from the compressed file until len-1 characters are read, or
    a newline character is read and transferred to buf, or an end-of-file
@@ -1213,19 +1213,19 @@ int inflateBackInit(z_streamp strm,
       gzgets returns buf, or Z_NULL in case of error.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzputc</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">c</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzputc</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">c</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
       Writes c, converted to an unsigned char, into the compressed file.
    gzputc returns the value that was written, or -1 in case of error.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzgetc</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzgetc</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
       Reads one byte from the compressed file. gzgetc returns this byte
    or -1 in case of end of file or error.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzungetc</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">c</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzungetc</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">c</span></span>, <span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
       Push one character back onto the stream to be read again later.
    Only one character of push-back is allowed.  gzungetc() returns the
@@ -1235,7 +1235,7 @@ int inflateBackInit(z_streamp strm,
    or gzrewind().
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzflush</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">flush</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzflush</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">flush</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Flushes all pending output into the compressed file. The parameter
    flush is as in the deflate() function. The return value is the zlib
@@ -1245,7 +1245,7 @@ int inflateBackInit(z_streamp strm,
    degrade compression.
 */</span>
 
-<span class="d Function"><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">gzseek</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">offset</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">whence</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">gzseek</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o "><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">offset</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">whence</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
       Sets the starting position for the next gzread or gzwrite on the
    given compressed file. The offset represents a number of bytes in the
@@ -1262,14 +1262,14 @@ int inflateBackInit(z_streamp strm,
    would be before the current position.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzrewind</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzrewind</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Rewinds the given file. This function is supported only for reading.
 
    gzrewind(file) is equivalent to (int)gzseek(file, 0L, SEEK_SET)
 */</span>
 
-<span class="d Function"><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">gztell</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">gztell</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Returns the starting position for the next gzread or gzwrite on the
    given compressed file. This position represents a number of bytes in the
@@ -1278,26 +1278,26 @@ int inflateBackInit(z_streamp strm,
    gztell(file) is equivalent to gzseek(file, 0L, SEEK_CUR)
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzeof</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzeof</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Returns 1 when EOF has previously been detected reading the given
    input stream, otherwise zero.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzdirect</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzdirect</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Returns 1 if file is being read directly without decompression, otherwise
    zero.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzclose</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">gzclose</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Flushes all pending output if necessary, closes the compressed file
    and deallocates all the (de)compression state. The return value is the zlib
    error number (see function gzerror below).
 */</span>
 
-<span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">gzerror</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span><span class="t Pointer">*</span> <span class="i">errnum</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">gzerror</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span><span class="t Pointer">*</span> <span class="i">errnum</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Returns the error message for the last error which occurred on the
    given compressed file. errnum is set to zlib error number. If an
@@ -1306,7 +1306,7 @@ int inflateBackInit(z_streamp strm,
    to get the exact error code.
 */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">gzclearerr</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">gzclearerr</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">gzFile</span></span> <span class="i">file</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Clears the error and end-of-file flags for file. This is analogous to the
    clearerr() function in stdio. This is useful for continuing to read a gzip
@@ -1321,7 +1321,7 @@ int inflateBackInit(z_streamp strm,
    compression library.
 */</span>
 
-<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler32</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span> <span class="i">buf</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">uInt</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler32</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler</span></span>, <span class="o "><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span> <span class="i">buf</span></span>, <span class="o "><span class="t Identifier"><span class="i">uInt</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Update a running Adler-32 checksum with the bytes buf[0..len-1] and
    return the updated checksum. If buf is NULL, this function returns
@@ -1337,7 +1337,7 @@ int inflateBackInit(z_streamp strm,
      if (adler != original_adler) error();
 */</span>
 
-<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler32_combine</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler1</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler2</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">len2</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler32_combine</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler1</span></span>, <span class="o "><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">adler2</span></span>, <span class="o "><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">len2</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Combine two Adler-32 checksums into one.  For two sequences of bytes, seq1
    and seq2 with lengths len1 and len2, Adler-32 checksums were calculated for
@@ -1345,7 +1345,7 @@ int inflateBackInit(z_streamp strm,
    seq1 and seq2 concatenated, requiring only adler1, adler2, and len2.
 */</span>
 
-<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc32</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span> <span class="i">buf</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">uInt</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc32</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc</span></span>, <span class="o "><span class="t Identifier"><span class="i">Bytef</span></span><span class="t Pointer">*</span> <span class="i">buf</span></span>, <span class="o "><span class="t Identifier"><span class="i">uInt</span></span> <span class="i">len</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="bc">/*
      Update a running CRC-32 with the bytes buf[0..len-1] and return the
    updated CRC-32. If buf is NULL, this function returns the required initial
@@ -1361,7 +1361,7 @@ int inflateBackInit(z_streamp strm,
      if (crc != original_crc) error();
 */</span>
 
-<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc32_combine</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc1</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc2</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">len2</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc32_combine</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc1</span></span>, <span class="o "><span class="t Identifier"><span class="i">uLong</span></span> <span class="i">crc2</span></span>, <span class="o "><span class="t Identifier"><span class="i">z_off_t</span></span> <span class="i">len2</span></span>)</span><span class="s FuncBody">;</span></span>
 
 <span class="bc">/*
      Combine two CRC-32 check values into one.  For two sequences of bytes,
@@ -1377,33 +1377,33 @@ int inflateBackInit(z_streamp strm,
 <span class="bc">/* deflateInit and inflateInit are macros to allow checking the zlib version
  * and the compiler's view of z_stream:
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateInit_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
-                 <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>        <span class="i">level</span></span>,
-                 <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>      <span class="i">ver</span></span>,
-                 <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>        <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateInit_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
-                 <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>      <span class="i">ver</span></span>,
-                 <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>        <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateInit2_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
-                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">level</span></span>,
-                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">method</span></span>,
-                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
-                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">memLevel</span></span>,
-                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">strategy</span></span>,
-                  <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>     <span class="i">ver</span></span>,
-                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateInit2_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
-                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
-                  <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>     <span class="i">ver</span></span>,
-                  <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateBackInit_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
-                     <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
-                     <span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span>    <span class="i">window</span></span>,
-                     <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>     <span class="i">ver</span></span>,
-                     <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateInit_</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
+                 <span class="o "><span class="t Integral"><span class="k">int</span></span>        <span class="i">level</span></span>,
+                 <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>      <span class="i">ver</span></span>,
+                 <span class="o "><span class="t Integral"><span class="k">int</span></span>        <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateInit_</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
+                 <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>      <span class="i">ver</span></span>,
+                 <span class="o "><span class="t Integral"><span class="k">int</span></span>        <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateInit2_</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                  <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">level</span></span>,
+                  <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">method</span></span>,
+                  <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
+                  <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">memLevel</span></span>,
+                  <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">strategy</span></span>,
+                  <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>     <span class="i">ver</span></span>,
+                  <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateInit2_</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                  <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
+                  <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>     <span class="i">ver</span></span>,
+                  <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateBackInit_</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                     <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
+                     <span class="o "><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span>    <span class="i">window</span></span>,
+                     <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>     <span class="i">ver</span></span>,
+                     <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">stream_size</span></span>)</span><span class="s FuncBody">;</span></span>
 
-<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateInit</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
-                           <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>        <span class="i">level</span></span>)</span>
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateInit</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>,
+                           <span class="o "><span class="t Integral"><span class="k">int</span></span>        <span class="i">level</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">deflateInit_</span></span>(<span class="i">strm</span>,
                         <span class="i">level</span>,
@@ -1411,19 +1411,19 @@ int inflateBackInit(z_streamp strm,
                         <span class="i">z_stream</span>.<span class="i">sizeof</span>)</span>;</span>
 }</span></span></span>
 
-<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateInit</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>)</span>
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateInit</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span>  <span class="i">strm</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">inflateInit_</span></span>(<span class="i">strm</span>,
                         <span class="i">ZLIB_VERSION</span>,
                         <span class="i">z_stream</span>.<span class="i">sizeof</span>)</span>;</span>
 }</span></span></span>
 
-<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateInit2</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
-                           <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">level</span></span>,
-                           <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">method</span></span>,
-                           <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
-                           <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">memLevel</span></span>,
-                           <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">strategy</span></span>)</span>
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">deflateInit2</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                           <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">level</span></span>,
+                           <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">method</span></span>,
+                           <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
+                           <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">memLevel</span></span>,
+                           <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">strategy</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">deflateInit2_</span></span>(<span class="i">strm</span>,
                          <span class="i">level</span>,
@@ -1435,8 +1435,8 @@ int inflateBackInit(z_streamp strm,
                          <span class="i">z_stream</span>.<span class="i">sizeof</span>)</span>;</span>
 }</span></span></span>
 
-<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateInit2</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
-                            <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>)</span>
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateInit2</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                            <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">inflateInit2_</span></span>(<span class="i">strm</span>,
                          <span class="i">windowBits</span>,
@@ -1444,9 +1444,9 @@ int inflateBackInit(z_streamp strm,
                          <span class="i">z_stream</span>.<span class="i">sizeof</span>)</span>;</span>
 }</span></span></span>
 
-<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateBackInit</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
-                               <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
-                               <span class="o Parameter"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span>    <span class="i">window</span></span>)</span>
+<span class="d Linkage"><span class="k">extern</span> (<span class="i">D</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inflateBackInit</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">strm</span></span>,
+                               <span class="o "><span class="t Integral"><span class="k">int</span></span>       <span class="i">windowBits</span></span>,
+                               <span class="o "><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span>    <span class="i">window</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">inflateBackInit_</span></span>(<span class="i">strm</span>,
                             <span class="i">windowBits</span>,
@@ -1455,9 +1455,9 @@ int inflateBackInit(z_streamp strm,
                             <span class="i">z_stream</span>.<span class="i">sizeof</span>)</span>;</span>
 }</span></span></span>
 
-<span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>   <span class="i">zError</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span>     <span class="i">inflateSyncPoint</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">z</span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Identifier"><span class="i">uLongf</span></span><span class="t Pointer">*</span> <span class="i">get_crc_table</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span></span></span>
+<span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span>   <span class="i">zError</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span>     <span class="i">inflateSyncPoint</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">z_streamp</span></span> <span class="i">z</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">uLongf</span></span><span class="t Pointer">*</span> <span class="i">get_crc_table</span><span class="o ">()</span><span class="s FuncBody">;</span></span></span></span>
 
 </pre></td>
 </tr></table>

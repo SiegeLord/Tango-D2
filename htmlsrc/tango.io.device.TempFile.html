@@ -39,7 +39,7 @@
 <span class="d Compound">{
     <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">Common</span> : <span class="i">DWORD</span>, <span class="i">LONG</span>, <span class="i">MAX_PATH</span>, <span class="i">PCHAR</span>, <span class="i">CP_UTF8</span>;</span>
 
-    <span class="d Enum"><span class="k">enum</span> : <span class="t Identifier"><span class="i">DWORD</span></span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">FILE_FLAG_OPEN_REPARSE_POINT</span></span> = <span class="e Int"><span class="n">0x00200000</span></span></span> }</span>
+    <span class="d Enum"><span class="k">enum</span> : <span class="t Identifier"><span class="i">DWORD</span></span> { <span class="d EnumMember"><span class="i">FILE_FLAG_OPEN_REPARSE_POINT</span> = <span class="e Int"><span class="n">0x00200000</span></span></span> }</span>
 
     <span class="d Version"><span class="k">version</span>( <span class="i">Win32SansUnicode</span> )
     <span class="d Compound">{
@@ -48,7 +48,7 @@
             <span class="i">FILE_FLAG_DELETE_ON_CLOSE</span>,
             <span class="i">GetTempPathA</span>;</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">GetTempPath</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">GetTempPath</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">len</span> = <span class="e Call"><span class="e Identifier"><span class="i">GetTempPathA</span></span>(<span class="n">0</span>, <span class="k">null</span>)</span>;</span></span>
             <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">len</span></span> == <span class="e Int"><span class="n">0</span></span></span> )
@@ -69,7 +69,7 @@
             <span class="i">FILE_FLAG_DELETE_ON_CLOSE</span>,
             <span class="i">GetTempPathW</span>;</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">GetTempPath</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">GetTempPath</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">len</span> = <span class="e Call"><span class="e Identifier"><span class="i">GetTempPathW</span></span>(<span class="n">0</span>, <span class="k">null</span>)</span>;</span></span>
             <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">len</span></span> == <span class="e Int"><span class="n">0</span></span></span> )
@@ -89,12 +89,12 @@
 
     <span class="lc">// Determines if reparse points (aka: symlinks) are supported.  Support</span>
     <span class="lc">// was introduced in Windows Vista.</span>
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">reparseSupported</span><span class="o Parameters">()</span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">reparseSupported</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">OSVERSIONINFO</span></span> <span class="i">versionInfo</span> = <span class="e VoidInit"><span class="k">void</span></span>;</span></span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">versionInfo</span></span>.<span class="e Identifier"><span class="i">dwOSVersionInfoSize</span></span> = <span class="e Identifier"><span class="i">versionInfo</span></span>.<span class="e Identifier"><span class="i">sizeof</span></span></span>;</span>
 
-        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">e</span><span class="o Parameters">()</span><span class="s FuncBody"><span class="s Compound">{<span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Exception</span></span>(<span class="e String"><span class="sl">"could not determine Windows version"</span></span>)</span>;</span>}</span></span></span></span>
+        <span class="s Declaration"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">e</span><span class="o ">()</span><span class="s FuncBody"><span class="s Compound">{<span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Exception</span></span>(<span class="e String"><span class="sl">"could not determine Windows version"</span></span>)</span>;</span>}</span></span></span></span>
 
         <span class="s Version"><span class="k">version</span>( <span class="i">Win32SansUnicode</span> )
         <span class="s Compound">{
@@ -189,12 +189,12 @@
         <span class="bc">/**
          * The temporary file should be destroyed along with the owner object.
          */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">Transient</span></span></span>,
+        <span class="d EnumMember"><span class="i">Transient</span></span>,
         <span class="bc">/**
          * The temporary file should persist after the object has been
          * destroyed.
          */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">Permanent</span></span></span>
+        <span class="d EnumMember"><span class="i">Permanent</span></span>
     }</span>
 
     <span class="nc">/+enum Sensitivity : ubyte
@@ -260,13 +260,13 @@
     <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">_style</span>;</span>
 
     <span class="lc">///</span>
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">style</span> = <span class="e Identifier"><span class="i">TempStyle</span></span>.<span class="e Identifier"><span class="i">init</span></span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">style</span> = <span class="e Identifier"><span class="i">TempStyle</span></span>.<span class="e Identifier"><span class="i">init</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">open</span></span> (<span class="i">style</span>);</span></span>
     }</span></span></span>
 
     <span class="lc">///</span>
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">prefix</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">style</span> = <span class="e Identifier"><span class="i">TempStyle</span></span>.<span class="e Identifier"><span class="i">init</span></span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">prefix</span></span>, <span class="o "><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">style</span> = <span class="e Identifier"><span class="i">TempStyle</span></span>.<span class="e Identifier"><span class="i">init</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">open</span></span> (<span class="i">prefix</span>, <span class="i">style</span>)</span>;</span>
     }</span></span></span>
@@ -276,7 +276,7 @@
      * Indicates the style that this TempFile was created with.
      *
      **************************************************************************/</span>
-    <span class="d Function"><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">tempStyle</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">tempStyle</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">_style</span></span>;</span>
     }</span></span></span>
@@ -284,12 +284,12 @@
     <span class="bc">/*
      * Creates a new temporary file with the given style.
      */</span>
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">open</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">style</span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">open</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">style</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">open</span></span> (<span class="i">tempPath</span>(), <span class="i">style</span>)</span>;</span>
     }</span></span></span>
 
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">open</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">prefix</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">style</span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">open</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">prefix</span></span>, <span class="o "><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">style</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s For"><span class="k">for</span>( <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ubyte</span></span> <span class="i">i</span>=<span class="e Identifier"><span class="i">style</span></span>.<span class="e Identifier"><span class="i">attempts</span></span>;</span></span> <span class="e PostDecr"><span class="e Identifier"><span class="i">i</span></span>--</span>; )
         <span class="s Scope"><span class="s Compound">{
@@ -315,7 +315,7 @@
          * created.  The returned path is safe to mutate.
          *
          **********************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">tempPath</span><span class="o Parameters">()</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">tempPath</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">GetTempPath</span></span>()</span>;</span>
         }</span></span></span>
@@ -324,7 +324,7 @@
          * Creates a new temporary file at the given path, with the specified
          * style.
          */</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">openTempFile</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">style</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">openTempFile</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o "><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">style</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="lc">// TODO: Check permissions directly and throw an exception;</span>
             <span class="lc">// otherwise, we could spin trying to make a file when it's</span>
@@ -365,7 +365,7 @@
          * created.  The returned path is safe to mutate.
          *
          **********************************************************************/</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">tempPath</span><span class="o Parameters">()</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">tempPath</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="lc">// Check for TMPDIR; failing that, use /tmp</span>
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span> <span class="i">ptr</span> = <span class="e Call"><span class="e Identifier"><span class="i">getenv</span></span> (<span class="sl">"TMPDIR"</span>)</span>;</span></span>
@@ -379,7 +379,7 @@
          * Creates a new temporary file at the given path, with the specified
          * style.
          */</span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">openTempFile</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">style</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">openTempFile</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o "><span class="t Identifier"><span class="i">TempStyle</span></span> <span class="i">style</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="lc">// Check suitability</span>
             <span class="s Scope"><span class="s Compound">{
@@ -404,7 +404,7 @@
                     <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">error</span></span>(<span class="sl">"temporary directory owned by neither root nor user"</span>)</span>;</span></span></span>
 
                 <span class="lc">// Check to see if anyone other than us can write to the dir.</span>
-                <span class="s If"><span class="k">if</span>( <span class="e AndAnd"><span class="e Equal"><span class="e Paren">(<span class="e And"><span class="e Identifier"><span class="i">sb</span></span>.<span class="e Identifier"><span class="i">st_mode</span></span> &amp; <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments"><span class="e Int"><span class="n">22</span></span></span></span></span>)</span> != <span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Equal"><span class="e Paren">(<span class="e And"><span class="e Identifier"><span class="i">sb</span></span>.<span class="e Identifier"><span class="i">st_mode</span></span> &amp; <span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments"><span class="e Int"><span class="n">1000</span></span></span></span></span>)</span> == <span class="e Int"><span class="n">0</span></span></span></span> )
+                <span class="s If"><span class="k">if</span>( <span class="e AndAnd"><span class="e Equal"><span class="e Paren">(<span class="e And"><span class="e Identifier"><span class="i">sb</span></span>.<span class="e Identifier"><span class="i">st_mode</span></span> &amp; <span class="e TmplInstance"><span class="i">octal</span>!<span class="o "><span class="e Int"><span class="n">22</span></span></span></span></span>)</span> != <span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Equal"><span class="e Paren">(<span class="e And"><span class="e Identifier"><span class="i">sb</span></span>.<span class="e Identifier"><span class="i">st_mode</span></span> &amp; <span class="e TmplInstance"><span class="i">octal</span>!<span class="o "><span class="e Int"><span class="n">1000</span></span></span></span></span>)</span> == <span class="e Int"><span class="n">0</span></span></span></span> )
                     <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">error</span></span>(<span class="sl">"sticky bit not set on world-writable directory"</span>)</span>;</span></span></span>
             }</span></span>
 
@@ -445,20 +445,20 @@
     <span class="bc">/*
      * Generates a new random file name, sans directory.
      */</span>
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">randomName</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">length</span>=<span class="e Identifier"><span class="i">DEFAULT_LENGTH</span></span></span>,
-            <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">prefix</span>=<span class="e Identifier"><span class="i">DEFAULT_PREFIX</span></span></span>,
-            <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">suffix</span>=<span class="e Identifier"><span class="i">DEFAULT_SUFFIX</span></span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span> <span class="i">randomName</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">length</span>=<span class="e Identifier"><span class="i">DEFAULT_LENGTH</span></span></span>,
+            <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">prefix</span>=<span class="e Identifier"><span class="i">DEFAULT_PREFIX</span></span></span>,
+            <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">suffix</span>=<span class="e Identifier"><span class="i">DEFAULT_SUFFIX</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">junk</span> = <span class="e New"><span class="k">new</span> <span class="t Integral"><span class="k">char</span></span><span class="t Array">[<span class="e Identifier"><span class="i">length</span></span></span>]</span>;</span></span>
         <span class="s ScopeGuard"><span class="k">scope</span>(<span class="i">exit</span>) <span class="s Expression"><span class="e Delete"><span class="k">delete</span> <span class="e Identifier"><span class="i">junk</span></span></span>;</span></span>
 
-        <span class="s Foreach"><span class="k">foreach</span>( <span class="o Parameters"><span class="o Parameter"><span class="k">ref</span> <span class="i">c</span></span></span> ; <span class="e Identifier"><span class="i">junk</span></span> )
+        <span class="s Foreach"><span class="k">foreach</span>( <span class="o "><span class="o "><span class="k">ref</span> <span class="i">c</span></span></span> ; <span class="e Identifier"><span class="i">junk</span></span> )
             <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">c</span></span> = <span class="e Index"><span class="e Identifier"><span class="i">JUNK_CHARS</span></span>[<span class="e Call"><span class="e Identifier"><span class="i">Kiss</span></span>.<span class="e Identifier"><span class="i">instance</span></span>.<span class="e Identifier"><span class="i">toInt</span></span>(<span class="k">cast</span>(<span class="k">uint</span>)$)</span>]</span></span>;</span></span></span>
 
         <span class="s Return"><span class="k">return</span> <span class="e Cat"><span class="e Cat"><span class="e Identifier"><span class="i">prefix</span></span>~<span class="e Identifier"><span class="i">junk</span></span></span>~<span class="e Identifier"><span class="i">suffix</span></span></span>;</span>
     }</span></span></span>
 
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">detach</span><span class="o Parameters">()</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">detach</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s StaticAssert"><span class="k">static</span> <span class="k">assert</span>( <span class="e Not">!<span class="e Is"><span class="k">is</span>(<span class="t Identifier"><span class="i">Sensitivity</span></span>)</span></span> );</span>
         <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>.<span class="e Identifier"><span class="i">detach</span></span>()</span>;</span>
@@ -470,7 +470,7 @@
 <span class="d Compound"><span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Console</span> : <span class="i">Cin</span>;</span>
 <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span> : <span class="i">Stdout</span>;</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>(<span class="sl">r"
 Please ensure that the transient file no longer exists once the TempFile

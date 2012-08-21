@@ -32,15 +32,15 @@
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">sys</span>.<span class="i">win32</span>.<span class="i">Types</span> : <span class="i">HINSTANCE</span>, <span class="i">HMODULE</span>, <span class="i">BOOL</span>;</span>
 
         <span class="d Linkage"><span class="k">extern</span> (<span class="i">Windows</span>)</span> <span class="d Compound">{
-            <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">GetProcAddress</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">HINSTANCE</span></span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-            <span class="d Function"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="i">FreeLibrary</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">HMODULE</span></span></span>)</span><span class="s FuncBody">;</span></span>
+            <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">GetProcAddress</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">HINSTANCE</span></span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+            <span class="d Function"><span class="t Identifier"><span class="i">BOOL</span></span> <span class="i">FreeLibrary</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">HMODULE</span></span></span>)</span><span class="s FuncBody">;</span></span>
 
             <span class="d Version"><span class="k">version</span> (<span class="i">Win32SansUnicode</span>)
-                     <span class="d Function"><span class="t Identifier"><span class="i">HINSTANCE</span></span> <span class="i">LoadLibraryA</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+                     <span class="d Function"><span class="t Identifier"><span class="i">HINSTANCE</span></span> <span class="i">LoadLibraryA</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
                 <span class="k">else</span> <span class="d Compound">{
-                   <span class="d Enum"><span class="k">enum</span> {<span class="d EnumMember"><span class="t Identifier"><span class="i">CP_UTF8</span></span> = <span class="e Int"><span class="n">65001</span></span></span>}</span>
-                   <span class="d Function"><span class="t Identifier"><span class="i">HINSTANCE</span></span> <span class="i">LoadLibraryW</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">wchar</span></span>)</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-                   <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">MultiByteToWideChar</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span></span>, <span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">wchar</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
+                   <span class="d Enum"><span class="k">enum</span> {<span class="d EnumMember"><span class="i">CP_UTF8</span> = <span class="e Int"><span class="n">65001</span></span></span>}</span>
+                   <span class="d Function"><span class="t Identifier"><span class="i">HINSTANCE</span></span> <span class="i">LoadLibraryW</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">wchar</span></span>)</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+                   <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">MultiByteToWideChar</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span></span>, <span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o "><span class="t Integral"><span class="k">wchar</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>)</span><span class="s FuncBody">;</span></span>
                 }</span></span>
         }</span>
     }</span>
@@ -101,10 +101,10 @@
 <span class="d StorageClass"><span class="k">final</span></span> <span class="d Class"><span class="k">class</span> <span class="i">SharedLib</span> <span class="d Compound">{
     <span class="lc">/// Mapped from RTLD_NOW, RTLD_LAZY, RTLD_GLOBAL and RTLD_LOCAL</span>
     <span class="d Enum"><span class="k">enum</span> <span class="i">LoadMode</span> {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">Now</span></span> = <span class="e Int"><span class="n">0b1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">Lazy</span></span> = <span class="e Int"><span class="n">0b10</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">Global</span></span> = <span class="e Int"><span class="n">0b100</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">Local</span></span> = <span class="e Int"><span class="n">0b1000</span></span></span>
+        <span class="d EnumMember"><span class="i">Now</span> = <span class="e Int"><span class="n">0b1</span></span></span>,
+        <span class="d EnumMember"><span class="i">Lazy</span> = <span class="e Int"><span class="n">0b10</span></span></span>,
+        <span class="d EnumMember"><span class="i">Global</span> = <span class="e Int"><span class="n">0b100</span></span></span>,
+        <span class="d EnumMember"><span class="i">Local</span> = <span class="e Int"><span class="n">0b1000</span></span></span>
     }</span>
 
 
@@ -122,7 +122,7 @@
             A SharedLib instance being a handle to the library, or throws
             SharedLibException if it could not be loaded
       */</span>
-    <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SharedLib</span></span> <span class="i">load</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">LoadMode</span></span> <span class="i">mode</span> = <span class="e Or"><span class="e Identifier"><span class="i">LoadMode</span></span>.<span class="e Identifier"><span class="i">Now</span></span> | <span class="e Identifier"><span class="i">LoadMode</span></span>.<span class="e Identifier"><span class="i">Global</span></span></span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SharedLib</span></span> <span class="i">load</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o "><span class="t Identifier"><span class="i">LoadMode</span></span> <span class="i">mode</span> = <span class="e Or"><span class="e Identifier"><span class="i">LoadMode</span></span>.<span class="e Identifier"><span class="i">Now</span></span> | <span class="e Identifier"><span class="i">LoadMode</span></span>.<span class="e Identifier"><span class="i">Global</span></span></span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     	<span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">loadImpl</span></span>(<span class="i">path</span>, <span class="i">mode</span>, <span class="k">true</span>)</span>;</span>
     }</span></span></span>
 
@@ -142,12 +142,12 @@
             A SharedLib instance being a handle to the library, or null if it
             could not be loaded
       */</span>
-    <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SharedLib</span></span> <span class="i">loadNoThrow</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">LoadMode</span></span> <span class="i">mode</span> = <span class="e Or"><span class="e Identifier"><span class="i">LoadMode</span></span>.<span class="e Identifier"><span class="i">Now</span></span> | <span class="e Identifier"><span class="i">LoadMode</span></span>.<span class="e Identifier"><span class="i">Global</span></span></span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SharedLib</span></span> <span class="i">loadNoThrow</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o "><span class="t Identifier"><span class="i">LoadMode</span></span> <span class="i">mode</span> = <span class="e Or"><span class="e Identifier"><span class="i">LoadMode</span></span>.<span class="e Identifier"><span class="i">Now</span></span> | <span class="e Identifier"><span class="i">LoadMode</span></span>.<span class="e Identifier"><span class="i">Global</span></span></span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     	<span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">loadImpl</span></span>(<span class="i">path</span>, <span class="i">mode</span>, <span class="k">false</span>)</span>;</span>
     }</span></span></span>
 
 
-    <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SharedLib</span></span> <span class="i">loadImpl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">LoadMode</span></span> <span class="i">mode</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Protection"><span class="k">private</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SharedLib</span></span> <span class="i">loadImpl</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>, <span class="o "><span class="t Identifier"><span class="i">LoadMode</span></span> <span class="i">mode</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">SharedLib</span></span> <span class="i">res</span>;</span></span>
 
         <span class="s Synchronized"><span class="k">synchronized</span> (<span class="e Identifier"><span class="i">mutex</span></span>) <span class="s Scope"><span class="s Compound">{
@@ -173,7 +173,7 @@
                 <span class="s Version"><span class="k">version</span> (<span class="i">SharedLibVerbose</span>) <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Trace</span></span>.<span class="e Identifier"><span class="i">formatln</span></span>(<span class="sl">"Loading the SharedLib"</span>)</span>;</span></span>
                 <span class="s Try"><span class="k">try</span> <span class="s Scope"><span class="s Compound">{
                     <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">res</span></span>.<span class="e Identifier"><span class="i">load_</span></span>(<span class="i">mode</span>, <span class="i">throwExceptions</span>)</span>;</span>
-                }</span></span> <span class="s Catch"><span class="k">catch</span> (<span class="o Parameter"><span class="t Identifier"><span class="i">Exception</span></span> <span class="i">e</span></span>) <span class="s Compound">{
+                }</span></span> <span class="s Catch"><span class="k">catch</span> (<span class="o "><span class="t Identifier"><span class="i">Exception</span></span> <span class="i">e</span></span>) <span class="s Compound">{
                     <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">exc</span></span> = <span class="e Identifier"><span class="i">e</span></span></span>;</span>
                 }</span></span></span>
             }</span></span></span>
@@ -219,7 +219,7 @@
 
         Throws SharedLibException on failure. In this case, the SharedLib object is not deleted.
       */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unload</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unload</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
     	<span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">unloadImpl</span></span>(<span class="k">true</span>)</span>;</span>
     }</span></span></span>
 
@@ -231,12 +231,12 @@
         It's invalid to use the object after unload() has been called, as unload()
         will delete it if it's not referenced any more.
       */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unloadNoThrow</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unloadNoThrow</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
     	<span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">unloadImpl</span></span>(<span class="k">false</span>)</span>;</span>
     }</span></span></span>
 
 
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unloadImpl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unloadImpl</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">bool</span></span> <span class="i">deleteThis</span> = <span class="e Bool"><span class="k">false</span></span>;</span></span>
 
         <span class="s Synchronized"><span class="k">synchronized</span> (<span class="e This"><span class="k">this</span></span>) <span class="s Scope"><span class="s Compound">{
@@ -248,7 +248,7 @@
                     <span class="s Version"><span class="k">version</span> (<span class="i">SharedLibVerbose</span>) <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Trace</span></span>.<span class="e Identifier"><span class="i">formatln</span></span>(<span class="sl">"Unloading the SharedLib"</span>)</span>;</span></span>
                     <span class="s Try"><span class="k">try</span> <span class="s Scope"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">unload_</span></span>(<span class="i">throwExceptions</span>);</span></span>
-                    }</span></span> <span class="s Catch"><span class="k">catch</span> (<span class="o Parameter"><span class="t Identifier"><span class="i">Exception</span></span> <span class="i">e</span></span>) <span class="s Compound">{
+                    }</span></span> <span class="s Catch"><span class="k">catch</span> (<span class="o "><span class="t Identifier"><span class="i">Exception</span></span> <span class="i">e</span></span>) <span class="s Compound">{
                         <span class="s Expression"><span class="e PreIncr">++<span class="e Identifier"><span class="i">refCnt</span></span></span>;</span>
                         <span class="s Throw"><span class="k">throw</span> <span class="e Identifier"><span class="i">e</span></span>;</span>
                     }</span></span></span>
@@ -270,7 +270,7 @@
     <span class="bc">/**
         Returns the path to the OS-specific shared library associated with this object.
       */</span>
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path_</span></span>;</span>
     }</span></span></span>
 
@@ -285,7 +285,7 @@
             A pointer to the symbol or throws SharedLibException if it's
             not present in the library.
       */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">getSymbol</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">name</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">getSymbol</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">name</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
        <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">getSymbolImpl</span></span>(<span class="i">name</span>, <span class="k">true</span>)</span>;</span>
     }</span></span></span>
 
@@ -299,12 +299,12 @@
         Returns:
             A pointer to the symbol or null if it's not present in the library.
       */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">getSymbolNoThrow</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">name</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">getSymbolNoThrow</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">name</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
        <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">getSymbolImpl</span></span>(<span class="i">name</span>, <span class="k">false</span>)</span>;</span>
     }</span></span></span>
 
 
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">getSymbolImpl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">name</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">getSymbolImpl</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">name</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span> (<span class="e Identifier"><span class="i">loaded</span></span>)</span>;</span>
         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">getSymbol_</span></span>(<span class="i">name</span>, <span class="i">throwExceptions</span>)</span>;</span>
     }</span></span></span>
@@ -314,7 +314,7 @@
     <span class="bc">/**
         Returns the total number of libraries currently loaded by SharedLib
       */</span>
-    <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">numLoadedLibs</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">numLoadedLibs</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">uint</span></span>) <span class="e Identifier"><span class="i">loadedLibs</span></span></span>.<span class="e Identifier"><span class="i">keys</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span>
     }</span></span></span>
 
@@ -323,7 +323,7 @@
         <span class="d Version"><span class="k">version</span> (<span class="i">Windows</span>) <span class="d Compound">{
             <span class="d Variables"><span class="t Identifier"><span class="i">HMODULE</span></span> <span class="i">handle</span>;</span>
 
-            <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">load_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">LoadMode</span></span> <span class="i">mode</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+            <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">load_</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">LoadMode</span></span> <span class="i">mode</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Version"><span class="k">version</span> (<span class="i">Win32SansUnicode</span>)
                          <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">handle</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">LoadLibraryA</span></span>((<span class="k">this</span>.<span class="i">path_</span> ~ <span class="sl">"<span class="es">\0</span>"</span>).<span class="i">ptr</span>)</span></span>;</span>
                     <span class="k">else</span> <span class="s Compound">{
@@ -342,7 +342,7 @@
                 }</span></span></span>
             }</span></span></span>
 
-            <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">getSymbol_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">name</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+            <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">getSymbol_</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">name</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="lc">// MSDN: "Multiple threads do not overwrite each other's last-error code."</span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">res</span> = <span class="e Call"><span class="e Identifier"><span class="i">GetProcAddress</span></span>(<span class="i">handle</span>, <span class="i">name</span>)</span>;</span></span>
                 <span class="s If"><span class="k">if</span> (<span class="e AndAnd"><span class="e Identity"><span class="e Identifier"><span class="i">res</span></span> <span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span> &amp;&amp; <span class="e Identifier"><span class="i">throwExceptions</span></span></span>) <span class="s Scope"><span class="s Compound">{
@@ -352,7 +352,7 @@
                 }</span></span></span>
             }</span></span></span>
 
-            <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unload_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+            <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unload_</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e AndAnd"><span class="e Equal"><span class="e Int"><span class="n">0</span></span> == <span class="e Call"><span class="e Identifier"><span class="i">FreeLibrary</span></span>(<span class="i">handle</span>)</span></span> &amp;&amp; <span class="e Identifier"><span class="i">throwExceptions</span></span></span>) <span class="s Scope"><span class="s Compound">{
                     <span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">SharedLibException</span></span>(<span class="e Cat"><span class="e Cat"><span class="e Cat"><span class="e String"><span class="sl">"Couldn't unload shared library '"</span></span> ~ <span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path_</span></span>.<span class="e Identifier"><span class="i">idup</span></span></span> ~ <span class="e String"><span class="sl">"' : "</span></span></span> ~ <span class="e Identifier"><span class="i">SysError</span></span>.<span class="e Identifier"><span class="i">lastMsg</span></span>.<span class="e Identifier"><span class="i">idup</span></span></span>)</span>;</span>
                 }</span></span></span>
@@ -361,7 +361,7 @@
         <span class="k">else</span> <span class="d Version"><span class="k">version</span> (<span class="i">Posix</span>) <span class="d Compound">{
             <span class="d Variables"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">handle</span>;</span>
 
-            <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">load_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">LoadMode</span></span> <span class="i">mode</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+            <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">load_</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">LoadMode</span></span> <span class="i">mode</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">mode_</span>;</span></span>
                 <span class="s If"><span class="k">if</span> (<span class="e And"><span class="e Identifier"><span class="i">mode</span></span> &amp; <span class="e Identifier"><span class="i">LoadMode</span></span>.<span class="e Identifier"><span class="i">Now</span></span></span>) <span class="s Scope"><span class="s Expression"><span class="e OrAssign"><span class="e Identifier"><span class="i">mode_</span></span> |= <span class="e Identifier"><span class="i">RTLD_NOW</span></span></span>;</span></span></span>
                 <span class="s If"><span class="k">if</span> (<span class="e And"><span class="e Identifier"><span class="i">mode</span></span> &amp; <span class="e Identifier"><span class="i">LoadMode</span></span>.<span class="e Identifier"><span class="i">Lazy</span></span></span>) <span class="s Scope"><span class="s Expression"><span class="e OrAssign"><span class="e Identifier"><span class="i">mode_</span></span> |= <span class="e Identifier"><span class="i">RTLD_LAZY</span></span></span>;</span></span></span>
@@ -374,7 +374,7 @@
                 }</span></span></span>
             }</span></span></span>
 
-            <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">getSymbol_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">name</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+            <span class="d Function"><span class="t Integral"><span class="k">void</span></span><span class="t Pointer">*</span> <span class="i">getSymbol_</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span> <span class="i">name</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">throwExceptions</span></span>) <span class="s Scope"><span class="s Compound">{
                     <span class="s Synchronized"><span class="k">synchronized</span> (<span class="e Typeof"><span class="t Typeof"><span class="k">typeof</span>(<span class="e This"><span class="k">this</span></span>)</span></span>.<span class="e Identifier"><span class="i">classinfo</span></span>) <span class="s Scope"><span class="s Compound">{ <span class="lc">// dlerror need not be reentrant</span>
                         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">err</span> = <span class="e Call"><span class="e Identifier"><span class="i">dlerror</span></span>()</span>;</span></span>               <span class="lc">// clear previous error condition</span>
@@ -392,7 +392,7 @@
                 }</span></span></span>
             }</span></span></span>
 
-            <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unload_</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+            <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unload_</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">throwExceptions</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e AndAnd"><span class="e Equal"><span class="e Int"><span class="n">0</span></span> != <span class="e Call"><span class="e Identifier"><span class="i">dlclose</span></span>(<span class="i">handle</span>)</span></span> &amp;&amp; <span class="e Identifier"><span class="i">throwExceptions</span></span></span>) <span class="s Scope"><span class="s Compound">{
                     <span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">SharedLibException</span></span>(<span class="e Cat"><span class="e String"><span class="sl">"Couldn't unload shared library: "</span></span> ~ <span class="e Call"><span class="e Identifier"><span class="i">fromStringz</span></span>(<span class="i">dlerror</span>())</span>.<span class="e Identifier"><span class="i">idup</span></span></span>)</span>;</span>
                 }</span></span></span>
@@ -407,12 +407,12 @@
         <span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">refCnt</span> = <span class="e Int"><span class="n">0</span></span>;</span>
 
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">loaded</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">loaded</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Return"><span class="k">return</span> <span class="e Identity"><span class="e Identifier"><span class="i">handle</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>;</span>
         }</span></span></span>
 
 
-        <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+        <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">path</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
             <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">path_</span></span> = <span class="e Identifier"><span class="i">path</span></span></span>;</span>
         }</span></span></span>
     }</span>
@@ -431,7 +431,7 @@
 
 
 <span class="d Class"><span class="k">class</span> <span class="i">SharedLibException</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">Exception</span></span></span> <span class="d Compound">{
-    <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">msg</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+    <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Immutable"><span class="k">immutable</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">msg</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span>(<span class="i">msg</span>);</span></span>
     }</span></span></span>
 }</span></span>
@@ -441,7 +441,7 @@
 
 <span class="d Debug"><span class="k">debug</span> (<span class="i">SharedLib</span>)
 <span class="d Compound">{
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{       
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">lib</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">SharedLib</span></span>(<span class="e String"><span class="sl">"foo"</span></span>)</span>;</span></span>
         }</span></span></span>

@@ -51,13 +51,13 @@
 
 ******************************************************************************/</span>
 
-<span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">StackMap</span> <span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">K</span></span>, <span class="o TemplateTypeParam"><span class="i">V</span></span>, <span class="o TemplateAliasParam"><span class="k">alias</span> <span class="i">Hash</span> = <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">hash</span></span></span>, 
-                      <span class="o TemplateAliasParam"><span class="k">alias</span> <span class="i">Reap</span> = <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">reap</span></span></span>, 
-                      <span class="o TemplateAliasParam"><span class="k">alias</span> <span class="i">Heap</span> = <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">Collect</span></span></span>)</span> 
+<span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">StackMap</span> <span class="o ">(<span class="o "><span class="i">K</span></span>, <span class="o "><span class="i">V</span></span>, <span class="o "><span class="k">alias</span> <span class="i">Hash</span> = <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">hash</span></span></span>, 
+                      <span class="o "><span class="k">alias</span> <span class="i">Reap</span> = <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">reap</span></span></span>, 
+                      <span class="o "><span class="k">alias</span> <span class="i">Heap</span> = <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">Collect</span></span></span>)</span> 
 <span class="d Compound">{
         <span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">QueuedEntry</span></span>       <span class="i">Type</span>;</span></span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">Type</span></span>              <span class="t Pointer">*</span><span class="i">Ref</span>;</span></span>
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">HashMap</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">K</span></span>, <span class="t Identifier"><span class="i">Ref</span></span>, <span class="t Identifier"><span class="i">Hash</span></span>, <span class="t Identifier"><span class="i">reaper</span></span>, <span class="t Identifier"><span class="i">Heap</span></span>)</span></span> <span class="i">Map</span>;</span></span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">HashMap</span>!<span class="o ">(<span class="t Identifier"><span class="i">K</span></span>, <span class="t Identifier"><span class="i">Ref</span></span>, <span class="t Identifier"><span class="i">Hash</span></span>, <span class="t Identifier"><span class="i">reaper</span></span>, <span class="t Identifier"><span class="i">Heap</span></span>)</span></span> <span class="i">Map</span>;</span></span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Map</span></span>                     <span class="i">hash</span>;</span>
         <span class="d Protection"><span class="k">private</span></span> <span class="d Variables"><span class="t Identifier"><span class="i">Type</span></span><span class="t Array">[]</span>                  <span class="i">links</span>;</span>
 
@@ -76,7 +76,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">capacity</span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">capacity</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">hash</span></span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Map</span></span></span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">capacity</span></span> = <span class="e Identifier"><span class="i">capacity</span></span></span>;</span>
@@ -86,7 +86,7 @@
 
                 <span class="lc">// create empty list</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">head</span></span> = <span class="e Assign"><span class="e Identifier"><span class="i">tail</span></span> = <span class="e Index"><span class="e Address">&amp;<span class="e Identifier"><span class="i">links</span></span></span>[<span class="e Int"><span class="n">0</span></span>]</span></span></span>;</span>
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="k">ref</span> <span class="i">link</span></span></span>; <span class="e Slice"><span class="e Identifier"><span class="i">links</span></span>[<span class="e Int"><span class="n">1</span></span>..<span class="e Dollar">$</span>]</span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="k">ref</span> <span class="i">link</span></span></span>; <span class="e Slice"><span class="e Identifier"><span class="i">links</span></span>[<span class="e Int"><span class="n">1</span></span>..<span class="e Dollar">$</span>]</span>)
                         <span class="s Scope"><span class="s Compound">{
                         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">link</span></span>.<span class="e Identifier"><span class="i">prev</span></span> = <span class="e Identifier"><span class="i">tail</span></span></span>;</span>
                         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">tail</span></span>.<span class="e Identifier"><span class="i">next</span></span> = <span class="e Address">&amp;<span class="e Identifier"><span class="i">link</span></span></span></span>;</span>
@@ -111,7 +111,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">reaper</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">K</span></span>, <span class="o TemplateTypeParam"><span class="i">R</span></span>)</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">K</span></span> <span class="i">k</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">R</span></span> <span class="i">r</span></span>)</span> 
+        <span class="d StorageClass"><span class="k">static</span></span> <span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">reaper</span><span class="o ">(<span class="o "><span class="i">K</span></span>, <span class="o "><span class="i">R</span></span>)</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">K</span></span> <span class="i">k</span></span>, <span class="o "><span class="t Identifier"><span class="i">R</span></span> <span class="i">r</span></span>)</span> 
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Reap</span></span> (<span class="i">k</span>, <span class="i">r</span>.<span class="i">value</span>)</span>;</span>
         }</span></span></span></span></span>
@@ -121,7 +121,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">size</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">size</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">hash</span></span>.<span class="e Identifier"><span class="i">size</span></span>;</span>
         }</span></span></span>
@@ -131,7 +131,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">clear</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">clear</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Identifier"><span class="i">hash</span></span>.<span class="e Identifier"><span class="i">clear</span></span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">start</span></span> = <span class="e Null"><span class="k">null</span></span></span>;</span>
@@ -151,7 +151,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">push</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">push</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">add</span></span> (<span class="i">key</span>, <span class="i">value</span>)</span>;</span>
         }</span></span></span>
@@ -162,7 +162,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">popHead</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">popHead</span> <span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">start</span></span>)
                    <span class="s Scope"><span class="s Compound">{
@@ -178,7 +178,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">popTail</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">popTail</span> <span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">start</span></span>)
                    <span class="s Scope"><span class="s Compound">{
@@ -194,7 +194,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span></span> <span class="i">dg</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span> <span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span></span> <span class="i">dg</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">K</span></span>   <span class="i">key</span>;</span></span>
                         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">V</span></span>   <span class="i">value</span>;</span></span>
@@ -226,7 +226,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">add</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">add</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">entry</span> = <span class="e Null"><span class="k">null</span></span>;</span></span>
 
@@ -250,7 +250,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">get</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">get</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">entry</span> = <span class="e Null"><span class="k">null</span></span>;</span></span>
 
@@ -269,7 +269,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">take</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">take</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">entry</span> = <span class="e Null"><span class="k">null</span></span>;</span></span>
                 <span class="s If"><span class="k">if</span> (<span class="e Call"><span class="e Identifier"><span class="i">hash</span></span>.<span class="e Identifier"><span class="i">get</span></span> (<span class="i">key</span>, <span class="i">entry</span>)</span>)
@@ -297,7 +297,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">deReference</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">entry</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">deReference</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">entry</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">entry</span></span> !<span class="k">is</span> <span class="e Identifier"><span class="i">tail</span></span></span>)
                    <span class="s Scope"><span class="s Compound">{
@@ -319,7 +319,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">reReference</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">entry</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">reReference</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">entry</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">entry</span></span> !<span class="k">is</span> <span class="e Identifier"><span class="i">head</span></span></span>)
                    <span class="s Scope"><span class="s Compound">{
@@ -341,7 +341,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">addEntry</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
+        <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">addEntry</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">hash</span></span>.<span class="e Identifier"><span class="i">size</span></span> &lt; <span class="e Identifier"><span class="i">capacity</span></span></span>)
                    <span class="s Scope"><span class="s Compound">{
@@ -372,7 +372,7 @@
 
                 **************************************************************/</span>
         
-                <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">set</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
+                <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">set</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">value</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">value</span></span> = <span class="e Identifier"><span class="i">value</span></span></span>;</span>
                         <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">key</span></span> = <span class="e Identifier"><span class="i">key</span></span></span>;</span>
@@ -386,7 +386,7 @@
         
                 **************************************************************/</span>
         
-                <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">prepend</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">before</span></span>)</span>
+                <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">prepend</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">before</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">before</span></span>)
                            <span class="s Scope"><span class="s Compound">{
@@ -410,7 +410,7 @@
         
                 **************************************************************/</span>
         
-                <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">append</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">after</span></span>)</span>
+                <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">append</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">after</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">after</span></span>)
                            <span class="s Scope"><span class="s Compound">{
@@ -435,7 +435,7 @@
         
                 **************************************************************/</span>
         
-                <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">extract</span> <span class="o Parameters">()</span>
+                <span class="d Function"><span class="t Identifier"><span class="i">Ref</span></span> <span class="i">extract</span> <span class="o ">()</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="lc">// make 'prev' and 'next' entries see each other</span>
                         <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">prev</span></span>)
@@ -462,39 +462,39 @@
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">core</span>.<span class="i">Memory</span>;</span>
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">time</span>.<span class="i">StopWatch</span>;</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">v</span>;</span></span>
-                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">map</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">StackMap</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>, <span class="t Integral"><span class="k">int</span></span>)</span></span>(<span class="e Int"><span class="n">3</span></span>)</span>;</span></span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">map</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">StackMap</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>, <span class="t Integral"><span class="k">int</span></span>)</span></span>(<span class="e Int"><span class="n">3</span></span>)</span>;</span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">map</span></span>.<span class="e Identifier"><span class="i">add</span></span> (<span class="sl">"foo"</span>, <span class="n">1</span>)</span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">map</span></span>.<span class="e Identifier"><span class="i">add</span></span> (<span class="sl">"bar"</span>, <span class="n">2</span>)</span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">map</span></span>.<span class="e Identifier"><span class="i">add</span></span> (<span class="sl">"wumpus"</span>, <span class="n">3</span>)</span>;</span>
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">k</span></span>, <span class="o Parameter"><span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">map</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">k</span></span>, <span class="o "><span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">map</span></span>)
                          <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"{} {}"</span>, <span class="i">k</span>, <span class="i">v</span>)</span>;</span></span></span>
 
                 <span class="s Expression"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">newline</span></span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">map</span></span>.<span class="e Identifier"><span class="i">get</span></span> (<span class="sl">"bar"</span>, <span class="i">v</span>)</span>;</span>
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">k</span></span>, <span class="o Parameter"><span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">map</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">k</span></span>, <span class="o "><span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">map</span></span>)
                          <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"{} {}"</span>, <span class="i">k</span>, <span class="i">v</span>)</span>;</span></span></span>
 
                 <span class="s Expression"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">newline</span></span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">map</span></span>.<span class="e Identifier"><span class="i">get</span></span> (<span class="sl">"bar"</span>, <span class="i">v</span>)</span>;</span>
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">k</span></span>, <span class="o Parameter"><span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">map</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">k</span></span>, <span class="o "><span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">map</span></span>)
                          <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"{} {}"</span>, <span class="i">k</span>, <span class="i">v</span>)</span>;</span></span></span>
 
                 <span class="s Expression"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">newline</span></span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">map</span></span>.<span class="e Identifier"><span class="i">get</span></span> (<span class="sl">"foo"</span>, <span class="i">v</span>)</span>;</span>
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">k</span></span>, <span class="o Parameter"><span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">map</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">k</span></span>, <span class="o "><span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">map</span></span>)
                          <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"{} {}"</span>, <span class="i">k</span>, <span class="i">v</span>)</span>;</span></span></span>
 
                 <span class="s Expression"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">newline</span></span>;</span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">map</span></span>.<span class="e Identifier"><span class="i">get</span></span> (<span class="sl">"wumpus"</span>, <span class="i">v</span>)</span>;</span>
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">k</span></span>, <span class="o Parameter"><span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">map</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">k</span></span>, <span class="o "><span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">map</span></span>)
                          <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"{} {}"</span>, <span class="i">k</span>, <span class="i">v</span>)</span>;</span></span></span>
 
 
                 <span class="lc">// setup for benchmark, with a cache of integers</span>
-                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">test</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">StackMap</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">int</span></span>, <span class="t Integral"><span class="k">int</span></span>, <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">hash</span></span>, <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">reap</span></span>, <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">Chunk</span></span>)</span></span> (<span class="e Int"><span class="n">1000000</span></span>)</span>;</span></span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">test</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">StackMap</span>!<span class="o ">(<span class="t Integral"><span class="k">int</span></span>, <span class="t Integral"><span class="k">int</span></span>, <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">hash</span></span>, <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">reap</span></span>, <span class="t Identifier"><span class="i">Container</span></span>.<span class="t Identifier"><span class="i">Chunk</span></span>)</span></span> (<span class="e Int"><span class="n">1000000</span></span>)</span>;</span></span>
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">const</span></span> <span class="d Variables"><span class="i">count</span> = <span class="e Int"><span class="n">1_000_000</span></span>;</span></span>
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">StopWatch</span></span> <span class="i">w</span>;</span></span>
 
@@ -512,7 +512,7 @@
 
                 <span class="lc">// benchmark iteration</span>
                 <span class="s Expression"><span class="e Identifier"><span class="i">w</span></span>.<span class="e Identifier"><span class="i">start</span></span>;</span>
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">key</span></span>, <span class="o Parameter"><span class="i">value</span></span></span>; <span class="e Identifier"><span class="i">test</span></span>) <span class="s Scope"><span class="s Compound">{}</span></span></span>
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">key</span></span>, <span class="o "><span class="i">value</span></span></span>; <span class="e Identifier"><span class="i">test</span></span>) <span class="s Scope"><span class="s Compound">{}</span></span></span>
                 <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">formatln</span></span> (<span class="sl">"{} element iteration: {}/s"</span>, <span class="i">test</span>.<span class="i">size</span>, <span class="i">test</span>.<span class="i">size</span>/<span class="i">w</span>.<span class="i">stop</span>)</span>;</span>
         }</span></span></span>
 }</span></span></span>

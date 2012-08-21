@@ -207,13 +207,13 @@ struct ucontext_t
     }</span></span>
 
     <span class="d Enum"><span class="k">enum</span> {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">_MC_FPFMT_NODEV</span></span>        = <span class="e Int"><span class="n">0x10000</span></span></span>, <span class="bc">/* device not present or configured */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">_MC_FPFMT_387</span></span>           = <span class="e Int"><span class="n">0x10001</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">_MC_FPFMT_XMM</span></span>           = <span class="e Int"><span class="n">0x10002</span></span></span>,
+        <span class="d EnumMember"><span class="i">_MC_FPFMT_NODEV</span>        = <span class="e Int"><span class="n">0x10000</span></span></span>, <span class="bc">/* device not present or configured */</span>
+        <span class="d EnumMember"><span class="i">_MC_FPFMT_387</span>           = <span class="e Int"><span class="n">0x10001</span></span></span>,
+        <span class="d EnumMember"><span class="i">_MC_FPFMT_XMM</span>           = <span class="e Int"><span class="n">0x10002</span></span></span>,
 
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">_MC_FPOWNED_NONE</span></span>        = <span class="e Int"><span class="n">0x20000</span></span></span>, <span class="bc">/* FP state not used */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">_MC_FPOWNED_FPU</span></span>         = <span class="e Int"><span class="n">0x20001</span></span></span>, <span class="bc">/* FP state came from FPU */</span>
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">_MC_FPOWNED_PCB</span></span>         = <span class="e Int"><span class="n">0x20002</span></span></span>,  <span class="bc">/* FP state came from PCB */</span>
+        <span class="d EnumMember"><span class="i">_MC_FPOWNED_NONE</span>        = <span class="e Int"><span class="n">0x20000</span></span></span>, <span class="bc">/* FP state not used */</span>
+        <span class="d EnumMember"><span class="i">_MC_FPOWNED_FPU</span>         = <span class="e Int"><span class="n">0x20001</span></span></span>, <span class="bc">/* FP state came from FPU */</span>
+        <span class="d EnumMember"><span class="i">_MC_FPOWNED_PCB</span>         = <span class="e Int"><span class="n">0x20002</span></span></span>,  <span class="bc">/* FP state came from PCB */</span>
     }</span>
 
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">sigset_t</span>;</span></span>
@@ -336,10 +336,10 @@ int  swapcontext(ucontext_t*, in ucontext_t*);
 
 <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Is"><span class="k">is</span>( <span class="t Identifier"><span class="i">ucontext_t</span></span> )</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>  <span class="i">getcontext</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ucontext_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">makecontext</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ucontext_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">()</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span></span>, <span class="o Parameter">...</span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>  <span class="i">setcontext</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">ucontext_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>  <span class="i">swapcontext</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ucontext_t</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="k">in</span> <span class="t Identifier"><span class="i">ucontext_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>  <span class="i">getcontext</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ucontext_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">makecontext</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ucontext_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Integral"><span class="k">void</span></span> <span class="t Function"><span class="k">function</span><span class="o ">()</span></span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span></span>, <span class="o ">...</span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>  <span class="i">setcontext</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">ucontext_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>  <span class="i">swapcontext</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ucontext_t</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="k">in</span> <span class="t Identifier"><span class="i">ucontext_t</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span>
 
 </pre></td>

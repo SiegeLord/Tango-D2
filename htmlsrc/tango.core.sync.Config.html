@@ -32,7 +32,7 @@
     <span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">stdc</span>.<span class="i">posix</span>.<span class="i">sys</span>.<span class="i">time</span>;</span>
 
 
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">getTimespec</span><span class="o Parameters">( <span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">timespec</span></span> <span class="i">t</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">getTimespec</span><span class="o ">( <span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">timespec</span></span> <span class="i">t</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Is"><span class="k">is</span>( <span class="t Typeof"><span class="k">typeof</span>( <span class="e Identifier"><span class="i">clock_gettime</span></span> )</span> )</span> )
         <span class="s Compound">{
@@ -50,11 +50,11 @@
     }</span></span></span>
 
 
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">adjTimespec</span><span class="o Parameters">( <span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">timespec</span></span> <span class="i">t</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">double</span></span> <span class="i">v</span></span> )</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">adjTimespec</span><span class="o ">( <span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">timespec</span></span> <span class="i">t</span></span>, <span class="o "><span class="t Integral"><span class="k">double</span></span> <span class="i">v</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Enum"><span class="k">enum</span>
         {
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">SECS_TO_NANOS</span></span> = <span class="e Int"><span class="n">1_000_000_000</span></span></span>
+            <span class="d EnumMember"><span class="i">SECS_TO_NANOS</span> = <span class="e Int"><span class="n">1_000_000_000</span></span></span>
         }</span></span>
 
         <span class="lc">// NOTE: The fractional value added to period is to correct fp error.</span>

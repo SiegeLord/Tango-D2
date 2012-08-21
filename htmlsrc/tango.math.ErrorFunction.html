@@ -111,7 +111,7 @@
  * A special function expx2(x) is used to suppress error amplification
  * in computing exp(-x^2).
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">erfc</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">erfc</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">a</span></span> == <span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">infinity</span></span></span>)
         <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Float"><span class="n">0.0</span></span>;</span></span></span>
@@ -163,7 +163,7 @@
    valid for x &gt; 1.
    Use with normalDistribution and expx2.  */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">erfce</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">erfce</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span>, <span class="i">q</span>;</span></span>
 
@@ -197,7 +197,7 @@
  * arithmetic   domain     # trials      peak         rms
  *    IEEE      0,1         50000       2.0e-19     5.7e-20
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">erf</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">erf</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">x</span></span> == <span class="e Float"><span class="n">0.0</span></span></span>)
         <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">x</span></span>;</span></span></span> <span class="lc">// deal with negative zero</span>
@@ -266,7 +266,7 @@
  *   IEEE     -106.566, 106.566    10^5       1.6e-19     4.4e-20
  */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">expx2</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">sign</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">expx2</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">sign</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="bc">/*
     Cephes Math Library Release 2.9:  June, 2000
@@ -325,7 +325,7 @@ $(LINK http://www.netlib.org/cephes/ldoubdoc.html),
 G. Marsaglia, "Evaluating the Normal Distribution",
 Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
 */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">normalDistributionImpl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">normalDistributionImpl</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">a</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span> = <span class="e Mul"><span class="e Identifier"><span class="i">a</span></span> * <span class="e Identifier"><span class="i">SQRT1_2</span></span></span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">real</span></span> <span class="i">z</span> = <span class="e Call"><span class="e Identifier"><span class="i">abs</span></span>(<span class="i">x</span>)</span>;</span></span>
@@ -367,7 +367,7 @@ Journal of Statistical Software &lt;b&gt;11&lt;/b&gt;, (July 2004).
  * For larger arguments,  x/sqrt(2 pi) = w + w^3 R(w^2)/S(w^2)) ,
  * where w = p - 0.5 .
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">normalDistributionInvImpl</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">normalDistributionInvImpl</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">p</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
   <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&gt;=<span class="e Float"><span class="n">0.0L</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">p</span></span>&lt;=<span class="e Float"><span class="n">1.0L</span></span></span></span>, <span class="e String"><span class="sl">"Domain error"</span></span>)</span>;</span>
 }</span>

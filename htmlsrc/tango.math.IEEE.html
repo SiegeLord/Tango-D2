@@ -116,19 +116,19 @@
 <span class="lc">// 4-7 = reserved.</span>
 <span class="d Enum"><span class="k">enum</span> <span class="i">TANGO_NAN</span> {
     <span class="lc">// General errors</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">DOMAIN_ERROR</span></span> = <span class="e Int"><span class="n">0x0101</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">SINGULARITY</span></span>  = <span class="e Int"><span class="n">0x0102</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">RANGE_ERROR</span></span>  = <span class="e Int"><span class="n">0x0103</span></span></span>,
+    <span class="d EnumMember"><span class="i">DOMAIN_ERROR</span> = <span class="e Int"><span class="n">0x0101</span></span></span>,
+    <span class="d EnumMember"><span class="i">SINGULARITY</span>  = <span class="e Int"><span class="n">0x0102</span></span></span>,
+    <span class="d EnumMember"><span class="i">RANGE_ERROR</span>  = <span class="e Int"><span class="n">0x0103</span></span></span>,
     <span class="lc">// NaNs created by functions in the basic library</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">TAN_DOMAIN</span></span>   = <span class="e Int"><span class="n">0x1001</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">POW_DOMAIN</span></span>   = <span class="e Int"><span class="n">0x1021</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">GAMMA_DOMAIN</span></span> = <span class="e Int"><span class="n">0x1101</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">GAMMA_POLE</span></span>   = <span class="e Int"><span class="n">0x1102</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">SGNGAMMA</span></span>     = <span class="e Int"><span class="n">0x1112</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">BETA_DOMAIN</span></span>  = <span class="e Int"><span class="n">0x1131</span></span></span>,
+    <span class="d EnumMember"><span class="i">TAN_DOMAIN</span>   = <span class="e Int"><span class="n">0x1001</span></span></span>,
+    <span class="d EnumMember"><span class="i">POW_DOMAIN</span>   = <span class="e Int"><span class="n">0x1021</span></span></span>,
+    <span class="d EnumMember"><span class="i">GAMMA_DOMAIN</span> = <span class="e Int"><span class="n">0x1101</span></span></span>,
+    <span class="d EnumMember"><span class="i">GAMMA_POLE</span>   = <span class="e Int"><span class="n">0x1102</span></span></span>,
+    <span class="d EnumMember"><span class="i">SGNGAMMA</span>     = <span class="e Int"><span class="n">0x1112</span></span></span>,
+    <span class="d EnumMember"><span class="i">BETA_DOMAIN</span>  = <span class="e Int"><span class="n">0x1131</span></span></span>,
     <span class="lc">// NaNs from statistical functions</span>
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">NORMALDISTRIBUTION_INV_DOMAIN</span></span> = <span class="e Int"><span class="n">0x2001</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">STUDENTSDDISTRIBUTION_DOMAIN</span></span>  = <span class="e Int"><span class="n">0x2011</span></span></span>
+    <span class="d EnumMember"><span class="i">NORMALDISTRIBUTION_INV_DOMAIN</span> = <span class="e Int"><span class="n">0x2001</span></span></span>,
+    <span class="d EnumMember"><span class="i">STUDENTSDDISTRIBUTION_DOMAIN</span>  = <span class="e Int"><span class="n">0x2011</span></span></span>
 }</span>
 
 <span class="d Protection"><span class="k">private</span></span>:
@@ -157,7 +157,7 @@
 
 <span class="lc">// Constants used for extracting the components of the representation.</span>
 <span class="lc">// They supplement the built-in floating point properties.</span>
-<span class="d Template"><span class="k">template</span> <span class="i">floatTraits</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span> <span class="d Compound">{
+<span class="d Template"><span class="k">template</span> <span class="i">floatTraits</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span> <span class="d Compound">{
  <span class="lc">// EXPMASK is a ushort mask to select the exponent portion (without sign)</span>
  <span class="lc">// SIGNMASK is a ushort mask to select the sign bit.</span>
  <span class="lc">// EXPPOS_SHORT is the index of the exponent when represented as a ushort array.</span>
@@ -167,9 +167,9 @@
 
  <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">T</span></span>.<span class="e Identifier"><span class="i">mant_dig</span></span> == <span class="e Int"><span class="n">24</span></span></span>) <span class="d Compound">{ <span class="lc">// float</span>
     <span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">ushort</span></span> {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">EXPMASK</span></span> = <span class="e Int"><span class="n">0x7F80</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">SIGNMASK</span></span> = <span class="e Int"><span class="n">0x8000</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">EXPBIAS</span></span> = <span class="e Int"><span class="n">0x3F00</span></span></span>
+        <span class="d EnumMember"><span class="i">EXPMASK</span> = <span class="e Int"><span class="n">0x7F80</span></span></span>,
+        <span class="d EnumMember"><span class="i">SIGNMASK</span> = <span class="e Int"><span class="n">0x8000</span></span></span>,
+        <span class="d EnumMember"><span class="i">EXPBIAS</span> = <span class="e Int"><span class="n">0x3F00</span></span></span>
     }</span>
     <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">EXPMASK_INT</span> = <span class="e Int"><span class="n">0x7F80_0000</span></span>;</span>
     <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">MANTISSAMASK_INT</span> = <span class="e Int"><span class="n">0x007F_FFFF</span></span>;</span>
@@ -180,9 +180,9 @@
     }</span></span>
  }</span> <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">T</span></span>.<span class="e Identifier"><span class="i">mant_dig</span></span>==<span class="e Int"><span class="n">53</span></span></span>) <span class="d Compound">{ <span class="lc">// double, or real==double</span>
      <span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">ushort</span></span> {
-         <span class="d EnumMember"><span class="t Identifier"><span class="i">EXPMASK</span></span> = <span class="e Int"><span class="n">0x7FF0</span></span></span>,
-         <span class="d EnumMember"><span class="t Identifier"><span class="i">SIGNMASK</span></span> = <span class="e Int"><span class="n">0x8000</span></span></span>,
-         <span class="d EnumMember"><span class="t Identifier"><span class="i">EXPBIAS</span></span> = <span class="e Int"><span class="n">0x3FE0</span></span></span>
+         <span class="d EnumMember"><span class="i">EXPMASK</span> = <span class="e Int"><span class="n">0x7FF0</span></span></span>,
+         <span class="d EnumMember"><span class="i">SIGNMASK</span> = <span class="e Int"><span class="n">0x8000</span></span></span>,
+         <span class="d EnumMember"><span class="i">EXPBIAS</span> = <span class="e Int"><span class="n">0x3FE0</span></span></span>
     }</span>
     <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">EXPMASK_INT</span> = <span class="e Int"><span class="n">0x7FF0_0000</span></span>;</span>
     <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">MANTISSAMASK_INT</span> = <span class="e Int"><span class="n">0x000F_FFFF</span></span>;</span> <span class="lc">// for the MSB only</span>
@@ -195,9 +195,9 @@
     }</span></span>
  }</span> <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">T</span></span>.<span class="e Identifier"><span class="i">mant_dig</span></span>==<span class="e Int"><span class="n">64</span></span></span>) <span class="d Compound">{ <span class="lc">// real80</span>
      <span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">ushort</span></span> {
-         <span class="d EnumMember"><span class="t Identifier"><span class="i">EXPMASK</span></span> = <span class="e Int"><span class="n">0x7FFF</span></span></span>,
-         <span class="d EnumMember"><span class="t Identifier"><span class="i">SIGNMASK</span></span> = <span class="e Int"><span class="n">0x8000</span></span></span>,
-         <span class="d EnumMember"><span class="t Identifier"><span class="i">EXPBIAS</span></span> = <span class="e Int"><span class="n">0x3FFE</span></span></span>
+         <span class="d EnumMember"><span class="i">EXPMASK</span> = <span class="e Int"><span class="n">0x7FFF</span></span></span>,
+         <span class="d EnumMember"><span class="i">SIGNMASK</span> = <span class="e Int"><span class="n">0x8000</span></span></span>,
+         <span class="d EnumMember"><span class="i">EXPBIAS</span> = <span class="e Int"><span class="n">0x3FFE</span></span></span>
      }</span>
 <span class="lc">//    enum ulong QUIETNANMASK = 0xC000_0000_0000_0000; // Converts a signaling NaN to a quiet NaN.</span>
     <span class="d Version"><span class="k">version</span>(<span class="i">LittleEndian</span>) <span class="d Compound">{
@@ -209,9 +209,9 @@
     }</span></span>
  }</span> <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span>==<span class="e Int"><span class="n">113</span></span></span>)<span class="d Compound">{ <span class="lc">// quadruple</span>
      <span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">ushort</span></span> {
-         <span class="d EnumMember"><span class="t Identifier"><span class="i">EXPMASK</span></span> = <span class="e Int"><span class="n">0x7FFF</span></span></span>,
-         <span class="d EnumMember"><span class="t Identifier"><span class="i">SIGNMASK</span></span> = <span class="e Int"><span class="n">0x8000</span></span></span>,
-         <span class="d EnumMember"><span class="t Identifier"><span class="i">EXPBIAS</span></span> = <span class="e Int"><span class="n">0x3FFE</span></span></span>
+         <span class="d EnumMember"><span class="i">EXPMASK</span> = <span class="e Int"><span class="n">0x7FFF</span></span></span>,
+         <span class="d EnumMember"><span class="i">SIGNMASK</span> = <span class="e Int"><span class="n">0x8000</span></span></span>,
+         <span class="d EnumMember"><span class="i">EXPBIAS</span> = <span class="e Int"><span class="n">0x3FFE</span></span></span>
      }</span>
     <span class="d Version"><span class="k">version</span>(<span class="i">LittleEndian</span>) <span class="d Compound">{
       <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">EXPPOS_SHORT</span> = <span class="e Int"><span class="n">7</span></span>;</span>
@@ -222,8 +222,8 @@
     }</span></span>
  }</span> <span class="k">else</span> <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span>==<span class="e Int"><span class="n">106</span></span></span>) <span class="d Compound">{ <span class="lc">// doubledouble</span>
      <span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">ushort</span></span> {
-         <span class="d EnumMember"><span class="t Identifier"><span class="i">EXPMASK</span></span> = <span class="e Int"><span class="n">0x7FF0</span></span></span>,
-         <span class="d EnumMember"><span class="t Identifier"><span class="i">SIGNMASK</span></span> = <span class="e Int"><span class="n">0x8000</span></span></span>
+         <span class="d EnumMember"><span class="i">EXPMASK</span> = <span class="e Int"><span class="n">0x7FF0</span></span></span>,
+         <span class="d EnumMember"><span class="i">SIGNMASK</span> = <span class="e Int"><span class="n">0x8000</span></span></span>
 <span class="lc">//         EXPBIAS = 0x3FE0</span>
      }</span>
     <span class="lc">// the exponent byte is not unique</span>
@@ -288,35 +288,35 @@
     <span class="d Version"><span class="k">version</span> (<span class="i">X86_Any</span>) <span class="d Compound">{
         <span class="lc">// Applies to both x87 status word (16 bits) and SSE2 status word(32 bits).</span>
         <span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">int</span></span> {
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">INEXACT_MASK</span></span>   = <span class="e Int"><span class="n">0x20</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">UNDERFLOW_MASK</span></span> = <span class="e Int"><span class="n">0x10</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">OVERFLOW_MASK</span></span>  = <span class="e Int"><span class="n">0x08</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">DIVBYZERO_MASK</span></span> = <span class="e Int"><span class="n">0x04</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">INVALID_MASK</span></span>   = <span class="e Int"><span class="n">0x01</span></span></span>
+            <span class="d EnumMember"><span class="i">INEXACT_MASK</span>   = <span class="e Int"><span class="n">0x20</span></span></span>,
+            <span class="d EnumMember"><span class="i">UNDERFLOW_MASK</span> = <span class="e Int"><span class="n">0x10</span></span></span>,
+            <span class="d EnumMember"><span class="i">OVERFLOW_MASK</span>  = <span class="e Int"><span class="n">0x08</span></span></span>,
+            <span class="d EnumMember"><span class="i">DIVBYZERO_MASK</span> = <span class="e Int"><span class="n">0x04</span></span></span>,
+            <span class="d EnumMember"><span class="i">INVALID_MASK</span>   = <span class="e Int"><span class="n">0x01</span></span></span>
         }</span>
         <span class="lc">// Don't bother about denormals, they are not supported on most CPUs.</span>
         <span class="lc">//  DENORMAL_MASK = 0x02;</span>
     }</span> <span class="k">else</span> <span class="d Version"><span class="k">version</span> (<span class="i">PPC</span>) <span class="d Compound">{
         <span class="lc">// PowerPC FPSCR is a 32-bit register.</span>
         <span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">int</span></span> {
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">INEXACT_MASK</span></span>   = <span class="e Int"><span class="n">0x600</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">UNDERFLOW_MASK</span></span> = <span class="e Int"><span class="n">0x010</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">OVERFLOW_MASK</span></span>  = <span class="e Int"><span class="n">0x008</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">DIVBYZERO_MASK</span></span> = <span class="e Int"><span class="n">0x020</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">INVALID_MASK</span></span>   = <span class="e Int"><span class="n">0xF80</span></span></span>
+            <span class="d EnumMember"><span class="i">INEXACT_MASK</span>   = <span class="e Int"><span class="n">0x600</span></span></span>,
+            <span class="d EnumMember"><span class="i">UNDERFLOW_MASK</span> = <span class="e Int"><span class="n">0x010</span></span></span>,
+            <span class="d EnumMember"><span class="i">OVERFLOW_MASK</span>  = <span class="e Int"><span class="n">0x008</span></span></span>,
+            <span class="d EnumMember"><span class="i">DIVBYZERO_MASK</span> = <span class="e Int"><span class="n">0x020</span></span></span>,
+            <span class="d EnumMember"><span class="i">INVALID_MASK</span>   = <span class="e Int"><span class="n">0xF80</span></span></span>
         }</span>
     }</span> <span class="k">else</span> <span class="d Compound">{ <span class="lc">// SPARC FSR is a 32bit register</span>
              <span class="lc">//(64 bits for Sparc 7 &amp; 8, but high 32 bits are uninteresting).</span>
         <span class="d Enum"><span class="k">enum</span> : <span class="t Integral"><span class="k">int</span></span> {
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">INEXACT_MASK</span></span>   = <span class="e Int"><span class="n">0x020</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">UNDERFLOW_MASK</span></span> = <span class="e Int"><span class="n">0x080</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">OVERFLOW_MASK</span></span>  = <span class="e Int"><span class="n">0x100</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">DIVBYZERO_MASK</span></span> = <span class="e Int"><span class="n">0x040</span></span></span>,
-            <span class="d EnumMember"><span class="t Identifier"><span class="i">INVALID_MASK</span></span>   = <span class="e Int"><span class="n">0x200</span></span></span>
+            <span class="d EnumMember"><span class="i">INEXACT_MASK</span>   = <span class="e Int"><span class="n">0x020</span></span></span>,
+            <span class="d EnumMember"><span class="i">UNDERFLOW_MASK</span> = <span class="e Int"><span class="n">0x080</span></span></span>,
+            <span class="d EnumMember"><span class="i">OVERFLOW_MASK</span>  = <span class="e Int"><span class="n">0x100</span></span></span>,
+            <span class="d EnumMember"><span class="i">DIVBYZERO_MASK</span> = <span class="e Int"><span class="n">0x040</span></span></span>,
+            <span class="d EnumMember"><span class="i">INVALID_MASK</span>   = <span class="e Int"><span class="n">0x200</span></span></span>
         }</span>
     }</span></span></span>
 <span class="d Protection"><span class="k">private</span></span>:
-    <span class="d Compound"><span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">IeeeFlags</span></span> <span class="i">getIeeeFlags</span><span class="o Parameters">()</span>
+    <span class="d Compound"><span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Identifier"><span class="i">IeeeFlags</span></span> <span class="i">getIeeeFlags</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="lc">// This is a highly time-critical operation, and</span>
         <span class="lc">// should really be an intrinsic.</span>
@@ -356,7 +356,7 @@
            <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Int"><span class="n">0</span></span>, <span class="e String"><span class="sl">"Not yet supported"</span></span>)</span>;</span>
        }</span></span></span>
     }</span></span></span>
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">resetIeeeFlags</span><span class="o Parameters">()</span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d StorageClass"><span class="k">static</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">resetIeeeFlags</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
        <span class="s Version"><span class="k">version</span>(<span class="i">D_InlineAsm_X86</span>) <span class="s Compound">{
             <span class="s AsmBlock"><span class="k">asm</span> <span class="s Compound">{
@@ -375,31 +375,31 @@
 <span class="d Protection"><span class="k">public</span></span>:
     <span class="lc">/// The result cannot be represented exactly, so rounding occured.</span>
     <span class="lc">/// (example: x = sin(0.1); }</span>
-    <span class="d Compound"><span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inexact</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e And"><span class="e Identifier"><span class="i">m_flags</span></span> &amp; <span class="e Identifier"><span class="i">INEXACT_MASK</span></span></span>;</span> }</span></span></span>
+    <span class="d Compound"><span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">inexact</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e And"><span class="e Identifier"><span class="i">m_flags</span></span> &amp; <span class="e Identifier"><span class="i">INEXACT_MASK</span></span></span>;</span> }</span></span></span>
     <span class="lc">/// A zero was generated by underflow (example: x = real.min*real.epsilon/2;)</span>
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">underflow</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e And"><span class="e Identifier"><span class="i">m_flags</span></span> &amp; <span class="e Identifier"><span class="i">UNDERFLOW_MASK</span></span></span>;</span> }</span></span></span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">underflow</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e And"><span class="e Identifier"><span class="i">m_flags</span></span> &amp; <span class="e Identifier"><span class="i">UNDERFLOW_MASK</span></span></span>;</span> }</span></span></span>
     <span class="lc">/// An infinity was generated by overflow (example: x = real.max*2;)</span>
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">overflow</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e And"><span class="e Identifier"><span class="i">m_flags</span></span> &amp; <span class="e Identifier"><span class="i">OVERFLOW_MASK</span></span></span>;</span> }</span></span></span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">overflow</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e And"><span class="e Identifier"><span class="i">m_flags</span></span> &amp; <span class="e Identifier"><span class="i">OVERFLOW_MASK</span></span></span>;</span> }</span></span></span>
     <span class="lc">/// An infinity was generated by division by zero (example: x = 3/0.0; )</span>
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">divByZero</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e And"><span class="e Identifier"><span class="i">m_flags</span></span> &amp; <span class="e Identifier"><span class="i">DIVBYZERO_MASK</span></span></span>;</span> }</span></span></span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">divByZero</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e And"><span class="e Identifier"><span class="i">m_flags</span></span> &amp; <span class="e Identifier"><span class="i">DIVBYZERO_MASK</span></span></span>;</span> }</span></span></span>
     <span class="lc">/// A machine NaN was generated. (example: x = real.infinity * 0.0; )</span>
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">invalid</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e And"><span class="e Identifier"><span class="i">m_flags</span></span> &amp; <span class="e Identifier"><span class="i">INVALID_MASK</span></span></span>;</span> }</span></span></span></span></span></span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">invalid</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e And"><span class="e Identifier"><span class="i">m_flags</span></span> &amp; <span class="e Identifier"><span class="i">INVALID_MASK</span></span></span>;</span> }</span></span></span></span></span></span>
 }</span></span>
 
 <span class="lc">/// Return a snapshot of the current state of the floating-point status flags.</span>
-<span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">IeeeFlags</span></span> <span class="i">ieeeFlags</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">IeeeFlags</span></span>.<span class="e Identifier"><span class="i">getIeeeFlags</span></span>()</span>;</span> }</span></span></span>
+<span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">IeeeFlags</span></span> <span class="i">ieeeFlags</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">IeeeFlags</span></span>.<span class="e Identifier"><span class="i">getIeeeFlags</span></span>()</span>;</span> }</span></span></span>
 
 <span class="lc">/// Set all of the floating-point status flags to false.</span>
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">resetIeeeFlags</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">IeeeFlags</span></span>.<span class="e Identifier"><span class="i">resetIeeeFlags</span></span>()</span>;</span> }</span></span></span>
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">resetIeeeFlags</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{ <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">IeeeFlags</span></span>.<span class="e Identifier"><span class="i">resetIeeeFlags</span></span>()</span>;</span> }</span></span></span>
 
 <span class="bc">/** IEEE rounding modes.
  * The default mode is ROUNDTONEAREST.
  */</span>
 <span class="d Enum"><span class="k">enum</span> <span class="i">RoundingMode</span> : <span class="t Integral"><span class="k">short</span></span> {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">ROUNDTONEAREST</span></span> = <span class="e Int"><span class="n">0x0000</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">ROUNDDOWN</span></span>      = <span class="e Int"><span class="n">0x0400</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">ROUNDUP</span></span>        = <span class="e Int"><span class="n">0x0800</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">ROUNDTOZERO</span></span>    = <span class="e Int"><span class="n">0x0C00</span></span></span>
+    <span class="d EnumMember"><span class="i">ROUNDTONEAREST</span> = <span class="e Int"><span class="n">0x0000</span></span></span>,
+    <span class="d EnumMember"><span class="i">ROUNDDOWN</span>      = <span class="e Int"><span class="n">0x0400</span></span></span>,
+    <span class="d EnumMember"><span class="i">ROUNDUP</span>        = <span class="e Int"><span class="n">0x0800</span></span></span>,
+    <span class="d EnumMember"><span class="i">ROUNDTOZERO</span>    = <span class="e Int"><span class="n">0x0C00</span></span></span>
 }</span><span class="d Empty">;</span>
 
 <span class="bc">/** Change the rounding mode used for all floating-point operations.
@@ -413,7 +413,7 @@
     scope (exit) setIeeeRounding(oldrounding);
 ---
  */</span>
-<span class="d Function"><span class="t Identifier"><span class="i">RoundingMode</span></span> <span class="i">setIeeeRounding</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">RoundingMode</span></span> <span class="i">roundingmode</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Identifier"><span class="i">RoundingMode</span></span> <span class="i">setIeeeRounding</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">RoundingMode</span></span> <span class="i">roundingmode</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
    <span class="s Version"><span class="k">version</span>(<span class="i">D_InlineAsm_X86</span>) <span class="s Compound">{
         <span class="lc">// TODO: For SSE/SSE2, do we also need to set the SSE rounding mode?</span>
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">short</span></span> <span class="i">cont</span>;</span></span>
@@ -435,7 +435,7 @@
 <span class="bc">/** Get the IEEE rounding mode which is in use.
  *
  */</span>
-<span class="d Function"><span class="t Identifier"><span class="i">RoundingMode</span></span> <span class="i">getIeeeRounding</span><span class="o Parameters">()</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Identifier"><span class="i">RoundingMode</span></span> <span class="i">getIeeeRounding</span><span class="o ">()</span> <span class="s FuncBody"><span class="s Compound">{
    <span class="s Version"><span class="k">version</span>(<span class="i">D_InlineAsm_X86</span>) <span class="s Compound">{
         <span class="lc">// TODO: For SSE/SSE2, do we also need to check the SSE rounding mode?</span>
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">short</span></span> <span class="i">cont</span>;</span></span>
@@ -477,9 +477,9 @@
 
 <span class="lc">// Note: Itanium supports more precision options than this. SSE/SSE2 does not support any.</span>
 <span class="d Enum"><span class="k">enum</span> <span class="i">PrecisionControl</span> : <span class="t Integral"><span class="k">short</span></span> {
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">PRECISION80</span></span> = <span class="e Int"><span class="n">0x300</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">PRECISION64</span></span> = <span class="e Int"><span class="n">0x200</span></span></span>,
-    <span class="d EnumMember"><span class="t Identifier"><span class="i">PRECISION32</span></span> = <span class="e Int"><span class="n">0x000</span></span></span>
+    <span class="d EnumMember"><span class="i">PRECISION80</span> = <span class="e Int"><span class="n">0x300</span></span></span>,
+    <span class="d EnumMember"><span class="i">PRECISION64</span> = <span class="e Int"><span class="n">0x200</span></span></span>,
+    <span class="d EnumMember"><span class="i">PRECISION32</span> = <span class="e Int"><span class="n">0x000</span></span></span>
 }</span><span class="d Empty">;</span>
 
 <span class="bc">/** Set the number of bits of precision used by 'real'.
@@ -487,7 +487,7 @@
  * Returns: the old precision.
  * This is not supported on all platforms.
  */</span>
-<span class="d Function"><span class="t Identifier"><span class="i">PrecisionControl</span></span> <span class="i">reduceRealPrecision</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">PrecisionControl</span></span> <span class="i">prec</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Identifier"><span class="i">PrecisionControl</span></span> <span class="i">reduceRealPrecision</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">PrecisionControl</span></span> <span class="i">prec</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
    <span class="s Version"><span class="k">version</span>(<span class="i">D_InlineAsm_X86</span>) <span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">short</span></span> <span class="i">cont</span>;</span></span>
         <span class="s AsmBlock"><span class="k">asm</span> <span class="s Compound">{
@@ -523,12 +523,12 @@
  *      $(TR $(TD $(PLUSMN)$(NAN)) $(TD $(PLUSMN)$(NAN)) $(TD int.min))
  *      )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">frexp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">value</span></span>, <span class="o Parameter"><span class="k">out</span> <span class="t Integral"><span class="k">int</span></span> <span class="i">exp</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">frexp</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">value</span></span>, <span class="o "><span class="k">out</span> <span class="t Integral"><span class="k">int</span></span> <span class="i">exp</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ushort</span></span><span class="t Pointer">*</span> <span class="i">vu</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ushort</span></span><span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">value</span></span></span></span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">long</span></span><span class="t Pointer">*</span> <span class="i">vl</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">long</span></span><span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">value</span></span></span></span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">ex</span>;</span></span>
-    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
+    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
 
     <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">ex</span></span> = <span class="e And"><span class="e Index"><span class="e Identifier"><span class="i">vu</span></span>[<span class="e Identifier"><span class="i">F</span></span>.<span class="e Identifier"><span class="i">EXPPOS_SHORT</span></span>]</span> &amp; <span class="e Identifier"><span class="i">F</span></span>.<span class="e Identifier"><span class="i">EXPMASK</span></span></span></span>;</span>
   <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span> == <span class="e Int"><span class="n">64</span></span></span>) <span class="s Compound">{ <span class="lc">// real80</span>
@@ -681,7 +681,7 @@
  * Compute n * 2$(SUP exp)
  * References: frexp
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ldexp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">n</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">exp</span></span>)</span> <span class="bc">/* intrinsic */</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">ldexp</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">n</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">exp</span></span>)</span> <span class="bc">/* intrinsic */</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">Naked_D_InlineAsm_X86</span>)
     <span class="s Compound">{
@@ -716,7 +716,7 @@
  *      $(TR $(TD $(NAN))            $(TD FP_ILOGBNAN) $(TD yes))
  *      )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">ilogb</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">ilogb</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
         <span class="s Version"><span class="k">version</span>(<span class="i">Naked_D_InlineAsm_X86</span>)
         <span class="s Compound">{
@@ -729,7 +729,7 @@
             }</span></span>
             <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">y</span></span>;</span>
         }</span> <span class="k">else</span> <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span>==<span class="e Int"><span class="n">64</span></span></span>) <span class="s Compound">{ <span class="lc">// 80-bit reals</span>
-            <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
+            <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">short</span></span> <span class="i">e</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">short</span></span>)<span class="e Paren">(<span class="e And"><span class="e Index"><span class="e Paren">(<span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">short</span></span> <span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">x</span></span></span></span>)</span>[<span class="e Identifier"><span class="i">F</span></span>.<span class="e Identifier"><span class="i">EXPPOS_SHORT</span></span>]</span> &amp; <span class="e Identifier"><span class="i">F</span></span>.<span class="e Identifier"><span class="i">EXPMASK</span></span></span>)</span></span>;</span></span>
             <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">e</span></span> == <span class="e Identifier"><span class="i">F</span></span>.<span class="e Identifier"><span class="i">EXPMASK</span></span></span>) <span class="s Scope"><span class="s Compound">{
                 <span class="lc">// BUG: should also set the invalid exception</span>
@@ -796,7 +796,7 @@
  *      $(TR $(TD $(PLUSMN)0.0)      $(TD -$(INFIN)) $(TD yes) )
  *      )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">logb</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">logb</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">Naked_D_InlineAsm_X86</span>)
     <span class="s Compound">{
@@ -833,7 +833,7 @@
  *      $(TR $(TD $(PLUSMN)0.0)      $(TD $(PLUSMN)0.0) )
  *  )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">scalbn</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">scalbn</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">n</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">Naked_D_InlineAsm_X86</span>)
     <span class="s Compound">{
@@ -867,7 +867,7 @@
  *  $(SV x $(LT)= y, +0.0)
  * )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">fdim</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">fdim</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Paren">(<span class="e Rel"><span class="e Identifier"><span class="i">x</span></span> !&lt;= <span class="e Identifier"><span class="i">y</span></span></span>)</span> ? <span class="e Minus"><span class="e Identifier"><span class="i">x</span></span> - <span class="e Identifier"><span class="i">y</span></span></span> : <span class="e Sign">+<span class="e Float"><span class="n">0.0</span></span></span></span>;</span>
 }</span></span></span>
@@ -887,7 +887,7 @@
  *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD +$(INFIN)) )
  *      )
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">fabs</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span> <span class="bc">/* intrinsic */</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">fabs</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span> <span class="bc">/* intrinsic */</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">D_InlineAsm_X86</span>)
     <span class="s Compound">{
@@ -912,7 +912,7 @@
  *
  * BUGS: Not currently implemented - rounds twice.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">fma</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">float</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">float</span></span> <span class="i">y</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">float</span></span> <span class="i">z</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">fma</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">float</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">float</span></span> <span class="i">y</span></span>, <span class="o "><span class="t Integral"><span class="k">float</span></span> <span class="i">z</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Plus"><span class="e Paren">(<span class="e Mul"><span class="e Identifier"><span class="i">x</span></span> * <span class="e Identifier"><span class="i">y</span></span></span>)</span> + <span class="e Identifier"><span class="i">z</span></span></span>;</span>
 }</span></span></span>
@@ -924,7 +924,7 @@
  * almost twice as fast as calculating sin(y) and cos(y)
  * seperately, and is the preferred method when both are required.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">expi</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">creal</span></span> <span class="i">expi</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Version"><span class="k">version</span>(<span class="i">Naked_D_InlineAsm_X86</span>)
     <span class="s Compound">{
@@ -952,9 +952,9 @@
  * Returns !=0 if e is a NaN.
  */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">isNaN</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">isNaN</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
-  <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
+  <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
   <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span>==<span class="e Int"><span class="n">53</span></span></span>) <span class="s Compound">{ <span class="lc">// double</span>
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ulong</span></span><span class="t Pointer">*</span>  <span class="i">p</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">x</span></span></span></span>;</span></span>
         <span class="s Return"><span class="k">return</span> <span class="e AndAnd"><span class="e Paren">(<span class="e Equal"><span class="e Paren">(<span class="e And"><span class="e Deref">*<span class="e Identifier"><span class="i">p</span></span></span> &amp; <span class="e Int"><span class="n">0x7FF0_0000_0000_0000</span></span></span>)</span> == <span class="e Int"><span class="n">0x7FF0_0000_0000_0000</span></span></span>)</span> &amp;&amp; <span class="e And"><span class="e Deref">*<span class="e Identifier"><span class="i">p</span></span></span> &amp; <span class="e Int"><span class="n">0x000F_FFFF_FFFF_FFFF</span></span></span></span>;</span>
@@ -992,9 +992,9 @@
  * (Need one for each format because subnormal
  *  floats might be converted to normal reals)
  */</span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">isNormal</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">X</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">X</span></span> <span class="i">x</span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">isNormal</span><span class="o ">(<span class="o "><span class="i">X</span></span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">X</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
-    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">X</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
+    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o ">(<span class="t Identifier"><span class="i">X</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
     
     <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span>==<span class="e Int"><span class="n">106</span></span></span>) <span class="s Compound">{ <span class="lc">// doubledouble</span>
     <span class="lc">// doubledouble is normal if the least significant part is normal.</span>
@@ -1033,7 +1033,7 @@
  * and two $(NAN)s are identical if they have the same 'payload'.
  */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isIdentical</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isIdentical</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="lc">// We're doing a bitwise comparison so the endianness is irrelevant.</span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">long</span></span><span class="t Pointer">*</span>   <span class="i">pxs</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">long</span></span> <span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">x</span></span></span></span>;</span></span>
@@ -1051,12 +1051,12 @@
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isIdentical</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isIdentical</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ireal</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">ireal</span></span> <span class="i">y</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">isIdentical</span></span>(<span class="i">x</span>.<span class="i">im</span>, <span class="i">y</span>.<span class="i">im</span>)</span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isIdentical</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">creal</span></span> <span class="i">y</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
+<span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isIdentical</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">creal</span></span> <span class="i">y</span></span>)</span> <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e AndAnd"><span class="e Call"><span class="e Identifier"><span class="i">isIdentical</span></span>(<span class="i">x</span>.<span class="i">re</span>, <span class="i">y</span>.<span class="i">re</span>)</span> &amp;&amp; <span class="e Call"><span class="e Identifier"><span class="i">isIdentical</span></span>(<span class="i">x</span>.<span class="i">im</span>, <span class="i">y</span>.<span class="i">im</span>)</span></span>;</span>
 }</span></span></span>
 
@@ -1084,7 +1084,7 @@
  * be converted to normal reals.
  */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">isSubnormal</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">float</span></span> <span class="i">f</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">isSubnormal</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">float</span></span> <span class="i">f</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="t Pointer">*</span><span class="i">p</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">uint</span></span> <span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">f</span></span></span></span>;</span></span>
     <span class="s Return"><span class="k">return</span> <span class="e AndAnd"><span class="e Equal"><span class="e Paren">(<span class="e And"><span class="e Deref">*<span class="e Identifier"><span class="i">p</span></span></span> &amp; <span class="e Int"><span class="n">0x7F80_0000</span></span></span>)</span> == <span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e And"><span class="e Deref">*<span class="e Identifier"><span class="i">p</span></span></span> &amp; <span class="e Int"><span class="n">0x007F_FFFF</span></span></span></span>;</span>
@@ -1102,7 +1102,7 @@
 
 <span class="lc">/// ditto</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">isSubnormal</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">double</span></span> <span class="i">d</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">isSubnormal</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">double</span></span> <span class="i">d</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="t Pointer">*</span><span class="i">p</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">uint</span></span> <span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">d</span></span></span></span>;</span></span>
     <span class="s Return"><span class="k">return</span> <span class="e AndAnd"><span class="e Equal"><span class="e Paren">(<span class="e And"><span class="e Index"><span class="e Identifier"><span class="i">p</span></span>[<span class="e Identifier"><span class="i">MANTISSA_MSB</span></span>]</span> &amp; <span class="e Int"><span class="n">0x7FF0_0000</span></span></span>)</span> == <span class="e Int"><span class="n">0</span></span></span> &amp;&amp; <span class="e Paren">(<span class="e OrOr"><span class="e Index"><span class="e Identifier"><span class="i">p</span></span>[<span class="e Identifier"><span class="i">MANTISSA_LSB</span></span>]</span> || <span class="e And"><span class="e Index"><span class="e Identifier"><span class="i">p</span></span>[<span class="e Identifier"><span class="i">MANTISSA_MSB</span></span>]</span> &amp; <span class="e Int"><span class="n">0x000F_FFFF</span></span></span></span>)</span></span>;</span>
@@ -1120,9 +1120,9 @@
 
 <span class="lc">/// ditto</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">isSubnormal</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">isSubnormal</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
-    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
+    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
     <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span> == <span class="e Int"><span class="n">53</span></span></span>) <span class="s Compound">{ <span class="lc">// double</span>
         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">isSubnormal</span></span>(<span class="k">cast</span>(<span class="k">double</span>)<span class="i">x</span>)</span>;</span>
     }</span> <span class="k">else</span> <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span> == <span class="e Int"><span class="n">113</span></span></span>) <span class="s Compound">{ <span class="lc">// quadruple        </span>
@@ -1154,9 +1154,9 @@
  *
  * Does not affect any floating-point flags
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">isZero</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">isZero</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
-    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
+    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
     <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span> == <span class="e Int"><span class="n">53</span></span></span>) <span class="s Compound">{ <span class="lc">// double</span>
         <span class="s Return"><span class="k">return</span> <span class="e Equal"><span class="e Paren">(<span class="e And"><span class="e Paren">(<span class="e Deref">*<span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">x</span></span></span></span></span>)</span> &amp; <span class="e Int"><span class="n">0x7FFF_FFFF_FFFF_FFFF</span></span></span>)</span> == <span class="e Int"><span class="n">0</span></span></span>;</span>
     }</span> <span class="k">else</span> <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span> == <span class="e Int"><span class="n">113</span></span></span>) <span class="s Compound">{ <span class="lc">// quadruple   </span>
@@ -1183,9 +1183,9 @@
  * Return !=0 if e is $(PLUSMNINF);.
  */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">isInfinity</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">isInfinity</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
-    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
+    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
     <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span> == <span class="e Int"><span class="n">53</span></span></span>) <span class="s Compound">{ <span class="lc">// double</span>
         <span class="s Return"><span class="k">return</span> <span class="e Equal"><span class="e Paren">(<span class="e And"><span class="e Paren">(<span class="e Deref">*<span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">x</span></span></span></span></span>)</span> &amp; <span class="e Int"><span class="n">0x7FFF_FFFF_FFFF_FFFF</span></span></span>)</span> == <span class="e Int"><span class="n">0x7FF8_0000_0000_0000</span></span></span>;</span>
     }</span> <span class="k">else</span> <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span> == <span class="e Int"><span class="n">106</span></span></span>) <span class="s Compound">{ <span class="lc">//doubledouble</span>
@@ -1235,9 +1235,9 @@
  * nextDoubleUp and nextFloatUp are the corresponding functions for
  * the IEEE double and IEEE float number lines.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">nextUp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">nextUp</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
-    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
+    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
     <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span> == <span class="e Int"><span class="n">53</span></span></span>) <span class="s Compound">{ <span class="lc">// double</span>
         <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Identifier"><span class="i">nextDoubleUp</span></span>(<span class="i">x</span>)</span>;</span>
     }</span> <span class="k">else</span> <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span>(<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span>==<span class="e Int"><span class="n">113</span></span></span>) <span class="s Compound">{  <span class="lc">// quadruple</span>
@@ -1305,7 +1305,7 @@
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">nextDoubleUp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">double</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">nextDoubleUp</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">double</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span><span class="i">ps</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ulong</span></span> <span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">x</span></span></span></span>;</span></span>
 
@@ -1327,7 +1327,7 @@
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">float</span></span> <span class="i">nextFloatUp</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">float</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">float</span></span> <span class="i">nextFloatUp</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">float</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="t Pointer">*</span><span class="i">ps</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">uint</span></span> <span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">x</span></span></span></span>;</span></span>
 
@@ -1412,7 +1412,7 @@
  * initial value; this amount will also have zeros in all bits in the lower half
  * of its significand.
  */</span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">X</span></span> <span class="i">splitSignificand</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">X</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">X</span></span> <span class="i">x</span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">X</span></span> <span class="i">splitSignificand</span><span class="o ">(<span class="o "><span class="i">X</span></span>)</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">X</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Call"><span class="e Identifier"><span class="i">fabs</span></span>(<span class="i">x</span>)</span> !&lt; <span class="e Identifier"><span class="i">X</span></span>.<span class="e Identifier"><span class="i">infinity</span></span></span>) <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Int"><span class="n">0</span></span>;</span></span></span> <span class="lc">// don't change NaN or infinity</span>
     <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">X</span></span> <span class="i">y</span> = <span class="e Identifier"><span class="i">x</span></span>;</span></span> <span class="lc">// copy the original value</span>
@@ -1467,19 +1467,19 @@
  * nextDoubleDown and nextFloatDown are the corresponding functions for
  * the IEEE double and IEEE float number lines.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">nextDown</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">nextDown</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Sign">-<span class="e Identifier"><span class="i">nextUp</span></span></span>(-<span class="i">x</span>)</span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">nextDoubleDown</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">double</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">double</span></span> <span class="i">nextDoubleDown</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">double</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Sign">-<span class="e Identifier"><span class="i">nextDoubleUp</span></span></span>(-<span class="i">x</span>)</span>;</span>
 }</span></span></span>
 
 <span class="bc">/** ditto */</span>
-<span class="d Function"><span class="t Integral"><span class="k">float</span></span> <span class="i">nextFloatDown</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">float</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">float</span></span> <span class="i">nextFloatDown</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">float</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Return"><span class="k">return</span> <span class="e Call"><span class="e Sign">-<span class="e Identifier"><span class="i">nextFloatUp</span></span></span>(-<span class="i">x</span>)</span>;</span>
 }</span></span></span>
@@ -1507,7 +1507,7 @@
  * exceptions will be raised if the function value is subnormal, and x is
  * not equal to y.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">nextafter</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">nextafter</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s If"><span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">x</span></span>==<span class="e Identifier"><span class="i">y</span></span></span>) <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">y</span></span>;</span></span></span>
     <span class="s Return"><span class="k">return</span> <span class="e Cond"><span class="e Paren">(<span class="e Rel"><span class="e Identifier"><span class="i">y</span></span>&gt;<span class="e Identifier"><span class="i">x</span></span></span>)</span> ? <span class="e Call"><span class="e Identifier"><span class="i">nextUp</span></span>(<span class="i">x</span>)</span> : <span class="e Call"><span class="e Identifier"><span class="i">nextDown</span></span>(<span class="i">x</span>)</span></span>;</span>
@@ -1531,7 +1531,7 @@
  * Remarks:
  * This is a very fast operation, suitable for use in speed-critical code.
  */</span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">feqrel</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">X</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">X</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">X</span></span> <span class="i">y</span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">feqrel</span><span class="o ">(<span class="o "><span class="i">X</span></span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">X</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Identifier"><span class="i">X</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="bc">/* Public Domain. Author: Don Clugston, 18 Aug 2005.
      */</span>
@@ -1551,7 +1551,7 @@
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ushort</span></span> <span class="t Pointer">*</span><span class="i">pb</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ushort</span></span> <span class="t Pointer">*</span>)<span class="e Paren">(<span class="e Address">&amp;<span class="e Identifier"><span class="i">y</span></span></span>)</span></span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ushort</span></span> <span class="t Pointer">*</span><span class="i">pd</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ushort</span></span> <span class="t Pointer">*</span>)<span class="e Paren">(<span class="e Address">&amp;<span class="e Identifier"><span class="i">diff</span></span></span>)</span></span>;</span></span>
 
-    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">X</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
+    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o ">(<span class="t Identifier"><span class="i">X</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
 
     <span class="lc">// The difference in abs(exponent) between x or y and abs(x-y)</span>
     <span class="lc">// is equal to the number of significand bits of x which are</span>
@@ -1656,9 +1656,9 @@
  * Return 1 if sign bit of e is set, 0 if not.
  */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">signbit</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">signbit</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
-    <span class="s Return"><span class="k">return</span> <span class="e Equal"><span class="e Paren">(<span class="e And"><span class="e Index"><span class="e Paren">(<span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ubyte</span></span> <span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">x</span></span></span></span>)</span>[<span class="e TmplInstance"><span class="i">floatTraits</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span>)</span></span>.<span class="e Identifier"><span class="i">SIGNPOS_BYTE</span></span>]</span> &amp; <span class="e Int"><span class="n">0x80</span></span></span>)</span> != <span class="e Int"><span class="n">0</span></span></span>;</span>
+    <span class="s Return"><span class="k">return</span> <span class="e Equal"><span class="e Paren">(<span class="e And"><span class="e Index"><span class="e Paren">(<span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ubyte</span></span> <span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">x</span></span></span></span>)</span>[<span class="e TmplInstance"><span class="i">floatTraits</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span>)</span></span>.<span class="e Identifier"><span class="i">SIGNPOS_BYTE</span></span>]</span> &amp; <span class="e Int"><span class="n">0x80</span></span></span>)</span> != <span class="e Int"><span class="n">0</span></span></span>;</span>
 }</span></span></span>
 
 <span class="d Debug"><span class="k">debug</span>(<span class="i">UnitTest</span>) <span class="d Compound">{
@@ -1678,12 +1678,12 @@
  * Return a value composed of to with from's sign bit.
  */</span>
 
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">copysign</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">to</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">from</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">copysign</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">to</span></span>, <span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">from</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span> <span class="i">pto</span>   = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ubyte</span></span> <span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">to</span></span></span></span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ubyte</span></span><span class="t Pointer">*</span> <span class="i">pfrom</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">ubyte</span></span> <span class="t Pointer">*</span>)<span class="e Address">&amp;<span class="e Identifier"><span class="i">from</span></span></span></span>;</span></span>
     
-    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
+    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
     <span class="s Expression"><span class="e AndAssign"><span class="e Index"><span class="e Identifier"><span class="i">pto</span></span>[<span class="e Identifier"><span class="i">F</span></span>.<span class="e Identifier"><span class="i">SIGNPOS_BYTE</span></span>]</span> &amp;= <span class="e Int"><span class="n">0x7F</span></span></span>;</span>
     <span class="s Expression"><span class="e OrAssign"><span class="e Index"><span class="e Identifier"><span class="i">pto</span></span>[<span class="e Identifier"><span class="i">F</span></span>.<span class="e Identifier"><span class="i">SIGNPOS_BYTE</span></span>]</span> |= <span class="e And"><span class="e Index"><span class="e Identifier"><span class="i">pfrom</span></span>[<span class="e Identifier"><span class="i">F</span></span>.<span class="e Identifier"><span class="i">SIGNPOS_BYTE</span></span>]</span> &amp; <span class="e Int"><span class="n">0x80</span></span></span></span>;</span>
     <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">to</span></span>;</span>
@@ -1726,7 +1726,7 @@
  *   ieeeMean(x, y) = sqrt(x * y).
  *
  */</span>
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">ieeeMean</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">x</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">y</span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">ieeeMean</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">x</span></span>, <span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">y</span></span>)</span>
 <span class="s FuncBody"><span class="k">in</span> <span class="s Compound">{
     <span class="lc">// both x and y must have the same sign, and must not be NaN.</span>
     <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e Call"><span class="e Identifier"><span class="i">signbit</span></span>(<span class="i">x</span>)</span> == <span class="e Call"><span class="e Identifier"><span class="i">signbit</span></span>(<span class="i">y</span>)</span></span>)</span>;</span> 
@@ -1740,7 +1740,7 @@
     <span class="lc">// The implementation is simple: cast x and y to integers,</span>
     <span class="lc">// average them (avoiding overflow), and cast the result back to a floating-point number.</span>
 
-    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
+    <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">floatTraits</span>!<span class="o ">(<span class="t Integral"><span class="k">real</span></span>)</span></span> <span class="i">F</span>;</span></span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">T</span></span> <span class="i">u</span>;</span></span>
     <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e Identifier"><span class="i">T</span></span>.<span class="e Identifier"><span class="i">mant_dig</span></span>==<span class="e Int"><span class="n">64</span></span></span>) <span class="s Compound">{ <span class="lc">// real80</span>
         <span class="lc">// There's slight additional complexity because they are actually</span>
@@ -1840,7 +1840,7 @@
  * For doubles, it is 0x3_FFFF_FFFF_FFFF.
  * For floats, it is 0x3F_FFFF.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">NaN</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">payload</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">real</span></span> <span class="i">NaN</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ulong</span></span> <span class="i">payload</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span> == <span class="e Int"><span class="n">64</span></span></span>) <span class="s Compound">{ <span class="lc">//real80</span>
       <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">v</span> = <span class="e Int"><span class="n">3</span></span>;</span></span> <span class="lc">// implied bit = 1, quiet bit = 1</span>
@@ -1900,7 +1900,7 @@
  * For doubles, it is 0x3_FFFF_FFFF_FFFF.
  * For floats, it is 0x3F_FFFF.
  */</span>
-<span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">getNaNPayload</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
+<span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">getNaNPayload</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">real</span></span> <span class="i">x</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Call"><span class="e Identifier"><span class="i">isNaN</span></span>(<span class="i">x</span>)</span>)</span>;</span>
     <span class="s StaticIf"><span class="k">static</span> <span class="k">if</span> (<span class="e Equal"><span class="e TypeDotId"><span class="t Integral"><span class="k">real</span></span>.<span class="i">mant_dig</span></span> == <span class="e Int"><span class="n">53</span></span></span>) <span class="s Compound">{

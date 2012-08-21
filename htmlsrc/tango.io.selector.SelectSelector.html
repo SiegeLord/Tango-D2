@@ -24,7 +24,7 @@
 
 <span class="d Protection"><span class="k">public</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">model</span>.<span class="i">IConduit</span>;</span>
 
-<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">core</span>.<span class="i">time</span>;</span>
+<span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">Time</span> = <span class="i">tango</span>.<span class="i">core</span>.<span class="i">Time</span>;</span>
 <span class="d Protection"><span class="k">public</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">selector</span>.<span class="i">model</span>.<span class="i">ISelector</span>;</span>
 
 <span class="d Protection"><span class="k">private</span></span> <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">selector</span>.<span class="i">AbstractSelector</span>;</span>
@@ -51,8 +51,8 @@
         <span class="d Compound">{
         }</span></span>
 
-        <span class="d Linkage"><span class="k">extern</span> (<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">select</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">nfds</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">fd_set</span></span><span class="t Pointer">*</span> <span class="i">readfds</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">fd_set</span></span><span class="t Pointer">*</span> <span class="i">writefds</span></span>,
-                                    <span class="o Parameter"><span class="t Identifier"><span class="i">fd_set</span></span><span class="t Pointer">*</span> <span class="i">errorfds</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">timeval</span></span><span class="t Pointer">*</span> <span class="i">timeout</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Linkage"><span class="k">extern</span> (<span class="i">Windows</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">select</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">nfds</span></span>, <span class="o "><span class="t Identifier"><span class="i">fd_set</span></span><span class="t Pointer">*</span> <span class="i">readfds</span></span>, <span class="o "><span class="t Identifier"><span class="i">fd_set</span></span><span class="t Pointer">*</span> <span class="i">writefds</span></span>,
+                                    <span class="o "><span class="t Identifier"><span class="i">fd_set</span></span><span class="t Pointer">*</span> <span class="i">errorfds</span></span>, <span class="o "><span class="t Identifier"><span class="i">timeval</span></span><span class="t Pointer">*</span> <span class="i">timeout</span></span>)</span><span class="s FuncBody">;</span></span>
     }</span>
 }</span></span>
 
@@ -147,7 +147,7 @@
      *                returned in the selection set per call to select();
      *                this value is currently not used by this selector.
      */</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">open</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">size</span> = <span class="e Identifier"><span class="i">DefaultSize</span></span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">maxEvents</span> = <span class="e Identifier"><span class="i">DefaultSize</span></span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">open</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">size</span> = <span class="e Identifier"><span class="i">DefaultSize</span></span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">maxEvents</span> = <span class="e Identifier"><span class="i">DefaultSize</span></span></span>)</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Rel"><span class="e Identifier"><span class="i">size</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
@@ -163,7 +163,7 @@
      * Remarks:
      * It can be called multiple times without harmful side-effects.
      */</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span><span class="o Parameters">()</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_size</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_keys</span></span> = <span class="e Null"><span class="k">null</span></span></span>;</span>
@@ -175,7 +175,7 @@
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_selectedExceptionSet</span></span> = <span class="e Identifier"><span class="i">HandleSet</span></span>.<span class="e Identifier"><span class="i">init</span></span></span>;</span>
     }</span></span></span>
 
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="t Pointer">*</span><span class="i">allocateSet</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">set</span></span>, <span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">selectedSet</span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="t Pointer">*</span><span class="i">allocateSet</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">set</span></span>, <span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">selectedSet</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span>(<span class="e Not">!<span class="e Identifier"><span class="i">set</span></span></span>.<span class="e Identifier"><span class="i">initialized</span></span>)
         <span class="s Scope"><span class="s Compound">{
@@ -208,7 +208,7 @@
      * selector.register(conduit, Event.Read | Event.Write, object);
      * ---
      */</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">register</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ISelectable</span></span> <span class="i">conduit</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Event</span></span> <span class="i">events</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Object</span></span> <span class="i">attachment</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">register</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ISelectable</span></span> <span class="i">conduit</span></span>, <span class="o "><span class="t Identifier"><span class="i">Event</span></span> <span class="i">events</span></span>, <span class="o "><span class="t Identifier"><span class="i">Object</span></span> <span class="i">attachment</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
     <span class="s FuncBody"><span class="k">in</span>
     <span class="s Compound">{
         <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e AndAnd"><span class="e Identity"><span class="e Identifier"><span class="i">conduit</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span> &amp;&amp; <span class="e Call"><span class="e Identifier"><span class="i">conduit</span></span>.<span class="e Identifier"><span class="i">fileHandle</span></span>()</span></span>)</span>;</span>
@@ -303,7 +303,7 @@
      * UnregisteredConduitException if the conduit had not been previously
      * registered to the selector.
      */</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unregister</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ISelectable</span></span> <span class="i">conduit</span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">unregister</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ISelectable</span></span> <span class="i">conduit</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">conduit</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
         <span class="s Scope"><span class="s Compound">{
@@ -381,7 +381,7 @@
      * property was set to false; SelectorException if there were no
      * resources available to wait for events from the conduits.
      */</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">select</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">timeout</span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">select</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">TimeSpan</span></span> <span class="i">timeout</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">fd_set</span></span> <span class="t Pointer">*</span><span class="i">readfds</span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">fd_set</span></span> <span class="t Pointer">*</span><span class="i">writefds</span>;</span></span>
@@ -469,7 +469,7 @@
             }</span></span>
             <span class="k">else</span>
             <span class="s Scope"><span class="s Compound">{
-                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Thread</span></span>.<span class="e Identifier"><span class="i">sleep</span></span>(<span class="i">dur</span>!<span class="sl">"msecs"</span>(<span class="k">cast</span>(<span class="k">long</span>)(<span class="i">timeout</span>.<span class="i">interval</span>()*<span class="n">1000</span>)))</span>;</span>
+                <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Thread</span></span>.<span class="e Identifier"><span class="i">sleep</span></span>(<span class="i">Time</span>.<span class="i">seconds</span>(<span class="i">timeout</span>.<span class="i">interval</span>()))</span>;</span>
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_eventCount</span></span> = <span class="e Int"><span class="n">0</span></span></span>;</span>
             }</span></span></span>
         }</span></span>
@@ -484,7 +484,7 @@
      * If the call to select() was unsuccessful or it did not return any
      * events, the returned value will be null.
      */</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">ISelectionSet</span></span> <span class="i">selectedSet</span><span class="o Parameters">()</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">ISelectionSet</span></span> <span class="i">selectedSet</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Paren">(<span class="e Cond"><span class="e Rel"><span class="e Identifier"><span class="i">_eventCount</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span> ? <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">SelectSelectionSet</span></span>(<span class="e Identifier"><span class="i">_keys</span></span>, <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">uint</span></span>) <span class="e Identifier"><span class="i">_eventCount</span></span></span>, <span class="e Identifier"><span class="i">_selectedReadSet</span></span>,
                                                          <span class="e Identifier"><span class="i">_selectedWriteSet</span></span>, <span class="e Identifier"><span class="i">_selectedExceptionSet</span></span>)</span> : <span class="e Null"><span class="k">null</span></span></span>)</span>;</span>
@@ -498,7 +498,7 @@
      * If the conduit is not registered to the selector the returned
      * value will be null. No exception will be thrown by this method.
      */</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SelectionKey</span></span> <span class="i">key</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ISelectable</span></span> <span class="i">conduit</span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">SelectionKey</span></span> <span class="i">key</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ISelectable</span></span> <span class="i">conduit</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span>(<span class="e Identity"><span class="e Identifier"><span class="i">conduit</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>)
         <span class="s Scope"><span class="s Compound">{
@@ -514,7 +514,7 @@
      * Return the number of keys resulting from the registration of a conduit
      * to the selector.
      */</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">count</span><span class="o Parameters">()</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">count</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">_keys</span></span>.<span class="e Identifier"><span class="i">length</span></span>;</span>
     }</span></span></span>
@@ -524,10 +524,10 @@
      * you should not erase or add any items from the selector while
      * iterating, although you can register existing conduits again.
      */</span>
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span><span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">SelectionKey</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span><span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">SelectionKey</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">result</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
-        <span class="s Foreach"><span class="k">foreach</span>(<span class="o Parameters"><span class="o Parameter"><span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">_keys</span></span>)
+        <span class="s Foreach"><span class="k">foreach</span>(<span class="o "><span class="o "><span class="i">v</span></span></span>; <span class="e Identifier"><span class="i">_keys</span></span>)
         <span class="s Scope"><span class="s Compound">{
             <span class="s If"><span class="k">if</span>(<span class="e Equal"><span class="e Paren">(<span class="e Assign"><span class="e Identifier"><span class="i">result</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">dg</span></span>(<span class="i">v</span>)</span></span>)</span> != <span class="e Int"><span class="n">0</span></span></span>)
                 <span class="s Scope"><span class="s Break"><span class="k">break</span>;</span></span></span>
@@ -547,8 +547,8 @@
     <span class="d Variables"><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">_writeSet</span>;</span>
     <span class="d Variables"><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">_exceptionSet</span>;</span>
 
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">SelectionKey</span></span><span class="t Array">[<span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span>]</span> <span class="i">keys</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">eventCount</span></span>,
-                   <span class="o Parameter"><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">readSet</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">writeSet</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">exceptionSet</span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">SelectionKey</span></span><span class="t Array">[<span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span>]</span> <span class="i">keys</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">eventCount</span></span>,
+                   <span class="o "><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">readSet</span></span>, <span class="o "><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">writeSet</span></span>, <span class="o "><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">exceptionSet</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_keys</span></span> = <span class="e Identifier"><span class="i">keys</span></span></span>;</span>
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_eventCount</span></span> = <span class="e Identifier"><span class="i">eventCount</span></span></span>;</span>
@@ -557,12 +557,12 @@
         <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_exceptionSet</span></span> = <span class="e Identifier"><span class="i">exceptionSet</span></span></span>;</span>
     }</span></span></span>
 
-    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">length</span><span class="o Parameters">()</span>
+    <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">length</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">_eventCount</span></span>;</span>
     }</span></span></span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span><span class="o Parameters">(<span class="o Parameter"><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Identifier"><span class="i">SelectionKey</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">opApply</span><span class="o ">(<span class="o "><span class="k">scope</span> <span class="t Integral"><span class="k">int</span></span> <span class="t Delegate"><span class="k">delegate</span><span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Identifier"><span class="i">SelectionKey</span></span></span>)</span></span> <span class="i">dg</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">rc</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span> <span class="i">handle</span>;</span></span>
@@ -571,7 +571,7 @@
         <span class="s Debug"><span class="k">debug</span> (<span class="i">selector</span>)
             <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">Stdout</span></span>.<span class="e Identifier"><span class="i">format</span></span>(<span class="sl">"--- SelectSelectionSet.opApply() ({0} elements)<span class="es">\n</span>"</span>, <span class="i">_eventCount</span>)</span>;</span></span>
 
-        <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="t Identifier"><span class="i">SelectionKey</span></span> <span class="i">current</span></span></span>; <span class="e Identifier"><span class="i">_keys</span></span>)
+        <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="t Identifier"><span class="i">SelectionKey</span></span> <span class="i">current</span></span></span>; <span class="e Identifier"><span class="i">_keys</span></span>)
         <span class="s Scope"><span class="s Compound">{
             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">handle</span></span> = <span class="e Call"><span class="e Identifier"><span class="i">current</span></span>.<span class="e Identifier"><span class="i">conduit</span></span>.<span class="e Identifier"><span class="i">fileHandle</span></span>()</span></span>;</span>
 
@@ -633,7 +633,7 @@
          * Constructor. Sets the initial number of handles that will be held
          * in the HandleSet.
          */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setup</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">size</span> = <span class="e Identifier"><span class="i">DefaultSize</span></span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setup</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">size</span> = <span class="e Identifier"><span class="i">DefaultSize</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">_buffer</span></span> = <span class="e New"><span class="k">new</span> <span class="t Integral"><span class="k">uint</span></span><span class="t Array">[<span class="e Plus"><span class="e Int"><span class="n">1</span></span> + <span class="e Identifier"><span class="i">size</span></span></span>]</span></span></span>;</span>
             <span class="s Expression"><span class="e Assign"><span class="e Index"><span class="e Identifier"><span class="i">_buffer</span></span>[<span class="e Int"><span class="n">0</span></span>]</span> = <span class="e Int"><span class="n">0</span></span></span>;</span>
@@ -642,7 +642,7 @@
         <span class="bc">/**
          *  return true if this handle set has been initialized.
          */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">initialized</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">initialized</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Return"><span class="k">return</span> <span class="e Rel"><span class="e Identifier"><span class="i">_buffer</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span>;</span>
         }</span></span></span>
@@ -650,7 +650,7 @@
         <span class="bc">/**
          * Return the number of handles present in the HandleSet.
          */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">length</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">uint</span></span> <span class="i">length</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Return"><span class="k">return</span> <span class="e Index"><span class="e Identifier"><span class="i">_buffer</span></span>[<span class="e Int"><span class="n">0</span></span>]</span>;</span>
         }</span></span></span>
@@ -658,7 +658,7 @@
         <span class="bc">/**
          * Add the handle to the set.
          */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">set</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span> <span class="i">handle</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">set</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span> <span class="i">handle</span></span>)</span>
         <span class="s FuncBody"><span class="k">in</span>
         <span class="s Compound">{
             <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Identifier"><span class="i">handle</span></span>)</span>;</span>
@@ -679,7 +679,7 @@
         <span class="bc">/**
          * Remove the handle from the set.
          */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">clear</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span> <span class="i">handle</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">clear</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span> <span class="i">handle</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s For"><span class="k">for</span> (<span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">i</span> = <span class="e Int"><span class="n">1</span></span>;</span></span> <span class="e Rel"><span class="e Identifier"><span class="i">i</span></span> &lt;= <span class="e Index"><span class="e Identifier"><span class="i">_buffer</span></span>[<span class="e Int"><span class="n">0</span></span>]</span></span>; <span class="e PreIncr">++<span class="e Identifier"><span class="i">i</span></span></span>)
             <span class="s Scope"><span class="s Compound">{
@@ -702,7 +702,7 @@
         <span class="bc">/**
          * Copy the contents of the HandleSet into this instance.
          */</span>
-        <span class="d Function"><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">copy</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">handleSet</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">copy</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">handleSet</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s If"><span class="k">if</span>(<span class="e Rel"><span class="e Identifier"><span class="i">handleSet</span></span>.<span class="e Identifier"><span class="i">_buffer</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Identifier"><span class="i">_buffer</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>)
             <span class="s Scope"><span class="s Compound">{
@@ -717,7 +717,7 @@
         <span class="bc">/**
          * Check whether the handle has been set.
          */</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isSet</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span> <span class="i">handle</span></span>)</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isSet</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span> <span class="i">handle</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s If"><span class="k">if</span>(<span class="e Equal"><span class="e Identifier"><span class="i">_buffer</span></span>.<span class="e Identifier"><span class="i">length</span></span> == <span class="e Int"><span class="n">0</span></span></span>)
                 <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Bool"><span class="k">false</span></span>;</span></span></span>
@@ -737,7 +737,7 @@
          * Cast the current object to a pointer to an fd_set, to be used with the
          * select() system call.
          */</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">fd_set</span></span><span class="t Pointer">*</span> <span class="i">opCast</span><span class="o Parameters">()</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Identifier"><span class="i">fd_set</span></span><span class="t Pointer">*</span> <span class="i">opCast</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Return"><span class="k">return</span> <span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">fd_set</span></span><span class="t Pointer">*</span>) <span class="e Identifier"><span class="i">_buffer</span></span></span>.<span class="e Identifier"><span class="i">ptr</span></span>;</span>
         }</span></span></span>
@@ -748,7 +748,7 @@
             <span class="bc">/**
              * Dump the contents of a HandleSet into stdout.
              */</span>
-            <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">dump</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+            <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">dump</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
             <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e AndAnd"><span class="e AndAnd"><span class="e Identity"><span class="e Identifier"><span class="i">_buffer</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">_buffer</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span></span> &amp;&amp; <span class="e Rel"><span class="e Index"><span class="e Identifier"><span class="i">_buffer</span></span>[<span class="e Int"><span class="n">0</span></span>]</span> &gt; <span class="e Int"><span class="n">0</span></span></span></span>)
                 <span class="s Scope"><span class="s Compound">{
@@ -802,7 +802,7 @@
          * Constructor. Sets the initial number of handles that will be held
          * in the HandleSet.
          */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setup</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">size</span> = <span class="e Identifier"><span class="i">DefaultSize</span></span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">setup</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">size</span> = <span class="e Identifier"><span class="i">DefaultSize</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s If"><span class="k">if</span> (<span class="e Rel"><span class="e Identifier"><span class="i">size</span></span> &lt; <span class="e Int"><span class="n">1024</span></span></span>)
                 <span class="s Scope"><span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">size</span></span> = <span class="e Int"><span class="n">1024</span></span></span>;</span></span></span>
@@ -813,7 +813,7 @@
         <span class="bc">/**
          * Return true if the handleset has been initialized
          */</span>
-        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">initialized</span><span class="o Parameters">()</span>
+        <span class="d StorageClass">@<span class="i">property</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">initialized</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Return"><span class="k">return</span> <span class="e Rel"><span class="e Identifier"><span class="i">_buffer</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span>;</span>
         }</span></span></span>
@@ -821,7 +821,7 @@
         <span class="bc">/**
          * Add a handle to the set.
          */</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">set</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span> <span class="i">handle</span></span>)</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">set</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span> <span class="i">handle</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="lc">// If we added too many sockets we increment the size of the buffer</span>
             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">fd</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">uint</span></span>)<span class="e Identifier"><span class="i">handle</span></span></span>;</span></span>
@@ -833,7 +833,7 @@
         <span class="bc">/**
          * Remove a handle from the set.
          */</span>
-        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">clear</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span> <span class="i">handle</span></span>)</span>
+        <span class="d Protection"><span class="k">public</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">clear</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span> <span class="i">handle</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">fd</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">uint</span></span>)<span class="e Identifier"><span class="i">handle</span></span></span>;</span></span>
             <span class="s If"><span class="k">if</span>(<span class="e Rel"><span class="e Identifier"><span class="i">fd</span></span> &lt; <span class="e Identifier"><span class="i">_buffer</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>)
@@ -843,7 +843,7 @@
         <span class="bc">/**
          * Copy the contents of the HandleSet into this instance.
          */</span>
-        <span class="d Function"><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">copy</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">handleSet</span></span>)</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">copy</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">HandleSet</span></span> <span class="i">handleSet</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="lc">//</span>
             <span class="lc">// adjust the length if necessary</span>
@@ -858,7 +858,7 @@
         <span class="bc">/**
          * Check whether the handle has been set.
          */</span>
-        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isSet</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span> <span class="i">handle</span></span>)</span>
+        <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">isSet</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">ISelectable</span></span>.<span class="t Identifier"><span class="i">Handle</span></span> <span class="i">handle</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">fd</span> = <span class="e Cast"><span class="k">cast</span>(<span class="t Integral"><span class="k">uint</span></span>)<span class="e Identifier"><span class="i">handle</span></span></span>;</span></span>
             <span class="s If"><span class="k">if</span>(<span class="e Rel"><span class="e Identifier"><span class="i">fd</span></span> &lt; <span class="e Identifier"><span class="i">_buffer</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>)
@@ -870,7 +870,7 @@
          * Cast the current object to a pointer to an fd_set, to be used with the
          * select() system call.
          */</span>
-        <span class="d Function"><span class="t Identifier"><span class="i">fd_set</span></span><span class="t Pointer">*</span> <span class="i">opCast</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Identifier"><span class="i">fd_set</span></span><span class="t Pointer">*</span> <span class="i">opCast</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
             <span class="s Return"><span class="k">return</span> <span class="e Cast"><span class="k">cast</span>(<span class="t Identifier"><span class="i">fd_set</span></span><span class="t Pointer">*</span>) <span class="e Identifier"><span class="i">_buffer</span></span></span>.<span class="e Identifier"><span class="i">ptr</span></span>;</span>
         }</span></span></span>
@@ -880,7 +880,7 @@
             <span class="bc">/**
              * Dump the contents of a HandleSet into stdout.
              */</span>
-            <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">dump</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+            <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">dump</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Array">[]</span> <span class="i">name</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
             <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e AndAnd"><span class="e Identity"><span class="e Identifier"><span class="i">_buffer</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span> &amp;&amp; <span class="e Rel"><span class="e Identifier"><span class="i">_buffer</span></span>.<span class="e Identifier"><span class="i">length</span></span> &gt; <span class="e Int"><span class="n">0</span></span></span></span>)
                 <span class="s Scope"><span class="s Compound">{

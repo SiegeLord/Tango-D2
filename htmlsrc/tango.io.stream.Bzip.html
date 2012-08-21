@@ -40,10 +40,10 @@
      * internally.  There's no particular reason to pick this size.  It might
      * be an idea to run some benchmarks to work out what a good number is.
      */</span>
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">BUFFER_SIZE</span></span> = <span class="e Mul"><span class="e Int"><span class="n">4</span></span>*<span class="e Int"><span class="n">1024</span></span></span></span> }</span><span class="d Empty">;</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="i">BUFFER_SIZE</span> = <span class="e Mul"><span class="e Int"><span class="n">4</span></span>*<span class="e Int"><span class="n">1024</span></span></span></span> }</span><span class="d Empty">;</span>
 
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">DEFAULT_BLOCKSIZE</span></span> = <span class="e Int"><span class="n">9</span></span></span> }</span><span class="d Empty">;</span>
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="t Identifier"><span class="i">DEFAULT_WORKFACTOR</span></span> = <span class="e Int"><span class="n">0</span></span></span> }</span><span class="d Empty">;</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="i">DEFAULT_BLOCKSIZE</span> = <span class="e Int"><span class="n">9</span></span></span> }</span><span class="d Empty">;</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Enum"><span class="k">enum</span> { <span class="d EnumMember"><span class="i">DEFAULT_WORKFACTOR</span> = <span class="e Int"><span class="n">0</span></span></span> }</span><span class="d Empty">;</span>
 }</span>
 
 <span class="bc">/*******************************************************************************
@@ -65,9 +65,9 @@
 
     <span class="d Enum"><span class="k">enum</span> <span class="i">BlockSize</span> : <span class="t Integral"><span class="k">int</span></span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">Normal</span></span> = <span class="e Int"><span class="n">9</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">Fast</span></span> = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">Best</span></span> = <span class="e Int"><span class="n">9</span></span></span>,
+        <span class="d EnumMember"><span class="i">Normal</span> = <span class="e Int"><span class="n">9</span></span></span>,
+        <span class="d EnumMember"><span class="i">Fast</span> = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">Best</span> = <span class="e Int"><span class="n">9</span></span></span>,
     }</span>
 
     <span class="d Protection"><span class="k">private</span></span>
@@ -102,7 +102,7 @@
 
     ***************************************************************************/</span>
 
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">blockSize</span> = <span class="e Identifier"><span class="i">BlockSize</span></span>.<span class="e Identifier"><span class="i">Normal</span></span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">blockSize</span> = <span class="e Identifier"><span class="i">BlockSize</span></span>.<span class="e Identifier"><span class="i">Normal</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">init</span></span>(<span class="i">stream</span>, <span class="i">blockSize</span>)</span>;</span>
         <span class="s ScopeGuard"><span class="k">scope</span>(<span class="i">failure</span>) <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span></span>
@@ -116,7 +116,7 @@
      * be called more than once for an instance, provided the instance is
      * either new or as part of a call to reset.
      */</span>
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">init</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">blockSize</span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">init</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">blockSize</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span>( <span class="e OrOr"><span class="e Rel"><span class="e Identifier"><span class="i">blockSize</span></span> &lt; <span class="e Int"><span class="n">1</span></span></span> || <span class="e Rel"><span class="e Identifier"><span class="i">blockSize</span></span> &gt; <span class="e Int"><span class="n">9</span></span></span></span> )
             <span class="s Scope"><span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipException</span></span>(<span class="e String"><span class="sl">"bzip2 block size must be between"</span>
@@ -147,7 +147,7 @@
 
     ***************************************************************************/</span> 
 
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">reset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">blockSize</span> = <span class="e Identifier"><span class="i">BlockSize</span></span>.<span class="e Identifier"><span class="i">Normal</span></span></span>)</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">reset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">OutputStream</span></span> <span class="i">stream</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">blockSize</span> = <span class="e Identifier"><span class="i">BlockSize</span></span>.<span class="e Identifier"><span class="i">Normal</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="lc">// If the stream is still valid, bail.</span>
         <span class="s If"><span class="k">if</span>( <span class="e Identifier"><span class="i">bzs_valid</span></span> )
@@ -165,7 +165,7 @@
 
     ***************************************************************************/</span>
 
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span><span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">write</span><span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">src</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">check_valid</span></span>()</span>;</span>
         <span class="s ScopeGuard"><span class="k">scope</span>(<span class="i">failure</span>) <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span></span>
@@ -214,7 +214,7 @@
 
     ***************************************************************************/</span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">written</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">written</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">_written</span></span>;</span>
     }</span></span></span>
@@ -226,7 +226,7 @@
 
     ***************************************************************************/</span>
 
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span><span class="o Parameters">()</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span>( <span class="e Identifier"><span class="i">bzs_valid</span></span> ) <span class="s Scope"><span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">commit</span></span>()</span>;</span></span></span>
         <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>.<span class="e Identifier"><span class="i">close</span></span>()</span>;</span>
@@ -244,7 +244,7 @@
 
     ***************************************************************************/</span>
 
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">commit</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">commit</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">check_valid</span></span>()</span>;</span>
         <span class="s ScopeGuard"><span class="k">scope</span>(<span class="i">failure</span>) <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span></span>
@@ -295,14 +295,14 @@
     }</span></span></span>
 
     <span class="lc">// Disable seeking</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">seek</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">offset</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Anchor</span></span> <span class="i">anchor</span> = <span class="e Identifier"><span class="i">Anchor</span></span>.<span class="e Identifier"><span class="i">Begin</span></span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">seek</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">offset</span></span>, <span class="o "><span class="t Identifier"><span class="i">Anchor</span></span> <span class="i">anchor</span> = <span class="e Identifier"><span class="i">Anchor</span></span>.<span class="e Identifier"><span class="i">Begin</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">IOException</span></span>(<span class="e String"><span class="sl">"BzipOutput does not support seek requests"</span></span>)</span>;</span>
     }</span></span></span>
 
     <span class="lc">// This function kills the stream: it deallocates the internal state, and</span>
     <span class="lc">// unsets the bzs_valid flag.</span>
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">kill_bzs</span><span class="o Parameters">()</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">kill_bzs</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">check_valid</span></span>()</span>;</span>
 
@@ -312,7 +312,7 @@
 
     <span class="lc">// Asserts that the stream is still valid and usable (except that this</span>
     <span class="lc">// check doesn't get elided with -release).</span>
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">check_valid</span><span class="o Parameters">()</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">check_valid</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span>( <span class="e Not">!<span class="e Identifier"><span class="i">bzs_valid</span></span></span> )
             <span class="s Scope"><span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipClosedException</span></span></span>;</span></span></span>
@@ -351,7 +351,7 @@
 
     ***************************************************************************/</span>
 
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">small</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">stream</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">small</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">init</span></span>(<span class="i">stream</span>, <span class="i">small</span>)</span>;</span>
         <span class="s ScopeGuard"><span class="k">scope</span>(<span class="i">failure</span>) <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">kill_bzs</span></span>()</span>;</span></span>
@@ -365,7 +365,7 @@
      * be called more than once for an instance, provided the instance is
      * either new or as part of a call to reset.
      */</span>
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">init</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">small</span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">init</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">stream</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">small</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">ret</span> = <span class="e Call"><span class="e Identifier"><span class="i">BZ2_bzDecompressInit</span></span>(&amp;<span class="i">bzs</span>, <span class="n">0</span>, <span class="i">small</span>?<span class="n">1</span>:<span class="n">0</span>)</span>;</span></span>
         <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e Identifier"><span class="i">ret</span></span> != <span class="e Identifier"><span class="i">BZ_OK</span></span></span> )
@@ -392,7 +392,7 @@
 
     ***************************************************************************/</span> 
 
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">reset</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">stream</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">small</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">reset</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">stream</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">small</span>=<span class="e Bool"><span class="k">false</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="lc">// If the stream is still valid, bail.</span>
         <span class="s If"><span class="k">if</span>( <span class="e Identifier"><span class="i">bzs_valid</span></span> )
@@ -410,7 +410,7 @@
 
     ***************************************************************************/</span> 
 
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">read</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">void</span></span><span class="t Array">[]</span> <span class="i">dst</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span>( <span class="e Not">!<span class="e Identifier"><span class="i">bzs_valid</span></span></span> )
             <span class="s Scope"><span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">IConduit</span></span>.<span class="e Identifier"><span class="i">Eof</span></span>;</span></span></span>
@@ -454,7 +454,7 @@
 
     ***************************************************************************/</span> 
 
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span><span class="o Parameters">()</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">check_valid</span></span>()</span>;</span>
 
@@ -465,14 +465,14 @@
     }</span></span></span>
 
     <span class="lc">// Disable seeking</span>
-    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">seek</span><span class="o Parameters">(<span class="o Parameter"><span class="t Integral"><span class="k">long</span></span> <span class="i">offset</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">Anchor</span></span> <span class="i">anchor</span> = <span class="e Identifier"><span class="i">Anchor</span></span>.<span class="e Identifier"><span class="i">Begin</span></span></span>)</span>
+    <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Integral"><span class="k">long</span></span> <span class="i">seek</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">offset</span></span>, <span class="o "><span class="t Identifier"><span class="i">Anchor</span></span> <span class="i">anchor</span> = <span class="e Identifier"><span class="i">Anchor</span></span>.<span class="e Identifier"><span class="i">Begin</span></span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">IOException</span></span>(<span class="e String"><span class="sl">"BzipOutput does not support seek requests"</span></span>)</span>;</span>
     }</span></span></span>
 
     <span class="lc">// This function kills the stream: it deallocates the internal state, and</span>
     <span class="lc">// unsets the bzs_valid flag.</span>
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">kill_bzs</span><span class="o Parameters">()</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">kill_bzs</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Identifier"><span class="i">check_valid</span></span>()</span>;</span>
 
@@ -482,7 +482,7 @@
 
     <span class="lc">// Asserts that the stream is still valid and usable (except that this</span>
     <span class="lc">// check doesn't get elided with -release).</span>
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">check_valid</span><span class="o Parameters">()</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">check_valid</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span>( <span class="e Not">!<span class="e Identifier"><span class="i">bzs_valid</span></span></span> )
             <span class="s Scope"><span class="s Throw"><span class="k">throw</span> <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">BzipClosedException</span></span></span>;</span></span></span>
@@ -498,17 +498,17 @@
 
 <span class="d Class"><span class="k">class</span> <span class="i">BzipException</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">IOException</span></span></span>
 <span class="d Compound">{
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">int</span></span> <span class="i">code</span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">int</span></span> <span class="i">code</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
-        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span>(<span class="i">codeName</span><span class="t CFunc"><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">code</span></span></span>)</span></span>);</span></span>
+        <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span>(<span class="i">codeName</span><span class="t CFunc"><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">code</span></span></span>)</span></span>);</span></span>
     }</span></span></span>
 
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">string</span></span> <span class="i">msg</span></span>)</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">string</span></span> <span class="i">msg</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span>(<span class="i">msg</span>);</span></span>
     }</span></span></span>
 
-    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">string</span></span> <span class="i">codeName</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">int</span></span> <span class="i">code</span></span>)</span>
+    <span class="d Protection"><span class="k">private</span></span> <span class="d Function"><span class="t Identifier"><span class="i">string</span></span> <span class="i">codeName</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">int</span></span> <span class="i">code</span></span>)</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">string</span></span> <span class="i">name</span>;</span></span>
 
@@ -544,7 +544,7 @@
 
 <span class="d Class"><span class="k">class</span> <span class="i">BzipClosedException</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">IOException</span></span></span>
 <span class="d Compound">{
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">()</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="sl">"cannot operate on closed bzip2 stream"</span>)</span>;</span>
     }</span></span></span>
@@ -560,7 +560,7 @@
 
 <span class="d Class"><span class="k">class</span> <span class="i">BzipStillOpenException</span> : <span class="t BaseClass"><span class="t Identifier"><span class="i">IOException</span></span></span>
 <span class="d Compound">{
-    <span class="d Constructor"><span class="k">this</span><span class="o Parameters">()</span>
+    <span class="d Constructor"><span class="k">this</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Expression"><span class="e Call"><span class="e Super"><span class="k">super</span></span>(<span class="sl">"cannot reset an open bzip2 stream"</span>)</span>;</span>
     }</span></span></span>

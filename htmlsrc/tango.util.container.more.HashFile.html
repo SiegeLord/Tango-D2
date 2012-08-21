@@ -53,7 +53,7 @@
 
 ******************************************************************************/</span>
 
-<span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">HashFile</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">K</span></span>, <span class="o TemplateTypeParam"><span class="i">V</span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">HashFile</span><span class="o ">(<span class="o "><span class="i">K</span></span>, <span class="o "><span class="i">V</span></span>)</span>
 <span class="d Compound">{
         <span class="bc">/**********************************************************************
 
@@ -107,7 +107,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">path</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">BlockSize</span></span> <span class="i">block</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">uint</span></span> <span class="i">initialRecords</span> = <span class="e Int"><span class="n">100</span></span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">path</span></span>, <span class="o "><span class="t Identifier"><span class="i">BlockSize</span></span> <span class="i">block</span></span>, <span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">initialRecords</span> = <span class="e Int"><span class="n">100</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">block</span></span> = <span class="e Identifier"><span class="i">block</span></span></span>;</span>
 
@@ -127,7 +127,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">path</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span> <span class="i">path</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">file</span></span>.<span class="e Identifier"><span class="i">path</span></span>;</span>
         }</span></span></span>
@@ -138,7 +138,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">length</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d StorageClass"><span class="k">const</span></span> <span class="d Function"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">length</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Return"><span class="k">return</span> <span class="e Identifier"><span class="i">waterLine</span></span>;</span>
         }</span></span></span>
@@ -152,7 +152,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">V</span></span> <span class="i">get</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">clear</span> = <span class="e Bool"><span class="k">false</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Identifier"><span class="i">V</span></span> <span class="i">get</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">clear</span> = <span class="e Bool"><span class="k">false</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e In"><span class="e Identifier"><span class="i">key</span></span> <span class="k">in</span> <span class="e Identifier"><span class="i">map</span></span></span>;</span></span>
 
@@ -170,7 +170,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">remove</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">remove</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">map</span></span>.<span class="t Identifier"><span class="i">remove</span></span> (<span class="i">key</span>);</span></span>
         }</span></span></span>
@@ -191,7 +191,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">put</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">data</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">K</span></span> <span class="t Function"><span class="k">function</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">K</span></span></span>)</span></span> <span class="i">retain</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">put</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">K</span></span> <span class="i">key</span></span>, <span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">data</span></span>, <span class="o "><span class="t Identifier"><span class="i">K</span></span> <span class="t Function"><span class="k">function</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">K</span></span></span>)</span></span> <span class="i">retain</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">r</span> = <span class="e In"><span class="e Identifier"><span class="i">key</span></span> <span class="k">in</span> <span class="e Identifier"><span class="i">map</span></span></span>;</span></span>
                 
@@ -213,7 +213,7 @@
 
         **********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span> <span class="o Parameters">()</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">close</span> <span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">file</span></span>)
                    <span class="s Scope"><span class="s Compound">{
@@ -246,7 +246,7 @@
 
                 **************************************************************/</span>
 
-                <span class="d Function"><span class="t Identifier"><span class="i">V</span></span> <span class="i">read</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">HashFile</span></span> <span class="i">bucket</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">bool</span></span> <span class="i">clear</span></span>)</span>
+                <span class="d Function"><span class="t Identifier"><span class="i">V</span></span> <span class="i">read</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">HashFile</span></span> <span class="i">bucket</span></span>, <span class="o "><span class="t Integral"><span class="k">bool</span></span> <span class="i">clear</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s If"><span class="k">if</span> (<span class="e Identifier"><span class="i">used</span></span>)
                            <span class="s Scope"><span class="s Compound">{
@@ -265,7 +265,7 @@
 
                 **************************************************************/</span>
 
-                <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">write</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">HashFile</span></span> <span class="i">bucket</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">V</span></span> <span class="i">data</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">BlockSize</span></span> <span class="i">block</span></span>)</span>
+                <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">write</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">HashFile</span></span> <span class="i">bucket</span></span>, <span class="o "><span class="t Identifier"><span class="i">V</span></span> <span class="i">data</span></span>, <span class="o "><span class="t Identifier"><span class="i">BlockSize</span></span> <span class="i">block</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">used</span></span> = <span class="e Identifier"><span class="i">data</span></span>.<span class="e Identifier"><span class="i">length</span></span></span>;</span>
 
@@ -280,7 +280,7 @@
 
                 **************************************************************/</span>
 
-                <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">createBucket</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">HashFile</span></span> <span class="i">bucket</span></span>, <span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">bytes</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">BlockSize</span></span> <span class="i">block</span></span>)</span>
+                <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">createBucket</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">HashFile</span></span> <span class="i">bucket</span></span>, <span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">bytes</span></span>, <span class="o "><span class="t Identifier"><span class="i">BlockSize</span></span> <span class="i">block</span></span>)</span>
                 <span class="s FuncBody"><span class="s Compound">{
                         <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">offset</span></span> = <span class="e Identifier"><span class="i">bucket</span></span>.<span class="e Identifier"><span class="i">waterLine</span></span></span>;</span>
                         <span class="s Expression"><span class="e Assign"><span class="e This"><span class="k">this</span></span>.<span class="e Identifier"><span class="i">capacity</span></span> = <span class="e And"><span class="e Paren">(<span class="e Plus"><span class="e Identifier"><span class="i">bytes</span></span> + <span class="e Identifier"><span class="i">block</span></span>.<span class="e Identifier"><span class="i">capacity</span></span></span>)</span> &amp; <span class="e Comp">~<span class="e Identifier"><span class="i">block</span></span></span>.<span class="e Identifier"><span class="i">capacity</span></span></span></span>;</span>
@@ -307,15 +307,15 @@
 
 <span class="d Debug"><span class="k">debug</span> (<span class="i">HashFile</span>)
 <span class="d Compound">{
-        <span class="d Linkage"><span class="k">extern</span>(<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">printf</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span></span>, <span class="o Parameter">...</span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Linkage"><span class="k">extern</span>(<span class="i">C</span>)</span> <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">printf</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">char</span></span>)</span><span class="t Pointer">*</span></span>, <span class="o ">...</span>)</span><span class="s FuncBody">;</span></span>
 
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Path</span>;</span>
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Stdout</span>;</span>
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">text</span>.<span class="i">convert</span>.<span class="i">Integer</span>;</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
-                <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">HashFile</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>, <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span> <span class="i">Bucket</span>;</span></span></span>
+                <span class="s Declaration"><span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t TemplateInstance"><span class="i">HashFile</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>, <span class="t Integral"><span class="k">char</span></span><span class="t Array">[]</span>)</span></span> <span class="i">Bucket</span>;</span></span></span>
 
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">file</span> = <span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Bucket</span></span> (<span class="e String"><span class="sl">"foo.map"</span></span>, <span class="e Identifier"><span class="i">Bucket</span></span>.<span class="e Identifier"><span class="i">QuarterK</span></span>, <span class="e Int"><span class="n">1</span></span>)</span>;</span></span>
         

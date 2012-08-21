@@ -21,7 +21,7 @@
  */</span> 
 <span class="d Compound"><span class="d Module"><span class="k">module</span> <span class="i">tango</span>.<span class="i">core</span>.<span class="i">Octal</span>;</span>
 
-<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">toOctal</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">decimal</span></span>)</span>
+<span class="d Template"><span class="d Compound"><span class="d Function"><span class="t Identifier"><span class="i">T</span></span> <span class="i">toOctal</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">decimal</span></span>)</span>
 <span class="s FuncBody"><span class="s Compound">{
     <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">T</span></span> <span class="i">ret</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
     <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">uint</span></span> <span class="i">power</span> = <span class="e Int"><span class="n">0</span></span>;</span></span>
@@ -44,22 +44,22 @@
     <span class="s Return"><span class="k">return</span> <span class="e Mul"><span class="e Identifier"><span class="i">ret</span></span> * <span class="e Identifier"><span class="i">sign</span></span></span>;</span>
 }</span></span></span></span></span>
 
-<span class="d Template"><span class="k">template</span> <span class="i">octal</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Integral"><span class="k">int</span></span> <span class="i">decimal</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">octal</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">decimal</span></span>)</span>
 <span class="d Compound">{
     <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">octal</span> = <span class="e Call"><span class="e Identifier"><span class="i">toOctal</span></span>(<span class="i">decimal</span>)</span>;</span>
 }</span></span>
 
-<span class="d Template"><span class="k">template</span> <span class="i">octalU</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Integral"><span class="k">uint</span></span> <span class="i">decimal</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">octalU</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">uint</span></span> <span class="i">decimal</span></span>)</span>
 <span class="d Compound">{
     <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">octal</span> = <span class="e Call"><span class="e Identifier"><span class="i">toOctal</span></span>(<span class="i">decimal</span>)</span>;</span>
 }</span></span>
 
-<span class="d Template"><span class="k">template</span> <span class="i">octalL</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Integral"><span class="k">long</span></span> <span class="i">decimal</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">octalL</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">long</span></span> <span class="i">decimal</span></span>)</span>
 <span class="d Compound">{
     <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">octal</span> = <span class="e Call"><span class="e Identifier"><span class="i">toOctal</span></span>(<span class="i">decimal</span>)</span>;</span>
 }</span></span>
 
-<span class="d Template"><span class="k">template</span> <span class="i">octalUL</span><span class="o TemplateParameters">(<span class="o TemplateValueParam"><span class="t Integral"><span class="k">ulong</span></span> <span class="i">decimal</span></span>)</span>
+<span class="d Template"><span class="k">template</span> <span class="i">octalUL</span><span class="o ">(<span class="o "><span class="t Integral"><span class="k">ulong</span></span> <span class="i">decimal</span></span>)</span>
 <span class="d Compound">{
     <span class="d StorageClass"><span class="k">enum</span></span> <span class="d Variables"><span class="i">octal</span> = <span class="e Call"><span class="e Identifier"><span class="i">toOctal</span></span>(<span class="i">decimal</span>)</span>;</span>
 }</span></span>
@@ -68,10 +68,10 @@
 <span class="d Compound">{
     <span class="d Unittest"><span class="k">unittest</span>
     <span class="s FuncBody"><span class="s Compound">{
-        <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">764</span></span>)</span></span> == <span class="e Int"><span class="n">500</span></span></span>)</span>;</span>
-        <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">1</span></span>)</span></span> == <span class="e Int"><span class="n">1</span></span></span>)</span>;</span>
-        <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Int"><span class="n">0</span></span>)</span></span> == <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
-        <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e TmplInstance"><span class="i">octal</span>!<span class="o TemplateArguments">(<span class="e Sign">-<span class="e Int"><span class="n">10</span></span></span>)</span></span> == <span class="e Sign">-<span class="e Int"><span class="n">8</span></span></span></span>)</span>;</span>
+        <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e TmplInstance"><span class="i">octal</span>!<span class="o ">(<span class="e Int"><span class="n">764</span></span>)</span></span> == <span class="e Int"><span class="n">500</span></span></span>)</span>;</span>
+        <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e TmplInstance"><span class="i">octal</span>!<span class="o ">(<span class="e Int"><span class="n">1</span></span>)</span></span> == <span class="e Int"><span class="n">1</span></span></span>)</span>;</span>
+        <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e TmplInstance"><span class="i">octal</span>!<span class="o ">(<span class="e Int"><span class="n">0</span></span>)</span></span> == <span class="e Int"><span class="n">0</span></span></span>)</span>;</span>
+        <span class="s Expression"><span class="e Assert"><span class="k">assert</span>(<span class="e Equal"><span class="e TmplInstance"><span class="i">octal</span>!<span class="o ">(<span class="e Sign">-<span class="e Int"><span class="n">10</span></span></span>)</span></span> == <span class="e Sign">-<span class="e Int"><span class="n">8</span></span></span></span>)</span>;</span>
     }</span></span></span>
 }</span></span></span>
 

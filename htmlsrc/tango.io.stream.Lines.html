@@ -47,7 +47,7 @@
 
 *******************************************************************************/</span>
 
-<span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">Lines</span><span class="o TemplateParameters">(<span class="o TemplateTypeParam"><span class="i">T</span></span>)</span> : <span class="t BaseClass"><span class="t TemplateInstance"><span class="i">Iterator</span>!<span class="o TemplateArguments">(<span class="t Identifier"><span class="i">T</span></span>)</span></span></span>
+<span class="d Template"><span class="d Compound"><span class="d Class"><span class="k">class</span> <span class="i">Lines</span><span class="o ">(<span class="o "><span class="i">T</span></span>)</span> : <span class="t BaseClass"><span class="t TemplateInstance"><span class="i">Iterator</span>!<span class="o ">(<span class="t Identifier"><span class="i">T</span></span>)</span></span></span>
 <span class="d Compound">{
         <span class="bc">/***********************************************************************
 
@@ -79,7 +79,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Constructor"><span class="k">this</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">stream</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
+        <span class="d Constructor"><span class="k">this</span> <span class="o ">(<span class="o "><span class="t Identifier"><span class="i">InputStream</span></span> <span class="i">stream</span> = <span class="e Null"><span class="k">null</span></span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="k">super</span></span> (<span class="i">stream</span>);</span></span>
         }</span></span></span>
@@ -91,7 +91,7 @@
 
         ***********************************************************************/</span>
 
-        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">readln</span> <span class="o Parameters">(<span class="o Parameter"><span class="k">ref</span> <span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">T</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span>
+        <span class="d StorageClass"><span class="k">final</span></span> <span class="d Function"><span class="t Integral"><span class="k">bool</span></span> <span class="i">readln</span> <span class="o ">(<span class="o "><span class="k">ref</span> <span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">T</span></span>)</span><span class="t Array">[]</span> <span class="i">content</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Expression"><span class="e Assign"><span class="e Identifier"><span class="i">content</span></span> = <span class="e Super"><span class="k">super</span></span>.<span class="e Identifier"><span class="i">next</span></span></span>;</span>
                 <span class="s Return"><span class="k">return</span> <span class="e Identity"><span class="e Identifier"><span class="i">content</span></span>.<span class="e Identifier"><span class="i">ptr</span></span> !<span class="k">is</span> <span class="e Null"><span class="k">null</span></span></span>;</span>
@@ -104,11 +104,11 @@
 
         ***********************************************************************/</span>
 
-        <span class="d Protection"><span class="k">protected</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">scan</span> <span class="o Parameters">(<span class="o Parameter"><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">data</span></span>)</span>
+        <span class="d Protection"><span class="k">protected</span></span> <span class="d StorageClass"><span class="k">override</span></span> <span class="d Function"><span class="t Identifier"><span class="i">size_t</span></span> <span class="i">scan</span> <span class="o ">(<span class="o "><span class="t Const"><span class="k">const</span>(<span class="t Integral"><span class="k">void</span></span>)</span><span class="t Array">[]</span> <span class="i">data</span></span>)</span>
         <span class="s FuncBody"><span class="s Compound">{
                 <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">content</span> = <span class="e Slice"><span class="e Paren">(<span class="e Cast"><span class="k">cast</span>(<span class="t Const"><span class="k">const</span>(<span class="t Identifier"><span class="i">T</span></span>)</span><span class="t Pointer">*</span>) <span class="e Identifier"><span class="i">data</span></span></span>.<span class="e Identifier"><span class="i">ptr</span></span>)</span> [<span class="e Int"><span class="n">0</span></span> .. <span class="e Div"><span class="e Identifier"><span class="i">data</span></span>.<span class="e Identifier"><span class="i">length</span></span> / <span class="e Identifier"><span class="i">T</span></span>.<span class="e Identifier"><span class="i">sizeof</span></span></span>]</span>;</span></span>
 
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">T</span></span> <span class="i">c</span></span></span>; <span class="e Identifier"><span class="i">content</span></span>)
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="t Integral"><span class="k">int</span></span> <span class="i">i</span></span>, <span class="o "><span class="t Identifier"><span class="i">T</span></span> <span class="i">c</span></span></span>; <span class="e Identifier"><span class="i">content</span></span>)
                          <span class="s Scope"><span class="s If"><span class="k">if</span> (<span class="e Identity"><span class="e Identifier"><span class="i">c</span></span> <span class="k">is</span> <span class="e Char"><span class="cl">'<span class="es">\n</span>'</span></span></span>)
                             <span class="s Scope"><span class="s Compound">{
                             <span class="s Declaration"><span class="d Variables"><span class="t Integral"><span class="k">int</span></span> <span class="i">slice</span> = <span class="e Identifier"><span class="i">i</span></span>;</span></span>
@@ -134,7 +134,7 @@
 
         <span class="d Unittest"><span class="k">unittest</span>
         <span class="s FuncBody"><span class="s Compound">{
-                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">Lines</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span>)</span></span> (<span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Array</span></span>(<span class="e String"><span class="sl">"blah"</span></span>.<span class="e Identifier"><span class="i">dup</span></span>)</span>)</span>;</span></span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">p</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">Lines</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span>)</span></span> (<span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Array</span></span>(<span class="e String"><span class="sl">"blah"</span></span>.<span class="e Identifier"><span class="i">dup</span></span>)</span>)</span>;</span></span>
         }</span></span></span>
 }</span></span>
 
@@ -148,11 +148,11 @@
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">Console</span>;</span>
         <span class="d Import"><span class="k">import</span> <span class="i">tango</span>.<span class="i">io</span>.<span class="i">device</span>.<span class="i">Array</span>;</span>
 
-        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o Parameters">()</span>
+        <span class="d Function"><span class="t Integral"><span class="k">void</span></span> <span class="i">main</span><span class="o ">()</span>
         <span class="s FuncBody"><span class="s Compound">{
-                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">lines</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">Lines</span>!<span class="o TemplateArguments">(<span class="t Integral"><span class="k">char</span></span>)</span></span>(<span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Array</span></span>(<span class="e String"><span class="sl">"one<span class="es">\n</span>two<span class="es">\r</span><span class="es">\n</span>three"</span></span>.<span class="e Identifier"><span class="i">dup</span></span>)</span>)</span>;</span></span>
-                <span class="s Foreach"><span class="k">foreach</span> (<span class="o Parameters"><span class="o Parameter"><span class="i">i</span></span>, <span class="o Parameter"><span class="i">line</span></span>, <span class="o Parameter"><span class="i">delim</span></span></span>; <span class="e Identifier"><span class="i">lines</span></span>)
-                         <span class="s Scope"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">Cout</span></span> (<span class="i">line</span>) <span class="t CFunc"><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">delim</span></span></span>)</span></span>;</span></span></span></span>
+                <span class="s Declaration"><span class="d StorageClass"><span class="k">auto</span></span> <span class="d Variables"><span class="i">lines</span> = <span class="e New"><span class="k">new</span> <span class="t TemplateInstance"><span class="i">Lines</span>!<span class="o ">(<span class="t Integral"><span class="k">char</span></span>)</span></span>(<span class="e New"><span class="k">new</span> <span class="t Identifier"><span class="i">Array</span></span>(<span class="e String"><span class="sl">"one<span class="es">\n</span>two<span class="es">\r</span><span class="es">\n</span>three"</span></span>.<span class="e Identifier"><span class="i">dup</span></span>)</span>)</span>;</span></span>
+                <span class="s Foreach"><span class="k">foreach</span> (<span class="o "><span class="o "><span class="i">i</span></span>, <span class="o "><span class="i">line</span></span>, <span class="o "><span class="i">delim</span></span></span>; <span class="e Identifier"><span class="i">lines</span></span>)
+                         <span class="s Scope"><span class="s Declaration"><span class="d Variables"><span class="t Identifier"><span class="i">Cout</span></span> (<span class="i">line</span>) <span class="t CFunc"><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">delim</span></span></span>)</span></span>;</span></span></span></span>
         }</span></span></span>
 }</span></span></span>
 

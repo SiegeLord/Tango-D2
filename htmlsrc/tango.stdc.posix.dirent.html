@@ -50,15 +50,15 @@ void    rewinddir(DIR*);
     <span class="lc">//       for dirent.d_type.</span>
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_UNKNOWN</span></span>  = <span class="e Int"><span class="n">0</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_FIFO</span></span>     = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_CHR</span></span>      = <span class="e Int"><span class="n">2</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_DIR</span></span>      = <span class="e Int"><span class="n">4</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_BLK</span></span>      = <span class="e Int"><span class="n">6</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_REG</span></span>      = <span class="e Int"><span class="n">8</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_LNK</span></span>      = <span class="e Int"><span class="n">10</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_SOCK</span></span>     = <span class="e Int"><span class="n">12</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_WHT</span></span>      = <span class="e Int"><span class="n">14</span></span></span>
+        <span class="d EnumMember"><span class="i">DT_UNKNOWN</span>  = <span class="e Int"><span class="n">0</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_FIFO</span>     = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_CHR</span>      = <span class="e Int"><span class="n">2</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_DIR</span>      = <span class="e Int"><span class="n">4</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_BLK</span>      = <span class="e Int"><span class="n">6</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_REG</span>      = <span class="e Int"><span class="n">8</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_LNK</span>      = <span class="e Int"><span class="n">10</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_SOCK</span>     = <span class="e Int"><span class="n">12</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_WHT</span>      = <span class="e Int"><span class="n">14</span></span></span>
     }</span>
 
     <span class="d Struct"><span class="k">struct</span> <span class="i">dirent</span>
@@ -77,27 +77,27 @@ void    rewinddir(DIR*);
 
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Identifier"><span class="i">__USE_LARGEFILE64</span></span> )
     <span class="d Compound">{
-        <span class="d Function"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span> <span class="i">readdir64</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span> <span class="i">readdir64</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
         <span class="d Alias"><span class="k">alias</span>   <span class="d Variables"><span class="t Identifier"><span class="i">readdir64</span></span> <span class="i">readdir</span>;</span></span>
     }</span>
     <span class="k">else</span>
     <span class="d Compound">{
-        <span class="d Function"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span> <span class="i">readdir</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span> <span class="i">readdir</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
     }</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> )
 <span class="d Compound">{
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_UNKNOWN</span></span>  = <span class="e Int"><span class="n">0</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_FIFO</span></span>     = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_CHR</span></span>      = <span class="e Int"><span class="n">2</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_DIR</span></span>      = <span class="e Int"><span class="n">4</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_BLK</span></span>      = <span class="e Int"><span class="n">6</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_REG</span></span>      = <span class="e Int"><span class="n">8</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_LNK</span></span>      = <span class="e Int"><span class="n">10</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_SOCK</span></span>     = <span class="e Int"><span class="n">12</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_WHT</span></span>      = <span class="e Int"><span class="n">14</span></span></span>
+        <span class="d EnumMember"><span class="i">DT_UNKNOWN</span>  = <span class="e Int"><span class="n">0</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_FIFO</span>     = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_CHR</span>      = <span class="e Int"><span class="n">2</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_DIR</span>      = <span class="e Int"><span class="n">4</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_BLK</span>      = <span class="e Int"><span class="n">6</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_REG</span>      = <span class="e Int"><span class="n">8</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_LNK</span>      = <span class="e Int"><span class="n">10</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_SOCK</span>     = <span class="e Int"><span class="n">12</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_WHT</span>      = <span class="e Int"><span class="n">14</span></span></span>
     }</span>
 
     <span class="d Align"><span class="k">align</span>(<span class="n">4</span>)</span>
@@ -115,21 +115,21 @@ void    rewinddir(DIR*);
         <span class="lc">// Managed by OS</span>
     }</span></span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span> <span class="i">readdir</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span> <span class="i">readdir</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_UNKNOWN</span></span>  = <span class="e Int"><span class="n">0</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_FIFO</span></span>     = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_CHR</span></span>      = <span class="e Int"><span class="n">2</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_DIR</span></span>      = <span class="e Int"><span class="n">4</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_BLK</span></span>      = <span class="e Int"><span class="n">6</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_REG</span></span>      = <span class="e Int"><span class="n">8</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_LNK</span></span>      = <span class="e Int"><span class="n">10</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_SOCK</span></span>     = <span class="e Int"><span class="n">12</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_WHT</span></span>      = <span class="e Int"><span class="n">14</span></span></span>
+        <span class="d EnumMember"><span class="i">DT_UNKNOWN</span>  = <span class="e Int"><span class="n">0</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_FIFO</span>     = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_CHR</span>      = <span class="e Int"><span class="n">2</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_DIR</span>      = <span class="e Int"><span class="n">4</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_BLK</span>      = <span class="e Int"><span class="n">6</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_REG</span>      = <span class="e Int"><span class="n">8</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_LNK</span>      = <span class="e Int"><span class="n">10</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_SOCK</span>     = <span class="e Int"><span class="n">12</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_WHT</span>      = <span class="e Int"><span class="n">14</span></span></span>
     }</span>
 
     <span class="d Align"><span class="k">align</span>(<span class="n">4</span>)</span>
@@ -157,7 +157,7 @@ void    rewinddir(DIR*);
         <span class="d Variables"><span class="t Identifier"><span class="i">_telldir</span></span><span class="t Pointer">*</span> <span class="i">dd_td</span>;</span>
     }</span></span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span> <span class="i">readdir</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span> <span class="i">readdir</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
@@ -165,15 +165,15 @@ void    rewinddir(DIR*);
     <span class="lc">//       for dirent.d_type.</span>
     <span class="d Enum"><span class="k">enum</span>
     {
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_UNKNOWN</span></span>  = <span class="e Int"><span class="n">0</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_FIFO</span></span>     = <span class="e Int"><span class="n">1</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_CHR</span></span>      = <span class="e Int"><span class="n">2</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_DIR</span></span>      = <span class="e Int"><span class="n">4</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_BLK</span></span>      = <span class="e Int"><span class="n">6</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_REG</span></span>      = <span class="e Int"><span class="n">8</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_LNK</span></span>      = <span class="e Int"><span class="n">10</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_SOCK</span></span>     = <span class="e Int"><span class="n">12</span></span></span>,
-        <span class="d EnumMember"><span class="t Identifier"><span class="i">DT_WHT</span></span>      = <span class="e Int"><span class="n">14</span></span></span>
+        <span class="d EnumMember"><span class="i">DT_UNKNOWN</span>  = <span class="e Int"><span class="n">0</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_FIFO</span>     = <span class="e Int"><span class="n">1</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_CHR</span>      = <span class="e Int"><span class="n">2</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_DIR</span>      = <span class="e Int"><span class="n">4</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_BLK</span>      = <span class="e Int"><span class="n">6</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_REG</span>      = <span class="e Int"><span class="n">8</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_LNK</span>      = <span class="e Int"><span class="n">10</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_SOCK</span>     = <span class="e Int"><span class="n">12</span></span></span>,
+        <span class="d EnumMember"><span class="i">DT_WHT</span>      = <span class="e Int"><span class="n">14</span></span></span>
     }</span>
     
     <span class="d Struct"><span class="k">struct</span> <span class="i">dirent</span>
@@ -194,23 +194,23 @@ void    rewinddir(DIR*);
     
     <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Identifier"><span class="i">__USE_LARGEFILE64</span></span> )
     <span class="d Compound">{
-        <span class="d Function"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span> <span class="i">readdir64</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span> <span class="i">readdir64</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
         <span class="d Alias"><span class="k">alias</span>   <span class="d Variables"><span class="t Identifier"><span class="i">readdir64</span></span> <span class="i">readdir</span>;</span></span>
     }</span>
     <span class="k">else</span>
     <span class="d Compound">{
-        <span class="d Function"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span> <span class="i">readdir</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+        <span class="d Function"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span> <span class="i">readdir</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
     }</span></span>
 }</span>
 <span class="k">else</span>
 <span class="d Compound">{
-    <span class="d Function"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span> <span class="i">readdir</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span> <span class="i">readdir</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span></span>
 
-<span class="d Function"><span class="t Integral"><span class="k">int</span></span>     <span class="i">closedir</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
-<span class="d Function"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span>    <span class="i">opendir</span><span class="o Parameters">(<span class="o Parameter"><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">int</span></span>     <span class="i">closedir</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span>    <span class="i">opendir</span><span class="o ">(<span class="o "><span class="k">in</span> <span class="t Integral"><span class="k">char</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 <span class="lc">//dirent* readdir(DIR*);</span>
-<span class="d Function"><span class="t Integral"><span class="k">void</span></span>    <span class="i">rewinddir</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+<span class="d Function"><span class="t Integral"><span class="k">void</span></span>    <span class="i">rewinddir</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 
 <span class="lc">//</span>
 <span class="lc">// Thread-Safe Functions (TSF)</span>
@@ -223,32 +223,32 @@ int readdir_r(DIR*, dirent*, dirent**);
 <span class="d Compound">{
   <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Identifier"><span class="i">__USE_LARGEFILE64</span></span> )
   <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">readdir64_r</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">readdir64_r</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">readdir64_r</span></span> <span class="i">readdir_r</span>;</span></span>
   }</span>
   <span class="k">else</span>
   <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">readdir_r</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">readdir_r</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
   }</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">darwin</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">readdir_r</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">readdir_r</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">FreeBSD</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">readdir_r</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">readdir_r</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span>
 <span class="k">else</span> <span class="d Version"><span class="k">version</span>( <span class="i">solaris</span> )
 <span class="d Compound">{
   <span class="d StaticIf"><span class="k">static</span> <span class="k">if</span>( <span class="e Identifier"><span class="i">__USE_LARGEFILE64</span></span> )
   <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">readdir64_r</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span>   <span class="i">readdir64_r</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
     <span class="d Alias"><span class="k">alias</span> <span class="d Variables"><span class="t Identifier"><span class="i">readdir64_r</span></span> <span class="i">readdir_r</span>;</span></span>
   }</span>
   <span class="k">else</span>
   <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">readdir_r</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">int</span></span> <span class="i">readdir_r</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">dirent</span></span><span class="t Pointer">*</span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
   }</span></span>
 }</span></span></span></span></span>
 
@@ -262,8 +262,8 @@ c_long telldir(DIR*);
 
 <span class="d Version"><span class="k">version</span>( <span class="i">linux</span> )
 <span class="d Compound">{
-    <span class="d Function"><span class="t Integral"><span class="k">void</span></span>   <span class="i">seekdir</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>, <span class="o Parameter"><span class="t Identifier"><span class="i">c_long</span></span></span>)</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Identifier"><span class="i">c_long</span></span> <span class="i">telldir</span><span class="o Parameters">(<span class="o Parameter"><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Integral"><span class="k">void</span></span>   <span class="i">seekdir</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>, <span class="o "><span class="t Identifier"><span class="i">c_long</span></span></span>)</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Identifier"><span class="i">c_long</span></span> <span class="i">telldir</span><span class="o ">(<span class="o "><span class="t Identifier"><span class="i">DIR</span></span><span class="t Pointer">*</span></span>)</span><span class="s FuncBody">;</span></span>
 }</span></span></span></span>
 
 </pre></td>

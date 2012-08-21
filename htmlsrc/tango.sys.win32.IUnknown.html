@@ -32,18 +32,18 @@
 
 <span class="d Interface"><span class="k">interface</span> <span class="i">IUnknown</span>
 <span class="d Compound">{
-    <span class="d Function"><span class="t Identifier"><span class="i">HRESULT</span></span> <span class="i">QueryInterface</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">REFIID</span></span> <span class="i">iid</span></span>, <span class="o Parameter"><span class="k">out</span> <span class="t Identifier"><span class="i">IUnknown</span></span> <span class="i">obj</span></span> )</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Identifier"><span class="i">ULONG</span></span> <span class="i">AddRef</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
-    <span class="d Function"><span class="t Identifier"><span class="i">ULONG</span></span> <span class="i">Release</span><span class="o Parameters">()</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Identifier"><span class="i">HRESULT</span></span> <span class="i">QueryInterface</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">REFIID</span></span> <span class="i">iid</span></span>, <span class="o "><span class="k">out</span> <span class="t Identifier"><span class="i">IUnknown</span></span> <span class="i">obj</span></span> )</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Identifier"><span class="i">ULONG</span></span> <span class="i">AddRef</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
+    <span class="d Function"><span class="t Identifier"><span class="i">ULONG</span></span> <span class="i">Release</span><span class="o ">()</span><span class="s FuncBody">;</span></span>
 }</span></span>
 
 
 <span class="bc">/**
  * This implementation may be mixed into COM classes to avoid code duplication.
  */</span>
-<span class="d Template"><span class="k">template</span> <span class="i">IUnknownImpl</span><span class="o TemplateParameters">()</span>
+<span class="d Template"><span class="k">template</span> <span class="i">IUnknownImpl</span><span class="o ">()</span>
 <span class="d Compound">{
-    <span class="d Function"><span class="t Identifier"><span class="i">HRESULT</span></span> <span class="i">QueryInterface</span><span class="o Parameters">( <span class="o Parameter"><span class="t Identifier"><span class="i">REFIID</span></span> <span class="i">iid</span></span>, <span class="o Parameter"><span class="k">out</span> <span class="t Identifier"><span class="i">IUnknown</span></span> <span class="i">obj</span></span> )</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">HRESULT</span></span> <span class="i">QueryInterface</span><span class="o ">( <span class="o "><span class="t Identifier"><span class="i">REFIID</span></span> <span class="i">iid</span></span>, <span class="o "><span class="k">out</span> <span class="t Identifier"><span class="i">IUnknown</span></span> <span class="i">obj</span></span> )</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span> ( <span class="e Equal"><span class="e Identifier"><span class="i">iid</span></span> == <span class="e Address">&amp;<span class="e Identifier"><span class="i">IID_IUnknown</span></span></span></span> )
         <span class="s Scope"><span class="s Compound">{
@@ -58,12 +58,12 @@
         }</span></span></span>
     }</span></span></span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">ULONG</span></span> <span class="i">AddRef</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">ULONG</span></span> <span class="i">AddRef</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s Return"><span class="k">return</span> <span class="e PreIncr">++<span class="e Identifier"><span class="i">m_count</span></span></span>;</span>
     }</span></span></span>
 
-    <span class="d Function"><span class="t Identifier"><span class="i">ULONG</span></span> <span class="i">Release</span><span class="o Parameters">()</span>
+    <span class="d Function"><span class="t Identifier"><span class="i">ULONG</span></span> <span class="i">Release</span><span class="o ">()</span>
     <span class="s FuncBody"><span class="s Compound">{
         <span class="s If"><span class="k">if</span>( <span class="e Equal"><span class="e PreDecr">--<span class="e Identifier"><span class="i">m_count</span></span></span> == <span class="e Int"><span class="n">0</span></span></span> )
         <span class="s Scope"><span class="s Compound">{
