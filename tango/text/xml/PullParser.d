@@ -653,7 +653,7 @@ package struct XmlText(Ch)
                 this.end = point + len;
         }
 
-        static enum ubyte name[64] =
+        static const ubyte name[64] =
         [
              // 0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
                 0,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  1,  1,  0,  1,  1,  // 0
@@ -662,7 +662,7 @@ package struct XmlText(Ch)
                 1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  1,  1,  1,  0,  0   // 3
         ];
 
-        static enum ubyte attributeName[64] =
+        static const ubyte attributeName[64] =
         [
              // 0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
                 0,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  1,  1,  0,  1,  1,  // 0
