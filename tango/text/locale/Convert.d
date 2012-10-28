@@ -323,7 +323,7 @@ version (Full)
                 if (format[0] is '%')
                     {
                     // specifiers for both standard format strings and custom ones
-                    enum immutable(char)[] commonSpecs = "dmMsty";
+                    __gshared immutable immutable(char)[] commonSpecs = "dmMsty";
                     foreach (c; commonSpecs)
                         if (format[1] is c)
                             {
@@ -494,22 +494,22 @@ private extern (C) char* ecvt(double d, int digits, out int decpt, out bool sign
 *******************************************************************************/
 
 // Must match NumberFormat.decimalPositivePattern
-package enum immutable(char)[] positiveNumberFormat = "#";
+package __gshared immutable immutable(char)[] positiveNumberFormat = "#";
 
 // Must match NumberFormat.decimalNegativePattern
-package enum immutable(char)[][] negativeNumberFormats =
+package __gshared immutable immutable(char)[][] negativeNumberFormats =
                 [
                 "(#)", "-#", "- #", "#-", "# -"
                 ];
 
 // Must match NumberFormat.currencyPositivePattern
-package enum immutable(char)[][] positiveCurrencyFormats =
+package __gshared immutable immutable(char)[][] positiveCurrencyFormats =
                 [
                 "$#", "#$", "$ #", "# $"
                 ];
 
 // Must match NumberFormat.currencyNegativePattern
-package enum immutable(char)[][] negativeCurrencyFormats =
+package __gshared immutable immutable(char)[][] negativeCurrencyFormats =
                 [
                 "($#)", "-$#", "$-#", "$#-", "(#$)",
                 "-#$", "#-$", "#$-", "-# $", "-$ #",
@@ -1095,7 +1095,7 @@ private struct Number
 
         private bool toDouble(out double value)
         {
-                enum   ulong[] pow10 =
+                __gshared immutable ulong[] pow10 =
                         [
                         0xa000000000000000UL,
                         0xc800000000000000UL,
@@ -1150,7 +1150,7 @@ private struct Number
                         0x8fcac257558ee4e2UL,
                         ];
 
-                enum   uint[] pow10Exp =
+                __gshared immutable uint[] pow10Exp =
                         [
                         4, 7, 10, 14, 17, 20, 24, 27, 30, 34,
                         37, 40, 44, 47, 50, 54, 107, 160, 213, 266,

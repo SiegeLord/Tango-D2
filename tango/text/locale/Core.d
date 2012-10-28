@@ -1441,14 +1441,14 @@ version (Clone)
  */
 public class DateTimeFormat : IFormatService {
 
-  private enum const(char)[] rfc1123Pattern_ = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
-  private enum const(char)[] sortableDateTimePattern_ = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
-  private enum const(char)[] universalSortableDateTimePattern_ = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
-  private enum const(char)[] allStandardFormats = [ 'd', 'D', 'f', 'F', 'g', 'G', 'm', 'M', 'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y' ];
+  private __gshared immutable const(char)[] rfc1123Pattern_ = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
+  private __gshared immutable const(char)[] sortableDateTimePattern_ = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
+  private __gshared immutable const(char)[] universalSortableDateTimePattern_ = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
+  private __gshared immutable const(char)[] allStandardFormats = [ 'd', 'D', 'f', 'F', 'g', 'G', 'm', 'M', 'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y' ];
 
 
   package bool isReadOnly_;
-  private static DateTimeFormat invariantFormat_;
+  private __gshared DateTimeFormat invariantFormat_;
   private const(CultureData)* cultureData_;
 
   private Calendar calendar_;

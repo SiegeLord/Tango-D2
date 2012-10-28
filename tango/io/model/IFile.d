@@ -48,22 +48,22 @@ interface FileConst
                 }
 
                 /// The parent directory string
-                enum immutable(char)[] ParentDirString = "..";
+                __gshared immutable immutable(char)[] ParentDirString = "..";
 
                 /// The current directory string
-                enum immutable(char)[] CurrentDirString = ".";
+                __gshared immutable immutable(char)[] CurrentDirString = ".";
 
                 /// The file separator string
-                enum immutable(char)[] FileSeparatorString = ".";
+                __gshared immutable immutable(char)[] FileSeparatorString = ".";
 
                 /// The path separator string
-                enum immutable(char)[] PathSeparatorString = "/";
+                __gshared immutable immutable(char)[] PathSeparatorString = "/";
 
                 /// The system path string
-                enum immutable(char)[] SystemPathString = ";";
+                __gshared immutable immutable(char)[] SystemPathString = ";";
 
                 /// The newline string
-                enum immutable(char)[] NewlineString = "\r\n";
+                __gshared immutable immutable(char)[] NewlineString = "\r\n";
         }
 
         version (Posix)
@@ -85,22 +85,22 @@ interface FileConst
                 }
 
                 /// The parent directory string
-                enum immutable(char)[] ParentDirString = "..";
+                __gshared immutable immutable(char)[] ParentDirString = "..";
 
                 /// The current directory string
-                enum immutable(char)[] CurrentDirString = ".";
+                __gshared immutable immutable(char)[] CurrentDirString = ".";
 
                 /// The file separator string
-                enum immutable(char)[] FileSeparatorString = ".";
+                __gshared immutable immutable(char)[] FileSeparatorString = ".";
 
                 /// The path separator string
-                enum immutable(char)[] PathSeparatorString = "/";
+                __gshared immutable immutable(char)[] PathSeparatorString = "/";
 
                 /// The system path string
-                enum immutable(char)[] SystemPathString = ":";
+                __gshared immutable immutable(char)[] SystemPathString = ":";
 
                 /// The newline string
-                enum immutable(char)[] NewlineString = "\n";
+                __gshared immutable immutable(char)[] NewlineString = "\n";
         }
 }
 

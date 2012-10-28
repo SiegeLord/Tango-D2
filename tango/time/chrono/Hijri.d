@@ -22,12 +22,12 @@ private import tango.time.chrono.Calendar;
  */
 public class Hijri : Calendar {
 
-  private enum uint[] DAYS_TO_MONTH = [ 0, 30, 59, 89, 118, 148, 177, 207, 236, 266, 295, 325, 355 ];
+  private __gshared immutable uint[] DAYS_TO_MONTH = [ 0, 30, 59, 89, 118, 148, 177, 207, 236, 266, 295, 325, 355 ];
 
   /**
    * Represents the current era.
    */
-  public enum uint HIJRI_ERA = 1;
+  public __gshared immutable uint HIJRI_ERA = 1;
 
   /**
    * Overridden. Returns a Time value set to the specified date and time in the specified _era.

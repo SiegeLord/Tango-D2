@@ -14,8 +14,8 @@ class Salsa20 : StreamCipher
     protected
     {
         // Constants
-        enum immutable(ubyte)[] sigma = cast(immutable(ubyte)[])"expand 32-byte k";
-        enum immutable(ubyte)[] tau = cast(immutable(ubyte)[])"expand 16-byte k";
+        __gshared immutable immutable(ubyte)[] sigma = cast(immutable(ubyte)[])"expand 32-byte k";
+        __gshared immutable immutable(ubyte)[] tau = cast(immutable(ubyte)[])"expand 16-byte k";
         
         // Counter indexes (added for ChaCha)            
         uint i0, i1;
@@ -223,7 +223,7 @@ class Salsa20 : StreamCipher
     {
         unittest
         {
-            enum immutable(char)[][] test_keys = [
+            __gshared immutable immutable(char)[][] test_keys = [
                 "80000000000000000000000000000000", 
                 "0053a6f94c9ff24598eb3e91e4378add",
                 "00002000000000000000000000000000"~
@@ -233,14 +233,14 @@ class Salsa20 : StreamCipher
                 
             ];
             
-            enum immutable(char)[][] test_ivs = [
+            __gshared immutable immutable(char)[][] test_ivs = [
                 "0000000000000000",            
                 "0d74db42a91077de",
                 "0000000000000000",
                 "288ff65dc42b92f9"
             ];
                  
-            enum immutable(char)[][] test_plaintexts = [
+            __gshared immutable immutable(char)[][] test_plaintexts = [
                 "00000000000000000000000000000000"~
                 "00000000000000000000000000000000"~
                 "00000000000000000000000000000000"~
@@ -264,7 +264,7 @@ class Salsa20 : StreamCipher
                 
             ];
                  
-            enum immutable(char)[][] test_ciphertexts = [
+            __gshared immutable immutable(char)[][] test_ciphertexts = [
                 "4dfa5e481da23ea09a31022050859936"~ // Expected output
                 "da52fcee218005164f267cb65f5cfd7f"~
                 "2b4f97e0ff16924a52df269515110a07"~

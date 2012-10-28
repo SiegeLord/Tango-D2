@@ -621,7 +621,7 @@ debug (TangoMemCache)
 
 void main()
 {
-        static const(char[])[] hosts = ["192.168.111.224:11211"];
+        __gshared const(char[])[] hosts = ["192.168.111.224:11211"];
 
         auto cache = new MemCache (hosts);
 

@@ -162,7 +162,7 @@ package abstract class Sha01 : MerkleDamgard
 
         ***********************************************************************/
 
-        protected enum uint[] K =
+        protected __gshared immutable uint[] K =
         [
                 0x5A827999,
                 0x6ED9EBA1,
@@ -174,7 +174,7 @@ package abstract class Sha01 : MerkleDamgard
 
         ***********************************************************************/
 
-        private enum uint[5] initial =
+        private __gshared immutable uint[5] initial =
         [
                 0x67452301,
                 0xEFCDAB89,

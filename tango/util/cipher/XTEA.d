@@ -112,7 +112,7 @@ class XTEA : BlockCipher
     {
         unittest
         {
-            enum immutable(char)[][] test_keys = [
+            __gshared immutable immutable(char)[][] test_keys = [
                 "00000000000000000000000000000000",
                 "00000000000000000000000000000000",
                 "0123456712345678234567893456789a",
@@ -125,7 +125,7 @@ class XTEA : BlockCipher
                 "00000000000000000000000000000000"
             ];
                  
-            enum immutable(char)[][] test_plaintexts = [
+            __gshared immutable immutable(char)[][] test_plaintexts = [
                 "0000000000000000",
                 "0102030405060708",
                 "0000000000000000",
@@ -138,7 +138,7 @@ class XTEA : BlockCipher
                 "4141414141414141"
             ];
                 
-            enum immutable(char)[][] test_ciphertexts = [
+            __gshared immutable immutable(char)[][] test_ciphertexts = [
                 "dee9d4d8f7131ed9",
                 "065c1b8975c6a816",
                 "1ff9a0261ac64264",

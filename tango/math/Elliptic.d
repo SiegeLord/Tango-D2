@@ -234,7 +234,7 @@ in {
 }
 body{
 
-enum real [] P = [
+__gshared immutable real [] P = [
    0x1.62e42fefa39ef35ap+0, // 1.3862943611198906189
    0x1.8b90bfbe8ed811fcp-4, // 0.096573590279993142323
    0x1.fa05af797624c586p-6, // 0.030885144578720423267
@@ -250,7 +250,7 @@ enum real [] P = [
    0x1.4ee247035a03e13p-20  // 1.2475397291548388385e-06
 ];
 
-enum real [] Q = [
+__gshared immutable real [] Q = [
    0x1p-1,  // 0.5
    0x1.fffffffffff635eap-4, // 0.12499999999999782631
    0x1.1fffffff8a2bea1p-4,  // 0.070312499993302227507
@@ -297,7 +297,7 @@ in {
  assert(x>=0 && x<=1.0);
 }
 body {
-enum real [] P = [
+__gshared immutable real [] P = [
    0x1.c5c85fdf473f78f2p-2, // 0.44314718055994670505
    0x1.d1591f9e9a66477p-5,  // 0.056805192715569305834
    0x1.65af6a7a61f587cp-6,  // 0.021831373198011179718
@@ -312,7 +312,7 @@ enum real [] P = [
    0x1.0c58aa9ab404f4fp-15  // 3.1989378120323412946e-05
 ];
 
-enum real [] Q = [
+__gshared immutable real [] Q = [
    0x1.ffffffffffffb1cep-3, // 0.24999999999999986434
    0x1.7ffffffff29eaa0cp-4, // 0.093749999999239422678
    0x1.dfffffbd51eb098p-5,  // 0.058593749514839092674
@@ -363,14 +363,14 @@ unittest {
 real ellipticPi(real phi, real m, real n)
 {
     // BUGS: This implementation suffers from poor precision.
-    enum double [] t = [
+    __gshared immutable double [] t = [
         0.9931285991850949, 0.9639719272779138,
         0.9122344282513259, 0.8391169718222188,
         0.7463319064601508, 0.6360536807265150,
         0.5108670019508271, 0.3737060887154195,
         0.2277858511416451, 0.7652652113349734e-1
     ];
-    enum double [] w =[
+    __gshared immutable double [] w =[
         0.1761400713915212e-1, 0.4060142980038694e-1,
         0.6267204833410907e-1, 0.8327674157670475e-1,
         0.1019301198172404, 0.1181945319615184,

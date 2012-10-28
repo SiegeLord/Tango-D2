@@ -714,9 +714,10 @@ version (WithVariant)
                 switch (type.classinfo.name[9])
                        {
                        case TypeCode.BOOL:
-                            enum T[] t = cast(T[])"true";
-                            enum T[] f = cast(T[])"false";
-                            return (*cast(bool*) p) ? t : f;
+                            __gshared immutable T[] t = cast(immutable T[])"true";
+                            __gshared immutable T[] f = cast(immutable T[])"false";
+                            /* Bad dup? */
+                            return (*cast(bool*) p) ? t.dup : f.dup;
 
                        case TypeCode.BYTE:
                             return integer (result, *cast(byte*) p, format, ubyte.max);
@@ -928,7 +929,7 @@ version (WithVariant)
         {
                 size_t ret;
 
-                enum immutable(T)[] Spaces = "                                ";
+                __gshared immutable immutable(T)[] Spaces = "                                ";
                 while (count > Spaces.length)
                       {
                       ret += sink (Spaces);
@@ -969,7 +970,7 @@ version (WithVariant)
                                   return (pe[9] & 0x80) != 0;
                                   }
                 }
-                enum immutable(T)[] plus = "+";
+                __gshared immutable immutable(T)[] plus = "+";
 
                 auto len = floatingTail (result, val.re, format, signed(val.im) ? null : plus).length;
                 return result [0 .. len + floatingTail (result[len..$], val.im, format, "*1i").length];

@@ -40,9 +40,9 @@ version (Posix)
 struct Console
 {
         version (Win32)
-                 enum immutable(char)[] Eol = "\r\n";
-              else
-                 enum immutable(char)[] Eol = "\n";
+                 __gshared immutable immutable(char)[] Eol = "\r\n";
+        else
+                 __gshared immutable immutable(char)[] Eol = "\n";
 
 
         /**********************************************************************
@@ -458,16 +458,16 @@ struct Console
 
                         private void reopen (size_t handle_)
                         {
-                                static const DWORD[] id = [
-                                                          cast(DWORD) -10,
-                                                          cast(DWORD) -11,
-                                                          cast(DWORD) -12
-                                                          ];
-                                static const char[][] f = [
-                                                          "CONIN$\0",
-                                                          "CONOUT$\0",
-                                                          "CONOUT$\0"
-                                                          ];
+                                __gshared immutable DWORD[] id = [
+                                                                 cast(DWORD) -10,
+                                                                 cast(DWORD) -11,
+                                                                 cast(DWORD) -12
+                                                                 ];
+                                __gshared immutable char[][] f = [
+                                                                 "CONIN$\0",
+                                                                 "CONOUT$\0",
+                                                                 "CONOUT$\0"
+                                                                 ];
 
                                 assert (handle_ < 3);
                                 io.handle = GetStdHandle (id[handle_]);

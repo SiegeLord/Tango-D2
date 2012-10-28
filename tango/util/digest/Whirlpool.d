@@ -370,7 +370,7 @@ final class Whirlpool : MerkleDamgard
 
 *******************************************************************************/
 
-private static const ulong C0[256] = 
+private __gshared immutable ulong C0[256] = 
 [
     0x18186018c07830d8, 0x23238c2305af4626, 0xc6c63fc67ef991b8, 0xe8e887e8136fcdfb,
     0x878726874ca113cb, 0xb8b8dab8a9626d11, 0x0101040108050209, 0x4f4f214f426e9e0d,
@@ -442,7 +442,7 @@ private static const ulong C0[256] =
 
 *******************************************************************************/
 
-private static const ulong C1[256] = 
+private __gshared immutable ulong C1[256] = 
 [
     0xd818186018c07830, 0x2623238c2305af46, 0xb8c6c63fc67ef991, 0xfbe8e887e8136fcd,
     0xcb878726874ca113, 0x11b8b8dab8a9626d, 0x0901010401080502, 0x0d4f4f214f426e9e,
@@ -514,7 +514,7 @@ private static const ulong C1[256] =
 
 *******************************************************************************/
 
-private static const ulong C2[256] = 
+private __gshared immutable ulong C2[256] = 
 [
     0x30d818186018c078, 0x462623238c2305af, 0x91b8c6c63fc67ef9, 0xcdfbe8e887e8136f,
     0x13cb878726874ca1, 0x6d11b8b8dab8a962, 0x0209010104010805, 0x9e0d4f4f214f426e,
@@ -586,7 +586,7 @@ private static const ulong C2[256] =
 
 *******************************************************************************/
 
-private static const ulong C3[256] = 
+private __gshared immutable ulong C3[256] = 
 [
     0x7830d818186018c0, 0xaf462623238c2305, 0xf991b8c6c63fc67e, 0x6fcdfbe8e887e813,
     0xa113cb878726874c, 0x626d11b8b8dab8a9, 0x0502090101040108, 0x6e9e0d4f4f214f42,
@@ -658,7 +658,7 @@ private static const ulong C3[256] =
 
 *******************************************************************************/
 
-private static const ulong C4[256] = 
+private __gshared immutable ulong C4[256] = 
 [
     0xc07830d818186018, 0x05af462623238c23, 0x7ef991b8c6c63fc6, 0x136fcdfbe8e887e8,
     0x4ca113cb87872687, 0xa9626d11b8b8dab8, 0x0805020901010401, 0x426e9e0d4f4f214f,
@@ -730,7 +730,7 @@ private static const ulong C4[256] =
 
 *******************************************************************************/
 
-private static const ulong C5[256] = 
+private __gshared immutable ulong C5[256] = 
 [
     0x18c07830d8181860, 0x2305af462623238c, 0xc67ef991b8c6c63f, 0xe8136fcdfbe8e887,
     0x874ca113cb878726, 0xb8a9626d11b8b8da, 0x0108050209010104, 0x4f426e9e0d4f4f21,
@@ -802,7 +802,7 @@ private static const ulong C5[256] =
 
 *******************************************************************************/
 
-private static const ulong C6[256] = 
+private __gshared immutable ulong C6[256] = 
 [
     0x6018c07830d81818, 0x8c2305af46262323, 0x3fc67ef991b8c6c6, 0x87e8136fcdfbe8e8,
     0x26874ca113cb8787, 0xdab8a9626d11b8b8, 0x0401080502090101, 0x214f426e9e0d4f4f,
@@ -874,7 +874,7 @@ private static const ulong C6[256] =
 
 *******************************************************************************/
 
-private static const ulong C7[256] = 
+private __gshared immutable ulong C7[256] = 
 [
     0x186018c07830d818, 0x238c2305af462623, 0xc63fc67ef991b8c6, 0xe887e8136fcdfbe8,
     0x8726874ca113cb87, 0xb8dab8a9626d11b8, 0x0104010805020901, 0x4f214f426e9e0d4f,
@@ -946,7 +946,7 @@ private static const ulong C7[256] =
 
 *******************************************************************************/
 
-private static const ulong rc[INTERNAL_ROUNDS + 1] = 
+private __gshared immutable ulong rc[INTERNAL_ROUNDS + 1] = 
 [
     0x0000000000000000,
     0x1823c6e887b8014f,
@@ -972,7 +972,7 @@ debug(UnitTest)
     	void testISOVectors()
     	{
     	    // The ISO test vectors and results
-    	    enum immutable(char)[][] strings =
+    	    __gshared immutable immutable(char)[][] strings =
     	    [
     	            "",
     	            "a",
@@ -985,7 +985,7 @@ debug(UnitTest)
      	            "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq" // Not an ISO vector, but from FIPS
     	    ];
 
-    	    enum immutable(char)[][] results =
+    	    __gshared immutable immutable(char)[][] results =
     	    [
     	            "19fa61d75522a4669b44e39c1d2e1726c530232130d407f89afee0964997f7a73e83be698b288febcf88e3e03c4f0757ea8964e59b63d93708b138cc42a66eb3",
     	            "8aca2602792aec6f11a67206531fb7d7f0dff59413145e6973c45001d0087b42d11bc645413aeff63a42391a39145a591a92200d560195e53b478584fdae231a",
@@ -1022,18 +1022,18 @@ debug(UnitTest)
     	void testNESSIE0bitVectors() {
     	    // Part of the NESSIE test vectors and results: strings of 0 bits
     	    ubyte[128] data = 0;
-    	    enum immutable(char)[][] results =
+    	    __gshared immutable immutable(char)[][] results =
     	    [
-    		        "19fa61d75522a4669b44e39c1d2e1726c530232130d407f89afee0964997f7a73e83be698b288febcf88e3e03c4f0757ea8964e59b63d93708b138cc42a66eb3",
-    	 	        "4d9444c212955963d425a410176fccfb74161e6839692b4c11fde2ed6eb559efe0560c39a7b61d5a8bcabd6817a3135af80f342a4942ccaae745abddfb6afed0",
-    	 	        "8bdc9d4471d0dabd8812098b8cbdf5090beddb3d582917a61e176e3d22529d753fed9a37990ca18583855efbc4f26e88f62002f67722eb05f74c7ea5e07013f5",
-    	 	        "86aabfd4a83c3551cc0a63185616acb41cdfa96118f1ffb28376b41067efa25fb6c889662435bfc11a4f0936be6bcc2c3e905c4686db06159c40e4dd67dd983f",
-    	 	        "4ed6b52e915f09a803677c3131f7b34655d32817505d89a8cc07ed073ca3fedddd4a57cc53696027e824ab9822630087657c6fc6a28836cf1f252ed204bca576",
-    	 	        "4a1d1d8380f38896b6fc5788c559f92727acfd4dfa7081c72302b17e1ed437b30a24cfd75a16fd71b6bf5aa7ae5c7084594e3003a0b71584dc993681f902df6f",
-    	 	        "a2a379b0900a3c51809f4216aa3347fec486d50ec7376553349c5cf2a767049a87bf1ac4642185144924259ecf6b5c3b48b55a20565de289361e8ae5eafc5802",
-    	 	        "23eb3e26a1543558672f29e196304cd778ea459cc8e38d199de0cc748bd32d58090fadb39e7c7b6954322de990556d001ba457061c4367c6fa5d6961f1046e2f",
-    	 	        "7207be34fee657189af2748358f46c23175c1dcdd6741a9bdb139aeb255b618b711775fc258ac0fa53c350305862415ea121c65bf9e2fae06cbd81355d928ad7",
-    	 	        "fef7d0be035d1860e95644864b199c3a94eb23ab7920134b73239a320eb7cae450092bc4ba8b9809e20c33937c37c52b52ca90241657ffd0816420c01f4fada8",
+		    "19fa61d75522a4669b44e39c1d2e1726c530232130d407f89afee0964997f7a73e83be698b288febcf88e3e03c4f0757ea8964e59b63d93708b138cc42a66eb3",
+		    "4d9444c212955963d425a410176fccfb74161e6839692b4c11fde2ed6eb559efe0560c39a7b61d5a8bcabd6817a3135af80f342a4942ccaae745abddfb6afed0",
+		    "8bdc9d4471d0dabd8812098b8cbdf5090beddb3d582917a61e176e3d22529d753fed9a37990ca18583855efbc4f26e88f62002f67722eb05f74c7ea5e07013f5",
+		    "86aabfd4a83c3551cc0a63185616acb41cdfa96118f1ffb28376b41067efa25fb6c889662435bfc11a4f0936be6bcc2c3e905c4686db06159c40e4dd67dd983f",
+		    "4ed6b52e915f09a803677c3131f7b34655d32817505d89a8cc07ed073ca3fedddd4a57cc53696027e824ab9822630087657c6fc6a28836cf1f252ed204bca576",
+		    "4a1d1d8380f38896b6fc5788c559f92727acfd4dfa7081c72302b17e1ed437b30a24cfd75a16fd71b6bf5aa7ae5c7084594e3003a0b71584dc993681f902df6f",
+		    "a2a379b0900a3c51809f4216aa3347fec486d50ec7376553349c5cf2a767049a87bf1ac4642185144924259ecf6b5c3b48b55a20565de289361e8ae5eafc5802",
+		    "23eb3e26a1543558672f29e196304cd778ea459cc8e38d199de0cc748bd32d58090fadb39e7c7b6954322de990556d001ba457061c4367c6fa5d6961f1046e2f",
+		    "7207be34fee657189af2748358f46c23175c1dcdd6741a9bdb139aeb255b618b711775fc258ac0fa53c350305862415ea121c65bf9e2fae06cbd81355d928ad7",
+		    "fef7d0be035d1860e95644864b199c3a94eb23ab7920134b73239a320eb7cae450092bc4ba8b9809e20c33937c37c52b52ca90241657ffd0816420c01f4fada8",
     	            "caafb557aef0fae9f20bcccda7f3dc769c478a70508f4f2d180303598276934c410bd3d17627159a9c55b5265b516ba7f3eef67fbb08d9f22e585bc45964c4d1",
     	            "8fe2b488ca099db8e421768e1e7e0193ffaa3000e8281403795575fe7d03bd87298c4f64b1c4311093e43de4d80049645782ee268c3653c7a5c13da3773d5564",
     	            "2e065509d50d6135e4c4bd238b0e4138391c98082a596e76bdf1fb925b5069adca9548f833296da968573b965f79cd806624fb8c7e06f728aa04f24185878933", 
@@ -1168,7 +1168,7 @@ debug(UnitTest)
     	void testNESSIE1bitVectors() {
     	    // Part of the NESSIE test vectors and results: 512-bit strings containing a single 1-bit
     	    ubyte[64] data = 0;
-    	    enum immutable(char)[][] results =
+    	    __gshared immutable immutable(char)[][] results =
     	    [
 	            "103e0055a9b090e11c8fddebba06c05ace8b64b896128f6eed3071fcf3dc16946778e07223233fd180fc40ccdb8430a640e37634271e655ca1674ebff507f8cb",
 	            "a892e8125f792ee5997d175257633bf889f947759ad6f19dd233f467a3261643f815ded3eed7892a315402cb341fe713c109c0c217a9f4c53bb9920af88136e7",

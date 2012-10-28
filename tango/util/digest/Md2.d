@@ -206,7 +206,7 @@ class Md2 : MerkleDamgard
 
 *******************************************************************************/
 
-private enum ubyte[256] PI =
+private __gshared immutable ubyte[256] PI =
 [
          41,  46,  67, 201, 162, 216, 124,   1,  61,  54,  84, 161, 236, 240,   6,
          19,  98, 167,   5, 243, 192, 199, 115, 140, 152, 147,  43, 217, 188,
@@ -237,7 +237,7 @@ debug(UnitTest)
 {
         unittest 
         {
-        enum immutable(char)[][] strings = 
+        __gshared immutable immutable(char)[][] strings = 
         [
                 "",
                 "a",
@@ -248,7 +248,7 @@ debug(UnitTest)
                 "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
         ];
 
-        static immutable(char)[][] results = 
+        __gshared immutable immutable(char)[][] results = 
         [
                 "8350e5a3e24c153df2275c9f80692773",
                 "32ec01ec4a6dac72c0ab96fb34c0b5d1",

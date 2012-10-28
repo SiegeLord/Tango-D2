@@ -288,7 +288,7 @@ final class Sha256 : MerkleDamgard
 
 *******************************************************************************/
 
-private enum uint[] K =
+private __gshared immutable uint[] K =
 [
         0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
         0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
@@ -304,7 +304,7 @@ private enum uint[] K =
 
 *******************************************************************************/
 
-private enum uint[8] initial =
+private __gshared immutable uint[8] initial =
 [
         0x6a09e667,
         0xbb67ae85,
@@ -324,13 +324,13 @@ debug(UnitTest)
 {
         unittest
         {
-        enum immutable(char)[][] strings =
+        __gshared immutable immutable(char)[][] strings =
         [
                 "abc",
                 "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
         ];
 
-        enum immutable(char)[][] results =
+        __gshared immutable immutable(char)[][] results =
         [
                 "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
                 "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1"

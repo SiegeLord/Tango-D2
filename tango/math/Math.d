@@ -1903,7 +1903,7 @@ debug(UnitTest) {
 unittest
 {
     real x = 3.1;
-    enum real pp[] = [56.1L, 32.7L, 6L];
+    __gshared immutable real pp[] = [56.1L, 32.7L, 6L];
 
     assert( poly(x, pp) == (56.1L + (32.7L + 6L * x) * x) );
 

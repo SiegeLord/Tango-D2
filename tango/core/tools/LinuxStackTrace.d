@@ -588,7 +588,7 @@ Lsplit:
             }
             const(char)[] addr = tok[0] ~ "\u0000";
             const(char)[] source = tok[$-1] ~ "\u0000";
-            enum immutable(char)[] marker = "\x7FELF"c;
+            __gshared immutable immutable(char)[] marker = "\x7FELF"c;
 
             void* start, end;
             if(2 != sscanf(addr.ptr, "%zX-%zX", &start, &end)){

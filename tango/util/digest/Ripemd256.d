@@ -33,13 +33,13 @@ public  import tango.util.digest.Digest;
 final class Ripemd256 : MerkleDamgard
 {
         private uint[8]        context;
-        private enum uint     padChar = 0x80;
+        private enum uint      padChar = 0x80;
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private enum uint[8] initial =
+        private __gshared immutable uint[8] initial =
         [
   				0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476,
   				0x76543210, 0xfedcba98, 0x89abcdef, 0x01234567
@@ -370,7 +370,7 @@ debug(UnitTest)
 {
     unittest
     {
-    enum immutable(char)[][] strings =
+    __gshared immutable immutable(char)[][] strings =
     [
             "",
             "a",
@@ -382,7 +382,7 @@ debug(UnitTest)
             "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
     ];
 
-    enum immutable(char)[][] results =
+    __gshared immutable immutable(char)[][] results =
     [
             "02ba4c4e5f8ecd1877fc52d64d30e37a2d9774fb1e5d026380ae0168e3c5522d",
             "f9333e45d857f5d90a91bab70a1eba0cfb1be4b0783c9acfcd883a9134692925",

@@ -39,7 +39,7 @@ final class Ripemd160 : MerkleDamgard
 
         ***********************************************************************/
 
-        private static enum uint[5] initial =
+        private __gshared immutable uint[5] initial =
         [
 				0x67452301,
 				0xefcdab89,
@@ -552,7 +552,7 @@ debug(UnitTest)
 {
     unittest
     {
-    enum immutable(char)[][] strings =
+    __gshared immutable immutable(char)[][] strings =
     [
             "",
             "a",
@@ -564,7 +564,7 @@ debug(UnitTest)
             "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
     ];
 
-    enum immutable(char)[][] results =
+    __gshared immutable immutable(char)[][] results =
     [
             "9c1185a5c5e9fc54612808977ee8f548b2258d31",
             "0bdc9d2d256b3ee9daae347be6f4dc835a467ffe",

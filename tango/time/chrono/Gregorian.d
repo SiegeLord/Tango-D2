@@ -53,9 +53,9 @@ class Gregorian : Calendar
         */
         enum {AD_ERA = 1, BC_ERA = 2, MAX_YEAR = 9999};
 
-        private static enum uint[] DaysToMonthCommon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
+        private __gshared immutable uint[] DaysToMonthCommon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
 
-        private static enum uint[] DaysToMonthLeap   = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366];
+        private __gshared immutable uint[] DaysToMonthLeap   = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366];
 
         /**
         * create a generic instance of this calendar

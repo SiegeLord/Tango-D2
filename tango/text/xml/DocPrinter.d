@@ -34,9 +34,9 @@ class DocPrinter(T)
         private uint indentation = 2;
 
         version (Win32)
-                 private enum const(T)[] Eol = "\r\n";
+              private __gshared immutable const(T)[] Eol = "\r\n";
            else
-              private enum const(T)[] Eol = "\n";
+              private __gshared immutable const(T)[] Eol = "\n";
 
         /***********************************************************************
         

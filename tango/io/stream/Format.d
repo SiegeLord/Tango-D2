@@ -107,9 +107,9 @@ class FormatOutput(T) : OutputFilter
         public alias newline    nl;             /// nl -> newline
 
         version (Win32)
-                 private enum immutable(T)[] Eol = "\r\n";
-             else
-                private enum immutable(T)[] Eol = "\n";
+                 private __gshared immutable immutable(T)[] Eol = "\r\n";
+        else
+                 private __gshared immutable immutable(T)[] Eol = "\n";
 
         /**********************************************************************
 
@@ -197,9 +197,9 @@ class FormatOutput(T) : OutputFilter
 
         final FormatOutput print ( ... )
         {
-                enum immutable(T)[] slice =  "{}, {}, {}, {}, {}, {}, {}, {}, "
-                                             "{}, {}, {}, {}, {}, {}, {}, {}, "
-                                             "{}, {}, {}, {}, {}, {}, {}, {}, ";
+                __gshared immutable immutable(T)[] slice =  "{}, {}, {}, {}, {}, {}, {}, {}, "
+                                                            "{}, {}, {}, {}, {}, {}, {}, {}, "
+                                                            "{}, {}, {}, {}, {}, {}, {}, {}, ";
 
                 assert (_arguments.length <= slice.length/4, "FormatOutput :: too many arguments");
 

@@ -40,43 +40,43 @@ enum real SQRT2PI = 2.50662827463100050242E0L; // sqrt(2pi)
 
 // Polynomial approximations for gamma and loggamma.
 
-enum real GammaNumeratorCoeffs[] = [ 1.0,
+__gshared immutable real GammaNumeratorCoeffs[] = [ 1.0,
     0x1.acf42d903366539ep-1, 0x1.73a991c8475f1aeap-2, 0x1.c7e918751d6b2a92p-4, 
     0x1.86d162cca32cfe86p-6, 0x1.0c378e2e6eaf7cd8p-8, 0x1.dc5c66b7d05feb54p-12,
     0x1.616457b47e448694p-15
 ];
 
-enum real GammaDenominatorCoeffs[] = [ 1.0,
+__gshared immutable real GammaDenominatorCoeffs[] = [ 1.0,
   0x1.a8f9faae5d8fc8bp-2,  -0x1.cb7895a6756eebdep-3,  -0x1.7b9bab006d30652ap-5,
   0x1.c671af78f312082ep-6, -0x1.a11ebbfaf96252dcp-11, -0x1.447b4d2230a77ddap-10,
   0x1.ec1d45bb85e06696p-13,-0x1.d4ce24d05bd0a8e6p-17
 ];
 
-enum real GammaSmallCoeffs[] = [ 1.0,
+__gshared immutable real GammaSmallCoeffs[] = [ 1.0,
     0x1.2788cfc6fb618f52p-1, -0x1.4fcf4026afa2f7ecp-1, -0x1.5815e8fa24d7e306p-5,
     0x1.5512320aea2ad71ap-3, -0x1.59af0fb9d82e216p-5,  -0x1.3b4b61d3bfdf244ap-7,
     0x1.d9358e9d9d69fd34p-8, -0x1.38fc4bcbada775d6p-10
 ];
 
-enum real GammaSmallNegCoeffs[] = [ -1.0,
+__gshared immutable real GammaSmallNegCoeffs[] = [ -1.0,
     0x1.2788cfc6fb618f54p-1, 0x1.4fcf4026afa2bc4cp-1, -0x1.5815e8fa2468fec8p-5,
     -0x1.5512320baedaf4b6p-3, -0x1.59af0fa283baf07ep-5, 0x1.3b4a70de31e05942p-7,
     0x1.d9398be3bad13136p-8, 0x1.291b73ee05bcbba2p-10
 ];
 
-enum real logGammaStirlingCoeffs[] = [
+__gshared immutable real logGammaStirlingCoeffs[] = [
     0x1.5555555555553f98p-4, -0x1.6c16c16c07509b1p-9, 0x1.a01a012461cbf1e4p-11,
     -0x1.3813089d3f9d164p-11, 0x1.b911a92555a277b8p-11, -0x1.ed0a7b4206087b22p-10,
     0x1.402523859811b308p-8
 ];
 
-enum real logGammaNumerator[] = [
+__gshared immutable real logGammaNumerator[] = [
     -0x1.0edd25913aaa40a2p+23, -0x1.31c6ce2e58842d1ep+24, -0x1.f015814039477c3p+23,
     -0x1.74ffe40c4b184b34p+22, -0x1.0d9c6d08f9eab55p+20,  -0x1.54c6b71935f1fc88p+16,
     -0x1.0e761b42932b2aaep+11
 ];
 
-enum real logGammaDenominator[] = [
+__gshared immutable real logGammaDenominator[] = [
     -0x1.4055572d75d08c56p+24, -0x1.deeb6013998e4d76p+24, -0x1.106f7cded5dcc79ep+24,
     -0x1.25e17184848c66d2p+22, -0x1.301303b99a614a0ap+19, -0x1.09e76ab41ae965p+15,
     -0x1.00f95ced9e5f54eep+9, 1.0
@@ -94,13 +94,13 @@ real gammaStirling(real x)
 {
     // CEPHES code Copyright 1994 by Stephen L. Moshier
 
-    enum real SmallStirlingCoeffs[] = [
+    __gshared immutable real SmallStirlingCoeffs[] = [
         0x1.55555555555543aap-4, 0x1.c71c71c720dd8792p-9, -0x1.5f7268f0b5907438p-9,
         -0x1.e13cd410e0477de6p-13, 0x1.9b0f31643442616ep-11, 0x1.2527623a3472ae08p-14,
         -0x1.37f6bc8ef8b374dep-11,-0x1.8c968886052b872ap-16, 0x1.76baa9c6d3eeddbcp-11
     ];
 
-    enum real LargeStirlingCoeffs[] = [ 1.0L,
+    __gshared immutable real LargeStirlingCoeffs[] = [ 1.0L,
         8.33333333333333333333E-2L, 3.47222222222222222222E-3L,
         -2.68132716049382716049E-3L, -2.29472093621399176955E-4L,
         7.84039221720066627474E-4L, 6.97281375836585777429E-5L
@@ -1370,7 +1370,7 @@ real digamma(real x)
    // Based on CEPHES, Stephen L. Moshier.
  
     // DAC: These values are Bn / n for n=2,4,6,8,10,12,14.
-    enum real [] Bn_n  = [
+    __gshared immutable real [] Bn_n  = [
         1.0L/(6*2), -1.0L/(30*4), 1.0L/(42*6), -1.0L/(30*8),
         5.0L/(66*10), -691.0L/(2730*12), 7.0L/(6*14) ];
 

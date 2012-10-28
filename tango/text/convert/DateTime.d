@@ -79,9 +79,9 @@ version (WithExtensions)
 
 struct DateTimeLocale
 {
-        enum immutable(char)[]   rfc1123Pattern = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
-        enum immutable(char)[]   sortableDateTimePattern = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
-        enum immutable(char)[]   universalSortableDateTimePattern = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
+        __gshared immutable immutable(char)[]   rfc1123Pattern = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
+        __gshared immutable immutable(char)[]   sortableDateTimePattern = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
+        __gshared immutable immutable(char)[]   universalSortableDateTimePattern = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
 
         Calendar               assignedCalendar;
 

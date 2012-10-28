@@ -74,13 +74,13 @@ class Uri : UriView
                                 fragment_;
         private HeapSlice       decoded;
 
-        private static __gshared ubyte    map[];
+        private __gshared ubyte    map[];
 
-        private static __gshared short[immutable(char)[]] genericSchemes;
+        private __gshared short[immutable(char)[]] genericSchemes;
 
-        private enum immutable(char)[] hexDigits = "0123456789abcdef";
+        private __gshared immutable immutable(char)[] hexDigits = "0123456789abcdef";
 
-        private enum SchemePort[] schemePorts =
+        private __gshared const SchemePort[] schemePorts =
                 [
                 {"coffee",      80},
                 {"file",        InvalidPort},

@@ -334,7 +334,7 @@ class HttpClient
 
         HttpClient setVersion (Version v)
         {
-                enum versions = ["HTTP/1.0", "HTTP/1.1"];
+                __gshared immutable versions = ["HTTP/1.0", "HTTP/1.1"];
 
                 httpVersion = versions[v];
                 return this;

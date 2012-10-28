@@ -38,10 +38,10 @@ extern (C)
 
 ******************************************************************************/
 
-private enum immutable(char)[] underflow = "input buffer is empty";
-private enum immutable(char)[] eofRead   = "end-of-flow whilst reading";
-private enum immutable(char)[] eofWrite  = "end-of-flow whilst writing";
-private enum immutable(char)[] overflow  = "output buffer is full";
+private __gshared immutable immutable(char)[] underflow = "input buffer is empty";
+private __gshared immutable immutable(char)[] eofRead   = "end-of-flow whilst reading";
+private __gshared immutable immutable(char)[] eofWrite  = "end-of-flow whilst writing";
+private __gshared immutable immutable(char)[] overflow  = "output buffer is full";
 
 
 /*******************************************************************************

@@ -45,7 +45,7 @@ private import  tango.io.FilePath,
 class SerialPort : Device
 {
     private const(char)[]              str;
-    private static const(char)[][]     _ports;
+    private __gshared const(char)[][]  _ports;
 
     /***************************************************************************
 
@@ -214,7 +214,7 @@ class SerialPort : Device
     }
 
     version(Posix) {
-        private __gshared static speed_t[uint] baudRates;
+        private __gshared speed_t[uint] baudRates;
 
         shared static this()
         {

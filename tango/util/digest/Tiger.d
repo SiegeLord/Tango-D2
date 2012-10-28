@@ -29,13 +29,13 @@ final class Tiger : MerkleDamgard
 {
         private ulong[3]        context;
         private uint            npass = 3;
-        private enum uint      padChar = 0x01;
+        private enum uint       padChar = 0x01;
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private enum ulong[3] initial =
+        private __gshared immutable ulong[3] initial =
         [
                 0x0123456789ABCDEF,
                 0xFEDCBA9876543210,
@@ -312,10 +312,10 @@ final class Tiger : MerkleDamgard
 
         ***********************************************************************/
 
-        @property private static ulong[] t1() { return table[0..256]; }
-        @property private static ulong[] t2() { return table[256..512]; }
-        @property private static ulong[] t3() { return table[512..768]; }
-        @property private static ulong[] t4() { return table[768..1024]; }
+        @property private static const(ulong)[] t1() { return table[0..256]; }
+        @property private static const(ulong)[] t2() { return table[256..512]; }
+        @property private static const(ulong)[] t3() { return table[512..768]; }
+        @property private static const(ulong)[] t4() { return table[768..1024]; }
 }
 
 
@@ -323,7 +323,7 @@ final class Tiger : MerkleDamgard
 
 *******************************************************************************/
 
-private enum ulong[1024] table = 
+private __gshared immutable ulong[1024] table = 
 [
     0x02aab17cf7e90c5e   /*    0 */,    0xac424b03e243a8ec   /*    1 */,
     0x72cd5be30dd5fcd3   /*    2 */,    0x6d019b93f6f97f3a   /*    3 */,
@@ -848,7 +848,7 @@ debug(UnitTest)
 {
         unittest
         {
-        enum immutable(char)[][] strings = [
+        __gshared immutable immutable(char)[][] strings = [
                 "",
                 "abc",
                 "Tiger",
@@ -859,7 +859,7 @@ debug(UnitTest)
                 "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
                 x"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000",
         ];
-        enum immutable(char)[][] results = [
+        __gshared immutable immutable(char)[][] results = [
                 "3293ac630c13f0245f92bbb1766e16167a4e58492dde73f3",
                 "2aab1484e8c158f2bfb8c5ff41b57a525129131c957b5f93",
                 "dd00230799f5009fec6debc838bb6a27df2b9d6f110c7937",

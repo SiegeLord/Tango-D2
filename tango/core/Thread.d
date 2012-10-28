@@ -2846,7 +2846,7 @@ private
 ////////////////////////////////////////////////////////////////////////////////
 
 private char[] ptrToStr(size_t addr,char[]buf){
-    enum char[] digits="0123456789ABCDEF".dup;
+    __gshared immutable char[] digits="0123456789ABCDEF".dup;
     enum{ nDigits=size_t.sizeof*2 }
     if (nDigits>buf.length) assert(0);
     char[] res=buf[0..nDigits];

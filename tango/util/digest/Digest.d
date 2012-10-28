@@ -129,7 +129,7 @@ abstract class Digest
                 ubyte[] ret = binaryDigest(buf);
                 assert(ret.ptr == buf.ptr);
             
-                enum immutable(char)[] hexdigits = "0123456789abcdef";
+                __gshared immutable immutable(char)[] hexdigits = "0123456789abcdef";
                 int i = 0;
             
                 foreach (b; buf) 

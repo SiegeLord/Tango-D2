@@ -224,12 +224,12 @@ private struct _FormatterInfo(T)
 
 T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
 {
-        enum immutable(T)[] lower = "0123456789abcdef";
-        enum immutable(T)[] upper = "0123456789ABCDEF";
+        __gshared immutable immutable(T)[] lower = "0123456789abcdef";
+        __gshared immutable immutable(T)[] upper = "0123456789ABCDEF";
         
         alias _FormatterInfo!(T) Info;
 
-        enum   Info[] formats = 
+        __gshared immutable Info[] formats = 
                 [
                 {10, null, lower}, 
                 {10, "-",  lower}, 

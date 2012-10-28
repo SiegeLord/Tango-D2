@@ -116,12 +116,12 @@ class MapOutput(T) : OutputFilter
 {
         private const(T)[] eol;
 
-        private enum const(T)[] prefix = "# ";
-        private enum const(T)[] equals = " = ";
+        private __gshared immutable const(T)[] prefix = "# ";
+        private __gshared immutable const(T)[] equals = " = ";
         version (Win32)
-                 private enum const(T)[] NL = "\r\n";
+                 private __gshared immutable const(T)[] NL = "\r\n";
         version (Posix)
-                 private enum const(T)[] NL = "\n";
+                 private __gshared immutable const(T)[] NL = "\n";
 
         /***********************************************************************
 

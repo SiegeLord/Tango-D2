@@ -86,7 +86,7 @@ debug(UnitTest)
 {
         unittest 
         {
-        enum immutable(char)[][] strings = 
+        __gshared immutable immutable(char)[][] strings = 
         [
                 "",
                 "abc",
@@ -96,7 +96,7 @@ debug(UnitTest)
                 "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
         ];
 
-        enum immutable(char)[][] results = 
+        __gshared immutable immutable(char)[][] results = 
         [
                 "f96cea198ad1dd5617ac084a3d92c6107708c0ef",
                 "0164b8a914cd2a5e74c4f7ff082c4d97f1edf880",

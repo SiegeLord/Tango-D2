@@ -628,7 +628,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                         enum O_LARGEFILE = 0x8000;
 
-                        enum Flags Access =
+                        __gshared immutable Flags Access =
                                         [
                                         0,                      // invalid
                                         O_RDONLY,
@@ -636,7 +636,7 @@ class File : Device, Device.Seek, Device.Truncate
                                         O_RDWR,
                                         ];
                                                 
-                        enum Flags Create =
+                        __gshared immutable Flags Create =
                                         [
                                         0,                      // open existing
                                         O_CREAT | O_TRUNC,      // truncate always
@@ -645,7 +645,7 @@ class File : Device, Device.Seek, Device.Truncate
                                         O_CREAT | O_EXCL,       // can't exist
                                         ];
 
-                        enum short[] Locks =
+                        __gshared immutable short[] Locks =
                                         [
                                         F_WRLCK,                // no sharing
                                         F_RDLCK,                // shared read

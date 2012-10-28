@@ -108,7 +108,7 @@ class RC4 : StreamCipher
     {
         unittest
         {
-            enum immutable(char)[][] test_keys = [
+            __gshared immutable immutable(char)[][] test_keys = [
                 "0123456789abcdef",
                 "0123456789abcdef",
                 "0000000000000000",
@@ -116,7 +116,7 @@ class RC4 : StreamCipher
                 "0123456789abcdef"
             ];
                  
-            enum immutable(char)[][] test_plaintexts = [
+            __gshared immutable immutable(char)[][] test_plaintexts = [
                 "0123456789abcdef",
                 "0000000000000000",
                 "0000000000000000",
@@ -155,7 +155,7 @@ class RC4 : StreamCipher
                 "01010101010101010101010101010101"
             ];
                  
-            enum immutable(char)[][] test_ciphertexts = [
+            __gshared immutable immutable(char)[][] test_ciphertexts = [
                 "75b7878099e0c596",
                 "7494c2e7104b0879",
                 "de188941a3375d3a",

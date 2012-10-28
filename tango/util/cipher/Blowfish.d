@@ -15,7 +15,7 @@ class Blowfish : BlockCipher
 {
     private
     {
-        enum uint[1024] S_INIT = [
+        __gshared immutable uint[1024] S_INIT = [
             0xd1310ba6u, 0x98dfb5acu, 0x2ffd72dbu, 0xd01adfb7u, 0xb8e1afedu, 0x6a267e96u,
             0xba7c9045u, 0xf12c7f99u, 0x24a19947u, 0xb3916cf7u, 0x0801f2e2u, 0x858efc16u,
             0x636920d8u, 0x71574e69u, 0xa458fea3u, 0xf4933d7eu, 0x0d95748fu, 0x728eb658u,
@@ -193,7 +193,7 @@ class Blowfish : BlockCipher
             0xb74e6132u, 0xce77e25bu, 0x578fdfe3u, 0x3ac372e6u
         ];
         
-        enum uint[18] P_INIT = [
+        __gshared immutable uint[18] P_INIT = [
             0x243f6a88u, 0x85a308d3u, 0x13198a2eu, 0x03707344u, 0xa4093822u, 0x299f31d0u,
             0x082efa98u, 0xec4e6c89u, 0x452821e6u, 0x38d01377u, 0xbe5466cfu, 0x34e90c6cu,
             0xc0ac29b7u, 0xc97c50ddu, 0x3f84d5b5u, 0xb5470917u, 0x9216d5d9u, 0x8979fb1bu
@@ -357,7 +357,7 @@ debug (UnitTest)
 {
     unittest
     {
-        enum immutable(char)[][] test_keys = [
+        __gshared immutable immutable(char)[][] test_keys = [
             "0000000000000000",
             "ffffffffffffffff",
             "57686f206973204a6f686e2047616c743f", // I don't know, do you?
@@ -367,7 +367,7 @@ debug (UnitTest)
             "fedcba9876543210"
         ];
              
-        enum immutable(char)[][] test_plaintexts = [
+        __gshared immutable immutable(char)[][] test_plaintexts = [
             "0000000000000000",
             "ffffffffffffffff",
             "fedcba9876543210",
@@ -377,7 +377,7 @@ debug (UnitTest)
             "0123456789abcdef"
         ];
             
-        enum immutable(char)[][] test_ciphertexts = [
+        __gshared immutable immutable(char)[][] test_ciphertexts = [
             "4ef997456198dd78",
             "51866fd5b85ecb8a",
             "cc91732b8022f684",

@@ -136,7 +136,7 @@ int compare (const(char[]) s1, const(char[]) s2)
 
 size_t isearch (in char[] src, in char[] pattern)
 {
-        enum  char[] _caseMap = 
+        __gshared immutable char[] _caseMap = 
                 [ 
                 '\000','\001','\002','\003','\004','\005','\006','\007',
                 '\010','\011','\012','\013','\014','\015','\016','\017',

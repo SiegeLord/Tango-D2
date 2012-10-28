@@ -135,8 +135,8 @@ struct Bitwise
 /** Converts between integral types and unsigned byte arrays */
 struct ByteConverter
 {
-    private enum immutable(char)[] hexits = "0123456789abcdef";
-    private enum immutable(char)[] base32digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+    private __gshared immutable immutable(char)[] hexits = "0123456789abcdef";
+    private __gshared immutable immutable(char)[] base32digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
     
     /** Conversions between little endian integrals and bytes */
     struct LittleEndian

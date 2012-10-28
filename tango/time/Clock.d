@@ -35,7 +35,7 @@ private import  tango.core.Exception;
 struct Clock
 {
         // copied from Gregorian.  Used while we rely on OS for toDate.
-        package enum uint[] DaysToMonthCommon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
+        package __gshared immutable uint[] DaysToMonthCommon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
         package static void setDoy(ref DateTime dt)
         {
             uint doy = dt.date.day + DaysToMonthCommon[dt.date.month - 1];

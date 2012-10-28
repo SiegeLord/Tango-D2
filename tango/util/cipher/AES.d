@@ -20,13 +20,13 @@ class AES : BlockCipher
     private
     {
         // Round constants
-        enum uint[10] RCON = [
+        __gshared immutable uint[10] RCON = [
             0x01000000u, 0x02000000u, 0x04000000u, 0x08000000u, 0x10000000u,
             0x20000000u, 0x40000000u, 0x80000000u, 0x1B000000u, 0x36000000u
         ];
         
         // Sbox and its inverse
-        const ubyte[256] S = [
+        __gshared immutable ubyte[256] S = [
             0x63u, 0x7cu, 0x77u, 0x7bu, 0xf2u, 0x6bu, 0x6fu, 0xc5u,
             0x30u, 0x01u, 0x67u, 0x2bu, 0xfeu, 0xd7u, 0xabu, 0x76u,
             0xcau, 0x82u, 0xc9u, 0x7du, 0xfau, 0x59u, 0x47u, 0xf0u,
@@ -97,7 +97,7 @@ class AES : BlockCipher
         ];
         
         // Round tables
-        const uint[256] TE0 = [
+        __gshared immutable uint[256] TE0 = [
             0xc66363a5u, 0xf87c7c84u, 0xee777799u, 0xf67b7b8du,
             0xfff2f20du, 0xd66b6bbdu, 0xde6f6fb1u, 0x91c5c554u,
             0x60303050u, 0x02010103u, 0xce6767a9u, 0x562b2b7du,
@@ -889,7 +889,7 @@ class AES : BlockCipher
     {
         unittest
         {
-            enum immutable(char)[][] test_keys = [
+            __gshared immutable immutable(char)[][] test_keys = [
                 "000102030405060708090a0b0c0d0e0f",
                 "000102030405060708090a0b0c0d0e0f1011121314151617",
                 "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
@@ -898,7 +898,7 @@ class AES : BlockCipher
                 "0000000000000000000000000000000000000000000000000000000000000000"
             ];
                  
-            enum immutable(char)[][] test_plaintexts = [
+            __gshared immutable immutable(char)[][] test_plaintexts = [
                 "00112233445566778899aabbccddeeff",
                 "00112233445566778899aabbccddeeff",
                 "00112233445566778899aabbccddeeff",
@@ -907,7 +907,7 @@ class AES : BlockCipher
                 "80000000000000000000000000000000"
             ];
                 
-            enum immutable(char)[][] test_ciphertexts = [
+            __gshared immutable immutable(char)[][] test_ciphertexts = [
                 "69c4e0d86a7b0430d8cdb78070b4c55a",
                 "dda97ca4864cdfe06eaf70a0ec0d7191",
                 "8ea2b7ca516745bfeafc49904b496089",

@@ -404,7 +404,7 @@ final class SharedLib {
     }
 
 
-    private __gshared static {
+    private __gshared {
         SharedLib[char[]] loadedLibs;
         Object mutex;
     }

@@ -168,7 +168,7 @@ class RC6 : BlockCipher
     {
         unittest
         {
-            enum immutable(char)[][] test_keys = [
+            __gshared immutable immutable(char)[][] test_keys = [
                 "00000000000000000000000000000000",
                 "0123456789abcdef0112233445566778",
                 "00000000000000000000000000000000"~
@@ -181,7 +181,7 @@ class RC6 : BlockCipher
                 "899aabbccddeeff01032547698badcfe"
             ];
                  
-            enum immutable(char)[][] test_plaintexts = [
+            __gshared immutable immutable(char)[][] test_plaintexts = [
                 "00000000000000000000000000000000",
                 "02132435465768798a9bacbdcedfe0f1",
                 "00000000000000000000000000000000",
@@ -190,7 +190,7 @@ class RC6 : BlockCipher
                 "02132435465768798a9bacbdcedfe0f1"
             ];
                 
-            enum immutable(char)[][] test_ciphertexts = [
+            __gshared immutable immutable(char)[][] test_ciphertexts = [
                 "8fc3a53656b1f778c129df4e9848a41e",
                 "524e192f4715c6231f51f6367ea43f18",
                 "6cd61bcb190b30384e8a3f168690ae82",

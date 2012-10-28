@@ -565,13 +565,13 @@ import tango.io.device.Array : Array;
 
 unittest
 {
-    enum immutable(char)[] message =
+    __gshared immutable immutable(char)[] message =
         "All dwarfs are by nature dutiful, serious, literate, obedient "
         "and thoughtful people whose only minor failing is a tendency, "
         "after one drink, to rush at enemies screaming \"Arrrrrrgh!\" and "
         "axing their legs off at the knee.";
 
-    const ubyte[] message_z = [
+    __gshared immutable ubyte[] message_z = [
         0x42, 0x5a, 0x68, 0x39, 0x31, 0x41, 0x59, 0x26,
         0x53, 0x59, 0x40, 0x98, 0xbe, 0xaa, 0x00, 0x00,
         0x16, 0xd5, 0x80, 0x10, 0x00, 0x70, 0x05, 0x20,

@@ -58,10 +58,10 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
         private size_t  dimension;              // maximum extent of content
         private size_t  expansion;              // for growing instances
 
-        private enum immutable(char)[] overflow  = "output buffer is full";
-        private enum immutable(char)[] underflow = "input buffer is empty";
-        private enum immutable(char)[] eofRead   = "end-of-flow while reading";
-        private enum immutable(char)[] eofWrite  = "end-of-flow while writing";
+        private __gshared immutable immutable(char)[] overflow  = "output buffer is full";
+        private __gshared immutable immutable(char)[] underflow = "input buffer is empty";
+        private __gshared immutable immutable(char)[] eofRead   = "end-of-flow while reading";
+        private __gshared immutable immutable(char)[] eofWrite  = "end-of-flow while writing";
 
         /***********************************************************************
 

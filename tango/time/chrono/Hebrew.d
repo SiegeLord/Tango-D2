@@ -25,7 +25,7 @@ private import tango.time.chrono.Calendar;
  */
 public class Hebrew : Calendar {
 
-  private enum uint[14][7] MonthDays = [
+  private __gshared immutable uint[14][7] MonthDays = [
     // month                                                    // year type
     [ 0, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0  ], 
     [ 0, 30, 29, 29, 29, 30, 29, 0,  30, 29, 30, 29, 30, 29 ],  // 1

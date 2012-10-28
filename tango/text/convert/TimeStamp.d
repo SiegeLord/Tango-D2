@@ -122,9 +122,9 @@ T[] format(T, U=Time) (T[] output, U t)
 
 T[] format(T) (T[] output, Time t)
 {
-        enum const(T)[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                               "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        enum const(T)[][] Days   = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        __gshared immutable const(T)[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                                   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        __gshared immutable const(T)[][] Days   = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
         T[] convert (T[] tmp, long i)
         {
@@ -693,7 +693,7 @@ private int parseShortDay(T) (ref T* p)
 
 private int parseFullDay(T) (ref T* p)
 {
-        static  const(T)[][] days =
+        __gshared immutable const(T)[][] days =
                 [
                 "Sunday", 
                 "Monday", 
