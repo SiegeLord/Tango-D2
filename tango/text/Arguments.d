@@ -858,13 +858,22 @@ class Arguments
                 ***************************************************************/
         
                 private void append (const(char)[] value, bool explicit=false)
-                {       
+                {
+                        Argument arg = this;
                         // pop to an argument that can accept implicit parameters?
                         if (explicit is false)
-                            for (auto s=&this.outer.stack; exp && s.size>1; this=s.top)
+                            for (auto s=&this.outer.stack; arg.exp && s.size>1; arg=s.top)
                                  s.pop();
 
-                        this.set = true;        // needed for default assignments 
+                        arg.actually_append(value);
+                        // pop to an argument that can accept parameters
+                        for (auto s=&this.outer.stack; arg.values.length >= max && s.size>1; arg=s.top)
+                             s.pop();
+                }
+
+                private void actually_append (const(char)[] value)
+                {
+                        set = true;             // needed for default assignments
                         values ~= value;        // append new value
 
                         if (error is None)
@@ -881,9 +890,6 @@ class Arguments
                                            error = None;
                               }
                            }
-                        // pop to an argument that can accept parameters
-                        for (auto s=&this.outer.stack; values.length >= max && s.size>1; this=s.top)
-                             s.pop();
                 }
 
                 /***************************************************************
