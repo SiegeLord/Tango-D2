@@ -248,7 +248,7 @@ final class SharedLib {
         }
         if (deleteThis) {
             version (SharedLibVerbose) Trace.formatln("Deleting the SharedLib");
-            delete this;
+            ((SharedLib l) { delete l; })(this);
         }
     }
 
