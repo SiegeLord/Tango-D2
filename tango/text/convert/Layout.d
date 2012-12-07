@@ -1000,7 +1000,7 @@ version (WithVariant)
 
 *******************************************************************************/
 
-private enum TypeCode
+package enum TypeCode
 {
         EMPTY = 0,
         VOID = 'v',
