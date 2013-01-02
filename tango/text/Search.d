@@ -71,7 +71,7 @@ SearchFruct!(T) search(T) (const(T)[] what)
 
 ******************************************************************************/
 
-private struct FindFruct(T)
+package struct FindFruct(T)
 {       
         private const(T)[] what;
 
@@ -285,7 +285,7 @@ private struct FindFruct(T)
 
 ******************************************************************************/
 
-private struct SearchFruct(T)
+package struct SearchFruct(T)
 {
         private const(T)[]             what;
         private bool                   fore;
