@@ -1275,8 +1275,10 @@ debug( UnitTest )
 
                     return Variant.fromVararg(_arguments, ap);
                 }
-
-                return Variant.fromVararg(_arguments, _argptr);
+                else
+                {
+                    return Variant.fromVararg(_arguments, _argptr);
+                }
             }
 
             auto va_0 = cast(char)  '?';
