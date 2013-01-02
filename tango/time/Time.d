@@ -83,17 +83,17 @@ struct TimeSpan
         /**
          * Minimum TimeSpan
          */
-        enum TimeSpan min = {long.min};
+        enum TimeSpan min = TimeSpan(long.min);
 
         /**
          * Maximum TimeSpan
          */
-        enum TimeSpan max = {long.max};
+        enum TimeSpan max = TimeSpan(long.max);
 
         /**
          * Zero TimeSpan.  Useful for comparisons.
          */
-        enum TimeSpan zero = {0};
+        enum TimeSpan zero = TimeSpan(0);
 
         /**
          * Get the number of ticks that this timespan represents.  This can be
@@ -129,6 +129,12 @@ struct TimeSpan
                     return 1;
 
                 return 0;
+        }
+
+        /* To support manifest constants */
+        int opCmp(const TimeSpan t) const
+        {
+                return opCmp(t);
         }
 
         /**
@@ -480,17 +486,17 @@ struct Time
         }
 
         /// Represents the smallest and largest Time value.
-        enum Time min       = {minimum},
-                  max       = {maximum};
+        enum Time min       = Time(minimum),
+                  max       = Time(maximum);
 
         /// Represents the epoch (1/1/0001)
-        enum Time epoch     = {0L};
+        enum Time epoch     = Time(0L);
 
         /// Represents the epoch of 1/1/1601 (Commonly used in Windows systems)
-        enum Time epoch1601 = {TimeSpan.Epoch1601};
+        enum Time epoch1601 = Time(TimeSpan.Epoch1601);
 
         /// Represents the epoch of 1/1/1970 (Commonly used in Unix systems)
-        enum Time epoch1970 = {TimeSpan.Epoch1970};
+        enum Time epoch1970 = Time(TimeSpan.Epoch1970);
 
         /**********************************************************************
 
@@ -543,6 +549,12 @@ struct Time
                     return 1;
 
                 return 0;
+        }
+
+        /* To support manifest constants */
+        int opCmp (const Time t) const
+        {
+                return opCmp(t);
         }
 
         /**********************************************************************
