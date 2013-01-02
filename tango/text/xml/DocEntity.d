@@ -100,11 +100,11 @@ T[] fromEntity (T) (const(T)[] src, T[] dst = null)
 /******************************************************************************
 
         Convert XML entity patterns to normal characters
-        ---
+        <pre>
         &amp; => ;
         &quot => "
         etc
-        ---
+        </pre>
         
         This variant does not require an interim workspace, and instead
         emits directly via the provided delegate
