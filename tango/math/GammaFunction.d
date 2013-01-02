@@ -282,7 +282,7 @@ unittest {
     assert(gamma(real.infinity) == real.infinity);
     assert(gamma(real.max) == real.infinity);
     assert(isNaN(gamma(-real.infinity)));
-    assert(gamma(real.min*real.epsilon) == real.infinity);
+    assert(gamma(real.min_normal*real.epsilon) == real.infinity);
     assert(gamma(MAXGAMMA)< real.infinity);
     assert(gamma(MAXGAMMA*2) == real.infinity);
 
@@ -405,8 +405,8 @@ unittest {
     assert(logGamma(-50.0) == real.infinity);
     assert(isIdentical(0.0L, logGamma(1.0L)));
     assert(isIdentical(0.0L, logGamma(2.0L)));
-    assert(logGamma(real.min*real.epsilon) == real.infinity);
-    assert(logGamma(-real.min*real.epsilon) == real.infinity);
+    assert(logGamma(real.min_normal*real.epsilon) == real.infinity);
+    assert(logGamma(-real.min_normal*real.epsilon) == real.infinity);
 
     // x, correct loggamma(x), correct d/dx loggamma(x).
     static real[] testpoints = [
@@ -443,7 +443,7 @@ unittest {
 
 private {
 enum real MAXLOG = 0x1.62e42fefa39ef358p+13L;  // log(real.max)
-enum real MINLOG = -0x1.6436716d5406e6d8p+13L; // log(real.min*real.epsilon) = log(smallest denormal)
+enum real MINLOG = -0x1.6436716d5406e6d8p+13L; // log(real.min_normal*real.epsilon) = log(smallest denormal)
 enum real BETA_BIG = 9.223372036854775808e18L;
 enum real BETA_BIGINV = 1.084202172485504434007e-19L;
 }

@@ -110,7 +110,7 @@ enum real SQRT1_2 =    0.70710678118654752440;  /** $(SQRT)$(HALF) */
 //enum real SQRTE   = 1.64872127070012814684865078781416357L; /** &radic;(e) */
 
 enum real MAXLOG = 0x1.62e42fefa39ef358p+13L;  /** log(real.max) */
-enum real MINLOG = -0x1.6436716d5406e6d8p+13L; /** log(real.min*real.epsilon) */
+enum real MINLOG = -0x1.6436716d5406e6d8p+13L; /** log(real.min_normal*real.epsilon) */
 enum real EULERGAMMA = 0.57721_56649_01532_86060_65120_90082_40243_10421_59335_93992L; /** Euler-Mascheroni enumant 0.57721566.. */
 
 /*
@@ -1791,7 +1791,7 @@ unittest
         [   0,  -0, 0],
         [   3,  4,  5],
         [   -300,   -400,   500],
-        [   real.min, real.min,  0x1.6a09e667f3bcc908p-16382L],
+        [   real.min_normal, real.min_normal,  0x1.6a09e667f3bcc908p-16382L],
         [   real.max/2, real.max/2, 0x1.6a09e667f3bcc908p+16383L /*8.41267e+4931L*/],
         [   real.max, 1, real.max],
         [   real.infinity, real.nan, real.infinity],
