@@ -489,7 +489,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text set (TextViewT other, bool copy = true)
+        final Text set (TextViewT other, bool copy)
         {
                 return set (other.mslice(), copy);
         }
