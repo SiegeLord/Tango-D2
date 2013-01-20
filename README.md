@@ -18,6 +18,8 @@ I do the porting on Linux, so that is the most tested platform. It generally sho
 
 Documentation can be found here: http://siegelord.github.com/Tango-D2/
 
+See [Bugs.md] for a list of D compiler bugs that affect Tango and possible workabouts for them.
+
 Breaking changes from D1
 --------
 
