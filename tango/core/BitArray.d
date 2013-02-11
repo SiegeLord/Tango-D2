@@ -2,14 +2,14 @@
  * This module contains a packed bit array implementation in the style of D's
  * built-in dynamic arrays.
  *
- * Copyright: Copyright (C) 2005-2006 Digital Mars, www.digitalmars.com.
+ * Copyright: Copyright (%C) 2005-2006 Digital Mars, www.digitalmars.com.
  *            All rights reserved.
  * License:   BSD style: $(LICENSE)
  * Authors:   Walter Bright, Sean Kelly
  */
 module tango.core.BitArray;
 
-
+import tango.io.Stdout;
 
 private import tango.core.BitManip;
 
@@ -25,7 +25,7 @@ struct BitArray
 {
     size_t  len;
     size_t* ptr;
-
+    enum bits_in_size=(size_t.sizeof*8);
 
     /**
      * This initializes a BitArray of bits.length bits, where each bit value
@@ -83,7 +83,7 @@ struct BitArray
         if( newlen != len )
         {
             auto olddim = dim();
-            auto newdim = (newlen + 31) / 32;
+            auto newdim = (newlen + (bits_in_size-1)) / bits_in_size;
 
             if( newdim != olddim )
             {
@@ -92,10 +92,10 @@ struct BitArray
 
                 buf.length = newdim; // realloc
                 ptr = buf.ptr;
-                if( newdim & 31 )
+                if( newdim & (bits_in_size-1) )
                 {
                     // Set any pad bits to 0
-                    ptr[newdim - 1] &= ~(~0 << (newdim & 31));
+                    ptr[newdim - 1] &= ~(~0 << (newdim & (bits_in_size-1)));
                 }
             }
             len = newlen;
@@ -104,14 +104,14 @@ struct BitArray
 
 
     /**
-     * Gets the length of a uint array large enough to hold all stored bits.
+     * Gets the length of a size_t array large enough to hold all stored bits.
      *
      * Returns:
-     *  The size a uint array would have to be to store this array.
+     *  The size a size_t array would have to be to store this array.
      */
-    @property size_t dim()
+    @property const size_t dim() const
     {
-        return (len + 31) / 32;
+        return (len + (bits_in_size-1)) / bits_in_size;
     }
 
 
@@ -121,7 +121,7 @@ struct BitArray
      * Returns:
      *  A duplicate of this array.
      */
-    @property BitArray dup()
+    @property BitArray dup() const
     {
         BitArray ba;
 
@@ -132,7 +132,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -202,11 +202,11 @@ struct BitArray
      }
      body
      {
-         size_t mDim=len/32;
+         size_t mDim=len/bits_in_size;
          ptr[0..mDim] = rhs.ptr[0..mDim];
-         int rest=cast(int)(len & cast(size_t)31u);
+         int rest=cast(int)(len & cast(size_t)(bits_in_size-1));
          if (rest){
-             uint mask=(~0u)<<rest;
+             size_t mask=(~0u)<<rest;
              ptr[mDim]=(rhs.ptr[mDim] & (~mask))|(ptr[mDim] & mask);
          }
          return this;
@@ -234,7 +234,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -274,7 +274,7 @@ struct BitArray
      * Returns:
      *  A shallow copy of this array.
      */
-    @property BitArray reverse()
+    @property ref BitArray reverse()
     out( result )
     {
         assert( result == this );
@@ -299,7 +299,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -322,7 +322,7 @@ struct BitArray
      * Returns:
      *  A shallow copy of this array.
      */
-    @property BitArray sort()
+    @property ref BitArray sort()
     out( result )
     {
         assert( result == this );
@@ -368,7 +368,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -423,7 +423,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -466,33 +466,33 @@ struct BitArray
      * Returns:
      *  false if not equal and non-zero otherwise.
      */
-    const bool opEquals(ref const(BitArray) rhs)
+    const bool opEquals(ref const(BitArray) rhs) const
     {
         if( this.length() != rhs.length() )
             return 0; // not equal
         const size_t* p1 = this.ptr;
         const size_t* p2 = rhs.ptr;
-        size_t n = this.length / 32;
+        size_t n = this.length / bits_in_size;
         size_t i;
         for( i = 0; i < n; ++i )
         {
             if( p1[i] != p2[i] )
             return 0; // not equal
         }
-        int rest = cast(int)(this.length & cast(size_t)31u);
-        uint mask = ~((~0u)<<rest);
+        int rest = cast(int)(this.length & cast(size_t)(bits_in_size-1));
+        size_t mask = ~((~0u)<<rest);
         return (rest == 0) || (p1[i] & mask) == (p2[i] & mask);
     }
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
         BitArray a = [1,0,1,0,1];
         BitArray b = [1,0,1];
         BitArray c = [1,0,1,0,1,0,1];
-        BitArray d = [1,0,1,1,1];
-        BitArray e = [1,0,1,0,1];
+        const(BitArray) d = [1,0,1,1,1];
+        immutable(BitArray) e = [1,0,1,0,1];
 
         assert(a != b);
         assert(a != c);
@@ -514,14 +514,14 @@ struct BitArray
      *  zero if the arrays are equavalent, and a value greater than zero if
      *  this array sorts after the supplied array.
      */
-    int opCmp( const ref BitArray rhs ) const
+    int opCmp( ref const(BitArray) rhs ) const
     {
         auto len = this.length;
         if( rhs.length < len )
             len = rhs.length;
         auto p1 = this.ptr;
         auto p2 = rhs.ptr;
-        size_t n = len / 32;
+        size_t n = len / bits_in_size;
         size_t i;
         for( i = 0; i < n; ++i )
         {
@@ -529,17 +529,17 @@ struct BitArray
                 return ((p1[i] < p2[i])?-1:1);
             }
         }
-        int rest=cast(int)(len & cast(size_t) 31u);
+        int rest=cast(int)(len & cast(size_t) (bits_in_size-1));
         if (rest>0) {
-            uint mask=~((~0u)<<rest);
-            uint v1=p1[i] & mask;
-            uint v2=p2[i] & mask;
+            size_t mask=~((~0u)<<rest);
+            size_t v1=p1[i] & mask;
+            size_t v2=p2[i] & mask;
             if (v1 != v2) return ((v1<v2)?-1:1);
         }
         return ((this.length<rhs.length)?-1:((this.length==rhs.length)?0:1));
     }
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -570,13 +570,13 @@ struct BitArray
      * Returns:
      *  This array represented as a void array.
      */
-    void[] opCast()
+    void[] opCast() const
     {
         return cast(void[])ptr[0 .. dim];
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -600,7 +600,7 @@ struct BitArray
      * Returns:
      *  The value of the bit at pos.
      */
-    bool opIndex( size_t pos )
+    bool opIndex( size_t pos ) const
     in
     {
         assert( pos < len );
@@ -627,13 +627,13 @@ struct BitArray
         result.length = len;
         for( size_t i = 0; i < dim; ++i )
             result.ptr[i] = ~this.ptr[i];
-        if( len & 31 )
-            result.ptr[dim - 1] &= ~(~0 << (len & 31));
+        if( len & (bits_in_size-1) )
+            result.ptr[dim - 1] &= ~(~0 << (len & (bits_in_size-1)));
         return result;
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -663,7 +663,7 @@ struct BitArray
      *  A new array which is the result of a bitwise and with this array and
      *  the supplied array.
      */
-    BitArray opAnd( BitArray rhs )
+    BitArray opAnd( ref const(BitArray) rhs ) const
     in
     {
         assert( len == rhs.length );
@@ -681,7 +681,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -713,7 +713,7 @@ struct BitArray
      *  A new array which is the result of a bitwise or with this array and
      *  the supplied array.
      */
-    BitArray opOr( BitArray rhs )
+    BitArray opOr( ref const(BitArray) rhs ) const
     in
     {
         assert( len == rhs.length );
@@ -731,7 +731,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -745,6 +745,25 @@ struct BitArray
         assert(c[2] == 1);
         assert(c[3] == 1);
         assert(c[4] == 1);
+
+        const BitArray d = [1,1,1,0,0];
+	c = a | d;
+
+        assert(c[0] == 1);
+	assert(c[1] == 1);
+	assert(c[2] == 1);
+	assert(c[3] == 1);
+	assert(c[4] == 0);
+
+        immutable BitArray e = [1,0,1,0,0];
+	c = a | e;
+
+        assert(c[0] == 1);
+	assert(c[1] == 0);
+	assert(c[2] == 1);
+	assert(c[3] == 1);
+	assert(c[4] == 0);
+
       }
     }
 
@@ -763,7 +782,7 @@ struct BitArray
      *  A new array which is the result of a bitwise xor with this array and
      *  the supplied array.
      */
-    BitArray opXor( BitArray rhs )
+    BitArray opXor( ref const(BitArray) rhs ) const
     in
     {
         assert( len == rhs.length );
@@ -781,7 +800,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -794,6 +813,26 @@ struct BitArray
         assert(c[1] == 0);
         assert(c[2] == 0);
         assert(c[3] == 1);
+        assert(c[4] == 1);
+
+        const BitArray d = [0,0,1,1,0];
+
+        BitArray c = a ^ d;
+
+        assert(c[0] == 1);
+        assert(c[1] == 0);
+        assert(c[2] == 0);
+        assert(c[3] == 1);
+        assert(c[4] == 1);
+
+        const BitArray e = [0,0,1,0,0];
+
+        BitArray c = a ^ e;
+
+        assert(c[0] == 1);
+        assert(c[1] == 0);
+        assert(c[2] == 0);
+        assert(c[3] == 0);
         assert(c[4] == 1);
       }
     }
@@ -813,7 +852,7 @@ struct BitArray
      * Returns:
      *  A new array which is the result of this array minus the supplied array.
      */
-    BitArray opSub( BitArray rhs )
+  BitArray opSub( ref const(BitArray) rhs ) const
     in
     {
         assert( len == rhs.length );
@@ -831,7 +870,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -844,6 +883,26 @@ struct BitArray
         assert( c[1] == 0 );
         assert( c[2] == 0 );
         assert( c[3] == 0 );
+        assert( c[4] == 1 );
+ 
+        const BitArray d = [0,0,1,1,0];
+
+        BitArray c = a - d;
+
+        assert( c[0] == 1 );
+        assert( c[1] == 0 );
+        assert( c[2] == 0 );
+        assert( c[3] == 0 );
+        assert( c[4] == 1 );
+ 
+        immutable BitArray e = [0,0,0,1,0];
+
+        BitArray c = a - e;
+
+        assert( c[0] == 1 );
+        assert( c[1] == 0 );
+        assert( c[2] == 0 );
+        assert( c[3] == 1 );
         assert( c[4] == 1 );
       }
     }
@@ -860,7 +919,7 @@ struct BitArray
      *  A new array which is the result of this array concatenated with the
      *  supplied array.
      */
-    BitArray opCat( bool rhs )
+    BitArray opCat( bool rhs ) const
     {
         BitArray result;
 
@@ -872,7 +931,7 @@ struct BitArray
 
 
     /** ditto */
-    BitArray opCat_r( bool lhs )
+    BitArray opCat_r( bool lhs ) const
     {
         BitArray result;
 
@@ -885,7 +944,7 @@ struct BitArray
 
 
     /** ditto */
-    BitArray opCat( BitArray rhs )
+  BitArray opCat( ref const(BitArray) rhs ) const
     {
         BitArray result;
 
@@ -895,7 +954,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -922,7 +981,28 @@ struct BitArray
         assert( c[0] == 0 );
         assert( c[1] == 1 );
         assert( c[2] == 0 );
-      }
+
+        const BitArray d = [0,1,1];
+
+        c = (a ~ d);
+        assert( c.length == 5 );
+        assert( c[0] == 1 );
+        assert( c[1] == 0 );
+        assert( c[2] == 0 );
+        assert( c[3] == 1 );
+        assert( c[4] == 1 );
+
+        immutable BitArray e = [1,0,1];
+
+        c = (a ~ e);
+        assert( c.length == 5 );
+        assert( c[0] == 1 );
+        assert( c[1] == 0 );
+        assert( c[2] == 0 );
+        assert( c[3] == 1 );
+        assert( c[4] == 1 );
+
+    }
     }
 
 
@@ -967,7 +1047,7 @@ struct BitArray
      * Returns:
      *  A shallow copy of this array.
      */
-    BitArray opAndAssign( BitArray rhs )
+    BitArray opAndAssign( const(BitArray) rhs ) 
     in
     {
         assert( len == rhs.length );
@@ -982,7 +1062,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -995,7 +1075,17 @@ struct BitArray
         assert( a[2] == 1 );
         assert( a[3] == 0 );
         assert( a[4] == 0 );
-      }
+
+        const BitArray d = [1,0,0,1,0];
+
+        a &= d;
+        assert( a[0] == 1 );
+        assert( a[1] == 0 );
+        assert( a[2] == 0 );
+        assert( a[3] == 0 );
+        assert( a[4] == 0 );
+ 
+     }
     }
 
 
@@ -1012,7 +1102,7 @@ struct BitArray
      * Returns:
      *  A shallow copy of this array.
      */
-    BitArray opOrAssign( BitArray rhs )
+  BitArray opOrAssign( const(BitArray) rhs )
     in
     {
         assert( len == rhs.length );
@@ -1027,7 +1117,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -1039,6 +1129,15 @@ struct BitArray
         assert( a[1] == 0 );
         assert( a[2] == 1 );
         assert( a[3] == 1 );
+        assert( a[4] == 1 );
+ 
+        const BitArray e = [1,0,1,0,0];
+
+        a |= e;
+        assert( a[0] == 1 );
+        assert( a[1] == 0 );
+        assert( a[2] == 1 );
+        assert( a[3] == 0 );
         assert( a[4] == 1 );
       }
     }
@@ -1057,7 +1156,7 @@ struct BitArray
      * Returns:
      *  A shallow copy of this array.
      */
-    BitArray opXorAssign( BitArray rhs )
+  BitArray opXorAssign( const(BitArray) rhs )
     in
     {
         assert( len == rhs.length );
@@ -1072,7 +1171,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -1084,6 +1183,15 @@ struct BitArray
         assert( a[1] == 0 );
         assert( a[2] == 0 );
         assert( a[3] == 1 );
+        assert( a[4] == 1 );
+ 
+        const BitArray e = [1,0,1,0,0];
+
+        a ^= e;
+        assert( a[0] == 0 );
+        assert( a[1] == 0 );
+        assert( a[2] == 0 );
+        assert( a[3] == 0 );
         assert( a[4] == 1 );
       }
     }
@@ -1103,7 +1211,7 @@ struct BitArray
      * Returns:
      *  A shallow copy of this array.
      */
-    BitArray opSubAssign( BitArray rhs )
+  BitArray opSubAssign( const(BitArray) rhs )
     in
     {
         assert( len == rhs.length );
@@ -1118,7 +1226,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -1153,7 +1261,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
@@ -1174,7 +1282,7 @@ struct BitArray
 
 
     /** ditto */
-    BitArray opCatAssign( BitArray rhs )
+    BitArray opCatAssign( const(BitArray) rhs )
     {
         auto istart = len;
         length = len + rhs.length;
@@ -1184,7 +1292,7 @@ struct BitArray
     }
 
 
-    debug( UnitTest )
+    debug( TangoUnitTest )
     {
       unittest
       {
