@@ -52,7 +52,7 @@ struct BitArray
         ptr = _ptr;
     }
 
-    this(bool[] bits)
+    this(const bool[] bits)
     {
         this.length = bits.length;
         foreach( pos, val; bits )
@@ -492,7 +492,7 @@ struct BitArray
         BitArray b = [1,0,1];
         BitArray c = [1,0,1,0,1,0,1];
         const(BitArray) d = [1,0,1,1,1];
-        immutable(BitArray) e = [1,0,1,0,1];
+        auto e = immutable(BitArray)([1,0,1,0,1]);
 
         assert(a != b);
         assert(a != c);
@@ -752,17 +752,18 @@ struct BitArray
         assert(c[0] == 1);
 	assert(c[1] == 1);
 	assert(c[2] == 1);
-	assert(c[3] == 1);
-	assert(c[4] == 0);
+	assert(c[3] == 0);
+	assert(c[4] == 1);
 
-        immutable BitArray e = [1,0,1,0,0];
+        auto  e = immutable(BitArray)([1,0,1,0,0]) ;
+
 	c = a | e;
 
         assert(c[0] == 1);
 	assert(c[1] == 0);
 	assert(c[2] == 1);
-	assert(c[3] == 1);
-	assert(c[4] == 0);
+	assert(c[3] == 0);
+	assert(c[4] == 1);
 
       }
     }
@@ -817,7 +818,7 @@ struct BitArray
 
         const BitArray d = [0,0,1,1,0];
 
-        BitArray c = a ^ d;
+        c = a ^ d;
 
         assert(c[0] == 1);
         assert(c[1] == 0);
@@ -827,7 +828,7 @@ struct BitArray
 
         const BitArray e = [0,0,1,0,0];
 
-        BitArray c = a ^ e;
+        c = a ^ e;
 
         assert(c[0] == 1);
         assert(c[1] == 0);
@@ -887,7 +888,7 @@ struct BitArray
  
         const BitArray d = [0,0,1,1,0];
 
-        BitArray c = a - d;
+        c = a - d;
 
         assert( c[0] == 1 );
         assert( c[1] == 0 );
@@ -895,15 +896,15 @@ struct BitArray
         assert( c[3] == 0 );
         assert( c[4] == 1 );
  
-        immutable BitArray e = [0,0,0,1,0];
+        auto e = immutable(BitArray)([0,0,0,1,1]);
 
-        BitArray c = a - e;
+        c = a - e;
 
         assert( c[0] == 1 );
         assert( c[1] == 0 );
-        assert( c[2] == 0 );
-        assert( c[3] == 1 );
-        assert( c[4] == 1 );
+        assert( c[2] == 1 );
+        assert( c[3] == 0 );
+        assert( c[4] == 0 );
       }
     }
 
@@ -992,14 +993,14 @@ struct BitArray
         assert( c[3] == 1 );
         assert( c[4] == 1 );
 
-        immutable BitArray e = [1,0,1];
+	auto e = immutable(BitArray)([1,0,1]);
 
         c = (a ~ e);
         assert( c.length == 5 );
         assert( c[0] == 1 );
         assert( c[1] == 0 );
-        assert( c[2] == 0 );
-        assert( c[3] == 1 );
+        assert( c[2] == 1 );
+        assert( c[3] == 0 );
         assert( c[4] == 1 );
 
     }
@@ -1133,6 +1134,7 @@ struct BitArray
  
         const BitArray e = [1,0,1,0,0];
 
+        a=[1,0,1,0,1];
         a |= e;
         assert( a[0] == 1 );
         assert( a[1] == 0 );
@@ -1187,6 +1189,7 @@ struct BitArray
  
         const BitArray e = [1,0,1,0,0];
 
+        a = [1,0,1,0,1];
         a ^= e;
         assert( a[0] == 0 );
         assert( a[1] == 0 );
