@@ -296,19 +296,21 @@ template isUDT(T)
 
 template isString(T)
 {
-    static if( is( typeof(T[]) : const(char[]) )
-            || is( typeof(T[]) : const(wchar[]) )
-            || is( typeof(T[]) : const(dchar[]) ) )
+    static if( is( T : const(char[]) )
+            || is( T : const(wchar[]) )
+            || is( T : const(dchar[]) ) )
         enum isString = true;
     else
         enum isString = false;
 }
 
+static assert(isString!(string));
+
 template isMutableString(T)
 {
-    static if( is( typeof(T[]) == char[] )
-            || is( typeof(T[]) == wchar[] )
-            || is( typeof(T[]) == dchar[] ) )
+    static if( is( T == char[] )
+            || is( T == wchar[] )
+            || is( T == dchar[] ) )
         enum isMutableString = true;
     else
         enum isMutableString = false;
@@ -316,9 +318,9 @@ template isMutableString(T)
 
 template isImmutableString(T)
 {
-    static if( is( typeof(T[]) == immutable(char)[] )
-            || is( typeof(T[]) == immutable(wchar)[] )
-            || is( typeof(T[]) == immutable(dchar)[] ) )
+    static if( is( T == immutable(char)[] )
+            || is( T == immutable(wchar)[] )
+            || is( T == immutable(dchar)[] ) )
         enum isImmutableString = true;
     else
         enum isImmutableString = false;
@@ -521,14 +523,14 @@ T toString_(T, C)(C[] str)
 
 template UtfNum(T)
 {
-    enum UtfNum = is(typeof(T[0]) : const(char)) ? "8" : (
-            is(typeof(T[0]) : const(wchar)) ? "16" : "32");
+    enum UtfNum = is(ElementTypeOfArray!(T) : const(char)) ? "8" : (
+            is(ElementTypeOfArray!(T) : const(wchar)) ? "16" : "32");
 }
 
 template StringNum(T)
 {
-    enum StringNum = is(typeof(T[0]) : const(char)) ? "" : (
-            is(typeof(T[0]) : const(wchar)) ? "16" : "32");
+    enum StringNum = is(ElementTypeOfArray!(T) : const(char)) ? "" : (
+            is(ElementTypeOfArray!(T) : const(wchar)) ? "16" : "32");
 }
 
 // Decodes a single dchar character from a string.  Yes, I know they're
@@ -1111,7 +1113,7 @@ D fromString(D,S)(D value)
 
 D toArrayFromArray(D,S)(S value)
 {
-    alias BaseTypeOf!(typeof(D[0])) De;
+    alias BaseTypeOf!(ElementTypeOfArray!(D)) De;
 
     De[] result; result.length = value.length;
     scope(failure) delete result;

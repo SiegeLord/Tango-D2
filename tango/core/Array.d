@@ -79,9 +79,9 @@ private
     }
 
 
-    template ElemTypeOf( T )
+    template ElemTypeOf( T:T[] )
     {
-        alias typeof(T[0]) ElemTypeOf;
+        alias T ElemTypeOf;
     }
 }
 
