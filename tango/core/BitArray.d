@@ -132,7 +132,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -234,7 +234,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -299,7 +299,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -368,7 +368,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -423,7 +423,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -484,7 +484,7 @@ struct BitArray
         return (rest == 0) || (p1[i] & mask) == (p2[i] & mask);
     }
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -539,7 +539,7 @@ struct BitArray
         return ((this.length<rhs.length)?-1:((this.length==rhs.length)?0:1));
     }
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -576,7 +576,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -633,7 +633,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -681,7 +681,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -731,7 +731,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -747,23 +747,23 @@ struct BitArray
         assert(c[4] == 1);
 
         const BitArray d = [1,1,1,0,0];
-	c = a | d;
+        c = a | d;
 
         assert(c[0] == 1);
-	assert(c[1] == 1);
-	assert(c[2] == 1);
-	assert(c[3] == 0);
-	assert(c[4] == 1);
+        assert(c[1] == 1);
+        assert(c[2] == 1);
+        assert(c[3] == 0);
+        assert(c[4] == 1);
 
         auto  e = immutable(BitArray)([1,0,1,0,0]) ;
 
-	c = a | e;
+        c = a | e;
 
         assert(c[0] == 1);
-	assert(c[1] == 0);
-	assert(c[2] == 1);
-	assert(c[3] == 0);
-	assert(c[4] == 1);
+        assert(c[1] == 0);
+        assert(c[2] == 1);
+        assert(c[3] == 0);
+        assert(c[4] == 1);
 
       }
     }
@@ -801,7 +801,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -871,7 +871,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -955,7 +955,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -993,7 +993,7 @@ struct BitArray
         assert( c[3] == 1 );
         assert( c[4] == 1 );
 
-	auto e = immutable(BitArray)([1,0,1]);
+        auto e = immutable(BitArray)([1,0,1]);
 
         c = (a ~ e);
         assert( c.length == 5 );
@@ -1063,7 +1063,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -1118,7 +1118,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -1173,7 +1173,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -1229,7 +1229,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -1264,7 +1264,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
@@ -1295,7 +1295,7 @@ struct BitArray
     }
 
 
-    debug( TangoUnitTest )
+    debug( UnitTest )
     {
       unittest
       {
