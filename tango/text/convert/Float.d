@@ -355,8 +355,41 @@ private char *convertl (char* buf, real value, int ndigit, int *decpt, int *sign
            while (value <  0.1) { value *= 10;  --exp10; }
            while (value >= 1.0) { value /= 10;  ++exp10; }
            }
-        assert(value is 0 || (0.1 <= value && value < 1.0));
-        //auto zero = pad ? int.max : 1;
+	//
+        // Bug note Sat Mar  2 18:41:11 CET 2013/cbleser
+	// For some reason this sometimes assert an error
+	// because (value is 0) is always true when (value == 0.0)
+	// 
+	// I have observed that this is caused when the byte outside value is not zero
+	//  Test. 
+        /+
+        ubyte* bptr=cast(ubyte*)&value;
+        assert( (bptr[value.sizeof] !=0) && (value is 0));
+        +/
+        // I have tried to reproduce this bug in tast code 
+	// but with out success.
+        // 
+	// Bug reproduce code
+	// 
+        /+
+	  ubyte[real.sizeof*2] bytes;
+          ubyte[] slide;
+          real* valptr;
+          foreach(i;0..real.sizeof-1) {
+            foreach(ref b;bytes) b=42; // Fill with dirt
+            slide=bytes[i..i+real.sizeof];
+            valptr=cast(real*)slide.ptr;
+            *valptr=0.0;
+            assert(*valptr==0.0);
+            assert(*valptr is 0);
+           }
+         +/
+       // So this code is replaced  
+       //assert(value is 0 || (0.1 <= value && value < 1.0));
+       // by (It works the same)
+       assert(value == 0.0 || (0.1 <= value && value < 1.0));
+
+       //auto zero = pad ? int.max : 1;
         auto zero = 1;
         if (fflag) 
            {
