@@ -213,6 +213,13 @@ private import  Integer = tango.text.convert.Integer;
 
 private import tango.stdc.string : memmove;
 
+private import tango.core.Compiler;
+
+static if(DMDFE_Version == 2062)
+{
+    pragma(msg, "Warning: This module is broken with this DMDFE version");
+}
+
 version(GNU)
 {
     private import tango.core.Vararg;
@@ -488,11 +495,13 @@ class Text(T) : TextView!(T)
                 Also resets the curent selection to null
 
         ***********************************************************************/
-
-        final Text set (TextViewT other, bool copy)
+static if(DMDFE_Version != 2061)
+{
+        final Text set (TextViewT other, bool copy = true)
         {
                 return set (other.mslice(), copy);
         }
+}
 
         /***********************************************************************
 
