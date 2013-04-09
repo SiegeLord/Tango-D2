@@ -5,6 +5,7 @@
  * License:   BSD style: $(LICENSE)
  * Authors:   Pavel Sountsov
  */
+module tango.core.Compiler;
 
 version(SDC)
 {
