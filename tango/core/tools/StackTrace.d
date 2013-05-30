@@ -277,7 +277,7 @@ class BasicTraceInfo: Throwable.TraceInfo{
         }
     }
     
-    override immutable(char)[] toString()
+    override immutable(char)[] toString() const
     {
         immutable(char)[] ret;
         writeOut((str) { ret ~= str; });
