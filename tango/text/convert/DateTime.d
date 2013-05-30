@@ -449,7 +449,7 @@ else
                 void put(const(char)[] str)
                 {
                         assert((len+str.length) <= ret.length);
-                        ret[len..len+str.length] = str;
+                        ret[len..len+str.length] = str[];
                         len += str.length;
                 }
 
@@ -1008,7 +1008,7 @@ private struct Result
                 auto end = index + rhs.length;
                 assert (end < target_.length);
 
-                target_[index .. end] = rhs;
+                target_[index .. end] = rhs[];
                 index = end;
         }
 

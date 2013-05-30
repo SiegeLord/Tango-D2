@@ -91,7 +91,7 @@ final class Tiger : MerkleDamgard
         {
                 version (BigEndian)
                         ByteSwap.swap64 (context.ptr, context.length * ulong.sizeof);
-                buf[] = cast(ubyte[]) context;
+                buf[] = (cast(ubyte[]) context)[];
         }
 
         /***********************************************************************

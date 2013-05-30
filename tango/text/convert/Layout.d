@@ -989,8 +989,8 @@ version (WithVariant)
                 auto res = floater (result[0..$-tail.length], val, format);
                 auto len=res.length;
                 if (res.ptr!is result.ptr)
-                    result[0..len]=res;
-                result [len .. len + tail.length] = tail;
+                    result[0..len]=res[];
+                result [len .. len + tail.length] = tail[];
                 return result [0 .. len + tail.length];
         }
 }

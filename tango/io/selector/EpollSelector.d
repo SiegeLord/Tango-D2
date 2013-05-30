@@ -113,12 +113,12 @@ version (linux)
          * Default number of SelectionKey's that will be handled by the
          * EpollSelector.
          */
-        public const uint DefaultSize = 64;
+        public enum uint DefaultSize = 64;
         /**
          * Default maximum number of events that will be received per
          * invocation to select().
          */
-        public const uint DefaultMaxEvents = 16;
+        public enum uint DefaultMaxEvents = 16;
 
 
         /** Map to associate the conduit handles with their selection keys */

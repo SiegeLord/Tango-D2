@@ -292,7 +292,7 @@ class FtpException: Exception
      code =            the code (5xx for fatal errors)
      ***********************************************************************/
     this(string message, char[3] code = "420") {
-        this.responseCode_[] = code;
+        this.responseCode_[] = code[];
         super(message);
     }
 
@@ -303,7 +303,7 @@ class FtpException: Exception
      r =               the server response
      ***********************************************************************/
     this(FtpResponse r) {
-        this.responseCode_[] = r.code;
+        this.responseCode_[] = r.code[];
         super(r.message.idup);
     }
 
@@ -313,9 +313,9 @@ class FtpException: Exception
     override string toString() {
         char[] buffer = new char[this.msg.length + 4];
 
-        buffer[0 .. 3] = this.responseCode_;
+        buffer[0 .. 3] = this.responseCode_[];
         buffer[3] = ' ';
-        buffer[4 .. buffer.length] = this.msg;
+        buffer[4 .. buffer.length] = this.msg[];
 
         return buffer.idup;
     }

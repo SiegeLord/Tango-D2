@@ -658,11 +658,11 @@ T[] combine(T) (T[] dst, const(T)[] prefix, const(T)[] postfix, const(T[])[] src
         T* p = dst.ptr;
         foreach (segment; src)
                 {
-                p[0 .. prefix.length] = prefix;
+                p[0 .. prefix.length] = prefix[];
                 p += prefix.length;
-                p[0 .. segment.length] = segment;
+                p[0 .. segment.length] = segment[];
                 p += segment.length;
-                p[0 .. postfix.length] = postfix;
+                p[0 .. postfix.length] = postfix[];
                 p += postfix.length;
                 }
 
@@ -694,7 +694,7 @@ T[] repeat(T) (const(T)[] src, size_t count, T[] dst=null)
             dst.length = len;
             
         for (auto p = dst.ptr; count--; p += src.length)
-             p[0 .. src.length] = src;
+             p[0 .. src.length] = src[];
 
         return dst [0 .. len];
 }
@@ -974,7 +974,7 @@ T[] layout(T) (T[] output, const(T[])[] layout ...)
                          size_t limit = pos + x.length;
                          if (limit < output.length)
                             {
-                            output [pos .. limit] = x;
+                            output [pos .. limit] = x[];
                             pos = limit;
                             continue;
                             } 

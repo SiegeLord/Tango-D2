@@ -47,7 +47,7 @@ final class Sha512 : MerkleDamgard
                 version (LittleEndian)
                          ByteSwap.swap64(context.ptr, context.length * ulong.sizeof);
 
-                buf[] = cast(ubyte[]) context[];
+                buf[] = (cast(ubyte[]) context)[];
         }
 
         /***********************************************************************

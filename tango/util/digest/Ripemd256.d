@@ -95,7 +95,7 @@ final class Ripemd256 : MerkleDamgard
             version (BigEndian)
             	ByteSwap.swap32 (context.ptr, context.length * uint.sizeof);
 
-        	buf[] = cast(ubyte[]) context;
+        	buf[] = (cast(ubyte[]) context)[];
         }
 
 

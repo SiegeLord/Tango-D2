@@ -83,7 +83,7 @@ final class Whirlpool : MerkleDamgard
             version (LittleEndian)
             	ByteSwap.swap64 (hash.ptr, hash.length * ulong.sizeof);
 
-        	buf[] = cast(ubyte[]) hash;
+        	buf[] = (cast(ubyte[]) hash)[];
         }
 
         /***********************************************************************

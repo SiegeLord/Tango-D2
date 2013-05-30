@@ -780,9 +780,9 @@ version(discrete)
                            // nope, copy the discrete segments into output
                            if (output.length < len)
                                output.length = len;
-                           output[0..prefixed.length] = prefixed;
+                           output[0..prefixed.length] = prefixed[];
                            output[prefixed.length] = ':';
-                           output[prefixed.length+1 .. len] = localName;
+                           output[prefixed.length+1 .. len] = localName[];
                            return output[0..len];
                            }
 

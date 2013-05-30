@@ -68,7 +68,7 @@ class Md2 : MerkleDamgard
 
         protected override void createDigest(ubyte[] buf)
         {
-                buf[] = state;                  
+                buf[] = state[];
         }
 
         /***********************************************************************

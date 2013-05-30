@@ -255,7 +255,7 @@ package struct FS
                 auto i = src.length + 1;
                 if (dst.length < i)
                     dst.length = i;
-                dst [0 .. i-1] = src;
+                dst [0 .. i-1] = src[];
                 dst[i-1] = 0;
                 return dst [0 .. i];
         }
@@ -2121,7 +2121,7 @@ char[] normalize (const(char)[] in_path, char[] buf = null)
         if (buf is null)
             path = in_path.dup;
         else
-           path = buf[0..in_path.length] = in_path;
+            path = buf[0..in_path.length] = in_path[];
 
         version (Windows)
         {

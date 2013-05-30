@@ -101,7 +101,7 @@ struct Stack (V, int Size = 0)
                 Stack s = void;
                 static if (Size == 0)
                            s.stack.length = stack.length;
-                s.stack[] = stack;
+                s.stack[] = stack[];
                 s.depth = depth;
                 return s;
         }

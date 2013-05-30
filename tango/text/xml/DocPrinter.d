@@ -82,7 +82,7 @@ class DocPrinter(T)
                                 if(i+t.length >= content.length) 
                                     throw new XmlException("Buffer is to small"); 
                                 
-                                content[i..t.length] = t; 
+                                content[i..t.length] = t[];
                                 i+=t.length; 
                             } 
                             content.length = i; 

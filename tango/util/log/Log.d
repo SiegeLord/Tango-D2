@@ -200,7 +200,7 @@ public struct Log
                         ];
 
         // logging-level names
-        private immutable char[][] LevelNames =
+        private __gshared immutable char[][] LevelNames =
         [
                 "Trace", "Info", "Warn", "Error", "Fatal", "None"
         ];

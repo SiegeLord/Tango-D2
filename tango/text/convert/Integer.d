@@ -328,7 +328,7 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
                        }
                  }
               // write optional prefix string ...
-              dst [len .. len + prefix.length] = prefix;
+              dst [len .. len + prefix.length] = prefix[];
 
               // return slice of provided output buffer
               return dst [len .. $];                               

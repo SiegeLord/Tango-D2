@@ -97,7 +97,7 @@ private
 
 struct LocalFileHeader
 {
-    const uint signature = 0x04034b50;
+    enum uint signature = 0x04034b50;
 
     alias LocalFileHeaderData Data;
     Data data;
@@ -257,7 +257,7 @@ struct LocalFileHeader
 
 struct FileHeader
 {
-    const uint signature = 0x02014b50;
+    enum uint signature = 0x02014b50;
 
     alias FileHeaderData Data;
     Data* data;
@@ -403,7 +403,7 @@ struct FileHeader
 
 struct EndOfCDRecord
 {
-    const uint  signature = 0x06054b50;
+    enum uint  signature = 0x06054b50;
 
     alias EndOfCDRecordData Data;
     Data data;
@@ -2013,7 +2013,7 @@ inout(char[]) cp437_to_utf8(inout(ubyte[]) s)
              * any further allocations.
              */
             auto r = new char[i+2*(s.length-i)];
-            r[0..i] = cast(char[]) s[0..i];
+            r[0..i] = (cast(char[]) s[0..i])[];
             size_t k=i; // current length
 
             // We insert new characters at r[i+j+k]
@@ -2144,7 +2144,7 @@ inout(ubyte)[] utf8_to_cp437(inout(char)[] s)
                  * 437, we need, at most, an array of the same number of elements.
                  */
                 auto r = new ubyte[cs.length];
-                r[0..i] = cast(ubyte[]) cs[0..i];
+                r[0..i] = (cast(ubyte[]) cs[0..i])[];
                 size_t k=i;
 
                 foreach( dchar d ; cs[i..$] )

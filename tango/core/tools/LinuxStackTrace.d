@@ -277,7 +277,7 @@ version(linux){
         }
 
         // stores the global sections
-        const MAX_SECTS=5;
+        enum MAX_SECTS=5;
         static StaticSectionInfo[MAX_SECTS] _gSections;
         static size_t _nGSections,_nFileBuf;
         static char[MAX_SECTS*256] _fileNameBuf;

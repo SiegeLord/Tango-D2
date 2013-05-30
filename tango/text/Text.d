@@ -864,7 +864,7 @@ static if(DMDFE_Version != 2061)
         final Text prepend (const(T)[] other)
         {
                 expand (selectPoint, other.length);
-                content[selectPoint..selectPoint+other.length] = other;
+                content[selectPoint..selectPoint+other.length] = other[];
                 return this;
         }
 
@@ -963,7 +963,7 @@ static if(DMDFE_Version != 2061)
                 else
                    remove (selectPoint, -chunk);
 
-                content [selectPoint .. selectPoint+chars.length] = chars;
+                content [selectPoint .. selectPoint+chars.length] = chars[];
                 return select (selectPoint, chars.length);
         }
 
@@ -1502,7 +1502,7 @@ static if(DMDFE_Version != 2061)
                    T[] x = content;
                    content = new T[size];
                    if (contentLength)
-                       content[0..contentLength] = x;
+                       content[0..contentLength] = x[];
                    }
         }
 
