@@ -669,6 +669,14 @@ struct CharRange(char_t)
     }
 }
 
+import tango.core.Compiler;
+
+static if(DMDFE_Version == 2063)
+{
+    /* Workabout for http://d.puremagic.com/issues/show_bug.cgi?id=10425 */
+    void _bug(CharRange!(dchar) a) {}
+}
+
 /* ************************************************************************************************
     Represents a class of characters as used in regular expressions (e.g. [0-9a-z], etc.)
 **************************************************************************************************/
