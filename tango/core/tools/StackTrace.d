@@ -192,10 +192,10 @@ class BasicTraceInfo: Throwable.TraceInfo{
     this(){}
     /// creates a stacktrace with the given traceAddresses
     this(size_t[] traceAddresses,AddrPrecision addrPrecision){
-        this.traceAddresses[]=traceAddresses;
+        this.traceAddresses[]=traceAddresses[];
         if (traceAddresses.length<=traceBuf.length){
             // change to either always copy (and truncate) or never copy?
-            traceBuf[0..traceAddresses.length]=traceAddresses;
+            traceBuf[0..traceAddresses.length]=traceAddresses[];
             this.traceAddresses=traceBuf[0..traceAddresses.length];
         }
         this.addrPrecision=addrPrecision;
@@ -277,7 +277,7 @@ class BasicTraceInfo: Throwable.TraceInfo{
         }
     }
     
-    override immutable(char)[] toString()
+    override immutable(char)[] toString() const
     {
         immutable(char)[] ret;
         writeOut((str) { ret ~= str; });

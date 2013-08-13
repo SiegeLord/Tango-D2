@@ -330,7 +330,7 @@ private struct Stack(T)
         size_t end = _top+vs.length;
         if ( end > stack.length )
             stack.length = end*2;
-        stack[_top..end] = vs;
+        stack[_top..end] = vs[];
         _top = end;
     }
 
@@ -669,6 +669,14 @@ struct CharRange(char_t)
     }
 }
 
+import tango.core.Compiler;
+
+static if(DMDFE_Version == 2063)
+{
+    /* Workabout for http://d.puremagic.com/issues/show_bug.cgi?id=10425 */
+    void _bug(CharRange!(dchar) a) {}
+}
+
 /* ************************************************************************************************
     Represents a class of characters as used in regular expressions (e.g. [0-9a-z], etc.)
 **************************************************************************************************/
@@ -987,8 +995,8 @@ private struct Predicate(char_t)
     Type    type;
 
     // data for compiled predicates
-    const uint  MAX_BITMAP_LENGTH = 256,
-                MAX_SEARCH_LENGTH = 256;
+    enum uint  MAX_BITMAP_LENGTH = 256,
+               MAX_SEARCH_LENGTH = 256;
     enum MatchMode {
         generic, generic_l,
         single_char, bitmap, string_search,         // consume
@@ -1772,16 +1780,16 @@ private:
         zero_one_xr, zero_more_xr, one_more_xr,     // extra-reluctant
         open_par_nm, occur_g, occur_ng
     }
-    const const(char)[][] operator_names = ["EOS", "concat", "|", "(", ")", "?", "*", "+", "??", "*?", "+?", "??x", "*?x", "+?x", "(?", "{x,y}", "{x,y}?"];
+    __gshared immutable const(char)[][] operator_names = ["EOS", "concat", "|", "(", ")", "?", "*", "+", "??", "*?", "+?", "??x", "*?x", "+?x", "(?", "{x,y}", "{x,y}?"];
 
     /// Actions for to-postfix transformation
     enum Act {
         pua, poc, poa, pca, don, err
     }
-    const const(char)[][] action_names = ["push+advance", "pop+copy", "pop+advance", "pop+copy+advance", "done", "error"];
+    __gshared immutable const(char)[][] action_names = ["push+advance", "pop+copy", "pop+advance", "pop+copy+advance", "done", "error"];
 
     /// Action lookup for to-postfix transformation
-    const Act[] action_lookup =
+    __gshared immutable Act[] action_lookup =
     [
     //  eos      concat   |        (        )        ?        *        +        ??       *?       +?       ??extra  *?extra  +?extra  (?       {x,y}    {x,y}?
         Act.don, Act.pua, Act.pua, Act.pua, Act.err, Act.pua, Act.pua, Act.pua, Act.pua, Act.pua, Act.pua, Act.pua, Act.pua, Act.pua, Act.pua, Act.pua, Act.pua,
@@ -2316,7 +2324,7 @@ private class TDFA(char_t)
     alias CharClass!(char_t)    charclass_t;
     alias char_t[]              string_t;
 
-    const uint CURRENT_POSITION_REGISTER = ~0;
+    enum uint CURRENT_POSITION_REGISTER = ~0;
 
     /* ********************************************************************************************
         Tag map assignment command
@@ -2370,8 +2378,8 @@ private class TDFA(char_t)
             GENERIC, MIXED, LOOKUP
         }
 
-        const uint  LOOKUP_LENGTH = 256,
-                    INVALID_STATE = 255;
+        enum uint  LOOKUP_LENGTH = 256,
+                   INVALID_STATE = 255;
 
         bool            accept = false;
         bool            reluctant = false;
@@ -2431,7 +2439,7 @@ private class TDFA(char_t)
 
             if ( count < 1 || transitions.length > INVALID_STATE ) {
                 generic_transitions.length = transitions.length;
-                generic_transitions[] = transitions;
+                generic_transitions[] = transitions[];
                 return;
             }
 
@@ -4392,7 +4400,7 @@ class RegExpT(char_t)
     debug(TangoRegex) tnfa_t tnfa_;
     tdfa_t      tdfa_;
 private:
-    const int   PREALLOC = 16;
+    enum int           PREALLOC = 16;
     const(char_t)[]    input_,
                        pattern_;
 

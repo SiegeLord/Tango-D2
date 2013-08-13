@@ -210,7 +210,7 @@ class Arguments
         private const(char)[]           sp,             // short prefix
                                         lp;             // long prefix
         private const(char[])[]         msgs = errmsg;  // error messages
-        private const const(char[])[]   errmsg =        // default errors
+        private __gshared const const(char[])[] errmsg = // default errors
                 [
                 "argument '{0}' expects {2} parameter(s) but has {1}\n", 
                 "argument '{0}' expects {3} parameter(s) but has {1}\n", 

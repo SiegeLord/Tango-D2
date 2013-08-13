@@ -51,7 +51,7 @@ private struct Result
         {
                 auto end = index + rhs.length;
 
-                target_[index .. end] = rhs;
+                target_[index .. end] = rhs[];
                 index = end;
         }
 
@@ -907,7 +907,7 @@ void formatFixed (ref Number number, ref Result target, int length,
                      if (c == size && i != 0)
                         {
                         size_t iii = ii - separator.length;
-                        temp[iii .. ii] = separator;
+                        temp[iii .. ii] = separator[];
                         ii = iii;
 
                         if (index < groupSizes.length - 1)

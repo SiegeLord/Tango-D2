@@ -213,6 +213,13 @@ private import  Integer = tango.text.convert.Integer;
 
 private import tango.stdc.string : memmove;
 
+private import tango.core.Compiler;
+
+static if(DMDFE_Version == 2062)
+{
+    pragma(msg, "Warning: This module is broken with this DMDFE version");
+}
+
 version(GNU)
 {
     private import tango.core.Vararg;
@@ -488,11 +495,13 @@ class Text(T) : TextView!(T)
                 Also resets the curent selection to null
 
         ***********************************************************************/
-
-        final Text set (TextViewT other, bool copy)
+static if(DMDFE_Version != 2061)
+{
+        final Text set (TextViewT other, bool copy = true)
         {
                 return set (other.mslice(), copy);
         }
+}
 
         /***********************************************************************
 
@@ -855,7 +864,7 @@ class Text(T) : TextView!(T)
         final Text prepend (const(T)[] other)
         {
                 expand (selectPoint, other.length);
-                content[selectPoint..selectPoint+other.length] = other;
+                content[selectPoint..selectPoint+other.length] = other[];
                 return this;
         }
 
@@ -954,7 +963,7 @@ class Text(T) : TextView!(T)
                 else
                    remove (selectPoint, -chunk);
 
-                content [selectPoint .. selectPoint+chars.length] = chars;
+                content [selectPoint .. selectPoint+chars.length] = chars[];
                 return select (selectPoint, chars.length);
         }
 
@@ -1493,7 +1502,7 @@ class Text(T) : TextView!(T)
                    T[] x = content;
                    content = new T[size];
                    if (contentLength)
-                       content[0..contentLength] = x;
+                       content[0..contentLength] = x[];
                    }
         }
 

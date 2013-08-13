@@ -112,7 +112,7 @@ public class SelectSelector: AbstractSelector
          * Default number of SelectionKey's that will be handled by the
          * SelectSelector.
          */
-        public const uint DefaultSize = 1024;
+        public enum uint DefaultSize = 1024;
     }
     else
     {
@@ -120,7 +120,7 @@ public class SelectSelector: AbstractSelector
          * Default number of SelectionKey's that will be handled by the
          * SelectSelector.
          */
-        public const uint DefaultSize = 63;
+        public enum uint DefaultSize = 63;
     }
 
     /**
@@ -780,7 +780,7 @@ else version (Posix)
     private struct HandleSet
     {
         /** Default number of handles that will be held in the HandleSet. */
-        const uint DefaultSize     = 1024;
+        enum uint DefaultSize     = 1024;
 
         BitArray _buffer;
 

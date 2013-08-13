@@ -414,7 +414,7 @@ class FilePath : PathView
                         {
                         auto len = p.end_ + other.length;
                         expand (len);
-                        p.fp [p.end_ .. len] = other;
+                        p.fp [p.end_ .. len] = other[];
                         p.fp [len] = 0;
                         p.end_ = cast(int)len;
                         }
@@ -474,7 +474,7 @@ class FilePath : PathView
                 expand (p.end_);
                 if (p.end_)
                    {
-                   p.fp[0 .. p.end_] = path;
+                   p.fp[0 .. p.end_] = path[];
                    if (convert)
                        .standard (p.fp [0 .. p.end_]);
                    }
@@ -706,7 +706,7 @@ class FilePath : PathView
                    {
                    char[512] tmp = void;
                    assert (sub.length < tmp.length);
-                   sub = tmp[0..sub.length] = sub;
+                   sub = tmp[0..sub.length] = sub[];
                    }
 
                 // make some room if necessary
@@ -801,8 +801,8 @@ class FilePath : PathView
                 assert (tmp.length - len > 1);
 
                 // construct full pathname
-                tmp [0 .. info.path.length] = info.path;
-                tmp [info.path.length .. len] = info.name;
+                tmp [0 .. info.path.length] = info.path[];
+                tmp [info.path.length .. len] = info.name[];
                 return FilePath(tmp[0 .. len]).isFolder(info.folder);
         }
 

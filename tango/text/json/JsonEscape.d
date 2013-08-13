@@ -38,7 +38,7 @@ T[] unescape(T) (const(T)[] src, T[] dst = null)
         {
                 if (content + s.length > dst.length)
                     dst.length = dst.length + s.length + 1024;
-                dst[content .. content+s.length] = s;
+                dst[content .. content+s.length] = s[];
                 content += s.length;
         }
 

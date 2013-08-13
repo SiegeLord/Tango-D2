@@ -1990,12 +1990,12 @@ class Process
                     if (path[$-1] != FileConst.PathSeparatorChar)
                     {
                         path_buf.length = path.length + 1 + filename.length + 1;
-                        path_buf[] = path ~ FileConst.PathSeparatorChar ~ filename ~ '\0';
+                        path_buf[] = (path ~ FileConst.PathSeparatorChar ~ filename ~ '\0')[];
                     }
                     else
                     {
                         path_buf.length = path.length +filename.length + 1;
-                        path_buf[] = path ~ filename ~ '\0';
+                        path_buf[] = (path ~ filename ~ '\0')[];
                     }
 
                     rc = execve(path_buf.ptr, argv.ptr, (envp.length == 0 ? cast(const(char)**)environ : envp.ptr));

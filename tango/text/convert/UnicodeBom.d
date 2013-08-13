@@ -368,7 +368,7 @@ class BomSniffer
 
         private enum {Utf8, Utf16, Utf32};
         
-        private const Info[] lookup =
+        private __gshared const Info[] lookup =
         [
         {Utf8,  Encoding.Unknown,  null,        true,  false, false, Encoding.UTF_8},
         {Utf8,  Encoding.UTF_8N,   null,        true,  false, false, Encoding.UTF_8},

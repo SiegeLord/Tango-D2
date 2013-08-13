@@ -74,7 +74,7 @@ version (Posix)
          * Default number of SelectionKey's that will be handled by the
          * PollSelector.
          */
-        public const uint DefaultSize = 64;
+        public enum uint DefaultSize = 64;
 
         /** Map to associate the conduit handles with their selection keys */
         private PollSelectionKey[ISelectable.Handle] _keys;

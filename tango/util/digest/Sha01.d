@@ -69,7 +69,7 @@ package abstract class Sha01 : MerkleDamgard
                 version (LittleEndian)
                          ByteSwap.swap32 (context.ptr, context.length * uint.sizeof);
 
-                buf[] = cast(ubyte[]) context;
+                buf[] = (cast(ubyte[]) context)[];
         }
 
         /***********************************************************************

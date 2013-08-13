@@ -33,7 +33,7 @@ inout(char)* toStringz (inout(char)[] s, char[] tmp=null)
             {
                   if (tmp.length <= len)
                       tmp = new char[len+1];
-                  tmp [0..len] = s;
+                  tmp [0..len] = s[];
                   tmp [len] = 0;
                   s = cast(inout(char)[])tmp;
             }

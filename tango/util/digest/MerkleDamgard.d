@@ -293,7 +293,7 @@ package class MerkleDamgard : Digest
         static protected final void littleEndian32(const(ubyte[]) input, uint[] output)
         {
                 assert(output.length == input.length/4);
-                output[] = cast(uint[]) input;
+                output[] = (cast(uint[]) input)[];
 
                 version (BigEndian)
                          ByteSwap.swap32 (output.ptr, output.length * uint.sizeof);
@@ -315,7 +315,7 @@ package class MerkleDamgard : Digest
         static protected final void bigEndian32(const(ubyte[]) input, uint[] output)
         {
                 assert(output.length == input.length/4);
-                output[] = cast(uint[]) input;
+                output[] = (cast(uint[]) input)[];
 
                 version(LittleEndian)
                         ByteSwap.swap32 (output.ptr, output.length *  uint.sizeof);
@@ -337,7 +337,7 @@ package class MerkleDamgard : Digest
         static protected final void littleEndian64(const(ubyte[]) input, ulong[] output)
         {
                 assert(output.length == input.length/8);
-                output[] = cast(ulong[]) input;
+                output[] = (cast(ulong[]) input)[];
 
                 version (BigEndian)
                          ByteSwap.swap64 (output.ptr, output.length * ulong.sizeof);
@@ -358,7 +358,7 @@ package class MerkleDamgard : Digest
         static protected final void bigEndian64(const(ubyte[]) input, ulong[] output)
         {
                 assert(output.length == input.length/8);
-                output[] = cast(ulong[]) input;
+                output[] = (cast(ulong[]) input)[];
 
                 version (LittleEndian)
                          ByteSwap.swap64 (output.ptr, output.length * ulong.sizeof);

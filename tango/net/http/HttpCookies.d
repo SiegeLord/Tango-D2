@@ -683,7 +683,7 @@ class CookieParser : Iterator!(char)
 
         **********************************************************************/
 
-        final static char[] toLower (ref char[] src)
+        final static char[] toLower (char[] src)
         {
                 foreach (int i, char c; src)
                          if (c >= 'A' && c <= 'Z')

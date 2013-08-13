@@ -10,6 +10,7 @@ module tango.stdc.stdlib;
 
 private import tango.stdc.stddef;
 private import tango.stdc.config;
+private import tango.core.Compiler;
 
 extern (C):
 
@@ -96,8 +97,16 @@ version( DigitalMars )
 }
 else version( LDC )
 {
-    pragma(alloca)
-        void* alloca(size_t size);
+    static if(DMDFE_Version > 2061)
+    {
+        pragma(LDC_alloca)
+            void* alloca(size_t size);
+    }
+    else
+    {
+        pragma(alloca)
+            void* alloca(size_t size);
+    }
 }
 else version( GNU )
 {

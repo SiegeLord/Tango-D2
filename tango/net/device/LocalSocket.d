@@ -152,7 +152,7 @@ class LocalAddress : Address
         {
                 assert (path.length < 108);
                 
-                sun.sun_path [0 .. path.length] = path;
+                sun.sun_path [0 .. path.length] = path[];
                 sun.sun_path [path.length .. $] = 0;
                 
                 _pathLength = path.length;

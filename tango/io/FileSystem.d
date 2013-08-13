@@ -395,7 +395,7 @@ struct FileSystem
                 {
                         char[512] tmp = void;
                         tmp [path.length] = 0;
-                        tmp[0..path.length] = path;
+                        tmp[0..path.length] = path[];
 
                         if (tango.stdc.posix.unistd.chdir (tmp.ptr))
                             exception ("Failed to set current directory");

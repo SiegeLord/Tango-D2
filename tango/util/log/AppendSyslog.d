@@ -179,7 +179,7 @@ public class AppendSyslog: Filer
         long oldest = 1;
         char[512] buf;
         
-        buf[0 .. this.path.length] = this.path;
+        buf[0 .. this.path.length] = this.path[];
         buf[this.path.length]  = '.';
         
         // release currently opened file

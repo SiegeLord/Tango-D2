@@ -46,13 +46,13 @@ struct BitArray
             temp[pos] = val;
         return temp;
     }*/
-    this(size_t _len, size_t* _ptr)
+    this(size_t _len, size_t* _ptr) pure
     {
         len = _len;
         ptr = _ptr;
     }
 
-    this(const bool[] bits)
+    this(const bool[] bits) pure
     {
         this.length = bits.length;
         foreach( pos, val; bits )
@@ -65,7 +65,7 @@ struct BitArray
      * Returns:
      *  The number of bits in this array.
      */
-    @property const size_t length()
+    @property const size_t length() pure
     {
         return len;
     }
@@ -78,7 +78,7 @@ struct BitArray
      * Params:
      *  newlen = The number of bits this array should contain.
      */
-    @property void length(const size_t newlen )
+    @property void length(const size_t newlen ) pure
     {
         if( newlen != len )
         {
@@ -109,7 +109,7 @@ struct BitArray
      * Returns:
      *  The size a size_t array would have to be to store this array.
      */
-    @property const size_t dim() const
+    @property const size_t dim() const pure
     {
         return (len + (bits_in_size-1)) / bits_in_size;
     }
@@ -1020,7 +1020,7 @@ struct BitArray
      * Returns:
      *  The new value of the bit at pos.
      */
-    bool opIndexAssign( bool b, size_t pos )
+    bool opIndexAssign( bool b, size_t pos ) pure
     in
     {
         assert( pos < len );
