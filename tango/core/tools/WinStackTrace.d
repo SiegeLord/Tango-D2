@@ -420,7 +420,7 @@ out {
     assert (numItems == array.length);
 }
 body {
-    alias typeof(T[0]) ItemT;
+    alias typeof(T.init[0]) ItemT;
     array = (cast(ItemT*)cMalloc(ItemT.sizeof * numItems))[0 .. numItems];
     
     static if (is(typeof(ItemT.init))) {
@@ -464,7 +464,7 @@ out {
     assert (numItems == array.length);
 }
 body {
-    alias typeof(T[0]) ItemT;
+    alias typeof(T.init[0]) ItemT;
     intT oldLen = array.length;
     array = (cast(ItemT*)cRealloc(array.ptr, ItemT.sizeof * numItems))[0 .. numItems];
     
@@ -516,7 +516,7 @@ body {
 void append(T, I)(ref T array, I elem, uint* realLength = null) {
     uint len = realLength is null ? array.length : *realLength;
     uint capacity = array.length;
-    alias typeof(T[0]) ItemT;
+    alias typeof(T.init[0]) ItemT;
     
     if (len >= capacity) {
         if (realLength is null) {       // just add one element to the array

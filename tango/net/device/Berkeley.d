@@ -219,7 +219,7 @@ version (Win32)
     
         private import tango.sys.win32.WsaSock;
 
-        private enum socket_t: int
+        enum socket_t: int
         {
             init  = ~0
         }
@@ -348,7 +348,7 @@ else
         private import tango.stdc.errno;
 
         //private alias int socket_t = -1;
-        private enum socket_t: int
+        enum socket_t: int
         {
             init  = -1
         }
