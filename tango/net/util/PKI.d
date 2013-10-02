@@ -399,7 +399,7 @@ class CertificateStore
 
     Example
     ---
-    auto public = new PublicKey(cast(char[])File("public.pem").read);
+    auto public = new PublicKey(cast(char[])File.get("public.pem"));
     auto encrypted = public.encrypt(cast(ubyte[])"Hello, how are you today?");
     auto pemData = public.pemFormat;
     ---
@@ -408,7 +408,7 @@ class CertificateStore
 
 class PublicKey
 {
-    package RSA *_evpKey = null;
+    package EVP_PKEY *_evpKey = null;
     private PrivateKey _existingKey = null;
 
     /*******************************************************************************
@@ -419,21 +419,22 @@ class PublicKey
             publicPemData = pem encoded data containing the public key 
             
     *******************************************************************************/
-    this (char[] publicPemData)
+    this (const(char)[] publicPemData)
     {
-        BIO *bp = BIO_new_mem_buf(publicPemData.ptr, cast(int) publicPemData.length);
+        BIO *bp = BIO_new_mem_buf(cast(void*)publicPemData.ptr, cast(int) publicPemData.length);
         if (bp)
         {
-            _evpKey = PEM_read_bio_RSAPublicKey(bp, null, null, null);
+            _evpKey = PEM_read_bio_PUBKEY(bp, null, null, null);
             BIO_free_all(bp);
         }
 
         if (_evpKey is null)
             throwOpenSSLError();
     }
+    
     package this(PrivateKey key) 
     {        
-        this._evpKey = cast(RSA *)key._evpKey.pkey;
+        this._evpKey = key._evpKey;
         this._existingKey = key;
     }
 
@@ -446,7 +447,7 @@ class PublicKey
         }
         else if (_evpKey)
         {
-            RSA_free(_evpKey);
+            EVP_PKEY_free(_evpKey);
             _evpKey = null;
         }
     }
@@ -457,17 +458,17 @@ class PublicKey
             
     *******************************************************************************/
 
-    char[] pemFormat()
+    string pemFormat()
     {
-        char[] rtn = null;
+        string rtn = null;
         BIO *bp = BIO_new(BIO_s_mem());
         if (bp)
         {
-            if (PEM_write_bio_RSAPublicKey(bp, _evpKey))
+            if (PEM_write_bio_PUBKEY(bp, _evpKey))
             {
                 char *pemData = null;
                 int pemSize = BIO_get_mem_data(bp, &pemData);
-                rtn = pemData[0..pemSize].dup;
+                rtn = pemData[0..pemSize].idup;
             }
             BIO_free_all(bp);
         }
@@ -485,17 +486,28 @@ class PublicKey
         signature = the digital signature
     *******************************************************************************/
 
-    bool verify(ubyte[] data, ubyte[] signature)
+    bool verify(const(ubyte)[] data, const(ubyte)[] signature)
     {
         ubyte[MD5_DIGEST_LENGTH] digest;
         MD5_CTX c;
         MD5_Init(&c);
         MD5_Update(&c, data.ptr, data.length);
         MD5_Final(digest.ptr, &c);
+
+        EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(_evpKey, null);
+        if (!ctx)
+            throwOpenSSLError();
+        scope(exit) EVP_PKEY_CTX_free(ctx);
         
-        if (RSA_verify(NID_md5, digest.ptr, MD5_DIGEST_LENGTH, signature.ptr, cast(uint) signature.length, _evpKey))
-            return true;
-        return false;
+        
+        if (EVP_PKEY_verify_init(ctx) <= 0)
+            throwOpenSSLError();
+
+        auto code = EVP_PKEY_verify(ctx, signature.ptr, signature.length, digest.ptr, digest.length);
+        if (code < 0)
+            throwOpenSSLError();
+
+        return code == 1;
     }
 
     /*******************************************************************************
@@ -512,19 +524,23 @@ class PublicKey
             
     *******************************************************************************/
 
-    ubyte[] encrypt(ubyte[] data)
+    ubyte[] encrypt(const(ubyte)[] data)
     {
         ubyte[] rtn;
-
-        uint maxSize = RSA_size(_evpKey);
-        if (data.length > maxSize)
-            throw new Exception("The specified data is larger than the size that can be encrypted by this public key.");
-        ubyte[] tmpRtn = new ubyte[maxSize];
-        int numBytes = RSA_public_encrypt(cast(int) data.length, data.ptr, tmpRtn.ptr, _evpKey, RSA_PKCS1_OAEP_PADDING);
-        if (numBytes >= 0)
-            rtn = tmpRtn[0..numBytes];
-        if (rtn is null)
+        EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(_evpKey, null);
+        if (!ctx)
             throwOpenSSLError();
+        scope(exit) EVP_PKEY_CTX_free(ctx);
+        
+        if (EVP_PKEY_encrypt_init(ctx) <= 0)
+            throwOpenSSLError();
+        
+        size_t out_len = 0;
+        if (EVP_PKEY_encrypt(ctx, null, &out_len, data.ptr, data.length) <= 0) //determine a out data size
+            throwOpenSSLError();  
+        rtn = new ubyte[out_len];
+        if (EVP_PKEY_encrypt(ctx, rtn.ptr, &out_len, data.ptr, data.length) <= 0)
+            throwOpenSSLError();    
         return rtn;
     }
 
@@ -539,17 +555,23 @@ class PublicKey
 
     *******************************************************************************/
        
-    ubyte[] decrypt(ubyte[] data)
+    ubyte[] decrypt(const(ubyte)[] data)
     {
         ubyte[] rtn;
-
-        uint maxSize = RSA_size(_evpKey);
-        ubyte[] tmpRtn = new ubyte[maxSize];
-        int numBytes = RSA_public_decrypt(cast(int) data.length, data.ptr, tmpRtn.ptr, _evpKey, RSA_PKCS1_PADDING);
-        if (numBytes >= 0)
-            rtn = tmpRtn[0..numBytes];
-        if (rtn is null)
+        EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(_evpKey, null);
+        if (!ctx)
             throwOpenSSLError();
+        scope(exit) EVP_PKEY_CTX_free(ctx);
+        
+        if (EVP_PKEY_decrypt_init(ctx) <= 0)
+            throwOpenSSLError();
+        
+        size_t out_len = 0;
+        if (EVP_PKEY_decrypt(ctx, null, &out_len, data.ptr, data.length) <= 0) //determine a out data size
+            throwOpenSSLError();  
+        rtn = new ubyte[out_len];
+        if (EVP_PKEY_decrypt(ctx, rtn.ptr, &out_len, data.ptr, data.length) <= 0)
+            throwOpenSSLError();    
         return rtn;
     }
 
@@ -586,9 +608,9 @@ class PrivateKey
         
     *******************************************************************************/
 
-    this (char[] privatePemData, char[] certPass = null)
+    this (const(char)[] privatePemData, const(char)[] certPass = null)
     {
-        BIO *bp = BIO_new_mem_buf(privatePemData.ptr, cast(int) privatePemData.length);
+        BIO *bp = BIO_new_mem_buf(cast(void*)privatePemData.ptr, cast(int) privatePemData.length);
         if (bp)
         {
             _evpKey = PEM_read_bio_PrivateKey(bp, null, null, certPass ? toStringz(certPass) : null);
@@ -656,9 +678,9 @@ class PrivateKey
             AES 256bit encryption, with this as the key.
         
     *******************************************************************************/
-    char[] pemFormat(char[] pass = null)
+    string pemFormat(const(char)[] pass = null)
     {
-        char[] rtn = null;
+        string rtn = null;
         BIO *bp = BIO_new(BIO_s_mem());
         if (bp)
         {
@@ -666,7 +688,7 @@ class PrivateKey
             {
                 char *pemData = null;
                 int pemSize = BIO_get_mem_data(bp, &pemData);
-                rtn = pemData[0..pemSize].dup;
+                rtn = pemData[0..pemSize].idup;
             }
             BIO_free_all(bp);
         }
@@ -700,9 +722,6 @@ class PrivateKey
 
     ubyte[] sign(const(ubyte)[] data, ubyte[] sigbuf)
     {
-        uint maxSize = RSA_size(cast(RSA *)_evpKey.pkey);
-        if (sigbuf.length < maxSize)
-            throw new Exception("The signature buffer is too small to fit the signature for this key.");
         ubyte[MD5_DIGEST_LENGTH] digest;
 
         MD5_CTX c;
@@ -710,12 +729,23 @@ class PrivateKey
         MD5_Update(&c, data.ptr, data.length);
         MD5_Final(digest.ptr, &c);
 
-        uint len = cast(uint) sigbuf.length;
-        if (RSA_sign(NID_md5, digest.ptr, cast(uint) digest.length, sigbuf.ptr, &len, cast(RSA *)_evpKey.pkey))
-            return sigbuf[0..len];
-        else
+        EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(_evpKey, null);
+        if (!ctx)
             throwOpenSSLError();
-        return null;
+        scope(exit) EVP_PKEY_CTX_free(ctx);
+
+        if (EVP_PKEY_sign_init(ctx) <= 0)
+            throwOpenSSLError();
+            
+        size_t out_len = 0;
+        if (EVP_PKEY_sign(ctx, null, &out_len, digest.ptr, digest.length) <= 0)
+            throwOpenSSLError();
+        if (sigbuf.length < out_len)
+            throw new Exception("The signature buffer is too small to fit the signature for this key.");
+        if (EVP_PKEY_sign(ctx, sigbuf.ptr, &out_len, digest.ptr, digest.length) <= 0)
+            throwOpenSSLError();
+
+        return sigbuf[0..out_len];
     }
 
     /*******************************************************************************
@@ -732,19 +762,23 @@ class PrivateKey
             
     *******************************************************************************/
 
-    ubyte[] encrypt(ubyte[] data)
+    ubyte[] encrypt(const(ubyte)[] data)
     {
         ubyte[] rtn;
-
-        uint maxSize = RSA_size(cast(RSA *)_evpKey.pkey);
-        if (data.length > maxSize)
-            throw new Exception("The specified data is larger than the size that can be encrypted by this public key.");
-        ubyte[] tmpRtn = new ubyte[maxSize];
-        int numBytes = RSA_private_encrypt(cast(int) data.length, data.ptr, tmpRtn.ptr, cast(RSA *)_evpKey.pkey, RSA_PKCS1_PADDING);
-        if (numBytes >= 0)
-            rtn = tmpRtn[0..numBytes];
-        if (rtn is null)
+        EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(_evpKey, null);
+        if (!ctx)
             throwOpenSSLError();
+        scope(exit) EVP_PKEY_CTX_free(ctx);
+        
+        if (EVP_PKEY_encrypt_init(ctx) <= 0)
+            throwOpenSSLError();
+        
+        size_t out_len = 0;
+        if (EVP_PKEY_encrypt(ctx, null, &out_len, data.ptr, data.length) <= 0) //determine a out data size
+            throwOpenSSLError();  
+        rtn = new ubyte[out_len];
+        if (EVP_PKEY_encrypt(ctx, rtn.ptr, &out_len, data.ptr, data.length) <= 0)
+            throwOpenSSLError();    
         return rtn;
     }
 
@@ -759,17 +793,23 @@ class PrivateKey
 
     *******************************************************************************/
        
-    ubyte[] decrypt(ubyte[] data)
+    ubyte[] decrypt(const(ubyte)[] data)
     {
         ubyte[] rtn;
-
-        uint maxSize = RSA_size(cast(RSA *)_evpKey.pkey);
-        ubyte[] tmpRtn = new ubyte[maxSize];
-        int numBytes = RSA_private_decrypt(cast(int) data.length, data.ptr, tmpRtn.ptr, cast(RSA *)_evpKey.pkey, RSA_PKCS1_OAEP_PADDING);
-        if (numBytes >= 0)
-            rtn = tmpRtn[0..numBytes];
-        if (rtn is null)
+        EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(_evpKey, null);
+        if (!ctx)
             throwOpenSSLError();
+        scope(exit) EVP_PKEY_CTX_free(ctx);
+        
+        if (EVP_PKEY_decrypt_init(ctx) <= 0)
+            throwOpenSSLError();
+        
+        size_t out_len = 0;
+        if (EVP_PKEY_decrypt(ctx, null, &out_len, data.ptr, data.length) <= 0) //determine a out data size
+            throwOpenSSLError();  
+        rtn = new ubyte[out_len];
+        if (EVP_PKEY_decrypt(ctx, rtn.ptr, &out_len, data.ptr, data.length) <= 0)
+            throwOpenSSLError();    
         return rtn;
     }
 
@@ -819,9 +859,9 @@ class Certificate
         Parses a X509 Certificate from the provided PEM encoded data.
             
     *******************************************************************************/
-    this(char[] publicPemData)
+    this(const(ubyte)[] publicPemData)
     {
-        BIO *data = BIO_new_mem_buf(publicPemData.ptr, cast(int) publicPemData.length);
+        BIO *data = BIO_new_mem_buf(cast(void*)publicPemData.ptr, cast(int) publicPemData.length);
         if (data)
         {
             _cert = PEM_read_bio_X509(data, null, null, null);
@@ -1152,9 +1192,9 @@ class Certificate
             
     *******************************************************************************/
 
-    char[] pemFormat()
+    string pemFormat()
     {
-        char[] rtn = null;
+        string rtn = null;
         BIO *bp = BIO_new(BIO_s_mem());
         if (bp)
         {
@@ -1162,7 +1202,7 @@ class Certificate
             {
                 char *pemData = null;
                 int pemSize = BIO_get_mem_data(bp, &pemData);
-                rtn = pemData[0..pemSize].dup;
+                rtn = pemData[0..pemSize].idup;
             }
             BIO_free_all(bp);
         }
@@ -1197,12 +1237,12 @@ version (Test)
         Test.Status _pkeyGenTest(ref char[][] messages)
         {
             auto pkey = new PrivateKey(2048);
-            char[] pem = pkey.pemFormat;
+            string pem = pkey.pemFormat;
             auto pkey2 = new PrivateKey(pem);
             if (pkey == pkey2)
             {
                 auto pkey3 = new PrivateKey(2048);
-                char[] pem2 = pkey3.pemFormat("hello");
+                string pem2 = pkey3.pemFormat("hello");
                 try
                     auto pkey4 = new PrivateKey(pem2, "badpass");
                 catch (Exception ex)
@@ -1221,7 +1261,7 @@ version (Test)
             auto pkey = new PrivateKey(2048);
             cert.privateKey(pkey).serialNumber(123).dateBeforeOffset(t1).dateAfterOffset(t2);
             cert.setSubject("CA", "Alberta", "Place", "None", "First Last", "no unit", "email@example.com").sign(cert, pkey);
-            char[] pemData = cert.pemFormat;
+            string pemData = cert.pemFormat;
             auto cert2 = new Certificate(pemData);
 //            Stdout.formatln("{}\n{}\n{}\n{}", cert2.serialNumber, cert2.subject, cert2.dateBefore, cert2.dateAfter);
             if (cert2 == cert)
@@ -1272,7 +1312,7 @@ version (Test)
         Test.Status _rsaCrypto(ref char[][] messages)
         {
             auto key = new PrivateKey(2048);
-            char[] pemData = key.publicKey.pemFormat;
+            string pemData = key.publicKey.pemFormat;
             auto pub = new PublicKey(pemData);
             auto encrypted = pub.encrypt(cast(ubyte[])"Hello, how are you today?");
             auto decrypted = key.decrypt(encrypted);
