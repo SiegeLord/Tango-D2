@@ -173,7 +173,18 @@ extern (C)
         int type;
         int save_type;
         int references;
-        void *pkey;
+        void *ameth;
+        void *engine;
+        union Pkey
+        {
+                void *ptr;
+                RSA *rsa;
+                DSA *dsa;
+                DH *dh;
+        };
+        Pkey pkey;
+        
+        
         // yadda yadda ...        
     };
     struct X509_STORE_CTX {};
@@ -216,8 +227,11 @@ extern (C)
     };
     struct X509_NAME {};
     struct RSA {};
+    struct DSA {};
+    struct DH {};
     struct BIO_METHOD {};
-
+    struct EVP_PKEY_CTX {};
+    
     alias int function(char *buf, int size, int rwflag, void *userdata) pem_password_cb;
     alias char *function() d2i_of_void;
     alias int function() i2d_of_void;
@@ -252,6 +266,7 @@ extern (C)
     alias int function(BIO *b, void *data, int len) tBIO_read;
     alias int function(SSL_CTX *ctx) tSSL_CTX_check_private_key;
     alias EVP_PKEY* function(BIO *bp, EVP_PKEY **x, pem_password_cb *cb, in void *u) tPEM_read_bio_PrivateKey;
+    alias EVP_PKEY* function(BIO *bp, EVP_PKEY **x, pem_password_cb *cb, in void *u) tPEM_read_bio_PUBKEY;
     alias BIO* function(const(char) *filename, const(char) *mode) tBIO_new_file;
     alias int function() tERR_peek_error;
     alias int function(BIO *b, int flags) tBIO_test_flags;
@@ -276,6 +291,7 @@ extern (C)
     alias BIO* function(BIO_METHOD *type) tBIO_new;
     alias BIO_METHOD* function() tBIO_s_mem;
     alias int function(BIO *bp, EVP_PKEY *x, const(EVP_CIPHER) *cipher, char *kstr, int klen, pem_password_cb, in void *) tPEM_write_bio_PKCS8PrivateKey;
+    alias int function(BIO *bp, EVP_PKEY *x) tPEM_write_bio_PUBKEY;
     alias EVP_CIPHER* function() tEVP_aes_256_cbc;
     alias void* function(d2i_of_void d2i, const(char) *name, BIO *bp, void **x, pem_password_cb cb, void *u) tPEM_ASN1_read_bio;
     alias X509* function() tX509_new;
@@ -323,7 +339,28 @@ extern (C)
     alias int function(EVP_CIPHER_CTX *ctx) tEVP_CIPHER_CTX_block_size;
     alias EVP_CIPHER *function() tEVP_aes_128_cbc;
     alias int function(EVP_CIPHER_CTX *ctx) tEVP_CIPHER_CTX_cleanup;
-
+    
+    alias int function(int) tEVP_PKEY_type;
+    alias RSA* function(EVP_PKEY *pkey) tEVP_PKEY_get1_RSA;
+    alias DSA* function(EVP_PKEY *pkey) tEVP_PKEY_get1_DSA;
+    
+    
+    alias EVP_PKEY_CTX* function(EVP_PKEY *pkey, void *e) tEVP_PKEY_CTX_new;
+    alias void function(EVP_PKEY_CTX *ctx) tEVP_PKEY_CTX_free;   
+    
+    
+    alias int function(EVP_PKEY_CTX *ctx) tEVP_PKEY_sign_init;
+    alias int function(EVP_PKEY_CTX *ctx, ubyte *sig, size_t *siglen, const ubyte *tbs, size_t tbslen) tEVP_PKEY_sign;
+    
+    alias int function(EVP_PKEY_CTX *ctx) tEVP_PKEY_verify_init;
+    alias int function(EVP_PKEY_CTX *ctx, const ubyte *sig, size_t siglen, const ubyte *tbs, size_t tbslen) tEVP_PKEY_verify;
+    
+    alias int function(EVP_PKEY_CTX *ctx) tEVP_PKEY_encrypt_init;
+    alias int function(EVP_PKEY_CTX *ctx, ubyte *outdata, size_t *outlen, const ubyte *indata, size_t inlen) tEVP_PKEY_encrypt;
+    
+    alias int function(EVP_PKEY_CTX *ctx) tEVP_PKEY_decrypt_init;
+    alias int function(EVP_PKEY_CTX *ctx, ubyte *outdata, size_t *outlen, const ubyte *indata, size_t inlen) tEVP_PKEY_decrypt;
+    
     struct CRYPTO_dynlock_value
     {
         ReadWriteMutex lock;
@@ -449,6 +486,7 @@ tX509V3_EXT_cleanup X509V3_EXT_cleanup;
 tCRYPTO_cleanup_all_ex_data CRYPTO_cleanup_all_ex_data;
 tSSL_CTX_check_private_key SSL_CTX_check_private_key;
 tPEM_read_bio_PrivateKey PEM_read_bio_PrivateKey;
+tPEM_read_bio_PUBKEY PEM_read_bio_PUBKEY;
 tBIO_new_file BIO_new_file;
 tERR_peek_error ERR_peek_error;
 tBIO_ctrl BIO_ctrl;
@@ -472,6 +510,7 @@ tRSA_free RSA_free;
 tBIO_new BIO_new;
 tBIO_s_mem BIO_s_mem;
 tPEM_write_bio_PKCS8PrivateKey PEM_write_bio_PKCS8PrivateKey;
+tPEM_write_bio_PUBKEY PEM_write_bio_PUBKEY;
 tEVP_aes_256_cbc EVP_aes_256_cbc;
 tPEM_ASN1_read_bio PEM_ASN1_read_bio;
 d2i_of_void d2i_X509;
@@ -523,6 +562,22 @@ tEVP_DecryptFinal_ex EVP_DecryptFinal_ex;
 tEVP_aes_128_cbc EVP_aes_128_cbc;
 tEVP_CIPHER_CTX_block_size EVP_CIPHER_CTX_block_size;
 tEVP_CIPHER_CTX_cleanup EVP_CIPHER_CTX_cleanup;
+
+tEVP_PKEY_type EVP_PKEY_type;
+tEVP_PKEY_get1_RSA EVP_PKEY_get1_RSA;
+tEVP_PKEY_get1_DSA EVP_PKEY_get1_DSA;
+
+tEVP_PKEY_CTX_new EVP_PKEY_CTX_new;
+tEVP_PKEY_CTX_free EVP_PKEY_CTX_free;
+tEVP_PKEY_sign_init EVP_PKEY_sign_init;
+tEVP_PKEY_sign EVP_PKEY_sign;
+tEVP_PKEY_verify_init EVP_PKEY_verify_init;
+tEVP_PKEY_verify EVP_PKEY_verify;
+
+tEVP_PKEY_encrypt_init EVP_PKEY_encrypt_init;
+tEVP_PKEY_encrypt EVP_PKEY_encrypt;
+tEVP_PKEY_decrypt_init EVP_PKEY_decrypt_init;
+tEVP_PKEY_decrypt EVP_PKEY_decrypt;
 }
 int PEM_write_bio_RSAPublicKey(BIO *bp, RSA *x)
 {
@@ -771,6 +826,7 @@ void bindCrypto(SharedLib ssllib)
         bindFunc(BIO_new, "BIO_new", ssllib);
         bindFunc(BIO_s_mem, "BIO_s_mem", ssllib);
         bindFunc(PEM_write_bio_PKCS8PrivateKey, "PEM_write_bio_PKCS8PrivateKey", ssllib);
+        bindFunc(PEM_write_bio_PUBKEY, "PEM_write_bio_PUBKEY", ssllib);
         bindFunc(EVP_aes_256_cbc, "EVP_aes_256_cbc", ssllib);
         bindFunc(PEM_ASN1_read_bio, "PEM_ASN1_read_bio", ssllib);
         bindFunc(d2i_X509, "d2i_X509", ssllib);
@@ -797,6 +853,7 @@ void bindCrypto(SharedLib ssllib)
         bindFunc(i2d_RSAPublicKey, "i2d_RSAPublicKey", ssllib);
         bindFunc(X509_NAME_add_entry_by_txt, "X509_NAME_add_entry_by_txt", ssllib);
         bindFunc(PEM_read_bio_PrivateKey, "PEM_read_bio_PrivateKey", ssllib);
+        bindFunc(PEM_read_bio_PUBKEY, "PEM_read_bio_PUBKEY", ssllib);
         bindFunc(BIO_new_file, "BIO_new_file", ssllib);
         bindFunc(ERR_peek_error, "ERR_peek_error", ssllib);
         try
@@ -852,6 +909,47 @@ void bindCrypto(SharedLib ssllib)
             EVP_CIPHER_CTX_block_size=&EVP_CIPHER_CTX_block_size_097l;
         }
         bindFunc(EVP_CIPHER_CTX_cleanup, "EVP_CIPHER_CTX_cleanup", ssllib);
+        
+        bindFunc(EVP_PKEY_type, "EVP_PKEY_type", ssllib);
+        bindFunc(EVP_PKEY_get1_RSA, "EVP_PKEY_get1_RSA", ssllib);
+        bindFunc(EVP_PKEY_get1_DSA, "EVP_PKEY_get1_DSA", ssllib);
+       
+        bindFunc(EVP_PKEY_CTX_new, "EVP_PKEY_CTX_new", ssllib);
+        bindFunc(EVP_PKEY_CTX_free, "EVP_PKEY_CTX_free", ssllib);
+        
+        bindFunc(EVP_PKEY_sign_init, "EVP_PKEY_sign_init", ssllib);
+        bindFunc(EVP_PKEY_sign, "EVP_PKEY_sign", ssllib);
+        
+        bindFunc(EVP_PKEY_verify_init, "EVP_PKEY_verify_init", ssllib);
+        bindFunc(EVP_PKEY_verify, "EVP_PKEY_verify", ssllib);
+        
+        bindFunc(EVP_PKEY_encrypt_init, "EVP_PKEY_encrypt_init", ssllib);
+        bindFunc(EVP_PKEY_encrypt, "EVP_PKEY_encrypt", ssllib);
+        
+        bindFunc(EVP_PKEY_decrypt_init, "EVP_PKEY_decrypt_init", ssllib);
+        bindFunc(EVP_PKEY_decrypt, "EVP_PKEY_decrypt", ssllib);
+
+
+        /*EVP_PKEY_CTX_new
+        EVP_PKEY_CTX_free
+        int EVP_PKEY_sign_init(EVP_PKEY_CTX *ctx);
+    int EVP_PKEY_sign(EVP_PKEY_CTX *ctx,
+                unsigned char *sig, size_t *siglen,
+                const unsigned char *tbs, size_t tbslen);
+    int EVP_PKEY_verify_init(EVP_PKEY_CTX *ctx);
+    int EVP_PKEY_verify(EVP_PKEY_CTX *ctx,
+                const unsigned char *sig, size_t siglen,
+                const unsigned char *tbs, size_t tbslen);
+
+    int EVP_PKEY_encrypt_init(EVP_PKEY_CTX *ctx);
+    int EVP_PKEY_encrypt(EVP_PKEY_CTX *ctx,
+                unsigned char *out, size_t *outlen,
+                const unsigned char *in, size_t inlen);
+    int EVP_PKEY_decrypt_init(EVP_PKEY_CTX *ctx);
+    int EVP_PKEY_decrypt(EVP_PKEY_CTX *ctx,
+                unsigned char *out, size_t *outlen,
+                const unsigned char *in, size_t inlen);*/
+        
     }
 }
 
@@ -859,9 +957,9 @@ void loadOpenSSL()
 {
     version (linux)
     {
-        const(char[])[] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
+        const(char[])[] loadPath = [ "libssl.so" ];
     }
-    version (Win32)
+    version (Windows)
     {
         const(char[])[] loadPath = [ "libssl32.dll" ];
     }
@@ -871,11 +969,11 @@ void loadOpenSSL()
     }
     version (FreeBSD)
     {
-        const(char[])[] loadPath = [ "libssl.so.5", "libssl.so" ];
+        const(char[])[] loadPath = [ "libssl.so" ];
     }
     version (solaris)
     {
-        const(char[])[] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
+        const(char[])[] loadPath = [ "libssl.so" ];
     }
     if ((ssllib = loadLib(loadPath)) !is null)
     {
