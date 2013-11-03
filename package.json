@@ -17,10 +17,10 @@
     "sourcePaths-OSX": ["tango/sys/darwin"],
 
     "configurations": [
-	{
-	    "name": "shared",
-	    "targetType": "dynamicLibrary"
-	}
+        {
+            "name": "shared",
+            "targetType": "dynamicLibrary"
+        }
     ],
 
     "targetName": "tango",
