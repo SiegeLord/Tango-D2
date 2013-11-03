@@ -1,5 +1,5 @@
 {
-    "name": "Tango-D2",
+    "name": "tango-d2",
     "description": "A large general-purpose library. A port of the D1 Tango library.",
     "homepage": "https://github.com/SiegeLord/Tango-D2/",
     "license": "BSD",
@@ -8,7 +8,14 @@
         "Origin Tango authors"
     ],
 
+    "sourcePaths": ["tango/core", "tango/io", "tango/math", "tango/net", 
+		    "tango/stdc", "tango/text", "tango/time", "tango/util"],
+    "sourcePaths-Windows": ["tango/sys/win32"],
+    "sourcePaths-linux": ["tango/sys/linux"],
+    "sourcePaths-FreeBSD": ["tango/sys/freebsd"],
+    "sourcePaths-Solaris": ["tango/sys/solaris"],
+    "sourcePaths-OSX": ["tango/sys/darwin"],
+
     "targetName": "Tango",
     "targetPath": "lib",
 }
-
