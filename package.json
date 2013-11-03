@@ -16,6 +16,6 @@
     "sourcePaths-Solaris": ["tango/sys/solaris"],
     "sourcePaths-OSX": ["tango/sys/darwin"],
 
-    "targetName": "Tango",
-    "targetPath": "lib",
+    "targetName": "tango",
+    "targetPath": ".",
 }
