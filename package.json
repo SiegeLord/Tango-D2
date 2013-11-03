@@ -16,6 +16,13 @@
     "sourcePaths-Solaris": ["tango/sys/solaris"],
     "sourcePaths-OSX": ["tango/sys/darwin"],
 
+    "configurations": [
+	{
+	    "name": "shared",
+	    "targetType": "dynamicLibrary"
+	}
+    ],
+
     "targetName": "tango",
     "targetPath": ".",
 }
