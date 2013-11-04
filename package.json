@@ -5,14 +5,14 @@
     "license": "BSD 3-clause",
     "authors": [
         "SiegeLord",
-	"Kris Bell",
-	"Sean Kelly",
-	"Lars Ivar Igesund",
+        "Kris Bell",
+        "Sean Kelly",
+        "Lars Ivar Igesund",
         "other original Tango authors"
     ],
 
     "sourcePaths": ["tango/core", "tango/io", "tango/math", "tango/net", 
-		    "tango/stdc", "tango/text", "tango/time", "tango/util"],
+                    "tango/stdc", "tango/text", "tango/time", "tango/util"],
     "sourcePaths-Windows": ["tango/sys/win32"],
     "sourcePaths-linux": ["tango/sys/linux"],
     "sourcePaths-FreeBSD": ["tango/sys/freebsd"],
@@ -24,7 +24,7 @@
     "importPaths": [""],
 
     "configurations": [
-	{
+        {
             "name": "static",
             "targetType": "staticLibrary"
         },
