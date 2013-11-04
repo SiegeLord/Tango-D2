@@ -2,10 +2,13 @@
     "name": "tango",
     "description": "A large general-purpose library. A port of the D1 Tango library.",
     "homepage": "https://github.com/SiegeLord/Tango-D2/",
-    "license": "BSD",
+    "license": "BSD 3-clause",
     "authors": [
         "SiegeLord",
-        "Origin Tango authors"
+	"Kris Bell",
+	"Sean Kelly",
+	"Lars Ivar Igesund",
+        "other original Tango authors"
     ],
 
     "sourcePaths": ["tango/core", "tango/io", "tango/math", "tango/net", 
@@ -16,7 +19,15 @@
     "sourcePaths-Solaris": ["tango/sys/solaris"],
     "sourcePaths-OSX": ["tango/sys/darwin"],
 
+    "excludedSourceFiles-Windows": ["tango/stdc/posix/*"],
+
+    "importPaths": [""],
+
     "configurations": [
+	{
+            "name": "static",
+            "targetType": "staticLibrary"
+        },
         {
             "name": "shared",
             "targetType": "dynamicLibrary"
