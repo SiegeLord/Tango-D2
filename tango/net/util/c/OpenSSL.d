@@ -957,7 +957,7 @@ void loadOpenSSL()
 {
     version (linux)
     {
-        const(char[])[] loadPath = [ "libssl.so" ];
+        const(char[])[] loadPath = [ "libssl.so.0.9.8", "libssl.so.1.0.0", "libssl.so" ];
     }
     version (Windows)
     {
@@ -969,11 +969,11 @@ void loadOpenSSL()
     }
     version (FreeBSD)
     {
-        const(char[])[] loadPath = [ "libssl.so" ];
+        const(char[])[] loadPath = [ "libssl.so.5", "libssl.so" ];
     }
     version (solaris)
     {
-        const(char[])[] loadPath = [ "libssl.so" ];
+        const(char[])[] loadPath = [ "libssl.so.0.9.8", "libssl.so.1.0.0", "libssl.so" ];
     }
     if ((ssllib = loadLib(loadPath)) !is null)
     {
