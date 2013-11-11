@@ -144,7 +144,7 @@ class Uri : UriView
                 // that a port value of zero is not supported ...
                 foreach (SchemePort sp; schemePorts)
                          genericSchemes[sp.name] = sp.port;
-                genericSchemes.rehash;
+                genericSchemes.rehash();
 
                 map = new ubyte[256];
 
