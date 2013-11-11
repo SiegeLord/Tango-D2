@@ -957,7 +957,7 @@ void loadOpenSSL()
 {
     version (linux)
     {
-        const(char[])[] loadPath = [ "libssl.so" ];
+        const(char[])[] loadPath = [ "libssl.so.1.0.0" ];
     }
     version (Windows)
     {
