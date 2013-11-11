@@ -13,13 +13,13 @@
 
     "sourcePaths": ["tango/core", "tango/io", "tango/math", "tango/net", 
                     "tango/stdc", "tango/text", "tango/time", "tango/util"],
-    "sourcePaths-Windows": ["tango/sys/win32"],
+    "sourcePaths-windows": ["tango/sys/win32"],
     "sourcePaths-linux": ["tango/sys/linux"],
-    "sourcePaths-FreeBSD": ["tango/sys/freebsd"],
-    "sourcePaths-Solaris": ["tango/sys/solaris"],
-    "sourcePaths-OSX": ["tango/sys/darwin"],
+    "sourcePaths-freebsd": ["tango/sys/freebsd"],
+    "sourcePaths-solaris": ["tango/sys/solaris"],
+    "sourcePaths-osx": ["tango/sys/darwin"],
 
-    "excludedSourceFiles-Windows": ["tango/stdc/posix/*"],
+    "excludedSourceFiles-windows": ["tango/stdc/posix/*"],
 
     "importPaths": [""],
 
