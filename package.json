@@ -12,7 +12,7 @@
         "other original Tango authors"
     ],
 
-    "sourcePaths": ["tango/core", "tango/io", "tango/math", "tango/net", 
+    "sourcePaths": ["tango/core", "tango/io", "tango/math", "tango/net",
                     "tango/stdc", "tango/text", "tango/time", "tango/util"],
     "sourcePaths-windows": ["tango/sys/win32"],
     "sourcePaths-linux": ["tango/sys/linux"],
@@ -25,7 +25,13 @@
     "versions-osx" : ["osx", "darwin"],
     "versions-freebsd" : ["freebsd"],
 
-    "importPaths": [""],
+    "importPaths": ["tango/core", "tango/io", "tango/math", "tango/net",
+                    "tango/stdc", "tango/text", "tango/time", "tango/util"],
+    "importPaths-windows": ["tango/sys/win32"],
+    "importPaths-linux": ["tango/sys/linux"],
+    "importPaths-freebsd": ["tango/sys/freebsd"],
+    "importPaths-solaris": ["tango/sys/solaris"],
+    "importPaths-osx": ["tango/sys/darwin"],
 
     "configurations": [
         {
