@@ -239,7 +239,7 @@ struct FileSystem
                     windowsPath(folder, tmp);
 
                     // we'd like to open a volume
-                    volPath_[0..4] = `\\.\`;
+                    volPath_[0..4] = `\\.\`w;
 
                     if (!GetVolumePathName(tmp.ptr, volPath_.ptr+4, volPath_.length-4))
                         exception ("GetVolumePathName failed");
