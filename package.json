@@ -12,8 +12,17 @@
         "other original Tango authors"
     ],
 
-    "sourcePaths": ["tango/core", "tango/io", "tango/math", "tango/net",
-                    "tango/stdc", "tango/text", "tango/time", "tango/util"],
+    "sourcePaths": [
+        "tango/core", "tango/io", "tango/math", "tango/net", "tango/stdc",
+        "tango/sys/consts", "tango/text", "tango/time", "tango/util"
+    ],
+
+    "sourceFiles": [
+        "tango/sys/Common.d", "tango/sys/Environment.d",
+        "tango/sys/HomeFolder.d", "tango/sys/Pipe.d",
+        "tango/sys/Process.d", "tango/sys/SharedLib.d"
+    ],
+
     "sourcePaths-windows": ["tango/sys/win32"],
     "sourcePaths-linux": ["tango/sys/linux"],
     "sourcePaths-freebsd": ["tango/sys/freebsd"],
@@ -25,13 +34,7 @@
     "versions-osx" : ["osx", "darwin"],
     "versions-freebsd" : ["freebsd"],
 
-    "importPaths": ["tango/core", "tango/io", "tango/math", "tango/net",
-                    "tango/stdc", "tango/text", "tango/time", "tango/util"],
-    "importPaths-windows": ["tango/sys/win32"],
-    "importPaths-linux": ["tango/sys/linux"],
-    "importPaths-freebsd": ["tango/sys/freebsd"],
-    "importPaths-solaris": ["tango/sys/solaris"],
-    "importPaths-osx": ["tango/sys/darwin"],
+    "importPaths": ["."],
 
     "configurations": [
         {
