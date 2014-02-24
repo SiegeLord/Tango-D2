@@ -1209,18 +1209,20 @@ debug( UnitTest )
         // Test variants as AA keys
         static if(DMDFE_Version != 2065)
         {
-            auto v1 = Variant(42);
-            auto v2 = Variant("foo");
-            auto v3 = Variant(1+2.0i);
+            {
+                auto v1 = Variant(42);
+                auto v2 = Variant("foo");
+                auto v3 = Variant(1+2.0i);
 
-            int[Variant] hash;
-            hash[v1] = 0;
-            hash[v2] = 1;
-            hash[v3] = 2;
+                int[Variant] hash;
+                hash[v1] = 0;
+                hash[v2] = 1;
+                hash[v3] = 2;
 
-            assert( hash[v1] == 0 );
-            assert( hash[v2] == 1 );
-            assert( hash[v3] == 2 );
+                assert( hash[v1] == 0 );
+                assert( hash[v2] == 1 );
+                assert( hash[v3] == 2 );
+            }
         }
 
         // Test AA storage
