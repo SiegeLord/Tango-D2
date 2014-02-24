@@ -12,6 +12,8 @@ private import tango.core.Vararg;
 private import tango.core.Traits;
 private import tango.core.Tuple;
 
+private import tango.core.Compiler;
+
 private extern(C) Object _d_toObject(void*);
 
 /*
@@ -626,7 +628,7 @@ struct Variant
             }
             else static if( isDynamicArrayType!(T) )
             {
-                return (cast(typeof(T.ptr)) value.array.ptr)
+                return (cast(typeof(T.init.ptr)) value.array.ptr)
                     [0..value.array.length];
             }
             else static if( isObject!(T) || isInterface!(T) )
@@ -1205,6 +1207,7 @@ debug( UnitTest )
         assert( Variant("foo") != Variant("bar") );
 
         // Test variants as AA keys
+        static if(DMDFE_Version != 2065)
         {
             auto v1 = Variant(42);
             auto v2 = Variant("foo");

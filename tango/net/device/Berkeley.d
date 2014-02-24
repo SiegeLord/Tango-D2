@@ -2279,7 +2279,7 @@ public class SocketSet
                 else version (Posix)
                 {
                         //return bt(cast(uint*)&first[fdelt(s)], cast(uint)s % nfdbits);
-                        int index = cast(uint)s % nfdbits;
+                        int index = cast(int)(cast(uint)s % nfdbits);
                         return (cast(uint*)&first[fdelt(s)])[index / (uint.sizeof*8)] & (1 << (index & ((uint.sizeof*8) - 1)));
                 }
                 else
