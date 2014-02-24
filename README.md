@@ -1,7 +1,7 @@
 Tango for D2
 ========
 
-Last tested DMDFE: 2.064
+Last tested DMDFE: 2.065
 
 This is an effort to port [Tango](http://www.dsource.org/projects/tango/) to the [D2 programming language](http://www.dlang.org).
 
