@@ -47,6 +47,8 @@
         }
     ],
 
+    "buildRequirements": ["silenceWarnings"],
+
     "targetName": "tango",
     "targetPath": "."
 }
