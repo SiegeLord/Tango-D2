@@ -2367,6 +2367,21 @@ private class TDFA(char_t)
     {
         uint    tag,
                 index;
+
+        const int opCmp(ref const TagIndex o)
+        {
+            if (tag == o.tag && index == o.index)
+                return 0;
+            if (tag > o.tag)
+                return 1;
+            if (tag < o.tag)
+                return -1;
+            if (index > o.index)
+                return 1;
+            if (index < o.index)
+                return -1;
+            assert(0);
+        }
     }
 
     /* ********************************************************************************************
@@ -3800,6 +3815,8 @@ class RegExpT(char_t)
             registers_[cmd.dst] = 0;
         }
 
+        tdfa_t.Transition* tp, tp_end;
+
         // DFA execution
         auto inp = input_[next_start_ .. $];
         auto s = tdfa_.start;
@@ -3853,7 +3870,7 @@ class RegExpT(char_t)
                     break;
             }
 
-            Ltrans_loop: for ( tdfa_t.Transition* tp = &s.generic_transitions[0], tp_end = tp+s.generic_transitions.length;
+            Ltrans_loop: for ( tp = &s.generic_transitions[0], tp_end = tp+s.generic_transitions.length;
                 tp < tp_end; ++tp )
             {
                 t = *tp;

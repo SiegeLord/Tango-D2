@@ -11,6 +11,14 @@ version(SDC)
 {
 	enum DMDFE_Version = 0;
 }
+else version(LDC)
+{
+	/* Some sort of bug */
+	static if(__VERSION__ < 2000)
+		enum DMDFE_Version = __VERSION__ + 2000;
+	else
+		enum DMDFE_Version = __VERSION__;
+}
 else
 {
 	enum DMDFE_Version = __VERSION__;

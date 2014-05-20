@@ -1,13 +1,11 @@
 Tango for D2
 ========
 
-Last tested DMDFE: 2.061
+Last tested DMDFE: 2.065
 
 This is an effort to port [Tango](http://www.dsource.org/projects/tango/) to the [D2 programming language](http://www.dlang.org).
 
 This port roughly follows the guidelines outlined in the `porting_guidelines` file. If you want to help out, please follow that procedure.
-
-I see this as a rough first pass at porting this library... making it more D2-like will be the second pass.
 
 What works so far
 --------
@@ -49,7 +47,7 @@ Windows
     cd PathToTango
     build\bin\win32\bob.exe -vu .
 
-DMD is the primary testing compiler, but LDC2 seems to compile the library as well.
+LDC2 is the primary testing compiler, but DMD seems to compile the library as well.
 
 There is also an experimental Makefile building system. You can invoke it like so (modify the parameters you pass to make to suit preference):
 
@@ -73,4 +71,4 @@ See LICENSE.txt
 Contact
 --------
 
-You can message me on Github, or find me on IRC on #d and #d.tango @ irc.freenode.net
+Find me on IRC on #d.tango @ irc.freenode.net or by email.

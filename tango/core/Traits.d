@@ -491,7 +491,7 @@ template staticArraySize(T)
 template DynamicArrayType(T)
 {
     static if( isStaticArrayType!(T) )
-        alias typeof(T.dup) DynamicArrayType;
+        alias typeof(T.init.dup) DynamicArrayType;
     else
         alias T DynamicArrayType;
 }

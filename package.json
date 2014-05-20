@@ -1,0 +1,54 @@
+{
+    "name": "tango",
+    "description": "A large general-purpose library. A port of the D1 Tango library.",
+    "homepage": "https://github.com/SiegeLord/Tango-D2/",
+    "license": "BSD 3-clause",
+    "authors": [
+        "SiegeLord",
+        "Igor Stepanov",
+        "Kris Bell",
+        "Sean Kelly",
+        "Lars Ivar Igesund",
+        "other original Tango authors"
+    ],
+
+    "sourcePaths": [
+        "tango/core", "tango/io", "tango/math", "tango/net", "tango/stdc",
+        "tango/sys/consts", "tango/text", "tango/time", "tango/util"
+    ],
+
+    "sourceFiles": [
+        "tango/sys/Common.d", "tango/sys/Environment.d",
+        "tango/sys/HomeFolder.d", "tango/sys/Pipe.d",
+        "tango/sys/Process.d", "tango/sys/SharedLib.d"
+    ],
+
+    "sourcePaths-windows": ["tango/sys/win32"],
+    "sourcePaths-linux": ["tango/sys/linux"],
+    "sourcePaths-freebsd": ["tango/sys/freebsd"],
+    "sourcePaths-solaris": ["tango/sys/solaris"],
+    "sourcePaths-osx": ["tango/sys/darwin"],
+
+    "excludedSourceFiles-windows": ["tango/stdc/posix/*"],
+
+    "versions-osx" : ["osx", "darwin"],
+    "versions-freebsd" : ["freebsd"],
+
+    "importPaths": ["."],
+
+    "configurations": [
+        {
+            "name": "static",
+            "targetType": "staticLibrary"
+        },
+        {
+            "name": "shared",
+            "targetType": "dynamicLibrary"
+        }
+    ],
+
+    "buildRequirements": ["silenceWarnings"],
+
+    "targetName": "tango",
+    "targetPath": "."
+}
