@@ -355,7 +355,7 @@ private char *convertl (char* buf, real value, int ndigit, int *decpt, int *sign
            while (value <  0.1) { value *= 10;  --exp10; }
            while (value >= 1.0) { value /= 10;  ++exp10; }
            }
-        assert(value is 0 || (0.1 <= value && value < 1.0));
+        assert(value == 0 || (0.1 <= value && value < 1.0));
         //auto zero = pad ? int.max : 1;
         auto zero = 1;
         if (fflag) 
