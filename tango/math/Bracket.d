@@ -70,7 +70,7 @@ BracketResult!(T, R) findRoot(T,R)(scope R delegate(T) f, T ax, T bx, R fax, R f
     scope bool delegate(BracketResult!(T,R) r) tolerance)
 in {
     assert(ax<=bx, "Parameters ax and bx out of order.");
-    assert(ax<>=0 && bx<>=0, "Limits must not be NaN");
+    assert(!isNaN(ax) && !isNaN(bx), "Limits must not be NaN");
     assert(oppositeSigns(fax,fbx), "Parameters must bracket the root.");
 }
 body {   
@@ -189,7 +189,7 @@ whileloop:
                 real d32 = (d31 - q21) * fd / (fd - fa);
                 real q33 = (d32 - q22) * fa / (fe - fa);
                 c = a + (q31 + q32 + q33);
-                if (c!<>=0 || (c <= a) || (c >= b)) {
+                if (isNaN(c) || (c <= a) || (c >= b)) {
                     // DAC: If the interpolation predicts a or b, it's 
                     // probable that it's the actual root. Only allow this if
                     // we're already close to the root.                
@@ -205,7 +205,7 @@ whileloop:
             }
             if (!ok) {
                c = newtonQuadratic(distinct ? 3 : 2);
-               if(c!<>=0 || (c <= a) || (c >= b)) {
+               if(isNaN(c) || (c <= a) || (c >= b)) {
                   // Failure, try a secant step:
                   c = secant_interpolate(a, b, fa, fb);
                }
@@ -232,7 +232,7 @@ whileloop:
         c = u - 2 * (fu / (fb - fa)) * (b - a);
         // DAC: If the secant predicts a value equal to an endpoint, it's
         // probably false.      
-        if(c==a || c==b || c!<>=0 || fabs(c - u) > (b - a) / 2) {
+        if(c==a || c==b || isNaN(c) || fabs(c - u) > (b - a) / 2) {
             if ((a-b) == a || (b-a) == b) {
                 if ( (a>0 && b<0) || (a<0 && b>0) ) c = 0;
                 else {
@@ -375,7 +375,7 @@ body{
             lastStep = GOLDENRATIO * stepBeforeLast;
         }
         T xtest;
-        if (fabs(lastStep) < tol1 || lastStep !<>= 0) {
+        if (fabs(lastStep) < tol1 || isNaN(lastStep)) {
             if (lastStep > 0) lastStep = tol1;
             else lastStep = - tol1;
         }
@@ -415,7 +415,7 @@ unittest{
     void testFindRoot(scope real delegate(real) f, real x1, real x2) {
         numCalls=0;
         ++numProblems;
-        assert(x1<>=0 && x2<>=0);
+        assert(!isNaN(x1) && !isNaN(x2));
         auto result = findRoot(f, x1, x2, f(x1), f(x2),
             (BracketResult!(real, real) r){ return r.xhi==nextUp(r.xlo); });
         

@@ -477,7 +477,7 @@ debug(UnitTest) {
             r = -r;
             t = tan(x);
             //printf("tan(%Lg) = %Lg, should be %Lg\n", x, t, r);
-            if (!isIdentical(r, t) && !(r!<>=0 && t!<>=0)) assert(fabs(r-t) <= .0000001);
+            if (!isIdentical(r, t) && !(isNaN(r) && isNaN(t))) assert(fabs(r-t) <= .0000001);
         }
         // overflow
         assert(isNaN(tan(real.infinity)));

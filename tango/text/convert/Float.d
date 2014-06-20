@@ -24,7 +24,8 @@
 
 module tango.text.convert.Float;
 
-private import tango.core.Exception;
+import tango.core.Exception;
+import tango.math.IEEE;
 
 /******************************************************************************
 
@@ -340,7 +341,7 @@ private char *convertl (char* buf, real value, int ndigit, int *decpt, int *sign
              value = -value;
 
         *decpt = 9999;
-        if (value !<>= value)
+        if (isNaN(value))
             return cast(char*)"nan\0";
 
         if (value is value.infinity)
@@ -714,7 +715,7 @@ T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp, bool pad=Pad)
         if (sign)
             x = -x;
 
-        if (x !<>= x)
+        if (isNaN(x))
             return sign ? nan : nan[1..$];
 
         if (x is x.infinity)
