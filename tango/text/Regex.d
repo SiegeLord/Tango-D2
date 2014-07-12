@@ -2354,13 +2354,6 @@ private class TDFA(char_t)
                 return 0;
             return 1;
         }
-
-        const bool opEquals(ref const Command cmd)
-        {
-            if ( dst != cmd.dst || src != cmd.src )
-                return false;
-            return true;
-        }
     }
 
     struct TagIndex

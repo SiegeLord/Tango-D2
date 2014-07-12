@@ -242,7 +242,7 @@ const(ClassInfo)[] baseTypes (const(ClassInfo) type)
 }
 
 ///
-ModuleInfo* moduleOf (const(ClassInfo) type)
+immutable(ModuleInfo)* moduleOf (const(ClassInfo) type)
 {
     foreach (modula; ModuleInfo)
         foreach (klass; modula.localClasses)
