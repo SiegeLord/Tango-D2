@@ -6,7 +6,7 @@ module tango.sys.win32.Types;
 */
 
 /+ Aliases, Types, and Constants +/
-const void* NULL = null;
+enum NULL = null;
 alias int SCODE;
 alias void VOID;
 alias void* POINTER;
