@@ -2354,6 +2354,9 @@ private class TDFA(char_t)
                 return 0;
             return 1;
         }
+        
+    	size_t toHash() const nothrow @safe { return typeid(ulong).getHash(&this); }
+    	bool opEquals(ref const Command s) const { return opCmp(s) == 0; }	
     }
 
     struct TagIndex
@@ -2375,6 +2378,8 @@ private class TDFA(char_t)
                 return -1;
             assert(0);
         }
+    	size_t toHash() const nothrow @safe { return typeid(ulong).getHash(&this); }
+    	bool opEquals(ref const TagIndex s) const { return opCmp(s) == 0; }
     }
 
     /* ********************************************************************************************
