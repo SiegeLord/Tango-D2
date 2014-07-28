@@ -244,27 +244,13 @@ const(ClassInfo)[] baseTypes (const(ClassInfo) type)
 }
 
 ///
-static if(DMDFE_Version <= 2065)
+ModuleInfo* moduleOf (const(ClassInfo) type)
 {
-    ModuleInfo* moduleOf (const(ClassInfo) type)
-    {
-        foreach (modula; ModuleInfo)
-            foreach (klass; modula.localClasses)
-                if (klass is type)
-                    return modula;
-        return null;
-    }
-}
-else
-{
-    immutable(ModuleInfo)* moduleOf (const(ClassInfo) type)
-    {
-        foreach (modula; ModuleInfo)
-            foreach (klass; modula.localClasses)
-                if (klass is type)
-                    return modula;
-        return null;
-    }
+    foreach (modula; ModuleInfo)
+        foreach (klass; modula.localClasses)
+            if (klass is type)
+                return modula;
+    return null;
 }
 
 /// Returns a list of interfaces that this class directly implements.
