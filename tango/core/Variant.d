@@ -1207,7 +1207,7 @@ debug( UnitTest )
         assert( Variant("foo") != Variant("bar") );
 
         // Test variants as AA keys
-        static if(DMDFE_Version != 2065)
+        static if(DMDFE_Version != 2065 && DMDFE_Version != 2066)
         {
             {
                 auto v1 = Variant(42);
