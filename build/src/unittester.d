@@ -93,7 +93,8 @@ void main(const(char[])[] args)
 		}
 		else
 		{
-			switch(compiler)
+			auto compiler_path = Path.parse(compiler);
+			switch(compiler_path.name)
 			{
 				case "dmd":
 					compiler_options = "-unittest -L-ltango-dmd -debug=UnitTest";
