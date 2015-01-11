@@ -103,6 +103,12 @@ version (GNU)
         alias void* Arg;
         alias va_list ArgList;
         }
+else version(LDC)
+        {
+        private import tango.core.Vararg;
+        alias void* Arg;
+        alias va_list ArgList;
+        }
 else version (DigitalMars)
         {
         private import tango.core.Vararg;
