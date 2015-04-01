@@ -35,6 +35,8 @@
     "versions-freebsd" : ["freebsd"],
 
     "importPaths": ["."],
+    
+    "libs": ["bz2"],
 
     "configurations": [
         {
