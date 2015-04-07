@@ -55,6 +55,17 @@ private
             FileEntry file;
         }
 
+        invariant()
+        {
+            if(type == EntryType.File)
+            {
+                auto zn = file.zipEntry is null;
+                auto tn = file.tempFile is null;
+                assert( (zn && tn)
+                        /* zn xor tn */ || (!(zn&&tn)&&(zn||tn)) );
+            }
+        }
+
         const(char)[] fullname;
         const(char)[] name;
 
@@ -266,14 +277,6 @@ private
     {
         ZipEntry zipEntry;
         TempFile tempFile;
-
-        invariant()
-        {
-            auto zn = zipEntry is null;
-            auto tn = tempFile is null;
-            assert( (zn && tn)
-          /* zn xor tn */ || (!(zn&&tn)&&(zn||tn)) );
-        }
     }
 }
 

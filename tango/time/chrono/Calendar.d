@@ -32,10 +32,10 @@ public abstract class Calendar
         /**
         * Indicates the current era of the calendar.
         */
-        package enum {CURRENT_ERA = 0};
+        package(tango) enum {CURRENT_ERA = 0};
 
         // Corresponds to Win32 calendar IDs
-        package enum 
+        package(tango) enum 
         {
                 GREGORIAN = 1,
                 GREGORIAN_US = 2,
@@ -51,14 +51,14 @@ public abstract class Calendar
                 GREGORIAN_XLIT_FRENCH = 12
         }
 
-        package enum WeekRule 
+        package(tango) enum WeekRule 
         {
                 FirstDay,         /// Indicates that the first week of the year is the first week containing the first day of the year.
                 FirstFullWeek,    /// Indicates that the first week of the year is the first full week following the first day of the year.
                 FirstFourDayWeek  /// Indicates that the first week of the year is the first week containing at least four days.
         }
 
-        package enum DatePart
+        package(tango) enum DatePart
         {
                 Year,
                 Month,

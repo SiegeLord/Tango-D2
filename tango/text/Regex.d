@@ -3774,7 +3774,7 @@ class RegExpT(char_t)
     }
 
     /** ditto */
-    public int opApply(int delegate(ref RegExpT!(char_t)) dg)
+    public int opApply(int delegate(RegExpT!(char_t)) dg)
     {
         int result;
         while ( !result && test() )
