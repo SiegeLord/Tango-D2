@@ -64,7 +64,7 @@ class Semaphore
             if( m_hndl == m_hndl.init )
                 throw new SyncException( "Unable to create semaphore" );
         }
-        else version( darwin ){
+        else version(OSX){
             creatingTask=mach_task_self();
             auto rc=semaphore_create(creatingTask,
                                    &m_hndl,
@@ -89,7 +89,7 @@ class Semaphore
             BOOL rc = CloseHandle( m_hndl );
             assert( rc, "Unable to destroy semaphore" );
         }
-		else version(darwin)
+		else version(OSX)
 		{
             auto rc=semaphore_destroy(creatingTask, m_hndl);
             assert( !rc, "Unable to destroy semaphore" );
@@ -122,7 +122,7 @@ class Semaphore
             if( rc != WAIT_OBJECT_0 )
                 throw new SyncException( "Unable to wait for semaphore" );
         }
-        else version(darwin){
+        else version(OSX){
             while (true){
                 auto rc=semaphore_wait(m_hndl);
                 if (rc==KERN_RETURN.ABORTED){
@@ -188,7 +188,7 @@ class Semaphore
                 throw new SyncException( "Unable to wait for semaphore" );
             }
         }
-        else version(darwin){
+        else version(OSX){
             timespec t;
 
             adjTimespec( t, period );
@@ -242,7 +242,7 @@ class Semaphore
             if( !ReleaseSemaphore( m_hndl, 1, null ) )
                 throw new SyncException( "Unable to notify semaphore" );
         }
-        else version(darwin){
+        else version(OSX){
             semaphore_signal(m_hndl);
         }
         else version( Posix )
@@ -278,7 +278,7 @@ class Semaphore
                 throw new SyncException( "Unable to wait for semaphore" );
             }
         }
-        else version(darwin){
+        else version(OSX){
             return wait(0.0);
         }
         else version( Posix )
@@ -304,7 +304,7 @@ private:
     {
         HANDLE  m_hndl;
     }
-    else version(darwin){
+    else version(OSX){
         task_t creatingTask;
         semaphore_t m_hndl;
     }

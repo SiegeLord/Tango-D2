@@ -94,7 +94,7 @@ version( linux )
 
     void* valloc(size_t); // LEGACY non-standard
 }
-else version( darwin )
+else version(OSX)
 {
     int setenv(in char*, in char*, int);
     int unsetenv(in char*);
@@ -127,7 +127,7 @@ version( linux )
 {
     int rand_r(uint*);
 }
-else version( darwin )
+else version(OSX)
 {
     int rand_r(uint*);
 }
@@ -234,7 +234,7 @@ version( linux )
     int    mkstemp(char*);
   }
 }
-else version( darwin )
+else version(OSX)
 {
     //WNOHANG     (defined in tango.stdc.posix.sys.wait)
     //WUNTRACED   (defined in tango.stdc.posix.sys.wait)

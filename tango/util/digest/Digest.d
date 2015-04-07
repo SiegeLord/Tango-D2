@@ -121,7 +121,7 @@ abstract class Digest
                 if (buffer.length < ds * 2)
                     buffer.length = ds * 2;
                 
-                version(darwin){
+                version(OSX){
                     ubyte[] buf = new ubyte[ds]; // the whole alloca mess needs to be adressed better
                 } else {
                     ubyte[] buf = (cast(ubyte *) alloca(ds))[0..ds];

@@ -9,7 +9,7 @@ else
 version (FreeBSD)
          public import tango.sys.freebsd.consts.fcntl;
 else
-version (darwin)
+version(OSX)
          public import tango.sys.darwin.consts.fcntl;
 else
 version (solaris)

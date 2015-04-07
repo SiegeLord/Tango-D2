@@ -199,7 +199,7 @@ version (Posix) {
     private import tango.stdc.posix.sys.time;
 }
 
-version(darwin) { version=has_urandom; }
+version(OSX) { version=has_urandom; }
 version(linux)  { version=has_urandom; }
 version(solaris){ version=has_urandom; }
 

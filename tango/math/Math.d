@@ -589,7 +589,7 @@ real acos(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    version(darwin){}
+    version(OSX){}
     else {
         assert(isIdentical(acos(NaN(254)), NaN(254)));
     }
@@ -615,7 +615,7 @@ real asin(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    version(darwin){}
+    version(OSX){}
     else{
         assert(isIdentical(asin(NaN(7249)), NaN(7249)));
     }

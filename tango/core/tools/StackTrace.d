@@ -290,7 +290,7 @@ version(linux){
     version=DladdrSymbolification;
     version=ElfSymbolification;
 }
-version(darwin){
+version(OSX){
     version=LibCBacktrace;
     version=DladdrSymbolification;
 }

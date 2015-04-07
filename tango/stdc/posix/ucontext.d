@@ -136,7 +136,7 @@ version( linux )
     }
 }
 
-version(darwin){
+version(OSX){
     struct mcontext_t{
         int undefined; /// this is architecture dependent, if you need it, then define it from the header files
     }

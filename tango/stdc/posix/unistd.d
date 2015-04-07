@@ -220,7 +220,7 @@ version( linux )
     int        truncate(in char*, off_t);
   }
 }
-else version (darwin)
+else version(OSX)
 {
     char*      crypt(in char*, in char*);
     char*      ctermid(char*);

@@ -53,7 +53,7 @@ version( Win32 )
 {
     enum:clock_t {CLOCKS_PER_SEC = 1000}
 }
-else version( darwin )
+else version(OSX)
 {
     enum:clock_t {CLOCKS_PER_SEC = 100}
 }
@@ -93,7 +93,7 @@ version( Win32 )
     wchar_t* _wstrdate(wchar_t*);
     wchar_t* _wstrtime(wchar_t*);
 }
-else version( darwin )
+else version(OSX)
 {
     void tzset();
 }

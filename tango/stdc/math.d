@@ -265,7 +265,7 @@ else version( linux )
     }
   }
 }
-else version( darwin )
+else version(OSX)
 {
     enum
     {

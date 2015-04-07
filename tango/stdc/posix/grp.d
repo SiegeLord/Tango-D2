@@ -39,7 +39,7 @@ version( linux )
         char**  gr_mem;
     }
 }
-else version( darwin )
+else version(OSX)
 {
     struct group
     {
@@ -85,7 +85,7 @@ version( linux )
     int getgrnam_r(in char*, group*, char*, size_t, group**);
     int getgrgid_r(gid_t, group*, char*, size_t, group**);
 }
-else version( darwin )
+else version(OSX)
 {
     int getgrnam_r(in char*, group*, char*, size_t, group**);
     int getgrgid_r(gid_t, group*, char*, size_t, group**);
@@ -115,7 +115,7 @@ version( linux )
     group* getgrent();
     void    setgrent();
 }
-else version ( darwin )
+else version(OSX)
 {
     void    endgrent();
     group* getgrent();

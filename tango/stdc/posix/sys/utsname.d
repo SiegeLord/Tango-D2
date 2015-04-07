@@ -14,7 +14,7 @@ module tango.stdc.posix.sys.utsname;
 
 extern (C):
 
-version (darwin)
+version(OSX)
 {
 	private const size_t len = 256;
 

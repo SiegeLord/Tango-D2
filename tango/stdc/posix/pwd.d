@@ -43,7 +43,7 @@ version( linux )
         char*   pw_shell;
     }
 }
-else version( darwin )
+else version(OSX)
 {
     struct passwd
     {
@@ -107,7 +107,7 @@ version( linux )
     int getpwnam_r(in char*, passwd*, char*, size_t, passwd**);
     int getpwuid_r(uid_t, passwd*, char*, size_t, passwd**);
 }
-else version( darwin )
+else version(OSX)
 {
     int getpwnam_r(in char*, passwd*, char*, size_t, passwd**);
     int getpwuid_r(uid_t, passwd*, char*, size_t, passwd**);
@@ -137,7 +137,7 @@ version( linux )
     passwd* getpwent();
     void    setpwent();
 }
-else version ( darwin )
+else version(OSX)
 {
     void    endpwent();
     passwd* getpwent();
