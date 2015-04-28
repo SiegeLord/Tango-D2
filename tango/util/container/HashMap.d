@@ -65,9 +65,9 @@ private import tango.core.Exception : NoSuchElementException;
 
 *******************************************************************************/
 
-class HashMap (K, V, alias Hash = Container.hash, 
-                     alias Reap = Container.reap, 
-                     alias Heap = Container.DefaultCollect) 
+class HashMap (K, V, alias Hash = Container.hash,
+                     alias Reap = Container.reap,
+                     alias Heap = Container.DefaultCollect)
                      : IContainer!(V)
 {
         // bucket types
@@ -83,7 +83,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         // each table entry is a linked list, or null
         private Ref                table[];
-        
+
         // number of elements contained
         private size_t             count;
 
@@ -92,7 +92,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         // configured heap manager
         private Alloc              heap;
-        
+
         // mutation tag updates on each change
         private size_t             mutation;
 
@@ -121,7 +121,7 @@ class HashMap (K, V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Return a generic iterator for contained elements
-                
+
         ***********************************************************************/
 
         final Iterator iterator ()
@@ -158,23 +158,23 @@ class HashMap (K, V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Return the number of elements contained
-                
+
         ***********************************************************************/
 
-        @property final const size_t size ()
+        @property final size_t size () const
         {
                 return count;
         }
-        
+
         /***********************************************************************
 
                 Add a new element to the set. Does not add if there is an
                 equivalent already present. Returns true where an element
                 is added, false where it already exists (and was possibly
                 updated).
-                
+
                 Time complexity: O(1) average; O(n) worst.
-                
+
         ***********************************************************************/
 
         final bool add (K key, V element)
@@ -184,7 +184,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
                 auto hd = &table [Hash (key, table.length)];
                 auto node = *hd;
-                
+
                 if (node is null)
                    {
                    *hd = heap.allocate.set (key, element, null);
@@ -208,7 +208,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                       increment;
 
                       // we only check load factor on add to nonempty bin
-                      checkLoad; 
+                      checkLoad;
                       }
                    }
                 return true;
@@ -222,9 +222,9 @@ class HashMap (K, V, alias Hash = Container.hash,
                 updated). This variation invokes the given retain function
                 when the key does not already exist. You would typically
                 use that to duplicate a char[], or whatever is required.
-                
+
                 Time complexity: O(1) average; O(n) worst.
-                
+
         ***********************************************************************/
 
         final bool add (K key, V element, K function(K) retain)
@@ -234,7 +234,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
                 auto hd = &table [Hash (key, table.length)];
                 auto node = *hd;
-                
+
                 if (node is null)
                    {
                    *hd = heap.allocate.set (retain(key), element, null);
@@ -258,7 +258,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                       increment;
 
                       // we only check load factor on add to nonempty bin
-                      checkLoad; 
+                      checkLoad;
                       }
                    }
                 return true;
@@ -271,7 +271,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 param: a key
                 param: a value reference (where returned value will reside)
                 Returns: whether the key is contained or not
-        
+
         ************************************************************************/
 
         final bool get (K key, ref V element)
@@ -294,10 +294,10 @@ class HashMap (K, V, alias Hash = Container.hash,
 
                 param: a key
                 Returns: a pointer to the located value, or null if not found
-        
+
         ************************************************************************/
 
-        final V* opIn_r (K key)
+        final V* opIn_r (inout(K) key)
         {
                 if (count)
                    {
@@ -311,9 +311,9 @@ class HashMap (K, V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Does this set contain the given element?
-        
+
                 Time complexity: O(1) average; O(n) worst
-                
+
         ***********************************************************************/
 
         final bool contains (V element)
@@ -324,9 +324,9 @@ class HashMap (K, V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Time complexity: O(n).
-        
+
         ************************************************************************/
-        
+
         final bool keyOf (V value, ref K key)
         {
                 if (count)
@@ -346,9 +346,9 @@ class HashMap (K, V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Time complexity: O(1) average; O(n) worst.
-                
+
         ***********************************************************************/
-        
+
         final bool containsKey (K key)
         {
                 if (count)
@@ -363,13 +363,13 @@ class HashMap (K, V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Time complexity: O(1) average; O(n) worst.
-        
+
         ***********************************************************************/
-        
+
         final bool containsPair (K key, V element)
         {
                 if (count)
-                   {                    
+                   {
                    auto p = table[Hash (key, table.length)];
                    if (p && p.findPair (key, element))
                        return true;
@@ -381,9 +381,9 @@ class HashMap (K, V, alias Hash = Container.hash,
 
                 Make an independent copy of the container. Does not clone
                 elements
-                
+
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         @property final HashMap dup ()
@@ -403,9 +403,9 @@ class HashMap (K, V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Time complexity: O(1) average; O(n) worst.
-        
+
         ***********************************************************************/
-        
+
         final bool removeKey (K key)
         {
                 V value;
@@ -416,9 +416,9 @@ class HashMap (K, V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Time complexity: O(1) average; O(n) worst.
-        
+
         ***********************************************************************/
-        
+
         final bool replaceKey (K key, K replace)
         {
                 if (count)
@@ -437,7 +437,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                                 table[h] = n;
                             else
                                trail.detachNext;
-                            
+
                             // inject into new location
                             h = Hash (replace, table.length);
                             table[h] = p.set (replace, p.value, table[h]);
@@ -456,9 +456,9 @@ class HashMap (K, V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Time complexity: O(1) average; O(n) worst.
-        
+
         ***********************************************************************/
-        
+
         final bool replacePair (K key, V oldElement, V newElement)
         {
                 if (count)
@@ -482,7 +482,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
                 Remove and expose the first element. Returns false when no
                 more elements are contained
-        
+
                 Time complexity: O(n)
 
         ***********************************************************************/
@@ -509,11 +509,11 @@ class HashMap (K, V, alias Hash = Container.hash,
                 param: a key
                 param: a value reference (where returned value will reside)
                 Returns: whether the key is contained or not
-        
+
                 Time complexity: O(1) average, O(n) worst
 
         ***********************************************************************/
-        
+
         final bool take (K key, ref V value)
         {
                 if (count)
@@ -528,7 +528,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                               value = n.value;
                               decrement (n);
                               return true;
-                              } 
+                              }
                            else
                               p = &n.next;
                    }
@@ -564,7 +564,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         /***********************************************************************
 
-                Remove a set of values 
+                Remove a set of values
 
         ************************************************************************/
 
@@ -580,23 +580,23 @@ class HashMap (K, V, alias Hash = Container.hash,
 
                 Removes element instances, and returns the number of elements
                 removed
-                
+
                 Time complexity: O(1) average; O(n) worst
-        
+
         ************************************************************************/
 
         final size_t remove (V element, bool all = false)
         {
                 auto i = count;
-                
+
                 if (i)
                     foreach (ref node; table)
-                            {                         
+                            {
                             auto p = node;
                             auto trail = node;
 
                             while (p)
-                                  {     
+                                  {
                                   auto n = p.next;
                                   if (element == p.value)
                                      {
@@ -631,13 +631,13 @@ class HashMap (K, V, alias Hash = Container.hash,
                 the number of replacements
 
                 Time complexity: O(n).
-                
+
         ************************************************************************/
 
         final size_t replace (V oldElement, V newElement, bool all = false)
         {
                 size_t i;
-                
+
                 if (count && oldElement != newElement)
                     foreach (node; table)
                              while (node && (node = node.find(oldElement)) !is null)
@@ -650,7 +650,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                                    }
                 return i;
         }
-        
+
         /***********************************************************************
 
                 Clears the HashMap contents. Various attributes are
@@ -658,7 +658,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 reset() to drop everything.
 
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         final HashMap clear ()
@@ -668,11 +668,11 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         /***********************************************************************
 
-                Reset the HashMap contents. This releases more memory 
+                Reset the HashMap contents. This releases more memory
                 than clear() does
 
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         final HashMap reset ()
@@ -698,11 +698,11 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         /***********************************************************************
 
-                Set the desired number of buckets in the hash table. Any 
+                Set the desired number of buckets in the hash table. Any
                 value greater than or equal to one is OK.
 
                 If different than current buckets, causes a version change
-                
+
                 Time complexity: O(n)
 
         ***********************************************************************/
@@ -721,7 +721,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
                 Set the number of buckets for the given threshold
                 and resize as required
-                
+
                 Time complexity: O(n)
 
         ***********************************************************************/
@@ -737,7 +737,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 Configure the assigned allocator with the size of each
                 allocation block (number of nodes allocated at one time)
                 and the number of nodes to pre-populate the cache with.
-                
+
                 Time complexity: O(n)
 
         ***********************************************************************/
@@ -767,12 +767,12 @@ class HashMap (K, V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Set the resize threshold, and resize as required
-                Set the current desired load factor. Any value greater 
-                than 0 is OK. The current load is checked against it, 
+                Set the current desired load factor. Any value greater
+                than 0 is OK. The current load is checked against it,
                 possibly causing a resize.
-                
+
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         final void threshold (float desired)
@@ -785,14 +785,14 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         /***********************************************************************
 
-                Copy and return the contained set of values in an array, 
-                using the optional dst as a recipient (which is resized 
+                Copy and return the contained set of values in an array,
+                using the optional dst as a recipient (which is resized
                 as necessary).
 
                 Returns a slice of dst representing the container values.
-                
+
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         final V[] toArray (V[] dst = null)
@@ -803,15 +803,15 @@ class HashMap (K, V, alias Hash = Container.hash,
                 size_t i = 0;
                 foreach (k, v; this)
                          dst[i++] = v;
-                return dst [0 .. count];                        
+                return dst [0 .. count];
         }
 
         /***********************************************************************
 
                 Is this container empty?
-                
+
                 Time complexity: O(1)
-                
+
         ***********************************************************************/
 
         final const bool isEmpty ()
@@ -824,7 +824,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 Sanity check
 
         ***********************************************************************/
-                        
+
         final HashMap check ()
         {
                 assert(!(table is null && count !is 0));
@@ -853,9 +853,9 @@ class HashMap (K, V, alias Hash = Container.hash,
 
                 Count the element instances in the set (there can only be
                 0 or 1 instances in a Set).
-                
+
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         private size_t instances (V element)
@@ -871,7 +871,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
                  Check to see if we are past load factor threshold. If so,
                  resize so that we are at half of the desired threshold.
-                 
+
         ***********************************************************************/
 
         private HashMap checkLoad ()
@@ -886,7 +886,7 @@ class HashMap (K, V, alias Hash = Container.hash,
         /***********************************************************************
 
                 resize table to new capacity, rehashing all elements
-                
+
         ***********************************************************************/
 
         private void resize (size_t newCap)
@@ -920,7 +920,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 the per-node memory than to gain a little on each remove
 
                 Used by iterators only
-                 
+
         ***********************************************************************/
 
         private bool removeNode (Ref node, Ref* list)
@@ -934,7 +934,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                            *p = n.next;
                            decrement (n);
                            return true;
-                           } 
+                           }
                         else
                            p = &n.next;
                 return false;
@@ -947,7 +947,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 reset() to drop everything.
 
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         private final HashMap clear (bool all)
@@ -975,7 +975,7 @@ class HashMap (K, V, alias Hash = Container.hash,
         /***********************************************************************
 
                 new element was added
-                
+
         ***********************************************************************/
 
         private void increment ()
@@ -983,11 +983,11 @@ class HashMap (K, V, alias Hash = Container.hash,
                 ++mutation;
                 ++count;
         }
-        
+
         /***********************************************************************
 
                 element was removed
-                
+
         ***********************************************************************/
 
         private void decrement (Ref p)
@@ -997,11 +997,11 @@ class HashMap (K, V, alias Hash = Container.hash,
                 ++mutation;
                 --count;
         }
-        
+
         /***********************************************************************
 
                 set was changed
-                
+
         ***********************************************************************/
 
         private void mutate ()
@@ -1033,7 +1033,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 bool valid ()
                 {
                         return owner.mutation is mutation;
-                }               
+                }
 
                 /***************************************************************
 
@@ -1047,7 +1047,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                         auto n = next (k);
                         return (n) ? v = *n, true : false;
                 }
-                
+
                 /***************************************************************
 
                         Return a pointer to the next value, or null when
@@ -1062,7 +1062,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                                    cell = table [row++];
                                else
                                   return null;
-  
+
                         prior = cell;
                         k = cell.key;
                         cell = cell.next;
@@ -1088,7 +1088,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                                          c = table [row++];
                                      else
                                         break loop;
-  
+
                               prior = c;
                               c = c.next;
                               if ((result = dg(prior.key, prior.value)) != 0)
@@ -1097,7 +1097,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
                         cell = c;
                         return result;
-                }                               
+                }
 
                 /***************************************************************
 
@@ -1159,7 +1159,7 @@ debug (HashMap)
                 auto iterator = map.iterator;
                 while (iterator.next(k, v))
                       {} //iterator.remove;
-                
+
                 // incremental iteration, with optional failfast
                 auto it = map.iterator;
                 while (it.valid && it.next(k, v))
@@ -1171,7 +1171,7 @@ debug (HashMap)
                 // remove first element ...
                 while (map.take(v))
                        Stdout.formatln ("taking {}, {} left", v, map.size);
-                  
+
                 // setup for benchmark, with a set of integers. We
                 // use a chunk allocator, and presize the bucket[]
                 auto test = new HashMap!(int, int);//, Container.hash, Container.reap, Container.ChunkGC);
