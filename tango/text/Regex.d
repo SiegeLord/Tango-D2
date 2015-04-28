@@ -2354,13 +2354,6 @@ private class TDFA(char_t)
                 return 0;
             return 1;
         }
-
-        const bool opEquals(ref const Command cmd)
-        {
-            if ( dst != cmd.dst || src != cmd.src )
-                return false;
-            return true;
-        }
     }
 
     struct TagIndex
@@ -3781,7 +3774,7 @@ class RegExpT(char_t)
     }
 
     /** ditto */
-    public int opApply(int delegate(ref RegExpT!(char_t)) dg)
+    public int opApply(int delegate(RegExpT!(char_t)) dg)
     {
         int result;
         while ( !result && test() )

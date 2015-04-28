@@ -92,7 +92,7 @@ version( linux )
         int   open(in char*, int, ...);
     }
 }
-else version( darwin )
+else version(OSX)
 {
     struct flock
     {

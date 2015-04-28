@@ -61,7 +61,7 @@ version( linux )
     alias ptrdiff_t ssize_t;
     //time_t (defined in tango.stdc.time)
 }
-else version( darwin )
+else version(OSX)
 {
     alias long      blkcnt_t;
     alias int       blksize_t;
@@ -159,7 +159,7 @@ version( linux )
     alias c_long    suseconds_t;
     alias uint      useconds_t;
 }
-else version( darwin )
+else version(OSX)
 {
     //clock_t
     alias uint  fsblkcnt_t;
@@ -300,7 +300,7 @@ version( linux )
 
     alias c_ulong pthread_t;
 }
-else version( darwin )
+else version(OSX)
 {
     private
     {
@@ -501,7 +501,7 @@ version( linux )
         int __pshared;
     }
 }
-else version( darwin )
+else version(OSX)
 {
     // NOTE: The following definitions are Tango-specific because darwin does
     //       not support them directly.
@@ -552,7 +552,7 @@ version( linux )
 {
     alias int pthread_spinlock_t; // volatile
 }
-else version( darwin )
+else version(OSX)
 {
     version (LDC)
         alias void* pthread_spinlock_t;

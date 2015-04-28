@@ -215,7 +215,7 @@ version( linux )
     int     sockatmark(int);
     int     socketpair(int, int, int, int[2]);
 }
-else version( darwin )
+else version(OSX)
 {
     alias uint   socklen_t;
     alias ubyte  sa_family_t;

@@ -477,7 +477,7 @@ debug(UnitTest) {
             r = -r;
             t = tan(x);
             //printf("tan(%Lg) = %Lg, should be %Lg\n", x, t, r);
-            if (!isIdentical(r, t) && !(r!<>=0 && t!<>=0)) assert(fabs(r-t) <= .0000001);
+            if (!isIdentical(r, t) && !(isNaN(r) && isNaN(t))) assert(fabs(r-t) <= .0000001);
         }
         // overflow
         assert(isNaN(tan(real.infinity)));
@@ -589,7 +589,7 @@ real acos(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    version(darwin){}
+    version(OSX){}
     else {
         assert(isIdentical(acos(NaN(254)), NaN(254)));
     }
@@ -615,7 +615,7 @@ real asin(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    version(darwin){}
+    version(OSX){}
     else{
         assert(isIdentical(asin(NaN(7249)), NaN(7249)));
     }

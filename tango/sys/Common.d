@@ -23,7 +23,7 @@ version (linux)
         alias tango.sys.linux.linux posix;
         }
 
-version (darwin)
+version(OSX)
         {
         public import tango.sys.darwin.darwin;
         alias tango.sys.darwin.darwin posix;

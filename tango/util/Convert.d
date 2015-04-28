@@ -1127,8 +1127,8 @@ D toArrayFromArray(D,S)(S value)
 
 D toMapFromMap(D,S)(S value)
 {
-    alias typeof(D.keys[0])   Dk;
-    alias typeof(D.values[0]) Dv;
+    alias typeof(D.init.keys[0])   Dk;
+    alias typeof(D.init.values[0]) Dv;
 
     D result;
 

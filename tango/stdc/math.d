@@ -8,7 +8,8 @@
  */
 module tango.stdc.math;
 
-private import tango.stdc.config;
+import tango.stdc.config;
+import tango.math.IEEE;
 
 extern (C):
 
@@ -264,7 +265,7 @@ else version( linux )
     }
   }
 }
-else version( darwin )
+else version(OSX)
 {
     enum
     {
@@ -457,9 +458,9 @@ extern (D)
     int islessgreater(real x, real y)      { return !(x !<> y); }
 
     //int isunordered(real-floating x, real-floating y);
-    int isunordered(float x, float y)      { return (x !<>= y); }
-    int isunordered(double x, double y)    { return (x !<>= y); }
-    int isunordered(real x, real y)        { return (x !<>= y); }
+    int isunordered(float x, float y)      { return !(x == y || x < y || x > y); }
+    int isunordered(double x, double y)    { return !(x == y || x < y || x > y); }
+    int isunordered(real x, real y)        { return !(x == y || x < y || x > y); }
 }
 
 // NOTE: freebsd < 8-CURRENT doesn't appear to support *l, but we can

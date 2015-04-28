@@ -128,7 +128,7 @@ class HttpClient
         public enum Version {OnePointZero, OnePointOne};
 
         // standard set of request methods ...
-        enum RequestMethod      Get = {"GET"},
+        static immutable RequestMethod  Get = {"GET"},
                                         Put = {"PUT"},
                                         Head = {"HEAD"},
                                         Post = {"POST"},

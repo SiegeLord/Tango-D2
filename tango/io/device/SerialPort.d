@@ -164,7 +164,7 @@ class SerialPort : Device
                     if(r is null) r = rest(path.name, "ttyS");
                     if(r.length == 0) return false;
                     return isInRange(r, '0', '9');
-                } else version (darwin) { // untested
+                } else version(OSX) { // untested
                     auto r = rest(path.name, "cu");
                     if(r.length == 0) return false;
                     return true;
@@ -274,7 +274,7 @@ class SerialPort : Device
                 baudRates[307200] = B307200;
                 baudRates[460800] = B460800;
             }
-            else version ( darwin )
+            else version(OSX)
             {
                 baudRates[7200] = B7200;
                 baudRates[14400] = B14400;

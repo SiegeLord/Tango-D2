@@ -160,7 +160,7 @@ struct WallClock
 
                 @property static TimeSpan zone ()
                 {
-                        version (darwin)
+                        version(OSX)
                                 {
                                 timezone_t tz = void;
                                 gettimeofday (null, &tz);
@@ -262,7 +262,7 @@ struct WallClock
 
 version (Posix)
 {
-    version (darwin) {}
+    version(OSX) {}
     else
     {
         shared static this()

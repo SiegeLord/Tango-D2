@@ -25,7 +25,7 @@ version (Posix)
     private import tango.stdc.posix.unistd;
     private import tango.stdc.posix.sys.wait;
 
-    version (darwin)
+    version(OSX)
     {
         extern (C) char*** _NSGetEnviron();
         private __gshared char** environ;
@@ -263,9 +263,9 @@ class Process
             _args = args;
         if(_args.length > 0)
         {
-			_program = _args[0];
-			_args = _args[1..$];
-		}
+            _program = _args[0];
+            _args = _args[1..$];
+        }
     }
 
     /**
@@ -326,9 +326,9 @@ class Process
         _env = env;
         if(_args.length > 0)
         {
-			_program = _args[0];
-			_args = _args[1..$];
-		}
+            _program = _args[0];
+            _args = _args[1..$];
+        }
     }
 
     /**
@@ -373,9 +373,9 @@ class Process
         _env = env;
         if(_args.length > 0)
         {
-			_program = _args[0];
-			_args = _args[1..$];
-		}
+            _program = _args[0];
+            _args = _args[1..$];
+        }
     }
 
     /**
@@ -457,8 +457,8 @@ class Process
      */
     public const(char[])[] args(const(char)[] progname, const(char[])[] args ...)
     {
-		_program = progname;
-        return _args = args;
+        _program = progname;
+        return _args = args.dup;
     }
 
     /**
@@ -832,7 +832,7 @@ class Process
     }
     body
     {
-		this._program = arg1;
+        this._program = arg1;
         this._args = args;
         execute();
     }
@@ -877,9 +877,9 @@ class Process
         _args = splitArgs(command);
         if (_args.length > 0)
         {
-			_program = _args[0];
-			_args = _args[1..$];
-		}
+            _program = _args[0];
+            _args = _args[1..$];
+        }
         _copyEnv = false;
         _env = env;
         execute();
@@ -937,9 +937,9 @@ class Process
         _args = args;
         if (_args.length > 0)
         {
-			_program = _args[0];
-			_args = _args[1..$];
-		}
+            _program = _args[0];
+            _args = _args[1..$];
+        }
         _env = env;
         _copyEnv = false;
 

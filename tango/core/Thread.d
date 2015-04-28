@@ -39,7 +39,7 @@ debug(Thread)
 
 // this should be true for most architectures
 version = StackGrowsDown;
-version(darwin){
+version(OSX){
     version=AtomicSuspendCount;
 }
 version(linux){
@@ -232,7 +232,7 @@ else version( Posix )
                 pthread_cleanup cleanup = void;
                 cleanup.push( &thread_cleanupHandler, cast(void*) obj );
             }
-            else version( darwin )
+            else version(OSX)
             {
                 pthread_cleanup cleanup = void;
                 cleanup.push( &thread_cleanupHandler, cast(void*) obj );
@@ -3634,7 +3634,7 @@ private:
 
         // NOTE: On OS X the stack must be 16-byte aligned according to the
         // IA-32 call spec.
-        version( darwin )
+        version(OSX)
         {
              pstack = cast(void*)(cast(uint)(pstack) - (cast(uint)(pstack) & 0x0F));
         }

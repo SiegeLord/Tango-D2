@@ -403,7 +403,7 @@ version(LDC){
         return oldval;
     }
 } else version(D_InlineAsm_X86) {
-    version(darwin){
+    version(OSX){
         extern(C) ubyte OSAtomicCompareAndSwap64(long oldValue, long newValue,
                  long *theValue); // assumes that in C sizeof(_Bool)==1 (as given in osx IA-32 ABI)
     }
@@ -446,7 +446,7 @@ version(LDC){
         }
         else static if( T.sizeof == long.sizeof ) {
             // 8 Byte StoreIf on 32-Bit Processor
-            version(darwin){
+            version(OSX){
                 union UVConv{long v; T t;}
                 union UVPtrConv{long *v; T *t;}
                 UVConv vEqual,vNew;

@@ -109,7 +109,7 @@ struct BitArray
      * Returns:
      *  The size a size_t array would have to be to store this array.
      */
-    @property const size_t dim() const pure
+    @property size_t dim() const pure
     {
         return (len + (bits_in_size-1)) / bits_in_size;
     }
@@ -466,7 +466,7 @@ struct BitArray
      * Returns:
      *  false if not equal and non-zero otherwise.
      */
-    const bool opEquals(ref const(BitArray) rhs) const
+    bool opEquals(ref const(BitArray) rhs) const
     {
         if( this.length() != rhs.length() )
             return 0; // not equal

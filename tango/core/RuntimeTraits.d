@@ -9,6 +9,8 @@
  */
 module tango.core.RuntimeTraits;
 
+import tango.core.Compiler;
+
 /// If the given type represents a typedef, return the actual type.
 const(TypeInfo) realType (const(TypeInfo) type)
 {

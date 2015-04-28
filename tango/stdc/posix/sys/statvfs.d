@@ -28,7 +28,7 @@ import tango.stdc.config;
 ;
 +/
 
-version(darwin) {
+version(OSX) {
 
     struct statvfs_t {
      c_ulong f_bsize;

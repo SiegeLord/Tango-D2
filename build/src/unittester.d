@@ -14,7 +14,7 @@ enum immutable(char)[] DummyFileContent = "void main() {}";
 enum immutable(char)[] Help = 
 `
 unittester - TangoD2's unittest utility
-Copyright (C) 2012 Pavel Sountsov.
+Copyright (C) 2012-2014 Pavel Sountsov.
 
 Usage: unittester [OPTION]... [FILES]...
 Example: unittester -c dmd -d .unittest -a "-m32" tango/text/Util.d
@@ -82,7 +82,6 @@ void main(const(char[])[] args)
 	if(!arguments.parse(args[1..$]) || arguments("help").set)
 	{
 		Stdout(arguments.errors(&Stdout.layout.sprint));
-		Stdout.formatln("{}", Help);
 		return;
 	}
 	
@@ -94,7 +93,8 @@ void main(const(char[])[] args)
 		}
 		else
 		{
-			switch(compiler)
+			auto compiler_path = Path.parse(compiler);
+			switch(compiler_path.name)
 			{
 				case "dmd":
 					compiler_options = "-unittest -L-ltango-dmd -debug=UnitTest";

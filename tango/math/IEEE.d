@@ -1716,7 +1716,7 @@ T ieeeMean(T)(T x, T y)
 in {
     // both x and y must have the same sign, and must not be NaN.
     assert(signbit(x) == signbit(y)); 
-    assert(x<>=0 && y<>=0);
+    assert(!isNaN(x) && !isNaN(y));
 }
 body {
     // Runtime behaviour for contract violation:

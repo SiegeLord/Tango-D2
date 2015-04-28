@@ -41,7 +41,7 @@ extern (C){
         const int TMP_MAX       = 238328;
         const int L_tmpnam      = 20;
     }
-    else version( darwin )
+    else version(OSX)
     {
         const int EOF           = -1;
         const int FOPEN_MAX     = 20;
@@ -147,7 +147,7 @@ extern (C){
             char[1] _shortbuf;
             void*   _lock;
         }
-        else version( darwin )
+        else version(OSX)
         {
             ubyte*    _p;
             int       _r;
@@ -328,7 +328,7 @@ version( Win32 )
     extern(C) extern __gshared FILE* stdout;
     extern(C) extern __gshared FILE* stderr;
 }
-else version( darwin )
+else version(OSX)
 {
     extern(C) extern __gshared FILE* __stdinp;
     extern(C) extern __gshared FILE* __stdoutp;
@@ -463,7 +463,7 @@ else version( linux )
     int  snprintf(char* s, size_t n, in char* format, ...);
     int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
 }
-else version( darwin )
+else version(OSX)
 {
     void rewind(FILE*);
     void clearerr(FILE*);

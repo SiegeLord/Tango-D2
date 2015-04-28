@@ -31,10 +31,11 @@
 
     "excludedSourceFiles-windows": ["tango/stdc/posix/*"],
 
-    "versions-osx" : ["osx", "darwin"],
     "versions-freebsd" : ["freebsd"],
 
     "importPaths": ["."],
+    
+    "libs": ["bz2"],
 
     "configurations": [
         {

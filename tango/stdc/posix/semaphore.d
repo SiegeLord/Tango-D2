@@ -54,7 +54,7 @@ version( linux )
 
     const SEM_FAILED    = cast(sem_t*) null;
 }
-else version( darwin )
+else version(OSX)
 {
     alias int sem_t;
 
@@ -150,7 +150,7 @@ version( linux )
 {
     int sem_timedwait(sem_t*, in timespec*);
 }
-else version( darwin )
+else version(OSX)
 {
     // int sem_timedwait(sem_t*, in timespec*); // not defined, use mach semaphores instead
 }

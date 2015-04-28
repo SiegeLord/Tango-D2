@@ -430,7 +430,7 @@ struct FileSystem
 
                 @property static char[][] roots ()
                 {
-                        version(darwin)
+                        version(OSX)
                         {
                             assert(0);
                         }

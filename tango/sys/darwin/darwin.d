@@ -1,6 +1,6 @@
 module tango.sys.darwin.darwin;
 
-version (darwin) {
+version(OSX) {
     public import tango.stdc.time;
     public import tango.stdc.posix.dlfcn;
     public import tango.stdc.posix.fcntl;

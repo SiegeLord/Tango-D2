@@ -691,7 +691,7 @@ version(Win32)
 {
     static __gshared SharedLib eaylib = null;
 }
-version(darwin){
+version(OSX){
     static __gshared SharedLib cryptolib = null;
 }
 static __gshared ReadWriteMutex[] _locks = null;
@@ -963,7 +963,7 @@ void loadOpenSSL()
     {
         const(char[])[] loadPath = [ "libssl32.dll" ];
     }
-    version (darwin)
+    version(OSX)
     {
         const(char[])[] loadPath = [ "/usr/lib/libssl.dylib", "libssl.dylib" ];
     }
@@ -997,7 +997,7 @@ void loadOpenSSL()
         bindFunc(SSL_CTX_set_session_id_context, "SSL_CTX_set_session_id_context", ssllib);
         version(Posix)
         {
-            version(darwin){
+            version(OSX){
                 string[] loadPathCrypto = [ "/usr/lib/libcrypto.dylib", "libcrypto.dylib" ];
                 cryptolib = loadLib(loadPathCrypto);
                 if (cryptolib !is null) bindCrypto(cryptolib);
@@ -1028,7 +1028,7 @@ void closeOpenSSL()
     CRYPTO_cleanup_all_ex_data();
     if (ssllib)
         ssllib.unload();
-    version(darwin){
+    version(OSX){
         if (cryptolib)
             cryptolib.unload();
     }
