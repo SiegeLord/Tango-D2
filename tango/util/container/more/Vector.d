@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2008 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-        
-        version:        Initial release: April 2008      
-        
+
+        version:        Initial release: April 2008
+
         author:         Kris
 
         Since:          0.99.7
@@ -26,7 +26,7 @@ private import tango.stdc.string : memmove;
 
 ******************************************************************************/
 
-struct Vector (V, int Size = 0) 
+struct Vector (V, int Size = 0)
 {
         alias add       push;
         alias slice     opSlice;
@@ -60,39 +60,39 @@ struct Vector (V, int Size = 0)
         }
 
         /***********************************************************************
-                
+
                 Return depth of the vector
 
         ***********************************************************************/
 
-        @property const size_t size ()
+        @property size_t size () const
         {
                 return depth;
         }
 
         /***********************************************************************
-                
+
                 Return remaining unused slots
 
         ***********************************************************************/
 
-        const size_t unused ()
+        size_t unused () const
         {
                 return vector.length - depth;
         }
 
         /***********************************************************************
-                
+
                 Returns a (shallow) clone of this vector
 
         ***********************************************************************/
 
         Vector clone ()
-        {       
+        {
                 Vector v;
                 static if (Size == 0)
                            v.vector.length = vector.length;
-                
+
                 v.vector[0..depth] = vector[0..depth];
                 v.depth = depth;
                 return v;
@@ -115,7 +115,7 @@ struct Vector (V, int Size = 0)
                           vector[depth++] = value;
                           }
                        else
-                          {                         
+                          {
                           if (depth < vector.length)
                               vector[depth++] = value;
                           else
@@ -241,11 +241,11 @@ struct Vector (V, int Size = 0)
         /**********************************************************************
 
                 Return the vector as an array of values, where the first
-                array entry represents the oldest value. 
-                
+                array entry represents the oldest value.
+
                 Doing a foreach() on the returned array will traverse in
                 the opposite direction of foreach() upon a vector
-                 
+
         **********************************************************************/
 
         V[] slice ()
@@ -313,7 +313,7 @@ debug (Vector)
         {
                 Vector!(int, 0) v;
                 v.add (1);
-                
+
                 Vector!(int, 10) s;
 
                 Stdout.formatln ("add four");
@@ -348,4 +348,3 @@ debug (Vector)
                 Stdout.formatln ("size {}", s.size);
         }
 }
-        
