@@ -611,7 +611,7 @@ version (Windows)
     private struct HandleSet
     {
         /** Default number of handles that will be held in the HandleSet. */
-        const uint DefaultSize = 63;
+        enum uint DefaultSize = 63;
 
         uint[] _buffer;
 
