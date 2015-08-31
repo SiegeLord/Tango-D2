@@ -855,7 +855,7 @@ unittest {
  */
 real fdim(real x, real y)
 {
-    return (x !<= y) ? x - y : +0.0;
+    return (x.isNaN || y.isNaN || x > y) ? x - y : +0.0;
 }
 
 debug(UnitTest) {
