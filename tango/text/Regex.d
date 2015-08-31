@@ -72,6 +72,8 @@
 *******************************************************************************/
 module tango.text.Regex;
 
+static import tango.core.Array;
+
 debug(TangoRegex) import tango.io.Stdout;
 
 /* *****************************************************************************
@@ -898,7 +900,7 @@ struct CharClass(char_t)
         if ( empty() )
             return;
 
-        parts.sort;
+        tango.core.Array.sort(parts);
 
         size_t i = 0;
         foreach ( p; parts[1 .. $] )
@@ -2708,13 +2710,13 @@ private class TDFA(char_t)
                 renumberCommand(cmd);
             // make sure pos-commands are executed after reorder-commands and
             // reorder-commands do not overwrite each other
-            state.finishers.sort;
+            tango.core.Array.sort(state.finishers);
 
             foreach ( trans; state.transitions )
             {
                 foreach ( ref cmd; trans.commands )
                     renumberCommand(cmd);
-                trans.commands.sort;
+                tango.core.Array.sort(trans.commands);
                 trans.predicate.compile();
             }
         }
@@ -3496,7 +3498,8 @@ private:
     {
         // if at least one of the TNFA states accepts,
         // set the finishers from active tags in increasing priority
-        StateElement[]  sorted_elms = r.elms.dup.sort;
+        StateElement[]  sorted_elms = r.elms.dup;
+        tango.core.Array.sort(sorted_elms);
         bool reluctant = false;
         foreach ( se; sorted_elms ) {
             debug (Finishers) Stdout.formatln("Finisher: {}", se);
@@ -4265,7 +4268,8 @@ class RegExpT(char_t)
             bool first_if=true;
             charclass_t cc, ccTest;
 
-            foreach ( t; s.transitions.sort )
+            tango.core.Array.sort(s.transitions);
+            foreach ( t; s.transitions )
             {
                 ccTest.add(t.predicate.getInput());
                 ccTest.optimize();

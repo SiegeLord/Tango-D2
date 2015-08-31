@@ -241,7 +241,7 @@ class Blowfish : BlockCipher
         setup(workingKey);
         
         if (!_encrypt)
-            P.reverse; // Oh yes I did.
+            reverse(P[]); // Oh yes I did.
     }
     
     private uint F(uint x)

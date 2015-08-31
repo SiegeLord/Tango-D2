@@ -69,7 +69,7 @@ final class Sha0 : Sha01
 
         ***********************************************************************/
 
-        final static protected void expand(uint W[], uint s)
+        final static protected void expand(uint[] W, uint s)
         {
                 W[s] = W[(s+13)&mask] ^ W[(s+8)&mask] ^ W[(s+2)&mask] ^ W[s];
         }

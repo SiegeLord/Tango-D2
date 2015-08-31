@@ -386,7 +386,7 @@ public class SaxHandler(Ch = char) {
          *            wrapping another exception
          * @see #characters
          *******************************************************************************/
-        public void ignorableWhitespace(Ch ch[])
+        public void ignorableWhitespace(Ch[] ch)
         {
                 
         }
@@ -1865,7 +1865,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/
-        public void characters(Ch ch[]) {
+        public void characters(Ch[] ch) {
                 if (saxHandler !is null) {
                         saxHandler.characters(ch);
                 }
@@ -1881,7 +1881,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/
-        public void ignorableWhitespace(Ch ch[]) {
+        public void ignorableWhitespace(Ch[] ch) {
                 if (saxHandler !is null) {
                         saxHandler.ignorableWhitespace(ch);
                 }

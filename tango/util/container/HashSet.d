@@ -65,7 +65,7 @@ class HashSet (V, alias Hash = Container.hash,
         private alias Heap!(Type) Alloc;
 
         // Each table entry is a list - null if no table allocated
-        private Ref             table[];
+        private Ref[]             table;
         
         // number of elements contained
         private size_t          count;

@@ -17,12 +17,12 @@ private {   // Rational polynomial approximations to j0, y0, j1, y1.
 
 // sqrt(j0^2(1/x^2) + y0^2(1/x^2)) = z P(z**2)/Q(z**2), z(x) = 1/sqrt(x)
 // Peak error =  1.80e-20
-__gshared immutable real j0modulusn[] = [ 0x1.154700ea96e79656p-7, 0x1.72244b6e998cd6fp-4,
+__gshared immutable real[] j0modulusn = [ 0x1.154700ea96e79656p-7, 0x1.72244b6e998cd6fp-4,
    0x1.6ebccf42e9c19fd2p-1, 0x1.6bd844e89cbd639ap+1, 0x1.e812b377c75ebc96p+2,
    0x1.46d69ca24ce76686p+3, 0x1.b756f7234cc67146p+2, 0x1.943a7471eaa50ab2p-2
 ];
 
-__gshared immutable real j0modulusd[] = [ 0x1.5b84007c37011506p-7, 0x1.cfe76758639bdab4p-4,
+__gshared immutable real[] j0modulusd = [ 0x1.5b84007c37011506p-7, 0x1.cfe76758639bdab4p-4,
    0x1.cbfa09bf71bafc7ep-1, 0x1.c8eafb3836f2eeb4p+1, 0x1.339db78060eb706ep+3,
    0x1.a06530916be8bc7ap+3, 0x1.23bfe7f67a54893p+3,  1.0
 ];
@@ -30,12 +30,12 @@ __gshared immutable real j0modulusd[] = [ 0x1.5b84007c37011506p-7, 0x1.cfe767586
 
 // atan(y0(x)/j0(x)) = x - pi/4 + x P(x**2)/Q(x**2)
 // Peak error =  2.80e-21. Relative error spread =  5.5e-1
-__gshared immutable real j0phasen[] = [ -0x1.ccbaf3865bb0985ep-22, -0x1.3a6b175e64bdb82ep-14,
+__gshared immutable real[] j0phasen = [ -0x1.ccbaf3865bb0985ep-22, -0x1.3a6b175e64bdb82ep-14,
    -0x1.06124b5310cdca28p-8, -0x1.3cebb7ab09cf1b14p-4, -0x1.00156ed209b43c6p-1,
    -0x1.78aa9ba4254ca20cp-1
 ];
 
-__gshared immutable real j0phased[] = [ 0x1.ccbaf3865bb09918p-19, 0x1.3b5b0e12900d58b8p-11,
+__gshared immutable real[] j0phased = [ 0x1.ccbaf3865bb09918p-19, 0x1.3b5b0e12900d58b8p-11,
    0x1.0897373ff9906f7ep-5, 0x1.450a5b8c552ade4ap-1, 0x1.123e263e7f0e96d2p+2,
    0x1.d82ecca5654be7d2p+2, 1.0
 ];
@@ -43,13 +43,13 @@ __gshared immutable real j0phased[] = [ 0x1.ccbaf3865bb09918p-19, 0x1.3b5b0e1290
 
 // j1(x) = (x^2-r0^2)(x^2-r1^2)(x^2-r2^2) x P(x**2)/Q(x**2), 0 <= x <= 9
 // Peak error =  2e-21
-__gshared immutable real j1n[] = [ -0x1.2f494fa4e623b1bp+58, 0x1.8289f0a5f1e1a784p+52,
+__gshared immutable real[] j1n = [ -0x1.2f494fa4e623b1bp+58, 0x1.8289f0a5f1e1a784p+52,
   -0x1.9d773ee29a52c6d8p+45, 0x1.e9394ff57a46071cp+37, -0x1.616c7939904a359p+29,
    0x1.424414b9ee5671eap+20, -0x1.6db34a9892d653e6p+10, 0x1.dcd7412d90a0db86p-1,
    -0x1.1444a1643199ee5ep-12
 ];
 
-__gshared immutable real j1d[] = [ 0x1.5a1e0a45eb67bacep+75, 0x1.35ee485d62f0ccbap+68,
+__gshared immutable real[] j1d = [ 0x1.5a1e0a45eb67bacep+75, 0x1.35ee485d62f0ccbap+68,
    0x1.11ee7aad4e4bcd8p+60, 0x1.3adde5dead800244p+51, 0x1.041c413dfbab693p+42,
    0x1.4066d12193fcc082p+32, 0x1.24309d0dc2c4d42ep+22, 0x1.7115bea028dd75f2p+11,
    1.0
@@ -102,12 +102,12 @@ real cylBessel_j0(real x)
 
 // j0(x) = (x^2-JZ1)(x^2-JZ2)(x^2-JZ3)P(x**2)/Q(x**2), 0 <= x <= 9
 // Peak error =  8.49e-22. Relative error spread =  2.2e-3
-__gshared immutable real j0n[] = [ -0x1.3e8ff72b890d72d8p+59, 0x1.cc86e3755a4c803p+53,
+__gshared immutable real[] j0n = [ -0x1.3e8ff72b890d72d8p+59, 0x1.cc86e3755a4c803p+53,
  -0x1.0ea6f5bac6623616p+47, 0x1.532c6d94d36f2874p+39, -0x1.ef25a232f6c00118p+30,
    0x1.aa0690536c11fc2p+21, -0x1.94e67651cc57535p+11,  0x1.4bfe47ac8411eeb2p+0
 ];
 
-__gshared immutable real j0d[] = [ 0x1.0096dec5f6560158p+73, 0x1.11705db14995fb9cp+66,
+__gshared immutable real[] j0d = [ 0x1.0096dec5f6560158p+73, 0x1.11705db14995fb9cp+66,
    0x1.220a41c3daaa7a58p+58, 0x1.93c6b48d196c1082p+49, 0x1.9814684a10dbfda2p+40,
    0x1.36f20ec527fccda4p+31, 0x1.634596b9247fc34p+21, 0x1.1d3eb73f90657bfcp+11,
    1.0
@@ -157,25 +157,25 @@ real cylBessel_y0(real x)
 
 // y0(x) = 2/pi * log(x) * j0(x) + P(z**2)/Q(z**2), 0 <= x <= 5
 // Peak error =  8.55e-22. Relative error spread =  2.7e-1
-__gshared immutable real y0n[] = [ -0x1.068026b402e2bf7ap+54, 0x1.3a2f7be8c4c8a03ep+55,
+__gshared immutable real[] y0n = [ -0x1.068026b402e2bf7ap+54, 0x1.3a2f7be8c4c8a03ep+55,
  -0x1.89928488d6524792p+51, 0x1.3e3ea2846f756432p+46, -0x1.c8be8d9366867c78p+39,
    0x1.43879530964e5fbap+32, -0x1.bee052fef72a5d8p+23, 0x1.e688c8fe417c24d8p+13
 ];
 
-__gshared immutable real y0d[] = [ 0x1.bc96c5351e564834p+57, 0x1.6821ac3b4c5209a6p+51,
+__gshared immutable real[] y0d = [ 0x1.bc96c5351e564834p+57, 0x1.6821ac3b4c5209a6p+51,
    0x1.27098b571836ce64p+44, 0x1.41870d2a9b90aa76p+36, 0x1.00394fd321f52f48p+28,
    0x1.317ce3b16d65b27p+19, 0x1.0432b36efe4b20aep+10, 1.0
 ];
 
 // y0(x) = (x-Y0Z1)(x-Y0Z2)(x-Y0Z3)(x-Y0Z4)P(x)/Q(x), 4.5 <= x <= 9
 // Peak error =  2.35e-20. Relative error spread =  7.8e-13
-__gshared immutable real y059n[] = [ -0x1.0fce17d26a21f218p+19, -0x1.c6fc144765fdfaa8p+16,
+__gshared immutable real[] y059n = [ -0x1.0fce17d26a21f218p+19, -0x1.c6fc144765fdfaa8p+16,
    0x1.3e20237c53c7180ep+19, 0x1.7d14055ff6a493c4p+17, 0x1.b8b694729689d1f4p+12,
    -0x1.1e24596784b6c5cp+12, 0x1.35189cb3ece7ab46p+6, 0x1.9428b3f406b4aa08p+4,
    -0x1.791187b68dd4240ep+0, 0x1.8417216d568b325ep-6
 ];
 
-__gshared immutable real y059d[] = [ 0x1.17af71a3d4167676p+30, 0x1.a36abbb668c79d6cp+31,
+__gshared immutable real[] y059d = [ 0x1.17af71a3d4167676p+30, 0x1.a36abbb668c79d6cp+31,
  -0x1.4ff64a14ed73c4d6p+29, 0x1.9d427af195244ffep+26, -0x1.4e85bbbc8d2fd914p+23,
   0x1.ac59b523ae0bd16cp+19, -0x1.8ebda33eaac74518p+15, 0x1.16194a051cd55a12p+11,
    -0x1.f2d714ab48d1bd7ep+5, 1.0
@@ -300,13 +300,13 @@ __gshared immutable real [] y1d = [ 0x1.8733bcfd7236e604p+56, 0x1.5af412c672fd18
 // y1(x) = (x-YZ1)(x-YZ2)(x-YZ3)(x-YZ4)R(x) P(z)/Q(z)
 // z(x) = x, 4.5 <= x <= 9
 // Peak error =  3.27e-22. Relative error spread =  4.5e-2
-__gshared immutable real y159n[] = [ 0x1.2fed87b1e60aa736p+18, -0x1.1a2b18cdb2d1ec5ep+20,
+__gshared immutable real[] y159n = [ 0x1.2fed87b1e60aa736p+18, -0x1.1a2b18cdb2d1ec5ep+20,
    -0x1.b848827f47b47022p+20, -0x1.b2e422305ea19a86p+20,
    -0x1.e3f82ac304534676p+16, 0x1.47a2cb5e852d657ep+14, 0x1.81b2fc6e44d7be8p+12,
    -0x1.cd861d7b090dd22ep+9, 0x1.588897d683cbfbe2p+5, -0x1.5c7feccf76856bcap-1
 ];
 
-__gshared immutable real y159d[] = [ 0x1.9b64f2a4d5614462p+26, -0x1.17501e0e38db675ap+30,
+__gshared immutable real[] y159d = [ 0x1.9b64f2a4d5614462p+26, -0x1.17501e0e38db675ap+30,
    0x1.fe88b567c2911c1cp+31, -0x1.86b1781e04e748d4p+29, 0x1.ccd7d4396f2edbcap+26,
    -0x1.694110c682e5cbcap+23, 0x1.c20f7005b88c789ep+19, -0x1.983a5b4275ab7da8p+15,
    0x1.17c60380490fa1fcp+11, -0x1.ee84c254392634d8p+5, 1.0

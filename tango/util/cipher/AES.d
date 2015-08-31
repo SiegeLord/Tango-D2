@@ -871,8 +871,8 @@ class AES : BlockCipher
         if (!_encrypt)
         {
             for (uint i = 0; i <= 4*ROUNDS; i+=4)
-                w[i..i+4].reverse;
-            w.reverse;
+                reverse(w[i..i+4]);
+            reverse(w);
             
             for (uint i = 4; i < w.length-4; i++)
             {

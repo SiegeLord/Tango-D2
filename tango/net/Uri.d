@@ -74,7 +74,7 @@ class Uri : UriView
                                 fragment_;
         private HeapSlice       decoded;
 
-        private __gshared ubyte    map[];
+        private __gshared ubyte[]    map;
 
         private __gshared short[immutable(char)[]] genericSchemes;
 

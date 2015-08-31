@@ -51,6 +51,16 @@ abstract class Cipher
     {
         return _initialized;
     }
+
+    static protected void reverse(T)(T[] arr)
+    {
+        foreach (i ; 0 .. arr.length / 2)
+        {
+            auto tmp = arr[i];
+            arr[i] = arr[arr.length - i - 1];
+            arr[arr.length - i - 1] = tmp;
+        }
+    }
 }
 
 

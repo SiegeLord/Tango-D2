@@ -721,10 +721,10 @@ void cpuidPPC()
     int cputype = PPC603;
     
     // 601 has a 8KB combined data & code L1 cache.
-    uint sizes[] = [4, 8, 16, 16, 32, 32, 32, 32, 64];
-    ubyte ways[] = [8, 2,  4,  4,  4,  8,  8,  8,  8];
-    uint L2size[]= [0, 0,  0,  0,  0,  0,  0,  256,  512];
-    uint L3size[]= [0, 0,  0,  0,  0,  0,  0,  2048,  0];
+    uint[] sizes = [4, 8, 16, 16, 32, 32, 32, 32, 64];
+    ubyte[] ways = [8, 2,  4,  4,  4,  8,  8,  8,  8];
+    uint[] L2size= [0, 0,  0,  0,  0,  0,  0,  256,  512];
+    uint[] L3size= [0, 0,  0,  0,  0,  0,  0,  2048,  0];
     
     datacache[0].size = sizes[cputype];
     datacache[0].associativity = ways[cputype]; 

@@ -158,7 +158,7 @@ version(linux){
         enum { EI_NIDENT = 16 }
 
         struct Elf32_Ehdr{
-            char        e_ident[EI_NIDENT]; /* Magic number and other info */
+            char[EI_NIDENT]    e_ident; /* Magic number and other info */
             Elf32_Half  e_type;         /* Object file type */
             Elf32_Half  e_machine;      /* Architecture */
             Elf32_Word  e_version;      /* Object file version */
@@ -175,7 +175,7 @@ version(linux){
         }
 
         struct Elf64_Ehdr{
-            char        e_ident[EI_NIDENT]; /* Magic number and other info */
+            char[EI_NIDENT]    e_ident; /* Magic number and other info */
             Elf64_Half  e_type;         /* Object file type */
             Elf64_Half  e_machine;      /* Architecture */
             Elf64_Word  e_version;      /* Object file version */

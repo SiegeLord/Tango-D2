@@ -249,7 +249,7 @@ class Json(T) : JsonParser!(T)
 
         ***********************************************************************/
         
-        final Value object (Attribute set[]...)
+        final Value object (Attribute[] set...)
         {
                 return createValue().set (createObject().add (set));
         }

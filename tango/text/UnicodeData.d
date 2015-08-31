@@ -228,7 +228,7 @@ private const
    SM = UnicodeData.GeneralCategory.SpecialMapping;
 
 private {
-UnicodeData internalUnicodeData[] = [
+UnicodeData[] internalUnicodeData = [
 //{<code>, <generalCategory>, <simpleUpperCaseMapping>,
 //<simpleLowerCaseMapping>, <simpleTitleCaseMapping>}
 {0x0,Cc,0x0,0x0,0x0},
@@ -17953,7 +17953,7 @@ UnicodeData internalUnicodeData[] = [
 {0x10FFFD,Co,0x10FFFD,0x10FFFD,0x10FFFD}
 ];
 
-SpecialCaseData internalSpecialCaseData[] = [
+SpecialCaseData[] internalSpecialCaseData = [
 {
 code: 0xDF,
 upperCaseMapping: [0x53, 0x53],
@@ -18574,7 +18574,7 @@ titleCaseMapping: [0x544, 0x56D]
 }
 ];
 
-FoldingCaseData internalFoldingCaseData[] = [
+FoldingCaseData[] internalFoldingCaseData = [
 {
 code: 0x41,
 mapping: [0x61]

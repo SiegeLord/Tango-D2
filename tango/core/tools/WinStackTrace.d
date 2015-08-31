@@ -358,7 +358,7 @@ void walkStack(LPCONTEXT ContextRecord, HANDLE hProcess, HANDLE hThread, void de
 
 
 bool addrToSymbolDetails(size_t addr, HANDLE hProcess, void delegate(const(char)[] func, const(char)[] file, int line, ptrdiff_t addrOffset) dg) {
-    ubyte buffer[256];
+    ubyte[256] buffer;
 
     SYMBOL_INFO* symbol_info = cast(SYMBOL_INFO*)buffer.ptr;
     symbol_info.SizeOfStruct = SYMBOL_INFO.sizeof;
@@ -763,7 +763,7 @@ extern (Windows) {
     struct SYMBOL_INFO {
         ULONG SizeOfStruct;
         ULONG TypeIndex;
-        ULONG64 Reserved[2];
+        ULONG64[2] Reserved;
         ULONG Index;
         ULONG Size;
         ULONG64 ModBase;
@@ -775,7 +775,7 @@ extern (Windows) {
         ULONG Tag;
         ULONG NameLen;
         ULONG MaxNameLen;
-        TCHAR Name[1];
+        TCHAR[1] Name;
     }
     alias SYMBOL_INFO* PSYMBOL_INFO;
     
@@ -880,7 +880,7 @@ extern (Windows) {
         DWORD64 KiUserExceptionDispatcher;
         DWORD64 StackBase;
         DWORD64 StackLimit;
-        DWORD64 Reserved[5];
+        DWORD64[5] Reserved;
     } 
     alias KDHELP64* PKDHELP64;
     
@@ -899,10 +899,10 @@ extern (Windows) {
         ADDRESS64 AddrStack;
         ADDRESS64 AddrBStore;
         PVOID FuncTableEntry;
-        DWORD64 Params[4];
+        DWORD64[4] Params;
         BOOL Far;
         BOOL Virtual;
-        DWORD64 Reserved[3];
+        DWORD64[3] Reserved;
         KDHELP64 KdHelp;
     }
     alias STACKFRAME64* LPSTACKFRAME64;
@@ -1316,7 +1316,7 @@ class DebugInfo {
         // blocks of debug data that reside at the end of the file (after the COFF
         // sections), including FPO data, COFF-style debug info, and the CodeView
         // we are *really* after.
-        bool ReadDebugDir(FILE* debugfile, ref IMAGE_DEBUG_DIRECTORY debugdirs[]) {
+        bool ReadDebugDir(FILE* debugfile, ref IMAGE_DEBUG_DIRECTORY[] debugdirs) {
             uint bytes_read;
             for(int i=0;i<debugdirs.length;i++) {
                 bytes_read = fread((&debugdirs[i]), 1, IMAGE_DEBUG_DIRECTORY.sizeof, debugfile);
@@ -1489,7 +1489,7 @@ class DebugInfo {
             ExtractSrcModuleInfo (rawdata, &filecount, &segcount,baseSrcFile);
 
             for(i=0;i<baseSrcFile.length;i++){
-                uint baseSrcLn[];
+                uint[] baseSrcLn;
                 ExtractSrcModuleFileInfo (rawdata+baseSrcFile[i],baseSrcLn);
                 for(int j=0;j<baseSrcLn.length;j++){
                     ExtractSrcModuleLineInfo (rawdata+baseSrcLn[j], j);
@@ -1603,13 +1603,13 @@ class DebugInfo {
         IMAGE_SEPARATE_DEBUG_HEADER g_dbghdr;
         IMAGE_NT_HEADERS g_nthdr;
 
-        IMAGE_SECTION_HEADER g_secthdrs[];
+        IMAGE_SECTION_HEADER[] g_secthdrs;
 
-        IMAGE_DEBUG_DIRECTORY g_debugdirs[];
+        IMAGE_DEBUG_DIRECTORY[] g_debugdirs;
         OMFSignature g_cvSig;
         OMFDirHeader g_cvHeader;
-        OMFDirEntry g_cvEntries[];
-        OMFModuleFull g_cvModules[];
+        OMFDirEntry[] g_cvEntries;
+        OMFModuleFull[] g_cvModules;
         const(char)[] g_filename;
         char* g_filenameStringz;
     }
@@ -1629,7 +1629,7 @@ enum {
 }
  
 struct OMFSignature {
-    char    Signature[4];
+    char[4]    Signature;
     int filepos;
 }
  
@@ -1659,14 +1659,14 @@ struct OMFModule {
     ushort  ovlNumber;
     ushort  iLib;
     ushort  cSeg;
-    char            Style[2];
+    char[2]            Style;
 }
  
 struct OMFModuleFull {
     ushort  ovlNumber;
     ushort  iLib;
     ushort  cSeg;
-    char            Style[2];
+    char[2]            Style;
     OMFSegDesc      *SegInfo;
     char            *Name;
 }
@@ -1685,7 +1685,7 @@ struct DATASYM16 {
         int off;        // offset of symbol
         ushort seg;     // segment of symbol
         ushort typind;  // Type index
-        byte name[1];   // Length-prefixed name
+        byte[1] name;   // Length-prefixed name
 }
 alias DATASYM16 PUBSYM16;
  
@@ -1705,10 +1705,10 @@ struct IMAGE_DOS_HEADER {      // DOS .EXE header
     ushort   e_cs;                        // Initial (relative) CS value
     ushort   e_lfarlc;                    // File address of relocation table
     ushort   e_ovno;                      // Overlay number
-    ushort   e_res[4];                    // Reserved words
+    ushort[4]   e_res;                    // Reserved words
     ushort   e_oemid;                     // OEM identifier (for e_oeminfo)
     ushort   e_oeminfo;                   // OEM information; e_oemid specific
-    ushort   e_res2[10];                  // Reserved words
+    ushort[10]   e_res2;                  // Reserved words
     int      e_lfanew;                    // File address of new exe header
 }
  
@@ -1735,7 +1735,7 @@ struct IMAGE_SEPARATE_DEBUG_HEADER {
     uint       ExportedNamesSize;
     uint       DebugDirectorySize;
     uint       SectionAlignment;
-    uint       Reserved[2];
+    uint[2]    Reserved;
 }
  
 struct IMAGE_DATA_DIRECTORY {
@@ -1788,7 +1788,7 @@ struct IMAGE_OPTIONAL_HEADER {
         IMAGE_NUMBEROF_DIRECTORY_ENTRIES = 16,
     }
 
-    IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
+    IMAGE_DATA_DIRECTORY[IMAGE_NUMBEROF_DIRECTORY_ENTRIES] DataDirectory;
 }
  
 struct IMAGE_NT_HEADERS {
@@ -1802,7 +1802,7 @@ enum {
 }
 
 struct IMAGE_SECTION_HEADER {
-    byte    Name[IMAGE_SIZEOF_SHORT_NAME];//8
+    byte[IMAGE_SIZEOF_SHORT_NAME]    Name;//8
     union misc{
             uint   PhysicalAddress;
             uint   VirtualSize;//12
@@ -1832,14 +1832,14 @@ struct IMAGE_DEBUG_DIRECTORY {
 struct OMFSourceLine {
     ushort  Seg;
     ushort  cLnOff;
-    uint    offset[1];
-    ushort  lineNbr[1];
+    uint[1]    offset;
+    ushort[1]  lineNbr;
 }
  
 struct OMFSourceFile {
     ushort  cSeg;
     ushort  reserved;
-    uint    baseSrcLn[1];
+    uint[1]    baseSrcLn;
     ushort  cFName;
     char    Name;
 }
@@ -1847,7 +1847,7 @@ struct OMFSourceFile {
 struct OMFSourceModule {
     ushort  cFile;
     ushort  cSeg;
-    uint    baseSrcFile[1];
+    uint[1]    baseSrcFile;
 }
 //#line 2 "parts/CInterface.di"
 extern (C) {
@@ -1893,7 +1893,7 @@ shared static this() {
     version (StacktraceSpam) printf ("found Thread.Fiber.run at %p with length %x",
             &D4core6thread5Fiber3runMFZv, fiberRunFuncLength);
 
-    char modNameBuf[512] = 0;
+    char[512] modNameBuf = 0;
     int modNameLen = GetModuleFileNameExA(GetCurrentProcess(), null, modNameBuf.ptr, modNameBuf.length-1);
     char[] modName = modNameBuf[0..modNameLen];
     SymSetOptions(SYMOPT_DEFERRED_LOADS/+ | SYMOPT_UNDNAME+/);

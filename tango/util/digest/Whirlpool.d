@@ -30,7 +30,7 @@ private static enum int INTERNAL_ROUNDS = 10;
 
 final class Whirlpool : MerkleDamgard
 {
-		private ulong hash[8];    /* the hashing state */
+		private ulong[8] hash;    /* the hashing state */
 
         private enum uint     padChar = 0x80;
 
@@ -154,7 +154,7 @@ final class Whirlpool : MerkleDamgard
 
         protected override void padLength(ubyte[] at, ulong length)
         {
-        	ulong buffer[4];
+        	ulong[4] buffer;
         	buffer[0..2] = 0L;
         	buffer[3] = length << 3;
         	bigEndian64((cast(ubyte*)&buffer)[0..ulong.sizeof*4],cast(ulong[]) at); 
@@ -177,7 +177,7 @@ final class Whirlpool : MerkleDamgard
 
         protected override void transform(const(ubyte[]) input)
         {
-            ulong block[8];    /* mu(buffer) */
+            ulong[8] block;    /* mu(buffer) */
 
             /*
              * map the buffer to a block:
@@ -187,14 +187,14 @@ final class Whirlpool : MerkleDamgard
             /*
              * compute and apply K^0 to the cipher state:
              */
-            ulong K[8] = hash[]; 			/* the round key */
-            ulong state[8] = block[] ^ K[];	/* the cipher state */
+            ulong[8] K = hash[]; 			/* the round key */
+            ulong[8] state = block[] ^ K[];	/* the cipher state */
 
             /*
              * iterate over all rounds:
              */
             for (auto r = 1; r <= INTERNAL_ROUNDS; r++) {
-                ulong L[8];
+                ulong[8] L;
                 /*
                  * compute K^r from K^{r-1}:
                  */
@@ -370,7 +370,7 @@ final class Whirlpool : MerkleDamgard
 
 *******************************************************************************/
 
-private __gshared immutable ulong C0[256] = 
+private __gshared immutable ulong[256] C0 = 
 [
     0x18186018c07830d8, 0x23238c2305af4626, 0xc6c63fc67ef991b8, 0xe8e887e8136fcdfb,
     0x878726874ca113cb, 0xb8b8dab8a9626d11, 0x0101040108050209, 0x4f4f214f426e9e0d,
@@ -442,7 +442,7 @@ private __gshared immutable ulong C0[256] =
 
 *******************************************************************************/
 
-private __gshared immutable ulong C1[256] = 
+private __gshared immutable ulong[256] C1 = 
 [
     0xd818186018c07830, 0x2623238c2305af46, 0xb8c6c63fc67ef991, 0xfbe8e887e8136fcd,
     0xcb878726874ca113, 0x11b8b8dab8a9626d, 0x0901010401080502, 0x0d4f4f214f426e9e,
@@ -514,7 +514,7 @@ private __gshared immutable ulong C1[256] =
 
 *******************************************************************************/
 
-private __gshared immutable ulong C2[256] = 
+private __gshared immutable ulong[256] C2 = 
 [
     0x30d818186018c078, 0x462623238c2305af, 0x91b8c6c63fc67ef9, 0xcdfbe8e887e8136f,
     0x13cb878726874ca1, 0x6d11b8b8dab8a962, 0x0209010104010805, 0x9e0d4f4f214f426e,
@@ -586,7 +586,7 @@ private __gshared immutable ulong C2[256] =
 
 *******************************************************************************/
 
-private __gshared immutable ulong C3[256] = 
+private __gshared immutable ulong[256] C3 = 
 [
     0x7830d818186018c0, 0xaf462623238c2305, 0xf991b8c6c63fc67e, 0x6fcdfbe8e887e813,
     0xa113cb878726874c, 0x626d11b8b8dab8a9, 0x0502090101040108, 0x6e9e0d4f4f214f42,
@@ -658,7 +658,7 @@ private __gshared immutable ulong C3[256] =
 
 *******************************************************************************/
 
-private __gshared immutable ulong C4[256] = 
+private __gshared immutable ulong[256] C4 = 
 [
     0xc07830d818186018, 0x05af462623238c23, 0x7ef991b8c6c63fc6, 0x136fcdfbe8e887e8,
     0x4ca113cb87872687, 0xa9626d11b8b8dab8, 0x0805020901010401, 0x426e9e0d4f4f214f,
@@ -730,7 +730,7 @@ private __gshared immutable ulong C4[256] =
 
 *******************************************************************************/
 
-private __gshared immutable ulong C5[256] = 
+private __gshared immutable ulong[256] C5 = 
 [
     0x18c07830d8181860, 0x2305af462623238c, 0xc67ef991b8c6c63f, 0xe8136fcdfbe8e887,
     0x874ca113cb878726, 0xb8a9626d11b8b8da, 0x0108050209010104, 0x4f426e9e0d4f4f21,
@@ -802,7 +802,7 @@ private __gshared immutable ulong C5[256] =
 
 *******************************************************************************/
 
-private __gshared immutable ulong C6[256] = 
+private __gshared immutable ulong[256] C6 = 
 [
     0x6018c07830d81818, 0x8c2305af46262323, 0x3fc67ef991b8c6c6, 0x87e8136fcdfbe8e8,
     0x26874ca113cb8787, 0xdab8a9626d11b8b8, 0x0401080502090101, 0x214f426e9e0d4f4f,
@@ -874,7 +874,7 @@ private __gshared immutable ulong C6[256] =
 
 *******************************************************************************/
 
-private __gshared immutable ulong C7[256] = 
+private __gshared immutable ulong[256] C7 = 
 [
     0x186018c07830d818, 0x238c2305af462623, 0xc63fc67ef991b8c6, 0xe887e8136fcdfbe8,
     0x8726874ca113cb87, 0xb8dab8a9626d11b8, 0x0104010805020901, 0x4f214f426e9e0d4f,
@@ -946,7 +946,7 @@ private __gshared immutable ulong C7[256] =
 
 *******************************************************************************/
 
-private __gshared immutable ulong rc[INTERNAL_ROUNDS + 1] = 
+private __gshared immutable ulong[INTERNAL_ROUNDS + 1] rc = 
 [
     0x0000000000000000,
     0x1823c6e887b8014f,

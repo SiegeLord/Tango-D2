@@ -155,7 +155,7 @@ class Pipe
         }
         else version (Posix)
         {
-            int fd[2];
+            int[2] fd;
 
             if (pipe(fd.ptr) == 0)
             {

@@ -1236,7 +1236,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        static Address[] resolveAll (const(char) host[], ushort port,
+        static Address[] resolveAll (const(char)[] host, ushort port,
                                      AddressFamily af = AddressFamily.UNSPEC,
                                      AIFlags flags = cast(AIFlags)0)
         {

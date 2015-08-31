@@ -405,9 +405,9 @@ else version( solaris )
     {
         sa_family_t ss_family;  /* Address family */
         /* Following fields are implementation specific */
-        char        _ss_pad1[_SS_PAD1SIZE];
+        char[_SS_PAD1SIZE]        _ss_pad1;
         sockaddr_maxalign_t _ss_align;
-        char        _ss_pad2[_SS_PAD2SIZE];
+        char[_SS_PAD2SIZE]        _ss_pad2;
     }
     
     struct msghdr

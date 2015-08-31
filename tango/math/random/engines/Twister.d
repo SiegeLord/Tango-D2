@@ -64,7 +64,7 @@ struct Twister
     uint next ()
     {
         uint y;
-        static uint mag01[2] =[0, MATRIX_A];
+        static uint[2] mag01 =[0, MATRIX_A];
 
         if (mti >= mt.length) { 
             int kk;

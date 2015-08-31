@@ -132,7 +132,7 @@ extern (C)
 
         ubyte[EVP_MAX_IV_LENGTH] oiv;
         ubyte[EVP_MAX_IV_LENGTH] iv;
-        ubyte buf[EVP_MAX_BLOCK_LENGTH];
+        ubyte[EVP_MAX_BLOCK_LENGTH] buf;
         int num;
 
         void *ap_data;

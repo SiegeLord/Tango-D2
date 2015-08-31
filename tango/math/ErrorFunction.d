@@ -359,44 +359,44 @@ in {
 }
 body
 {
-__gshared immutable real P0[] = [ -0x1.758f4d969484bfdcp-7, 0x1.53cee17a59259dd2p-3,
+__gshared immutable real[] P0 = [ -0x1.758f4d969484bfdcp-7, 0x1.53cee17a59259dd2p-3,
    -0x1.ea01e4400a9427a2p-1,  0x1.61f7504a0105341ap+1, -0x1.09475a594d0399f6p+2,
     0x1.7c59e7a0df99e3e2p+1, -0x1.87a81da52edcdf14p-1,  0x1.1fb149fd3f83600cp-7
 ];
 
-__gshared immutable real Q0[] = [ -0x1.64b92ae791e64bb2p-7, 0x1.7585c7d597298286p-3,
+__gshared immutable real[] Q0 = [ -0x1.64b92ae791e64bb2p-7, 0x1.7585c7d597298286p-3,
    -0x1.40011be4f7591ce6p+0, 0x1.1fc067d8430a425ep+2, -0x1.21008ffb1e7ccdf2p+3,
    0x1.3d1581cf9bc12fccp+3, -0x1.53723a89fd8f083cp+2, 1.0
 ];
 
-__gshared immutable real P1[] = [ 0x1.20ceea49ea142f12p-13, 0x1.cbe8a7267aea80bp-7,
+__gshared immutable real[] P1 = [ 0x1.20ceea49ea142f12p-13, 0x1.cbe8a7267aea80bp-7,
    0x1.79fea765aa787c48p-2, 0x1.d1f59faa1f4c4864p+1, 0x1.1c22e426a013bb96p+4,
    0x1.a8675a0c51ef3202p+5, 0x1.75782c4f83614164p+6, 0x1.7a2f3d90948f1666p+6,
    0x1.5cd116ee4c088c3ap+5, 0x1.1361e3eb6e3cc20ap+2
 ];
 
-__gshared immutable real Q1[] = [ 0x1.3a4ce1406cea98fap-13, 0x1.f45332623335cda2p-7,
+__gshared immutable real[] Q1 = [ 0x1.3a4ce1406cea98fap-13, 0x1.f45332623335cda2p-7,
    0x1.98f28bbd4b98db1p-2, 0x1.ec3b24f9c698091cp+1, 0x1.1cc56ecda7cf58e4p+4,
    0x1.92c6f7376bf8c058p+5, 0x1.4154c25aa47519b4p+6, 0x1.1b321d3b927849eap+6,
    0x1.403a5f5a4ce7b202p+4, 1.0
 ];
 
-__gshared immutable real P2[] = [ 0x1.8c124a850116a6d8p-21, 0x1.534abda3c2fb90bap-13, 
+__gshared immutable real[] P2 = [ 0x1.8c124a850116a6d8p-21, 0x1.534abda3c2fb90bap-13, 
    0x1.29a055ec93a4718cp-7, 0x1.6468e98aad6dd474p-3, 0x1.3dab2ef4c67a601cp+0,
    0x1.e1fb3a1e70c67464p+1, 0x1.b6cce8035ff57b02p+2, 0x1.9f4c9e749ff35f62p+1
 ];
 
-__gshared immutable real Q2[] = [ 0x1.af03f4fc0655e006p-21, 0x1.713192048d11fb2p-13,
+__gshared immutable real[] Q2 = [ 0x1.af03f4fc0655e006p-21, 0x1.713192048d11fb2p-13,
    0x1.4357e5bbf5fef536p-7, 0x1.7fdac8749985d43cp-3, 0x1.4a080c813a2d8e84p+0,
    0x1.c3a4b423cdb41bdap+1, 0x1.8160694e24b5557ap+2, 1.0
 ];
 
-__gshared immutable real P3[] = [ -0x1.55da447ae3806168p-34, -0x1.145635641f8778a6p-24,
+__gshared immutable real[] P3 = [ -0x1.55da447ae3806168p-34, -0x1.145635641f8778a6p-24,
  -0x1.abf46d6b48040128p-17, -0x1.7da550945da790fcp-11, -0x1.aa0b2a31157775fap-8,
    0x1.b11d97522eed26bcp-3, 0x1.1106d22f9ae89238p+1, 0x1.029a358e1e630f64p+1
 ];
 
-__gshared immutable real Q3[] = [ -0x1.74022dd5523e6f84p-34, -0x1.2cb60d61e29ee836p-24,
+__gshared immutable real[] Q3 = [ -0x1.74022dd5523e6f84p-34, -0x1.2cb60d61e29ee836p-24,
    -0x1.d19e6ec03a85e556p-17, -0x1.9ea2a7b4422f6502p-11, -0x1.c54b1e852f107162p-8,
    0x1.e05268dd3c07989ep-3, 0x1.239c6aff14afbf82p+1, 1.0
 ];
