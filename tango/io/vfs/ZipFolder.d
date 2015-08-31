@@ -300,9 +300,8 @@ class ZipSubFolder : VfsFolder, VfsSync
 
     ///
     final override string toString()
-    in { assert( valid ); }
-    body
     {
+        assert( valid );
         return entry.fullname.idup;
     }
 
@@ -870,7 +869,7 @@ private:
         // Update readonly to reflect the write-protected status of the
         // archive.
         this.readonly = this.readonly || !Path.isWritable(path);
-        
+
         zr = new ZipBlockReader(path);
 
         // Parse the contents of the archive
@@ -975,9 +974,8 @@ class ZipFile : VfsFile
 
     ///
     final override string toString()
-    in { assert( valid ); }
-    body
     {
+        assert( valid );
         if( entry ) return entry.fullname.idup;
         else        return (parent.fullname ~ "/" ~ name_).idup;
     }

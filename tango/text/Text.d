@@ -422,7 +422,7 @@ class Text(T) : TextView!(T)
                 set (content, copy);
                 this.comparator_ = &simpleComparator;
         }
-        
+
         this (const(T)[] content)
         {
                 set (content);
@@ -444,7 +444,7 @@ class Text(T) : TextView!(T)
         {
                 this (other.mslice(), copy);
         }
-        
+
         this (const(TextViewT) other, bool copy = true)
         {
                 this (other.slice());
@@ -473,7 +473,7 @@ class Text(T) : TextView!(T)
                 // no selection
                 return select (0, 0);
         }
-        
+
         final Text set (const(T)[] chars)
         {
                 contentLength = chars.length;
@@ -1283,7 +1283,7 @@ static if(DMDFE_Version != 2061)
         {
                 return content [0 .. contentLength];
         }
-        
+
         override T[] mslice ()
         {
                 return content [0 .. contentLength];
@@ -1308,12 +1308,12 @@ static if(DMDFE_Version != 2061)
                 will be moved to the heap if said buffer is not large enough
 
         ***********************************************************************/
-        
+
         override const string toString()
         {
                 return toString(null).idup;
         }
-        
+
         final override const char[] toString (char[] dst)
         {
                 static if (is (T == char)) {
@@ -1693,6 +1693,8 @@ class TextView(T) : UniText
 
 class UniText
 {
+        override string toString() { return toString(null).idup; }
+
         abstract const char[]  toString  (char[]  dst = null);
 
         abstract const wchar[] toString16 (wchar[] dst = null);
