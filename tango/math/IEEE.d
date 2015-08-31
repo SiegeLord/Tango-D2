@@ -86,12 +86,12 @@ version (Naked_D_InlineAsm_X86) {
 }
 
 
-version(Windows) { 
-    version(DigitalMars) { 
- 	    version = DMDWindows; 
-    } 
+version(Windows) {
+    version(DigitalMars) {
+ 	    version = DMDWindows;
+    }
 }
- 	
+
 // Standard Tango NaN payloads.
 // NOTE: These values may change in future Tango releases
 // The lowest three bits indicate the cause of the NaN:
@@ -159,7 +159,7 @@ template floatTraits(T) {
     }
     enum uint EXPMASK_INT = 0x7F80_0000;
     enum uint MANTISSAMASK_INT = 0x007F_FFFF;
-    version(LittleEndian) {        
+    version(LittleEndian) {
       enum EXPPOS_SHORT = 1;
     } else {
       enum EXPPOS_SHORT = 0;
@@ -498,7 +498,7 @@ PrecisionControl reduceRealPrecision(PrecisionControl prec) {
  *      Calculate and return $(I x) and $(I exp) such that
  *      value =$(I x)*2$(SUP exp) and
  *      .5 $(LT)= |$(I x)| $(LT) 1.0
- *      
+ *
  *      $(I x) has same sign as value.
  *
  *      $(TABLE_SV
@@ -543,7 +543,7 @@ real frexp(real value, out int exp)
         vu[F.EXPPOS_SHORT] = cast(ushort)((0x8000 & vu[F.EXPPOS_SHORT]) | 0x3FFE);
     }
     return value;
-  } else static if (real.mant_dig == 113) { // quadruple      
+  } else static if (real.mant_dig == 113) { // quadruple
         if (ex) { // If exponent is non-zero
             if (ex == F.EXPMASK) {   // infinity or NaN
                 if (vl[MANTISSA_LSB] |( vl[MANTISSA_MSB]&0x0000_FFFF_FFFF_FFFF)) {  // NaN
@@ -621,8 +621,8 @@ unittest
         [double.min_normal/2.0, .5, -1022],
         [real.infinity,real.infinity,int.max],
         [-real.infinity,-real.infinity,int.min],
-    ];   
-    
+    ];
+
     int i;
     int eptr;
     real v = frexp(NaN(0xABC), eptr);
@@ -689,7 +689,7 @@ real ldexp(real n, int exp) /* intrinsic */
  *
  * If x is not a special value, the result is the same as
  * $(D cast(int)logb(x)).
- * 
+ *
  * Remarks: This function is consistent with IEEE754R, but it
  * differs from the C function of the same name
  * in the return value of infinity. (in C, ilogb(real.infinity)== int.max).
@@ -914,7 +914,7 @@ creal expi(real y)
 {
     version(Naked_D_InlineAsm_X86)
     {
-        asm {            
+        asm {
             fld y;
             fsincos;
             fxch ST(1), ST(0);
@@ -981,7 +981,7 @@ unittest
 int isNormal(X)(X x)
 {
     alias floatTraits!(X) F;
-    
+
     static if(real.mant_dig==106) { // doubledouble
     // doubledouble is normal if the least significant part is normal.
         return isNormal((cast(double*)&x)[MANTISSA_LSB]);
@@ -1008,7 +1008,7 @@ unittest
     assert(!isNormal(real.infinity));
     assert(isNormal(-real.max));
     assert(!isNormal(real.min_normal/4));
-    
+
 }
 }
 
@@ -1111,7 +1111,7 @@ int isSubnormal(real x)
     alias floatTraits!(real) F;
     static if (real.mant_dig == 53) { // double
         return isSubnormal(cast(double)x);
-    } else static if (real.mant_dig == 113) { // quadruple        
+    } else static if (real.mant_dig == 113) { // quadruple
         ushort e = F.EXPMASK & (cast(ushort *)&x)[F.EXPPOS_SHORT];
         long*   ps = cast(long *)&x;
         return (e == 0 && (((ps[MANTISSA_LSB]|(ps[MANTISSA_MSB]& 0x0000_FFFF_FFFF_FFFF))) !=0));
@@ -1145,7 +1145,7 @@ int isZero(real x)
     alias floatTraits!(real) F;
     static if (real.mant_dig == 53) { // double
         return ((*cast(ulong *)&x) & 0x7FFF_FFFF_FFFF_FFFF) == 0;
-    } else static if (real.mant_dig == 113) { // quadruple   
+    } else static if (real.mant_dig == 113) { // quadruple
         long*   ps = cast(long *)&x;
         return (ps[MANTISSA_LSB] | (ps[MANTISSA_MSB]& 0x7FFF_FFFF_FFFF_FFFF)) == 0;
     } else { // real80
@@ -1175,10 +1175,10 @@ int isInfinity(real x)
     static if (real.mant_dig == 53) { // double
         return ((*cast(ulong *)&x) & 0x7FFF_FFFF_FFFF_FFFF) == 0x7FF8_0000_0000_0000;
     } else static if(real.mant_dig == 106) { //doubledouble
-        return (((cast(ulong *)&x)[MANTISSA_MSB]) & 0x7FFF_FFFF_FFFF_FFFF) == 0x7FF8_0000_0000_0000;   
-    } else static if (real.mant_dig == 113) { // quadruple   
+        return (((cast(ulong *)&x)[MANTISSA_MSB]) & 0x7FFF_FFFF_FFFF_FFFF) == 0x7FF8_0000_0000_0000;
+    } else static if (real.mant_dig == 113) { // quadruple
         long*   ps = cast(long *)&x;
-        return (ps[MANTISSA_LSB] == 0) 
+        return (ps[MANTISSA_LSB] == 0)
          && (ps[MANTISSA_MSB] & 0x7FFF_FFFF_FFFF_FFFF) == 0x7FFF_0000_0000_0000;
     } else { // real80
         ushort e = cast(ushort)(F.EXPMASK & (cast(ushort *)&x)[F.EXPPOS_SHORT]);
@@ -1217,7 +1217,7 @@ unittest
  *
  * Remarks:
  * This function is included in the IEEE 754-2008 standard.
- * 
+ *
  * nextDoubleUp and nextFloatUp are the corresponding functions for
  * the IEEE double and IEEE float number lines.
  */
@@ -1231,7 +1231,7 @@ real nextUp(real x)
         if (e == F.EXPMASK) { // NaN or Infinity
              if (x == -real.infinity) return -real.max;
              return x; // +Inf and NaN are unchanged.
-        }     
+        }
         ulong*   ps = cast(ulong *)&e;
         if (ps[MANTISSA_LSB] & 0x8000_0000_0000_0000)  { // Negative number
             if (ps[MANTISSA_LSB]==0 && ps[MANTISSA_MSB] == 0x8000_0000_0000_0000) { // it was negative zero
@@ -1246,7 +1246,7 @@ real nextUp(real x)
             if (ps[MANTISSA_LSB]==0) ++ps[MANTISSA_MSB];
         }
         return x;
-          
+
     } else static if(real.mant_dig==64){ // real80
         // For 80-bit reals, the "implied bit" is a nuisance...
         ushort *pe = cast(ushort *)&x;
@@ -1449,7 +1449,7 @@ unittest {
  *
  * Remarks:
  * This function is included in the IEEE 754-2008 standard.
- * 
+ *
  * nextDoubleDown and nextFloatDown are the corresponding functions for
  * the IEEE double and IEEE float number lines.
  */
@@ -1522,12 +1522,12 @@ int feqrel(X)(X x, X y)
     /* Public Domain. Author: Don Clugston, 18 Aug 2005.
      */
   static assert(is(X==real) || is(X==double) || is(X==float), "Only float, double, and real are supported by feqrel");
-  
+
   static if (X.mant_dig == 106) { // doubledouble.
      int a = feqrel(cast(double*)(&x)[MANTISSA_MSB], cast(double*)(&y)[MANTISSA_MSB]);
      if (a != double.mant_dig) return a;
-     return double.mant_dig + feqrel(cast(double*)(&x)[MANTISSA_LSB], cast(double*)(&y)[MANTISSA_LSB]);     
-  } else static if (X.mant_dig==64 || X.mant_dig==113 
+     return double.mant_dig + feqrel(cast(double*)(&x)[MANTISSA_LSB], cast(double*)(&y)[MANTISSA_LSB]);
+  } else static if (X.mant_dig==64 || X.mant_dig==113
                  || X.mant_dig==53 || X.mant_dig == 24) {
     if (x == y) return X.mant_dig; // ensure diff!=0, cope with INF.
 
@@ -1550,20 +1550,20 @@ int feqrel(X)(X x, X y)
     // they could have 0 or 1 bits in common.
 
  static if (X.mant_dig==64 || X.mant_dig==113) { // real80 or quadruple
-    int bitsdiff = ( ((pa[F.EXPPOS_SHORT] & F.EXPMASK) 
+    int bitsdiff = ( ((pa[F.EXPPOS_SHORT] & F.EXPMASK)
                      + (pb[F.EXPPOS_SHORT]& F.EXPMASK)
-                     - (0x8000-F.EXPMASK))>>1) 
+                     - (0x8000-F.EXPMASK))>>1)
                 - pd[F.EXPPOS_SHORT];
  } else static if (X.mant_dig==53) { // double
     int bitsdiff = (( ((pa[F.EXPPOS_SHORT] & F.EXPMASK)
                      + (pb[F.EXPPOS_SHORT] & F.EXPMASK)
-                     - (0x8000-F.EXPMASK))>>1) 
+                     - (0x8000-F.EXPMASK))>>1)
                  - (pd[F.EXPPOS_SHORT] & F.EXPMASK))>>4;
  } else static if (X.mant_dig == 24) { // float
      int bitsdiff = (( ((pa[F.EXPPOS_SHORT] & F.EXPMASK)
                       + (pb[F.EXPPOS_SHORT] & F.EXPMASK)
-                      - (0x8000-F.EXPMASK))>>1) 
-             - (pd[F.EXPPOS_SHORT] & F.EXPMASK))>>7;     
+                      - (0x8000-F.EXPMASK))>>1)
+             - (pd[F.EXPPOS_SHORT] & F.EXPMASK))>>7;
  }
     if (pd[F.EXPPOS_SHORT] == 0)
     {   // Difference is denormal
@@ -1576,9 +1576,9 @@ int feqrel(X)(X x, X y)
 
     if (bitsdiff > 0)
         return bitsdiff + 1; // add the 1 we subtracted before
-        
-    // Avoid out-by-1 errors when factor is almost 2.    
-     static if (X.mant_dig==64 || X.mant_dig==113) { // real80 or quadruple    
+
+    // Avoid out-by-1 errors when factor is almost 2.
+     static if (X.mant_dig==64 || X.mant_dig==113) { // real80 or quadruple
         return (bitsdiff == 0) ? (pa[F.EXPPOS_SHORT] == pb[F.EXPPOS_SHORT]) : 0;
      } else static if (X.mant_dig == 53 || X.mant_dig == 24) { // double or float
         return (bitsdiff == 0 && !((pa[F.EXPPOS_SHORT] ^ pb[F.EXPPOS_SHORT])& F.EXPMASK)) ? 1 : 0;
@@ -1608,9 +1608,9 @@ unittest
    assert(feqrel(1.5+real.epsilon,1.5L)==real.mant_dig-1);
    assert(feqrel(1.5-real.epsilon,1.5L)==real.mant_dig-1);
    assert(feqrel(1.5-real.epsilon,1.5+real.epsilon)==real.mant_dig-2);
-   
+
    assert(feqrel(real.min_normal/8,real.min_normal/17)==3);
-   
+
    // Numbers that are close
    assert(feqrel(0x1.Bp+84, 0x1.B8p+84)==5);
    assert(feqrel(0x1.8p+10, 0x1.Cp+10)==2);
@@ -1631,7 +1631,7 @@ unittest
    assert(feqrel(real.infinity,-real.infinity)==0);
    assert(feqrel(-real.max,real.infinity)==0);
    assert(feqrel(real.max,-real.max)==0);
-   
+
    // floats
    assert(feqrel(2.1f, 2.1f)==float.mant_dig);
    assert(feqrel(1.5f, 1.0f)==1);
@@ -1668,7 +1668,7 @@ real copysign(real to, real from)
 {
     ubyte* pto   = cast(ubyte *)&to;
     ubyte* pfrom = cast(ubyte *)&from;
-    
+
     alias floatTraits!(real) F;
     pto[F.SIGNPOS_BYTE] &= 0x7F;
     pto[F.SIGNPOS_BYTE] |= pfrom[F.SIGNPOS_BYTE] & 0x80;
@@ -1715,7 +1715,7 @@ unittest
 T ieeeMean(T)(T x, T y)
 in {
     // both x and y must have the same sign, and must not be NaN.
-    assert(signbit(x) == signbit(y)); 
+    assert(signbit(x) == signbit(y));
     assert(!isNaN(x) && !isNaN(y));
 }
 body {
@@ -1758,8 +1758,8 @@ body {
         ulong *ul = cast(ulong *)&u;
         ulong *xl = cast(ulong *)&x;
         ulong *yl = cast(ulong *)&y;
-        // Multi-byte add, then multi-byte right shift.        
-        ulong mh = ((xl[MANTISSA_MSB] & 0x7FFF_FFFF_FFFF_FFFFL) 
+        // Multi-byte add, then multi-byte right shift.
+        ulong mh = ((xl[MANTISSA_MSB] & 0x7FFF_FFFF_FFFF_FFFFL)
                   + (yl[MANTISSA_MSB] & 0x7FFF_FFFF_FFFF_FFFFL));
         // Discard the lowest bit (to avoid overflow)
         ulong ml = (xl[MANTISSA_LSB]>>>1) + (yl[MANTISSA_LSB]>>>1);
@@ -1868,7 +1868,7 @@ real NaN(ulong payload)
             *cast(ulong*)(6+cast(ubyte*)(&x)) = v;
           } else {
             *cast(ulong*)(2+cast(ubyte*)(&x)) = v;
-          }        
+          }
         } else { // real80
             * cast(ulong *)(&x) = v;
         }
