@@ -28,7 +28,7 @@ module tango.sys.freebsd.consts.socket;
         // OptionLevel.TCP settings
         TCP_NODELAY = 1 ,
     }
-    
+
     enum
     {
         SOCK_STREAM = 1 , /++ sequential, reliable +/
@@ -42,7 +42,7 @@ module tango.sys.freebsd.consts.socket;
         SOL_SOCKET      = 0xffff,
     }
     /* Standard well-defined IP protocols.  */
-    private enum
+    enum
       {
         IPPROTO_IP = 0, /* Dummy protocol for TCP.  */
         IPPROTO_IPV4 = 4, /* Dummy protocol for TCP.  */
@@ -118,14 +118,14 @@ module tango.sys.freebsd.consts.socket;
         AI_CANONNAME = 0x00000002, /// fill ai_canonname
         AI_NUMERICHOST = 0x00000004, /// prevent host name resolution
         AI_NUMERICSERV = 0x00000008, /// prevent service name resolution valid flags for addrinfo (not a standard def, apps should not use it)
-        AI_ALL = 0x00000100, /// IPv6 and IPv4-mapped (with AI_V4MAPPED) 
+        AI_ALL = 0x00000100, /// IPv6 and IPv4-mapped (with AI_V4MAPPED)
         AI_V4MAPPED_CFG = 0x00000200, /// accept IPv4-mapped if kernel supports
         AI_ADDRCONFIG = 0x00000400, /// only if any address is assigned
         AI_V4MAPPED = 0x00000800, /// accept IPv4-mapped IPv6 address special recommended flags for getipnodebyname
         AI_MASK = (AI_PASSIVE | AI_CANONNAME | AI_NUMERICHOST | AI_NUMERICSERV | AI_ADDRCONFIG),
         AI_DEFAULT = (AI_V4MAPPED_CFG | AI_ADDRCONFIG),
  }
-                        
+
 
 enum
 {
@@ -138,7 +138,7 @@ enum
         EAI_SOCKTYPE = 10,      /// `ai_socktype' not supported.
         EAI_SERVICE = 9,        /// SERVICE not supported for `ai_socktype'.
         EAI_MEMORY = 6, /// Memory allocation failure.
-}       
+}
 
 enum
 {
@@ -149,6 +149,6 @@ enum
         NI_NOFQDN = 0x00000001, /// Only return nodename portion.
         NI_NAMEREQD = 0x00000004,       /// Don't return numeric addresses.
         NI_DGRAM = 0x00000010,  /// Look up UDP service rather than TCP.
-}       
+}
 
-                        
+
