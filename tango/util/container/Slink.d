@@ -16,7 +16,7 @@
 
 module tango.util.container.Slink;
 
-import tango.util.container.model.IContainer;
+private import tango.util.container.model.IContainer;
 
 /*******************************************************************************
 
@@ -28,7 +28,7 @@ import tango.util.container.model.IContainer;
 
         Still, Slink is made `public' so that you can use it to build other
         kinds of containers
-        
+
         Note that when K is specified, support for keys are enabled. When
         Identity is stipulated as 'true', those keys are compared using an
         identity-comparison instead of equality (using 'is'). Similarly, if
@@ -37,7 +37,7 @@ import tango.util.container.model.IContainer;
 
 *******************************************************************************/
 
-alias int KeyDummy;
+private alias int KeyDummy;
 
 struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 {
@@ -52,11 +52,11 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
         {
         hash_t       cache;             // retain hash value?
         }
-                
+
         /***********************************************************************
 
                 add support for keys also?
-                
+
         ***********************************************************************/
 
         static if (!is(typeof(K) == KeyDummy))
@@ -74,7 +74,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                         return typeid(K).getHash(&key);
                 }
 
-                final Ref findKey (K key)
+                final Ref findKey (inout(K) key) 
                 {
                         static if (Identity == true)
                         {
@@ -180,13 +180,13 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                         return c;
                 }
         }
-        
+
         /***********************************************************************
 
                  Set to point to n as next cell
 
                  param: n, the new next cell
-                        
+
         ***********************************************************************/
 
         final Ref set (V v, Ref n)
@@ -202,7 +202,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                  previously pointing to
 
                  param: p, the cell to splice
-                        
+
         ***********************************************************************/
 
         final void attach (Ref p)
@@ -214,9 +214,9 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 
         /***********************************************************************
 
-                Cause current cell to skip over the current next() one, 
+                Cause current cell to skip over the current next() one,
                 effectively removing the next element from the list
-                        
+
         ***********************************************************************/
 
         final void detachNext()
@@ -228,10 +228,10 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
         /***********************************************************************
 
                  Linear search down the list looking for element
-                 
+
                  param: element to look for
                  Returns: the cell containing element, or null if no such
-                 
+
         ***********************************************************************/
 
         final Ref find (V element)
@@ -246,7 +246,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 
                 Return the number of cells traversed to find first occurrence
                 of a cell with element() element, or -1 if not present
-                        
+
         ***********************************************************************/
 
         final const int index (V element)
@@ -262,7 +262,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
         /***********************************************************************
 
                 Count the number of occurrences of element in list
-                        
+
         ***********************************************************************/
 
         final const int count (V element)
@@ -277,7 +277,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
         /***********************************************************************
 
                  Return the number of cells in the list
-                        
+
         ***********************************************************************/
 
         final const int count ()
@@ -292,7 +292,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 
                 Return the cell representing the last element of the list
                 (i.e., the one whose next() is null
-                        
+
         ***********************************************************************/
 
         final Ref tail ()
@@ -306,13 +306,13 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
         /***********************************************************************
 
                 Return the nth cell of the list, or null if no such
-                        
+
         ***********************************************************************/
 
-        final Ref nth (int n)
+        final inout(Ref) nth (size_t n) inout
         {
                 auto p = &this;
-                for (int i; i < n; ++i)
+                for (size_t i; i < n; ++i)
                      p = p.next;
                 return p;
         }
@@ -321,7 +321,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 
                 Make a copy of the list; i.e., a new list containing new cells
                 but including the same elements in the same order
-                        
+
         ***********************************************************************/
 
         final Ref copy (scope Ref delegate() alloc)
@@ -341,7 +341,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
         /***********************************************************************
 
                 dup is shallow; i.e., just makes a copy of the current cell
-                        
+
         ***********************************************************************/
 
         Ref dup (scope Ref delegate() alloc)
@@ -358,12 +358,12 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 
                 Basic linkedlist merge algorithm.
                 Merges the lists head by fst and snd with respect to cmp
-         
+
                 param: fst head of the first list
                 param: snd head of the second list
                 param: cmp a Comparator used to compare elements
                 Returns: the merged ordered list
-                        
+
         ***********************************************************************/
 
         static Ref merge (Ref fst, Ref snd, Comparator cmp)
@@ -452,11 +452,11 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
         /***********************************************************************
 
                  Standard merge sort algorithm
-                 
+
                  param: s the list to sort
                  param: cmp, the comparator to use for ordering
                  Returns: the head of the sorted list
-                        
+
         ***********************************************************************/
 
         static Ref sort (Ref s, Comparator cmp)

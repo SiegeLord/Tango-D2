@@ -65,8 +65,8 @@ private import tango.core.Exception : NoSuchElementException;
 
 *******************************************************************************/
 
-class SortedMap (K, V, alias Reap = Container.reap, 
-                       alias Heap = Container.DefaultCollect) 
+class SortedMap (K, V, alias Reap = Container.reap,
+                       alias Heap = Container.DefaultCollect)
                        : IContainer!(V)
 {
         // use this type for Allocator configuration
@@ -93,7 +93,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Make an empty tree, using given Comparator for ordering
-                 
+
         ***********************************************************************/
 
         public this (Comparator c = null)
@@ -104,11 +104,11 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Special version of constructor needed by dup()
-                 
+
         ***********************************************************************/
 
         private this (Comparator c, size_t n)
-        {       
+        {
                 count = n;
                 cmpElem = &compareElem;
                 cmp = (c is null) ? &compareKey : c;
@@ -128,7 +128,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Return a generic iterator for contained elements
-                
+
         ***********************************************************************/
 
         final Iterator iterator (bool forward = true)
@@ -141,15 +141,15 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 i.prior = null;
                 return i;
         }
-      
+
         /***********************************************************************
 
-                Return an iterator which return all elements matching 
+                Return an iterator which return all elements matching
                 or greater/lesser than the key in argument. The second
                 argument dictates traversal direction.
 
                 Return a generic iterator for contained elements
-                
+
         ***********************************************************************/
 
         final Iterator iterator (K key, bool forward)
@@ -164,7 +164,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 Configure the assigned allocator with the size of each
                 allocation block (number of nodes allocated at one time)
                 and the number of nodes to pre-populate the cache with.
-                
+
                 Time complexity: O(n)
 
         ***********************************************************************/
@@ -178,18 +178,18 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Return the number of elements contained
-                
+
         ***********************************************************************/
 
-        @property final const size_t size ()
+        @property final size_t size () const
         {
                 return count;
         }
-        
+
         /***********************************************************************
 
                 Create an independent copy. Does not clone elements
-                 
+
         ***********************************************************************/
 
         @property final SortedMap dup ()
@@ -204,7 +204,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Time complexity: O(log n)
-                        
+
         ***********************************************************************/
 
         final bool contains (V value)
@@ -215,9 +215,9 @@ class SortedMap (K, V, alias Reap = Container.reap,
         }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
-        
+
         final int opApply (scope int delegate (ref V value) dg)
         {
                 return iterator.opApply ((ref K k, ref V v) {return dg(v);});
@@ -225,9 +225,9 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
 
         /***********************************************************************
-        
+
         ***********************************************************************/
-        
+
         final int opApply (scope int delegate (ref K key, ref V value) dg)
         {
                 return iterator.opApply (dg);
@@ -236,7 +236,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Use a new Comparator. Causes a reorganization
-                 
+
         ***********************************************************************/
 
         final SortedMap comparator (Comparator c)
@@ -246,13 +246,13 @@ class SortedMap (K, V, alias Reap = Container.reap,
                    cmp = (c is null) ? &compareKey : c;
 
                    if (count !is 0)
-                      {       
+                      {
                       // must rebuild tree!
                       mutate;
                       auto t = tree.leftmost;
                       tree = null;
                       count = 0;
-                      
+
                       while (t)
                             {
                             add_ (t.value, t.attribute, false);
@@ -266,7 +266,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Time complexity: O(log n)
-                 
+
         ***********************************************************************/
 
         final bool containsKey (K key)
@@ -280,7 +280,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Time complexity: O(n)
-                 
+
         ***********************************************************************/
 
         final bool containsPair (K key, V value)
@@ -293,11 +293,11 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                Return the value associated with Key key. 
+                Return the value associated with Key key.
 
                 param: key a key
                 Returns: whether the key is contained or not
-                 
+
         ***********************************************************************/
 
         final bool get (K key, ref V value)
@@ -319,13 +319,13 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 Return the value of the key exactly matching the provided
                 key or, if none, the key just after/before it based on the
                 setting of the second argument
-    
+
                 param: key a key
                 param: after indicates whether to look beyond or before
                        the given key, where there is no exact match
                 throws: NoSuchElementException if none found
                 returns: a pointer to the value, or null if not present
-             
+
         ***********************************************************************/
 
         K nearbyKey (K key, bool after)
@@ -342,11 +342,11 @@ class SortedMap (K, V, alias Reap = Container.reap,
         }
 
         /***********************************************************************
-        
+
                 Return the first key of the map
 
                 throws: NoSuchElementException where the map is empty
-                     
+
         ***********************************************************************/
 
         K firstKey ()
@@ -359,11 +359,11 @@ class SortedMap (K, V, alias Reap = Container.reap,
         }
 
         /***********************************************************************
-        
+
                 Return the last key of the map
 
                 throws: NoSuchElementException where the map is empty
-                     
+
         ***********************************************************************/
 
         K lastKey ()
@@ -377,11 +377,11 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                Return the value associated with Key key. 
+                Return the value associated with Key key.
 
                 param: key a key
                 Returns: a pointer to the value, or null if not present
-                 
+
         ***********************************************************************/
 
         final V* opIn_r (K key)
@@ -398,7 +398,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Time complexity: O(n)
-                 
+
         ***********************************************************************/
 
         final bool keyOf (V value, ref K key)
@@ -417,7 +417,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Time complexity: O(n)
-                 
+
         ***********************************************************************/
 
         final SortedMap clear ()
@@ -427,11 +427,11 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                Reset the SortedMap contents. This releases more memory 
+                Reset the SortedMap contents. This releases more memory
                 than clear() does
 
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         final SortedMap reset ()
@@ -454,11 +454,11 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Time complexity: O(n
-                 
+
         ***********************************************************************/
 
         final size_t remove (V value, bool all = false)
-        {       
+        {
                 size_t i = count;
                 if (count)
                    {
@@ -478,7 +478,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Time complexity: O(n)
-                 
+
         ***********************************************************************/
 
         final size_t replace (V oldElement, V newElement, bool all = false)
@@ -506,7 +506,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 Time complexity: O(log n)
 
                 Takes the value associated with the least key.
-                 
+
         ***********************************************************************/
 
         final bool take (ref V v)
@@ -525,7 +525,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Time complexity: O(log n)
-                        
+
         ***********************************************************************/
 
         final bool take (K key, ref V value)
@@ -548,9 +548,9 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
                 Time complexity: O(log n)
 
-                Returns true if inserted, false where an existing key 
+                Returns true if inserted, false where an existing key
                 exists and was updated instead
-                 
+
         ***********************************************************************/
 
         final bool add (K key, V value)
@@ -562,9 +562,9 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
                 Time complexity: O(log n)
 
-                Returns true if inserted, false where an existing key 
+                Returns true if inserted, false where an existing key
                 exists and was updated instead
-                 
+
         ***********************************************************************/
 
         final bool opIndexAssign (V element, K key)
@@ -593,20 +593,20 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Time complexity: O(log n)
-                        
+
         ***********************************************************************/
 
         final bool removeKey (K key)
         {
                 V value;
-                
+
                 return take (key, value);
         }
 
         /***********************************************************************
 
                 Time complexity: O(log n)
-                 
+
         ***********************************************************************/
 
         final bool replacePair (K key, V oldElement, V newElement)
@@ -626,14 +626,14 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                Copy and return the contained set of values in an array, 
-                using the optional dst as a recipient (which is resized 
+                Copy and return the contained set of values in an array,
+                using the optional dst as a recipient (which is resized
                 as necessary).
 
                 Returns a slice of dst representing the container values.
-                
+
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         final V[] toArray (V[] dst = null)
@@ -644,15 +644,15 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 size_t i = 0;
                 foreach (k, v; this)
                          dst[i++] = v;
-                return dst [0 .. count];                        
+                return dst [0 .. count];
         }
 
         /***********************************************************************
 
                 Is this container empty?
-                
+
                 Time complexity: O(1)
-                
+
         ***********************************************************************/
 
         final const bool isEmpty ()
@@ -662,7 +662,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                 
+
         ***********************************************************************/
 
         final SortedMap check ()
@@ -688,10 +688,10 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 return this;
         }
 
-            
+
         /***********************************************************************
 
-                 
+
         ***********************************************************************/
 
         private void noSuchElement (immutable(char)[] msg)
@@ -702,7 +702,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Time complexity: O(log n)
-                 
+
         ***********************************************************************/
 
         private size_t instances (V value)
@@ -714,9 +714,9 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                Returns true where an element is added, false where an 
+                Returns true where an element is added, false where an
                 existing key is found
-                 
+
         ***********************************************************************/
 
         private final bool add_ (K key, V value, bool checkOccurrence)
@@ -773,7 +773,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Time complexity: O(n)
-                 
+
         ***********************************************************************/
 
         private SortedMap clear (bool all)
@@ -781,7 +781,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 mutate;
 
                 // collect each node if we can't collect all at once
-                if ((heap.collect(all) is false) & count)                 
+                if ((heap.collect(all) is false) & count)
                    {
                    auto node = tree.leftmost;
                    while (node)
@@ -800,7 +800,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Time complexity: O(log n)
-                        
+
         ***********************************************************************/
 
         private void remove (Ref node)
@@ -812,7 +812,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         /***********************************************************************
 
                 new element was added
-                
+
         ***********************************************************************/
 
         private void increment ()
@@ -820,11 +820,11 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 ++mutation;
                 ++count;
         }
-        
+
         /***********************************************************************
 
                 element was removed
-                
+
         ***********************************************************************/
 
         private void decrement (Ref p)
@@ -834,11 +834,11 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 ++mutation;
                 --count;
         }
-        
+
         /***********************************************************************
 
                 set was changed
-                
+
         ***********************************************************************/
 
         private void mutate ()
@@ -855,7 +855,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
                 Returns: a negative number if fst is less than snd; a
                 positive number if fst is greater than snd; else 0
-                 
+
         ***********************************************************************/
 
         private static int compareKey (ref K fst, ref K snd)
@@ -876,7 +876,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
                 Returns: a negative number if fst is less than snd; a
                 positive number if fst is greater than snd; else 0
-                 
+
         ***********************************************************************/
 
         private static int compareElem(ref V fst, ref V snd)
@@ -910,7 +910,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 bool valid ()
                 {
                         return owner.mutation is mutation;
-                }               
+                }
 
                 /***************************************************************
 
@@ -924,7 +924,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                         auto n = next (k);
                         return (n) ? v = *n, true : false;
                 }
-                
+
                 /***************************************************************
 
                         Return a pointer to the next value, or null when
@@ -967,7 +967,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                               }
                         node = n;
                         return result;
-                }                               
+                }
 
                 /***************************************************************
 
@@ -1063,7 +1063,7 @@ debug (SortedMap)
                 auto iterator = map.iterator;
                 while (iterator.next(k, v))
                       {} //iterator.remove;
-                
+
                 // incremental iteration, with optional failfast
                 auto it = map.iterator;
                 while (it.valid && it.next(k, v))
@@ -1075,15 +1075,15 @@ debug (SortedMap)
                 // remove first element ...
                 while (map.take(v))
                        Stdout.formatln ("taking {}, {} left", v, map.size);
-                
-                
+
+
                 // setup for benchmark, with a set of integers. We
                 // use a chunk allocator, and presize the bucket[]
                 auto test = new SortedMap!(int, int, Container.reap, Container.Chunk);
                 test.cache (1000, 500_000);
                 const count = 500_000;
                 StopWatch w;
-                
+
                 auto keys = new int[count];
                 foreach (ref vv; keys)
                          vv = Kiss.instance.toInt(int.max);

@@ -18,9 +18,9 @@ private import core.bitop;
 
 /******************************************************************************
 
-        A fixed or dynamic set of bits. Note that this does no memory 
-        allocation of its own when Size != 0, and does heap allocation 
-        when Size is zero. Thus you can have a fixed-size low-overhead 
+        A fixed or dynamic set of bits. Note that this does no memory
+        allocation of its own when Size != 0, and does heap allocation
+        when Size is zero. Thus you can have a fixed-size low-overhead
         'instance, or a heap oriented instance. The latter has support
         for resizing, whereas the former does not.
 
@@ -28,20 +28,20 @@ private import core.bitop;
 
 ******************************************************************************/
 
-struct BitSet (int Count=0) 
-{               
+struct BitSet (int Count=0)
+{
         private enum           width = size_t.sizeof * 8;
-        
+
         const bool opBinary(immutable(char)[] s : "&")(size_t i)
         {
             return and(i);
         }
-        
+
         void opOpAssign(immutable(char)[] s : "|")(size_t i)
         {
             or(i);
         }
-        
+
         void opOpAssign(immutable(char)[] s : "^")(size_t i)
         {
             xor(i);
@@ -68,7 +68,7 @@ struct BitSet (int Count=0)
 
         /**********************************************************************
 
-                Test whether the indexed bit is enabled 
+                Test whether the indexed bit is enabled
 
         **********************************************************************/
 
@@ -103,7 +103,7 @@ struct BitSet (int Count=0)
                 bits[i / width] |= (1 << (i % width));
                 //bts (&bits[i / width], i % width);
         }
-        
+
         /**********************************************************************
 
                 Invert an indexed bit
@@ -115,7 +115,7 @@ struct BitSet (int Count=0)
                 bits[i / width] ^= (1 << (i % width));
                 //btc (&bits[i / width], i % width);
         }
-        
+
         /**********************************************************************
 
                 Clear an indexed bit
@@ -139,14 +139,14 @@ struct BitSet (int Count=0)
                 bits[] = 0;
                 return &this;
         }
-        
+
         /**********************************************************************
 
                 Clone this BitSet and return it
 
         **********************************************************************/
 
-        @property const BitSet dup ()
+        @property BitSet dup () inout
         {
                 BitSet x;
                 static if (Count == 0)
@@ -161,7 +161,7 @@ struct BitSet (int Count=0)
 
         **********************************************************************/
 
-        @property const size_t size ()
+        @property size_t size () const
         {
                 return width * bits.length;
         }

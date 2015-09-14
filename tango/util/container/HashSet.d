@@ -52,21 +52,21 @@ private import tango.util.container.model.IContainer;
 
 *******************************************************************************/
 
-class HashSet (V, alias Hash = Container.hash, 
-                  alias Reap = Container.reap, 
-                  alias Heap = Container.DefaultCollect) 
+class HashSet (V, alias Hash = Container.hash,
+                  alias Reap = Container.reap,
+                  alias Heap = Container.DefaultCollect)
                   : IContainer!(V)
 {
         // use this type for Allocator configuration
         public alias Slink!(V)  Type;
-        
+
         private alias Type      *Ref;
 
         private alias Heap!(Type) Alloc;
 
         // Each table entry is a list - null if no table allocated
         private Ref             table[];
-        
+
         // number of elements contained
         private size_t          count;
 
@@ -75,7 +75,7 @@ class HashSet (V, alias Hash = Container.hash,
 
         // configured heap manager
         private Alloc           heap;
-        
+
         // mutation tag updates on each change
         private size_t            mutation;
 
@@ -104,7 +104,7 @@ class HashSet (V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Return a generic iterator for contained elements
-                
+
         ***********************************************************************/
 
         final Iterator iterator ()
@@ -131,22 +131,22 @@ class HashSet (V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Return the number of elements contained
-                
+
         ***********************************************************************/
 
-        @property final const size_t size ()
+        @property final size_t size () const
         {
                 return count;
         }
-        
+
         /***********************************************************************
 
                 Add a new element to the set. Does not add if there is an
                 equivalent already present. Returns true where an element
                 is added, false where it already exists
-                
+
                 Time complexity: O(1) average; O(n) worst.
-                
+
         ***********************************************************************/
 
         final bool add (V element)
@@ -163,18 +163,18 @@ class HashSet (V, alias Hash = Container.hash,
                 table[h] = allocate.set (element, hd);
                 increment;
 
-                // only check if bin was nonempty                    
+                // only check if bin was nonempty
                 if (hd)
-                    checkLoad; 
+                    checkLoad;
                 return true;
         }
 
         /***********************************************************************
 
                 Does this set contain the given element?
-        
+
                 Time complexity: O(1) average; O(n) worst
-                
+
         ***********************************************************************/
 
         final bool contains (V element)
@@ -192,15 +192,15 @@ class HashSet (V, alias Hash = Container.hash,
 
                 Make an independent copy of the container. Does not clone
                 elements
-                
+
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         @property final HashSet dup ()
         {
                 auto clone = new HashSet!(V, Hash, Reap, Heap) (loadFactor);
-                
+
                 if (count)
                    {
                    clone.buckets (buckets);
@@ -215,7 +215,7 @@ class HashSet (V, alias Hash = Container.hash,
 
                 Remove the provided element. Returns true if found, false
                 otherwise
-                
+
                 Time complexity: O(1) average; O(n) worst
 
         ***********************************************************************/
@@ -229,7 +229,7 @@ class HashSet (V, alias Hash = Container.hash,
 
                 Remove the provided element. Returns true if found, false
                 otherwise
-                
+
                 Time complexity: O(1) average; O(n) worst
 
         ***********************************************************************/
@@ -257,7 +257,7 @@ class HashSet (V, alias Hash = Container.hash,
                             else
                                trail.next = n;
                             return true;
-                            } 
+                            }
                          else
                             {
                             trail = p;
@@ -273,7 +273,7 @@ class HashSet (V, alias Hash = Container.hash,
                 Replace the first instance of oldElement with newElement.
                 Returns true if oldElement was found and replaced, false
                 otherwise.
-                
+
         ***********************************************************************/
 
         final size_t replace (V oldElement, V newElement, bool all)
@@ -286,7 +286,7 @@ class HashSet (V, alias Hash = Container.hash,
                 Replace the first instance of oldElement with newElement.
                 Returns true if oldElement was found and replaced, false
                 otherwise.
-                
+
         ***********************************************************************/
 
         final bool replace (V oldElement, V newElement)
@@ -306,7 +306,7 @@ class HashSet (V, alias Hash = Container.hash,
 
                 Remove and expose the first element. Returns false when no
                 more elements are contained
-        
+
                 Time complexity: O(n)
 
         ***********************************************************************/
@@ -356,7 +356,7 @@ class HashSet (V, alias Hash = Container.hash,
                 reset() to drop everything.
 
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         final HashSet clear ()
@@ -370,7 +370,7 @@ class HashSet (V, alias Hash = Container.hash,
                 heap manager. This releases more memory than clear() does
 
                 Time complexity: O(1)
-                
+
         ***********************************************************************/
 
         final HashSet reset ()
@@ -397,7 +397,7 @@ class HashSet (V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Set the number of buckets and resize as required
-                
+
                 Time complexity: O(n)
 
         ***********************************************************************/
@@ -415,7 +415,7 @@ class HashSet (V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Return the resize threshold
-                
+
                 Time complexity: O(1)
 
         ***********************************************************************/
@@ -428,9 +428,9 @@ class HashSet (V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Set the resize threshold, and resize as required
-                
+
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         final void threshold (float desired)
@@ -446,7 +446,7 @@ class HashSet (V, alias Hash = Container.hash,
                 Configure the assigned allocator with the size of each
                 allocation block (number of nodes allocated at one time)
                 and the number of nodes to pre-populate the cache with.
-                
+
                 Time complexity: O(n)
 
         ***********************************************************************/
@@ -459,14 +459,14 @@ class HashSet (V, alias Hash = Container.hash,
 
         /***********************************************************************
 
-                Copy and return the contained set of values in an array, 
-                using the optional dst as a recipient (which is resized 
+                Copy and return the contained set of values in an array,
+                using the optional dst as a recipient (which is resized
                 as necessary).
 
                 Returns a slice of dst representing the container values.
-                
+
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         final V[] toArray (V[] dst = null)
@@ -477,15 +477,15 @@ class HashSet (V, alias Hash = Container.hash,
                 size_t i = 0;
                 foreach (v; this)
                          dst[i++] = v;
-                return dst [0 .. count];                        
+                return dst [0 .. count];
         }
 
         /***********************************************************************
 
                 Is this container empty?
-                
+
                 Time complexity: O(1)
-                
+
         ***********************************************************************/
 
         final const bool isEmpty ()
@@ -496,7 +496,7 @@ class HashSet (V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Sanity check
-                 
+
         ***********************************************************************/
 
         final HashSet check()
@@ -525,19 +525,19 @@ class HashSet (V, alias Hash = Container.hash,
         /***********************************************************************
 
                 Allocate a node instance. This is used as the default allocator
-                 
+
         ***********************************************************************/
 
         private Ref allocate ()
         {
                 return heap.allocate;
         }
-        
+
         /***********************************************************************
 
                  Check to see if we are past load factor threshold. If so,
                  resize so that we are at half of the desired threshold.
-                 
+
         ***********************************************************************/
 
         private void checkLoad ()
@@ -551,7 +551,7 @@ class HashSet (V, alias Hash = Container.hash,
         /***********************************************************************
 
                 resize table to new capacity, rehashing all elements
-                
+
         ***********************************************************************/
 
         private void resize (size_t newCap)
@@ -582,7 +582,7 @@ class HashSet (V, alias Hash = Container.hash,
                 the per-node memory than to gain a little on each remove
 
                 Used by iterators only
-                 
+
         ***********************************************************************/
 
         private bool remove (Ref node, size_t row)
@@ -602,7 +602,7 @@ class HashSet (V, alias Hash = Container.hash,
                          else
                             trail.next = n;
                          return true;
-                         } 
+                         }
                       else
                          {
                          trail = p;
@@ -619,7 +619,7 @@ class HashSet (V, alias Hash = Container.hash,
                 reset() to drop everything.
 
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         private HashSet clear (bool all)
@@ -647,7 +647,7 @@ class HashSet (V, alias Hash = Container.hash,
         /***********************************************************************
 
                 new element was added
-                
+
         ***********************************************************************/
 
         private void increment()
@@ -655,11 +655,11 @@ class HashSet (V, alias Hash = Container.hash,
                 ++mutation;
                 ++count;
         }
-        
+
         /***********************************************************************
 
                 element was removed
-                
+
         ***********************************************************************/
 
         private void decrement (Ref p)
@@ -669,11 +669,11 @@ class HashSet (V, alias Hash = Container.hash,
                 ++mutation;
                 --count;
         }
-        
+
         /***********************************************************************
 
                 set was changed
-                
+
         ***********************************************************************/
 
         private void mutate()
@@ -705,7 +705,7 @@ class HashSet (V, alias Hash = Container.hash,
                 bool valid ()
                 {
                         return owner.mutation is mutation;
-                }               
+                }
 
                 /***************************************************************
 
@@ -719,7 +719,7 @@ class HashSet (V, alias Hash = Container.hash,
                         auto n = next;
                         return (n) ? v = *n, true : false;
                 }
-                
+
                 /***************************************************************
 
                         Return a pointer to the next value, or null when
@@ -734,7 +734,7 @@ class HashSet (V, alias Hash = Container.hash,
                                    cell = table [row++];
                                else
                                   return null;
-  
+
                         prior = cell;
                         cell = cell.next;
                         return &prior.value;
@@ -758,7 +758,7 @@ class HashSet (V, alias Hash = Container.hash,
                                          c = table [row++];
                                      else
                                         break loop;
-  
+
                               prior = c;
                               c = c.next;
                               if ((result = dg(prior.value)) != 0)
@@ -767,7 +767,7 @@ class HashSet (V, alias Hash = Container.hash,
 
                         cell = c;
                         return result;
-                }                               
+                }
 
                 /***************************************************************
 
@@ -802,7 +802,7 @@ debug (HashSet)
         import tango.io.Stdout;
         import tango.core.Thread;
         import tango.time.StopWatch;
-       
+
         void main()
         {
                 // usage examples ...
@@ -829,7 +829,7 @@ debug (HashSet)
                 auto iterator = set.iterator;
                 while (iterator.next(v))
                       {} //iterator.remove;
-                
+
                 // incremental iteration, with optional failfast
                 auto it = set.iterator;
                 while (it.valid && it.next(v))
@@ -841,8 +841,8 @@ debug (HashSet)
                 // remove first element ...
                 while (set.take(v))
                        Stdout.formatln ("taking {}, {} left", v, set.size);
-                
-                
+
+
                 // setup for benchmark, with a set of integers. We
                 // use a chunk allocator, and presize the bucket[]
                 auto test = new HashSet!(int, Container.hash, Container.reap, Container.Chunk);

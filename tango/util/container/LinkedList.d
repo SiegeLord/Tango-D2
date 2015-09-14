@@ -72,13 +72,13 @@ private import tango.util.container.model.IContainer;
 
 *******************************************************************************/
 
-class LinkedList (V, alias Reap = Container.reap, 
-                     alias Heap = Container.DefaultCollect) 
+class LinkedList (V, alias Reap = Container.reap,
+                     alias Heap = Container.DefaultCollect)
                      : IContainer!(V)
 {
         // use this type for Allocator configuration
         private alias Slink!(V) Type;
-        
+
         private alias Type*     Ref;
         private alias V*        VRef;
 
@@ -89,7 +89,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         // configured heap manager
         private Alloc           heap;
-        
+
         // mutation tag updates on each change
         private size_t          mutation;
 
@@ -133,7 +133,7 @@ class LinkedList (V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Return a generic iterator for contained elements
-                
+
         ***********************************************************************/
 
         final Iterator iterator ()
@@ -151,7 +151,7 @@ class LinkedList (V, alias Reap = Container.reap,
                 Configure the assigned allocator with the size of each
                 allocation block (number of nodes allocated at one time)
                 and the number of nodes to pre-populate the cache with.
-                
+
                 Time complexity: O(n)
 
         ***********************************************************************/
@@ -175,10 +175,10 @@ class LinkedList (V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Return the number of elements contained
-                
+
         ***********************************************************************/
 
-        @property final const size_t size ()
+        @property final size_t size () const
         {
                 return count;
         }
@@ -237,10 +237,17 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final V get (size_t index)
+        final inout(V) get (size_t index) inout
         {
                 return cellAt(index).value;
         }
+
+        alias get opIndex;
+        void opIndexAssign(V val, size_t index) {
+            addAt(index, val);
+        }
+
+        alias size length;
 
         /***********************************************************************
 
@@ -309,7 +316,7 @@ class LinkedList (V, alias Reap = Container.reap,
                    {
                    auto p = cellAt (from);
                    auto current = newlist = heap.allocate.set (p.value, null);
-         
+
                    for (auto i = 1; i < length; ++i)
                         if ((p = p.next) is null)
                              length = i;
@@ -337,12 +344,12 @@ class LinkedList (V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Reset the HashMap contents and optionally configure a new
-                heap manager. We cannot guarantee to clean up reconfigured 
+                heap manager. We cannot guarantee to clean up reconfigured
                 allocators, so be sure to invoke reset() before discarding
                 this class
 
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         final LinkedList reset ()
@@ -351,7 +358,7 @@ class LinkedList (V, alias Reap = Container.reap,
         }
 
         /***********************************************************************
-        
+
                 Takes the first value on the list
 
                 Time complexity: O(1)
@@ -701,14 +708,14 @@ class LinkedList (V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                Copy and return the contained set of values in an array, 
-                using the optional dst as a recipient (which is resized 
+                Copy and return the contained set of values in an array,
+                using the optional dst as a recipient (which is resized
                 as necessary).
 
                 Returns a slice of dst representing the container values.
-                
+
                 Time complexity: O(n)
-                
+
         ***********************************************************************/
 
         final V[] toArray (V[] dst = null)
@@ -719,15 +726,15 @@ class LinkedList (V, alias Reap = Container.reap,
                 size_t i = 0;
                 foreach (v; this)
                          dst[i++] = v;
-                return dst [0 .. count];                        
+                return dst [0 .. count];
         }
 
         /***********************************************************************
 
                 Is this container empty?
-                
+
                 Time complexity: O(1)
-                
+
         ***********************************************************************/
 
         final const bool isEmpty ()
@@ -793,7 +800,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        private Ref cellAt (size_t index)
+        private inout(Ref) cellAt (size_t index) inout
         {
                 checkIndex (index);
                 return list.nth (index);
@@ -803,7 +810,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        private void checkIndex (size_t index)
+        private void checkIndex (size_t index) const
         {
                 if (index >= count)
                     throw new Exception ("out of range");
@@ -811,7 +818,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                Splice elements of e between hd and tl. If hd 
+                Splice elements of e between hd and tl. If hd
                 is null return new hd
 
                 Returns the count of new elements added
@@ -867,7 +874,7 @@ class LinkedList (V, alias Reap = Container.reap,
                          p = n;
                          }
                    }
-        
+
                 list = null;
                 count = 0;
                 return this;
@@ -876,7 +883,7 @@ class LinkedList (V, alias Reap = Container.reap,
         /***********************************************************************
 
                 new element was added
-                
+
         ***********************************************************************/
 
         private void increment ()
@@ -884,11 +891,11 @@ class LinkedList (V, alias Reap = Container.reap,
                 ++mutation;
                 ++count;
         }
-        
+
         /***********************************************************************
 
                 element was removed
-                
+
         ***********************************************************************/
 
         private void decrement (Ref p)
@@ -898,11 +905,11 @@ class LinkedList (V, alias Reap = Container.reap,
                 ++mutation;
                 --count;
         }
-        
+
         /***********************************************************************
 
                 set was changed
-                
+
         ***********************************************************************/
 
         private void mutate ()
@@ -933,7 +940,7 @@ class LinkedList (V, alias Reap = Container.reap,
                 bool valid ()
                 {
                         return owner.mutation is mutation;
-                }               
+                }
 
                 /***************************************************************
 
@@ -947,7 +954,7 @@ class LinkedList (V, alias Reap = Container.reap,
                         auto n = next;
                         return (n) ? v = *n, true : false;
                 }
-                
+
                 /***************************************************************
 
                         Return a pointer to the next value, or null when
@@ -1037,7 +1044,7 @@ class LinkedList (V, alias Reap = Container.reap,
                               }
                         node = n;
                         return result;
-                }                               
+                }
 
                 /***************************************************************
 
@@ -1087,7 +1094,7 @@ debug (LinkedList)
                 foreach (value; set)
                          Stdout (value).newline;
 
-                // explicit generic iteration   
+                // explicit generic iteration
                 foreach (value; set.iterator)
                          Stdout.formatln ("{}", value);
 
@@ -1110,7 +1117,7 @@ debug (LinkedList)
                 auto iterator = set.iterator;
                 while (iterator.next(v))
                       {} //iterator.remove;
-                
+
                 // incremental iteration, with optional failfast
                 auto it = set.iterator;
                 while (it.valid && it.next(v))
@@ -1122,8 +1129,8 @@ debug (LinkedList)
                 // remove first element ...
                 while (set.take(v))
                        Stdout.formatln ("taking {}, {} left", v, set.size);
-                
-                
+
+
                 // setup for benchmark, with a set of integers. We
                 // use a chunk allocator, and presize the bucket[]
                 auto test = new LinkedList!(int, Container.reap, Container.Chunk);
@@ -1163,11 +1170,10 @@ debug (LinkedList)
 
 
                 // benchmark iteration
-                w.start;             
-                foreach (ref iii; test) {} 
+                w.start;
+                foreach (ref iii; test) {}
                 Stdout.formatln ("{} pointer iteration: {}/s", test.size, test.size/w.stop);
 
                 test.check;
         }
 }
-                

@@ -74,7 +74,7 @@ struct Stack (V, int Size = 0)
 
         ***********************************************************************/
 
-        @property size_t size ()
+        @property size_t size () const
         {
                 return depth;
         }

@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2008 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-        
-        version:        Initial release: April 2008      
-        
+
+        version:        Initial release: April 2008
+
         author:         Kris
 
         Since:          0.99.7
@@ -22,26 +22,26 @@ public  import tango.util.container.Container;
 
 /******************************************************************************
 
-        CacheMap extends the basic hashmap type by adding a limit to 
-        the number of items contained at any given time. In addition, 
-        CacheMap sorts the cache entries such that those entries 
+        CacheMap extends the basic hashmap type by adding a limit to
+        the number of items contained at any given time. In addition,
+        CacheMap sorts the cache entries such that those entries
         frequently accessed are at the head of the queue, and those
-        least frequently accessed are at the tail. When the queue 
-        becomes full, old entries are dropped from the tail and are 
-        reused to house new cache entries. 
+        least frequently accessed are at the tail. When the queue
+        becomes full, old entries are dropped from the tail and are
+        reused to house new cache entries.
 
         In other words, it retains MRU items while dropping LRU when
         capacity is reached.
 
         This is great for keeping commonly accessed items around, while
-        limiting the amount of memory used. Typically, the queue size 
+        limiting the amount of memory used. Typically, the queue size
         would be set in the thousands (via the ctor)
 
 ******************************************************************************/
 
-class CacheMap (K, V, alias Hash = Container.hash, 
-                      alias Reap = Container.reap, 
-                      alias Heap = Container.Collect) 
+class CacheMap (K, V, alias Hash = Container.hash,
+                      alias Reap = Container.reap,
+                      alias Heap = Container.Collect)
 {
         private alias QueuedEntry       Type;
         private alias Type              *Ref;
@@ -57,10 +57,10 @@ class CacheMap (K, V, alias Hash = Container.hash,
 
        /**********************************************************************
 
-                Construct a cache with the specified maximum number of 
+                Construct a cache with the specified maximum number of
                 entries. Additions to the cache beyond this number will
                 reuse the slot of the least-recently-referenced cache
-                entry. 
+                entry.
 
         **********************************************************************/
 
@@ -87,7 +87,7 @@ class CacheMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        static void reaper(K, R) (K k, R r) 
+        static void reaper(K, R) (K k, R r)
         {
                 Reap (k, r.value);
         }
@@ -97,7 +97,7 @@ class CacheMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        @property final const uint size ()
+        @property final size_t size () const
         {
                 return hash.size;
         }
@@ -151,7 +151,7 @@ class CacheMap (K, V, alias Hash = Container.hash,
 
                 Place an entry into the cache and associate it with the
                 provided key. Note that there can be only one entry for
-                any particular key. If two entries are added with the 
+                any particular key. If two entries are added with the
                 same key, the second effectively overwrites the first.
 
                 Returns true if we added a new entry; false if we just
@@ -171,14 +171,14 @@ class CacheMap (K, V, alias Hash = Container.hash,
                    return false;
                    }
 
-                // create a new entry at the list head 
+                // create a new entry at the list head
                 addEntry (key, value);
                 return true;
         }
 
         /**********************************************************************
 
-                Remove the cache entry associated with the provided key. 
+                Remove the cache entry associated with the provided key.
                 Returns false if there is no such entry.
 
         **********************************************************************/
@@ -192,7 +192,7 @@ class CacheMap (K, V, alias Hash = Container.hash,
 
         /**********************************************************************
 
-                Remove (and return) the cache entry associated with the 
+                Remove (and return) the cache entry associated with the
                 provided key. Returns false if there is no such entry.
 
         **********************************************************************/
@@ -263,7 +263,7 @@ class CacheMap (K, V, alias Hash = Container.hash,
 
                 Add an entry into the queue. If the queue is full, the
                 least-recently-referenced entry is reused for the new
-                addition. 
+                addition.
 
         **********************************************************************/
 
@@ -287,98 +287,98 @@ class CacheMap (K, V, alias Hash = Container.hash,
         }
 
         /**********************************************************************
-        
-                A doubly-linked list entry, used as a wrapper for queued 
+
+                A doubly-linked list entry, used as a wrapper for queued
                 cache entries
-        
+
         **********************************************************************/
-        
+
         private struct QueuedEntry
         {
                 private K               key;
                 private Ref             prev,
                                         next;
                 private V               value;
-        
+
                 /**************************************************************
-        
-                        Set this linked-list entry with the given arguments. 
+
+                        Set this linked-list entry with the given arguments.
 
                 **************************************************************/
-        
+
                 Ref set (K key, V value)
                 {
                         this.value = value;
                         this.key = key;
                         return &this;
                 }
-        
+
                 /**************************************************************
-        
-                        Insert this entry into the linked-list just in 
+
+                        Insert this entry into the linked-list just in
                         front of the given entry.
-        
+
                 **************************************************************/
-        
+
                 Ref prepend (Ref before)
                 {
                         if (before)
                            {
                            prev = before.prev;
-        
+
                            // patch 'prev' to point at me
                            if (prev)
                                prev.next = &this;
-        
+
                            //patch 'before' to point at me
                            next = before;
                            before.prev = &this;
                            }
                         return &this;
                 }
-        
+
                 /**************************************************************
-                        
-                        Add this entry into the linked-list just after 
+
+                        Add this entry into the linked-list just after
                         the given entry.
-        
+
                 **************************************************************/
-        
+
                 Ref append (Ref after)
                 {
                         if (after)
                            {
                            next = after.next;
-        
+
                            // patch 'next' to point at me
                            if (next)
                                next.prev = &this;
-        
+
                            //patch 'after' to point at me
                            prev = after;
                            after.next = &this;
                            }
                         return &this;
                 }
-        
+
                 /**************************************************************
-        
-                        Remove this entry from the linked-list. The 
-                        previous and next entries are patched together 
+
+                        Remove this entry from the linked-list. The
+                        previous and next entries are patched together
                         appropriately.
-        
+
                 **************************************************************/
-        
+
                 Ref extract ()
                 {
                         // make 'prev' and 'next' entries see each other
                         if (prev)
                             prev.next = next;
-        
+
                         if (next)
                             next.prev = prev;
-        
-                        // Murphy's law 
+
+                        // Murphy's law
                         next = prev = null;
                         return &this;
                 }
@@ -452,4 +452,3 @@ debug (CacheMap)
                 test.hash.check;
         }
 }
-        
