@@ -1,0 +1,10 @@
+language: d
+d:
+  - dmd
+  - ldc
+
+env:
+  - ARCH=x86_64
+
+script:
+    - make -f build/Makefile static-lib DC=$DC ARCH=$ARCH BUILD_PATH=.
