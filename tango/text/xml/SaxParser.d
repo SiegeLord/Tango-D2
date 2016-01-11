@@ -858,7 +858,7 @@ public class SAXException : Exception {
          *
          * @return The error or warning message.
          *******************************************************************************/
-        public immutable(char)[] message() {
+        public override const(char)[] message() const {
                 if (msg is null && next !is null) {
                         return next.msg;
                 }
