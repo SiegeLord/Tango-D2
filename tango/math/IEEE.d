@@ -611,7 +611,7 @@ debug(UnitTest) {
 
 unittest
 {
-    static real vals[][3] = // x,frexp,exp
+    static real[][3] vals = // x,frexp,exp
     [
         [0.0,   0.0,    0],
         [-0.0,  -0.0,   0],
@@ -643,7 +643,7 @@ unittest
 
     }
    static if (real.mant_dig == 64) {
-     static real extendedvals[][3] = [ // x,frexp,exp
+     static real[][3] extendedvals = [ // x,frexp,exp
         [0x1.a5f1c2eb3fe4efp+73L, 0x1.A5F1C2EB3FE4EFp-1L,   74],    // normal
         [0x1.fa01712e8f0471ap-1064L,  0x1.fa01712e8f0471ap-1L,     -1063],
         [real.min_normal,  .5,     -16381],
@@ -1400,7 +1400,7 @@ package {
  */
 X splitSignificand(X)(ref X x)
 {
-    if (fabs(x) !< X.infinity) return 0; // don't change NaN or infinity
+    if (isNaN(x) || isInfinity(x)) return 0; // don't change NaN or infinity
     X y = x; // copy the original value
     static if (X.mant_dig == float.mant_dig) {
         uint *ps = cast(uint *)&x;

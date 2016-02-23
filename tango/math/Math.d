@@ -434,7 +434,7 @@ Lret:
 debug(UnitTest) {
     unittest
     {
-        static real vals[][2] =     // angle,tan
+        static real[][2] vals =     // angle,tan
         [
                 [   0,   0],
                 [   .5,  .5463024898],
@@ -1785,7 +1785,7 @@ real hypot(real x, real y)
 debug(UnitTest) {
 unittest
 {
-    static real vals[][3] = // x,y,hypot
+    static real[][3] vals = // x,y,hypot
     [
         [   0,  0,  0],
         [   0,  -0, 0],
@@ -1903,7 +1903,7 @@ debug(UnitTest) {
 unittest
 {
     real x = 3.1;
-    __gshared immutable real pp[] = [56.1L, 32.7L, 6L];
+    __gshared immutable real[] pp = [56.1L, 32.7L, 6L];
 
     assert( poly(x, pp) == (56.1L + (32.7L + 6L * x) * x) );
 
