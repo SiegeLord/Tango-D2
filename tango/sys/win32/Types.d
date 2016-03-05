@@ -6853,7 +6853,7 @@ struct LOGFONTW
  ubyte lfClipPrecision;
  ubyte lfQuality;
  ubyte lfPitchAndFamily;
- WCHAR lfFaceName[LF_FACESIZE] = 0;
+ WCHAR[LF_FACESIZE] lfFaceName = 0;
 };
 
 alias LOGFONTW  TLOGFONTW;
@@ -8000,7 +8000,7 @@ struct DISK_PERFORMANCE
  DWORD SplitCount;
  LARGE_INTEGER QueryTime;
  DWORD StorageDeviceNumber;
- WCHAR StorageManagerName[8];
+ WCHAR[8] StorageManagerName;
 }
 
 alias DISK_PERFORMANCE _DISK_PERFORMANCE;
@@ -9426,25 +9426,25 @@ alias ENUM_SERVICE_STATUS* PENUMSERVICESTATUS;
 
 struct ENUMLOGFONTA {
   LOGFONTA elfLogFont;
-  BYTE  elfFullName[LF_FULLFACESIZE];
-  BYTE  elfStyle[LF_FACESIZE];
+  BYTE[LF_FULLFACESIZE]  elfFullName;
+  BYTE[LF_FACESIZE]  elfStyle;
 }
 struct ENUMLOGFONTW {
   LOGFONTW elfLogFont;
-  WCHAR elfFullName[LF_FULLFACESIZE];
-  WCHAR elfStyle[LF_FACESIZE];
+  WCHAR[LF_FULLFACESIZE] elfFullName;
+  WCHAR[LF_FACESIZE] elfStyle;
 }
 struct ENUMLOGFONTEXA {
  LOGFONTA  elfLogFont;
- BYTE   elfFullName[LF_FULLFACESIZE];
- BYTE   elfStyle[LF_FACESIZE];
- BYTE   elfScript[LF_FACESIZE];
+ BYTE[LF_FULLFACESIZE]   elfFullName;
+ BYTE[LF_FACESIZE]   elfStyle;
+ BYTE[LF_FACESIZE]   elfScript;
 }
 struct ENUMLOGFONTEXW {
  LOGFONTW  elfLogFont;
- WCHAR  elfFullName[LF_FULLFACESIZE];
- WCHAR  elfStyle[LF_FACESIZE];
- WCHAR  elfScript[LF_FACESIZE];
+ WCHAR[LF_FULLFACESIZE]  elfFullName;
+ WCHAR[LF_FACESIZE]  elfStyle;
+ WCHAR[LF_FACESIZE]  elfScript;
 }
 version(Win32SansUnicode){
  alias ENUMLOGFONTA ENUMLOGFONT;
@@ -11482,7 +11482,7 @@ struct OSVERSIONINFOA
  DWORD dwMinorVersion;
  DWORD dwBuildNumber;
  DWORD dwPlatformId;
- CHAR szCSDVersion[ 128 ];
+ CHAR[ 128 ] szCSDVersion;
 }
 alias OSVERSIONINFOA* POSVERSIONINFOA, LPOSVERSIONINFOA;
 
@@ -11493,7 +11493,7 @@ struct OSVERSIONINFOW
  DWORD dwMinorVersion;
  DWORD dwBuildNumber;
  DWORD dwPlatformId;
- WCHAR szCSDVersion[ 128 ];
+ WCHAR[ 128 ] szCSDVersion;
 }
 alias OSVERSIONINFOW* POSVERSIONINFOW, LPOSVERSIONINFOW;
 version(Win32SansUnicode)
@@ -13093,7 +13093,7 @@ struct TBBUTTON
 //#ifdef _WIN64
 // BYTE  bReserved[6];  // padding for alignment
 //#elif defined(_WIN32)
- BYTE  bReserved[2];  // padding for alignment
+ BYTE[2]  bReserved;  // padding for alignment
 //#endif
  DWORD_PTR   dwData;
  INT_PTR  iString;
@@ -13385,7 +13385,7 @@ struct NMTTDISPINFOA
 {
  NMHDR hdr;
  LPSTR lpszText;
- char szText[80];
+ char[80] szText;
  HINSTANCE hinst;
  UINT uFlags;
  LPARAM lParam;
@@ -13395,7 +13395,7 @@ struct NMTTDISPINFOW
 {
  NMHDR hdr;
  LPWSTR lpszText;
- WCHAR szText[80];
+ WCHAR[80] szText;
  HINSTANCE hinst;
  UINT uFlags;
  LPARAM lParam;
@@ -13682,8 +13682,8 @@ struct WIN32_FIND_DATAW
  DWORD nFileSizeLow;
  DWORD dwReserved0;
  DWORD dwReserved1;
- WCHAR  cFileName[MAX_PATH];
- WCHAR  cAlternateFileName[14];
+ WCHAR[MAX_PATH]  cFileName;
+ WCHAR[14]  cAlternateFileName;
 }
 
 alias WIN32_FIND_DATAW* LPWIN32_FIND_DATAW;
@@ -14224,7 +14224,7 @@ struct MONITORINFOEX
  RECT   rcMonitor;
  RECT   rcWork;
  DWORD  dwFlags;
- TCHAR  szDevice[CCHDEVICENAME];
+ TCHAR[CCHDEVICENAME]  szDevice;
 }
 alias MONITORINFOEX* LPMONITORINFOEX;
 
