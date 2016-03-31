@@ -328,7 +328,7 @@ class HttpTokens
         
         **********************************************************************/
 
-        private static class FilteredTokens 
+        package static class FilteredTokens
         {       
                 private const(char)[]          match;
                 private HttpTokens      tokens;

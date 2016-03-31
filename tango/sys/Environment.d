@@ -12,6 +12,8 @@
 
 module tango.sys.Environment;
 
+static import tango.stdc.posix.unistd;
+
 private import  tango.sys.Common;
 
 private import  tango.io.Path,

@@ -14,6 +14,7 @@ module tango.io.stream.Patterns;
 
 private import tango.text.Regex;
 
+private import tango.io.model.IConduit;
 private import tango.io.stream.Iterator;
 
 /*******************************************************************************

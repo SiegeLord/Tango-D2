@@ -12,6 +12,7 @@
 
 module tango.io.stream.Delimiters;
 
+private import tango.io.model.IConduit;
 private import tango.io.stream.Iterator;
 
 /*******************************************************************************

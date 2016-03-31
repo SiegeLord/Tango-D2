@@ -74,6 +74,8 @@ module tango.text.Regex;
 
 static import tango.core.Array;
 
+static import tango.text.convert.Utf;
+
 debug(TangoRegex) import tango.io.Stdout;
 
 /* *****************************************************************************
