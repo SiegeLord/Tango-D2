@@ -2343,6 +2343,17 @@ private class TDFA(char_t)
             return Format.convert("{}<-{}", dst, src==CURRENT_POSITION_REGISTER?"p":Format.convert("{}", src)).idup;
         }
 
+        bool opEquals(in Command cmd) const
+        {
+            return this.tupleof == cmd.tupleof;
+        }
+
+        size_t toHash() const
+        {
+            static assert(this.sizeof == 8);
+            return typeid(void[8]).getHash(&this);
+        }
+
         /* ****************************************************************************************
             Order transitions by the order of their predicates.
         ******************************************************************************************/
@@ -2364,21 +2375,6 @@ private class TDFA(char_t)
     {
         uint    tag,
                 index;
-
-        const int opCmp(ref const TagIndex o)
-        {
-            if (tag == o.tag && index == o.index)
-                return 0;
-            if (tag > o.tag)
-                return 1;
-            if (tag < o.tag)
-                return -1;
-            if (index > o.index)
-                return 1;
-            if (index < o.index)
-                return -1;
-            assert(0);
-        }
     }
 
     /* ********************************************************************************************
