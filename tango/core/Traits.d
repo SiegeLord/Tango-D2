@@ -484,7 +484,7 @@ template staticArraySize(T)
 {
     static assert(isStaticArrayType!(T),"staticArraySize needs a static array as type");
     static assert(rankOfArray!(T)==1,"implemented only for 1d arrays...");
-    const size_t staticArraySize=(T).sizeof / ElementTypeOfArray!(T).sizeof;
+    const size_t staticArraySize=(T).sizeof / typeof(*T.ptr).sizeof;
 }
 
 /// is T is static array returns a dynamic array, otherwise returns T
