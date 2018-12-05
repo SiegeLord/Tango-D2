@@ -699,7 +699,7 @@ struct Variant
     }
 
     /// ditto
-    hash_t toHash()
+    hash_t toHash() const
     {
         return type.getHash(this.ptr);
     }
