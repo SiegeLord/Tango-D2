@@ -11,23 +11,15 @@ module tango.core.RuntimeTraits;
 
 import tango.core.Compiler;
 
-/// If the given type represents a typedef, return the actual type.
+/** If the given type represents a typedef, return the actual type.
+  * Typedefs have been removed from the language and are no longer supported.
+  */
 const(TypeInfo) realType (const(TypeInfo) type)
 {
-    // TypeInfo_Typedef.next() doesn't return the actual type.
-    // I think it returns TypeInfo_Typedef.base.next().
-    // So, a slightly different method.
-    auto def = cast(TypeInfo_Typedef) type;
-    if (def !is null)
+    // TypeInfo_Invariant inherits from TypeInfo_Const.
+    if (auto ct = cast(const(TypeInfo_Const))type)
     {
-        return def.base;
-    }
-    else if ((type.classinfo.name.length is 14  && type.classinfo.name[9..$] == "Const") ||
-             (type.classinfo.name.length is 18  && type.classinfo.name[9..$] == "Invariant") ||
-             (type.classinfo.name.length is 15  && type.classinfo.name[9..$] == "Shared") ||
-             (type.classinfo.name.length is 14  && type.classinfo.name[9..$] == "Inout"))
-    {
-        return (cast(TypeInfo_Const)type).next;
+        return ct.base;
     }
     return type;
 }

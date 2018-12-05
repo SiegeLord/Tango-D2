@@ -342,17 +342,6 @@ public struct Log
 
         static void formatln (const(char[]) fmt, ...)
         {
-            version (DigitalMarsX64)
-            {
-                va_list ap;
-
-                version(GNU) {} else va_start(ap, __va_argsave);
-
-                scope(exit) va_end(ap);
-
-                root.format (Level.Info, fmt, _arguments, ap);
-            }
-            else            
                 root.format (Level.Info, fmt, _arguments, _argptr);
         }
 
@@ -538,7 +527,7 @@ public class Logger : ILogger
             {
                 va_list ap;
 
-                va_start(ap, __va_argsave);
+                va_start(ap, fmt);
 
                 scope(exit) va_end(ap);
 
@@ -571,7 +560,7 @@ public class Logger : ILogger
             {
                 va_list ap;
 
-                va_start(ap, __va_argsave);
+                va_start(ap, fmt);
 
                 scope(exit) va_end(ap);
 
@@ -604,7 +593,7 @@ public class Logger : ILogger
             {
                 va_list ap;
 
-                va_start(ap, __va_argsave);
+                va_start(ap, fmt);
 
                 scope(exit) va_end(ap);
 
@@ -637,7 +626,7 @@ public class Logger : ILogger
             {
                 va_list ap;
 
-                va_start(ap, __va_argsave);
+                va_start(ap, fmt);
 
                 scope(exit) va_end(ap);
 
@@ -670,7 +659,7 @@ public class Logger : ILogger
             {
                 va_list ap;
 
-                va_start(ap, __va_argsave);
+                va_start(ap, fmt);
 
                 scope(exit) va_end(ap);
 
@@ -888,7 +877,7 @@ public class Logger : ILogger
             {
                 va_list ap;
 
-                va_start(ap, __va_argsave);
+                va_start(ap, formatStr);
 
                 scope(exit) va_end(ap);
 

@@ -372,13 +372,13 @@ class BomSniffer
         [
         {Utf8,  Encoding.Unknown,  null,        true,  false, false, Encoding.UTF_8},
         {Utf8,  Encoding.UTF_8N,   null,        true,  false, false, Encoding.UTF_8},
-        {Utf8,  Encoding.UTF_8,    x"efbbbf",   false},
+        {Utf8,  Encoding.UTF_8,    "\xef\xbb\xbf",   false},
         {Utf16, Encoding.UTF_16,   null,        true,  false, false, Encoding.UTF_16BE},
-        {Utf16, Encoding.UTF_16BE, x"feff",     false, true, true},
-        {Utf16, Encoding.UTF_16LE, x"fffe",     false, true},
+        {Utf16, Encoding.UTF_16BE, "\xfe\xff",     false, true, true},
+        {Utf16, Encoding.UTF_16LE, "\xff\xfe",     false, true},
         {Utf32, Encoding.UTF_32,   null,        true,  false, false, Encoding.UTF_32BE},
-        {Utf32, Encoding.UTF_32BE, x"0000feff", false, true, true},
-        {Utf32, Encoding.UTF_32LE, x"fffe0000", false, true},
+        {Utf32, Encoding.UTF_32BE, "\x00\x00\xfe\xff", false, true, true},
+        {Utf32, Encoding.UTF_32LE, "\xff\xfe\x00\x00", false, true},
         ];
 
         /***********************************************************************
@@ -460,7 +460,7 @@ debug (UnitTest)
         unittest
         {
                 void[] INPUT2 = "abc\xE3\x81\x82\xE3\x81\x84\xE3\x81\x86".dup;
-                void[] INPUT = x"efbbbf" ~ INPUT2;
+                void[] INPUT = "\xef\xbb\xbf" ~ INPUT2;
                 auto bom = new UnicodeBom!(char)(Encoding.Unknown);
                 size_t ate;
                 char[256] buf;
@@ -482,7 +482,7 @@ debug (UnicodeBom)
         void main()
         {
                 void[] INPUT2 = "abc\xE3\x81\x82\xE3\x81\x84\xE3\x81\x86".dup;
-                void[] INPUT = x"efbbbf" ~ INPUT2;
+                void[] INPUT = "\xef\xbb\xbf" ~ INPUT2;
                 auto bom = new UnicodeBom!(char)(Encoding.Unknown);
                 size_t ate;
                 char[256] buf;

@@ -152,7 +152,7 @@ class FormatOutput(T) : OutputFilter
             {
                 va_list ap;
 
-                va_start(ap, __va_argsave);
+                va_start(ap, fmt);
 
                 scope(exit) va_end(ap);
 
@@ -176,7 +176,7 @@ class FormatOutput(T) : OutputFilter
             {
                 va_list ap;
 
-                va_start(ap, __va_argsave);
+                va_start(ap, fmt);
 
                 scope(exit) va_end(ap);
 
@@ -197,8 +197,8 @@ class FormatOutput(T) : OutputFilter
 
         final FormatOutput print ( ... )
         {
-                __gshared immutable immutable(T)[] slice =  "{}, {}, {}, {}, {}, {}, {}, {}, "
-                                                            "{}, {}, {}, {}, {}, {}, {}, {}, "
+                __gshared immutable immutable(T)[] slice =  "{}, {}, {}, {}, {}, {}, {}, {}, " ~
+                                                            "{}, {}, {}, {}, {}, {}, {}, {}, " ~
                                                             "{}, {}, {}, {}, {}, {}, {}, {}, ";
 
                 assert (_arguments.length <= slice.length/4, "FormatOutput :: too many arguments");
@@ -207,19 +207,7 @@ class FormatOutput(T) : OutputFilter
                     sink.flush();
                 else
                 {
-
-                    version (DigitalMarsX64)
-                    {
-                        va_list ap;
-
-                        va_start(ap, __va_argsave);
-
-                        scope(exit) va_end(ap);
-
-                        convert (&emit, _arguments, ap, slice[0 .. _arguments.length * 4 - 2]);
-                    }
-                    else
-                        convert (&emit, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
+                    convert (&emit, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
                 }
                 return this;
         }

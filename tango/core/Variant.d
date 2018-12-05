@@ -83,9 +83,9 @@ else version( DDoc )
 
 version( EnableVararg ) {} else
 {
-    pragma(msg, "Note: Variant vararg functionality not supported for this "
+    pragma(msg, "Note: Variant vararg functionality not supported for this " ~
             "compiler/platform combination.");
-    pragma(msg, "To override and enable vararg support anyway, compile with "
+    pragma(msg, "To override and enable vararg support anyway, compile with " ~
             "the EnableVararg version.");
 }
 
@@ -147,18 +147,18 @@ private
     template isObject(T)
     {
         static if( is( T : Object ) )
-            const isObject = true;
+            enum isObject = true;
         else
-            const isObject = false;
+            enum isObject = false;
     }
 
     // Determines if the given type is an interface
     template isInterface(T)
     {
         static if( is( T == interface ) )
-            const isInterface = true;
+            enum isInterface = true;
         else
-            const isInterface = false;
+            enum isInterface = false;
     }
 
     // A list of all basic types
@@ -172,22 +172,22 @@ private
     // see isBasicType
     template isBasicTypeImpl(T, U)
     {
-        const isBasicTypeImpl = is( T == U );
+        enum isBasicTypeImpl = is( T == U );
     }
 
     // see isBasicType
     template isBasicTypeImpl(T, U, Us...)
     {
         static if( is( T == U ) )
-            const isBasicTypeImpl = true;
+            enum isBasicTypeImpl = true;
         else
-            const isBasicTypeImpl = isBasicTypeImpl!(T, Us);
+            enum isBasicTypeImpl = isBasicTypeImpl!(T, Us);
     }
 
     // Determines if the given type is one of the basic types.
     template isBasicType(T)
     {
-        const isBasicType = isBasicTypeImpl!(T, BasicTypes);
+        enum isBasicType = isBasicTypeImpl!(T, BasicTypes);
     }
 
     /*
@@ -196,20 +196,8 @@ private
      * version in RuntimeTraits since we can basically eliminate half of the
      * tests.
      */
-    bool canImplicitCastToType(dsttypeT)(TypeInfo srctype)
+    bool canImplicitCastToType(dsttypeT)(const TypeInfo srctype)
     {
-        /*
-         * Before we do anything else, we need to "unwrap" typedefs to
-         * get at the real type.  While we do that, make sure we don't
-         * accidentally jump over the destination type.
-         */
-        while( cast(TypeInfo_Typedef) srctype !is null )
-        {
-            if( srctype is typeid(dsttypeT) )
-                return true;
-            srctype = cast()srctype.next;
-        }
-
         /*
          * First, we'll generate tests for the basic types.  The list of
          * things which can be cast TO basic types is finite and easily
@@ -254,7 +242,7 @@ private
             if( typeid(T[]) is srctype )
                 return true;
 
-            if( auto ti_sa = cast(TypeInfo_StaticArray) srctype )
+            if( auto ti_sa = cast(const(TypeInfo_StaticArray)) srctype )
                 return ti_sa.next is typeid(T);
 
             return false;
@@ -264,15 +252,15 @@ private
          * Any pointer can be cast to void*.
          */
         else static if( is( dsttypeT == void* ) )
-            return (cast(TypeInfo_Pointer) srctype) !is null;
+            return (cast(const(TypeInfo_Pointer)) srctype) !is null;
 
         /*
          * Any array can be cast to void[], however remember that it has to
          * be manually adjusted to preserve the correct length.
          */
         else static if( is( dsttypeT == void[] ) )
-            return ((cast(TypeInfo_Array) srctype) !is null)
-                || ((cast(TypeInfo_StaticArray) srctype) !is null);
+            return ((cast(const(TypeInfo_Array)) srctype) !is null)
+                || ((cast(const(TypeInfo_StaticArray)) srctype) !is null);
 
         else return false;
     }
@@ -295,7 +283,7 @@ private
      * traits functions.
      */
 
-    bool isBasicTypeInfo(TypeInfo ti)
+    bool isBasicTypeInfo(const(TypeInfo) ti)
     {
         foreach( T ; BasicTypes )
             if( ti is typeid(T) )
@@ -316,7 +304,7 @@ private
  */
 class VariantTypeMismatchException : Exception
 {
-    this(TypeInfo expected, TypeInfo got)
+    this(const(TypeInfo) expected, const(TypeInfo) got)
     {
         super("cannot convert "~expected.toString()
                     ~" value to a "~got.toString());
@@ -393,7 +381,7 @@ struct Variant
      *  auto v = Variant(typeid(typeof(life)), &life);
      * -----
      */
-    static Variant opCall()(TypeInfo type, void* ptr)
+    static Variant opCall()(const TypeInfo type, void* ptr)
     {
         Variant _this;
         Variant.fromPtr(type, ptr, _this);
@@ -691,6 +679,11 @@ struct Variant
             return get!(T) == rhs;
     }
 
+    bool opEquals(const ref Variant other) const
+    {
+        return opEqualsVariant(other) != 0;
+    }
+
     /* This opCmp is not detectable as one for the purposes of TypeInfo_Struct.xopCmp.
      * Try doing opCmp(const ref Variant) and opCmp(...). My tests indicate that this may work. */
     /// ditto
@@ -727,7 +720,7 @@ struct Variant
      * This can be used to retrieve the TypeInfo for the currently stored
      * value.
      */
-    @property TypeInfo type()
+    @property const(TypeInfo) type() const
     {
         return _type;
     }
@@ -736,7 +729,7 @@ struct Variant
      * This can be used to retrieve a pointer to the value stored in the
      * variant.
      */
-    @property void* ptr()
+    @property inout(void*) ptr() inout
     {
         if( type.tsize <= value.sizeof )
             return &value;
@@ -750,7 +743,7 @@ struct Variant
         /**
          * Converts a vararg function argument list into an array of Variants.
          */
-        static Variant[] fromVararg(TypeInfo[] types, void* args)
+        static Variant[] fromVararg(const(TypeInfo[]) types, void* args)
         {
             auto vs = new Variant[](types.length);
 
@@ -759,7 +752,7 @@ struct Variant
                 version(DigitalMarsX64)
                 {
                     scope void[] buffer = new void[types[i].tsize];
-                    va_arg(cast(va_list)args, types[i], buffer.ptr);
+                    va_arg(cast(va_list)args, cast(TypeInfo)types[i], buffer.ptr);
                     Variant.fromPtr(types[i], buffer.ptr, v);
                 }
                 else
@@ -774,17 +767,7 @@ struct Variant
         /// ditto
         static Variant[] fromVararg(...)
         {
-            version(DigitalMarsX64)
-            {
-                va_list ap;
-                va_start(ap, __va_argsave);
-
-                scope (exit) va_end(ap);
-
-                return Variant.fromVararg(_arguments, ap);
-            }
-            else
-                return Variant.fromVararg(_arguments, _argptr);
+            return Variant.fromVararg(_arguments, _argptr);
         }
 
         /+
@@ -834,16 +817,21 @@ private:
     TypeInfo _type = typeid(void);
     VariantStorage value;
 
-    @property TypeInfo type(TypeInfo v)
+    @property const(TypeInfo) type(const(TypeInfo) v)
     {
-        return (_type = v);
+        return (_type = cast(TypeInfo)v);
     }
 
     /*
      * Creates a Variant using a given TypeInfo and a void*.  Returns the
      * given pointer adjusted for the next vararg.
      */
-    static void* fromPtr(TypeInfo type, void* ptr, out Variant r)
+    static void* fromPtr(const TypeInfo type, void* ptr, out Variant r)
+    in
+    {
+        assert(type !is null);
+    }
+    do
     {
         /*
          * This function basically duplicates the functionality of
@@ -995,7 +983,7 @@ private:
      * Performs a type-dependant comparison.  Note that this obviously doesn't
      * take into account things like implicit conversions.
      */
-    int opEqualsVariant(Variant rhs)
+    int opEqualsVariant(const ref Variant rhs) const
     {
         if( type != rhs.type ) return false;
         return cast(bool) type.equals(this.ptr, rhs.ptr);
@@ -1271,19 +1259,7 @@ debug( UnitTest )
 
             Variant[] scoop(...)
             {
-                version(DigitalMarsX64)
-                {
-                    va_list ap;
-                    va_start(ap, __va_argsave);
-
-                    scope (exit) va_end(ap);
-
-                    return Variant.fromVararg(_arguments, ap);
-                }
-                else
-                {
-                    return Variant.fromVararg(_arguments, _argptr);
-                }
+                return Variant.fromVararg(_arguments, _argptr);
             }
 
             auto va_0 = cast(char)  '?';

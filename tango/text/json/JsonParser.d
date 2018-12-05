@@ -327,10 +327,20 @@ class JsonParser(T)
                 while (c >= '0' && c <= '9') c = *++p;                 
 
                 if (c is '.')
-                    while (c = *++p, c >= '0' && c <= '9') {}                 
+                    while (true)
+                    {
+                        p++;
+                        c = *p;
+                        if (!(c >= '0' && c <= '9')) break;
+                    }
 
                 if (c is 'e' || c is 'E')
-                    while (c = *++p, c >= '0' && c <= '9') {}
+                    while (true)
+                    {
+                        p++;
+                        c = *p;
+                        if (!(c >= '0' && c <= '9')) break;
+                    }
 
                 if (p < e) 
                     curLen = p - curLoc;
@@ -425,32 +435,32 @@ class JsonParser(T)
 debug(UnitTest)
 {       
                 immutable(char)[] json = 
-                "{"
-                "\"glossary\": {"
-                "\"title\": \"example glossary\","
-                "\"GlossDiv\": {"
-                "   \"title\": \"S\","
-                "   \"GlossList\": {"
-                "       \"GlossEntry\": {"
-                "           \"ID\": \"SGML\","
-                "           \"SortAs\": \"SGML\","
-                "           \"GlossTerm\": \"Standard Generalized Markup Language\","
-                "           \"Acronym\": \"SGML\","
-                "           \"Abbrev\": \"ISO 8879:1986\","
-                "           \"GlossDef\": {"
-                "                \"para\": \"A meta-markup language, used to create markup languages such as DocBook.\","
-                "            \"GlossSeeAlso\": [\"GML\", \"XML\"]"
-                "           },"
-                "          \"GlossSee\": \"markup\","
-                "          \"ANumber\": 12345.6e7"
-                "          \"True\": true"
-                "          \"False\": false"
-                "          \"Null\": null"
-                "        }"
-                "    }"
-                "}"
-                "}"
-                "}";
+                `{
+                "glossary": {
+                "title": "example glossary",
+                "GlossDiv": {
+                   "title": "S",
+                   "GlossList": {
+                       "GlossEntry": {
+                           "ID": "SGML",
+                           "SortAs": "SGML",
+                           "GlossTerm": "Standard Generalized Markup Language",
+                           "Acronym": "SGML",
+                           "Abbrev": "ISO 8879:1986",
+                           "GlossDef": {
+                                "para": "A meta-markup language, used to create markup languages such as DocBook.",
+                            "GlossSeeAlso": ["GML", "XML"]
+                           },
+                          "GlossSee": "markup",
+                          "ANumber": 12345.6e7
+                          "True": true
+                          "False": false
+                          "Null": null
+                        }
+                    }
+                }
+                }
+                }`;
        
 unittest
 {

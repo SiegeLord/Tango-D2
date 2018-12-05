@@ -1499,7 +1499,7 @@ class Process
                     result.status = cast(short) GetLastError();
 
                     debug (Process)
-                        Stdout.formatln("Child process '{0}' ({1}) failed "
+                        Stdout.formatln("Child process '{0}' ({1}) failed " ~
                                         "with unknown exit status {2}\n",
                                         _program, pid, result.status);
                 }
@@ -1556,7 +1556,7 @@ class Process
                             result.status = WTERMSIG(rc);
 
                             debug (Process)
-                                Stdout.formatln("Child process '{0}' ({1}) was killed prematurely "
+                                Stdout.formatln("Child process '{0}' ({1}) was killed prematurely " ~
                                                 "with signal {2}",
                                                 _program, _pid, result.status);
                         }
@@ -1566,7 +1566,7 @@ class Process
                             result.status = WSTOPSIG(rc);
 
                             debug (Process)
-                                Stdout.formatln("Child process '{0}' ({1}) was stopped "
+                                Stdout.formatln("Child process '{0}' ({1}) was stopped " ~
                                                 "with signal {2}",
                                                 _program, _pid, result.status);
                         }
@@ -1576,7 +1576,7 @@ class Process
                             result.status = WSTOPSIG(rc);
 
                             debug (Process)
-                                Stdout.formatln("Child process '{0}' ({1}) was continued "
+                                Stdout.formatln("Child process '{0}' ({1}) was continued " ~
                                                 "with signal {2}",
                                                 _program, _pid, result.status);
                         }
@@ -1586,7 +1586,7 @@ class Process
                             result.status = rc;
 
                             debug (Process)
-                                Stdout.formatln("Child process '{0}' ({1}) failed "
+                                Stdout.formatln("Child process '{0}' ({1}) failed " ~
                                                 "with unknown exit status {2}\n",
                                                 _program, _pid, result.status);
                         }
@@ -1873,9 +1873,9 @@ class Process
      */
     protected void cleanPipes()
     {
-        delete _stdin;
-        delete _stdout;
-        delete _stderr;
+        _stdin.destroy;
+        _stdout.destroy;
+        _stderr.destroy;
     }
 
     /**

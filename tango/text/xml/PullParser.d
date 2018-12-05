@@ -745,8 +745,8 @@ debug (UnitTest)
 	
 	***********************************************************************/
 	
-	__gshared immutable immutable(char)[] testXML = "<?xml version=\"1.0\" ?><!DOCTYPE element [ <!ELEMENT element (#PCDATA)>]><element "
-	    "attr=\"1\" attr2=\"two\"><!--comment-->test&amp;&#x5a;<qual:elem /><el2 attr3 = "
+	__gshared immutable immutable(char)[] testXML = "<?xml version=\"1.0\" ?><!DOCTYPE element [ <!ELEMENT element (#PCDATA)>]><element " ~
+	    "attr=\"1\" attr2=\"two\"><!--comment-->test&amp;&#x5a;<qual:elem /><el2 attr3 = " ~
 	    "'3three'><![CDATA[sdlgjsh]]><el3 />data<?pi test?></el2></element>";
 	
 	unittest

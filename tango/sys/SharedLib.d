@@ -184,7 +184,7 @@ final class SharedLib {
 
         if (delRes) {
             version (SharedLibVerbose) Trace.formatln("Deleting the SharedLib");
-            delete res;
+            res.destroy;
         }
 
         if (exc !is null) {
@@ -248,7 +248,7 @@ final class SharedLib {
         }
         if (deleteThis) {
             version (SharedLibVerbose) Trace.formatln("Deleting the SharedLib");
-            ((SharedLib l) { delete l; })(this);
+            ((SharedLib l) { l.destroy; })(this);
         }
     }
 

@@ -105,7 +105,7 @@ class BzipOutput : OutputFilter
     private void init(OutputStream stream, int blockSize)
     {
         if( blockSize < 1 || blockSize > 9 )
-            throw new BzipException("bzip2 block size must be between"
+            throw new BzipException("bzip2 block size must be between" ~
                     " 1 and 9");
 
         auto ret = BZ2_bzCompressInit(&bzs, blockSize, 0, DEFAULT_WORKFACTOR);
@@ -566,9 +566,9 @@ import tango.io.device.Array : Array;
 unittest
 {
     __gshared immutable immutable(char)[] message =
-        "All dwarfs are by nature dutiful, serious, literate, obedient "
-        "and thoughtful people whose only minor failing is a tendency, "
-        "after one drink, to rush at enemies screaming \"Arrrrrrgh!\" and "
+        "All dwarfs are by nature dutiful, serious, literate, obedient " ~
+        "and thoughtful people whose only minor failing is a tendency, " ~
+        "after one drink, to rush at enemies screaming \"Arrrrrrgh!\" and " ~
         "axing their legs off at the knee.";
 
     __gshared immutable ubyte[] message_z = [

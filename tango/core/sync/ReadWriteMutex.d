@@ -88,17 +88,17 @@ class ReadWriteMutex
         m_commonMutex = new Mutex;
         if( !m_commonMutex )
             throw new SyncException( "Unable to initialize mutex" );
-        scope(failure) delete m_commonMutex;
+        scope(failure) m_commonMutex.destroy;
 
         m_readerQueue = new Condition( m_commonMutex );
         if( !m_readerQueue )
             throw new SyncException( "Unable to initialize mutex" );
-        scope(failure) delete m_readerQueue;
+        scope(failure) m_readerQueue.destroy;
 
         m_writerQueue = new Condition( m_commonMutex );
         if( !m_writerQueue )
             throw new SyncException( "Unable to initialize mutex" );
-        scope(failure) delete m_writerQueue;
+        scope(failure) m_writerQueue.destroy;
 
         m_policy = policy;
         m_reader = new Reader;

@@ -123,7 +123,7 @@ class Layout(T)
                 {
                     va_list ap;
 
-                    va_start(ap, __va_argsave);
+                    va_start(ap, formatStr);
 
                     scope(exit) va_end(ap);
 
@@ -198,7 +198,7 @@ class Layout(T)
                 {
                     va_list ap;
 
-                    va_start(ap, __va_argsave);
+                    va_start(ap, formatStr);
 
                     scope(exit) va_end(ap);
 
@@ -218,7 +218,7 @@ class Layout(T)
                 {
                     va_list ap;
 
-                    va_start(ap, __va_argsave);
+                    va_start(ap, formatStr);
 
                     scope(exit) va_end(ap);
 
@@ -249,7 +249,7 @@ class Layout(T)
                 {
                     va_list ap;
 
-                    va_start(ap, __va_argsave);
+                    va_start(ap, formatStr);
 
                     scope(exit) va_end(ap);
 
@@ -418,7 +418,7 @@ class Layout(T)
                             len+= (argType.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1);
                         }
 
-                        scope (exit) delete buffer;
+                        scope (exit) buffer.destroy;
                     }
                     else 
                     {
@@ -580,12 +580,13 @@ class Layout(T)
                       // an astonishing number of typehacks needed to handle arrays :(
                       void process (const(TypeInfo) _ti, Arg _arg)
                       {
+                          assert(_ti !is null, "typeinfo can't be null");
                                 if ((_ti.classinfo.name.length is 14  && _ti.classinfo.name[9..$] == "Const") ||
                                     (_ti.classinfo.name.length is 18  && _ti.classinfo.name[9..$] == "Invariant") ||
                                     (_ti.classinfo.name.length is 15  && _ti.classinfo.name[9..$] == "Shared") ||
                                     (_ti.classinfo.name.length is 14  && _ti.classinfo.name[9..$] == "Inout"))
                                 {
-                                    process((cast(TypeInfo_Const)_ti).next, _arg);
+                                    process((cast(TypeInfo_Const)_ti).base, _arg);
                                     return;
                                 }
                                 // Because Variants can contain AAs (and maybe
@@ -1212,8 +1213,12 @@ debug (UnitTest)
         d[234] = 2;
         d[345] = 3;
 
-        assert( Formatter( "{}", d ) == "{234 => 2, 345 => 3}" ||
-                Formatter( "{}", d ) == "{345 => 3, 234 => 2}");
+        auto formattedAA = Formatter("{}", d);
+        auto aaOption1 = "{234 => 2, 345 => 3}";
+        auto aaOption2 = "{345 => 3, 234 => 2}";
+        assert(
+            formattedAA == aaOption1 || formattedAA == aaOption2,
+            formattedAA);
 
         // bool/string AA
         bool[char[]] e;
@@ -1227,7 +1232,7 @@ debug (UnitTest)
         f[ 1.0 ] = "one".dup;
         f[ 3.14 ] = "PI".dup;
         assert( Formatter( "{}", f ) == "{1.00 => one, 3.14 => PI}" ||
-                Formatter( "{}", f ) == "{3.14 => PI, 1.00 => one}");
+                Formatter( "{}", f ) == "{3.14 => PI, 1.00 => one}", Formatter("{}", f));
         }
 }
 

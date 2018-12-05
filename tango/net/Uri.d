@@ -461,7 +461,7 @@ class Uri : UriView
                 immutable(void)[] s;
 
                 s.length = 256, s.length = 0;
-                produce ((const(void)[] v) {return s ~= v, v.length;});
+                produce ((const(void)[] v) {s ~= v; return v.length;});
                 return cast(immutable(char)[]) s;
         }
 
@@ -511,7 +511,7 @@ class Uri : UriView
         static char[] encode (const(char)[] text, int flags)
         {
                 void[] s;
-                encode ((const(void)[] v) {return s ~= v, v.length;}, text, flags);
+                encode ((const(void)[] v) {s ~= v; return v.length;}, text, flags);
                 return cast(char[]) s;
         }
 

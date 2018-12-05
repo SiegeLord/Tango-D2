@@ -122,8 +122,6 @@ struct LocalFileHeader
 
         // Encode filename
         auto file_name = utf8_to_cp437(this.file_name);
-        scope(exit) if( file_name !is cast(ubyte[])this.file_name )
-            delete file_name;
 
         if( file_name is null )
             ZipException.fnencode;
@@ -150,7 +148,6 @@ struct LocalFileHeader
         auto tmp = new ubyte[data.file_name_length];
         readExact(src, tmp);
         file_name = cp437_to_utf8(tmp);
-        if( cast(char*) tmp.ptr !is file_name.ptr ) delete tmp;
 
         extra_field = new ubyte[data.extra_field_length];
         readExact(src, extra_field);
@@ -302,11 +299,7 @@ struct FileHeader
 
         // encode the filename and comment
         auto file_name = utf8_to_cp437(this.file_name);
-        scope(exit) if( file_name !is cast(ubyte[])this.file_name )
-            delete file_name;
         auto file_comment = utf8_to_cp437(this.file_comment);
-        scope(exit) if( file_comment !is cast(ubyte[])this.file_comment )
-            delete file_comment;
 
         if( file_name is null )
             ZipException.fnencode;
@@ -423,8 +416,6 @@ struct EndOfCDRecord
             ZipException.cotoolong;
 
         auto file_comment = utf8_to_cp437(this.file_comment);
-        scope(exit) if( file_comment !is cast(ubyte[])this.file_comment )
-                delete file_comment;
 
         // Set up data block
         Data data = this.data;
@@ -486,7 +477,7 @@ private
                                utf-8 encoding            | |
                                             ^            ^ /\               */
     const ushort SUPPORTED_FLAGS = 0b00_0_0_0_0000_0_0_0_1_11_0;
-    const ushort UNSUPPORTED_FLAGS = ~SUPPORTED_FLAGS;
+    const ushort UNSUPPORTED_FLAGS = cast(ushort)~cast(int)SUPPORTED_FLAGS;
 
     Method toMethod(ushort method)
     {
@@ -621,12 +612,12 @@ class ZipBlockReader : ZipReader
         state = State.Done;
         source = null;
         seeker = null;
-        delete headers;
+        destroy(headers);
 
         if( file_source !is null )  
           {
           file_source.close();
-          delete file_source;
+          destroy(file_source);
           }
     }
 
@@ -705,7 +696,7 @@ class ZipBlockReader : ZipReader
         }
 
         if( entry !is null )
-            delete entry;
+            destroy(entry);
 
         return result;
     }
@@ -837,7 +828,7 @@ private:
         auto chunk_offset = seeker.seek(0, seeker.Anchor.Current);
         //Stderr.formatln(" . chunk_offset = {}", chunk_offset);
         auto chunk = new ubyte[chunk_len];
-        scope(exit) delete chunk;
+        scope(exit) destroy(chunk);
         readExact(source, chunk);
 
         // Now look for our magic number.  Don't forget that on big-endian
@@ -1005,7 +996,7 @@ class ZipBlockWriter : ZipWriter
         output = null;
         seeker = null;
 
-        if( file_output !is null ) delete file_output;
+        if( file_output !is null ) destroy(file_output);
     }
 
     /**
@@ -1197,7 +1188,7 @@ private:
 
             // Add compression
             ZlibOutput compress;
-            scope(exit) if( compress !is null ) delete compress;
+            scope(exit) if( compress !is null ) destroy(compress);
 
             switch( _method )
             {
@@ -1552,13 +1543,13 @@ private:
 
     @property static void incons(const(char)[] name)
     {
-        thisT("inconsistent headers for file \""~name.idup~"\"; "
+        thisT("inconsistent headers for file \""~name.idup~"\"; " ~
                 "archive is likely corrupted");
     }
 
     @property static void missingdir()
     {
-        thisT("could not locate central archive directory; "
+        thisT("could not locate central archive directory; " ~
                 "file is corrupt or possibly not a Zip archive");
     }
 
@@ -1854,7 +1845,7 @@ private:
         if( digest is null ) return;
 
         auto crc = digest.crc32Digest();
-        delete digest;
+        destroy(digest);
 
         if( crc != entry.header.data.crc_32 )
             ZipChecksumException(entry.info.name);
