@@ -80,6 +80,8 @@ else version(DigitalMars)
         alias void* ArgList;
         }
 
+private alias aaApplyDg = int delegate(void*, void*);
+private extern(C) int _aaApply(void* aa, in size_t ignored, aaApplyDg dg);
 /*******************************************************************************
 
         Contains methods for replacing format items in a string with string
@@ -623,41 +625,22 @@ version (WithVariant)
                                    auto tiAsso = cast(TypeInfo_AssociativeArray)_ti;
                                    auto tiKey = tiAsso.key;
                                    auto tiVal = tiAsso.next();
-
-                                   // the knowledge of the internal k/v storage is used
-                                   // so this might break if, that internal storage changes
-                                   alias ubyte AV; // any type for key, value might be ok, the sizes are corrected later
-                                   alias ubyte AK;
-                                   auto aa = *cast(AV[AK]*) _arg;
-
-                                   length += sink ("{");
                                    bool first = true;
 
-                                   size_t roundUp (size_t tsize)
+                                   length += sink ("{");
+
+                                   // The argument is a pointer to a struct. We need to get that
+                                   // struct itself.
+                                   _aaApply(*cast(void**)_arg, 0, delegate int(void* pk, void* pv)
                                    {
-                                        //return (sz + (void*).sizeof -1) & ~((void*).sizeof - 1);
-
-                                        version (X86_64)
-                                            // Size of key needed to align value on 16 bytes
-                                            return (tsize + 15) & ~(15);
-                                        else
-                                            return (tsize + size_t.sizeof - 1) & ~(size_t.sizeof - 1);
-                                   }
-
-                                   foreach (ref v; aa)
-                                           {
-                                           // the key is befor the value, so substrace with fixed key size from above
-                                           auto pk = cast(Arg)( &v - roundUp(AK.sizeof));
-                                           // now the real value pos is plus the real key size
-                                           auto pv = cast(Arg)(pk + roundUp(tiKey.tsize()));
-
-                                           if (!first)
-                                                length += sink (", ");
-                                           process (tiKey, pk);
-                                           length += sink (" => ");
-                                           process (tiVal, pv);
-                                           first = false;
-                                           }
+                                       if (!first)
+                                            length += sink (", ");
+                                       process (tiKey, pk);
+                                       length += sink (" => ");
+                                       process (tiVal, pv);
+                                       first = false;
+                                       return 0;
+                                   });
                                    length += sink ("}");
                                    }
                                 else
