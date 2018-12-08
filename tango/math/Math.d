@@ -434,7 +434,7 @@ Lret:
 debug(UnitTest) {
     unittest
     {
-        static real[][2] vals =     // angle,tan
+        static real[2][] vals =     // angle,tan
         [
                 [   0,   0],
                 [   .5,  .5463024898],
@@ -1785,7 +1785,7 @@ real hypot(real x, real y)
 debug(UnitTest) {
 unittest
 {
-    static real[][3] vals = // x,y,hypot
+    static real[3][] vals = // x,y,hypot
     [
         [   0,  0,  0],
         [   0,  -0, 0],

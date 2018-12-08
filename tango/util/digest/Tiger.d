@@ -857,7 +857,7 @@ debug(UnitTest)
                 "Tiger - A Fast New Hash Function, by Ross Anderson and Eli Biham",
                 "Tiger - A Fast New Hash Function, by Ross Anderson and Eli Biham, proceedings of Fast Software Encryption 3, Cambridge.",
                 "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
-                x"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000",
+                "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08\x00\x00\x00",
         ];
         __gshared immutable immutable(char)[][] results = [
                 "3293ac630c13f0245f92bbb1766e16167a4e58492dde73f3",

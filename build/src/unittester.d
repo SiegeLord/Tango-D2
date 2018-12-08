@@ -193,6 +193,7 @@ void main(const(char[])[] args)
 		Stdout("Testing...").nl;
 
 		Process.Result test_result;
+		bool killed;
 
 		void test_thread()
 		{
@@ -200,6 +201,7 @@ void main(const(char[])[] args)
 			{
 				if(!test_condition.wait(10))
 				{
+					killed = true;
 					test_proc.kill();
 				}
 			}
@@ -220,7 +222,7 @@ void main(const(char[])[] args)
 			Stdout("PASS").nl;
 			pass++;
 		}
-		else if(test_result.reason == Process.Result.Signal)
+		else if(test_result.reason == Process.Result.Signal && killed)
 		{
 			Stdout("TIMEDOUT").nl;
 			Stdout(result.toString()).nl;

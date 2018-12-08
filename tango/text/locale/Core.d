@@ -564,7 +564,7 @@ version (Posix) {
         else
           parent_ = new Culture(parentCulture);
       }
-      catch {
+      catch (Throwable e) {
         parent_ = invariantCulture;
       }
     }

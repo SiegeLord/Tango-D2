@@ -342,7 +342,7 @@ class TempFile : File
         private static enum DEFAULT_SUFFIX = "~";
 
         private static enum JUNK_CHARS =
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ~
             "abcdefghijklmnopqrstuvwxyz0123456789";
 
        /**********************************************************************
@@ -436,7 +436,7 @@ class TempFile : File
             const(char)[] suffix=DEFAULT_SUFFIX)
     {
         auto junk = new char[length];
-        scope(exit) delete junk;
+        scope(exit) junk.destroy;
 
         foreach( ref c ; junk )
             c = JUNK_CHARS[Kiss.instance.toInt(cast(uint)$)];

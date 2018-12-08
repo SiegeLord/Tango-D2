@@ -782,7 +782,7 @@ class FilePath : PathView
                         if (filter is null || filter (p, info.folder))
                             paths ~= p;
                         else
-                           delete p;
+                           p.destroy;
                         }
                 return paths;
         }

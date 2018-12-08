@@ -459,16 +459,16 @@ class FTPConnection: Telnet
 
             socket_.close();
 
-            delete supportedFeatures_;
-            delete socket_;
+            supportedFeatures_.destroy;
+            socket_.destroy;
         }
     }
 
     public void setPassive() {
         inf_.type = FtpConnectionType.passive;
 
-        delete inf_.address;
-        delete inf_.listen;
+        inf_.address.destroy;
+        inf_.listen.destroy;
     }
 
     public void setActive(const(char)[] ip, ushort port, const(char)[] listen_ip = null,
@@ -665,7 +665,7 @@ class FTPConnection: Telnet
 
         // 221 means FEAT is supported, and a list follows.  Otherwise we don't know...
         if(response.code != "211")
-            delete supportedFeatures_;
+            supportedFeatures_.destroy;
         else {
             const(char)[][] lines = Text.splitLines(response.message);
 
@@ -681,7 +681,7 @@ class FTPConnection: Telnet
                     supportedFeatures_[i].params = lines[i][pos + 1 .. lines[i].length];
             }
 
-            delete lines;
+            lines.destroy;
         }
     }
 
@@ -946,7 +946,7 @@ else
         }
 
         scope(exit)
-            delete connect_to;
+            connect_to.destroy;
 
         // This will throw an exception if it cannot connect.
         auto sock = new Socket;
@@ -1111,7 +1111,7 @@ else
             // Each line is something in that directory.
             const(char)[][] lines = Text.splitLines(cast(const(char)[]) listing.slice());
             scope(exit)
-                delete lines;
+                lines.destroy;
 
             foreach(const(char)[] line; lines) {
                 if(line.length == 0)
@@ -1264,7 +1264,7 @@ else
         // Split out the lines.  Most of the time, it's one-to-one.
         const(char)[][] lines = Text.splitLines(cast(const(char)[]) listing.slice());
         scope(exit)
-            delete lines;
+            lines.destroy;
 
         foreach(const(char)[] line; lines) {
             if(line.length == 0)
@@ -1413,7 +1413,7 @@ else
                     info.modify = Time.max;
 
                 pos = r.match(0).length;
-                delete r;
+                r.destroy;
 
                 // This will either be <DIR>, or a number.
                 const(char)[] dir_or_size = parse_word();
@@ -1567,7 +1567,7 @@ else
         auto file = new File(local_file);
         scope(exit) {
             file.detach();
-            delete file;
+            file.destroy;
         }
 
         // Seek to the correct place, if specified.
@@ -1713,7 +1713,7 @@ else
 
         scope(exit) {
             file.detach();
-            delete file;
+            file.destroy;
         }
 
         // Now that it's open, we do what we always do.

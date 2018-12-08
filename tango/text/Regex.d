@@ -2498,7 +2498,7 @@ private class TDFA(char_t)
             return predicate.opCmp(t.predicate);
         }
 
-        final const bool opEquals(const Object o)
+        override final const bool opEquals(const Object o)
         {
             auto t = cast(const(Transition))o;
             if ( t is null )
@@ -3559,7 +3559,7 @@ private:
                 diff_ = new bool[num*(num+1)/2];
             }
 
-            ~this() { delete diff_; }
+            ~this() { diff_.destroy; }
 
             bool opCall(size_t a, size_t b)
             {

@@ -731,7 +731,7 @@ static if(DMDFE_Version != 2061)
                 {
                     va_list ap;
 
-                    va_start(ap, __va_argsave);
+                    va_start(ap, format);
 
                     scope(exit) va_end(ap);
 

@@ -967,9 +967,14 @@ class CircularList (V, alias Reap = Container.reap,
                 @property bool next (ref V v)
                 {
                         auto n = next;
-                        return (n) ? v = *n, true : false;
+                        if (n)
+                        {
+                            v = *n;
+                            return true;
+                        }
+                        return false;
                 }
-                
+
                 /***************************************************************
 
                         Return a pointer to the next value, or null when

@@ -877,7 +877,7 @@ unittest
     // One ring to rule them all, one ring to find them,
     // One ring to bring them all and in the darkness bind them.
     const char[] message =
-        "Ash nazg durbatulûk, ash nazg gimbatul, "
+        "Ash nazg durbatulûk, ash nazg gimbatul, " ~
         "ash nazg thrakatulûk, agh burzum-ishi krimpatul.";
 
     static assert( message.length == 90 );

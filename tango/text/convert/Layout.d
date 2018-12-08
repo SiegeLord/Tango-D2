@@ -80,6 +80,8 @@ else version(DigitalMars)
         alias void* ArgList;
         }
 
+private alias aaApplyDg = int delegate(void*, void*);
+private extern(C) int _aaApply(void* aa, in size_t ignored, aaApplyDg dg);
 /*******************************************************************************
 
         Contains methods for replacing format items in a string with string
@@ -123,7 +125,7 @@ class Layout(T)
                 {
                     va_list ap;
 
-                    va_start(ap, __va_argsave);
+                    va_start(ap, formatStr);
 
                     scope(exit) va_end(ap);
 
@@ -198,7 +200,7 @@ class Layout(T)
                 {
                     va_list ap;
 
-                    va_start(ap, __va_argsave);
+                    va_start(ap, formatStr);
 
                     scope(exit) va_end(ap);
 
@@ -218,7 +220,7 @@ class Layout(T)
                 {
                     va_list ap;
 
-                    va_start(ap, __va_argsave);
+                    va_start(ap, formatStr);
 
                     scope(exit) va_end(ap);
 
@@ -249,7 +251,7 @@ class Layout(T)
                 {
                     va_list ap;
 
-                    va_start(ap, __va_argsave);
+                    va_start(ap, formatStr);
 
                     scope(exit) va_end(ap);
 
@@ -418,7 +420,7 @@ class Layout(T)
                             len+= (argType.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1);
                         }
 
-                        scope (exit) delete buffer;
+                        scope (exit) buffer.destroy;
                     }
                     else 
                     {
@@ -580,12 +582,13 @@ class Layout(T)
                       // an astonishing number of typehacks needed to handle arrays :(
                       void process (const(TypeInfo) _ti, Arg _arg)
                       {
+                          assert(_ti !is null, "typeinfo can't be null");
                                 if ((_ti.classinfo.name.length is 14  && _ti.classinfo.name[9..$] == "Const") ||
                                     (_ti.classinfo.name.length is 18  && _ti.classinfo.name[9..$] == "Invariant") ||
                                     (_ti.classinfo.name.length is 15  && _ti.classinfo.name[9..$] == "Shared") ||
                                     (_ti.classinfo.name.length is 14  && _ti.classinfo.name[9..$] == "Inout"))
                                 {
-                                    process((cast(TypeInfo_Const)_ti).next, _arg);
+                                    process((cast(TypeInfo_Const)_ti).base, _arg);
                                     return;
                                 }
                                 // Because Variants can contain AAs (and maybe
@@ -622,41 +625,22 @@ version (WithVariant)
                                    auto tiAsso = cast(TypeInfo_AssociativeArray)_ti;
                                    auto tiKey = tiAsso.key;
                                    auto tiVal = tiAsso.next();
-
-                                   // the knowledge of the internal k/v storage is used
-                                   // so this might break if, that internal storage changes
-                                   alias ubyte AV; // any type for key, value might be ok, the sizes are corrected later
-                                   alias ubyte AK;
-                                   auto aa = *cast(AV[AK]*) _arg;
-
-                                   length += sink ("{");
                                    bool first = true;
 
-                                   size_t roundUp (size_t tsize)
+                                   length += sink ("{");
+
+                                   // The argument is a pointer to a struct. We need to get that
+                                   // struct itself.
+                                   _aaApply(*cast(void**)_arg, 0, delegate int(void* pk, void* pv)
                                    {
-                                        //return (sz + (void*).sizeof -1) & ~((void*).sizeof - 1);
-
-                                        version (X86_64)
-                                            // Size of key needed to align value on 16 bytes
-                                            return (tsize + 15) & ~(15);
-                                        else
-                                            return (tsize + size_t.sizeof - 1) & ~(size_t.sizeof - 1);
-                                   }
-
-                                   foreach (ref v; aa)
-                                           {
-                                           // the key is befor the value, so substrace with fixed key size from above
-                                           auto pk = cast(Arg)( &v - roundUp(AK.sizeof));
-                                           // now the real value pos is plus the real key size
-                                           auto pv = cast(Arg)(pk + roundUp(tiKey.tsize()));
-
-                                           if (!first)
-                                                length += sink (", ");
-                                           process (tiKey, pk);
-                                           length += sink (" => ");
-                                           process (tiVal, pv);
-                                           first = false;
-                                           }
+                                       if (!first)
+                                            length += sink (", ");
+                                       process (tiKey, pk);
+                                       length += sink (" => ");
+                                       process (tiVal, pv);
+                                       first = false;
+                                       return 0;
+                                   });
                                    length += sink ("}");
                                    }
                                 else
@@ -1212,8 +1196,12 @@ debug (UnitTest)
         d[234] = 2;
         d[345] = 3;
 
-        assert( Formatter( "{}", d ) == "{234 => 2, 345 => 3}" ||
-                Formatter( "{}", d ) == "{345 => 3, 234 => 2}");
+        auto formattedAA = Formatter("{}", d);
+        auto aaOption1 = "{234 => 2, 345 => 3}";
+        auto aaOption2 = "{345 => 3, 234 => 2}";
+        assert(
+            formattedAA == aaOption1 || formattedAA == aaOption2,
+            formattedAA);
 
         // bool/string AA
         bool[char[]] e;
@@ -1227,7 +1215,7 @@ debug (UnitTest)
         f[ 1.0 ] = "one".dup;
         f[ 3.14 ] = "PI".dup;
         assert( Formatter( "{}", f ) == "{1.00 => one, 3.14 => PI}" ||
-                Formatter( "{}", f ) == "{3.14 => PI, 1.00 => one}");
+                Formatter( "{}", f ) == "{3.14 => PI, 1.00 => one}", Formatter("{}", f));
         }
 }
 

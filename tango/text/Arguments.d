@@ -927,7 +927,7 @@ class Arguments
                                         }
                             }
                         }
-                        debug(Arguments) stdout.formatln ("{}: error={}, set={}, min={}, max={}, "
+                        debug(Arguments) stdout.formatln ("{}: error={}, set={}, min={}, max={}, " ~
                                                "req={}, values={}, defaults={}, requires={}", 
                                                name, error, set, min, max, req, values, 
                                                deefalts, dependees);

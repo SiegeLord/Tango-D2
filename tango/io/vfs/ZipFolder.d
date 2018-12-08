@@ -191,7 +191,7 @@ private
                         file.tempFile.copy(zi).close();
 
                         debug( ZipFolder )
-                            Stderr.formatln("Entry.openOutput: duplicated"
+                            Stderr.formatln("Entry.openOutput: duplicated" ~
                                     " temp file {} for {}",
                                     file.tempFile, this.fullname);
                     }
@@ -206,7 +206,7 @@ private
                     file.tempFile = new TempFile;
 
                     debug( ZipFolder )
-                        Stderr.formatln("Entry.openOutput: created"
+                        Stderr.formatln("Entry.openOutput: created" ~
                                 " temp file {} for {}",
                                 file.tempFile, this.fullname);
                 }
@@ -234,13 +234,13 @@ private
             {
                 case EntryType.Dir:
                     auto keys = dir.children.keys;
-                    scope(exit) delete keys;
+                    scope(exit) keys.destroy;
                     foreach( k ; keys )
                     {
                         auto child = dir.children[k];
                         child.dispose();
                         dir.children.remove(k);
-                        delete child;
+                        child.destroy;
                     }
                     dir.children = dir.children.init;
                     break;
@@ -650,7 +650,7 @@ class ZipFolder : ZipSubFolder
         if( zr !is null )
         {
             zr.close();
-            delete zr;
+            zr.destroy;
         }
 
         // Destroy entries
@@ -658,7 +658,7 @@ class ZipFolder : ZipSubFolder
         version( Bug_HeapCorruption )
             root = null;
         else
-            delete root;
+            root.destroy;
 
         return this;
     }
@@ -696,7 +696,7 @@ else
         // zip entries, then we'll need to write to a temporary path instead.
         OutputStream os;
         TempFile tempFile;
-        scope(exit) if( tempFile !is null ) delete tempFile;
+        scope(exit) if( tempFile !is null ) tempFile.destroy;
 
         auto p = Path.parse (path);
         foreach( file ; this.tree.catalog )
@@ -720,7 +720,7 @@ else
             if( zr !is null )
             {
                 zr.close();
-                delete zr;
+                zr.destroy;
             }
 
             os = new File(path, File.WriteCreate);
@@ -998,7 +998,7 @@ class ZipFile : VfsFile
         if( exists )
             return entry.fileSize;
         else
-            error("ZipFile.size: cannot reliably determine size of a "
+            error("ZipFile.size: cannot reliably determine size of a " ~
                     "non-existent file");
 
         assert(false);
@@ -1062,7 +1062,7 @@ version( ZipFolder_NonMutating )
 else
 {
         if( exists )
-            error("ZipFile.create: cannot create already existing file: "
+            error("ZipFile.create: cannot create already existing file: " ~
                     "this folder ain't big enough for the both of 'em");
 
         // MUTATE
@@ -1116,7 +1116,7 @@ version( ZipFolder_NonMutating )
 else
 {
         if( !exists )
-            error("ZipFile.remove: cannot remove non-existent file; "
+            error("ZipFile.remove: cannot remove non-existent file; " ~
                     "rather redundant, really");
 
         // MUTATE
@@ -1149,7 +1149,7 @@ else
             return entry.openInput();
 
         else
-            error("ZipFile.input: cannot open non-existent file for input; "
+            error("ZipFile.input: cannot open non-existent file for input; " ~
                     "results would not be very useful");
 
         assert(false);
@@ -1350,7 +1350,7 @@ else
 
         // If the folder exists, we can't really create it, now can we?
         if( this.exists )
-            error("ZipSubFolderEntry.create: cannot create folder that already "
+            error("ZipSubFolderEntry.create: cannot create folder that already " ~
                     "exists, and believe me, I *tried*");
 
         // Ok, I suppose I can do this for ya...
@@ -1626,7 +1626,7 @@ void error(const(char)[] msg)
 
 void mutate_error(const(char)[] method)
 {
-    error(method ~ ": mutating the contents of a ZipFolder "
+    error(method ~ ": mutating the contents of a ZipFolder " ~
             "is not supported yet; terribly sorry");
 }
 

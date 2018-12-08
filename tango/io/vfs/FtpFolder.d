@@ -55,7 +55,8 @@ private FtpFileInfo[] getEntries(FTPConnection ftp, const(char)[] path = "") {
         }
     }
     foreach(FtpFileInfo inf; temp) {
-        temp2 ~= getEntries((ftp.cd(inf.name) , ftp));
+        ftp.cd(inf.name);
+        temp2 ~= getEntries(ftp);
         //wasn't here at the beginning
         foreach(inf2; temp2) {
             inf2.name = checkCat(inf.name, inf2.name);
