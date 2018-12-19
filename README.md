@@ -3,7 +3,7 @@ Tango for D2
 
 [![Build Status](https://travis-ci.org/SiegeLord/Tango-D2.svg?branch=travis_test)](https://travis-ci.org/SiegeLord/Tango-D2)
 
-Last tested DMDFE: 2.068
+Last tested DMDFE: 2.083
 
 This is an effort to port [Tango](http://www.dsource.org/projects/tango/) to the [D2 programming language](http://www.dlang.org).
 
