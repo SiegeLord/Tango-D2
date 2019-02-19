@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: Aug 2006      
-        
+        version:        Initial release: Aug 2006
+
         author:         Kris
 
 *******************************************************************************/
@@ -75,7 +75,7 @@ class InternetAddress : IPv4Address
         **********************************************************************/
 
         private static int parse (const(char)[] s)
-        {       
+        {
                 int number;
 
                 foreach (c; s)

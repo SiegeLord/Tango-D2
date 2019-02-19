@@ -137,7 +137,7 @@ private bool tryParseExact(const(char)[] s, const(char)[] pattern, DateTimeForma
         result = -result;
       return result;
     }
-      
+
     char[] stringOf(char c, int count = 1) {
       char[] s = new char[count];
       s[0 .. count] = c;

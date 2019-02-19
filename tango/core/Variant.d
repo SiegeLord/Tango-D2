@@ -654,15 +654,15 @@ struct Variant
     {
         mixin("return get!(T) " ~ op ~ " rhs;");
     }
-    
+
     auto opBinaryRight(immutable(char)[] op, T)(T lhs)
     {
         mixin("return lhs " ~ op ~ " get!(T);");
     }
-    
+
     Variant opOpAssign(immutable(char)[] op, T)(T value)
     {
-        mixin("return (this = get!(T) " ~ op ~ " value);"); 
+        mixin("return (this = get!(T) " ~ op ~ " value);");
     }
 
     /**

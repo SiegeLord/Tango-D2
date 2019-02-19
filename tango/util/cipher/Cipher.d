@@ -13,10 +13,10 @@ abstract class Cipher
 {
     enum bool ENCRYPT = true,
               DECRYPT = false;
-                      
+
     protected bool _initialized,
                    _encrypt;
-    
+
     /**
      * Process a block of plaintext data from the input array
      * and place it in the output array.
@@ -28,16 +28,16 @@ abstract class Cipher
      * Returns: The amount of encrypted data processed.
      */
     abstract uint update(const(void[]) input_, void[] output_);
-    
+
     /** Returns: The name of the algorithm of this cipher. */
     @property abstract const(char)[] name();
-    
+
     /** Reset cipher to its state immediately subsequent the last init. */
     abstract void reset();
-   
+
     /**
      * throw an InvalidArgument exception
-     * 
+     *
      * Params:
      *     msg = message to associate with the exception
      */
@@ -45,7 +45,7 @@ abstract class Cipher
     {
         throw new IllegalArgumentException (msg.idup);
     }
-     
+
     /** Returns: Whether or not the cipher has been initialized. */
     final const bool initialized()
     {
@@ -75,7 +75,7 @@ abstract class BlockCipher : Cipher
 
 /** Interface for a standard stream cipher. */
 abstract class StreamCipher : Cipher
-{   
+{
     /**
      * Process one byte of input.
      *
@@ -87,7 +87,7 @@ abstract class StreamCipher : Cipher
     abstract ubyte returnByte(ubyte input);
 }
 
- 
+
  /** Base padding class for implementing block padding schemes. */
  abstract class BlockCipherPadding
  {
@@ -101,7 +101,7 @@ abstract class StreamCipher : Cipher
     *     len = Length of padding to generate
     *
     * Returns: The padding bytes to be added.
-    */ 
+    */
     abstract ubyte[] pad(uint len);
 
     /**
@@ -112,7 +112,7 @@ abstract class StreamCipher : Cipher
     *
     * Returns: The number of pad bytes in the block.
     *
-    * Throws: dcrypt.crypto.errors.InvalidPaddingError if 
+    * Throws: dcrypt.crypto.errors.InvalidPaddingError if
     *         pad length cannot be discerned.
     */
     abstract uint unpad(const(void[]) input_);
@@ -124,20 +124,20 @@ struct Bitwise
     {
         return (x << y) | (x >> (32u-y));
     }
-    
+
     static uint rotateRight(uint x, uint y)
     {
-        return (x >> y) | (x << (32u-y));    
+        return (x >> y) | (x << (32u-y));
     }
-    
+
     static ulong rotateLeft(ulong x, uint y)
     {
         return (x << y) | (x >> (64u-y));
     }
-    
+
     static ulong rotateRight(ulong x, uint y)
     {
-        return (x >> y) | (x << (64u-y));    
+        return (x >> y) | (x << (64u-y));
     }
 }
 
@@ -147,16 +147,16 @@ struct ByteConverter
 {
     private __gshared immutable immutable(char)[] hexits = "0123456789abcdef";
     private __gshared immutable immutable(char)[] base32digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-    
+
     /** Conversions between little endian integrals and bytes */
     struct LittleEndian
     {
         /**
          * Converts the supplied array to integral type T
-         * 
+         *
          * Params:
          *     x_ = The supplied array of bytes (ubytes, bytes, chars, whatever)
-         * 
+         *
          * Returns:
          *     A integral of type T created with the supplied bytes placed
          *     in the specified byte order.
@@ -164,16 +164,16 @@ struct ByteConverter
         static T to(T)(const(void[]) x_)
         {
             const(ubyte[]) x = cast(const(ubyte[]))x_;
-            
+
             T result = ((cast(T)x[0])       |
                        ((cast(T)x[1]) << 8));
-                       
+
             static if (T.sizeof >= int.sizeof)
             {
                 result |= ((cast(T)x[2]) << 16) |
                           ((cast(T)x[3]) << 24);
             }
-            
+
             static if (T.sizeof >= long.sizeof)
             {
                 result |= ((cast(T)x[4]) << 32) |
@@ -181,16 +181,16 @@ struct ByteConverter
                           ((cast(T)x[6]) << 48) |
                           ((cast(T)x[7]) << 56);
             }
-            
+
             return result;
         }
-        
+
         /**
          * Converts the supplied integral to an array of unsigned bytes.
-         * 
+         *
          * Params:
          *     input = Integral to convert to bytes
-         * 
+         *
          * Returns:
          *     Integral input of type T split into its respective bytes
          *     with the bytes placed in the specified byte order.
@@ -199,13 +199,13 @@ struct ByteConverter
         {
             output[0] = cast(ubyte)(input);
             output[1] = cast(ubyte)(input >> 8);
-            
+
             static if (T.sizeof >= int.sizeof)
             {
                 output[2] = cast(ubyte)(input >> 16);
                 output[3] = cast(ubyte)(input >> 24);
             }
-            
+
             static if (T.sizeof >= long.sizeof)
             {
                 output[4] = cast(ubyte)(input >> 32);
@@ -215,15 +215,15 @@ struct ByteConverter
             }
         }
     }
-    
+
     /** Conversions between big endian integrals and bytes */
     struct BigEndian
     {
-        
+
         static T to(T)(const(void[]) x_)
         {
             const(ubyte[]) x = cast(const(ubyte[]))x_;
-            
+
             static if (is(T == ushort) || is(T == short))
             {
                 return cast(T) (((x[0] & 0xff) << 8) |
@@ -248,7 +248,7 @@ struct ByteConverter
                                  (x[7] & 0xff));
             }
         }
-        
+
         static void from(T)(T input, ubyte[] output)
         {
             static if (T.sizeof == long.sizeof)
@@ -281,17 +281,17 @@ struct ByteConverter
     {
         const(ubyte[]) input = cast(const(ubyte[]))input_;
         char[] output = new char[input.length<<1];
-        
+
         int i = 0;
         foreach (ubyte j; input)
-        { 
+        {
             output[i++] = hexits[j>>4];
             output[i++] = hexits[j&0xf];
         }
-        
-        return output;    
+
+        return output;
     }
-    
+
     static char[] base32Encode(const(void[]) input_, bool doPad=true)
     {
         if (!input_)
@@ -330,20 +330,20 @@ struct ByteConverter
     {
         char[] inputAsLower = stringToLower(input);
         ubyte[] output = new ubyte[input.length>>1];
-        
+
         static __gshared ubyte[char] hexitIndex;
         for (int i = 0; i < hexits.length; i++)
             hexitIndex[hexits[i]] = cast(ubyte) i;
-            
+
         for (int i = 0, j = 0; i < output.length; i++)
         {
             output[i] = cast(ubyte) (hexitIndex[inputAsLower[j++]] << 4);
-            output[i] |= hexitIndex[inputAsLower[j++]]; 
+            output[i] |= hexitIndex[inputAsLower[j++]];
         }
-        
+
         return output;
     }
-    
+
     static ubyte[] base32Decode(const(char[]) input)
     {
         static __gshared ubyte[char] b32Index;
@@ -374,10 +374,10 @@ struct ByteConverter
     private static char[] stringToLower(const(char[]) input)
     {
         char[] output = new char[input.length];
-        
-        foreach (int i, char c; input) 
+
+        foreach (int i, char c; input)
             output[i] = cast(char) ((c >= 'A' && c <= 'Z') ? c+32 : c);
-            
+
         return cast(char[])output;
     }
 

@@ -87,8 +87,8 @@ inout(dchar[]) toString32 (inout(dchar[]) src, dchar[] dst = null, size_t* ate=n
             output = result;
         ---
 
-        Where 'ate' is provided, it will be set to the number of 
-        elements consumed from the input, and the output buffer 
+        Where 'ate' is provided, it will be set to the number of
+        elements consumed from the input, and the output buffer
         will not be resized (or allocated). This represents a
         streaming mode, where slices of the input are processed
         in sequence rather than all at one time (should use 'ate'
@@ -168,8 +168,8 @@ char[] toString (const(wchar[]) input, char[] output=null, size_t* ate=null)
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
 
-        Where 'ate' is provided, it will be set to the number of 
-        elements consumed from the input, and the output buffer 
+        Where 'ate' is provided, it will be set to the number of
+        elements consumed from the input, and the output buffer
         will not be resized (or allocated). This represents a
         streaming mode, where slices of the input are processed
         in sequence rather than all at one time (should use 'ate'
@@ -264,8 +264,8 @@ wchar[] toString16 (const(char[]) input, wchar[] output=null, size_t* ate=null)
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
 
-        Where 'ate' is provided, it will be set to the number of 
-        elements consumed from the input, and the output buffer 
+        Where 'ate' is provided, it will be set to the number of
+        elements consumed from the input, and the output buffer
         will not be resized (or allocated). This represents a
         streaming mode, where slices of the input are processed
         in sequence rather than all at one time (should use 'ate'
@@ -354,8 +354,8 @@ char[] toString (const(dchar[]) input, char[] output=null, size_t* ate=null)
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
 
-        Where 'ate' is provided, it will be set to the number of 
-        elements consumed from the input, and the output buffer 
+        Where 'ate' is provided, it will be set to the number of
+        elements consumed from the input, and the output buffer
         will not be resized (or allocated). This represents a
         streaming mode, where slices of the input are processed
         in sequence rather than all at one time (should use 'ate'
@@ -456,8 +456,8 @@ dchar[] toString32 (const(char[]) input, dchar[] output=null, size_t* ate=null)
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
 
-        Where 'ate' is provided, it will be set to the number of 
-        elements consumed from the input, and the output buffer 
+        Where 'ate' is provided, it will be set to the number of
+        elements consumed from the input, and the output buffer
         will not be resized (or allocated). This represents a
         streaming mode, where slices of the input are processed
         in sequence rather than all at one time (should use 'ate'
@@ -527,8 +527,8 @@ wchar[] toString16 (const(dchar[]) input, wchar[] output=null, size_t* ate=null)
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
 
-        Where 'ate' is provided, it will be set to the number of 
-        elements consumed from the input, and the output buffer 
+        Where 'ate' is provided, it will be set to the number of
+        elements consumed from the input, and the output buffer
         will not be resized (or allocated). This represents a
         streaming mode, where slices of the input are processed
         in sequence rather than all at one time (should use 'ate'
@@ -622,7 +622,7 @@ dchar decode (const(wchar[]) src, ref size_t ate)
 
 /*******************************************************************************
 
-        Encode a dchar into the provided dst array, and return a slice of 
+        Encode a dchar into the provided dst array, and return a slice of
         it representing the encoding
 
 *******************************************************************************/
@@ -634,7 +634,7 @@ char[] encode (char[] dst, dchar c)
 
 /*******************************************************************************
 
-        Encode a dchar into the provided dst array, and return a slice of 
+        Encode a dchar into the provided dst array, and return a slice of
         it representing the encoding
 
 *******************************************************************************/
@@ -657,7 +657,7 @@ bool isValid (dchar c)
 
 /*******************************************************************************
 
-        Convert from a char[] into the type of the dst provided. 
+        Convert from a char[] into the type of the dst provided.
 
         Returns a slice of the given dst, where it is sufficiently large
         to house the result, or a heap-allocated array otherwise. Returns
@@ -681,7 +681,7 @@ T[] fromString8(T) (const(char[]) s, T[] dst) if (!is (T == char))
 
 /*******************************************************************************
 
-        Convert from a wchar[] into the type of the dst provided. 
+        Convert from a wchar[] into the type of the dst provided.
 
         Returns a slice of the given dst, where it is sufficiently large
         to house the result, or a heap-allocated array otherwise. Returns
@@ -705,7 +705,7 @@ T[] fromString16(T) (const(wchar[]) s, T[] dst) if (!is (T == wchar))
 
 /*******************************************************************************
 
-        Convert from a dchar[] into the type of the dst provided. 
+        Convert from a dchar[] into the type of the dst provided.
 
         Returns a slice of the given dst, where it is sufficiently large
         to house the result, or a heap-allocated array otherwise. Returns
@@ -729,7 +729,7 @@ T[] fromString32(T) (const(dchar[]) s, T[] dst) if (!is (T == dchar))
 
 /*******************************************************************************
 
-        Adjust the content such that no partial encodings exist on the 
+        Adjust the content such that no partial encodings exist on the
         left side of the provided text.
 
         Returns a slice of the input
@@ -753,7 +753,7 @@ T[] cropLeft(T) (T[] s)
 
 /*******************************************************************************
 
-        Adjust the content such that no partial encodings exist on the 
+        Adjust the content such that no partial encodings exist on the
         right side of the provided text.
 
         Returns a slice of the input
@@ -777,7 +777,7 @@ T[] cropRight(T) (T[] s)
                                 // is it a 3 byte sequence?
                                 if (b & 0x20)
                                     --d;
-   
+
                                 // or a four byte sequence?
                                 if (b & 0x10)
                                     --d;
@@ -787,7 +787,7 @@ T[] cropRight(T) (T[] s)
                                     i = s.length;
                                 return s [0..i];
                                 }
-                             else 
+                             else
                                 --i;
                       }
 
