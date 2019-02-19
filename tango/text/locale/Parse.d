@@ -99,13 +99,13 @@ private bool tryParseExact(const(char)[] s, const(char)[] pattern, DateTimeForma
     int parseMultiple(const(char)[] s, ref int pos, const(char[])[] values ...) {
       int result = -1;
       size_t max;
-      foreach (int i, const(char)[] value; values) {
+      foreach (i, const(char)[] value; values) {
         if (value.length == 0 || s.length - pos < value.length)
           continue;
 
         if (s[pos .. pos + value.length] == value) {
           if (result == 0 || value.length > max) {
-            result = i + 1;
+            result = cast(int) i + 1;
             max = value.length;
           }
         }

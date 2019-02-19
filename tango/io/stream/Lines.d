@@ -95,10 +95,10 @@ class Lines(T) : Iterator!(T)
         {
                 auto content = (cast(const(T)*) data.ptr) [0 .. data.length / T.sizeof];
 
-                foreach (int i, T c; content)
+                foreach (i, T c; content)
                          if (c is '\n')
                             {
-                            int slice = i;
+                            auto slice = i;
                             if (i && content[i-1] is '\r')
                                 --slice;
                             set (content.ptr, 0, slice, i);

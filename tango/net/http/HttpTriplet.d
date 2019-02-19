@@ -41,10 +41,10 @@ class HttpTriplet
         bool parse (const(char)[] line)
         {
                 int i;
-                int mark;
+                size_t mark;
 
                 this.line = line;
-                foreach (int index, char c; line)
+                foreach (index, char c; line)
                          if (c is ' ')
                          {
                              if (i < 2)

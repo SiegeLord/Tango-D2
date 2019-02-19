@@ -191,7 +191,7 @@ class MemCache : Thr.Thread
         {
                 auto conn = new shared(Connection) [hosts.length];
 
-                foreach (int i, const(char)[] host; hosts)
+                foreach (i, const(char)[] host; hosts)
                          conn[i] = cast(shared) new Connection(host);
 
                 // set new list of connections

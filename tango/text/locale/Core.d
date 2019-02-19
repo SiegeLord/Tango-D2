@@ -406,7 +406,7 @@ version (Posix) {
     }
 
     Culture[] result = new Culture[cultures.length];
-    foreach (int i, int cultureID; cultures)
+    foreach (i, int cultureID; cultures)
       result[i] = new Culture(cultureID);
     return result;
   }
@@ -633,7 +633,7 @@ version (Posix) {
    */
   @property public Calendar[] optionalCalendars() {
     Calendar[] cals = new Calendar[cultureData_.optionalCalendars.length];
-    foreach (int i, int calID; cultureData_.optionalCalendars)
+    foreach (i, int calID; cultureData_.optionalCalendars)
       cals[i] = getCalendarInstance(calID);
     return cals;
   }

@@ -38,7 +38,7 @@ class InternetAddress : IPv4Address
 
         this (const(char)[] addr, int port = PORT_ANY)
         {
-                foreach (int i, char c; addr)
+                foreach (i, char c; addr)
                          if (c is ':')
                             {
                             port = parse (addr [i+1 .. $]);

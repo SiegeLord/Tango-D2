@@ -685,7 +685,7 @@ class CookieParser : Iterator!(char)
 
         final static char[] toLower (char[] src)
         {
-                foreach (int i, char c; src)
+                foreach (i, char c; src)
                          if (c >= 'A' && c <= 'Z')
                              src[i] = cast(char)(c + ('a' - 'A'));
                 return src;

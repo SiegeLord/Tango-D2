@@ -111,7 +111,7 @@ char[] toString (const(wchar[]) input, char[] output=null, size_t* ate=null)
         char* pOut = output.ptr;
         char* pMax = pOut + output.length - 3;
 
-        foreach (int eaten, wchar b; input)
+        foreach (eaten, wchar b; input)
                 {
                 // about to overflow the output?
                 if (pOut > pMax)
@@ -288,7 +288,7 @@ char[] toString (const(dchar[]) input, char[] output=null, size_t* ate=null)
         char* pOut = output.ptr;
         char* pMax = pOut + output.length - 4;
 
-        foreach (int eaten, dchar b; input)
+        foreach (eaten, dchar b; input)
                 {
                 // about to overflow the output?
                 if (pOut > pMax)
@@ -479,7 +479,7 @@ wchar[] toString16 (const(dchar[]) input, wchar[] output=null, size_t* ate=null)
         wchar* pOut = output.ptr;
         wchar* pMax = pOut + output.length - 2;
 
-        foreach (int eaten, dchar b; input)
+        foreach (eaten, dchar b; input)
                 {
                 // about to overflow the output?
                 if (pOut > pMax)

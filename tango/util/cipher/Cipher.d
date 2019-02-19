@@ -375,7 +375,7 @@ struct ByteConverter
     {
         char[] output = new char[input.length];
 
-        foreach (int i, char c; input)
+        foreach (i, char c; input)
             output[i] = cast(char) ((c >= 'A' && c <= 'Z') ? c+32 : c);
 
         return cast(char[])output;
@@ -385,7 +385,7 @@ struct ByteConverter
     {
         char[] output = new char[input.length];
 
-        foreach (int i, char c; input)
+        foreach (i, char c; input)
             output[i] = cast(char) ((c >= 'a' && c <= 'z') ? c-32 : c);
 
         return cast(char[])output;

@@ -476,10 +476,10 @@ class Uri : UriView
         {
                 size_t  ret;
                 char[3] hex;
-                int     mark;
+                size_t  mark;
 
                 hex[0] = '%';
-                foreach (int i, char c; s)
+                foreach (i, char c; s)
                         {
                         if (! (map[c] & flags))
                            {
@@ -816,7 +816,7 @@ class Uri : UriView
                         len = auth.length;
 
                 // get userinfo: (([^@]*)@?)
-                foreach (int i, char c; auth)
+                foreach (i, char c; auth)
                          if (c is '@')
                             {
                             userinfo_ = decoder (auth[0 .. i]);
