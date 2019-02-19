@@ -699,7 +699,7 @@ struct Variant
     }
 
     /// ditto
-    hash_t toHash() const
+    hash_t toHash() const nothrow @safe
     {
         return type.getHash(this.ptr);
     }
@@ -720,7 +720,7 @@ struct Variant
      * This can be used to retrieve the TypeInfo for the currently stored
      * value.
      */
-    @property const(TypeInfo) type() const
+    @property const(TypeInfo) type() const nothrow @safe
     {
         return _type;
     }
@@ -729,7 +729,7 @@ struct Variant
      * This can be used to retrieve a pointer to the value stored in the
      * variant.
      */
-    @property inout(void*) ptr() inout
+    @property inout(void*) ptr() inout nothrow @trusted
     {
         if( type.tsize <= value.sizeof )
             return &value;
