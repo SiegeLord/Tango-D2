@@ -1059,7 +1059,7 @@ class GlobalDebugInfo {
         info.freeArrays();
         info.prev = info.next = null;
         
-        delete info;
+        info.destroy;
 			}
     }
 }

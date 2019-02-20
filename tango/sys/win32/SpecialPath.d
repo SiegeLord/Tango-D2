@@ -112,7 +112,7 @@ char[] getSpecialPath( int csidl )
     else
     {
         wchar* spath = (new wchar[MAX_PATH]).ptr;
-        scope(exit) delete spath;
+        scope(exit) spath.destroy;
 
         if( !SHGetSpecialFolderPathW( null, spath, csidl, true ) )
             throw new Exception( "getSpecialPath :: " ~ SysError.lastMsg.idup );
