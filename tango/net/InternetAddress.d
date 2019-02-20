@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: Aug 2006      
-        
+        version:        Initial release: Aug 2006
+
         author:         Kris
 
 *******************************************************************************/
@@ -38,7 +38,7 @@ class InternetAddress : IPv4Address
 
         this (const(char)[] addr, int port = PORT_ANY)
         {
-                foreach (int i, char c; addr)
+                foreach (i, char c; addr)
                          if (c is ':')
                             {
                             port = parse (addr [i+1 .. $]);
@@ -75,7 +75,7 @@ class InternetAddress : IPv4Address
         **********************************************************************/
 
         private static int parse (const(char)[] s)
-        {       
+        {
                 int number;
 
                 foreach (c; s)

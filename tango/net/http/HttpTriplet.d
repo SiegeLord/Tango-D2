@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-        
-        version:        Initial release: December 2005      
-        
+
+        version:        Initial release: December 2005
+
         author:         Kris
 
 *******************************************************************************/
@@ -14,11 +14,11 @@ module tango.net.http.HttpTriplet;
 
 /******************************************************************************
 
-        Class to represent an HTTP response- or request-line 
+        Class to represent an HTTP response- or request-line
 
 ******************************************************************************/
 
-class HttpTriplet 
+class HttpTriplet
 {
         protected const(char)[]        line;
         protected const(char)[]        failed;
@@ -41,10 +41,10 @@ class HttpTriplet
         bool parse (const(char)[] line)
         {
                 int i;
-                int mark;
+                size_t mark;
 
                 this.line = line;
-                foreach (int index, char c; line)
+                foreach (index, char c; line)
                          if (c is ' ')
                          {
                              if (i < 2)

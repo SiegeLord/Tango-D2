@@ -8,9 +8,9 @@
 
         author:         John Chapman
 
-        Contains classes that provide information about locales, such as 
-        the language and calendars, as well as cultural conventions used 
-        for formatting dates, currency and numbers. Use these classes when 
+        Contains classes that provide information about locales, such as
+        the language and calendars, as well as cultural conventions used
+        for formatting dates, currency and numbers. Use these classes when
         writing applications for an international audience.
 
 ******************************************************************************/
@@ -118,7 +118,7 @@ private import  tango.time.chrono.Hijri,
                 tango.time.chrono.Japanese,
                 tango.time.chrono.Gregorian,
                 tango.time.chrono.ThaiBuddhist;
-        
+
 version (Windows)
          private import tango.text.locale.Win32;
 
@@ -147,7 +147,7 @@ public enum CultureTypes {
 /**
  * $(ANCHOR _IFormatService)
  * Retrieves an object to control formatting.
- * 
+ *
  * A class implements $(LINK2 #IFormatService_getFormat, getFormat) to retrieve an object that provides format information for the implementing type.
  * Remarks: IFormatService is implemented by $(LINK2 #Culture, Culture), $(LINK2 #NumberFormat, NumberFormat) and $(LINK2 #DateTimeFormat, DateTimeFormat) to provide locale-specific formatting of
  * numbers and date and time values.
@@ -167,12 +167,12 @@ public interface IFormatService {
 /**
  * $(ANCHOR _Culture)
  * Provides information about a culture, such as its name, calendar and date and number format patterns.
- * Remarks: tango.text.locale adopts the RFC 1766 standard for culture names in the format &lt;language&gt;"-"&lt;region&gt;. 
- * &lt;language&gt; is a lower-case two-letter code defined by ISO 639-1. &lt;region&gt; is an upper-case 
+ * Remarks: tango.text.locale adopts the RFC 1766 standard for culture names in the format &lt;language&gt;"-"&lt;region&gt;.
+ * &lt;language&gt; is a lower-case two-letter code defined by ISO 639-1. &lt;region&gt; is an upper-case
  * two-letter code defined by ISO 3166. For example, "en-GB" is UK English.
  * $(BR)$(BR)There are three types of culture: invariant, neutral and specific. The invariant culture is not tied to
  * any specific region, although it is associated with the English language. A neutral culture is associated with
- * a language, but not with a region. A specific culture is associated with a language and a region. "es" is a neutral 
+ * a language, but not with a region. A specific culture is associated with a language and a region. "es" is a neutral
  * culture. "es-MX" is a specific culture.
  * $(BR)$(BR)Instances of $(LINK2 #DateTimeFormat, DateTimeFormat) and $(LINK2 #NumberFormat, NumberFormat) cannot be created for neutral cultures.
  * Examples:
@@ -406,7 +406,7 @@ version (Posix) {
     }
 
     Culture[] result = new Culture[cultures.length];
-    foreach (int i, int cultureID; cultures)
+    foreach (i, int cultureID; cultures)
       result[i] = new Culture(cultureID);
     return result;
   }
@@ -493,7 +493,7 @@ version (Posix) {
   /**
    * $(I Property.) Retrieves the identifier of the Culture.
    * Returns: The culture identifier of the current instance.
-   * Remarks: The culture identifier corresponds to the Windows locale identifier (LCID). It can therefore be used when 
+   * Remarks: The culture identifier corresponds to the Windows locale identifier (LCID). It can therefore be used when
    * interfacing with the Windows NLS functions.
    */
   @property public const int id() {
@@ -511,7 +511,7 @@ version (Posix) {
 
   /**
    * $(I Property.) Retrieves the name of the Culture in the format &lt;languagename&gt; (&lt;regionname&gt;) in English.
-   * Returns: The name of the current instance in English. For example, the englishName of the UK English culture 
+   * Returns: The name of the current instance in English. For example, the englishName of the UK English culture
    * is "English (United Kingdom)".
    */
   @property public const const(char)[] englishName() {
@@ -520,7 +520,7 @@ version (Posix) {
 
   /**
    * $(I Property.) Retrieves the name of the Culture in the format &lt;languagename&gt; (&lt;regionname&gt;) in its native language.
-   * Returns: The name of the current instance in its native language. For example, if Culture.name is "de-DE", nativeName is 
+   * Returns: The name of the current instance in its native language. For example, if Culture.name is "de-DE", nativeName is
    * "Deutsch (Deutschland)".
    */
   @property public const const(char)[] nativeName() {
@@ -608,7 +608,7 @@ version (Posix) {
   /**
    * $(I Property.) Retrieves a value indicating whether the instance is read-only.
    * Returns: true if the instance is read-only; otherwise, false.
-   * Remarks: If the culture is read-only, the $(LINK2 #Culture_dateTimeFormat, dateTimeFormat) and $(LINK2 #Culture_numberFormat, numberFormat) properties return 
+   * Remarks: If the culture is read-only, the $(LINK2 #Culture_dateTimeFormat, dateTimeFormat) and $(LINK2 #Culture_numberFormat, numberFormat) properties return
    * read-only instances.
    */
   @property public const final bool isReadOnly() {
@@ -633,7 +633,7 @@ version (Posix) {
    */
   @property public Calendar[] optionalCalendars() {
     Calendar[] cals = new Calendar[cultureData_.optionalCalendars.length];
-    foreach (int i, int calID; cultureData_.optionalCalendars)
+    foreach (i, int calID; cultureData_.optionalCalendars)
       cals[i] = getCalendarInstance(calID);
     return cals;
   }
@@ -905,8 +905,8 @@ public class Region {
  *   foreach (c; Culture.getCultures(CultureTypes.Specific)) {
  *     if (c.twoLetterLanguageName == "en") {
  *       NumberFormat fmt = c.numberFormat;
- *       Println("The currency symbol for %s is '%s'", 
- *         c.englishName, 
+ *       Println("The currency symbol for %s is '%s'",
+ *         c.englishName,
  *         fmt.currencySymbol);
  *     }
  *   }
@@ -1436,7 +1436,7 @@ version (Clone)
  * $(ANCHOR _DateTimeFormat)
  * Determines how $(LINK2 #Time, Time) values are formatted, depending on the culture.
  * Remarks: To create a DateTimeFormat for a specific culture, create a $(LINK2 #Culture, Culture) for that culture and
- * retrieve its $(LINK2 #Culture_dateTimeFormat, dateTimeFormat) property. To create a DateTimeFormat for the user's current 
+ * retrieve its $(LINK2 #Culture_dateTimeFormat, dateTimeFormat) property. To create a DateTimeFormat for the user's current
  * culture, use the $(LINK2 #Culture_current, current) property.
  */
 public class DateTimeFormat : IFormatService {

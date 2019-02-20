@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-        
-        version:        Initial release: April 2004      
-        
+
+        version:        Initial release: April 2004
+
         author:         Kris
 
 *******************************************************************************/
@@ -24,17 +24,17 @@ private import  tango.stdc.string : memchr;
 
 /*******************************************************************************
 
-        Implements an RFC 2396 compliant URI specification. See 
+        Implements an RFC 2396 compliant URI specification. See
         <A HREF="http://ftp.ics.uci.edu/pub/ietf/uri/rfc2396.txt">this page</A>
-        for more information. 
+        for more information.
 
         The implementation fails the spec on two counts: it doesn't insist
         on a scheme being present in the Uri, and it doesn't implement the
         "Relative References" support noted in section 5.2. The latter can
         be found in tango.util.PathUtil instead.
-        
+
         Note that IRI support can be implied by assuming each of userinfo,
-        path, query, and fragment are UTF-8 encoded 
+        path, query, and fragment are UTF-8 encoded
         (see <A HREF="http://www.w3.org/2001/Talks/0912-IUC-IRI/paper.html">
         this page</A> for further details).
 
@@ -44,7 +44,7 @@ class Uri : UriView
 {
         // simplistic string appender
         private alias scope size_t delegate(const(void)[]) Consumer;
-        
+
         /// old method names
         public alias port        getPort;
         public alias defaultPort getDefaultPort;
@@ -91,12 +91,12 @@ class Uri : UriView
                 {"http-ng",     80},
                 {"https",       443},
                 {"imap",        143},
-                {"irc",         194}, 
+                {"irc",         194},
                 {"ldap",        389},
                 {"news",        119},
-                {"nfs",         2049}, 
+                {"nfs",         2049},
                 {"nntp",        119},
-                {"pop",         110}, 
+                {"pop",         110},
                 {"rwhois",      4321},
                 {"shttp",       80},
                 {"smtp",        25},
@@ -107,20 +107,20 @@ class Uri : UriView
                 {"whois++",     43},
                 ];
 
-        public enum    
-        {       
-                ExcScheme       = 0x01,         
-                ExcAuthority    = 0x02, 
-                ExcPath         = 0x04, 
+        public enum
+        {
+                ExcScheme       = 0x01,
+                ExcAuthority    = 0x02,
+                ExcPath         = 0x04,
                 IncUser         = 0x80,         // encode spec for User
                 IncPath         = 0x10,         // encode spec for Path
                 IncQuery        = 0x20,         // encode spec for Query
                 IncQueryAll     = 0x40,
                 IncScheme       = 0x80,         // encode spec for Scheme
-                IncGeneric      = IncScheme | 
-                                  IncUser   | 
-                                  IncPath   | 
-                                  IncQuery  | 
+                IncGeneric      = IncScheme |
+                                  IncUser   |
+                                  IncPath   |
+                                  IncQuery  |
                                   IncQueryAll
         }
 
@@ -132,7 +132,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Initialize the Uri character maps and so on
 
         ***********************************************************************/
@@ -149,13 +149,13 @@ class Uri : UriView
                 map = new ubyte[256];
 
                 // load the character map with valid symbols
-                for (int i='a'; i <= 'z'; ++i)  
+                for (int i='a'; i <= 'z'; ++i)
                      map[i] = IncGeneric;
 
-                for (int i='A'; i <= 'Z'; ++i)  
+                for (int i='A'; i <= 'Z'; ++i)
                      map[i] = IncGeneric;
 
-                for (int i='0'; i<='9'; ++i)  
+                for (int i='0'; i<='9'; ++i)
                      map[i] = IncGeneric;
 
                 // exclude these from parsing elements
@@ -214,9 +214,9 @@ class Uri : UriView
                 map['?'] |= IncQueryAll;
                 map['&'] |= IncQueryAll;
         }
-        
+
         /***********************************************************************
-        
+
                 Create an empty Uri
 
         ***********************************************************************/
@@ -228,7 +228,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Construct a Uri from the provided character string
 
         ***********************************************************************/
@@ -240,10 +240,10 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Construct a Uri from the given components. The query is
                 optional.
-                
+
         ***********************************************************************/
 
         this (const(char)[] scheme, const(char)[] host, const(char)[] path, const(char)[] query = null)
@@ -257,7 +257,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Clone another Uri. This can be used to make a mutable Uri
                 from an immutable UriView.
 
@@ -275,7 +275,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Return the default port for the given scheme. InvalidPort
                 is returned if the scheme is unknown, or does not accept
                 a port.
@@ -284,14 +284,14 @@ class Uri : UriView
 
         override final const int defaultPort (const(char)[] scheme)
         {
-                short* port = scheme in genericSchemes; 
+                short* port = scheme in genericSchemes;
                 if (port is null)
                     return InvalidPort;
                 return *port;
         }
 
         /***********************************************************************
-        
+
                 Return the parsed scheme, or null if the scheme was not
                 specified
 
@@ -303,7 +303,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Return the parsed host, or null if the host was not
                 specified
 
@@ -315,7 +315,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Return the parsed port number, or InvalidPort if the port
                 was not provided.
 
@@ -327,8 +327,8 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
-                Return a valid port number by performing a lookup on the 
+
+                Return a valid port number by performing a lookup on the
                 known schemes if the port was not explicitly specified.
 
         ***********************************************************************/
@@ -341,8 +341,8 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
-                Return the parsed userinfo, or null if userinfo was not 
+
+                Return the parsed userinfo, or null if userinfo was not
                 provided.
 
         ***********************************************************************/
@@ -353,8 +353,8 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
-                Return the parsed path, or null if the path was not 
+
+                Return the parsed path, or null if the path was not
                 provided.
 
         ***********************************************************************/
@@ -365,8 +365,8 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
-                Return the parsed query, or null if a query was not 
+
+                Return the parsed query, or null if a query was not
                 provided.
 
         ***********************************************************************/
@@ -377,8 +377,8 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
-                Return the parsed fragment, or null if a fragment was not 
+
+                Return the parsed fragment, or null if a fragment was not
                 provided.
 
         ***********************************************************************/
@@ -389,7 +389,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Return whether or not the Uri scheme is considered generic.
 
         ***********************************************************************/
@@ -400,7 +400,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Emit the content of this Uri via the provided Consumer. The
                 output is constructed per RFC 2396.
 
@@ -450,7 +450,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Emit the content of this Uri via the provided Consumer. The
                 output is constructed per RFC 2396.
 
@@ -466,7 +466,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Encode uri characters into a Consumer, such that
                 reserved chars are converted into their %hex version.
 
@@ -476,16 +476,16 @@ class Uri : UriView
         {
                 size_t  ret;
                 char[3] hex;
-                int     mark;
+                size_t  mark;
 
                 hex[0] = '%';
-                foreach (int i, char c; s)
+                foreach (i, char c; s)
                         {
                         if (! (map[c] & flags))
                            {
                            ret += consume (s[mark..i]);
                            mark = i+1;
-                                
+
                            hex[1] = hexDigits [(c >> 4) & 0x0f];
                            hex[2] = hexDigits [c & 0x0f];
                            ret += consume (hex);
@@ -500,8 +500,8 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
-                Encode uri characters into a string, such that reserved 
+
+                Encode uri characters into a string, such that reserved
                 chars are converted into their %hex version.
 
                 Returns a dup'd string
@@ -516,7 +516,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Decode a character string with potential %hex values in it.
                 The decoded strings are placed into a thread-safe expanding
                 buffer, and a slice of it is returned to the caller.
@@ -537,7 +537,7 @@ class Uri : UriView
                             c -= ('A' - 10);
                         return c;
                 }
-                
+
                 auto length = s.length;
 
                 // take a peek first, to see if there's work to do
@@ -545,7 +545,7 @@ class Uri : UriView
                    {
                    char* p;
                    int   j;
-                        
+
                    // ensure we have enough decoding space available
                    p = cast(char*) decoded.expand (length);
 
@@ -558,7 +558,7 @@ class Uri : UriView
                           {
                           c = toInt(s[i+1]) * 16 + toInt(s[i+2]);
 
-                          // leave ignored escapes in the stream, 
+                          // leave ignored escapes in the stream,
                           // permitting escaped '&' to remain in
                           // the query string
                           if (c && (c is ignore))
@@ -576,10 +576,10 @@ class Uri : UriView
 
                 // return original content
                 return s;
-        }   
+        }
 
         /***********************************************************************
-        
+
                 Decode a duplicated string with potential %hex values in it
 
         ***********************************************************************/
@@ -590,13 +590,13 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Parsing is performed according to RFC 2396
-                
+
                 <pre>
                   ^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?
                    12            3  4          5       6  7        8 9
-                    
+
                 2 isolates scheme
                 4 isolates authority
                 5 isolates path
@@ -604,9 +604,9 @@ class Uri : UriView
                 9 isolates fragment
                 </pre>
 
-                This was originally a state-machine; it turned out to be a 
+                This was originally a state-machine; it turned out to be a
                 lot faster (~40%) when unwound like this instead.
-                
+
         ***********************************************************************/
 
         final Uri parse (const(char)[] uri, bool relative = false)
@@ -635,7 +635,7 @@ class Uri : UriView
                 if (mark < len-1 && uri[mark] is '/' && uri[mark+1] is '/')
                    {
                    for (mark+=2, i=mark; i < len && !(map[uri[i]] & ExcAuthority); ++i) {}
-                   parseAuthority (uri[mark .. i]); 
+                   parseAuthority (uri[mark .. i]);
                    mark = i;
                    }
                 else
@@ -669,7 +669,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Clear everything to null.
 
         ***********************************************************************/
@@ -682,7 +682,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Parse the given uri, with support for relative URLs
 
         ***********************************************************************/
@@ -691,9 +691,9 @@ class Uri : UriView
         {
                 return parse (uri, true);
         }
-        
+
         /***********************************************************************
-                
+
                 Set the Uri scheme
 
         ***********************************************************************/
@@ -705,7 +705,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Set the Uri host
 
         ***********************************************************************/
@@ -717,7 +717,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Set the Uri port
 
         ***********************************************************************/
@@ -729,7 +729,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Set the Uri userinfo
 
         ***********************************************************************/
@@ -741,7 +741,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Set the Uri query
 
         ***********************************************************************/
@@ -753,7 +753,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Extend the Uri query
 
         ***********************************************************************/
@@ -771,11 +771,11 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Set the Uri path
 
         ***********************************************************************/
-        
+
         @property final Uri path (const(char)[] path)
         {
                 this.path_ = path;
@@ -783,7 +783,7 @@ class Uri : UriView
         }
 
         /***********************************************************************
-        
+
                 Set the Uri fragment
 
         ***********************************************************************/
@@ -793,16 +793,16 @@ class Uri : UriView
                 this.fragment_ = fragment;
                 return this;
         }
-        
+
         /***********************************************************************
-        
-                Authority is the section after the scheme, but before the 
+
+                Authority is the section after the scheme, but before the
                 path, query or fragment; it typically represents a host.
-               
+
                 ---
                     ^(([^@]*)@?)([^:]*)?(:(.*))?
                      12         3       4 5
-                  
+
                 2 isolates userinfo
                 3 isolates host
                 5 isolates port
@@ -816,7 +816,7 @@ class Uri : UriView
                         len = auth.length;
 
                 // get userinfo: (([^@]*)@?)
-                foreach (int i, char c; auth)
+                foreach (i, char c; auth)
                          if (c is '@')
                             {
                             userinfo_ = decoder (auth[0 .. i]);
@@ -852,7 +852,7 @@ class Uri : UriView
 
         /**********************************************************************
 
-                in-place conversion to lowercase 
+                in-place conversion to lowercase
 
         **********************************************************************/
 
@@ -867,7 +867,7 @@ class Uri : UriView
 
 
 /*******************************************************************************
-        
+
 *******************************************************************************/
 
 private struct HeapSlice
@@ -876,7 +876,7 @@ private struct HeapSlice
         private void[]  buffer;
 
         /***********************************************************************
-        
+
                 Reset content length to zero
 
         ***********************************************************************/
@@ -887,7 +887,7 @@ private struct HeapSlice
         }
 
         /***********************************************************************
-        
+
                 Potentially expand the content space, and return a pointer
                 to the start of the empty section.
 
@@ -903,9 +903,9 @@ private struct HeapSlice
         }
 
         /***********************************************************************
-        
-                Return a slice of the content from the current position 
-                with the specified size. Adjusts the current position to 
+
+                Return a slice of the content from the current position
+                with the specified size. Adjusts the current position to
                 point at an empty zone.
 
         ***********************************************************************/
@@ -919,23 +919,23 @@ private struct HeapSlice
 }
 
 /*******************************************************************************
-      
+
     Unittest
-        
+
 *******************************************************************************/
 
 debug (UnitTest)
-{ 
+{
     import tango.util.log.Trace;
 
 unittest
 {
     auto uri = new Uri;
     auto uristring = "http://www.example.com/click.html/c=37571:RoS_Intern_search-link3_LB_Sky_Rec/b=98983:news-time-search-link_leader_neu/l=68%7C%7C%7C%7Cde/url=http://ads.ad4max.com/adclick.aspx?id=cf722624-efd5-4b10-ad53-88a5872a8873&pubad=b9c8acc4-e396-4b0b-b665-8bb3078128e6&avid=963171985&adcpc=xrH%2f%2bxVeFaPVkbVCMufB5A%3d%3d&a1v=6972657882&a1lang=de&a1ou=http%3a%2f%2fad.search.ch%2fiframe_ad.html%3fcampaignname%3dRoS_Intern_search-link3_LB_Sky_Rec%26bannername%3dnews-time-search-link_leader_neu%26iframeid%3dsl_if1%26content%3dvZLLbsIwEEX3%2bQo3aqUW1XEgkAckSJRuKqEuoDuELD%2bmiSEJyDEE%2fr7h0cKm6q6SF9bVjH3uzI3vMOaVYdpgPIwrodXGIHPYQGIb2BuyZDt2Vu2hRUh8Nx%2b%2fjj5Gc4u0UNAJ95H7jCbAJGi%2bZlqix3eoqyfUIhaT3YLtabpVEiXI5pEImRBdDF7k4y53Oea%2b38Mh554bhO1OCL49%2bO6qlTTZsa3546pmoNLMHOXIvaoapNIgTnpmzKZPCJNOBUyLzBEZEbkSKyczRU5E4gW9oN2frmf0rTSgS3quw7kqVx6dvNDZ6kCnIAhPojAKvX7Z%2bMFGFYBvKml%2bskxL2JI88cOHYPxzJJCtzpP79pXQaCZWqkxppcVvlDsF9b9CqiJNLiB1Xd%2bQqIKlUBHXSdWnjQbN1heLoRWTcwz%2bCAlqLCZXg5VzHoEj1gW5XJeVffOcFR8TCKVs8vcF%26crc%3dac8cc2fa9ec2e2de9d242345c2d40c25";
-    
-    
+
+
     uri.parse(uristring);
-    
+
     with(uri)
     {
         assert(scheme == "http");
@@ -945,22 +945,22 @@ unittest
         assert(fragment == null);
         assert(path == "/click.html/c=37571:RoS_Intern_search-link3_LB_Sky_Rec/b=98983:news-time-search-link_leader_neu/l=68||||de/url=http://ads.ad4max.com/adclick.aspx");
         assert(query == "id=cf722624-efd5-4b10-ad53-88a5872a8873&pubad=b9c8acc4-e396-4b0b-b665-8bb3078128e6&avid=963171985&adcpc=xrH/+xVeFaPVkbVCMufB5A==&a1v=6972657882&a1lang=de&a1ou=http://ad.search.ch/iframe_ad.html?campaignname=RoS_Intern_search-link3_LB_Sky_Rec%26bannername=news-time-search-link_leader_neu%26iframeid=sl_if1%26content=vZLLbsIwEEX3+Qo3aqUW1XEgkAckSJRuKqEuoDuELD+miSEJyDEE/r7h0cKm6q6SF9bVjH3uzI3vMOaVYdpgPIwrodXGIHPYQGIb2BuyZDt2Vu2hRUh8Nx+/jj5Gc4u0UNAJ95H7jCbAJGi+Zlqix3eoqyfUIhaT3YLtabpVEiXI5pEImRBdDF7k4y53Oea+38Mh554bhO1OCL49+O6qlTTZsa3546pmoNLMHOXIvaoapNIgTnpmzKZPCJNOBUyLzBEZEbkSKyczRU5E4gW9oN2frmf0rTSgS3quw7kqVx6dvNDZ6kCnIAhPojAKvX7Z+MFGFYBvKml+skxL2JI88cOHYPxzJJCtzpP79pXQaCZWqkxppcVvlDsF9b9CqiJNLiB1Xd+QqIKlUBHXSdWnjQbN1heLoRWTcwz+CAlqLCZXg5VzHoEj1gW5XJeVffOcFR8TCKVs8vcF%26crc=ac8cc2fa9ec2e2de9d242345c2d40c25");
-    
-    
+
+
         parse("psyc://example.net/~marenz?what#_presence");
-        
+
         assert(scheme == "psyc");
         assert(host == "example.net");
         assert(port == InvalidPort);
         assert(fragment == "_presence");
         assert(path == "/~marenz");
         assert(query == "what");
-   
+
     }
-   
+
     //Cout (uri).newline;
     //Cout (uri.encode ("&#$%", uri.IncQuery)).newline;
-        
+
 }
 
 }

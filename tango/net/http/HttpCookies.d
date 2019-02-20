@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: April 2004      
-        
+        version:        Initial release: April 2004
+
         author:         Kris
 
 *******************************************************************************/
@@ -27,12 +27,12 @@ private import  Integer = tango.text.convert.Integer;
 /*******************************************************************************
 
         Defines the Cookie class, and the means for reading & writing them.
-        Cookie implementation conforms with RFC 2109, but supports parsing 
+        Cookie implementation conforms with RFC 2109, but supports parsing
         of server-side cookies only. Client-side cookies are supported in
         terms of output, but response parsing is not yet implemented ...
 
         See over <A HREF="http://www.faqs.org/rfcs/rfc2109.html">here</A>
-        for the RFC document.        
+        for the RFC document.
 
 *******************************************************************************/
 
@@ -48,7 +48,7 @@ class Cookie //: IWritable
         long            maxAge=long.min;
 
         /***********************************************************************
-                
+
                 Construct an empty client-side cookie. You add these
                 to an output request using HttpClient.addCookie(), or
                 the equivalent.
@@ -58,9 +58,9 @@ class Cookie //: IWritable
         this () {}
 
         /***********************************************************************
-        
-                Construct a cookie with the provided attributes. You add 
-                these to an output request using HttpClient.addCookie(), 
+
+                Construct a cookie with the provided attributes. You add
+                these to an output request using HttpClient.addCookie(),
                 or the equivalent.
 
         ***********************************************************************/
@@ -72,7 +72,7 @@ class Cookie //: IWritable
         }
 
         /***********************************************************************
-        
+
                 Set the name of this cookie
 
         ***********************************************************************/
@@ -84,7 +84,7 @@ class Cookie //: IWritable
         }
 
         /***********************************************************************
-        
+
                 Set the value of this cookie
 
         ***********************************************************************/
@@ -96,7 +96,7 @@ class Cookie //: IWritable
         }
 
         /***********************************************************************
-                
+
                 Set the version of this cookie
 
         ***********************************************************************/
@@ -108,7 +108,7 @@ class Cookie //: IWritable
         }
 
         /***********************************************************************
-        
+
                 Set the path of this cookie
 
         ***********************************************************************/
@@ -120,7 +120,7 @@ class Cookie //: IWritable
         }
 
         /***********************************************************************
-        
+
                 Set the domain of this cookie
 
         ***********************************************************************/
@@ -132,7 +132,7 @@ class Cookie //: IWritable
         }
 
         /***********************************************************************
-        
+
                 Set the comment associated with this cookie
 
         ***********************************************************************/
@@ -144,7 +144,7 @@ class Cookie //: IWritable
         }
 
         /***********************************************************************
-        
+
                 Set the maximum duration of this cookie
 
         ***********************************************************************/
@@ -156,7 +156,7 @@ class Cookie //: IWritable
         }
 
         /***********************************************************************
-        
+
                 Indicate whether this cookie should be considered secure or not
 
         ***********************************************************************/
@@ -168,7 +168,7 @@ class Cookie //: IWritable
         }
 /+
         /***********************************************************************
-        
+
                 Output the cookie as a text stream, via the provided IWriter
 
         ***********************************************************************/
@@ -179,7 +179,7 @@ class Cookie //: IWritable
         }
 +/
         /***********************************************************************
-        
+
                 Output the cookie as a text stream, via the provided consumer
 
         ***********************************************************************/
@@ -216,7 +216,7 @@ class Cookie //: IWritable
         }
 
         /***********************************************************************
-        
+
                 Reset this cookie
 
         ***********************************************************************/
@@ -282,7 +282,7 @@ class CookieStack
                     resize (cookies, depth * 2);
                 return cookies [depth++];
         }
-        
+
         /**********************************************************************
 
                 Resize the stack such that it has more room.
@@ -292,7 +292,7 @@ class CookieStack
         private final static void resize (ref Cookie[] cookies, size_t size)
         {
                 size_t i = cookies.length;
-                
+
                 for (cookies.length=size; i < cookies.length; ++i)
                      cookies[i] = new Cookie();
         }
@@ -421,7 +421,7 @@ class HttpCookies
 
         /**********************************************************************
 
-                Construct an output cookie wrapper upon the provided 
+                Construct an output cookie wrapper upon the provided
                 output headers. Each cookie added is converted to an
                 addition to those headers.
 
@@ -442,7 +442,7 @@ class HttpCookies
         void add (Cookie cookie)
         {
                 // add the cookie header via our callback
-                headers.add (name, (OutputBuffer buf){cookie.produce (&buf.write);});        
+                headers.add (name, (OutputBuffer buf){cookie.produce (&buf.write);});
         }
 }
 
@@ -488,7 +488,7 @@ class CookieParser : Iterator!(char)
                 charMap['{'] = true;
                 charMap['}'] = true;
         }
-        
+
         /***********************************************************************
 
         ***********************************************************************/
@@ -508,7 +508,7 @@ class CookieParser : Iterator!(char)
         ***********************************************************************/
 
         protected override size_t scan (const(void)[] data)
-        {      
+        {
                 char           c;
                 int            mark,
                                vrsn;
@@ -526,7 +526,7 @@ class CookieParser : Iterator!(char)
                 ***************************************************************/
 
                 void setValue (size_t i)
-                {   
+                {
                         token = content [mark..i];
                         //Print ("::name '%.*s'\n", name);
                         //Print ("::value '%.*s'\n", token);
@@ -548,16 +548,16 @@ class CookieParser : Iterator!(char)
                                      {
                                      case "$path":
                                            if (cookie)
-                                               cookie.setPath (token); 
+                                               cookie.setPath (token);
                                            break;
 
                                      case "$domain":
                                            if (cookie)
-                                               cookie.setDomain (token); 
+                                               cookie.setDomain (token);
                                            break;
 
                                      case "$version":
-                                           vrsn = cast(int) Integer.parse (token); 
+                                           vrsn = cast(int) Integer.parse (token);
                                            break;
 
                                      default:
@@ -645,28 +645,28 @@ class CookieParser : Iterator!(char)
                            }
                     }
 
-                // we ran out of content; patch partial cookie values 
+                // we ran out of content; patch partial cookie values
                 if (state is State.Token)
                     setValue (content.length);
 
                 // go home
                 return IConduit.Eof;
         }
-                                
+
         /***********************************************************************
-        
+
                 Locate the next token from the provided buffer, and map a
-                buffer reference into token. Returns true if a token was 
-                located, false otherwise. 
+                buffer reference into token. Returns true if a token was
+                located, false otherwise.
 
                 Note that the buffer content is not duplicated. Instead, a
                 slice of the buffer is referenced by the token. You can use
                 Token.clone() or Token.toString().dup() to copy content per
                 your application needs.
 
-                Note also that there may still be one token left in a buffer 
-                that was not terminated correctly (as in eof conditions). In 
-                such cases, tokens are mapped onto remaining content and the 
+                Note also that there may still be one token left in a buffer
+                that was not terminated correctly (as in eof conditions). In
+                such cases, tokens are mapped onto remaining content and the
                 buffer will have no more readable content.
 
         ***********************************************************************/
@@ -679,13 +679,13 @@ class CookieParser : Iterator!(char)
 
         /**********************************************************************
 
-                in-place conversion to lowercase 
+                in-place conversion to lowercase
 
         **********************************************************************/
 
         final static char[] toLower (char[] src)
         {
-                foreach (int i, char c; src)
+                foreach (i, char c; src)
                          if (c >= 'A' && c <= 'Z')
                              src[i] = cast(char)(c + ('a' - 'A'));
                 return src;
@@ -702,5 +702,5 @@ class CookieParser : Iterator!(char)
                 return (c > 32 && c < 127 && !charMap[c]);
         }
 }
-   
-     
+
+

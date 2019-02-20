@@ -84,12 +84,12 @@ class Delimiters(T) : Iterator!(T)
 
                 if (delim.length is 1)
                    {
-                   foreach (int i, T c; content)
+                   foreach (i, T c; content)
                             if (c is delim[0])
                                 return found (set (content.ptr, 0, i, i));
                    }
                 else
-                   foreach (int i, T c; content)
+                   foreach (i, T c; content)
                             if (has (delim, c))
                                 return found (set (content.ptr, 0, i, i));
 
