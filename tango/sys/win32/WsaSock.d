@@ -28,8 +28,8 @@ struct WSADATA
 {
         WORD wVersion;
         WORD wHighVersion;
-        char szDescription[WSADESCRIPTION_LEN+1];
-        char szSystemStatus[WSASYS_STATUS_LEN+1];
+        char[WSADESCRIPTION_LEN+1] szDescription;
+        char[WSASYS_STATUS_LEN+1] szSystemStatus;
         ushort iMaxSockets;
         ushort iMaxUdpDg;
         char* lpVendorInfo;

@@ -31,7 +31,7 @@ private import tango.core.Octal;
 
 *******************************************************************************/
 
-version (Win32)
+version (Windows)
          private import Utf = tango.text.convert.Utf;
    else
       private import tango.stdc.posix.unistd;
