@@ -11,17 +11,13 @@
 
 *******************************************************************************/
 
-module tango.io.FileScan;
+deprecated("tango.io.FileScan is deprecated. Please use tango.io.FilePath.toList or tango.io.vfs.* instead.") module tango.io.FileScan;
 
 
 
 public  import tango.io.FilePath;
 
 private import tango.core.Exception;
-
-pragma(msg, "tango.io.FileScan is deprecated. Please use tango.io.FilePath.toList or tango.io.vfs.* instead.");
-
-deprecated:
 
 /*******************************************************************************
     This module is deprecated because it doesn't support file globbing
@@ -60,7 +56,7 @@ class FileScan
         FilePath[]      fileSet;
         const(char)[][]        errorSet;
         FilePath[]      folderSet;
-        
+
         /***********************************************************************
 
             Alias for Filter delegate. Accepts a FilePath & a bool as
@@ -104,7 +100,7 @@ class FileScan
         }
 
         /***********************************************************************
-        
+
                 Return all directories found in the last scan
 
         ***********************************************************************/
@@ -118,9 +114,9 @@ class FileScan
 
                 Sweep a set of files and directories from the given parent
                 path, with no filtering applied
-        
+
         ***********************************************************************/
-        
+
         FileScan sweep (const(char)[] path, bool recurse=true)
         {
                 return sweep (path, cast(Filter) null, recurse);
@@ -130,9 +126,9 @@ class FileScan
 
                 Sweep a set of files and directories from the given parent
                 path, where the files are filtered by the given suffix
-        
+
         ***********************************************************************/
-        
+
         FileScan sweep (const(char)[] path, const(char)[] match, bool recurse=true)
         {
                 return sweep (path, (FilePath fp, bool isDir)
@@ -145,7 +141,7 @@ class FileScan
                 path, where the files are filtered by the provided delegate
 
         ***********************************************************************/
-        
+
         FileScan sweep (const(char)[] path, Filter filter, bool recurse=true)
         {
                 errorSet = null, fileSet = folderSet = null;
@@ -156,11 +152,11 @@ class FileScan
         /***********************************************************************
 
                 Internal routine to locate files and sub-directories. We
-                skip entries with names composed only of '.' characters. 
+                skip entries with names composed only of '.' characters.
 
         ***********************************************************************/
 
-        private FileScan scan (FilePath folder, Filter filter, bool recurse) 
+        private FileScan scan (FilePath folder, Filter filter, bool recurse)
         {
                 try {
                     auto paths = folder.toList (filter);
