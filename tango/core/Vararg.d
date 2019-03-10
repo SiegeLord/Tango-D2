@@ -14,7 +14,7 @@ public import core.vararg;
 
 /**
 
-  Gdc 
+  Gdc
 
 
 **/
@@ -23,7 +23,7 @@ public import core.vararg;
 version( GNU )
 {
     // GDC doesn't need va_start/va_end
-    // If the va_arg template version is used,  
+    // If the va_arg template version is used,
 
     public import std.stdarg;
 
@@ -40,7 +40,7 @@ version( GNU )
 }
 else version( LDC )
 {
-    public import ldc.vararg;
+    public import core.stdc.stdarg;
 }
 else
 {
