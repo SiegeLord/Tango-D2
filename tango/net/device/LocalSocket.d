@@ -20,14 +20,11 @@ private import tango.net.device.Berkeley;
 
 *******************************************************************************/
 
-version (Windows)
-{
-        pragma(msg, "not yet available for windows");
-}
+version (Posix):
 
 /*******************************************************************************
 
-        A wrapper around the Berkeley API to implement the IConduit 
+        A wrapper around the Berkeley API to implement the IConduit
         abstraction and add stream-specific functionality.
 
 *******************************************************************************/
@@ -35,7 +32,7 @@ version (Windows)
 class LocalSocket : Socket
 {
         /***********************************************************************
-        
+
                 Create a streaming local socket
 
         ***********************************************************************/
@@ -46,7 +43,7 @@ class LocalSocket : Socket
         }
 
         /***********************************************************************
-        
+
                 Create a streaming local socket
 
         ***********************************************************************/
@@ -57,13 +54,13 @@ class LocalSocket : Socket
         }
 
         /***********************************************************************
-        
+
                 Create a streaming local socket
 
         ***********************************************************************/
 
         this (LocalAddress addr)
-        {       
+        {
                 this();
                 super.connect (addr);
         }
@@ -86,7 +83,7 @@ class LocalSocket : Socket
 *******************************************************************************/
 
 class LocalServerSocket : LocalSocket
-{      
+{
         /***********************************************************************
 
         ***********************************************************************/
@@ -134,7 +131,7 @@ class LocalAddress : Address
                 ushort sun_family = AddressFamily.UNIX;
                 char[108] sun_path;
         }
-                        
+
         protected
         {
                 sockaddr_un sun;
@@ -151,10 +148,10 @@ class LocalAddress : Address
         this (const(char)[] path)
         {
                 assert (path.length < 108);
-                
+
                 sun.sun_path [0 .. path.length] = path[];
                 sun.sun_path [path.length .. $] = 0;
-                
+
                 _pathLength = path.length;
                 _path = sun.sun_path [0 .. path.length];
         }
@@ -163,29 +160,29 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        @property override final sockaddr* name () 
-        { 
-                return cast(sockaddr*) &sun; 
+        @property override final sockaddr* name ()
+        {
+                return cast(sockaddr*) &sun;
         }
-        
+
         /***********************************************************************
 
         ***********************************************************************/
 
         @property override final const int nameLen ()
-        { 
+        {
                 return cast(int)(_pathLength + ushort.sizeof);
         }
-        
+
         /***********************************************************************
 
         ***********************************************************************/
 
-        @property override final AddressFamily addressFamily () 
-        { 
-                return AddressFamily.UNIX; 
+        @property override final AddressFamily addressFamily ()
+        {
+                return AddressFamily.UNIX;
         }
-        
+
         /***********************************************************************
 
         ***********************************************************************/
@@ -197,7 +194,7 @@ class LocalAddress : Address
                 else
                    return "unix:path=" ~ _path.idup;
         }
-        
+
         /***********************************************************************
 
         ***********************************************************************/
@@ -206,7 +203,7 @@ class LocalAddress : Address
         {
                 return _path;
         }
-        
+
         /***********************************************************************
 
         ***********************************************************************/
@@ -228,6 +225,6 @@ debug (LocalSocket)
         void main()
         {
                 auto y = new LocalSocket ("foo");
-                auto x = new LocalServerSocket ("foo");   
+                auto x = new LocalServerSocket ("foo");
         }
 }
