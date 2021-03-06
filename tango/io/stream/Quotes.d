@@ -12,6 +12,8 @@
 
 module tango.io.stream.Quotes;
 
+private import tango.io.device.Conduit;
+
 private import tango.io.stream.Iterator;
 
 /*******************************************************************************
