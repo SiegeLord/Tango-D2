@@ -752,7 +752,7 @@ struct Variant
                 version(DigitalMarsX64)
                 {
                     scope void[] buffer = new void[types[i].tsize];
-                    va_arg(cast(va_list)args, cast(TypeInfo)types[i], buffer.ptr);
+                    va_arg(*cast(va_list*)&args, cast(TypeInfo)types[i], buffer.ptr);
                     Variant.fromPtr(types[i], buffer.ptr, v);
                 }
                 else
