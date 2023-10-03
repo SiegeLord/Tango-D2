@@ -123,7 +123,8 @@ private class List(T)
     Element head,
             tail;
 
-    List opCatAssign(T v)
+    List // opCatAssign(T v)
+	    opOpAssign(string op)(T v) if (op == "~")
     {
         if ( tail is null )
             head = tail = new Element(v);
@@ -159,7 +160,8 @@ private class List(T)
         return this;
     }
 
-    List opCatAssign(List l)
+    List // opCatAssign(List l)
+	    opOpAssign(string op)(List l) if (op == "~")
     {
         if ( l.empty() )
             return this;
@@ -327,9 +329,10 @@ private struct Stack(T)
         stack[_top] = v;
         ++_top;
     }
-    alias push opCatAssign;
+    // alias push opCatAssign;
 
-    void opCatAssign(T[] vs)
+    void // opCatAssign(T[] vs)
+	    opOpAssign(string op)(T[] vs) if (op == "~")
     {
         size_t end = _top+vs.length;
         if ( end > stack.length )
@@ -1397,7 +1400,7 @@ private final class TNFA(char_t)
         Stack!(Operator)    opStack;
         Stack!(uint)        tagStack;
         Stack!(Pair!(uint)) occurStack;
-        opStack ~= Operator.eos;
+        opStack.push(Operator.eos);
 
         /* ****************************************************************************************
             Perform action on operator stack
@@ -1414,9 +1417,9 @@ private final class TNFA(char_t)
             switch ( action_lookup[index] )
             {
                 case Act.pua:
-                    opStack ~= next_op;
+                    opStack.push(next_op);
                     if ( next_op == Operator.open_par ) {
-                        tagStack ~= next_tag;
+                        tagStack.push(next_tag);
                         next_tag += 2;
                     }
                     break;
@@ -1541,7 +1544,7 @@ private final class TNFA(char_t)
                 case '{':
                     Pair!(uint) occur;
                     parseOccurCount(occur.a, occur.b);
-                    occurStack ~= occur;
+                    occurStack.push(occur);
                     if ( peekPattern() == '?' ) {
                         readPattern();
                         perform(Operator.occur_ng);
@@ -1747,7 +1750,7 @@ private final class TNFA(char_t)
             {
                 state.visited = true;
                 foreach_reverse ( t; state.transitions )
-                    todo ~= t;
+                    todo.push(t);
             }
 
             if ( todo.empty() )
