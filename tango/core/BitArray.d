@@ -1256,7 +1256,8 @@ struct BitArray
      * Returns:
      *  A shallow copy of this array.
      */
-    BitArray opCatAssign( bool b )
+    BitArray // opCatAssign( bool b )
+	    opOpAssign(string op)(bool b) if (op == "~")
     {
         length = len + 1;
         (this)[len - 1] = b;
@@ -1285,7 +1286,8 @@ struct BitArray
 
 
     /** ditto */
-    BitArray opCatAssign( const(BitArray) rhs )
+    BitArray // opCatAssign( const(BitArray) rhs )
+	    opOpAssign(string op)(const(BitArray) rhs) if (op == "~")
     {
         auto istart = len;
         length = len + rhs.length;

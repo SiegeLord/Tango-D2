@@ -1003,7 +1003,8 @@ private struct Result
 
         **********************************************************************/
 
-        private void opCatAssign (const(char)[] rhs)
+        private void // opCatAssign (const(char)[] rhs)
+	    opOpAssign(string op)(const(char)[] rhs) if (op == "~")
         {
                 auto end = index + rhs.length;
                 assert (end < target_.length);
@@ -1016,7 +1017,8 @@ private struct Result
 
         **********************************************************************/
 
-        private void opCatAssign (char rhs)
+        private void // opCatAssign (char rhs)
+	    opOpAssign(string op)(char rhs) if (op == "~")
         {
                 assert (index < target_.length);
                 target_[index++] = rhs;
